@@ -1,382 +1,446 @@
-
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>드래곤 초월 등급표</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--font-sans)}
-#wrap{padding:0.75rem 0}
-#search-bar{display:flex;gap:8px;margin-bottom:0.6rem}
-#search-bar input{flex:1;padding:7px 10px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:13px;background:var(--color-background-primary);color:var(--color-text-primary)}
-#filter-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:0.6rem}
-.ftag{padding:3px 8px;border-radius:20px;font-size:11px;border:0.5px solid var(--color-border-secondary);cursor:pointer;background:var(--color-background-primary);color:var(--color-text-secondary)}
-.ftag.active{background:var(--color-background-info);color:var(--color-text-info);border-color:var(--color-border-info)}
-#count{font-size:12px;color:var(--color-text-secondary);margin-bottom:0.4rem}
-.tbl-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:12px}
-thead tr{background:var(--color-background-secondary)}
-th{padding:6px 6px;text-align:left;font-weight:500;color:var(--color-text-secondary);border-bottom:1px solid var(--color-border-tertiary);white-space:nowrap}
-th.center,td.center{text-align:center}
-td{padding:5px 6px;border-bottom:0.5px solid var(--color-border-tertiary);color:var(--color-text-primary);vertical-align:middle}
-tr:hover td{background:var(--color-background-secondary)}
-.dragon-img{width:32px;height:32px;border-radius:var(--border-radius-md);object-fit:cover;display:block}
-.img-placeholder{width:32px;height:32px;border-radius:var(--border-radius-md);background:var(--color-background-secondary);border:0.5px dashed var(--color-border-secondary);display:flex;align-items:center;justify-content:center;color:var(--color-text-secondary);font-size:10px}
-.badge-elem{font-size:10px;padding:2px 5px;border-radius:8px;font-weight:500;white-space:nowrap}
-.badge-type{font-size:10px;padding:2px 5px;border-radius:8px;background:var(--color-background-secondary);color:var(--color-text-secondary)}
-.lv-o{color:#2e7d32;font-weight:500}
-.lv-x{color:#c62828;font-weight:500}
-.tier-val{font-size:13px;font-weight:500}
-.t-blue  {color:#29b6f6}
-.t-gold  {color:#f9a825}
-.t-silver{color:#90a4ae}
-.t-pink  {color:#ce93d8}
-.no-res td{text-align:center;padding:2rem;color:var(--color-text-secondary)}
+body{font-family:'Malgun Gothic',sans-serif;background:#1a1a2e;color:#eee;padding:12px}
+
+/* 검색/필터 */
+#top{margin-bottom:12px}
+#search-bar{display:flex;gap:8px;margin-bottom:8px}
+#search-bar input{flex:1;padding:8px 12px;border:1px solid #444;border-radius:8px;font-size:13px;background:#2a2a3e;color:#eee}
+#search-bar input::placeholder{color:#888}
+#filter-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}
+.ftag{padding:4px 10px;border-radius:20px;font-size:11px;border:1px solid #555;cursor:pointer;background:#2a2a3e;color:#aaa}
+.ftag.active{background:#4a90d9;color:#fff;border-color:#4a90d9}
+#count{font-size:12px;color:#888;margin-bottom:8px}
+
+/* 속성 패널 그리드 */
+#panels{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+
+/* 패널 */
+.panel{border-radius:10px;overflow:hidden;border:1px solid #333}
+.panel-header{display:flex;align-items:center;gap:10px;padding:10px 14px;font-size:15px;font-weight:700}
+.panel-header .elem-icon{width:36px;height:36px;border-radius:6px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:20px;background:rgba(0,0,0,0.2)}
+.panel-header .elem-icon img{width:100%;height:100%;object-fit:cover}
+
+/* 속성별 헤더 색상 */
+.panel-땅 .panel-header{background:linear-gradient(90deg,#b5651d,#d4863a)}
+.panel-물 .panel-header{background:linear-gradient(90deg,#1565c0,#1e88e5)}
+.panel-불 .panel-header{background:linear-gradient(90deg,#b71c1c,#e53935)}
+.panel-바람 .panel-header{background:linear-gradient(90deg,#1b5e20,#388e3c)}
+.panel-빛 .panel-header{background:linear-gradient(90deg,#e65100,#fb8c00)}
+.panel-어둠 .panel-header{background:linear-gradient(90deg,#311b92,#5e35b1)}
+.panel-황혼 .panel-header{background:linear-gradient(90deg,#880e4f,#c2185b)}
+.panel-여명 .panel-header{background:linear-gradient(90deg,#4e342e,#795548)}
+.panel-악몽 .panel-header{background:linear-gradient(90deg,#4a148c,#7b1fa2)}
+
+/* 테이블 */
+.panel table{width:100%;border-collapse:collapse;font-size:12px;background:#1e1e30}
+.panel thead tr{background:#252538}
+.panel th{padding:6px 8px;text-align:center;font-weight:500;color:#aaa;border-bottom:1px solid #333;white-space:nowrap;font-size:11px}
+.panel th.left{text-align:left}
+.panel td{padding:5px 8px;border-bottom:0.5px solid #2a2a3e;vertical-align:middle;color:#ddd}
+.panel td.center{text-align:center}
+.panel tr:hover td{background:#252540}
+
+/* 순위 */
+.rank{font-size:11px;color:#888;text-align:center;width:24px}
+
+/* 드래곤 이미지 */
+.dragon-img{width:36px;height:36px;border-radius:6px;object-fit:cover;display:block}
+.img-placeholder{width:36px;height:36px;border-radius:6px;background:#2a2a3e;border:1px dashed #444;display:flex;align-items:center;justify-content:center;color:#555;font-size:10px}
+
+/* 타입 뱃지 */
+.badge-type{font-size:10px;padding:2px 5px;border-radius:6px;background:#2e2e4a;color:#aaa;white-space:nowrap}
+
+/* 레벨업 */
+.lv-o{color:#66bb6a;font-weight:700}
+.lv-x{color:#ef5350;font-weight:700}
+
+/* 등급 색상 */
+.t-blue  {color:#5dcff5 !important;font-weight:700;font-size:13px;text-shadow:0 0 6px rgba(93,207,245,0.6)}
+.t-gold  {color:#f5c842 !important;font-weight:700;font-size:13px;text-shadow:0 0 6px rgba(245,200,66,0.5)}
+.t-silver{color:#a8b4c0 !important;font-weight:700;font-size:13px;text-shadow:0 0 4px rgba(168,180,192,0.4)}
+.t-pink  {color:#c4879e !important;font-weight:700;font-size:13px;text-shadow:0 0 4px rgba(196,135,158,0.4)}
+.t-neg   {color:#ef5350 !important;font-weight:700;font-size:13px}
+
+.no-data td{text-align:center;padding:1rem;color:#555}
+
+/* 속성 아이콘 이미지 경로 — 직접 수정하세요 */
+/* 예: ./images/icon_earth.png */
 </style>
-<div id="wrap">
-  <h1>초등표 made by 닉스 (인터페이스 수정, 드래곤 이미지 및 성장폭 현재 추가중)</h1>
-  <div id="search-bar"><input id="q" type="text" placeholder="드래곤 이름 검색..." oninput="render()"></div>
+</head>
+<body>
+
+<div id="top">
+  <div id="search-bar">
+    <input id="q" type="text" placeholder="드래곤 이름 검색..." oninput="render()">
+  </div>
   <div id="filter-row"></div>
   <div id="count"></div>
-  <div class="tbl-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th style="width:38px"></th>
-          <th>드래곤</th>
-          <th class="center">속성</th>
-          <th class="center">타입</th>
-          <th class="center">레벨업</th>
-          <th class="center">등급</th>
-        </tr>
-      </thead>
-      <tbody id="tbody"></tbody>
-    </table>
-  </div>
 </div>
+
+<div id="panels"></div>
+
 <script>
-const elementColors={
-  "땅":["#fff3e0","#e65100"],"물":["#e3f2fd","#1565c0"],"불":["#fce4ec","#b71c1c"],
-  "바람":["#e8f5e9","#1b5e20"],"빛":["#fffde7","#f57f17"],"어둠":["#ede7f6","#4a148c"],
-  "황혼":["#fdf2f8","#880e4f"],"여명":["#fff8e1","#6d4c41"],"악몽":["#f3e5f5","#6a1b9a"],
+/* ===== 속성 설정 =====
+   icon: 속성 아이콘 이미지 경로. 없으면 "" 로 두면 텍스트로 표시 */
+const elemConfig={
+  "땅" :{icon:"", label:"땅 속성"},
+  "물" :{icon:"", label:"물 속성"},
+  "불" :{icon:"", label:"불 속성"},
+  "바람":{icon:"", label:"바람 속성"},
+  "빛" :{icon:"", label:"빛 속성"},
+  "어둠":{icon:"", label:"어둠 속성"},
+  "황혼":{icon:"", label:"황혼 속성"},
+  "여명":{icon:"", label:"여명 속성"},
+  "악몽":{icon:"", label:"악몽 속성"},
 };
+
 function tierClass(g){
   if(g>=7.0) return 't-blue';
   if(g>=6.5) return 't-gold';
   if(g>=4.5) return 't-silver';
-  return 't-pink';
+  if(g>=0)   return 't-pink';
+  return 't-neg';
 }
+
+/* ===== 데이터 ===== */
 const data=[
-{n:"다로스",e:"땅",t:"공방",lv:"X",g:7.0,img:""},
-{n:"파키",e:"땅",t:"방어",lv:"O",g:6.8,img:""},
-{n:"즈믄",e:"땅",t:"공방",lv:"O",g:6.7,img:""},
-{n:"논",e:"땅",t:"체방",lv:"O",g:6.675,img:""},
-{n:"헤임달",e:"땅",t:"체방",lv:"O",g:6.6,img:""},
-{n:"바스카",e:"땅",t:"공격",lv:"O",g:6.6,img:""},
-{n:"리베티",e:"땅",t:"체공",lv:"O",g:6.5,img:""},
-{n:"아카이아",e:"땅",t:"공방",lv:"O",g:6.35,img:""},
-{n:"크로마 아카이아",e:"땅",t:"공방",lv:"O",g:6.35,img:""},
-{n:"케찰코아틀",e:"땅",t:"체공",lv:"O",g:6.3,img:""},
-{n:"에그마용",e:"땅",t:"체력",lv:"O",g:6.3,img:""},
-{n:"알데바란",e:"땅",t:"체력",lv:"O",g:6.0,img:""},
-{n:"레오벡터",e:"땅",t:"공격",lv:"O",g:6.0,img:""},
-{n:"포이즌리버",e:"땅",t:"체력",lv:"O",g:5.9,img:""},
-{n:"아스타테",e:"땅",t:"체방",lv:"X",g:5.4,img:""},
-{n:"칸타카",e:"땅",t:"체방",lv:"X",g:5.225,img:""},
-{n:"지진",e:"땅",t:"체력",lv:"O",g:4.85,img:""},
-{n:"포폰",e:"땅",t:"체력",lv:"O",g:4.5,img:""},
-{n:"레이어스",e:"땅",t:"체공",lv:"O",g:4.3,img:""},
-{n:"애플칙",e:"땅",t:"체력",lv:"O",g:4.0,img:""},
-{n:"데빌곤",e:"땅",t:"공격",lv:"X",g:2.1,img:""},
-{n:"플라워 드래곤",e:"땅",t:"방어",lv:"X",g:2.0,img:""},
-{n:"스콜피온 드래곤",e:"땅",t:"공방",lv:"O",g:1.95,img:""},
-{n:"콜로서스",e:"땅",t:"체공",lv:"X",g:1.875,img:""},
-{n:"스파인",e:"땅",t:"공방",lv:"O",g:1.45,img:""},
-{n:"파이썬",e:"땅",t:"체방",lv:"X",g:-0.2,img:""},
-{n:"머스타드 해머",e:"땅",t:"체방",lv:"O",g:-0.35,img:""},
-{n:"에그 드래곤",e:"땅",t:"방어",lv:"O",g:-0.675,img:""},
-{n:"스마트 드래곤",e:"땅",t:"방어",lv:"O",g:-0.675,img:""},
-{n:"패트 드래곤",e:"땅",t:"체력",lv:"O",g:-0.675,img:""},
-{n:"타이거 드래곤",e:"땅",t:"체력",lv:"O",g:-0.675,img:""},
-{n:"골든혼",e:"땅",t:"체방",lv:"O",g:-0.85,img:""},
-{n:"파워 드래곤",e:"땅",t:"공격",lv:"O",g:-1.275,img:""},
-{n:"히드라곤",e:"땅",t:"체공",lv:"O",g:-2.175,img:""},
-{n:"지하땅굴 드래곤",e:"땅",t:"방어",lv:"O",g:-2.175,img:""},
-{n:"옥타",e:"물",t:"공방",lv:"O",g:6.9,img:""},
-{n:"크로마 옥타",e:"물",t:"공방",lv:"O",g:6.9,img:""},
-{n:"풀투누스",e:"물",t:"방어",lv:"O",g:6.7,img:""},
-{n:"스카트",e:"물",t:"방어",lv:"O",g:6.6,img:""},
-{n:"로키",e:"물",t:"방어",lv:"O",g:6.575,img:""},
-{n:"마소티스",e:"물",t:"공방",lv:"O",g:6.5,img:""},
-{n:"루드라",e:"물",t:"공격",lv:"O",g:6.5,img:""},
-{n:"볼바",e:"물",t:"체력",lv:"O",g:6.5,img:""},
-{n:"유르카",e:"물",t:"체력",lv:"O",g:6.45,img:""},
-{n:"알레샤",e:"물",t:"체력",lv:"O",g:6.45,img:""},
-{n:"크로마 알레샤",e:"물",t:"체력",lv:"O",g:6.45,img:""},
-{n:"루살카",e:"물",t:"체공",lv:"O",g:6.4,img:""},
-{n:"피싱테일 드래곤",e:"물",t:"공격",lv:"O",g:6.3,img:""},
-{n:"블리자드",e:"물",t:"공격",lv:"O",g:6.25,img:""},
-{n:"프로즌",e:"물",t:"체공",lv:"O",g:6.2,img:""},
-{n:"레굴루스",e:"물",t:"체방",lv:"O",g:5.3,img:""},
-{n:"크로마 레굴루스",e:"물",t:"체방",lv:"O",g:5.3,img:""},
-{n:"베른하르트",e:"물",t:"공격",lv:"O",g:5.2,img:""},
-{n:"세크레타",e:"물",t:"공방",lv:"X",g:4.9,img:""},
-{n:"트로페우스",e:"물",t:"공방",lv:"O",g:4.1,img:""},
-{n:"베놈 드래곤",e:"물",t:"체공",lv:"O",g:4.0,img:""},
-{n:"루미네스",e:"물",t:"공격",lv:"X",g:3.2,img:""},
-{n:"위드미",e:"물",t:"방어",lv:"O",g:3.05,img:""},
-{n:"브리트라",e:"물",t:"체공",lv:"X",g:2.925,img:""},
-{n:"바이올렛 드래곤",e:"물",t:"체공",lv:"X",g:2.275,img:""},
-{n:"스터드 드래곤",e:"물",t:"방어",lv:"X",g:2.0,img:""},
-{n:"나트론",e:"물",t:"체방",lv:"O",g:1.9,img:""},
-{n:"아이스드레이크",e:"물",t:"공방",lv:"X",g:1.9,img:""},
-{n:"현무 드래곤",e:"물",t:"방어",lv:"O",g:1.55,img:""},
-{n:"샤크곤",e:"물",t:"공격",lv:"O",g:1.45,img:""},
-{n:"퍼플릭스 드래곤",e:"물",t:"체방",lv:"O",g:1.225,img:""},
-{n:"스왐프 드래곤",e:"물",t:"체력",lv:"O",g:-0.675,img:""},
-{n:"빙하고룡",e:"물",t:"공격",lv:"O",g:-1.275,img:""},
-{n:"슬라임 드래곤",e:"물",t:"체방",lv:"O",g:-2.1,img:""},
-{n:"페어리 드래곤",e:"물",t:"공격",lv:"O",g:-2.175,img:""},
-{n:"네시",e:"물",t:"체력",lv:"O",g:-2.175,img:""},
-{n:"수룡",e:"물",t:"체방",lv:"O",g:-3.275,img:""},
-{n:"파이거",e:"불",t:"체력",lv:"O",g:6.825,img:""},
-{n:"크로마 파이거",e:"불",t:"체력",lv:"O",g:6.825,img:""},
-{n:"토트",e:"불",t:"방어",lv:"O",g:6.8,img:""},
-{n:"불나래",e:"불",t:"공방",lv:"O",g:6.7,img:""},
-{n:"크로마 불나래",e:"불",t:"공방",lv:"O",g:6.7,img:""},
-{n:"적마룡",e:"불",t:"체공",lv:"O",g:6.7,img:""},
-{n:"블레이즈 드래곤",e:"불",t:"체공",lv:"O",g:6.6,img:""},
-{n:"수라 드래곤",e:"불",t:"공격",lv:"O",g:6.5,img:""},
-{n:"라센티",e:"불",t:"공격",lv:"O",g:6.5,img:""},
-{n:"화귀 드래곤",e:"불",t:"체방",lv:"O",g:6.475,img:""},
-{n:"스카투스",e:"불",t:"방어",lv:"O",g:6.4,img:""},
-{n:"크로마 스카투스",e:"불",t:"방어",lv:"O",g:6.4,img:""},
-{n:"염화룡",e:"불",t:"체력",lv:"O",g:6.15,img:""},
-{n:"엔투라스",e:"불",t:"공격",lv:"O",g:6.0,img:""},
-{n:"가루다",e:"불",t:"공방",lv:"X",g:5.8,img:""},
-{n:"마룡",e:"불",t:"공방",lv:"X",g:5.5,img:""},
-{n:"포포모",e:"불",t:"체력",lv:"X",g:5.3,img:""},
-{n:"와일드 드래곤",e:"불",t:"방어",lv:"X",g:4.9,img:""},
-{n:"이그나",e:"불",t:"체방",lv:"O",g:4.7,img:""},
-{n:"루가르 드래곤",e:"불",t:"방어",lv:"X",g:4.5,img:""},
-{n:"타나토스",e:"불",t:"체방",lv:"O",g:4.4,img:""},
-{n:"푸투룸",e:"불",t:"체방",lv:"X",g:4.0,img:""},
-{n:"번네스",e:"불",t:"공격",lv:"X",g:2.6,img:""},
-{n:"아이언 드래곤",e:"불",t:"방어",lv:"X",g:2.0,img:""},
-{n:"레드 와이번",e:"불",t:"공격",lv:"O",g:1.95,img:""},
-{n:"자룡",e:"불",t:"체공",lv:"X",g:0.7,img:""},
-{n:"므네이아",e:"불",t:"체공",lv:"X",g:0.025,img:""},
-{n:"레드불 드래곤",e:"불",t:"체공",lv:"X",g:-0.175,img:""},
-{n:"인섹트 드래곤",e:"불",t:"공방",lv:"O",g:-0.275,img:""},
-{n:"샌드 드래곤",e:"불",t:"공방",lv:"O",g:-0.275,img:""},
-{n:"스파이크 드래곤",e:"불",t:"방어",lv:"O",g:-0.675,img:""},
-{n:"번개고룡",e:"불",t:"체공",lv:"O",g:-1.275,img:""},
-{n:"파이어 드래곤",e:"불",t:"공격",lv:"O",g:-2.175,img:""},
-{n:"피닉스",e:"불",t:"공격",lv:"O",g:-2.175,img:""},
-{n:"키갈",e:"바람",t:"방어",lv:"O",g:7.0,img:""},
-{n:"에트왈 드래곤",e:"바람",t:"공방",lv:"O",g:7.0,img:""},
-{n:"피타야",e:"바람",t:"공방",lv:"O",g:7.0,img:""},
-{n:"티르",e:"바람",t:"체방",lv:"O",g:6.675,img:""},
-{n:"리티오",e:"바람",t:"방어",lv:"O",g:6.6,img:""},
-{n:"크로마 리티오",e:"바람",t:"방어",lv:"O",g:6.6,img:""},
-{n:"토르",e:"바람",t:"공방",lv:"O",g:6.6,img:""},
-{n:"블루썬더",e:"바람",t:"공격",lv:"O",g:6.4,img:""},
-{n:"크로마 블루썬더",e:"바람",t:"공격",lv:"O",g:6.4,img:""},
-{n:"센투라",e:"바람",t:"체방",lv:"X",g:6.075,img:""},
-{n:"루루",e:"바람",t:"체방",lv:"O",g:6.075,img:""},
-{n:"크로마 루루",e:"바람",t:"체방",lv:"O",g:6.075,img:""},
-{n:"보레아스",e:"바람",t:"체공",lv:"O",g:6.0,img:""},
-{n:"아라카",e:"바람",t:"공격",lv:"X",g:5.675,img:""},
-{n:"거스트 드래곤",e:"바람",t:"공격",lv:"O",g:5.3,img:""},
-{n:"엠파이어",e:"바람",t:"체력",lv:"X",g:5.1,img:""},
-{n:"아스티",e:"바람",t:"공격",lv:"X",g:5.0,img:""},
-{n:"혼",e:"바람",t:"체력",lv:"O",g:4.7,img:""},
-{n:"그레이탄",e:"바람",t:"공방",lv:"O",g:4.4,img:""},
-{n:"스틸윙",e:"바람",t:"방어",lv:"X",g:4.2,img:""},
-{n:"스트라이커",e:"바람",t:"공격",lv:"O",g:3.9,img:""},
-{n:"제피로스",e:"바람",t:"체공",lv:"O",g:3.4,img:""},
-{n:"카오스",e:"바람",t:"체공",lv:"X",g:2.6,img:""},
-{n:"태엽 드래곤",e:"바람",t:"체방",lv:"X",g:2.6,img:""},
-{n:"i곤",e:"바람",t:"공방",lv:"X",g:2.025,img:""},
-{n:"프로스티",e:"바람",t:"방어",lv:"O",g:1.55,img:""},
-{n:"타이푼 드래곤",e:"바람",t:"체방",lv:"X",g:1.225,img:""},
-{n:"가디언",e:"바람",t:"체력",lv:"O",g:1.05,img:""},
-{n:"윙스 드래곤",e:"바람",t:"공방",lv:"O",g:-0.275,img:""},
-{n:"메탈 마그넷 드래곤",e:"바람",t:"공방",lv:"O",g:-0.275,img:""},
-{n:"청룡",e:"바람",t:"공격",lv:"O",g:-2.175,img:""},
-{n:"윈드 드래곤",e:"바람",t:"체력",lv:"O",g:-2.175,img:"7 (2)"},
-{n:"식스 레그 혼 드래곤",e:"바람",t:"체력",lv:"O",g:-2.175,img:""},
-{n:"스워드",e:"빛",t:"공격",lv:"O",g:7.0,img:""},
-{n:"개틀링곤",e:"빛",t:"방어",lv:"O",g:6.9,img:""},
-{n:"아르테미스 드래곤",e:"빛",t:"방어",lv:"O",g:6.9,img:""},
-{n:"바르그",e:"빛",t:"공격",lv:"O",g:6.7,img:""},
-{n:"슬루카니스",e:"빛",t:"공방",lv:"O",g:6.7,img:""},
-{n:"프로텍트 드래곤",e:"빛",t:"방어",lv:"O",g:6.575,img:""},
-{n:"크로마 프로텍트 드래곤",e:"빛",t:"방어",lv:"O",g:6.575,img:""},
-{n:"아톤",e:"빛",t:"공격",lv:"O",g:6.4,img:""},
-{n:"사효",e:"빛",t:"공방",lv:"O",g:6.4,img:""},
-{n:"메라크",e:"빛",t:"체공",lv:"O",g:6.4,img:""},
-{n:"아즈니르",e:"빛",t:"공격",lv:"O",g:6.325,img:""},
-{n:"엔젤주니어",e:"빛",t:"체력",lv:"O",g:6.2,img:""},
-{n:"알투스",e:"빛",t:"체공",lv:"O",g:6.15,img:""},
-{n:"탈릿샤",e:"빛",t:"공방",lv:"X",g:5.925,img:""},
-{n:"슬라",e:"빛",t:"공격",lv:"O",g:5.9,img:""},
-{n:"화이트썬더 드래곤",e:"빛",t:"공방",lv:"O",g:5.6,img:""},
-{n:"테디 드래곤",e:"빛",t:"체방",lv:"X",g:5.5,img:""},
-{n:"미나스 드래곤",e:"빛",t:"체공",lv:"O",g:5.35,img:""},
-{n:"카쿠라",e:"빛",t:"공격",lv:"X",g:5.0,img:""},
-{n:"아실리",e:"빛",t:"체방",lv:"X",g:4.65,img:""},
-{n:"스타에이스",e:"빛",t:"공방",lv:"X",g:4.1,img:""},
-{n:"아만타",e:"빛",t:"공방",lv:"O",g:3.8,img:""},
-{n:"시타엘",e:"빛",t:"체력",lv:"X",g:3.8,img:""},
-{n:"헤이즈",e:"빛",t:"방어",lv:"O",g:3.525,img:""},
-{n:"오르도",e:"빛",t:"공격",lv:"X",g:3.5,img:""},
-{n:"바르라야",e:"빛",t:"공방",lv:"X",g:2.8,img:""},
-{n:"모리카 드래곤",e:"빛",t:"공격",lv:"O",g:2.7,img:""},
-{n:"로우스",e:"빛",t:"방어",lv:"X",g:2.1,img:""},
-{n:"아르고 드래곤",e:"빛",t:"공격",lv:"O",g:2.0,img:""},
-{n:"삐에로 드래곤",e:"빛",t:"체력",lv:"X",g:2.0,img:""},
-{n:"베르나",e:"빛",t:"체공",lv:"X",g:1.9,img:""},
-{n:"샴 드래곤",e:"빛",t:"체력",lv:"O",g:1.55,img:""},
-{n:"나이트 드래곤",e:"빛",t:"방어",lv:"O",g:1.55,img:""},
-{n:"스파이시",e:"빛",t:"체공",lv:"O",g:1.55,img:""},
-{n:"고대 주니어",e:"빛",t:"공방",lv:"O",g:1.45,img:""},
-{n:"레인보우",e:"빛",t:"체력",lv:"O",g:1.05,img:""},
-{n:"큐피트용",e:"빛",t:"공격",lv:"O",g:0.2,img:""},
-{n:"라이곤",e:"빛",t:"체공",lv:"O",g:0.2,img:""},
-{n:"라파엘",e:"빛",t:"체방",lv:"O",g:-0.35,img:""},
-{n:"백룡",e:"빛",t:"체방",lv:"O",g:-1.85,img:""},
-{n:"에메랄드 드래곤",e:"빛",t:"체방",lv:"O",g:-2.1,img:""},
-{n:"고대신룡",e:"빛",t:"체방",lv:"O",g:-2.575,img:""},
-{n:"엔젤 드래곤",e:"빛",t:"체방",lv:"O",g:-2.575,img:""},
-{n:"요르문간드",e:"어둠",t:"체공",lv:"O",g:7.0,img:""},
-{n:"리치몬드",e:"어둠",t:"공방",lv:"O",g:6.9,img:""},
-{n:"크로마 리치몬드",e:"어둠",t:"공방",lv:"O",g:6.9,img:""},
-{n:"마카라",e:"어둠",t:"공방",lv:"O",g:6.9,img:""},
-{n:"쿠베라",e:"어둠",t:"방어",lv:"X",g:6.8,img:""},
-{n:"베타라",e:"어둠",t:"공격",lv:"O",g:6.6,img:""},
-{n:"크로마 베타라",e:"어둠",t:"공격",lv:"O",g:6.6,img:""},
-{n:"하트샤",e:"어둠",t:"공방",lv:"O",g:6.525,img:""},
-{n:"포르타",e:"어둠",t:"방어",lv:"O",g:6.5,img:""},
-{n:"피데스",e:"어둠",t:"체공",lv:"O",g:6.5,img:""},
-{n:"오백스",e:"어둠",t:"공격",lv:"O",g:6.5,img:""},
-{n:"타이아메트",e:"어둠",t:"체공",lv:"O",g:6.425,img:""},
-{n:"아자카",e:"어둠",t:"공격",lv:"O",g:6.4,img:""},
-{n:"마그나스",e:"어둠",t:"체력",lv:"O",g:6.3,img:""},
-{n:"카스록스",e:"어둠",t:"체력",lv:"O",g:6.2,img:""},
-{n:"드래곤 슬레이어",e:"어둠",t:"공방",lv:"O",g:6.075,img:""},
-{n:"말로단",e:"어둠",t:"체력",lv:"X",g:5.4,img:""},
-{n:"베히모스",e:"어둠",t:"체방",lv:"X",g:5.1,img:""},
-{n:"카르나",e:"어둠",t:"방어",lv:"O",g:5.0,img:""},
-{n:"마르바스",e:"어둠",t:"공방",lv:"X",g:5.0,img:""},
-{n:"블랙찌또",e:"어둠",t:"체력",lv:"X",g:4.3,img:""},
-{n:"다크나이트",e:"어둠",t:"체방",lv:"O",g:4.3,img:""},
-{n:"고트",e:"어둠",t:"체방",lv:"O",g:4.2,img:""},
-{n:"문라이트",e:"어둠",t:"체력",lv:"X",g:4.175,img:""},
-{n:"블랙티어 드래곤",e:"어둠",t:"체력",lv:"O",g:3.55,img:""},
-{n:"원더 드래곤",e:"어둠",t:"체력",lv:"O",g:3.4,img:""},
-{n:"타임머신",e:"어둠",t:"공격",lv:"X",g:3.2,img:""},
-{n:"유니버스",e:"어둠",t:"체방",lv:"O",g:2.9,img:""},
-{n:"블랙아머 드래곤",e:"어둠",t:"방어",lv:"X",g:2.825,img:""},
-{n:"프랑켄슈타곤",e:"어둠",t:"체력",lv:"X",g:2.0,img:""},
-{n:"다크프로스티",e:"어둠",t:"공격",lv:"O",g:1.95,img:""},
-{n:"데몽과가고일",e:"어둠",t:"공방",lv:"O",g:1.95,img:""},
-{n:"시그마 드래곤",e:"어둠",t:"체공",lv:"X",g:1.8,img:""},
-{n:"바알",e:"어둠",t:"체공",lv:"X",g:1.6,img:""},
-{n:"다크닉스",e:"어둠",t:"체공",lv:"X",g:1.6,img:""},
-{n:"베네지",e:"어둠",t:"방어",lv:"O",g:1.55,img:""},
-{n:"유니 드래곤",e:"어둠",t:"공격",lv:"O",g:1.45,img:""},
-{n:"쿠로이 드래곤",e:"어둠",t:"방어",lv:"O",g:1.375,img:""},
-{n:"드라고노이드",e:"어둠",t:"체방",lv:"X",g:1.225,img:""},
-{n:"히에나곤",e:"어둠",t:"체공",lv:"O",g:1.05,img:""},
-{n:"크레센트",e:"어둠",t:"체공",lv:"O",g:1.05,img:""},
-{n:"블레이드 드래곤",e:"어둠",t:"공격",lv:"O",g:0.2,img:""},
-{n:"G네 드래곤",e:"어둠",t:"공격",lv:"O",g:0.2,img:""},
-{n:"뱃도치 드래곤",e:"어둠",t:"공방",lv:"O",g:0.2,img:""},
-{n:"미이라곤",e:"어둠",t:"체공",lv:"O",g:0.2,img:""},
-{n:"스켈레곤",e:"어둠",t:"체공",lv:"O",g:0.2,img:""},
-{n:"메탈 드래곤",e:"어둠",t:"체공",lv:"O",g:0.2,img:""},
-{n:"흑룡",e:"어둠",t:"체공",lv:"O",g:-0.025,img:""},
-{n:"다크폴",e:"어둠",t:"체공",lv:"X",g:-0.175,img:""},
-{n:"윗치 드래곤",e:"어둠",t:"체공",lv:"X",g:-0.675,img:""},
-{n:"이클립스",e:"황혼",t:"체력",lv:"O",g:7.0,img:""},
-{n:"흐레스벨그",e:"황혼",t:"체력",lv:"O",g:7.0,img:""},
-{n:"인베르소",e:"황혼",t:"체공",lv:"O",g:6.875,img:""},
-{n:"틸키",e:"황혼",t:"공격",lv:"O",g:6.8,img:""},
-{n:"마누스",e:"황혼",t:"체방",lv:"O",g:6.8,img:""},
-{n:"레긴레이프",e:"황혼",t:"체공",lv:"O",g:6.75,img:""},
-{n:"크로마 레긴레이프",e:"황혼",t:"체공",lv:"O",g:6.75,img:""},
-{n:"데스락",e:"황혼",t:"방어",lv:"O",g:6.7,img:""},
-{n:"템피오스",e:"황혼",t:"체력",lv:"O",g:6.7,img:""},
-{n:"프라이드",e:"황혼",t:"공방",lv:"O",g:6.575,img:""},
-{n:"에피트",e:"황혼",t:"체방",lv:"O",g:6.5,img:""},
-{n:"네블라",e:"황혼",t:"체공",lv:"O",g:6.1,img:""},
-{n:"차차웅",e:"황혼",t:"방어",lv:"O",g:6.0,img:""},
-{n:"세에레",e:"황혼",t:"방어",lv:"O",g:5.7,img:""},
-{n:"포메콘",e:"황혼",t:"공방",lv:"O",g:5.6,img:""},
-{n:"카라선",e:"황혼",t:"공격",lv:"O",g:5.275,img:""},
-{n:"렉몰 리버스",e:"황혼",t:"체공",lv:"O",g:5.25,img:""},
-{n:"렉스톤",e:"황혼",t:"공격",lv:"O",g:4.775,img:""},
-{n:"하리카",e:"황혼",t:"공격",lv:"O",g:4.25,img:""},
-{n:"베팔",e:"황혼",t:"공방",lv:"X",g:3.8,img:""},
-{n:"발라크",e:"황혼",t:"체방",lv:"X",g:1.9,img:""},
-{n:"미미르",e:"여명",t:"체방",lv:"O",g:7.0,img:""},
-{n:"코르투스",e:"여명",t:"공방",lv:"O",g:6.875,img:""},
-{n:"야누스",e:"여명",t:"체력",lv:"O",g:6.8,img:""},
-{n:"킨더 드래곤",e:"여명",t:"공방",lv:"O",g:6.7,img:""},
-{n:"보상이용",e:"여명",t:"체공",lv:"O",g:6.6,img:""},
-{n:"아프로디테",e:"여명",t:"체방",lv:"O",g:6.6,img:""},
-{n:"암두시아스",e:"여명",t:"공방",lv:"O",g:6.4,img:""},
-{n:"루크바트",e:"여명",t:"체공",lv:"O",g:6.3,img:""},
-{n:"네비아",e:"여명",t:"체방",lv:"O",g:6.2,img:""},
-{n:"아말테아",e:"여명",t:"체력",lv:"O",g:6.2,img:""},
-{n:"베리스",e:"여명",t:"체력",lv:"O",g:6.0,img:""},
-{n:"엘리고스",e:"여명",t:"방어",lv:"O",g:5.8,img:""},
-{n:"셀마사",e:"여명",t:"공격",lv:"X",g:5.7,img:""},
-{n:"라스",e:"여명",t:"방어",lv:"O",g:5.7,img:""},
-{n:"울르",e:"여명",t:"공격",lv:"O",g:5.6,img:""},
-{n:"함라",e:"여명",t:"공격",lv:"O",g:5.4,img:""},
-{n:"타아비레",e:"여명",t:"체공",lv:"X",g:4.2,img:""},
-{n:"조화룡",e:"여명",t:"방어",lv:"O",g:4.2,img:""},
-{n:"할리벨",e:"여명",t:"체공",lv:"X",g:1.8,img:""},
-{n:"벨레드",e:"악몽",t:"방어",lv:"O",g:7.0,img:""},
-{n:"크로마 벨레드",e:"악몽",t:"방어",lv:"O",g:7.0,img:""},
-{n:"잠식된 요르문간드",e:"악몽",t:"공격",lv:"O",g:7.0,img:""},
-{n:"루드오어",e:"악몽",t:"체공",lv:"O",g:6.9,img:""},
-{n:"레무레스",e:"악몽",t:"공격",lv:"O",g:6.9,img:""},
-{n:"진",e:"악몽",t:"공방",lv:"O",g:6.775,img:""},
-{n:"미스핏",e:"악몽",t:"방어",lv:"O",g:6.7,img:""},
-{n:"발레포르",e:"악몽",t:"체공",lv:"O",g:6.7,img:""},
-{n:"크로마 발레포르",e:"악몽",t:"체공",lv:"O",g:6.7,img:""},
-{n:"블라드",e:"악몽",t:"체력",lv:"O",g:6.6,img:""},
-{n:"커스리퍼",e:"악몽",t:"공방",lv:"O",g:6.6,img:""},
-{n:"크레바스",e:"악몽",t:"체공",lv:"O",g:6.4,img:""},
-{n:"쉘로시",e:"악몽",t:"공격",lv:"O",g:6.2,img:""},
-{n:"네무스",e:"악몽",t:"체력",lv:"O",g:6.1,img:""},
-{n:"롱기누스",e:"악몽",t:"체방",lv:"O",g:6.075,img:""},
-{n:"애니마라",e:"악몽",t:"체방",lv:"O",g:5.8,img:""},
-{n:"디멘션 드래곤",e:"악몽",t:"공격",lv:"O",g:5.5,img:""},
-{n:"자간",e:"악몽",t:"공방",lv:"X",g:4.7,img:""},
-{n:"단탈리온",e:"악몽",t:"체력",lv:"X",g:4.4,img:""},
-{n:"마스테마",e:"악몽",t:"체방",lv:"O",g:4.3,img:""},
+{n:"다로스",e:"땅",t:"공방",lv:"X",g:7.0,img1:"1"},
+{n:"파키",e:"땅",t:"방어",lv:"O",g:6.8,img1:"2"},
+{n:"즈믄",e:"땅",t:"공방",lv:"O",g:6.7,img1:""},
+{n:"논",e:"땅",t:"체방",lv:"O",g:6.675,img1:""},
+{n:"헤임달",e:"땅",t:"체방",lv:"O",g:6.6,img1:""},
+{n:"바스카",e:"땅",t:"공격",lv:"O",g:6.6,img1:""},
+{n:"리베티",e:"땅",t:"체공",lv:"O",g:6.5,img1:"7"},
+{n:"아카이아",e:"땅",t:"공방",lv:"O",g:6.35,img1:""},
+{n:"크로마 아카이아",e:"땅",t:"공방",lv:"O",g:6.35,img1:""},
+{n:"케찰코아틀",e:"땅",t:"체공",lv:"O",g:6.3,img1:""},
+{n:"에그마용",e:"땅",t:"체력",lv:"O",g:6.3,img1:""},
+{n:"알데바란",e:"땅",t:"체력",lv:"O",g:6.0,img1:""},
+{n:"레오벡터",e:"땅",t:"공격",lv:"O",g:6.0,img1:""},
+{n:"포이즌리버",e:"땅",t:"체력",lv:"O",g:5.9,img1:""},
+{n:"아스타테",e:"땅",t:"체방",lv:"X",g:5.4,img1:""},
+{n:"칸타카",e:"땅",t:"체방",lv:"X",g:5.225,img1:""},
+{n:"지진",e:"땅",t:"체력",lv:"O",g:4.85,img1:""},
+{n:"포폰",e:"땅",t:"체력",lv:"O",g:4.5,img1:""},
+{n:"레이어스",e:"땅",t:"체공",lv:"O",g:4.3,img1:""},
+{n:"애플칙",e:"땅",t:"체력",lv:"O",g:4.0,img1:""},
+{n:"데빌곤",e:"땅",t:"공격",lv:"X",g:2.1,img1:""},
+{n:"플라워 드래곤",e:"땅",t:"방어",lv:"X",g:2.0,img1:""},
+{n:"스콜피온 드래곤",e:"땅",t:"공방",lv:"O",g:1.95,img1:""},
+{n:"콜로서스",e:"땅",t:"체공",lv:"X",g:1.875,img1:""},
+{n:"스파인",e:"땅",t:"공방",lv:"O",g:1.45,img1:""},
+{n:"파이썬",e:"땅",t:"체방",lv:"X",g:-0.2,img1:""},
+{n:"머스타드 해머",e:"땅",t:"체방",lv:"O",g:-0.35,img1:""},
+{n:"에그 드래곤",e:"땅",t:"방어",lv:"O",g:-0.675,img1:""},
+{n:"스마트 드래곤",e:"땅",t:"방어",lv:"O",g:-0.675,img1:""},
+{n:"패트 드래곤",e:"땅",t:"체력",lv:"O",g:-0.675,img1:""},
+{n:"타이거 드래곤",e:"땅",t:"체력",lv:"O",g:-0.675,img1:""},
+{n:"골든혼",e:"땅",t:"체방",lv:"O",g:-0.85,img1:""},
+{n:"파워 드래곤",e:"땅",t:"공격",lv:"O",g:-1.275,img1:""},
+{n:"히드라곤",e:"땅",t:"체공",lv:"O",g:-2.175,img1:""},
+{n:"지하땅굴 드래곤",e:"땅",t:"방어",lv:"O",g:-2.175,img1:""},
+{n:"옥타",e:"물",t:"공방",lv:"O",g:6.9,img2:""},
+{n:"크로마 옥타",e:"물",t:"공방",lv:"O",g:6.9,img2:""},
+{n:"풀투누스",e:"물",t:"방어",lv:"O",g:6.7,img2:""},
+{n:"스카트",e:"물",t:"방어",lv:"O",g:6.6,img2:""},
+{n:"로키",e:"물",t:"방어",lv:"O",g:6.575,img2:""},
+{n:"마소티스",e:"물",t:"공방",lv:"O",g:6.5,img2:""},
+{n:"루드라",e:"물",t:"공격",lv:"O",g:6.5,img2:""},
+{n:"볼바",e:"물",t:"체력",lv:"O",g:6.5,img2:""},
+{n:"유르카",e:"물",t:"체력",lv:"O",g:6.45,img2:""},
+{n:"알레샤",e:"물",t:"체력",lv:"O",g:6.45,img2:""},
+{n:"크로마 알레샤",e:"물",t:"체력",lv:"O",g:6.45,img2:""},
+{n:"루살카",e:"물",t:"체공",lv:"O",g:6.4,img2:""},
+{n:"피싱테일 드래곤",e:"물",t:"공격",lv:"O",g:6.3,img2:""},
+{n:"블리자드",e:"물",t:"공격",lv:"O",g:6.25,img2:""},
+{n:"프로즌",e:"물",t:"체공",lv:"O",g:6.2,img2:""},
+{n:"레굴루스",e:"물",t:"체방",lv:"O",g:5.3,img2:""},
+{n:"크로마 레굴루스",e:"물",t:"체방",lv:"O",g:5.3,img2:""},
+{n:"베른하르트",e:"물",t:"공격",lv:"O",g:5.2,img2:""},
+{n:"세크레타",e:"물",t:"공방",lv:"X",g:4.9,img2:""},
+{n:"트로페우스",e:"물",t:"공방",lv:"O",g:4.1,img2:""},
+{n:"베놈 드래곤",e:"물",t:"체공",lv:"O",g:4.0,img2:""},
+{n:"루미네스",e:"물",t:"공격",lv:"X",g:3.2,img2:""},
+{n:"위드미",e:"물",t:"방어",lv:"O",g:3.05,img2:""},
+{n:"브리트라",e:"물",t:"체공",lv:"X",g:2.925,img2:""},
+{n:"바이올렛 드래곤",e:"물",t:"체공",lv:"X",g:2.275,img2:""},
+{n:"스터드 드래곤",e:"물",t:"방어",lv:"X",g:2.0,img2:""},
+{n:"나트론",e:"물",t:"체방",lv:"O",g:1.9,img2:""},
+{n:"아이스드레이크",e:"물",t:"공방",lv:"X",g:1.9,img2:""},
+{n:"현무 드래곤",e:"물",t:"방어",lv:"O",g:1.55,img2:""},
+{n:"샤크곤",e:"물",t:"공격",lv:"O",g:1.45,img2:""},
+{n:"퍼플릭스 드래곤",e:"물",t:"체방",lv:"O",g:1.225,img2:""},
+{n:"스왐프 드래곤",e:"물",t:"체력",lv:"O",g:-0.675,img2:""},
+{n:"빙하고룡",e:"물",t:"공격",lv:"O",g:-1.275,img2:""},
+{n:"슬라임 드래곤",e:"물",t:"체방",lv:"O",g:-2.1,img2:""},
+{n:"페어리 드래곤",e:"물",t:"공격",lv:"O",g:-2.175,img2:""},
+{n:"네시",e:"물",t:"체력",lv:"O",g:-2.175,img2:""},
+{n:"수룡",e:"물",t:"체방",lv:"O",g:-3.275,img2:""},
+{n:"파이거",e:"불",t:"체력",lv:"O",g:6.825,img3:""},
+{n:"크로마 파이거",e:"불",t:"체력",lv:"O",g:6.825,img3:""},
+{n:"토트",e:"불",t:"방어",lv:"O",g:6.8,img3:""},
+{n:"불나래",e:"불",t:"공방",lv:"O",g:6.7,img3:""},
+{n:"크로마 불나래",e:"불",t:"공방",lv:"O",g:6.7,img3:""},
+{n:"적마룡",e:"불",t:"체공",lv:"O",g:6.7,img3:""},
+{n:"블레이즈 드래곤",e:"불",t:"체공",lv:"O",g:6.6,img3:""},
+{n:"수라 드래곤",e:"불",t:"공격",lv:"O",g:6.5,img3:""},
+{n:"라센티",e:"불",t:"공격",lv:"O",g:6.5,img3:""},
+{n:"화귀 드래곤",e:"불",t:"체방",lv:"O",g:6.475,img3:""},
+{n:"스카투스",e:"불",t:"방어",lv:"O",g:6.4,img3:""},
+{n:"크로마 스카투스",e:"불",t:"방어",lv:"O",g:6.4,img3:""},
+{n:"염화룡",e:"불",t:"체력",lv:"O",g:6.15,img3:""},
+{n:"엔투라스",e:"불",t:"공격",lv:"O",g:6.0,img3:""},
+{n:"가루다",e:"불",t:"공방",lv:"X",g:5.8,img3:""},
+{n:"마룡",e:"불",t:"공방",lv:"X",g:5.5,img3:""},
+{n:"포포모",e:"불",t:"체력",lv:"X",g:5.3,img3:""},
+{n:"와일드 드래곤",e:"불",t:"방어",lv:"X",g:4.9,img3:""},
+{n:"이그나",e:"불",t:"체방",lv:"O",g:4.7,img3:""},
+{n:"루가르 드래곤",e:"불",t:"방어",lv:"X",g:4.5,img3:""},
+{n:"타나토스",e:"불",t:"체방",lv:"O",g:4.4,img3:""},
+{n:"푸투룸",e:"불",t:"체방",lv:"X",g:4.0,img3:""},
+{n:"번네스",e:"불",t:"공격",lv:"X",g:2.6,img3:""},
+{n:"아이언 드래곤",e:"불",t:"방어",lv:"X",g:2.0,img3:""},
+{n:"레드 와이번",e:"불",t:"공격",lv:"O",g:1.95,img3:""},
+{n:"자룡",e:"불",t:"체공",lv:"X",g:0.7,img3:""},
+{n:"므네이아",e:"불",t:"체공",lv:"X",g:0.025,img3:""},
+{n:"레드불 드래곤",e:"불",t:"체공",lv:"X",g:-0.175,img3:""},
+{n:"인섹트 드래곤",e:"불",t:"공방",lv:"O",g:-0.275,img3:""},
+{n:"샌드 드래곤",e:"불",t:"공방",lv:"O",g:-0.275,img3:""},
+{n:"스파이크 드래곤",e:"불",t:"방어",lv:"O",g:-0.675,img3:""},
+{n:"번개고룡",e:"불",t:"체공",lv:"O",g:-1.275,img3:""},
+{n:"파이어 드래곤",e:"불",t:"공격",lv:"O",g:-2.175,img3:""},
+{n:"피닉스",e:"불",t:"공격",lv:"O",g:-2.175,img3:""},
+{n:"키갈",e:"바람",t:"방어",lv:"O",g:7.0,img4:""},
+{n:"에트왈 드래곤",e:"바람",t:"공방",lv:"O",g:7.0,img4:""},
+{n:"피타야",e:"바람",t:"공방",lv:"O",g:7.0,img4:""},
+{n:"티르",e:"바람",t:"체방",lv:"O",g:6.675,img4:""},
+{n:"리티오",e:"바람",t:"방어",lv:"O",g:6.6,img4:""},
+{n:"크로마 리티오",e:"바람",t:"방어",lv:"O",g:6.6,img4:""},
+{n:"토르",e:"바람",t:"공방",lv:"O",g:6.6,img4:""},
+{n:"블루썬더",e:"바람",t:"공격",lv:"O",g:6.4,img4:""},
+{n:"크로마 블루썬더",e:"바람",t:"공격",lv:"O",g:6.4,img4:""},
+{n:"센투라",e:"바람",t:"체방",lv:"X",g:6.075,img4:""},
+{n:"루루",e:"바람",t:"체방",lv:"O",g:6.075,img4:""},
+{n:"크로마 루루",e:"바람",t:"체방",lv:"O",g:6.075,img4:""},
+{n:"보레아스",e:"바람",t:"체공",lv:"O",g:6.0,img4:""},
+{n:"아라카",e:"바람",t:"공격",lv:"X",g:5.675,img4:""},
+{n:"거스트 드래곤",e:"바람",t:"공격",lv:"O",g:5.3,img4:""},
+{n:"엠파이어",e:"바람",t:"체력",lv:"X",g:5.1,img4:""},
+{n:"아스티",e:"바람",t:"공격",lv:"X",g:5.0,img4:""},
+{n:"혼",e:"바람",t:"체력",lv:"O",g:4.7,img4:""},
+{n:"그레이탄",e:"바람",t:"공방",lv:"O",g:4.4,img4:""},
+{n:"스틸윙",e:"바람",t:"방어",lv:"X",g:4.2,img4:""},
+{n:"스트라이커",e:"바람",t:"공격",lv:"O",g:3.9,img4:""},
+{n:"제피로스",e:"바람",t:"체공",lv:"O",g:3.4,img4:""},
+{n:"카오스",e:"바람",t:"체공",lv:"X",g:2.6,img4:""},
+{n:"태엽 드래곤",e:"바람",t:"체방",lv:"X",g:2.6,img4:""},
+{n:"i곤",e:"바람",t:"공방",lv:"X",g:2.025,img4:""},
+{n:"프로스티",e:"바람",t:"방어",lv:"O",g:1.55,img4:""},
+{n:"타이푼 드래곤",e:"바람",t:"체방",lv:"X",g:1.225,img4:""},
+{n:"가디언",e:"바람",t:"체력",lv:"O",g:1.05,img4:""},
+{n:"윙스 드래곤",e:"바람",t:"공방",lv:"O",g:-0.275,img4:""},
+{n:"메탈 마그넷 드래곤",e:"바람",t:"공방",lv:"O",g:-0.275,img4:""},
+{n:"청룡",e:"바람",t:"공격",lv:"O",g:-2.175,img4:""},
+{n:"윈드 드래곤",e:"바람",t:"체력",lv:"O",g:-2.175,img4:""},
+{n:"식스 레그 혼 드래곤",e:"바람",t:"체력",lv:"O",g:-2.175,img4:""},
+{n:"스워드",e:"빛",t:"공격",lv:"O",g:7.0,img5:""},
+{n:"개틀링곤",e:"빛",t:"방어",lv:"O",g:6.9,img5:""},
+{n:"아르테미스 드래곤",e:"빛",t:"방어",lv:"O",g:6.9,img5:""},
+{n:"바르그",e:"빛",t:"공격",lv:"O",g:6.7,img5:""},
+{n:"슬루카니스",e:"빛",t:"공방",lv:"O",g:6.7,img5:""},
+{n:"프로텍트 드래곤",e:"빛",t:"방어",lv:"O",g:6.575,img5:""},
+{n:"크로마 프로텍트 드래곤",e:"빛",t:"방어",lv:"O",g:6.575,img5:""},
+{n:"아톤",e:"빛",t:"공격",lv:"O",g:6.4,img5:""},
+{n:"사효",e:"빛",t:"공방",lv:"O",g:6.4,img5:""},
+{n:"메라크",e:"빛",t:"체공",lv:"O",g:6.4,img5:""},
+{n:"아즈니르",e:"빛",t:"공격",lv:"O",g:6.325,img5:""},
+{n:"엔젤주니어",e:"빛",t:"체력",lv:"O",g:6.2,img5:""},
+{n:"알투스",e:"빛",t:"체공",lv:"O",g:6.15,img5:""},
+{n:"탈릿샤",e:"빛",t:"공방",lv:"X",g:5.925,img5:""},
+{n:"슬라",e:"빛",t:"공격",lv:"O",g:5.9,img5:""},
+{n:"화이트썬더 드래곤",e:"빛",t:"공방",lv:"O",g:5.6,img5:""},
+{n:"테디 드래곤",e:"빛",t:"체방",lv:"X",g:5.5,img5:""},
+{n:"미나스 드래곤",e:"빛",t:"체공",lv:"O",g:5.35,img5:""},
+{n:"카쿠라",e:"빛",t:"공격",lv:"X",g:5.0,img5:""},
+{n:"아실리",e:"빛",t:"체방",lv:"X",g:4.65,img5:""},
+{n:"스타에이스",e:"빛",t:"공방",lv:"X",g:4.1,img5:""},
+{n:"아만타",e:"빛",t:"공방",lv:"O",g:3.8,img5:""},
+{n:"시타엘",e:"빛",t:"체력",lv:"X",g:3.8,img5:""},
+{n:"헤이즈",e:"빛",t:"방어",lv:"O",g:3.525,img5:""},
+{n:"오르도",e:"빛",t:"공격",lv:"X",g:3.5,img5:""},
+{n:"바르라야",e:"빛",t:"공방",lv:"X",g:2.8,img5:""},
+{n:"모리카 드래곤",e:"빛",t:"공격",lv:"O",g:2.7,img5:""},
+{n:"로우스",e:"빛",t:"방어",lv:"X",g:2.1,img5:""},
+{n:"아르고 드래곤",e:"빛",t:"공격",lv:"O",g:2.0,img5:""},
+{n:"삐에로 드래곤",e:"빛",t:"체력",lv:"X",g:2.0,img5:""},
+{n:"베르나",e:"빛",t:"체공",lv:"X",g:1.9,img5:""},
+{n:"샴 드래곤",e:"빛",t:"체력",lv:"O",g:1.55,img5:""},
+{n:"나이트 드래곤",e:"빛",t:"방어",lv:"O",g:1.55,img5:""},
+{n:"스파이시",e:"빛",t:"체공",lv:"O",g:1.55,img5:""},
+{n:"고대 주니어",e:"빛",t:"공방",lv:"O",g:1.45,img5:""},
+{n:"레인보우",e:"빛",t:"체력",lv:"O",g:1.05,img5:""},
+{n:"큐피트용",e:"빛",t:"공격",lv:"O",g:0.2,img5:""},
+{n:"라이곤",e:"빛",t:"체공",lv:"O",g:0.2,img5:""},
+{n:"라파엘",e:"빛",t:"체방",lv:"O",g:-0.35,img5:""},
+{n:"백룡",e:"빛",t:"체방",lv:"O",g:-1.85,img5:""},
+{n:"에메랄드 드래곤",e:"빛",t:"체방",lv:"O",g:-2.1,img5:""},
+{n:"고대신룡",e:"빛",t:"체방",lv:"O",g:-2.575,img5:""},
+{n:"엔젤 드래곤",e:"빛",t:"체방",lv:"O",g:-2.575,img5:""},
+{n:"요르문간드",e:"어둠",t:"체공",lv:"O",g:7.0,img6:""},
+{n:"리치몬드",e:"어둠",t:"공방",lv:"O",g:6.9,img6:""},
+{n:"크로마 리치몬드",e:"어둠",t:"공방",lv:"O",g:6.9,img6:""},
+{n:"마카라",e:"어둠",t:"공방",lv:"O",g:6.9,img6:""},
+{n:"쿠베라",e:"어둠",t:"방어",lv:"X",g:6.8,img6:""},
+{n:"베타라",e:"어둠",t:"공격",lv:"O",g:6.6,img6:""},
+{n:"크로마 베타라",e:"어둠",t:"공격",lv:"O",g:6.6,img6:""},
+{n:"하트샤",e:"어둠",t:"공방",lv:"O",g:6.525,img6:""},
+{n:"포르타",e:"어둠",t:"방어",lv:"O",g:6.5,img6:""},
+{n:"피데스",e:"어둠",t:"체공",lv:"O",g:6.5,img6:""},
+{n:"오백스",e:"어둠",t:"공격",lv:"O",g:6.5,img6:""},
+{n:"타이아메트",e:"어둠",t:"체공",lv:"O",g:6.425,img6:""},
+{n:"아자카",e:"어둠",t:"공격",lv:"O",g:6.4,img6:""},
+{n:"마그나스",e:"어둠",t:"체력",lv:"O",g:6.3,img6:""},
+{n:"카스록스",e:"어둠",t:"체력",lv:"O",g:6.2,img6:""},
+{n:"드래곤 슬레이어",e:"어둠",t:"공방",lv:"O",g:6.075,img6:""},
+{n:"말로단",e:"어둠",t:"체력",lv:"X",g:5.4,img6:""},
+{n:"베히모스",e:"어둠",t:"체방",lv:"X",g:5.1,img6:""},
+{n:"카르나",e:"어둠",t:"방어",lv:"O",g:5.0,img6:""},
+{n:"마르바스",e:"어둠",t:"공방",lv:"X",g:5.0,img6:""},
+{n:"블랙찌또",e:"어둠",t:"체력",lv:"X",g:4.3,img6:""},
+{n:"다크나이트",e:"어둠",t:"체방",lv:"O",g:4.3,img6:""},
+{n:"고트",e:"어둠",t:"체방",lv:"O",g:4.2,img6:""},
+{n:"문라이트",e:"어둠",t:"체력",lv:"X",g:4.175,img6:""},
+{n:"블랙티어 드래곤",e:"어둠",t:"체력",lv:"O",g:3.55,img6:""},
+{n:"원더 드래곤",e:"어둠",t:"체력",lv:"O",g:3.4,img6:""},
+{n:"타임머신",e:"어둠",t:"공격",lv:"X",g:3.2,img6:""},
+{n:"유니버스",e:"어둠",t:"체방",lv:"O",g:2.9,img6:""},
+{n:"블랙아머 드래곤",e:"어둠",t:"방어",lv:"X",g:2.825,img6:""},
+{n:"프랑켄슈타곤",e:"어둠",t:"체력",lv:"X",g:2.0,img6:""},
+{n:"다크프로스티",e:"어둠",t:"공격",lv:"O",g:1.95,img6:""},
+{n:"데몽과가고일",e:"어둠",t:"공방",lv:"O",g:1.95,img6:""},
+{n:"시그마 드래곤",e:"어둠",t:"체공",lv:"X",g:1.8,img6:""},
+{n:"바알",e:"어둠",t:"체공",lv:"X",g:1.6,img6:""},
+{n:"다크닉스",e:"어둠",t:"체공",lv:"X",g:1.6,img6:""},
+{n:"베네지",e:"어둠",t:"방어",lv:"O",g:1.55,img6:""},
+{n:"유니 드래곤",e:"어둠",t:"공격",lv:"O",g:1.45,img6:""},
+{n:"쿠로이 드래곤",e:"어둠",t:"방어",lv:"O",g:1.375,img6:""},
+{n:"드라고노이드",e:"어둠",t:"체방",lv:"X",g:1.225,img6:""},
+{n:"히에나곤",e:"어둠",t:"체공",lv:"O",g:1.05,img6:""},
+{n:"크레센트",e:"어둠",t:"체공",lv:"O",g:1.05,img6:""},
+{n:"블레이드 드래곤",e:"어둠",t:"공격",lv:"O",g:0.2,img6:""},
+{n:"G네 드래곤",e:"어둠",t:"공격",lv:"O",g:0.2,img6:""},
+{n:"뱃도치 드래곤",e:"어둠",t:"공방",lv:"O",g:0.2,img6:""},
+{n:"미이라곤",e:"어둠",t:"체공",lv:"O",g:0.2,img6:""},
+{n:"스켈레곤",e:"어둠",t:"체공",lv:"O",g:0.2,img6:""},
+{n:"메탈 드래곤",e:"어둠",t:"체공",lv:"O",g:0.2,img6:""},
+{n:"흑룡",e:"어둠",t:"체공",lv:"O",g:-0.025,img6:""},
+{n:"다크폴",e:"어둠",t:"체공",lv:"X",g:-0.175,img6:""},
+{n:"윗치 드래곤",e:"어둠",t:"체공",lv:"X",g:-0.675,img6:""},
+{n:"이클립스",e:"황혼",t:"체력",lv:"O",g:7.0,img7:""},
+{n:"흐레스벨그",e:"황혼",t:"체력",lv:"O",g:7.0,img7:""},
+{n:"인베르소",e:"황혼",t:"체공",lv:"O",g:6.875,img7:""},
+{n:"틸키",e:"황혼",t:"공격",lv:"O",g:6.8,img7:""},
+{n:"마누스",e:"황혼",t:"체방",lv:"O",g:6.8,img7:""},
+{n:"레긴레이프",e:"황혼",t:"체공",lv:"O",g:6.75,img7:""},
+{n:"크로마 레긴레이프",e:"황혼",t:"체공",lv:"O",g:6.75,img7:""},
+{n:"데스락",e:"황혼",t:"방어",lv:"O",g:6.7,img7:""},
+{n:"템피오스",e:"황혼",t:"체력",lv:"O",g:6.7,img7:""},
+{n:"프라이드",e:"황혼",t:"공방",lv:"O",g:6.575,img7:""},
+{n:"에피트",e:"황혼",t:"체방",lv:"O",g:6.5,img7:""},
+{n:"네블라",e:"황혼",t:"체공",lv:"O",g:6.1,img7:""},
+{n:"차차웅",e:"황혼",t:"방어",lv:"O",g:6.0,img7:""},
+{n:"세에레",e:"황혼",t:"방어",lv:"O",g:5.7,img7:""},
+{n:"포메콘",e:"황혼",t:"공방",lv:"O",g:5.6,img7:""},
+{n:"카라선",e:"황혼",t:"공격",lv:"O",g:5.275,img7:""},
+{n:"렉몰 리버스",e:"황혼",t:"체공",lv:"O",g:5.25,img7:""},
+{n:"렉스톤",e:"황혼",t:"공격",lv:"O",g:4.775,img7:""},
+{n:"하리카",e:"황혼",t:"공격",lv:"O",g:4.25,img7:""},
+{n:"베팔",e:"황혼",t:"공방",lv:"X",g:3.8,img7:""},
+{n:"발라크",e:"황혼",t:"체방",lv:"X",g:1.9,img7:""},
+{n:"미미르",e:"여명",t:"체방",lv:"O",g:7.0,img8:""},
+{n:"코르투스",e:"여명",t:"공방",lv:"O",g:6.875,img8:""},
+{n:"야누스",e:"여명",t:"체력",lv:"O",g:6.8,img8:""},
+{n:"킨더 드래곤",e:"여명",t:"공방",lv:"O",g:6.7,img8:""},
+{n:"보상이용",e:"여명",t:"체공",lv:"O",g:6.6,img8:""},
+{n:"아프로디테",e:"여명",t:"체방",lv:"O",g:6.6,img8:""},
+{n:"암두시아스",e:"여명",t:"공방",lv:"O",g:6.4,img8:""},
+{n:"루크바트",e:"여명",t:"체공",lv:"O",g:6.3,img8:""},
+{n:"네비아",e:"여명",t:"체방",lv:"O",g:6.2,img8:""},
+{n:"아말테아",e:"여명",t:"체력",lv:"O",g:6.2,img8:""},
+{n:"베리스",e:"여명",t:"체력",lv:"O",g:6.0,img8:""},
+{n:"엘리고스",e:"여명",t:"방어",lv:"O",g:5.8,img8:""},
+{n:"셀마사",e:"여명",t:"공격",lv:"X",g:5.7,img8:""},
+{n:"라스",e:"여명",t:"방어",lv:"O",g:5.7,img8:""},
+{n:"울르",e:"여명",t:"공격",lv:"O",g:5.6,img8:""},
+{n:"함라",e:"여명",t:"공격",lv:"O",g:5.4,img8:""},
+{n:"타아비레",e:"여명",t:"체공",lv:"X",g:4.2,img8:""},
+{n:"조화룡",e:"여명",t:"방어",lv:"O",g:4.2,img8:""},
+{n:"할리벨",e:"여명",t:"체공",lv:"X",g:1.8,img8:""},
+{n:"벨레드",e:"악몽",t:"방어",lv:"O",g:7.0,img9:""},
+{n:"크로마 벨레드",e:"악몽",t:"방어",lv:"O",g:7.0,img9:""},
+{n:"잠식된 요르문간드",e:"악몽",t:"공격",lv:"O",g:7.0,img9:""},
+{n:"루드오어",e:"악몽",t:"체공",lv:"O",g:6.9,img9:""},
+{n:"레무레스",e:"악몽",t:"공격",lv:"O",g:6.9,img9:""},
+{n:"진",e:"악몽",t:"공방",lv:"O",g:6.775,img9:""},
+{n:"미스핏",e:"악몽",t:"방어",lv:"O",g:6.7,img9:""},
+{n:"발레포르",e:"악몽",t:"체공",lv:"O",g:6.7,img9:""},
+{n:"크로마 발레포르",e:"악몽",t:"체공",lv:"O",g:6.7,img9:""},
+{n:"블라드",e:"악몽",t:"체력",lv:"O",g:6.6,img9:""},
+{n:"커스리퍼",e:"악몽",t:"공방",lv:"O",g:6.6,img9:""},
+{n:"크레바스",e:"악몽",t:"체공",lv:"O",g:6.4,img9:""},
+{n:"쉘로시",e:"악몽",t:"공격",lv:"O",g:6.2,img9:""},
+{n:"네무스",e:"악몽",t:"체력",lv:"O",g:6.1,img9:""},
+{n:"롱기누스",e:"악몽",t:"체방",lv:"O",g:6.075,img9:""},
+{n:"애니마라",e:"악몽",t:"체방",lv:"O",g:5.8,img9:""},
+{n:"디멘션 드래곤",e:"악몽",t:"공격",lv:"O",g:5.5,img9:""},
+{n:"자간",e:"악몽",t:"공방",lv:"X",g:4.7,img9:""},
+{n:"단탈리온",e:"악몽",t:"체력",lv:"X",g:4.4,img9:""},
+{n:"마스테마",e:"악몽",t:"체방",lv:"O",g:4.3,img9:""},
 ];
 
-const elements=["전체","땅","물","불","바람","빛","어둠","황혼","여명","악몽"];
+const elemOrder=["땅","물","불","바람","빛","어둠","황혼","여명","악몽"];
 const types=["전체","공방","공격","방어","체공","체방","체력"];
-let eFilter="전체",tFilter="전체";
+let eFilter="전체", tFilter="전체";
 
 function buildFilters(){
   const fr=document.getElementById("filter-row");
   fr.innerHTML="";
-  elements.forEach(e=>{
+
+  // 속성 필터
+  const eLabel=document.createElement("span");
+  eLabel.textContent="속성";
+  eLabel.style="font-size:11px;color:#888;align-self:center;margin-right:2px";
+  fr.appendChild(eLabel);
+  ["전체","땅","물","불","바람","빛","어둠","황혼","여명","악몽"].forEach(e=>{
     const b=document.createElement("button");
     b.className="ftag"+(eFilter===e?" active":"");
-    b.textContent=e;b.onclick=()=>{eFilter=e;render();};
+    b.textContent=e;
+    b.onclick=()=>{eFilter=e;render();};
     fr.appendChild(b);
   });
-  const sep=document.createElement("span");
-  sep.style="display:block;width:100%;height:0;margin:2px 0";
+
+  // 구분선
+  const sep=document.createElement("div");
+  sep.style="width:100%;height:6px";
   fr.appendChild(sep);
-  types.forEach(t=>{
+
+  // 타입 필터
+  const tLabel=document.createElement("span");
+  tLabel.textContent="타입";
+  tLabel.style="font-size:11px;color:#888;align-self:center;margin-right:2px";
+  fr.appendChild(tLabel);
+  ["전체","체력","공격","방어","체공","체방","공방"].forEach(t=>{
     const b=document.createElement("button");
     b.className="ftag"+(tFilter===t?" active":"");
-    b.textContent=t;b.onclick=()=>{tFilter=t;render();};
+    b.textContent=t;
+    b.onclick=()=>{tFilter=t;render();};
     fr.appendChild(b);
   });
 }
@@ -384,31 +448,69 @@ function buildFilters(){
 function render(){
   buildFilters();
   const q=document.getElementById("q").value.trim();
-  let list=data;
-  if(eFilter!=="전체") list=list.filter(d=>d.e===eFilter);
-  if(tFilter!=="전체") list=list.filter(d=>d.t===tFilter);
-  if(q) list=list.filter(d=>d.n.includes(q));
-  list=list.slice().sort((a,b)=>b.g-a.g);
-  const tbody=document.getElementById("tbody");
-  document.getElementById("count").textContent=`${list.length}마리`;
-  tbody.innerHTML="";
-  if(!list.length){
-    tbody.innerHTML='<tr class="no-res"><td colspan="6">검색 결과가 없습니다</td></tr>';
-    return;
-  }
-  list.forEach(d=>{
-    const [bg,tx]=elementColors[d.e]||["#f5f5f5","#333"];
-    const imgCell=d.img?`<img src="${d.img}" class="dragon-img" alt="${d.n}">`:`<div class="img-placeholder">?</div>`;
-    const tr=document.createElement("tr");
-    tr.innerHTML=`
-      <td class="center">${imgCell}</td>
-      <td style="font-weight:500;font-size:12px">${d.n}</td>
-      <td class="center"><span class="badge-elem" style="background:${bg};color:${tx}">${d.e}</span></td>
-      <td class="center"><span class="badge-type">${d.t}</span></td>
-      <td class="center ${d.lv==='O'?'lv-o':'lv-x'}">${d.lv}</td>
-      <td class="center tier-val ${tierClass(d.g)}">${d.g.toFixed(3).replace(/\.?0+$/,'')}</td>`;
-    tbody.appendChild(tr);
+  const panels=document.getElementById("panels");
+  panels.innerHTML="";
+
+  let total=0;
+  const filteredElems=eFilter==="전체"?elemOrder:[eFilter];
+  filteredElems.forEach(elem=>{
+    let list=data.filter(d=>d.e===elem);
+    if(tFilter!=="전체") list=list.filter(d=>d.t===tFilter);
+    if(q) list=list.filter(d=>d.n.includes(q));
+    if(!list.length) return;
+    list=list.slice().sort((a,b)=>b.g-a.g);
+    total+=list.length;
+
+    const cfg=elemConfig[elem];
+    const panel=document.createElement("div");
+    panel.className=`panel panel-${elem}`;
+
+    // 헤더
+    const iconHtml=cfg.icon
+      ?`<div class="elem-icon"><img src="${cfg.icon}" alt="${elem}"></div>`
+      :`<div class="elem-icon" style="font-size:18px;background:rgba(0,0,0,0.25);width:36px;height:36px;border-radius:6px;display:flex;align-items:center;justify-content:center">${elem[0]}</div>`;
+
+    let rows="";
+    list.forEach((d,i)=>{
+      const imgMap={"땅":"img1","물":"img2","불":"img3","바람":"img4","빛":"img5","어둠":"img6","황혼":"img7","여명":"img8","악몽":"img9"};
+      const imgKey=imgMap[d.e]||"img1";
+      const imgSrc=d[imgKey]||"";
+      const imgCell=imgSrc
+        ?`<img src="${imgSrc}" class="dragon-img" alt="${d.n}">`
+        :`<div class="img-placeholder"></div>`;
+      rows+=`<tr>
+        <td class="center rank">${i+1}</td>
+        <td class="center" style="width:42px">${imgCell}</td>
+        <td class="center"><span class="badge-type">${d.t}</span></td>
+        <td style="font-size:12px;font-weight:500">${d.n}</td>
+        <td class="center ${d.lv==='O'?'lv-o':'lv-x'}">${d.lv}</td>
+        <td class="center ${tierClass(d.g)}">${Number.isInteger(d.g)?d.g.toFixed(1):d.g}</td>
+      </tr>`;
+    });
+
+    panel.innerHTML=`
+      <div class="panel-header">
+        ${iconHtml}
+        <span>${cfg.label}</span>
+      </div>
+      <table>
+        <thead><tr>
+          <th style="width:24px"></th>
+          <th style="width:42px"></th>
+          <th class="center">타입</th>
+          <th class="left">드래곤</th>
+          <th class="center">레벨업</th>
+          <th class="center">등급</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+    panels.appendChild(panel);
   });
+
+  document.getElementById("count").textContent=`${total}마리`;
 }
+
 render();
 </script>
+</body>
+</html>

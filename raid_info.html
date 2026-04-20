@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>레이드 정보</title>
+<style>
+
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic',sans-serif;background:#1a1a2e;color:#eee;padding:12px}
+#tab-bar{display:flex;gap:0;margin-bottom:16px;border-bottom:2px solid #333;align-items:flex-end}
+#site-title{display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;margin-right:16px;margin-bottom:6px;border:1.5px solid #444;border-radius:20px;padding:10px 18px;transition:border-color 0.15s;flex-shrink:0}
+#site-title:hover{border-color:#5dcff5}
+#site-title .title-main{font-size:16px;font-weight:700;color:#aaa;line-height:1.4}
+#site-title .title-sub{font-size:12px;color:#666;line-height:1.4}
+
+.tab-btn{padding:10px 20px;font-size:13px;font-weight:500;background:none;border:none;color:#888;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;text-decoration:none;display:inline-block}
+.tab-btn:hover{color:#ccc}
+.tab-btn.active{color:#5dcff5;border-bottom:2px solid #5dcff5}
+#tab-bar a{text-decoration:none}
+@media(max-width:600px){.tab-btn{display:none}}
+h1{font-size:20px;color:#aaa;margin-bottom:16px}
+.section{background:#1e1e30;border:1px solid #333;border-radius:10px;padding:16px;margin-bottom:16px}
+.section-title{font-size:13px;font-weight:700;color:#5dcff5;margin-bottom:12px;letter-spacing:0.05em}
+.sub-tab{padding:8px 16px;font-size:12px;font-weight:600;background:none;border:none;border-bottom:2px solid transparent;color:#888;cursor:pointer;font-family:inherit;margin-bottom:-1px}
+.sub-tab:hover{color:#ccc}
+.sub-tab.active{color:#5dcff5;border-bottom:2px solid #5dcff5}
+.boss-icon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:12px;padding:4px 0}
+.boss-icon-card{background:#252538;border:1px solid #333;border-radius:10px;padding:12px 8px;text-align:center;cursor:pointer;transition:border-color 0.15s}
+.boss-icon-card:hover{border-color:#5dcff5}
+.boss-icon-card.active{border-color:#5dcff5;background:rgba(93,207,245,0.08)}
+.boss-icon-card img{width:80px;height:80px;object-fit:contain;border-radius:6px}
+.boss-icon-name{font-size:11px;color:#aaa;margin-top:6px}
+.boss-detail{margin-top:16px}
+#boss-detail .section{position:relative;overflow:hidden}
+#boss-detail-bg{position:absolute;inset:0;background-size:cover;background-position:center;background-repeat:no-repeat;opacity:0.12;pointer-events:none;transition:background-image 0.3s}
+#boss-detail-content{position:relative;z-index:1}
+.tip-item{padding:7px 10px;border-left:2px solid #5dcff5;background:rgba(93,207,245,0.05);border-radius:0 6px 6px 0;margin-bottom:6px;font-size:12px;color:#ddd;line-height:1.5}
+.tip-item:last-child{margin-bottom:0}
+#boss-detail-content .boss-name{font-size:15px;font-weight:700;color:#eee;margin-bottom:10px}
+
+
+
+</style>
+</head>
+<body>
+
+<div id="tab-bar">
+  <a href="./index.html" id="site-title">
+  <span class="title-main">메인화면 이동</span>
+  <span class="title-sub">made by 닉스</span>
+</a>
+  <a href="./tier.html" class="tab-btn">초월 등급표</a>
+  <a href="./dex.html" class="tab-btn">드래곤 도감</a>
+  <a href="./sss.html" class="tab-btn">SSS 랭킹</a>
+  <a href="./raid.html" class="tab-btn">아르하 입구</a>
+  <a href="./raid_info.html" class="tab-btn">레이드 정보</a>
+</div>
+
+<h1>레이드 정보</h1>
+
+<div style="display:flex;gap:0;border-bottom:1px solid #333;margin-bottom:16px">
+  <button class="sub-tab active" id="sub-tab-arha" onclick="switchSubTab('arha')">아르하필드</button>
+  <button class="sub-tab" id="sub-tab-normal" onclick="switchSubTab('normal')">일반 레이드</button>
+  <button class="sub-tab" id="sub-tab-lemuria" onclick="switchSubTab('lemuria')">길드 레이드</button>
+</div>
+
+<div id="sub-arha">
+  <div class="boss-icon-grid">
+    <div class="boss-icon-card" onclick="showBossInfo(8, this)">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/8.png" alt="블리자드">
+      <div class="boss-icon-name">블리자드</div>
+    </div>
+    <div class="boss-icon-card" onclick="showBossInfo(9, this)">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/9.png" alt="이그나">
+      <div class="boss-icon-name">이그나</div>
+    </div>
+    <div class="boss-icon-card" onclick="showBossInfo(10, this)">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/10.png" alt="다크나이트">
+      <div class="boss-icon-name">다크나이트</div>
+    </div>
+    <div class="boss-icon-card" onclick="showBossInfo(11, this)">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/11.png" alt="스트라">
+      <div class="boss-icon-name">스트라</div>
+    </div>
+    <div class="boss-icon-card" onclick="showBossInfo(12, this)">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/12.png" alt="말덱">
+      <div class="boss-icon-name">말덱</div>
+    </div>
+    <div class="boss-icon-card" onclick="showBossInfo(13, this)">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/13.png" alt="헤네스">
+      <div class="boss-icon-name">헤네스</div>
+    </div>
+  </div>
+</div>
+
+<div id="sub-normal" style="display:none">
+  <div class="boss-icon-grid">
+    <div class="boss-icon-card" onclick="showBossInfo(14, this)">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/14.png" alt="포포모">
+      <div class="boss-icon-name">포포모</div>
+    </div>
+    <div class="boss-icon-card" onclick="showBossInfo(15, this)">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/15.png" alt="테디">
+      <div class="boss-icon-name">테디</div>
+    </div>
+    <div class="boss-icon-card" onclick="showBossInfo(16, this)">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/16.png" alt="움브라">
+      <div class="boss-icon-name">움브라</div>
+    </div>
+    <div class="boss-icon-card" onclick="showBossInfo(17, this)">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/17.png" alt="엘리고스">
+      <div class="boss-icon-name">엘리고스</div>
+    </div>
+    <div class="boss-icon-card" onclick="showBossInfo(18, this)">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/18.png" alt="로키">
+      <div class="boss-icon-name">로키</div>
+    </div>
+    <div class="boss-icon-card" onclick="showBossInfo(19, this)">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/19.png" alt="리치몬드">
+      <div class="boss-icon-name">리치몬드</div>
+    </div>
+    <div class="boss-icon-card" onclick="showBossInfo(20, this)">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/20.png" alt="레굴루스">
+      <div class="boss-icon-name">레굴루스</div>
+    </div>
+    <div class="boss-icon-card" onclick="showBossInfo(21, this)">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/21.png" alt="벨레드">
+      <div class="boss-icon-name">벨레드</div>
+    </div>
+    <div class="boss-icon-card" onclick="showBossInfo(22, this)">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/22.png" alt="블루썬더">
+      <div class="boss-icon-name">블루썬더</div>
+    </div>
+    <div class="boss-icon-card" onclick="showBossInfo(23, this)">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/23.png" alt="베테라">
+      <div class="boss-icon-name">베테라</div>
+    </div>
+    <div class="boss-icon-card" onclick="showBossInfo(24, this)">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/24.png" alt="불나래">
+      <div class="boss-icon-name">불나래</div>
+    </div>
+    <div class="boss-icon-card" onclick="showBossInfo(25, this)">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/25.png" alt="옥타">
+      <div class="boss-icon-name">옥타</div>
+    </div>
+    <div class="boss-icon-card" onclick="showBossInfo(26, this)">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/26.png" alt="프로텍트">
+      <div class="boss-icon-name">프로텍트</div>
+    </div>
+    <div class="boss-icon-card" onclick="showBossInfo(27, this)">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/27.png" alt="리티오">
+      <div class="boss-icon-name">리티오</div>
+    </div>
+    <div class="boss-icon-card" onclick="showBossInfo(28, this)">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/28.png" alt="스카투스">
+      <div class="boss-icon-name">스카투스</div>
+    </div>
+    <div class="boss-icon-card" onclick="showBossInfo(29, this)">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/29.png" alt="아카이아">
+      <div class="boss-icon-name">아카이아</div>
+    </div>
+    <div class="boss-icon-card" onclick="showBossInfo(30, this)">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/30.png" alt="루루">
+      <div class="boss-icon-name">루루</div>
+    </div>
+    <div class="boss-icon-card" onclick="showBossInfo(31, this)">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/31.png" alt="펜리르">
+      <div class="boss-icon-name">펜리르</div>
+    </div>
+    <div class="boss-icon-card" onclick="showBossInfo(32, this)">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/32.png" alt="지바타르">
+      <div class="boss-icon-name">지바타르</div>
+    </div>
+    <div class="boss-icon-card" onclick="showBossInfo(33, this)">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/33.png" alt="카모플라쥬">
+      <div class="boss-icon-name">카모플라쥬</div>
+    </div>
+    <div class="boss-icon-card" onclick="showBossInfo(34, this)">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/34.png" alt="파프니르">
+      <div class="boss-icon-name">파프니르</div>
+    </div>
+  </div>
+</div>
+
+<div id="sub-lemuria" style="display:none">
+  <div class="boss-icon-grid">
+    <div class="boss-icon-card" onclick="showBossInfo(40, this)">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/40.png" alt="엔젤주니어">
+      <div class="boss-icon-name">엔젤주니어</div>
+    </div>
+    <div class="boss-icon-card" onclick="showBossInfo(41, this)">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/41.png" alt="템페스트">
+      <div class="boss-icon-name">템페스트</div>
+    </div>
+    <div class="boss-icon-card" onclick="showBossInfo(42, this)">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/42.png" alt="선셋">
+      <div class="boss-icon-name">선셋</div>
+    </div>
+    <div class="boss-icon-card" onclick="showBossInfo(43, this)">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/43.png" alt="알레샤">
+      <div class="boss-icon-name">알레샤</div>
+    </div>
+  </div>
+</div>
+
+<div id="boss-detail" class="boss-detail" style="display:none">
+  <div class="section" style="position:relative">
+    <div id="boss-detail-bg"></div>
+    <button onclick="closeBossInfo()" style="position:absolute;top:12px;right:14px;background:none;border:none;color:#aaa;font-size:18px;cursor:pointer;z-index:2">✕</button>
+    <div id="boss-detail-content"></div>
+  </div>
+</div>
+
+<script>
+
+const bossNames = {
+  8: "블리자드",
+  9: "이그나",
+  10: "다크나이트",
+  11: "스트라",
+  12: "말덱",
+  13: "헤네스",
+  14: "포포모",
+  15: "테디",
+  16: "움브라",
+  17: "엘리고스",
+  18: "로키",
+  19: "리치몬드",
+  20: "레굴루스",
+  21: "벨레드",
+  22: "블루썬더",
+  23: "베테라",
+  24: "불나래",
+  25: "옥타",
+  26: "프로텍트",
+  27: "리티오",
+  28: "스카투스",
+  29: "아카이아",
+  30: "루루",
+  31: "펜리르",
+  32: "지바타르",
+  33: "카모플라쥬",
+  34: "파프니르",
+  40: "엔젤주니어",
+  41: "템페스트",
+  42: "선셋",
+  43: "알레샤"
+};
+const bossData = {};
+
+function switchSubTab(tab) {
+  ['arha','normal','lemuria'].forEach(t => {
+    document.getElementById('sub-'+t).style.display = t===tab ? '' : 'none';
+    document.getElementById('sub-tab-'+t).classList.toggle('active', t===tab);
+  });
+  closeBossInfo();
+}
+
+function showBossInfo(num, el) {
+  document.querySelectorAll('.boss-icon-card').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  const data = bossData[num];
+  const content = data
+    ? `<div class="boss-name">${data.name}</div>${data.desc}`
+    : `<div class="boss-name">${bossNames[num] || '보스 #'+num}</div><div style="color:#666;font-size:13px">데이터 준비 중입니다.</div>`;
+  document.getElementById('boss-detail-content').innerHTML = content;
+  document.getElementById('boss-detail-bg').style.backgroundImage = `url('https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/${num}-1.png')`;
+  document.getElementById('boss-detail').style.display = '';
+  document.getElementById('boss-detail').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function closeBossInfo() {
+  document.getElementById('boss-detail').style.display='none';
+  document.querySelectorAll('.boss-icon-card').forEach(c=>c.classList.remove('active'));
+}
+
+</script>
+</body>
+</html>

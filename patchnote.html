@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>패치노트 - 종합 정보사이트 made by 닉스</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic',sans-serif;background:#1a1a2e;color:#eee;padding:12px}
+#tab-bar{display:flex;gap:0;margin-bottom:16px;border-bottom:2px solid #333;align-items:flex-end}
+#site-title{display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;margin-right:16px;margin-bottom:6px;border:1.5px solid #444;border-radius:20px;padding:10px 18px;transition:border-color 0.15s;flex-shrink:0}
+#site-title:hover{border-color:#5dcff5}
+#site-title .title-main{font-size:16px;font-weight:700;color:#aaa;line-height:1.4}
+#site-title .title-sub{font-size:12px;color:#666;line-height:1.4}
+.tab-btn{padding:10px 20px;font-size:13px;font-weight:500;background:none;border:none;color:#888;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;text-decoration:none;display:inline-block}
+.tab-btn:hover{color:#ccc}
+.tab-btn.active{color:#5dcff5;border-bottom:2px solid #5dcff5}
+#tab-bar a{text-decoration:none}
+@media(max-width:600px){.tab-btn{display:none}}
+
+h1{font-size:20px;color:#aaa;margin-bottom:20px}
+
+.patch-list{display:flex;flex-direction:column;gap:16px;max-width:800px}
+.patch-card{background:#1e1e30;border:1px solid #333;border-radius:10px;padding:20px}
+.patch-header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.patch-version{font-size:14px;font-weight:700;color:#5dcff5}
+.patch-date{font-size:12px;color:#666}
+.patch-badge{font-size:10px;padding:2px 8px;border-radius:10px;margin-left:auto}
+.badge-new{background:rgba(102,187,106,0.15);color:#66bb6a;border:1px solid rgba(102,187,106,0.3)}
+.badge-fix{background:rgba(239,83,80,0.15);color:#ef5350;border:1px solid rgba(239,83,80,0.3)}
+.badge-update{background:rgba(93,207,245,0.15);color:#5dcff5;border:1px solid rgba(93,207,245,0.3)}
+.patch-content{font-size:13px;color:#aaa;line-height:2}
+.patch-content li{list-style:none;padding-left:12px;position:relative}
+.patch-content li::before{content:"·";position:absolute;left:0;color:#5dcff5}
+</style>
+</head>
+<body>
+<div id="tab-bar">
+  <a href="./index.html" id="site-title">
+    <span class="title-main">메인화면 이동</span>
+    <span class="title-sub">made by 닉스</span>
+  </a>
+</div>
+
+<h1>패치노트</h1>
+
+<div class="patch-list" id="patch-list">
+
+  <!-- 패치노트 작성 예시 — 아래 형식으로 복사해서 추가하세요 -->
+  <div class="patch-card">
+    <div class="patch-header">
+      <span class="patch-version">v0.0.1</span>
+      <span class="patch-date">2026-04-20</span>
+      <span class="patch-badge badge-new">NEW</span>
+    </div>
+    <ul class="patch-content">
+      <li>속성 및 타입 중복 선택기능 추가</li>
+      <li>드래곤 도감 추가, 이미지 연동</li>
+      <li>등급용(SSS) 순위 추가</li>
+      <li>아르하입구 조합 추가 및 디데락 자동 조합 기능제공</li>
+      <li>레이드 정보 창 추가</li>
+      <li>모바일 및 PC UI 개선</li>
+    </ul>
+  </div>
+
+</div>
+</body>
+</html>

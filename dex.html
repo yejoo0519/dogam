@@ -1,0 +1,1824 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>드래곤 도감</title>
+<style>
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic',sans-serif;background:#1a1a2e;color:#eee;padding:12px}
+
+/* 탭 */
+#site-header{display:flex;align-items:center;gap:0;margin-bottom:0}
+#tab-bar{display:flex;gap:0;margin-bottom:16px;border-bottom:2px solid #333;align-items:flex-end}
+#site-title{display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;margin-right:16px;margin-bottom:6px;border:1.5px solid #444;border-radius:20px;padding:10px 18px;transition:border-color 0.15s;flex-shrink:0}
+#site-title:hover{border-color:#5dcff5}
+#site-title .title-main{font-size:16px;font-weight:700;color:#aaa;line-height:1.4}
+#site-title .title-sub{font-size:12px;color:#666;line-height:1.4}
+
+.tab-btn{padding:10px 20px;font-size:13px;font-weight:500;background:none;border:none;color:#888;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px}
+.tab-btn:hover{color:#ccc}
+.tab-btn.active{color:#5dcff5;border-bottom:2px solid #5dcff5}
+@media(max-width:600px){.tab-btn{display:none}}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* 초월 등급표 */
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic',sans-serif;background:#1a1a2e;color:#eee;padding:12px}
+
+/* 검색/필터 */
+#top{margin-bottom:12px}
+#search-bar{display:flex;gap:8px;margin-bottom:8px}
+#search-bar input{flex:1;padding:16px 20px;border:1px solid #444;border-radius:8px;font-size:16px;background:#2a2a3e;color:#eee}
+#search-bar input::placeholder{color:#888}
+#filter-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}
+.ftag{padding:4px 10px;border-radius:20px;font-size:11px;border:1px solid #555;cursor:pointer;background:#2a2a3e;color:#aaa}
+.ftag.active{background:#4a90d9;color:#fff;border-color:#4a90d9}
+#count{font-size:12px;color:#888;margin-bottom:8px}
+
+/* 속성 패널 그리드 */
+#panels{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+
+/* 패널 */
+.panel{border-radius:10px;overflow:hidden;border:1px solid #333}
+.panel-header{display:flex;align-items:center;gap:10px;padding:10px 14px;font-size:15px;font-weight:700}
+.panel-header .elem-icon{width:36px;height:36px;border-radius:6px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:20px;background:rgba(0,0,0,0.2)}
+.panel-header .elem-icon img{width:100%;height:100%;object-fit:cover}
+
+/* 속성별 헤더 색상 */
+.panel-땅 .panel-header{background:linear-gradient(90deg,#b5651d,#d4863a)}
+.panel-물 .panel-header{background:linear-gradient(90deg,#1565c0,#1e88e5)}
+.panel-불 .panel-header{background:linear-gradient(90deg,#b71c1c,#e53935)}
+.panel-바람 .panel-header{background:linear-gradient(90deg,#1b5e20,#388e3c)}
+.panel-빛 .panel-header{background:linear-gradient(90deg,#e65100,#fb8c00)}
+.panel-어둠 .panel-header{background:linear-gradient(90deg,#311b92,#5e35b1)}
+.panel-황혼 .panel-header{background:linear-gradient(90deg,#880e4f,#c2185b)}
+.panel-여명 .panel-header{background:linear-gradient(90deg,#4e342e,#795548)}
+.panel-악몽 .panel-header{background:linear-gradient(90deg,#4a148c,#7b1fa2)}
+
+/* 테이블 */
+.panel table{width:100%;border-collapse:collapse;font-size:12px;background:#1e1e30;min-width:0}
+.panel thead tr{background:#252538}
+.panel th{padding:6px 8px;text-align:center;font-weight:500;color:#aaa;border-bottom:1px solid #333;white-space:nowrap;font-size:11px}
+.panel th.left{text-align:left}
+.panel td{padding:5px 8px;border-bottom:0.5px solid #2a2a3e;vertical-align:middle;color:#ddd}
+.panel td.center{text-align:center}
+.panel tr:hover td{background:#252540}
+
+/* 순위 */
+.rank{font-size:11px;color:#888;text-align:center;width:24px}
+
+/* 드래곤 이미지 */
+.dragon-img{width:36px;height:36px;border-radius:6px;object-fit:cover;display:block}
+.img-placeholder{width:36px;height:36px;border-radius:6px;background:#2a2a3e;border:1px dashed #444;display:flex;align-items:center;justify-content:center;color:#555;font-size:10px}
+
+/* 타입 뱃지 */
+.badge-type{font-size:10px;padding:2px 5px;border-radius:6px;background:#2e2e4a;color:#aaa;white-space:nowrap}
+
+/* 레벨업 */
+.lv-o{color:#66bb6a;font-weight:700}
+.lv-x{color:#ef5350;font-weight:700}
+
+/* 등급 색상 */
+.t-blue  {color:#5dcff5 !important;font-weight:700;font-size:13px;text-shadow:0 0 6px rgba(93,207,245,0.6)}
+.t-gold  {color:#f5c842 !important;font-weight:700;font-size:13px;text-shadow:0 0 6px rgba(245,200,66,0.5)}
+.t-silver{color:#a8b4c0 !important;font-weight:700;font-size:13px;text-shadow:0 0 4px rgba(168,180,192,0.4)}
+.t-pink  {color:#c4879e !important;font-weight:700;font-size:13px;text-shadow:0 0 4px rgba(196,135,158,0.4)}
+.t-neg   {color:#ef5350 !important;font-weight:700;font-size:13px}
+
+.no-data td{text-align:center;padding:1rem;color:#555}
+/* 속성별 행 그라데이션 */
+.panel-땅 tr.ex-true { background: linear-gradient(90deg, rgba(181,101,29,0.25) 0%, transparent 30%); }
+.panel-물 tr.ex-true { background: linear-gradient(90deg, rgba(21,101,192,0.25) 0%, transparent 30%); }
+.panel-불 tr.ex-true { background: linear-gradient(90deg, rgba(183,28,28,0.25) 0%, transparent 30%); }
+.panel-바람 tr.ex-true { background: linear-gradient(90deg, rgba(27,94,32,0.25) 0%, transparent 30%); }
+.panel-빛 tr.ex-true { background: linear-gradient(90deg, rgba(230,81,0,0.25) 0%, transparent 30%); }
+.panel-어둠 tr.ex-true { background: linear-gradient(90deg, rgba(49,27,146,0.25) 0%, transparent 30%); }
+.panel-황혼 tr.ex-true { background: linear-gradient(90deg, rgba(136,14,79,0.25) 0%, transparent 30%); }
+.panel-여명 tr.ex-true { background: linear-gradient(90deg, rgba(78,52,46,0.3) 0%, transparent 30%); }
+.panel-악몽 tr.ex-true { background: linear-gradient(90deg, rgba(74,20,140,0.25) 0%, transparent 30%); }
+
+
+
+
+/* 속성 아이콘 이미지 경로 — 직접 수정하세요 */
+/* 예: ./images/icon_earth.png */
+
+
+/* 도감 */
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic',sans-serif;background:#1a1a2e;color:#eee;padding:12px}
+h1{font-size:24px;margin-bottom:12px;color:#aaa}
+
+/* 필터 */
+#filter-area{margin-bottom:10px}
+#search-bar{display:flex;gap:8px;margin-bottom:8px}
+#search-bar input{flex:1;padding:10px 14px;border:1px solid #444;border-radius:8px;font-size:14px;background:#2a2a3e;color:#eee}
+#search-bar input::placeholder{color:#888}
+#dex-search-bar{display:flex;gap:8px;margin-bottom:8px}
+#dex-search-bar input{flex:1;padding:10px 14px;border:1px solid #444;border-radius:8px;font-size:14px;background:#2a2a3e;color:#eee}
+#dex-search-bar input::placeholder{color:#888}
+#filter-row{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:8px}
+.ftag{padding:5px 12px;border-radius:20px;font-size:12px;border:1px solid #555;cursor:pointer;background:#2a2a3e;color:#aaa}
+.ftag.active{background:#4a90d9;color:#fff;border-color:#4a90d9}
+#count{font-size:12px;color:#888;margin-bottom:8px}
+
+/* 테이블 */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+/* 모바일 두줄 레이아웃 */
+.td-pc{display:table-cell}
+.td-mobile{display:none}
+@media(max-width:600px){
+  .tbl-wrap table{min-width:0!important}
+  .tbl-wrap thead{display:none}
+  .tbl-wrap tbody tr{display:block;padding:8px;border-bottom:1px solid #2a2a3e}
+  .td-pc{display:none!important}
+  .td-mobile{display:flex!important}
+  .row1{align-items:center;gap:8px;margin-bottom:6px}
+  .row2{gap:0;justify-content:space-around;background:#252538;border-radius:6px;padding:5px 0}
+  .row2-cell{text-align:center;flex:1}
+  .row2-cell .r2-label{font-size:10px;color:#888;display:block}
+  .row2-cell .r2-val{font-size:11px;display:block}
+}
+
+.tbl-wrap table{width:100%;border-collapse:collapse;font-size:12px;background:transparent;min-width:520px}
+.tbl-wrap thead tr{background:#252538}
+.tbl-wrap th{padding:7px 8px;text-align:center;font-weight:500;color:#aaa;border-bottom:1px solid #333;white-space:nowrap;font-size:11px}
+.tbl-wrap th.left{text-align:left}
+.tbl-wrap td{padding:10px 8px;border-bottom:0.5px solid #2a2a3e;vertical-align:middle;color:#ddd;text-align:center;background:transparent}
+.tbl-wrap td.left{text-align:left;white-space:nowrap}
+.tbl-wrap tr:hover td{background:#252540}
+.tbl-wrap tbody{background:#1e1e30}
+
+/* 속성 뱃지 */
+.badge-elem{font-size:10px;padding:2px 6px;border-radius:6px;font-weight:500;white-space:nowrap}
+.badge-type{font-size:10px;padding:2px 5px;border-radius:6px;background:#2e2e4a;color:#aaa;white-space:nowrap}
+
+/* 체크 */
+.chk-y{color:#66bb6a !important;font-weight:700;font-size:13px}
+.chk-n{color:#ef5350 !important;font-weight:700;font-size:13px}
+
+/* 코드화 */
+.cd-yes{color:#66bb6a;font-size:11px;font-weight:500}
+.cd-no{color:#ef5350;font-size:11px;font-weight:500}
+.cd-cs{color:#f5c842;font-size:11px;font-weight:500}
+
+/* 드래곤 이미지 */
+.dragon-img{width:36px;height:36px;border-radius:6px;object-fit:cover;display:block}
+.img-placeholder{width:36px;height:36px;border-radius:6px;background:#2a2a3e;border:1px dashed #444}
+.dex-elem-icon{width:24px;height:24px;border-radius:4px;object-fit:cover;display:block;margin:0 auto}
+.dex-elem-icon-placeholder{width:24px;height:24px;border-radius:4px;background:#2a2a3e;border:1px dashed #333;margin:0 auto}
+
+/* 상세보기 버튼 */
+.detail-btn{font-size:10px;padding:2px 8px;border-radius:4px;border:1px solid #444;background:#2a2a3e;color:#aaa;cursor:pointer}
+.detail-btn:hover{background:#333;color:#eee}
+
+/* 모달 */
+#modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1000;align-items:center;justify-content:center}
+#modal-overlay.open{display:flex}
+#modal{background:#1e1e30;border:1px solid #444;border-radius:12px;padding:24px;min-width:280px;max-width:90vw;position:relative}
+#modal-close{position:absolute;top:12px;right:14px;background:none;border:none;color:#aaa;font-size:18px;cursor:pointer}
+#modal-close:hover{color:#eee}
+#modal-title{font-size:16px;font-weight:700;color:#eee;margin-bottom:16px}
+#modal-body{font-size:13px;color:#aaa;line-height:1.8}
+
+/* 속성별 색상 */
+.e-땅{background:#fff3e0;color:#e65100}
+.e-물{background:#e3f2fd;color:#1565c0}
+.e-불{background:#fce4ec;color:#b71c1c}
+.e-바람{background:#e8f5e9;color:#1b5e20}
+.e-빛{background:#fffde7;color:#f57f17}
+.e-어둠{background:#ede7f6;color:#4a148c}
+.e-황혼{background:#fdf2f8;color:#880e4f}
+.e-여명{background:#fff8e1;color:#6d4c41}
+.e-악몽{background:#f3e5f5;color:#6a1b9a}
+
+/* 속성별 행 그라데이션 */
+tr.e-row-땅  {background:linear-gradient(90deg,rgba(181,101,29,0.12) 0%,transparent 20%)}
+tr.e-row-물  {background:linear-gradient(90deg,rgba(21,101,192,0.12) 0%,transparent 20%)}
+tr.e-row-불  {background:linear-gradient(90deg,rgba(183,28,28,0.12) 0%,transparent 20%)}
+tr.e-row-바람{background:linear-gradient(90deg,rgba(27,94,32,0.12) 0%,transparent 20%)}
+tr.e-row-빛  {background:linear-gradient(90deg,rgba(230,81,0,0.12) 0%,transparent 20%)}
+tr.e-row-어둠{background:linear-gradient(90deg,rgba(49,27,146,0.12) 0%,transparent 20%)}
+tr.e-row-황혼{background:linear-gradient(90deg,rgba(136,14,79,0.12) 0%,transparent 20%)}
+tr.e-row-여명{background:linear-gradient(90deg,rgba(78,52,46,0.15) 0%,transparent 20%)}
+tr.e-row-악몽{background:linear-gradient(90deg,rgba(74,20,140,0.12) 0%,transparent 20%)}
+tr:hover td{background:#252540!important}
+
+
+/* 탭 네비 링크 스타일 */
+#tab-bar a{text-decoration:none}
+
+</style>
+</head>
+<body>
+<div id="tab-bar">
+  <a href="./index.html" id="site-title">
+  <span class="title-main">메인화면 이동</span>
+  <span class="title-sub">made by 닉스</span>
+</a>
+  <a href="./tier.html" class="tab-btn">초월 등급표</a>
+  <a href="./dex.html" class="tab-btn active">드래곤 도감</a>
+  <a href="./sss.html" class="tab-btn">SSS 랭킹</a>
+  <a href="./raid.html" class="tab-btn">아르하 입구</a>
+  <a href="./raid_info.html" class="tab-btn">레이드 정보</a>
+  
+</div>
+<h1>드래곤 도감</h1>
+<div id="filter-area">
+  <div id="dex-search-bar">
+    <input id="dex-q" type="text" placeholder="드래곤 이름 검색..." oninput="render()">
+  </div>
+  <div id="dex-filter-row"></div>
+  <div id="dex-count"></div>
+</div>
+<div class="tbl-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th style="width:28px">#</th>
+        <th style="width:42px"></th>
+        <th class="left">드래곤</th>
+        <th style="width:32px"></th>
+        <th>타입</th>
+        <th>각성</th>
+        <th>강림</th>
+        <th>초월</th>
+        <th>레벨업</th>
+        <th>코드화</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</div>
+
+<div id="modal-overlay" onclick="closeModal(event)">
+  <div id="modal">
+    <button id="modal-close" onclick="closeModal()">✕</button>
+    <div id="modal-title"></div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+<script>
+const dexData=[
+{n:"고대신룡",e:"빛",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:1,tg:"-2.575",cd:"Yes"},
+{n:"윈드 드래곤",e:"바람",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:1,tg:"-2.175",cd:"Yes"},
+{n:"식스 레그 혼 드래곤",e:"바람",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:1,tg:"-2.175",cd:"Yes"},
+{n:"청룡",e:"바람",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"-2.175",cd:"Yes"},
+{n:"파이어 드래곤",e:"불",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"-2.175",cd:"Yes"},
+{n:"번개고룡",e:"불",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"-1.275",cd:"Yes"},
+{n:"라바 드래곤",e:"불",t:"체공",t_kr:"체공",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"피닉스",e:"불",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"-2.175",cd:"Yes"},
+{n:"빙하고룡",e:"물",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"-1.275",cd:"Yes"},
+{n:"네시",e:"물",t:"체력",t_kr:"체력",aw:1,ad:0,tr:1,lv:1,tg:"-2.175",cd:"Yes"},
+{n:"테일 드래곤",e:"물",t:"체방",t_kr:"체방",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"수룡",e:"물",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:1,tg:"-3.275",cd:"Yes"},
+{n:"히드라곤",e:"땅",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:1,tg:"-2.175",cd:"Yes"},
+{n:"파워 드래곤",e:"땅",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"-1.275",cd:"Yes"},
+{n:"바위 드래곤",e:"땅",t:"방어",t_kr:"방어",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"지하땅굴 드래곤",e:"땅",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:1,tg:"-2.175",cd:"Yes"},
+{n:"페어리 드래곤",e:"물",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"-2.175",cd:"Yes"},
+{n:"레이디 드래곤",e:"바람",t:"체방",t_kr:"체방",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"에그 드래곤",e:"땅",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:1,tg:"-0.675",cd:"Yes"},
+{n:"헬 드래곤",e:"불",t:"공방",t_kr:"공방",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"엔젤 드래곤",e:"빛",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:1,tg:"-2.575",cd:"Yes"},
+{n:"에일리언 드래곤",e:"바람",t:"공방",t_kr:"공방",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"미니 드래곤",e:"물",t:"공방",t_kr:"공방",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"스왐프 드래곤",e:"물",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:1,tg:"-0.675",cd:"Yes"},
+{n:"패트 드래곤",e:"땅",t:"체력",t_kr:"체력",aw:1,ad:0,tr:1,lv:1,tg:"-0.675",cd:"Yes"},
+{n:"스파이크 드래곤",e:"불",t:"방어",t_kr:"방어",aw:1,ad:0,tr:1,lv:1,tg:"-0.675",cd:"Yes"},
+{n:"인섹트 드래곤",e:"불",t:"공방",t_kr:"공방",aw:1,ad:0,tr:1,lv:1,tg:"-0.275",cd:"Yes"},
+{n:"리프 드래곤",e:"땅",t:"방어",t_kr:"방어",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"프로그 드래곤",e:"물",t:"방어",t_kr:"방어",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"윙스 드래곤",e:"바람",t:"공방",t_kr:"공방",aw:1,ad:0,tr:1,lv:1,tg:"-0.275",cd:"Yes"},
+{n:"샌드 드래곤",e:"불",t:"공방",t_kr:"공방",aw:1,ad:0,tr:1,lv:1,tg:"-0.275",cd:"Yes"},
+{n:"스마트 드래곤",e:"땅",t:"방어",t_kr:"방어",aw:1,ad:0,tr:1,lv:1,tg:"-0.675",cd:"Yes"},
+{n:"뮤직 드래곤",e:"바람",t:"체력",t_kr:"체력",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"흑룡",e:"어둠",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:1,tg:"-0.025",cd:"Yes"},
+{n:"에메랄드 드래곤",e:"빛",t:"체방",t_kr:"체방",aw:1,ad:0,tr:1,lv:1,tg:"-2.1",cd:"Yes"},
+{n:"라이곤",e:"빛",t:"체공",t_kr:"체공",aw:1,ad:0,tr:1,lv:1,tg:"0.2",cd:"Yes"},
+{n:"카멜레용",e:"빛",t:"체력",t_kr:"체력",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"치킨헤드 드래곤",e:"빛",t:"체방",t_kr:"체방",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"캥거레빗 드래곤",e:"빛",t:"체공",t_kr:"체공",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"큐피트용",e:"빛",t:"공격",t_kr:"공격",aw:1,ad:0,tr:1,lv:1,tg:"0.2",cd:"Yes"},
+{n:"골드 드래곤",e:"빛",t:"체방",t_kr:"체방",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"슬라임 드래곤",e:"물",t:"체방",t_kr:"체방",aw:1,ad:0,tr:1,lv:1,tg:"-2.1",cd:"Yes"},
+{n:"블레이드 드래곤",e:"어둠",t:"공격",t_kr:"공격",aw:1,ad:0,tr:1,lv:1,tg:"0.2",cd:"Yes"},
+{n:"메탈 드래곤",e:"어둠",t:"체공",t_kr:"체공",aw:1,ad:0,tr:1,lv:1,tg:"0.2",cd:"Yes"},
+{n:"미이라곤",e:"어둠",t:"체공",t_kr:"체공",aw:1,ad:0,tr:1,lv:1,tg:"0.2",cd:"Yes"},
+{n:"뱃도치 드래곤",e:"어둠",t:"공방",t_kr:"공방",aw:1,ad:0,tr:1,lv:1,tg:"0.2",cd:"Yes"},
+{n:"스켈레곤",e:"어둠",t:"체공",t_kr:"체공",aw:1,ad:0,tr:1,lv:1,tg:"0.2",cd:"Yes"},
+{n:"서펀트 드래곤",e:"어둠",t:"공격",t_kr:"공격",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"G네 드래곤",e:"어둠",t:"공격",t_kr:"공격",aw:1,ad:0,tr:1,lv:1,tg:"0.2",cd:"Yes"},
+{n:"타이거 드래곤",e:"땅",t:"체력",t_kr:"체력",aw:1,ad:0,tr:1,lv:1,tg:"-0.675",cd:"Yes"},
+{n:"금오 드래곤",e:"불",t:"체방",t_kr:"체방",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"메탈 마그넷 드래곤",e:"바람",t:"공방",t_kr:"공방",aw:1,ad:0,tr:1,lv:1,tg:"-0.275",cd:"Yes"},
+{n:"다크닉스",e:"어둠",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:0,tg:"1.6",cd:"Yes"},
+{n:"백룡",e:"빛",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:1,tg:"-1.85",cd:"Yes"},
+{n:"히에나곤",e:"어둠",t:"체공",t_kr:"체공",aw:1,ad:0,tr:1,lv:1,tg:"1.05",cd:"Yes"},
+{n:"유니 드래곤",e:"어둠",t:"공격",t_kr:"공격",aw:1,ad:0,tr:1,lv:1,tg:"1.45",cd:"Yes"},
+{n:"골든혼",e:"땅",t:"체방",t_kr:"체방",aw:1,ad:0,tr:1,lv:1,tg:"-0.85",cd:"Yes"},
+{n:"샤크곤",e:"물",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"1.45",cd:"Yes"},
+{n:"가디언",e:"바람",t:"체력",t_kr:"체력",aw:1,ad:0,tr:1,lv:1,tg:"1.05",cd:"Yes"},
+{n:"크레센트",e:"어둠",t:"체공",t_kr:"체공",aw:1,ad:0,tr:1,lv:1,tg:"1.05",cd:"Yes"},
+{n:"레인보우",e:"빛",t:"체력",t_kr:"체력",aw:1,ad:0,tr:1,lv:1,tg:"1.05",cd:"Yes"},
+{n:"타투",e:"땅",t:"방어",t_kr:"방어",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"스파인",e:"땅",t:"공방",t_kr:"공방",aw:1,ad:0,tr:1,lv:1,tg:"1.45",cd:"Yes"},
+{n:"고대 주니어",e:"빛",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:1,tg:"1.45",cd:"Yes"},
+{n:"프로스티",e:"바람",t:"방어",t_kr:"방어",aw:1,ad:0,tr:1,lv:1,tg:"1.55",cd:"Yes"},
+{n:"다크프로스티",e:"어둠",t:"공격",t_kr:"공격",aw:1,ad:0,tr:1,lv:1,tg:"1.95",cd:"Yes"},
+{n:"현무 드래곤",e:"물",t:"방어",t_kr:"방어",aw:1,ad:0,tr:1,lv:1,tg:"1.55",cd:"Yes"},
+{n:"크리마용",e:"빛",t:"방어",t_kr:"방어",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"데몽과가고일",e:"어둠",t:"공방",t_kr:"공방",aw:1,ad:0,tr:1,lv:1,tg:"1.95",cd:"Yes"},
+{n:"샴 드래곤",e:"빛",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:1,tg:"1.55",cd:"Yes"},
+{n:"본헤드",e:"불",t:"체공",t_kr:"체공",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"베네지",e:"어둠",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:1,tg:"1.55",cd:"Yes"},
+{n:"머스타 드해머",e:"땅",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:1,tg:"-0.35",cd:"Yes"},
+{n:"레드와이번",e:"불",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"1.95",cd:"Yes"},
+{n:"해태드래곤",e:"바람",t:"방어",t_kr:"방어",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"스콜피온 드래곤",e:"땅",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:1,tg:"1.95",cd:"Yes"},
+{n:"나이트 드래곤",e:"빛",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:1,tg:"1.55",cd:"No"},
+{n:"스파이시",e:"빛",t:"체공",t_kr:"체공",aw:1,ad:0,tr:1,lv:1,tg:"1.55",cd:"No"},
+{n:"라파엘",e:"빛",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:1,tg:"-0.35",cd:"No"},
+{n:"바알",e:"어둠",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:0,tg:"1.6",cd:"No"},
+{n:"삐에로 드래곤",e:"빛",t:"체력",t_kr:"체력",aw:1,ad:0,tr:1,lv:0,tg:"2.0",cd:"Yes"},
+{n:"파라오곤",e:"빛",t:"공방",t_kr:"공방",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"쉐도우 드래곤",e:"어둠",t:"공격",t_kr:"공격",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"순둥곤",e:"빛",t:"방어",t_kr:"방어",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"프랑켄슈타곤",e:"어둠",t:"체력",t_kr:"체력",aw:1,ad:0,tr:1,lv:0,tg:"2.0",cd:"Yes"},
+{n:"닌자 드래곤",e:"어둠",t:"공격",t_kr:"공격",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"드라고노이드",e:"어둠",t:"체방",t_kr:"체방",aw:1,ad:0,tr:1,lv:0,tg:"1.225",cd:"Yes"},
+{n:"볼케이노",e:"불",t:"공방",t_kr:"공방",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"블루라이트닝",e:"물",t:"체공",t_kr:"체공",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"윗치 드래곤",e:"어둠",t:"체공",t_kr:"체공",aw:1,ad:0,tr:1,lv:0,tg:"-0.675",cd:"Yes"},
+{n:"퍼플립스 드래곤",e:"물",t:"체방",t_kr:"체방",aw:1,ad:0,tr:1,lv:0,tg:"1.225",cd:"Yes"},
+{n:"파이썬",e:"땅",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:0,tg:"-0.2",cd:"No"},
+{n:"아이언 드래곤",e:"불",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:0,tg:"2.0",cd:"No"},
+{n:"오로",e:"바람",t:"공방",t_kr:"공방",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"자룡",e:"불",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:0,tg:"0.7",cd:"Yes"},
+{n:"배틀 드래곤",e:"불",t:"공격",t_kr:"공격",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"데빌곤",e:"땅",t:"공격",t_kr:"공격",aw:1,ad:0,tr:1,lv:0,tg:"2.1",cd:"Yes"},
+{n:"바이올렛 드래곤",e:"물",t:"체공",t_kr:"체공",aw:1,ad:0,tr:1,lv:0,tg:"2.275",cd:"Yes"},
+{n:"네온 드래곤",e:"빛",t:"체공",t_kr:"체공",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"플레임 드래곤",e:"불",t:"체공",t_kr:"체공",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"블랙퀸",e:"어둠",t:"공격",t_kr:"공격",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"시그마 드래곤",e:"어둠",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:0,tg:"1.8",cd:"No"},
+{n:"램곤",e:"땅",t:"체력",t_kr:"체력",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"아르고 드래곤",e:"빛",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:0,tg:"2.0",cd:"No"},
+{n:"헤라클레스곤",e:"땅",t:"체방",t_kr:"체방",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"토템 드래곤",e:"바람",t:"체력",t_kr:"체력",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"말소자 드래곤",e:"불",t:"공격",t_kr:"공격",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"팀버 드래곤",e:"땅",t:"방어",t_kr:"방어",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"코브라곤",e:"어둠",t:"공방",t_kr:"공방",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"루피아 드래곤",e:"물",t:"방어",t_kr:"방어",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"타이푼 드래곤",e:"바람",t:"체방",t_kr:"체방",aw:1,ad:0,tr:1,lv:0,tg:"1.225",cd:"Yes"},
+{n:"스터드 드래곤",e:"물",t:"방어",t_kr:"방어",aw:1,ad:0,tr:1,lv:0,tg:"2.0",cd:"Yes"},
+{n:"플라워 드래곤",e:"땅",t:"방어",t_kr:"방어",aw:1,ad:0,tr:1,lv:0,tg:"2.0",cd:"Yes"},
+{n:"해마곤",e:"물",t:"체공",t_kr:"체공",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"클라우드 드래곤",e:"바람",t:"체력",t_kr:"체력",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"돌풍의 라이오스",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"찬란한 바리안",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"물결의 파프리온",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"열화의 발칸",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"장벽의 에닉스",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"암흑의 발로드",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"레드불 드래곤",e:"불",t:"체공",t_kr:"체공",aw:1,ad:0,tr:1,lv:0,tg:"-0.175",cd:"Yes"},
+{n:"툰드라 드래곤",e:"물",t:"체력",t_kr:"체력",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"메갈로돈",e:"물",t:"공격",t_kr:"공격",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"오로라 드래곤",e:"빛",t:"체방",t_kr:"체방",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"캣츠곤",e:"어둠",t:"체공",t_kr:"체공",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"이그니스",e:"불",t:"공방",t_kr:"공방",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"타르타로스",e:"어둠",t:"체공",t_kr:"체공",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"슈팅스타",e:"빛",t:"체공",t_kr:"체공",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"다크폴",e:"어둠",t:"체공",t_kr:"체공",aw:1,ad:0,tr:1,lv:0,tg:"-0.175",cd:"Yes"},
+{n:"헝그리 드래곤",e:"땅",t:"체력",t_kr:"체력",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"아쿠아 드래곤",e:"물",t:"공방",t_kr:"공방",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"오르페우스",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"루미네스",e:"물",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:0,tg:"3.2",cd:"No"},
+{n:"번네스",e:"불",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:0,tg:"2.6",cd:"No"},
+{n:"깨비곤",e:"빛",t:"체공",t_kr:"체공",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"제트 드래곤",e:"바람",t:"체공",t_kr:"체공",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"마리노 드래곤",e:"물",t:"체방",t_kr:"체방",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"투탕카",e:"어둠",t:"방어",t_kr:"방어",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"머드 드래곤",e:"땅",t:"체력",t_kr:"체력",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"붐버 드래곤",e:"불",t:"체력",t_kr:"체력",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"사나래",e:"빛",t:"방어",t_kr:"방어",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"타일런트",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"청마룡",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"너티빌런",e:"불",t:"방어",t_kr:"방어",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"글래시어",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"므네이아",e:"불",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:0,tg:"0.025",cd:"Yes"},
+{n:"녹스O",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"일리오스O",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"코너투스",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"스왈로우",e:"바람",t:"체공",t_kr:"체공",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"i곤",e:"바람",t:"공방",t_kr:"공방",aw:1,ad:0,tr:1,lv:0,tg:"2.025",cd:"Yes"},
+{n:"블러디네이트",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"피스 드래곤",e:"바람",t:"공방",t_kr:"공방",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"갤럭시",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"페이퍼 드래곤",e:"바람",t:"공격",t_kr:"공격",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"하이페리곤",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"모리카 드래곤",e:"빛",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"2.7",cd:"Yes"},
+{n:"베가본드 드래곤",e:"땅",t:"공격",t_kr:"공격",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"태엽 드래곤",e:"바람",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:0,tg:"2.6",cd:"Yes"},
+{n:"스플렌더 드래곤",e:"어둠",t:"공격",t_kr:"공격",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"블랙티어 드래곤",e:"어둠",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:0,tg:"3.55",cd:"Yes"},
+{n:"블랙아머 드래곤",e:"어둠",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:0,tg:"2.825",cd:"No"},
+{n:"오렌지리프 드래곤",e:"땅",t:"체력",t_kr:"체력",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"핑크벨 드래곤",e:"바람",t:"체력",t_kr:"체력",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"쿠로이 드래곤",e:"어둠",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:1,tg:"1.375",cd:"No"},
+{n:"포레스트 드래곤",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"기간티스",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"데모니오",e:"불",t:"공격",t_kr:"공격",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"게스 드래곤",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"베라 드래곤",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"디요나",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"콘라드",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"파브레가스",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"파이어퓨리",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"스테고 드래곤",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"레텐토르",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"미스트 드래곤",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"리쿠루 드래곤",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"페트라 드래곤",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"크룩커스",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"밴시",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"할로우",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"루포",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"데칼",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"카오스",e:"바람",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:0,tg:"2.6",cd:"No"},
+{n:"일레마",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"블랙코어",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"오딘",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"프리러너",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"타임머신",e:"어둠",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:0,tg:"3.2",cd:"Yes"},
+{n:"시타엘",e:"빛",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:0,tg:"3.8",cd:"No"},
+{n:"그라치아",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-SS"},
+{n:"마가",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-SS"},
+{n:"스쿠룸",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-SS"},
+{n:"콜로서스",e:"땅",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:0,tg:"1.875",cd:"No"},
+{n:"원더 드래곤",e:"어둠",t:"체력",t_kr:"체력",aw:0,ad:1,tr:1,lv:1,tg:"3.4",cd:"Yes"},
+{n:"아이스 드레이크",e:"물",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:0,tg:"1.9",cd:"Yes"},
+{n:"오미야콘",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"니플하임",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"루돌프 드래곤",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"바르라아",e:"빛",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:0,tg:"2.8",cd:"No"},
+{n:"루틸루스",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"청양 드래곤",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"옵타툽",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"아실리",e:"빛",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:0,tg:"4.65",cd:"No"},
+{n:"블랙찡또",e:"어둠",t:"체력",t_kr:"체력",aw:1,ad:0,tr:1,lv:0,tg:"4.3",cd:"Yes"},
+{n:"아폴로누스",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"로루스",e:"빛",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:0,tg:"2.1",cd:"Yes"},
+{n:"러스트",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"슬레이어",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"파이어리 블랜드",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"문라이트",e:"어둠",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:0,tg:"4.175",cd:"Yes"},
+{n:"코랄",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"아브밸리",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"가이안",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"오쿠러스",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"위드미",e:"물",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:1,tg:"3.05",cd:"No"},
+{n:"헤이즈",e:"빛",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:1,tg:"3.525",cd:"No"},
+{n:"라우아",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"듀펜",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"메이플 드래곤",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"딜랑",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"스트라이커",e:"바람",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"3.9",cd:"Yes"},
+{n:"가루다",e:"불",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:0,tg:"5.8",cd:"No"},
+{n:"리베라",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"티라노 드래곤",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"파티 드래곤",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"오르도",e:"빛",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:0,tg:"3.5",cd:"Yes"},
+{n:"세크레타",e:"물",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:0,tg:"4.9",cd:"Yes"},
+{n:"푸투룸",e:"불",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:0,tg:"4.0",cd:"Yes"},
+{n:"할리벨",e:"여명",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:0,tg:"1.8",cd:"Yes"},
+{n:"타아비레",e:"여명",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:0,tg:"4.2",cd:"Yes"},
+{n:"발라크",e:"황혼",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:0,tg:"1.9",cd:"Yes"},
+{n:"베팔",e:"황혼",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:0,tg:"3.8",cd:"Yes"},
+{n:"단탈리온",e:"악몽",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:0,tg:"4.4",cd:"Yes"},
+{n:"자간",e:"악몽",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:0,tg:"4.7",cd:"Yes"},
+{n:"어비스 엣지",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"적오드래곤",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"헬가스트",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"마르바스",e:"어둠",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:0,tg:"5.0",cd:"No"},
+{n:"칸",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"위그드라실",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"와일드 드래곤",e:"불",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:0,tg:"4.9",cd:"No"},
+{n:"좀비 드래곤",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"레이어스",e:"땅",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:1,tg:"4.3",cd:"No"},
+{n:"웨일 드래곤",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"베놈 드래곤",e:"물",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:1,tg:"4.0",cd:"No"},
+{n:"발라 드래곤",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"루가르 드래곤",e:"불",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:0,tg:"4.5",cd:"No"},
+{n:"아틀란티스",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"유니버스",e:"어둠",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:1,tg:"2.9",cd:"No"},
+{n:"빙설룡",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"점프 드래곤",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"아스티",e:"바람",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:0,tg:"5.0",cd:"No"},
+{n:"지마",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"갤러스",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"퓨미스",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"베히모스",e:"어둠",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:0,tg:"5.1",cd:"No"},
+{n:"스틸윙",e:"바람",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:0,tg:"4.2",cd:"No"},
+{n:"소울",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"이슬룡",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"데르",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"렉몰",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"화랑",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"그레이탄",e:"바람",t:"공방",t_kr:"공방",aw:0,ad:1,tr:1,lv:1,tg:"4.4",cd:"No"},
+{n:"미스틱티니",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"다로스",e:"땅",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:0,tg:"7.0",cd:"No"},
+{n:"자루카",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"다크혼",e:"황혼",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"스타에이스",e:"빛",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:0,tg:"4.1",cd:"No"},
+{n:"말로단",e:"어둠",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:0,tg:"5.4",cd:"No"},
+{n:"아이가스",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"포포모",e:"불",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:0,tg:"5.3",cd:"Yes"},
+{n:"테디 드래곤",e:"빛",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:0,tg:"5.5",cd:"Yes"},
+{n:"나기",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"그리핀",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"블랙쇼커",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"트리페어윙",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"리바이어던",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"스케어",e:"어둠",t:"공방",t_kr:"공방",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"블루벨",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"화이트스톰",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"네펜데스",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"아그나드",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"버블 드래곤",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"C-S"},
+{n:"합라",e:"여명",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"5.4",cd:"Yes"},
+{n:"레블롭틴",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"C-S"},
+{n:"레인보우배트곤",e:"바람",t:"공방",t_kr:"공방",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"아라카",e:"바람",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:0,tg:"5.675",cd:"No"},
+{n:"라지카스",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"미스틸테인",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"시소르",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"루",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"플래그너",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"셀마사",e:"여명",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:0,tg:"5.7",cd:"No"},
+{n:"청화풍",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"카라선",e:"황혼",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"5.275",cd:"Yes"},
+{n:"아쿠아리움",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"일로스",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"렉스톤",e:"황혼",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"4.775",cd:"Yes"},
+{n:"포메쿨",e:"황혼",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:1,tg:"5.6",cd:"Yes"},
+{n:"카르나",e:"어둠",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:0,tg:"5.0",cd:"No"},
+{n:"아르주나",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"마룡",e:"불",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:0,tg:"5.5",cd:"Yes"},
+{n:"블랙혼",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"얼티밋 드래곤",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"매직스타 드래곤",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"아르테미스 드래곤",e:"빛",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:1,tg:"6.9",cd:"Yes"},
+{n:"할루시",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"페르마타",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"앙그라",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"옴므니아",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"코므니아",e:"황혼",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"다므니아",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"드므니아",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"맘므니아",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"흐므니아",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"엠파이어",e:"바람",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:0,tg:"5.1",cd:"Yes"},
+{n:"루시페르",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"네크로멘서",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"지진",e:"땅",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:1,tg:"4.85",cd:"No"},
+{n:"니케",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"아스트라이나",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"하레스",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"나이트메어",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"스윗클라우드",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"데네브",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"박쥐곤",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"우파룸",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"부두룡",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"화주사",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"미트라",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"보상이용",e:"여명",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes"},
+{n:"다크베인",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"블러디터스크",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"포이즌리버",e:"땅",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:1,tg:"5.9",cd:"Yes"},
+{n:"유리온",e:"황혼",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"터들톰톰",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"타이게타",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"선인장 드래곤",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"베르나",e:"빛",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:0,tg:"1.9",cd:"No"},
+{n:"룩소린",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"혼",e:"바람",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:1,tg:"4.7",cd:"Yes"},
+{n:"나트론",e:"물",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:1,tg:"1.9",cd:"Yes"},
+{n:"살라",e:"황혼",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"움브라",e:"악몽",t:"체공",t_kr:"체공",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes"},
+{n:"솔라",e:"빛",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"5.9",cd:"Yes"},
+{n:"포폰",e:"땅",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:1,tg:"4.5",cd:"Yes"},
+{n:"제피로스",e:"바람",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:1,tg:"3.4",cd:"Yes"},
+{n:"드래곤 슬레이어",e:"어둠",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:1,tg:"6.075",cd:"Yes"},
+{n:"헬카이저",e:"황혼",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"레버넌트",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"이블 던",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"디멘션 드래곤",e:"악몽",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"5.5",cd:"Yes"},
+{n:"픽셀 드래곤",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"그랑 세이버",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"킨더 드래곤",e:"여명",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes"},
+{n:"푸딩곤",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"C-SS"},
+{n:"엔틱 드래곤",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"트와일라잇",e:"황혼",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"플로리안",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"라루스",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"프로딘",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"틸키",e:"황혼",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"6.8",cd:"Yes"},
+{n:"이그나",e:"불",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:1,tg:"4.7",cd:"Yes"},
+{n:"블리자드",e:"물",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"6.25",cd:"Yes"},
+{n:"다크나이트",e:"어둠",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:1,tg:"4.3",cd:"Yes"},
+{n:"엔더 드래곤",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"거스트 드래곤",e:"바람",t:"공격",t_kr:"공격",aw:0,ad:1,tr:1,lv:1,tg:"5.1",cd:"Yes"},
+{n:"샤프테일 드래곤",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"화이트썬더 드래곤",e:"빛",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:1,tg:"5.6",cd:"Yes"},
+{n:"카루라",e:"빛",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:0,tg:"5.0",cd:"No"},
+{n:"간다르바",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"호크아이",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"루아셰아 드래곤",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"루네라 드래곤",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"미나스 드래곤",e:"빛",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:1,tg:"5.35",cd:"Yes"},
+{n:"헬스페로우",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"쿠베라",e:"어둠",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:0,tg:"6.8",cd:"No"},
+{n:"칼라빈카",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"직소 드래곤",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"카이저번",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"골락",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"렉몰 리버스",e:"황혼",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:1,tg:"5.25",cd:"Yes"},
+{n:"앳지버",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"센투라",e:"바람",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:0,tg:"6.075",cd:"No"},
+{n:"아프리트",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"에트왈 드래곤",e:"바람",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes"},
+{n:"넬로 드래곤",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"썬더레인 드래곤",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"즈믄",e:"땅",t:"공방",t_kr:"공방",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes"},
+{n:"리베티",e:"땅",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes"},
+{n:"브리트라",e:"물",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:0,tg:"2.925",cd:"No"},
+{n:"타크샤카",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"슈넬 드래곤",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"키갈",e:"바람",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes"},
+{n:"아델라",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"슬리즈 드래곤",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"칸타카",e:"땅",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:0,tg:"5.225",cd:"No"},
+{n:"지타쿨라",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"파고스 드래곤",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"본샤스 드래곤",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"갤럭시아 드래곤",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"알리스 드래곤",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"마브리카 드래곤",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"소서러 드래곤",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"아톤",e:"빛",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes"},
+{n:"탈릿사",e:"빛",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:0,tg:"5.925",cd:"No"},
+{n:"쿠즈마라",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"하리카",e:"황혼",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"4.25",cd:"Yes"},
+{n:"톤톤",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"아쿠아펄",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"키리온",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"애플칙",e:"땅",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:1,tg:"4.0",cd:"Yes"},
+{n:"트로페우스",e:"물",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:1,tg:"4.1",cd:"Yes"},
+{n:"니케이",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"니케다",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"니케라이",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"니케플로",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"니케벤토",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"니케테라",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"판므니아",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"라므니아",e:"황혼",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"닌므니아",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"아스타테",e:"땅",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:0,tg:"5.4",cd:"No"},
+{n:"시리스",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"엘더 드래곤",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"수라 드래곤",e:"불",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes"},
+{n:"타로스",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"익시아",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"엔젤주니어",e:"빛",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:1,tg:"6.2",cd:"Yes"},
+{n:"허리케인",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"하데스",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"프레데터",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"엔퓨",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"가스트",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"엔투라스",e:"불",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"6.0",cd:"Yes"},
+{n:"액스칼리버",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"일란",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"코스모",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"파베르",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"앵커",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"말덱",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"스트라",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"헤네스",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"데스락",e:"황혼",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes"},
+{n:"애니마라",e:"악몽",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:1,tg:"5.8",cd:"Yes"},
+{n:"설리반",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"파프닐",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"아비온",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"아자크",e:"어둠",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes"},
+{n:"프로즌",e:"물",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:1,tg:"6.2",cd:"Yes"},
+{n:"아비스",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"차콜플레임",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"궁니르",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"루드오어",e:"악몽",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:1,tg:"6.9",cd:"Yes"},
+{n:"스워드",e:"빛",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes"},
+{n:"케이나인",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"C-SS"},
+{n:"에이라",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"스칼렛",e:"황혼",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"쉔",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"베리스",e:"여명",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:1,tg:"6.0",cd:"Yes"},
+{n:"템페스트",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"선셋 드래곤",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"포말하우트",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"마카라",e:"어둠",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:1,tg:"6.9",cd:"No"},
+{n:"아누라다",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"C-SS"},
+{n:"이클립스",e:"황혼",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes"},
+{n:"벨레드",e:"악몽",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes"},
+{n:"미티어",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"카모플라쥬",e:"황혼",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"엘리고스",e:"여명",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:1,tg:"5.8",cd:"Yes"},
+{n:"범",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"이모션",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"미미르",e:"여명",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes"},
+{n:"샬롯",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"이지스",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"레이징",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"페이몬",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"암두시아스",e:"여명",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes"},
+{n:"백택곤",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"레오벡터",e:"땅",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"6.0",cd:"Yes"},
+{n:"네비아",e:"여명",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:1,tg:"6.2",cd:"Yes"},
+{n:"썬더버드",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"보레아스",e:"바람",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:1,tg:"6.0",cd:"Yes"},
+{n:"쿠알레",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"코즈메키온",e:"황혼",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"화귀 드래곤",e:"불",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:1,tg:"6.475",cd:"Yes"},
+{n:"헤카테",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"밀라",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"라울",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"스탑튠",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"다크스퀘어",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"고귀한 헬카이저",e:"황혼",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"마소티스",e:"물",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes"},
+{n:"리치몬드",e:"어둠",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:1,tg:"6.9",cd:"Yes"},
+{n:"크로마 리치몬드",e:"어둠",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:1,tg:"6.9",cd:"Yes"},
+{n:"톡시닉",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"이터널",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"개틀링곤",e:"빛",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:1,tg:"6.9",cd:"Yes"},
+{n:"베른하르트",e:"물",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"5.2",cd:"Yes"},
+{n:"로티스",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"스노우볼",e:"황혼",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"고귀한 블러디터스크",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"젤리피쉬",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"펜리르",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"티르",e:"바람",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:1,tg:"6.675",cd:"Yes"},
+{n:"아만타",e:"빛",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:1,tg:"3.8",cd:"Yes"},
+{n:"코멧",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"화이트 디스트로이어",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"피미루",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"샤흐",e:"빛",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes"},
+{n:"고귀한 다크베인",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"에오스",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"네뷸라",e:"황혼",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:1,tg:"6.1",cd:"Yes"},
+{n:"레굴루스",e:"물",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:1,tg:"5.3",cd:"Yes"},
+{n:"크로마 레굴루스",e:"물",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:1,tg:"5.3",cd:"Yes"},
+{n:"알데바란",e:"땅",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:1,tg:"6.0",cd:"Yes"},
+{n:"강림 강화곤",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No"},
+{n:"다르누스",e:"황혼",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"페트로아",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"롱기누스",e:"악몽",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:1,tg:"6.075",cd:"Yes"},
+{n:"고귀한 엔더 드래곤",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"지바타르",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"미스핏",e:"악몽",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes"},
+{n:"염화룡",e:"불",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:1,tg:"6.15",cd:"Yes"},
+{n:"마니메칼라",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"폴투누스",e:"물",t:"방어",t_kr:"방어",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes"},
+{n:"세에레",e:"황혼",t:"방어",t_kr:"방어",aw:0,ad:1,tr:1,lv:1,tg:"5.7",cd:"Yes"},
+{n:"바르그",e:"빛",t:"공격",t_kr:"공격",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes"},
+{n:"마스테마",e:"악몽",t:"체방",t_kr:"체방",aw:0,ad:1,tr:1,lv:1,tg:"4.3",cd:"Yes"},
+{n:"카스티타스",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"고귀한 이지스",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"타나토스",e:"불",t:"체방",t_kr:"체방",aw:0,ad:1,tr:1,lv:1,tg:"4.4",cd:"Yes"},
+{n:"칼리시",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"크로마 칼리시",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"프라이드",e:"황혼",t:"공방",t_kr:"공방",aw:0,ad:1,tr:1,lv:1,tg:"6.575",cd:"Yes"},
+{n:"고귀한 아델라",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"라스",e:"여명",t:"방어",t_kr:"방어",aw:0,ad:1,tr:1,lv:1,tg:"5.7",cd:"Yes"},
+{n:"밀라타스",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"크로마 밀라타스",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"고귀한 넬로 드래곤",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"토트",e:"불",t:"방어",t_kr:"방어",aw:0,ad:1,tr:1,lv:1,tg:"6.8",cd:"Yes"},
+{n:"인스트리아",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"크로마 인스트리아",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"네무스",e:"악몽",t:"체력",t_kr:"체력",aw:0,ad:1,tr:1,lv:1,tg:"6.1",cd:"Yes"},
+{n:"베네보렌티아",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"크로마 베네보렌티아",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"고귀한 갤러헤드",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"고귀한 이블던",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"뇌신",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"크로마 뇌신",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"크레바스",e:"악몽",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes"},
+{n:"라센티",e:"불",t:"공격",t_kr:"공격",aw:0,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes"},
+{n:"마문드",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"고트",e:"어둠",t:"체방",t_kr:"체방",aw:0,ad:1,tr:1,lv:1,tg:"4.2",cd:"Yes"},
+{n:"고귀한 레버넌트",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"파키",e:"땅",t:"방어",t_kr:"방어",aw:0,ad:1,tr:1,lv:1,tg:"6.8",cd:"Yes"},
+{n:"호저리",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"타라",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"고귀한 카이저번",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"피타야",e:"바람",t:"공방",t_kr:"공방",aw:0,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes"},
+{n:"구미호",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"루송",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"아말테아",e:"여명",t:"체력",t_kr:"체력",aw:0,ad:1,tr:1,lv:1,tg:"6.2",cd:"Yes"},
+{n:"니티",e:"황혼",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"케찰코아틀",e:"땅",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:1,tg:"6.3",cd:"Yes"},
+{n:"조화룡",e:"여명",t:"방어",t_kr:"방어",aw:0,ad:1,tr:1,lv:1,tg:"4.2",cd:"Yes"},
+{n:"아바돈",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"큐아네드",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"고귀한 스트라",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"마그나스",e:"어둠",t:"체력",t_kr:"체력",aw:0,ad:1,tr:1,lv:1,tg:"6.3",cd:"Yes"},
+{n:"크로마 벨레드",e:"악몽",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes"},
+{n:"포르타",e:"어둠",t:"방어",t_kr:"방어",aw:0,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes"},
+{n:"페로스",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"디아누",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"초림",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"루드라",e:"물",t:"공격",t_kr:"공격",aw:0,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes"},
+{n:"고귀한 말덱",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"강강",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"술래",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"차차웅",e:"황혼",t:"방어",t_kr:"방어",aw:0,ad:1,tr:1,lv:1,tg:"6.0",cd:"Yes"},
+{n:"데바",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"그라노스",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"스텔스 드래곤",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"코르투스",e:"여명",t:"공방",t_kr:"공방",aw:0,ad:1,tr:1,lv:1,tg:"6.875",cd:"Yes"},
+{n:"레오파드",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"고귀한 헤네스",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"에피트",e:"황혼",t:"체방",t_kr:"체방",aw:0,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes"},
+{n:"스킨크 드래곤",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"크레스티드 드래곤",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"에그마용",e:"땅",t:"체력",t_kr:"체력",aw:0,ad:1,tr:1,lv:1,tg:"6.3",cd:"Yes"},
+{n:"블루썬더",e:"바람",t:"공격",t_kr:"공격",aw:0,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes"},
+{n:"크로마 블루썬더",e:"바람",t:"공격",t_kr:"공격",aw:0,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes"},
+{n:"고귀한 페로스",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"솔루카니스",e:"빛",t:"방어",t_kr:"방어",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes"},
+{n:"주작",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"백호",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"루살카",e:"물",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes"},
+{n:"베타라",e:"어둠",t:"공격",t_kr:"공격",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes"},
+{n:"크로마 베타라",e:"어둠",t:"공격",t_kr:"공격",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes"},
+{n:"루크바트",e:"여명",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:1,tg:"6.3",cd:"Yes"},
+{n:"카스룩스",e:"어둠",t:"체력",t_kr:"체력",aw:0,ad:1,tr:1,lv:1,tg:"6.2",cd:"Yes"},
+{n:"고귀한 디아누",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"알투스",e:"빛",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:1,tg:"6.15",cd:"Yes"},
+{n:"에슈",e:"황혼",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"기린",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"락샤사",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"루민디스",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"피데스",e:"어둠",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes"},
+{n:"비어디 드래곤",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"불나래",e:"불",t:"공방",t_kr:"공방",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes"},
+{n:"크로마 불나래",e:"불",t:"공방",t_kr:"공방",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes"},
+{n:"유르카",e:"물",t:"체력",t_kr:"체력",aw:0,ad:1,tr:1,lv:1,tg:"6.45",cd:"Yes"},
+{n:"고귀한 아누라다",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"쉴로시",e:"악몽",t:"공격",t_kr:"공격",aw:0,ad:1,tr:1,lv:1,tg:"6.2",cd:"Yes"},
+{n:"골디",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"라키온",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"옥타",e:"물",t:"공방",t_kr:"공방",aw:0,ad:1,tr:1,lv:1,tg:"6.9",cd:"Yes"},
+{n:"크로마 옥타",e:"물",t:"공방",t_kr:"공방",aw:0,ad:1,tr:1,lv:1,tg:"6.9",cd:"Yes"},
+{n:"커스리퍼",e:"악몽",t:"공방",t_kr:"공방",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes"},
+{n:"울르",e:"여명",t:"공격",t_kr:"공격",aw:0,ad:1,tr:1,lv:1,tg:"5.6",cd:"Yes"},
+{n:"엔젤캣",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"아프로디테",e:"여명",t:"체방",t_kr:"체방",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes"},
+{n:"그리파르",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"글라오네",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"고귀한 루네라 드래곤",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"블레이즈 드래곤",e:"불",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes"},
+{n:"에버네일",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"토네스",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"고귀한 익시아",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"프로텍트 드래곤",e:"빛",t:"방어",t_kr:"방어",aw:0,ad:1,tr:1,lv:1,tg:"6.575",cd:"Yes"},
+{n:"크로마 프로텍트 드래곤",e:"빛",t:"방어",t_kr:"방어",aw:0,ad:1,tr:1,lv:1,tg:"6.575",cd:"Yes"},
+{n:"템피오스",e:"황혼",t:"체력",t_kr:"체력",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes"},
+{n:"거들테일 드래곤",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"진",e:"악몽",t:"공방",t_kr:"공방",aw:0,ad:1,tr:1,lv:1,tg:"6.775",cd:"Yes"},
+{n:"마카롱",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"아르켈론",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"고귀한 다크혼",e:"황혼",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"인베르소",e:"황혼",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:1,tg:"6.875",cd:"Yes"},
+{n:"티키톡",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"레베리",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"리티오",e:"바람",t:"방어",t_kr:"방어",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes"},
+{n:"크로마 리티오",e:"바람",t:"방어",t_kr:"방어",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes"},
+{n:"페이렉스",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"스카트",e:"물",t:"방어",t_kr:"방어",aw:0,ad:1,tr:1,lv:1,tg:"6.45",cd:"Yes"},
+{n:"알레샤",e:"물",t:"체력",t_kr:"체력",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes"},
+{n:"크로마 알레샤",e:"물",t:"체력",t_kr:"체력",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes"},
+{n:"야누스",e:"여명",t:"체력",t_kr:"체력",aw:0,ad:1,tr:1,lv:1,tg:"6.8",cd:"Yes"},
+{n:"파이거",e:"불",t:"체력",t_kr:"체력",aw:0,ad:1,tr:1,lv:1,tg:"6.825",cd:"Yes"},
+{n:"크로마 파이거",e:"불",t:"체력",t_kr:"체력",aw:0,ad:1,tr:1,lv:1,tg:"6.825",cd:"Yes"},
+{n:"스카투스",e:"불",t:"방어",t_kr:"방어",aw:0,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes"},
+{n:"크로마 스카투스",e:"불",t:"방어",t_kr:"방어",aw:0,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes"},
+{n:"로키",e:"물",t:"방어",t_kr:"방어",aw:0,ad:1,tr:1,lv:1,tg:"6.575",cd:"Yes"},
+{n:"파프니르",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"후긴",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"무닌",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"헤임달",e:"땅",t:"체방",t_kr:"체방",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes"},
+{n:"볼바",e:"물",t:"체력",t_kr:"체력",aw:0,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes"},
+{n:"토르",e:"바람",t:"공방",t_kr:"공방",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes"},
+{n:"요르문간드",e:"어둠",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes"},
+{n:"마누스",e:"황혼",t:"체방",t_kr:"체방",aw:0,ad:1,tr:1,lv:1,tg:"6.8",cd:"Yes"},
+{n:"잠식된 요르문간드",e:"악몽",t:"공격",t_kr:"공격",aw:0,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes"},
+{n:"야즈니르",e:"빛",t:"공격",t_kr:"공격",aw:0,ad:1,tr:1,lv:1,tg:"6.325",cd:"Yes"},
+{n:"고귀한 설리반",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"논",e:"땅",t:"체방",t_kr:"체방",aw:0,ad:1,tr:1,lv:1,tg:"6.675",cd:"Yes"},
+{n:"플로레",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"루시오",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"장고",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"레무레스",e:"악몽",t:"공격",t_kr:"공격",aw:0,ad:1,tr:1,lv:1,tg:"6.9",cd:"Yes"},
+{n:"아카이아",e:"땅",t:"공방",t_kr:"공방",aw:0,ad:1,tr:1,lv:1,tg:"6.35",cd:"Yes"},
+{n:"크로마 아카이아",e:"땅",t:"공방",t_kr:"공방",aw:0,ad:1,tr:1,lv:1,tg:"6.35",cd:"Yes"},
+{n:"티아매트",e:"어둠",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:1,tg:"6.425",cd:"Yes"},
+{n:"리브로",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes"},
+{n:"오벡스",e:"어둠",t:"공격",t_kr:"공격",aw:0,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes"},
+{n:"흐레스벨그",e:"황혼",t:"체력",t_kr:"체력",aw:0,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes"},
+{n:"호드",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"슬레이프니르",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"고귀한 펜리르",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"하트샤",e:"어둠",t:"공방",t_kr:"공방",aw:0,ad:1,tr:1,lv:1,tg:"6.525",cd:"Yes"},
+{n:"꽁꽁이",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"파루파루",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"발레포르",e:"악몽",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes"},
+{n:"크로마 발레포르",e:"악몽",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes"},
+{n:"메라크",e:"빛",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes"},
+{n:"레긴레이프",e:"황혼",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:1,tg:"6.75",cd:"Yes"},
+{n:"크로마 레긴레이프",e:"황혼",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:1,tg:"6.75",cd:"Yes"},
+{n:"적마룡",e:"불",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes"},
+{n:"고귀한 허리케인",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No"},
+{n:"피싱테일 드래곤",e:"물",t:"공격",t_kr:"공격",aw:0,ad:1,tr:1,lv:1,tg:"6.3",cd:"Yes"},
+{n:"까마귀 드래곤",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"까치 드래곤",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S"},
+{n:"루루",e:"바람",t:"체방",t_kr:"체방",aw:0,ad:1,tr:1,lv:1,tg:"6.075",cd:"Yes"},
+{n:"크로마 루루",e:"바람",t:"체방",t_kr:"체방",aw:0,ad:1,tr:1,lv:1,tg:"6.075",cd:"Yes"},
+{n:"바스카",e:"땅",t:"공격",t_kr:"공격",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes"},
+{n:"블라드",e:"악몽",t:"체력",t_kr:"체력",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes"}
+];
+
+const dexElemOrder=["전체","땅","물","불","바람","빛","어둠","황혼","여명","악몽"];
+const typeOrder=["전체","체력","공격","방어","체공","체방","공방","중립"];
+const stageOrder=["전체","성체만","초월이상"];
+const lvOrder=["전체","O","X"];
+const cdOrder=["전체","Yes","No","C-S","C-SS"];
+
+let eFilters=new Set(),tFilters=new Set(),stFilter="전체",lvFilter="전체",cdFilter="전체";
+
+const dexImgMap={
+  "고대신룡":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image1.png",
+  "윈드 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image2.png",
+  "식스 레그 혼 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image3.png",
+  "청룡":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image4.png",
+  "파이어 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image5.png",
+  "번개고룡":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image6.png",
+  "라바 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image7.png",
+  "피닉스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image8.png",
+  "빙하고룡":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image9.png",
+  "네시":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image10.png",
+  "테일 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image11.png",
+  "수룡":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image12.png",
+  "히드라곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image13.png",
+  "파워 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image14.png",
+  "바위 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image15.png",
+  "지하땅굴 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image16.png",
+  "페어리 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image17.png",
+  "레이디 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image18.png",
+  "에그 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image19.png",
+  "헬 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image20.png",
+  "엔젤 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image21.png",
+  "에일리언 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image22.png",
+  "미니 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image23.png",
+  "스왐프 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image24.png",
+  "패트 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image25.png",
+  "스파이크 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image26.png",
+  "인섹트 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image27.png",
+  "리프 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image28.png",
+  "프로그 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image29.png",
+  "윙스 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image30.png",
+  "샌드 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image31.png",
+  "스마트 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image32.png",
+  "뮤직 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image33.png",
+  "흑룡":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image34.png",
+  "에메랄드 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image35.png",
+  "라이곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image36.png",
+  "카멜레용":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image37.png",
+  "치킨헤드 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image38.png",
+  "캥거레빗 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image39.png",
+  "큐피트용":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image40.png",
+  "골드 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image41.png",
+  "슬라임 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image42.png",
+  "블레이드 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image43.png",
+  "메탈 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image44.png",
+  "미이라곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image45.png",
+  "뱃도치 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image46.png",
+  "스켈레곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image47.png",
+  "서펀트 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image48.png",
+  "G네 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image49.png",
+  "타이거 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image50.png",
+  "금오 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image51.png",
+  "메탈 마그넷 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image52.png",
+  "다크닉스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image53.png",
+  "백룡":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image54.png",
+  "히에나곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image55.png",
+  "유니 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image56.png",
+  "골든혼":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image57.png",
+  "샤크곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image58.png",
+  "가디언":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image59.png",
+  "크레센트":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image60.png",
+  "레인보우":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image61.png",
+  "타투":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image62.png",
+  "스파인":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image63.png",
+  "고대 주니어":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image64.png",
+  "프로스티":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image65.png",
+  "다크프로스티":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image66.png",
+  "현무 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image67.png",
+  "크리마용":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image68.png",
+  "데몽과가고일":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image69.png",
+  "샴 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image70.png",
+  "본헤드":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image71.png",
+  "베네지":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image72.png",
+  "머스타 드해머":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image73.png",
+  "레드와이번":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image74.png",
+  "해태드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image75.png",
+  "스콜피온 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image76.png",
+  "나이트 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image77.png",
+  "스파이시":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image78.png",
+  "라파엘":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image79.png",
+  "바알":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image80.png",
+  "삐에로 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image81.png",
+  "파라오곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image82.png",
+  "쉐도우 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image83.png",
+  "순둥곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image84.png",
+  "프랑켄슈타곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image85.png",
+  "닌자 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image86.png",
+  "드라고노이드":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image87.png",
+  "볼케이노":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image88.png",
+  "블루라이트닝":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image89.png",
+  "윗치 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image90.png",
+  "퍼플립스 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image91.png",
+  "파이썬":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image92.png",
+  "아이언 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image93.png",
+  "오로":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image94.png",
+  "자룡":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image95.png",
+  "배틀 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image96.png",
+  "데빌곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image97.png",
+  "바이올렛 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image98.png",
+  "네온 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image99.png",
+  "플레임 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image100.png",
+  "블랙퀸":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image101.png",
+  "시그마 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image102.png",
+  "램곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image103.png",
+  "아르고 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image104.png",
+  "헤라클레스곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image105.png",
+  "토템 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image106.png",
+  "말소자 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image107.png",
+  "팀버 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image108.png",
+  "코브라곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image109.png",
+  "루피아 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image110.png",
+  "타이푼 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image111.png",
+  "스터드 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image112.png",
+  "플라워 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image113.png",
+  "해마곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image114.png",
+  "클라우드 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image115.png",
+  "돌풍의 라이오스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image116.png",
+  "찬란한 바리안":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image117.png",
+  "물결의 파프리온":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image118.png",
+  "열화의 발칸":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image119.png",
+  "장벽의 에닉스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image120.png",
+  "암흑의 발로드":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image121.png",
+  "레드불 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image122.png",
+  "툰드라 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image123.png",
+  "메갈로돈":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image124.png",
+  "오로라 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image125.png",
+  "캣츠곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image126.png",
+  "이그니스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image127.png",
+  "타르타로스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image128.png",
+  "슈팅스타":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image129.png",
+  "다크폴":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image130.png",
+  "헝그리 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image131.png",
+  "아쿠아 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image132.png",
+  "오르페우스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image133.png",
+  "루미네스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image134.png",
+  "번네스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image135.png",
+  "깨비곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image136.png",
+  "제트 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image137.png",
+  "마리노 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image138.png",
+  "투탕카":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image139.png",
+  "머드 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image140.png",
+  "붐버 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image141.png",
+  "사나래":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image142.png",
+  "타일런트":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image143.png",
+  "청마룡":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image144.png",
+  "너티빌런":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image145.png",
+  "글래시어":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image146.png",
+  "므네이아":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image147.png",
+  "녹스O":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image148.png",
+  "일리오스O":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image149.png",
+  "코너투스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image150.png",
+  "스왈로우":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image151.png",
+  "i곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image152.png",
+  "블러디네이트":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image153.png",
+  "피스 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image154.png",
+  "갤럭시":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image155.png",
+  "페이퍼 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image156.png",
+  "하이페리곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image157.png",
+  "모리카 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image158.png",
+  "베가본드 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image159.png",
+  "태엽 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image160.png",
+  "스플렌더 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image161.png",
+  "블랙티어 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image162.png",
+  "블랙아머 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image163.png",
+  "오렌지리프 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image164.png",
+  "핑크벨 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image165.png",
+  "쿠로이 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image166.png",
+  "포레스트 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image167.png",
+  "기간티스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image168.png",
+  "데모니오":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image169.png",
+  "게스 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image170.png",
+  "베라 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image171.png",
+  "디요나":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image172.png",
+  "콘라드":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image173.png",
+  "파브레가스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image174.png",
+  "파이어퓨리":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image175.png",
+  "스테고 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image176.png",
+  "레텐토르":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image177.png",
+  "미스트 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image178.png",
+  "리쿠루 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image179.png",
+  "페트라 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image180.png",
+  "크룩커스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image181.png",
+  "밴시":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image182.png",
+  "할로우":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image183.png",
+  "루포":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image184.png",
+  "데칼":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image185.png",
+  "카오스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image186.png",
+  "일레마":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image187.png",
+  "블랙코어":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image188.png",
+  "오딘":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image189.png",
+  "프리러너":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image190.png",
+  "타임머신":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image191.png",
+  "시타엘":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image192.png",
+  "그라치아":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image193.png",
+  "마가":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image194.png",
+  "스쿠룸":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image195.png",
+  "콜로서스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image196.png",
+  "원더 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image197.png",
+  "아이스 드레이크":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image198.png",
+  "오미야콘":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image199.png",
+  "니플하임":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image200.png",
+  "루돌프 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image201.png",
+  "바르라아":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image202.png",
+  "루틸루스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image203.png",
+  "청양 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image204.png",
+  "옵타툽":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image205.png",
+  "아실리":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image206.png",
+  "블랙찡또":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image207.png",
+  "아폴로누스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image208.png",
+  "로루스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image209.png",
+  "러스트":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image210.png",
+  "슬레이어":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image211.png",
+  "파이어리 블랜드":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image212.png",
+  "문라이트":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image213.png",
+  "코랄":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image214.png",
+  "아브밸리":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image215.png",
+  "가이안":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image216.png",
+  "오쿠러스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image217.png",
+  "위드미":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image218.png",
+  "헤이즈":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image219.png",
+  "라우아":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image220.png",
+  "듀펜":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image221.png",
+  "메이플 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image222.png",
+  "딜랑":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image223.png",
+  "스트라이커":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image224.png",
+  "가루다":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image225.png",
+  "리베라":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image226.png",
+  "티라노 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image227.png",
+  "파티 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image228.png",
+  "오르도":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image229.png",
+  "세크레타":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image230.png",
+  "푸투룸":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image231.png",
+  "할리벨":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dawn/image232.png",
+  "타아비레":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dawn/image233.png",
+  "발라크":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dusk/image234.png",
+  "베팔":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dusk/image235.png",
+  "단탈리온":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Nightmare/image236.png",
+  "자간":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Nightmare/image237.png",
+  "어비스 엣지":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image238.png",
+  "적오드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image239.png",
+  "헬가스트":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image240.png",
+  "마르바스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image241.png",
+  "칸":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image242.png",
+  "위그드라실":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image243.png",
+  "와일드 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image244.png",
+  "좀비 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image245.png",
+  "레이어스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image246.png",
+  "웨일 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image247.png",
+  "베놈 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image248.png",
+  "발라 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image249.png",
+  "루가르 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image250.png",
+  "아틀란티스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image251.png",
+  "유니버스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image252.png",
+  "빙설룡":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image253.png",
+  "점프 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image254.png",
+  "아스티":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image255.png",
+  "지마":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image256.png",
+  "갤러스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image257.png",
+  "퓨미스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image258.png",
+  "베히모스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image259.png",
+  "스틸윙":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image260.png",
+  "소울":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image261.png",
+  "이슬룡":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image262.png",
+  "데르":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image263.png",
+  "렉몰":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image264.png",
+  "화랑":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image265.png",
+  "그레이탄":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image266.png",
+  "미스틱티니":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image267.png",
+  "다로스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image268.png",
+  "자루카":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image269.png",
+  "다크혼":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image270.png",
+  "스타에이스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image271.png",
+  "말로단":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image272.png",
+  "아이가스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image273.png",
+  "포포모":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image274.png",
+  "테디 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image275.png",
+  "나기":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image276.png",
+  "그리핀":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image277.png",
+  "블랙쇼커":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image278.png",
+  "트리페어윙":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image279.png",
+  "리바이어던":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image280.png",
+  "스케어":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image281.png",
+  "블루벨":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image282.png",
+  "화이트스톰":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image283.png",
+  "네펜데스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image284.png",
+  "아그나드":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image285.png",
+  "버블 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image286.png",
+  "합라":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dawn/image287.png",
+  "레블롭틴":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image288.png",
+  "레인보우배트곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image289.png",
+  "아라카":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image290.png",
+  "라지카스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image291.png",
+  "미스틸테인":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image292.png",
+  "시소르":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image293.png",
+  "루":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image294.png",
+  "플래그너":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI4/image295.png",
+  "셀마사":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dawn/image296.png",
+  "청화풍":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image297.png",
+  "카라선":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dusk/image298.png",
+  "아쿠아리움":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image299.png",
+  "일로스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI/image300.png",
+  "렉스톤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dusk/image301.png",
+  "포메쿨":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dusk/image302.png",
+  "카르나":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image303.png",
+  "아르주나":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image304.png",
+  "마룡":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image305.png",
+  "블랙혼":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image306.png",
+  "얼티밋 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image307.png",
+  "매직스타 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image308.png",
+  "아르테미스 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image309.png",
+  "할루시":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image310.png",
+  "페르마타":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image311.png",
+  "앙그라":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image312.png",
+  "옴므니아":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image313.png",
+  "코므니아":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image314.png",
+  "다므니아":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image315.png",
+  "드므니아":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image316.png",
+  "맘므니아":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image317.png",
+  "흐므니아":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image318.png",
+  "엠파이어":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image319.png",
+  "루시페르":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image320.png",
+  "네크로멘서":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image321.png",
+  "지진":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image322.png",
+  "니케":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image323.png",
+  "아스트라이나":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image324.png",
+  "하레스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image325.png",
+  "나이트메어":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image326.png",
+  "스윗클라우드":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image327.png",
+  "데네브":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image328.png",
+  "박쥐곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image329.png",
+  "우파룸":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image330.png",
+  "부두룡":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image331.png",
+  "화주사":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image332.png",
+  "미트라":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image333.png",
+  "보상이용":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dawn/image334.png",
+  "다크베인":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image335.png",
+  "블러디터스크":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI4/image336.png",
+  "포이즌리버":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image337.png",
+  "유리온":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image338.png",
+  "터들톰톰":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image339.png",
+  "타이게타":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image340.png",
+  "선인장 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image341.png",
+  "베르나":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image342.png",
+  "룩소린":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image343.png",
+  "혼":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image344.png",
+  "나트론":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image345.png",
+  "살라":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image346.png",
+  "움브라":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Nightmare/image347.png",
+  "솔라":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image348.png",
+  "포폰":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image349.png",
+  "제피로스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image350.png",
+  "드래곤 슬레이어":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image351.png",
+  "헬카이저":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image352.png",
+  "레버넌트":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image353.png",
+  "이블 던":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image354.png",
+  "디멘션 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Nightmare/image355.png",
+  "픽셀 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image356.png",
+  "그랑 세이버":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image357.png",
+  "킨더 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dawn/image358.png",
+  "푸딩곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image359.png",
+  "엔틱 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image360.png",
+  "트와일라잇":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image361.png",
+  "플로리안":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image362.png",
+  "라루스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image363.png",
+  "프로딘":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image364.png",
+  "틸키":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dusk/image365.png",
+  "이그나":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image366.png",
+  "블리자드":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image367.png",
+  "다크나이트":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image368.png",
+  "엔더 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image369.png",
+  "거스트 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image370.png",
+  "샤프테일 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image371.png",
+  "화이트썬더 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image372.png",
+  "카루라":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image373.png",
+  "간다르바":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image374.png",
+  "호크아이":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image375.png",
+  "루아셰아 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image376.png",
+  "루네라 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image377.png",
+  "미나스 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image378.png",
+  "헬스페로우":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image379.png",
+  "쿠베라":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image380.png",
+  "칼라빈카":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image381.png",
+  "직소 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image382.png",
+  "카이저번":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image383.png",
+  "골락":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image384.png",
+  "렉몰 리버스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dusk/image385.png",
+  "앳지버":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image386.png",
+  "센투라":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image387.png",
+  "아프리트":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image388.png",
+  "에트왈 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image389.png",
+  "넬로 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image390.png",
+  "썬더레인 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image391.png",
+  "즈믄":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image392.png",
+  "리베티":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image393.png",
+  "브리트라":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image394.png",
+  "타크샤카":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image395.png",
+  "슈넬 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image396.png",
+  "키갈":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image397.png",
+  "아델라":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image398.png",
+  "슬리즈 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image399.png",
+  "칸타카":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image400.png",
+  "지타쿨라":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image401.png",
+  "파고스 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image402.png",
+  "본샤스 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image403.png",
+  "갤럭시아 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image404.png",
+  "알리스 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image405.png",
+  "마브리카 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image406.png",
+  "소서러 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image407.png",
+  "아톤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image408.png",
+  "탈릿사":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image409.png",
+  "쿠즈마라":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image410.png",
+  "하리카":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dusk/image411.png",
+  "톤톤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image412.png",
+  "아쿠아펄":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image413.png",
+  "키리온":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image414.png",
+  "애플칙":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image415.png",
+  "트로페우스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image416.png",
+  "니케이":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image417.png",
+  "니케다":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image418.png",
+  "니케라이":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image419.png",
+  "니케플로":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image420.png",
+  "니케벤토":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image421.png",
+  "니케테라":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image422.png",
+  "판므니아":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image423.png",
+  "라므니아":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image424.png",
+  "닌므니아":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image425.png",
+  "아스타테":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image426.png",
+  "시리스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image427.png",
+  "엘더 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image428.png",
+  "수라 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image429.png",
+  "타로스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image430.png",
+  "익시아":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image431.png",
+  "엔젤주니어":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image432.png",
+  "허리케인":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image433.png",
+  "하데스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image434.png",
+  "프레데터":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image435.png",
+  "엔퓨":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image436.png",
+  "가스트":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image437.png",
+  "엔투라스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image438.png",
+  "액스칼리버":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image439.png",
+  "일란":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image440.png",
+  "코스모":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image441.png",
+  "파베르":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image442.png",
+  "앵커":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image443.png",
+  "말덱":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image444.png",
+  "스트라":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image445.png",
+  "헤네스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI2/image446.png",
+  "데스락":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dusk/image447.png",
+  "애니마라":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Nightmare/image448.png",
+  "설리반":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image449.png",
+  "파프닐":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image450.png",
+  "아비온":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image451.png",
+  "아자크":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image452.png",
+  "프로즌":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image453.png",
+  "아비스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image454.png",
+  "차콜플레임":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image455.png",
+  "궁니르":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image456.png",
+  "루드오어":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Nightmare/image457.png",
+  "스워드":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image458.png",
+  "케이나인":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image459.png",
+  "에이라":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image460.png",
+  "스칼렛":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image461.png",
+  "쉔":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image462.png",
+  "베리스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dawn/image463.png",
+  "템페스트":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image464.png",
+  "선셋 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image465.png",
+  "포말하우트":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image466.png",
+  "마카라":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image467.png",
+  "아누라다":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image468.png",
+  "이클립스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dusk/image469.png",
+  "벨레드":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Nightmare/image470.png",
+  "미티어":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image471.png",
+  "카모플라쥬":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image472.png",
+  "엘리고스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dawn/image473.png",
+  "범":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image474.png",
+  "이모션":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image475.png",
+  "미미르":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dawn/image476.png",
+  "샬롯":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image477.png",
+  "이지스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image478.png",
+  "레이징":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image479.png",
+  "페이몬":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image480.png",
+  "암두시아스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dawn/image481.png",
+  "백택곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image482.png",
+  "레오벡터":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image483.png",
+  "네비아":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dawn/image484.png",
+  "썬더버드":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image485.png",
+  "보레아스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image486.png",
+  "쿠알레":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image487.png",
+  "코즈메키온":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image488.png",
+  "화귀 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image489.png",
+  "헤카테":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image490.png",
+  "밀라":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image491.png",
+  "라울":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image492.png",
+  "스탑튠":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image493.png",
+  "다크스퀘어":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image494.png",
+  "고귀한 헬카이저":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image495.png",
+  "마소티스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image496.png",
+  "리치몬드":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image497.png",
+  "크로마 리치몬드":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image498.png",
+  "톡시닉":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image499.png",
+  "이터널":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image500.png",
+  "개틀링곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image501.png",
+  "베른하르트":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image502.png",
+  "로티스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image503.png",
+  "스노우볼":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image504.png",
+  "고귀한 블러디터스크":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI4/image505.png",
+  "젤리피쉬":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image506.png",
+  "펜리르":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image507.png",
+  "티르":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image508.png",
+  "아만타":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image509.png",
+  "코멧":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image510.png",
+  "화이트 디스트로이어":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image511.png",
+  "피미루":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image512.png",
+  "샤흐":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image513.png",
+  "고귀한 다크베인":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image514.png",
+  "에오스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image515.png",
+  "네뷸라":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dusk/image516.png",
+  "레굴루스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image517.png",
+  "크로마 레굴루스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image518.png",
+  "알데바란":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image519.png",
+  "강림 강화곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image520.png",
+  "다르누스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image521.png",
+  "페트로아":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image522.png",
+  "롱기누스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Nightmare/image523.png",
+  "고귀한 엔더 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image524.png",
+  "지바타르":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image525.png",
+  "미스핏":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Nightmare/image526.png",
+  "염화룡":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image527.png",
+  "마니메칼라":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image528.png",
+  "폴투누스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image529.png",
+  "세에레":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dusk/image530.png",
+  "바르그":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image531.png",
+  "마스테마":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Nightmare/image532.png",
+  "카스티타스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image533.png",
+  "고귀한 이지스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image534.png",
+  "타나토스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image535.png",
+  "칼리시":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image536.png",
+  "크로마 칼리시":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image537.png",
+  "프라이드":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dusk/image538.png",
+  "고귀한 아델라":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image539.png",
+  "라스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dawn/image540.png",
+  "밀라타스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image541.png",
+  "크로마 밀라타스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image542.png",
+  "고귀한 넬로 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image543.png",
+  "토트":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image544.png",
+  "인스트리아":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image545.png",
+  "크로마 인스트리아":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image546.png",
+  "네무스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Nightmare/image547.png",
+  "베네보렌티아":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image548.png",
+  "크로마 베네보렌티아":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image549.png",
+  "고귀한 갤러헤드":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image550.png",
+  "고귀한 이블던":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image551.png",
+  "뇌신":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image552.png",
+  "크로마 뇌신":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image553.png",
+  "크레바스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Nightmare/image554.png",
+  "라센티":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image555.png",
+  "마문드":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image556.png",
+  "고트":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image557.png",
+  "고귀한 레버넌트":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image558.png",
+  "파키":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image559.png",
+  "호저리":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image560.png",
+  "타라":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image561.png",
+  "고귀한 카이저번":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image562.png",
+  "피타야":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image563.png",
+  "구미호":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image564.png",
+  "루송":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image565.png",
+  "아말테아":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dawn/image566.png",
+  "니티":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image567.png",
+  "케찰코아틀":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image568.png",
+  "조화룡":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dawn/image569.png",
+  "아바돈":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image570.png",
+  "큐아네드":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image571.png",
+  "고귀한 스트라":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image572.png",
+  "마그나스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image573.png",
+  "크로마 벨레드":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Nightmare/image574.png",
+  "포르타":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image575.png",
+  "페로스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image576.png",
+  "디아누":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image577.png",
+  "초림":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image578.png",
+  "루드라":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image579.png",
+  "고귀한 말덱":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image580.png",
+  "강강":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image581.png",
+  "술래":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image582.png",
+  "차차웅":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dusk/image583.png",
+  "데바":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image584.png",
+  "그라노스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image585.png",
+  "스텔스 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image586.png",
+  "코르투스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dawn/image587.png",
+  "레오파드":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image588.png",
+  "고귀한 헤네스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image589.png",
+  "에피트":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dusk/image590.png",
+  "스킨크 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image591.png",
+  "크레스티드 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image592.png",
+  "에그마용":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image593.png",
+  "블루썬더":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image594.png",
+  "크로마 블루썬더":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image595.png",
+  "고귀한 페로스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image596.png",
+  "솔루카니스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image597.png",
+  "주작":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image598.png",
+  "백호":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image599.png",
+  "루살카":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image600.png",
+  "베타라":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image601.png",
+  "크로마 베타라":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image602.png",
+  "루크바트":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dawn/image603.png",
+  "카스룩스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image604.png",
+  "고귀한 디아누":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image605.png",
+  "알투스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image606.png",
+  "에슈":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image607.png",
+  "기린":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image608.png",
+  "락샤사":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image609.png",
+  "루민디스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image610.png",
+  "피데스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image611.png",
+  "비어디 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image612.png",
+  "불나래":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image613.png",
+  "크로마 불나래":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image614.png",
+  "유르카":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image615.png",
+  "고귀한 아누라다":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI3/image616.png",
+  "쉴로시":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Nightmare/image617.png",
+  "골디":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI4/image618.png",
+  "라키온":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI4/image619.png",
+  "옥타":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image620.png",
+  "크로마 옥타":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image621.png",
+  "커스리퍼":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Nightmare/image622.png",
+  "울르":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dawn/image623.png",
+  "엔젤캣":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI4/image624.png",
+  "아프로디테":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dawn/image625.png",
+  "그리파르":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI4/image626.png",
+  "글라오네":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI4/image627.png",
+  "고귀한 루네라 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI4/image628.png",
+  "블레이즈 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image629.png",
+  "에버네일":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI4/image630.png",
+  "토네스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI4/image631.png",
+  "고귀한 익시아":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI4/image632.png",
+  "프로텍트 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image633.png",
+  "크로마 프로텍트 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image634.png",
+  "템피오스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dusk/image635.png",
+  "거들테일 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI4/image636.png",
+  "진":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Nightmare/image637.png",
+  "마카롱":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI4/image638.png",
+  "아르켈론":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI4/image639.png",
+  "고귀한 다크혼":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI4/image640.png",
+  "인베르소":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dusk/image641.png",
+  "티키톡":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI4/image642.png",
+  "레베리":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI4/image643.png",
+  "리티오":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image644.png",
+  "크로마 리티오":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image645.png",
+  "페이렉스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI4/image646.png",
+  "스카트":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image647.png",
+  "알레샤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image648.png",
+  "크로마 알레샤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image649.png",
+  "야누스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dawn/image650.png",
+  "파이거":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image651.png",
+  "크로마 파이거":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image652.png",
+  "스카투스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image653.png",
+  "크로마 스카투스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image654.png",
+  "로키":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image655.png",
+  "파프니르":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI4/image656.png",
+  "후긴":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI4/image657.png",
+  "무닌":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI4/image658.png",
+  "헤임달":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image659.png",
+  "볼바":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image660.png",
+  "토르":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image661.png",
+  "요르문간드":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image662.png",
+  "마누스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dusk/image663.png",
+  "잠식된 요르문간드":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Nightmare/image664.png",
+  "야즈니르":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image665.png",
+  "고귀한 설리반":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI4/image666.png",
+  "논":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image667.png",
+  "플로레":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI4/image668.png",
+  "루시오":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI4/image669.png",
+  "장고":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI4/image670.png",
+  "레무레스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Nightmare/image671.png",
+  "아카이아":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image672.png",
+  "크로마 아카이아":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image673.png",
+  "티아매트":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image674.png",
+  "리브로":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI4/image675.png",
+  "오벡스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image676.png",
+  "흐레스벨그":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dusk/image677.png",
+  "호드":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI4/image678.png",
+  "슬레이프니르":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI4/image679.png",
+  "고귀한 펜리르":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI4/image680.png",
+  "하트샤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dark/image681.png",
+  "꽁꽁이":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI4/image682.png",
+  "파루파루":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI4/image683.png",
+  "발레포르":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Nightmare/image684.png",
+  "크로마 발레포르":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Nightmare/image685.png",
+  "메라크":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Light/image686.png",
+  "레긴레이프":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dusk/image687.png",
+  "크로마 레긴레이프":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Dusk/image688.png",
+  "적마룡":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Fire/image689.png",
+  "고귀한 허리케인":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI4/image690.png",
+  "피싱테일 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Water/image691.png",
+  "까마귀 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI4/image692.png",
+  "까치 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/NI4/image693.png",
+  "루루":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image694.png",
+  "크로마 루루":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Wind/image695.png",
+  "바스카":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Earht/image696.png",
+  "블라드":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/Nightmare/image697.png"
+};
+const dexElemIcons={
+  "땅":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/11.png",
+  "물":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/12.png",
+  "불":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/13.png",
+  "바람":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/14.png",
+  "빛":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/84.png",
+  "어둠":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/87.png",
+  "황혼":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/487.png",
+  "여명":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/486.png",
+  "악몽":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/488.png",
+};
+function buildFilters(){
+  const fr=document.getElementById("dex-filter-row");
+  fr.innerHTML="";
+
+  const addMulti=(label,items,curSet)=>{
+    const sp=document.createElement("span");
+    sp.textContent=label;
+    sp.style="font-size:11px;color:#888;align-self:center;margin-right:2px";
+    fr.appendChild(sp);
+    items.forEach(v=>{
+      const b=document.createElement("button");
+      b.className="ftag"+(curSet.has(v)?" active":"");
+      b.textContent=v;
+      b.onclick=()=>{
+        if(curSet.has(v)) curSet.delete(v);
+        else curSet.add(v);
+        render();
+      };
+      fr.appendChild(b);
+    });
+    const sep=document.createElement("div");
+    sep.style="width:100%;height:4px";
+    fr.appendChild(sep);
+  };
+  const addSingle=(label,items,cur,setter)=>{
+    const sp=document.createElement("span");
+    sp.textContent=label;
+    sp.style="font-size:11px;color:#888;align-self:center;margin-right:2px";
+    fr.appendChild(sp);
+    items.forEach(v=>{
+      const b=document.createElement("button");
+      b.className="ftag"+(cur===v?" active":"");
+      b.textContent=v;
+      b.onclick=()=>{setter(v);render();};
+      fr.appendChild(b);
+    });
+    const sep=document.createElement("div");
+    sep.style="width:100%;height:4px";
+    fr.appendChild(sep);
+  };
+
+  addMulti("속성",dexElemOrder.slice(1),eFilters);
+  addMulti("타입",typeOrder.slice(1),tFilters);
+  addSingle("단계",stageOrder,stFilter,v=>stFilter=v);
+  addSingle("레벨업",lvOrder,lvFilter,v=>lvFilter=v);
+  addSingle("코드화",cdOrder,cdFilter,v=>cdFilter=v);
+}
+
+function tgClass(tg){
+  if(tg==="NI"||tg==="") return "tg-ni";
+  const n=parseFloat(tg);
+  if(isNaN(n)) return "tg-ni";
+  if(n>=7.0) return "tg-blue";
+  if(n>=6.5) return "tg-gold";
+  if(n>=4.5) return "tg-silver";
+  if(n>=0)   return "tg-pink";
+  return "tg-neg";
+}
+
+function render(){
+  buildFilters();
+  const q=document.getElementById("dex-q").value.trim();
+  let list=dexData;
+
+  if(eFilters.size>0) list=list.filter(d=>eFilters.has(d.e));
+  if(tFilters.size>0) list=list.filter(d=>tFilters.has(d.t));
+  if(stFilter==="성체만") list=list.filter(d=>d.tr===0);
+  if(stFilter==="초월이상") list=list.filter(d=>d.tr===1);
+  if(lvFilter==="O") list=list.filter(d=>d.lv===1);
+  if(lvFilter==="X") list=list.filter(d=>d.lv===0);
+  if(cdFilter!=="전체") list=list.filter(d=>d.cd===cdFilter);
+  if(q) list=list.filter(d=>d.n.includes(q));
+
+  document.getElementById("dex-count").textContent=`${list.length}마리`;
+
+  const tbody=document.getElementById("tbody");
+  tbody.innerHTML="";
+  if(!list.length){
+    tbody.innerHTML=`<tr><td colspan="10" style="text-align:center;padding:2rem;color:#555">검색 결과가 없습니다</td></tr>`;
+    return;
+  }
+
+  list.forEach((d,i)=>{
+    const tr=document.createElement("tr");
+    tr.className=`e-row-${d.e}`;
+
+    const cdCls = d.cd==="Yes"?"cd-yes":d.cd==="No"?"cd-no":"cd-cs";
+
+    const imgUrl=dexImgMap[d.n]||'';
+    const imgCell=imgUrl?`<img src="${imgUrl}" class="dragon-img" alt="${d.n}">`:`<div class="img-placeholder"></div>`;
+    const dexIconUrl=dexElemIcons[d.e]||'';
+    const iconCell=dexIconUrl?`<img src="${dexIconUrl}" class="dex-elem-icon" alt="${d.e}">`:`<div class="dex-elem-icon-placeholder"></div>`;
+
+    tr.innerHTML=`
+      <td class="td-mobile row1">
+        <span style="color:#666;font-size:11px;min-width:20px;text-align:center">${i+1}</span>
+        ${iconCell}
+        ${imgCell}
+        <span style="font-size:12px;font-weight:500;flex:1">${d.n}</span>
+        <span class="badge-type">${d.t_kr}</span>
+      </td>
+      <td class="td-mobile row2">
+        <div class="row2-cell"><span class="r2-label">각성</span><span class="r2-val ${d.aw?"chk-y":"chk-n"}">${d.aw?"√":"X"}</span></div>
+        <div class="row2-cell"><span class="r2-label">강림</span><span class="r2-val ${d.ad?"chk-y":"chk-n"}">${d.ad?"√":"X"}</span></div>
+        <div class="row2-cell"><span class="r2-label">초월</span><span class="r2-val ${d.tr?"chk-y":"chk-n"}">${d.tr?"√":"X"}</span></div>
+        <div class="row2-cell"><span class="r2-label">레벨업</span><span class="r2-val ${d.lv?"chk-y":"chk-n"}">${d.lv?"√":"X"}</span></div>
+        <div class="row2-cell"><span class="r2-label">코드화</span><span class="r2-val ${cdCls}">${d.cd}</span></div>
+        <div class="row2-cell"><button class="detail-btn" onclick="openModal('${d.n.replace(/'/g,"\\'")}')">상세</button></div>
+      </td>
+      <td class="td-pc" style="color:#666;font-size:11px">${i+1}</td>
+      <td class="td-pc center">${imgCell}</td>
+      <td class="td-pc left" style="font-size:12px;font-weight:500">${d.n}</td>
+      <td class="td-pc">${iconCell}</td>
+      <td class="td-pc"><span class="badge-type">${d.t_kr}</span></td>
+      <td class="td-pc ${d.aw?"chk-y":"chk-n"}">${d.aw?"√":"X"}</td>
+      <td class="td-pc ${d.ad?"chk-y":"chk-n"}">${d.ad?"√":"X"}</td>
+      <td class="td-pc ${d.tr?"chk-y":"chk-n"}">${d.tr?"√":"X"}</td>
+      <td class="td-pc ${d.lv?"chk-y":"chk-n"}">${d.lv?"√":"X"}</td>
+      <td class="td-pc ${cdCls}">${d.cd}</td>
+      <td class="td-pc"><button class="detail-btn" onclick="openModal('${d.n.replace(/'/g,"\\'")}')">상세</button></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+render();
+
+function openModal(name){
+  document.getElementById("modal-title").textContent=name;
+  document.getElementById("modal-body").textContent="Test";
+  document.getElementById("modal-overlay").classList.add("open");
+}
+function closeModal(e){
+  if(!e||e.target===document.getElementById("modal-overlay")){
+    document.getElementById("modal-overlay").classList.remove("open");
+  }
+}
+</script>
+</body>
+</html>

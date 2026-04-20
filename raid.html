@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>아르하 입구</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic',sans-serif;background:#1a1a2e;color:#eee;padding:12px}
+
+/* 네비 */
+#tab-bar{display:flex;gap:0;margin-bottom:16px;border-bottom:2px solid #333;align-items:flex-end}
+#site-title{display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;margin-right:16px;margin-bottom:6px;border:1.5px solid #444;border-radius:20px;padding:10px 18px;transition:border-color 0.15s;flex-shrink:0}
+#site-title:hover{border-color:#5dcff5}
+#site-title .title-main{font-size:16px;font-weight:700;color:#aaa;line-height:1.4}
+#site-title .title-sub{font-size:12px;color:#666;line-height:1.4}
+
+.tab-btn{padding:10px 20px;font-size:13px;font-weight:500;background:none;border:none;color:#888;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;text-decoration:none;display:inline-block}
+.tab-btn:hover{color:#ccc}
+.tab-btn.active{color:#5dcff5;border-bottom:2px solid #5dcff5}
+@media(max-width:600px){.tab-btn{display:none}}
+
+h1{font-size:20px;color:#aaa;margin-bottom:16px}
+
+/* 패턴 선택 */
+.section{background:#1e1e30;border:1px solid #333;border-radius:10px;padding:16px;margin-bottom:16px}
+.section-title{font-size:13px;font-weight:700;color:#5dcff5;margin-bottom:12px;letter-spacing:0.05em}
+
+.pattern-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px}
+.pattern-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:8px;border:1px solid #333;background:#252538}
+
+.pattern-item input[type=checkbox]{width:16px;height:16px;accent-color:#5dcff5;flex-shrink:0;margin-top:2px}
+.pattern-desc{font-size:11px;color:#888;margin-top:3px;line-height:1.5}
+.pattern-name{font-size:12px;font-weight:600;color:#eee}
+.pattern-cond{font-size:11px;color:#f5c842;margin-top:4px}
+
+
+
+/* 플레이어 섹션 */
+.players-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.player-card{background:#252538;border:1px solid #333;border-radius:10px;padding:14px}
+.player-title{font-size:13px;font-weight:700;color:#eee;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.player-num{width:22px;height:22px;border-radius:50%;background:#4a90d9;color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+/* 검색 입력 */
+.dragon-search{position:relative;margin-bottom:8px}
+.dragon-search input{width:100%;padding:7px 10px;background:#1e1e30;border:1px solid #444;border-radius:6px;color:#eee;font-size:12px;font-family:inherit}
+.dragon-search input::placeholder{color:#666}
+.autocomplete{position:absolute;top:100%;left:0;right:0;background:#1e1e30;border:1px solid #444;border-radius:6px;max-height:160px;overflow-y:auto;z-index:100;display:none}
+.autocomplete.open{display:block}
+.ac-item{padding:7px 10px;font-size:12px;cursor:pointer;border-bottom:0.5px solid #2a2a3e}
+.ac-item:hover{background:#252540}
+.ac-item span{font-size:10px;color:#888;margin-left:6px}
+
+/* 드래곤 리스트 */
+.dragon-list{display:flex;flex-direction:column;gap:4px;min-height:40px}
+.dragon-tag{display:flex;align-items:center;justify-content:space-between;padding:5px 8px;background:#1e1e30;border-radius:6px;border:1px solid #333;font-size:11px}
+.dragon-tag-info{display:flex;align-items:center;gap:6px}
+.dragon-tag-name{color:#ddd}
+.dragon-tag-elem{font-size:10px;padding:1px 5px;border-radius:4px;font-weight:500}
+.dragon-tag-type{font-size:10px;color:#888}
+.dragon-tag-remove{background:none;border:none;color:#555;cursor:pointer;font-size:14px;line-height:1;padding:0 2px}
+.dragon-tag-remove:hover{color:#ef5350}
+.dragon-tag-stage{font-size:9px;padding:1px 4px;border-radius:3px;margin-left:2px}
+.stage-tr{background:rgba(93,207,245,0.15);color:#5dcff5}
+.stage-ad{background:rgba(245,200,66,0.15);color:#f5c842}
+.stage-none{background:rgba(255,255,255,0.05);color:#666}
+
+/* 속성 색상 */
+.e-땅{background:#fff3e0;color:#e65100}
+.e-물{background:#e3f2fd;color:#1565c0}
+.e-불{background:#fce4ec;color:#b71c1c}
+.e-바람{background:#e8f5e9;color:#1b5e20}
+.e-빛{background:#fffde7;color:#f57f17}
+.e-어둠{background:#ede7f6;color:#4a148c}
+.e-황혼{background:#fdf2f8;color:#880e4f}
+.e-여명{background:#fff8e1;color:#6d4c41}
+.e-악몽{background:#f3e5f5;color:#6a1b9a}
+
+/* 조합 버튼 */
+#calc-btn{width:100%;padding:14px;background:linear-gradient(90deg,#4a90d9,#5dcff5);border:none;border-radius:8px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;margin-top:4px;font-family:inherit}
+#calc-btn:hover{opacity:0.9}
+#calc-btn:disabled{background:#333;color:#666;cursor:not-allowed}
+
+/* 결과 */
+#result{display:none}
+.result-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.result-title{font-size:15px;font-weight:700;color:#eee}
+.result-badge{font-size:11px;padding:3px 10px;border-radius:10px}
+.badge-ok{background:rgba(102,187,106,0.2);color:#66bb6a;border:1px solid rgba(102,187,106,0.3)}
+.badge-fail{background:rgba(239,83,80,0.2);color:#ef5350;border:1px solid rgba(239,83,80,0.3)}
+
+.result-players{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:16px}
+.result-player{background:#252538;border:1px solid #333;border-radius:10px;padding:14px}
+.result-player-title{font-size:12px;font-weight:700;color:#aaa;margin-bottom:10px}
+.result-dragon{display:flex;align-items:center;gap:8px;padding:6px 8px;background:#1e1e30;border-radius:6px;margin-bottom:4px;border-left:3px solid transparent}
+.result-dragon.highlight{border-left-color:#5dcff5}
+.result-dragon-name{font-size:12px;color:#eee;font-weight:500}
+
+.result-check{margin-top:8px}
+.check-item{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:0.5px solid #2a2a3e;font-size:12px}
+.check-item:last-child{border-bottom:none}
+.check-ok{color:#66bb6a;font-size:14px}
+.check-fail{color:#ef5350;font-size:14px}
+.check-warn{color:#f5c842;font-size:14px}
+
+
+
+.main-tab{padding:8px 20px;font-size:13px;font-weight:600;background:none;border:none;border-bottom:2px solid transparent;color:#888;cursor:pointer;font-family:inherit;margin-bottom:-1px}
+.main-tab:hover{color:#ccc}
+.main-tab.active{color:#5dcff5;border-bottom:2px solid #5dcff5}
+
+.boss-btn{padding:8px 20px;border-radius:8px;border:1px solid #444;background:#2a2a3e;color:#aaa;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.15s}
+.boss-btn:hover{border-color:#555;color:#eee}
+.boss-btn.active{background:#4a90d9;color:#fff;border-color:#4a90d9}
+#boss-select-section{max-width:480px;position:relative;overflow:hidden;transition:background-image 0.3s}
+#boss-select-bg{position:absolute;right:0;top:0;width:50%;height:100%;background-size:contain;background-repeat:no-repeat;background-position:right center;opacity:0.25;pointer-events:none;transition:background-image 0.3s}
+#boss-select-content{position:relative;z-index:1}
+
+
+#section-daily{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:16px}
+#section-daily h1{grid-column:1/-1}
+#section-daily .section:last-child{grid-column:1/-1}
+.boss-section{position:relative}
+.boss-header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.boss-portrait{width:56px;height:56px;border-radius:10px;object-fit:contain;object-position:center;border:1px solid #444;flex-shrink:0;background:#1a1a2e}
+.boss-header-text .section-title{margin-bottom:2px}
+@media(max-width:600px){
+  #section-daily{grid-template-columns:1fr!important}
+  #section-daily .section:last-child{grid-column:auto}
+  .boss-portrait{width:48px;height:48px}
+}
+
+
+
+.info-icon{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:#4a90d9;color:#fff;font-size:10px;font-weight:700;cursor:pointer;margin-left:6px;position:relative;flex-shrink:0;vertical-align:middle}
+.info-tooltip{display:none;position:absolute;left:50%;transform:translateX(-50%);bottom:calc(100% + 8px);background:#252538;border:1px solid #4a90d9;border-radius:8px;padding:14px 16px;width:420px;font-size:12px;color:#ddd;line-height:2;z-index:200;white-space:normal;text-align:left;box-shadow:0 4px 20px rgba(0,0,0,0.5)}
+.info-tooltip::after{content:"";position:absolute;left:50%;transform:translateX(-50%);top:100%;border:6px solid transparent;border-top-color:#4a90d9}
+.info-icon:hover .info-tooltip{display:block}
+.info-tooltip b{color:#5dcff5}
+
+.fail-msg{background:rgba(239,83,80,0.1);border:1px solid rgba(239,83,80,0.3);border-radius:8px;padding:12px;font-size:12px;color:#ef5350;margin-top:8px}
+</style>
+</head>
+<body>
+
+<div id="tab-bar">
+  <a href="./index.html" id="site-title">
+  <span class="title-main">메인화면 이동</span>
+  <span class="title-sub">made by 닉스</span>
+</a>
+  <a href="./tier.html" class="tab-btn">초월 등급표</a>
+  <a href="./dex.html" class="tab-btn">드래곤 도감</a>
+  <a href="./sss.html" class="tab-btn">SSS 랭킹</a>
+  <a href="./raid.html" class="tab-btn">아르하 입구</a>
+  <a href="./raid_info.html" class="tab-btn">레이드 정보</a>
+</div>
+
+<div style="display:flex;gap:0;border-bottom:1px solid #333;margin-bottom:16px">
+  <button class="main-tab active" id="main-tab-raid" onclick="switchMainTab('raid')">디데락 조합</button>
+  <button class="main-tab" id="main-tab-daily" onclick="switchMainTab('daily')">일반 보스</button>
+</div>
+
+<div id="section-raid">
+<h1>아르하 입구</h1>
+
+<!-- 보스 선택 -->
+<div class="section" id="boss-select-section">
+  <div id="boss-select-bg" style="background-image:url('https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/6.png')"></div>
+  <div id="boss-select-content">
+    <div class="section-title">보스 선택</div>
+    <div style="display:flex;gap:8px">
+      <button class="boss-btn active" id="boss-btn-dimension" onclick="selectBoss('dimension')">디멘션</button>
+      <button class="boss-btn" id="boss-btn-deathlock" onclick="selectBoss('deathlock')">데스락</button>
+    </div>
+  </div>
+</div>
+
+<!-- 패턴 정보 -->
+<div class="section">
+  <div class="section-title">보스 패턴 (전체 파훼 목표)</div>
+  <div class="pattern-grid" id="pattern-grid">
+    <!-- 디멘션 패턴 -->
+    <div class="pattern-item boss-dimension">
+      <div>
+        <div class="pattern-name">(1) 피격 회피증가</div>
+        <div class="pattern-desc">피격당 회피증가 3%</div>
+        <div class="pattern-cond">불속성 2마리 · 공방타입 2마리</div>
+      </div>
+    </div>
+    <div class="pattern-item boss-dimension">
+      <div>
+        <div class="pattern-name">(2) 랜덤 강력 피해</div>
+        <div class="pattern-desc">일반공격 시 랜덤 두마리에게 매우 강력한 피해</div>
+        <div class="pattern-cond">악몽속성 2마리 · 체력타입 2마리</div>
+      </div>
+    </div>
+    <div class="pattern-item boss-dimension">
+      <div>
+        <div class="pattern-name">(3) 피해 감소</div>
+        <div class="pattern-desc">보스가 피격데미지를 크게 감소</div>
+        <div class="pattern-cond">여명속성 2마리 · 체공타입 2마리</div>
+      </div>
+    </div>
+    <div class="pattern-item boss-dimension">
+      <div>
+        <div class="pattern-name">(4) 피해 반사</div>
+        <div class="pattern-desc">보스가 입은 피해를 강하게 반사</div>
+        <div class="pattern-cond">빛속성 2마리 · 체방타입 2마리</div>
+      </div>
+    </div>
+    <div class="pattern-item boss-dimension">
+      <div>
+        <div class="pattern-name">(5) 체력 회복</div>
+        <div class="pattern-desc">체력 소진 시 전부 회복 후 재전투</div>
+        <div class="pattern-cond">어둠속성 2마리 · 공격타입 2마리</div>
+      </div>
+    </div>
+    <!-- 데스락 패턴 -->
+    <div class="pattern-item boss-deathlock" style="display:none">
+      <div>
+        <div class="pattern-name">(1) 체력 회복</div>
+        <div class="pattern-desc">매턴 보스가 일정량의 체력을 회복</div>
+        <div class="pattern-cond">바람속성 2마리 · 체력타입 2마리</div>
+      </div>
+    </div>
+    <div class="pattern-item boss-deathlock" style="display:none">
+      <div>
+        <div class="pattern-name">(2) 공격력 증가</div>
+        <div class="pattern-desc">보스의 공격력이 점차 증가</div>
+        <div class="pattern-cond">어둠속성 2마리 · 공방타입 2마리</div>
+      </div>
+    </div>
+    <div class="pattern-item boss-deathlock" style="display:none">
+      <div>
+        <div class="pattern-name">(3) 방어력 증가</div>
+        <div class="pattern-desc">보스의 방어력이 점차 증가</div>
+        <div class="pattern-cond">여명속성 2마리</div>
+      </div>
+    </div>
+    <div class="pattern-item boss-deathlock" style="display:none">
+      <div>
+        <div class="pattern-name">(4) 사슬 해제</div>
+        <div class="pattern-desc">데스락의 사슬이 해제됩니다</div>
+        <div class="pattern-cond">빛속성 3마리 · 공격타입 3마리</div>
+      </div>
+    </div>
+    <div class="pattern-item boss-deathlock" style="display:none">
+      <div>
+        <div class="pattern-name">(5) 방어력 1.5배 버프</div>
+        <div class="pattern-desc">아군의 방어력 1.5배 상승 (★★☆)</div>
+        <div class="pattern-cond">땅속성 2마리 · 방어타입 2마리</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 플레이어 드래곤 입력 -->
+<div class="section">
+  <div class="section-title" style="display:flex;align-items:center">
+    플레이어별 드래곤 입력 (각 3마리 이상 입력 권장)
+    <span class="info-icon">i
+      <div class="info-tooltip">
+        <b>1.</b> 드래곤 도감 기준으로 데이터가 등록되어 있어, 줄임말은 인식하지 못합니다.<br>
+        &nbsp;&nbsp;&nbsp;✗ 고신, 드슬, 카룩<br>
+        &nbsp;&nbsp;&nbsp;✓ 엔젤, 페어리, 디멘<br><br>
+        <b>2.</b> 이름을 쉼표로 구분해 입력하면 한번에 등록됩니다.<br>
+        &nbsp;&nbsp;&nbsp;예) 고대신룡, 다크닉스, 엔젤
+      </div>
+    </span>
+  </div>
+  <div class="players-grid" id="players-grid"></div>
+</div>
+
+<button id="calc-btn" onclick="calculate()">조합 짜기</button>
+
+<!-- 결과 -->
+<div class="section" id="result" style="margin-top:16px">
+  <div class="result-header">
+    <div class="result-title">조합 결과</div>
+    <div class="result-badge" id="result-badge"></div>
+  </div>
+  <div class="result-players" id="result-players"></div>
+  <div class="section-title" style="margin-bottom:8px">패턴 충족 여부</div>
+  <div id="result-check"></div>
+  <div id="result-fail-msg"></div>
+</div>
+
+</div><!-- /section-raid -->
+<div id="section-daily" style="display:none">
+<h1 style="margin-bottom:16px">일반 보스 패턴</h1>
+
+<!-- 월요일 -->
+<div class="section boss-section">
+  <div class="boss-header">
+    <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/1.png" class="boss-portrait" alt="월요일 — 모스벨">
+    <div class="boss-header-text">
+      <div class="section-title">월요일 — 모스벨</div>
+      <div style="font-size:11px;color:#888">드롭: 달의 정수 &nbsp;|&nbsp; 1인 최소 EVAL: 10000~11000</div>
+    </div>
+  </div>
+  <div class="pattern-grid">
+    <div class="pattern-item">
+      <div>
+        <div class="pattern-name">(1) 피격 회피율 증가</div>
+        <div class="pattern-desc">피격당 회피율 3% 증가</div>
+        <div class="pattern-cond">불속성 3마리 · 공격타입 3마리</div>
+      </div>
+    </div>
+    <div class="pattern-item">
+      <div>
+        <div class="pattern-name">(2) 강력한 광역 공격</div>
+        <div class="pattern-desc">3턴당 강력한 광역 공격</div>
+        <div class="pattern-cond">바람속성 3마리 · 체공타입 3마리</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 화요일 -->
+<div class="section boss-section">
+  <div class="boss-header">
+    <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/2.png" class="boss-portrait" alt="화요일 — 잉카라">
+    <div class="boss-header-text">
+      <div class="section-title">화요일 — 잉카라</div>
+      <div style="font-size:11px;color:#888">드롭: 불의 정수 &nbsp;|&nbsp; 1인 최소 EVAL: 10000~11000</div>
+    </div>
+  </div>
+  <div class="pattern-grid">
+    <div class="pattern-item">
+      <div>
+        <div class="pattern-name">(1) 광역 3배 피해</div>
+        <div class="pattern-desc">기본공격 시 랜덤 4마리에 3배 피해</div>
+        <div class="pattern-cond">물속성 3마리 · 중립타입 3마리</div>
+      </div>
+    </div>
+    <div class="pattern-item">
+      <div>
+        <div class="pattern-name">(2) 광역 2배 피해</div>
+        <div class="pattern-desc">기본공격 시 랜덤 3마리에 2배 피해</div>
+        <div class="pattern-cond">땅속성 3마리 · 공격타입 3마리</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 수요일 -->
+<div class="section boss-section">
+  <div class="boss-header">
+    <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/3.png" class="boss-portrait" alt="수요일 — 타우킹">
+    <div class="boss-header-text">
+      <div class="section-title">수요일 — 타우킹</div>
+      <div style="font-size:11px;color:#888">드롭: 물의 정수 &nbsp;|&nbsp; 1인 최소 EVAL: 7000</div>
+    </div>
+  </div>
+  <div class="pattern-grid">
+    <div class="pattern-item">
+      <div>
+        <div class="pattern-name">(1) 체력 회복 + 광역 전환</div>
+        <div class="pattern-desc">공격 시 체력 회복 + 모든 공격이 광역피해로 전환</div>
+        <div class="pattern-cond">어둠속성 3마리 · 체공타입 3마리</div>
+      </div>
+    </div>
+    <div class="pattern-item">
+      <div>
+        <div class="pattern-name">(2) 체력 전회복 재전투</div>
+        <div class="pattern-desc">체력 소진 시 전부 회복 후 재전투</div>
+        <div class="pattern-cond">황혼속성 3마리 · 체력타입 3마리</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 목요일 -->
+<div class="section boss-section">
+  <div class="boss-header">
+    <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/4.png" class="boss-portrait" alt="목요일 — 골락">
+    <div class="boss-header-text">
+      <div class="section-title">목요일 — 골락</div>
+      <div style="font-size:11px;color:#888">드롭: 땅의 정수, 골락의 알 C~A &nbsp;|&nbsp; 1인 최소 EVAL: 11000~12000</div>
+    </div>
+  </div>
+  <div class="pattern-grid">
+    <div class="pattern-item">
+      <div>
+        <div class="pattern-name">(1) 70턴 불사</div>
+        <div class="pattern-desc">체력 소진 시 70턴 동안 사망하지 않고 전투</div>
+        <div class="pattern-cond">여명속성 3마리 · 방어타입 3마리</div>
+      </div>
+    </div>
+    <div class="pattern-item">
+      <div>
+        <div class="pattern-name">(2) 피해 70% 무시</div>
+        <div class="pattern-desc">피격 시 70% 데미지 무시</div>
+        <div class="pattern-cond">빛속성 3마리 · 공방타입 3마리</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 금요일 -->
+<div class="section boss-section">
+  <div class="boss-header">
+    <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/5.png" class="boss-portrait" alt="금요일 — 카이저 번">
+    <div class="boss-header-text">
+      <div class="section-title">금요일 — 카이저 번</div>
+      <div style="font-size:11px;color:#888">드롭: 태양의 정수, 카이저 번의 알 C~A &nbsp;|&nbsp; 1인 최소 EVAL: 11000~12000</div>
+    </div>
+  </div>
+  <div class="pattern-grid">
+    <div class="pattern-item">
+      <div>
+        <div class="pattern-name">(1) 피해 반사</div>
+        <div class="pattern-desc">체력 50% 이하 시 받은 피해의 300%를 랜덤 5마리에 반사</div>
+        <div class="pattern-cond">악몽속성 3마리 · 중립타입 3마리</div>
+      </div>
+    </div>
+    <div class="pattern-item">
+      <div>
+        <div class="pattern-name">(2) 크리·회피·방어 봉인</div>
+        <div class="pattern-desc">이번 전투의 모든 아군 크리티컬·회피·방어 봉인</div>
+        <div class="pattern-cond">빛속성 3마리 · 체방타입 3마리</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 토요일 -->
+<div class="section">
+  <div class="section-title">토요일 — 랜덤 보스</div>
+  <div style="font-size:11px;color:#888;margin-bottom:4px">월~금 보스 중 랜덤 1마리 등장 · 공략 방법 동일</div>
+</div>
+
+</div><!-- /section-daily -->
+
+
+<script>
+const allDragons=[
+{n:"고대신룡",e:"빛",t:"체방",ad:true,tr:true},
+{n:"윈드 드래곤",e:"바람",t:"체력",ad:true,tr:true},
+{n:"식스 레그 혼 드래곤",e:"바람",t:"체력",ad:true,tr:true},
+{n:"청룡",e:"바람",t:"공격",ad:true,tr:true},
+{n:"파이어 드래곤",e:"불",t:"공격",ad:true,tr:true},
+{n:"번개고룡",e:"불",t:"공격",ad:true,tr:true},
+{n:"라바 드래곤",e:"불",t:"체공",ad:false,tr:false},
+{n:"피닉스",e:"불",t:"공격",ad:true,tr:true},
+{n:"빙하고룡",e:"물",t:"공격",ad:true,tr:true},
+{n:"네시",e:"물",t:"체력",ad:false,tr:true},
+{n:"테일 드래곤",e:"물",t:"체방",ad:false,tr:false},
+{n:"수룡",e:"물",t:"체방",ad:true,tr:true},
+{n:"히드라곤",e:"땅",t:"체공",ad:true,tr:true},
+{n:"파워 드래곤",e:"땅",t:"공격",ad:true,tr:true},
+{n:"바위 드래곤",e:"땅",t:"방어",ad:false,tr:false},
+{n:"지하땅굴 드래곤",e:"땅",t:"방어",ad:true,tr:true},
+{n:"페어리 드래곤",e:"물",t:"공격",ad:true,tr:true},
+{n:"레이디 드래곤",e:"바람",t:"체방",ad:false,tr:false},
+{n:"에그 드래곤",e:"땅",t:"방어",ad:true,tr:true},
+{n:"헬 드래곤",e:"불",t:"공방",ad:false,tr:false},
+{n:"엔젤 드래곤",e:"빛",t:"체방",ad:true,tr:true},
+{n:"에일리언 드래곤",e:"바람",t:"공방",ad:false,tr:false},
+{n:"미니 드래곤",e:"물",t:"공방",ad:false,tr:false},
+{n:"스왐프 드래곤",e:"물",t:"체력",ad:true,tr:true},
+{n:"패트 드래곤",e:"땅",t:"체력",ad:false,tr:true},
+{n:"스파이크 드래곤",e:"불",t:"방어",ad:false,tr:true},
+{n:"인섹트 드래곤",e:"불",t:"공방",ad:false,tr:true},
+{n:"리프 드래곤",e:"땅",t:"방어",ad:false,tr:false},
+{n:"프로그 드래곤",e:"물",t:"방어",ad:false,tr:false},
+{n:"윙스 드래곤",e:"바람",t:"공방",ad:false,tr:true},
+{n:"샌드 드래곤",e:"불",t:"공방",ad:false,tr:true},
+{n:"스마트 드래곤",e:"땅",t:"방어",ad:false,tr:true},
+{n:"뮤직 드래곤",e:"바람",t:"체력",ad:false,tr:false},
+{n:"흑룡",e:"어둠",t:"체공",ad:true,tr:true},
+{n:"에메랄드 드래곤",e:"빛",t:"체방",ad:false,tr:true},
+{n:"라이곤",e:"빛",t:"체공",ad:false,tr:true},
+{n:"카멜레용",e:"빛",t:"체력",ad:false,tr:false},
+{n:"치킨헤드 드래곤",e:"빛",t:"체방",ad:false,tr:false},
+{n:"캥거레빗 드래곤",e:"빛",t:"체공",ad:false,tr:false},
+{n:"큐피트용",e:"빛",t:"공격",ad:false,tr:true},
+{n:"골드 드래곤",e:"빛",t:"체방",ad:false,tr:false},
+{n:"슬라임 드래곤",e:"물",t:"체방",ad:false,tr:true},
+{n:"블레이드 드래곤",e:"어둠",t:"공격",ad:false,tr:true},
+{n:"메탈 드래곤",e:"어둠",t:"체공",ad:false,tr:true},
+{n:"미이라곤",e:"어둠",t:"체공",ad:false,tr:true},
+{n:"뱃도치 드래곤",e:"어둠",t:"공방",ad:false,tr:true},
+{n:"스켈레곤",e:"어둠",t:"체공",ad:false,tr:true},
+{n:"서펀트 드래곤",e:"어둠",t:"공격",ad:false,tr:false},
+{n:"G네 드래곤",e:"어둠",t:"공격",ad:false,tr:true},
+{n:"타이거 드래곤",e:"땅",t:"체력",ad:false,tr:true},
+{n:"금오 드래곤",e:"불",t:"체방",ad:false,tr:false},
+{n:"메탈 마그넷 드래곤",e:"바람",t:"공방",ad:false,tr:true},
+{n:"다크닉스",e:"어둠",t:"체공",ad:true,tr:true},
+{n:"백룡",e:"빛",t:"체방",ad:true,tr:true},
+{n:"히에나곤",e:"어둠",t:"체공",ad:false,tr:true},
+{n:"유니 드래곤",e:"어둠",t:"공격",ad:false,tr:true},
+{n:"골든혼",e:"땅",t:"체방",ad:false,tr:true},
+{n:"샤크곤",e:"물",t:"공격",ad:true,tr:true},
+{n:"가디언",e:"바람",t:"체력",ad:false,tr:true},
+{n:"크레센트",e:"어둠",t:"체공",ad:false,tr:true},
+{n:"레인보우",e:"빛",t:"체력",ad:false,tr:true},
+{n:"타투",e:"땅",t:"방어",ad:false,tr:false},
+{n:"스파인",e:"땅",t:"공방",ad:false,tr:true},
+{n:"고대 주니어",e:"빛",t:"공방",ad:true,tr:true},
+{n:"프로스티",e:"바람",t:"방어",ad:false,tr:true},
+{n:"다크프로스티",e:"어둠",t:"공격",ad:false,tr:true},
+{n:"현무 드래곤",e:"물",t:"방어",ad:false,tr:true},
+{n:"크리마용",e:"빛",t:"방어",ad:false,tr:false},
+{n:"데몽과가고일",e:"어둠",t:"공방",ad:false,tr:true},
+{n:"샴 드래곤",e:"빛",t:"체력",ad:true,tr:true},
+{n:"본헤드",e:"불",t:"체공",ad:false,tr:false},
+{n:"베네지",e:"어둠",t:"방어",ad:true,tr:true},
+{n:"머스타 드해머",e:"땅",t:"체방",ad:true,tr:true},
+{n:"레드와이번",e:"불",t:"공격",ad:true,tr:true},
+{n:"해태드래곤",e:"바람",t:"방어",ad:false,tr:false},
+{n:"스콜피온 드래곤",e:"땅",t:"공방",ad:true,tr:true},
+{n:"나이트 드래곤",e:"빛",t:"방어",ad:true,tr:true},
+{n:"스파이시",e:"빛",t:"체공",ad:false,tr:true},
+{n:"라파엘",e:"빛",t:"체방",ad:true,tr:true},
+{n:"바알",e:"어둠",t:"체공",ad:true,tr:true},
+{n:"삐에로 드래곤",e:"빛",t:"체력",ad:false,tr:true},
+{n:"파라오곤",e:"빛",t:"공방",ad:false,tr:false},
+{n:"쉐도우 드래곤",e:"어둠",t:"공격",ad:false,tr:false},
+{n:"순둥곤",e:"빛",t:"방어",ad:false,tr:false},
+{n:"프랑켄슈타곤",e:"어둠",t:"체력",ad:false,tr:true},
+{n:"닌자 드래곤",e:"어둠",t:"공격",ad:false,tr:false},
+{n:"드라고노이드",e:"어둠",t:"체방",ad:false,tr:true},
+{n:"볼케이노",e:"불",t:"공방",ad:false,tr:false},
+{n:"블루라이트닝",e:"물",t:"체공",ad:false,tr:false},
+{n:"윗치 드래곤",e:"어둠",t:"체공",ad:false,tr:true},
+{n:"퍼플립스 드래곤",e:"물",t:"체방",ad:false,tr:true},
+{n:"파이썬",e:"땅",t:"체방",ad:true,tr:true},
+{n:"아이언 드래곤",e:"불",t:"방어",ad:true,tr:true},
+{n:"오로",e:"바람",t:"공방",ad:false,tr:false},
+{n:"자룡",e:"불",t:"체공",ad:true,tr:true},
+{n:"배틀 드래곤",e:"불",t:"공격",ad:false,tr:false},
+{n:"데빌곤",e:"땅",t:"공격",ad:false,tr:true},
+{n:"바이올렛 드래곤",e:"물",t:"체공",ad:false,tr:true},
+{n:"네온 드래곤",e:"빛",t:"체공",ad:false,tr:false},
+{n:"플레임 드래곤",e:"불",t:"체공",ad:false,tr:false},
+{n:"블랙퀸",e:"어둠",t:"공격",ad:false,tr:false},
+{n:"시그마 드래곤",e:"어둠",t:"체공",ad:true,tr:true},
+{n:"램곤",e:"땅",t:"체력",ad:false,tr:false},
+{n:"아르고 드래곤",e:"빛",t:"공격",ad:true,tr:true},
+{n:"헤라클레스곤",e:"땅",t:"체방",ad:false,tr:false},
+{n:"토템 드래곤",e:"바람",t:"체력",ad:false,tr:false},
+{n:"말소자 드래곤",e:"불",t:"공격",ad:false,tr:false},
+{n:"팀버 드래곤",e:"땅",t:"방어",ad:false,tr:false},
+{n:"코브라곤",e:"어둠",t:"공방",ad:false,tr:false},
+{n:"루피아 드래곤",e:"물",t:"방어",ad:false,tr:false},
+{n:"타이푼 드래곤",e:"바람",t:"체방",ad:false,tr:true},
+{n:"스터드 드래곤",e:"물",t:"방어",ad:false,tr:true},
+{n:"플라워 드래곤",e:"땅",t:"방어",ad:false,tr:true},
+{n:"해마곤",e:"물",t:"체공",ad:false,tr:false},
+{n:"클라우드 드래곤",e:"바람",t:"체력",ad:false,tr:false},
+{n:"돌풍의 라이오스",e:"바람",t:"중립",ad:false,tr:false},
+{n:"찬란한 바리안",e:"빛",t:"중립",ad:false,tr:false},
+{n:"물결의 파프리온",e:"물",t:"중립",ad:false,tr:false},
+{n:"열화의 발칸",e:"불",t:"중립",ad:false,tr:false},
+{n:"장벽의 에닉스",e:"땅",t:"중립",ad:false,tr:false},
+{n:"암흑의 발로드",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"레드불 드래곤",e:"불",t:"체공",ad:false,tr:true},
+{n:"툰드라 드래곤",e:"물",t:"체력",ad:false,tr:false},
+{n:"메갈로돈",e:"물",t:"공격",ad:false,tr:false},
+{n:"오로라 드래곤",e:"빛",t:"체방",ad:false,tr:false},
+{n:"캣츠곤",e:"어둠",t:"체공",ad:false,tr:false},
+{n:"이그니스",e:"불",t:"공방",ad:false,tr:false},
+{n:"타르타로스",e:"어둠",t:"체공",ad:false,tr:false},
+{n:"슈팅스타",e:"빛",t:"체공",ad:false,tr:false},
+{n:"다크폴",e:"어둠",t:"체공",ad:false,tr:true},
+{n:"헝그리 드래곤",e:"땅",t:"체력",ad:false,tr:false},
+{n:"아쿠아 드래곤",e:"물",t:"공방",ad:false,tr:false},
+{n:"오르페우스",e:"땅",t:"중립",ad:false,tr:false},
+{n:"루미네스",e:"물",t:"공격",ad:true,tr:true},
+{n:"번네스",e:"불",t:"공격",ad:true,tr:true},
+{n:"깨비곤",e:"빛",t:"체공",ad:false,tr:false},
+{n:"제트 드래곤",e:"바람",t:"체공",ad:false,tr:false},
+{n:"마리노 드래곤",e:"물",t:"체방",ad:false,tr:false},
+{n:"투탕카",e:"어둠",t:"방어",ad:false,tr:false},
+{n:"머드 드래곤",e:"땅",t:"체력",ad:false,tr:false},
+{n:"붐버 드래곤",e:"불",t:"체력",ad:false,tr:false},
+{n:"사나래",e:"빛",t:"방어",ad:false,tr:false},
+{n:"타일런트",e:"물",t:"중립",ad:false,tr:false},
+{n:"청마룡",e:"물",t:"중립",ad:false,tr:false},
+{n:"너티빌런",e:"불",t:"방어",ad:false,tr:false},
+{n:"글래시어",e:"물",t:"중립",ad:false,tr:false},
+{n:"므네이아",e:"불",t:"체공",ad:true,tr:true},
+{n:"녹스O",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"일리오스O",e:"빛",t:"중립",ad:false,tr:false},
+{n:"코너투스",e:"물",t:"중립",ad:false,tr:false},
+{n:"스왈로우",e:"바람",t:"체공",ad:false,tr:false},
+{n:"i곤",e:"바람",t:"공방",ad:false,tr:true},
+{n:"블러디네이트",e:"불",t:"중립",ad:false,tr:false},
+{n:"피스 드래곤",e:"바람",t:"공방",ad:false,tr:false},
+{n:"갤럭시",e:"빛",t:"중립",ad:false,tr:false},
+{n:"페이퍼 드래곤",e:"바람",t:"공격",ad:false,tr:false},
+{n:"하이페리곤",e:"빛",t:"중립",ad:false,tr:false},
+{n:"모리카 드래곤",e:"빛",t:"공격",ad:true,tr:true},
+{n:"베가본드 드래곤",e:"땅",t:"공격",ad:false,tr:false},
+{n:"태엽 드래곤",e:"바람",t:"체방",ad:true,tr:true},
+{n:"스플렌더 드래곤",e:"어둠",t:"공격",ad:false,tr:false},
+{n:"블랙티어 드래곤",e:"어둠",t:"체력",ad:true,tr:true},
+{n:"블랙아머 드래곤",e:"어둠",t:"방어",ad:true,tr:true},
+{n:"오렌지리프 드래곤",e:"땅",t:"체력",ad:false,tr:false},
+{n:"핑크벨 드래곤",e:"바람",t:"체력",ad:false,tr:false},
+{n:"쿠로이 드래곤",e:"어둠",t:"방어",ad:true,tr:true},
+{n:"포레스트 드래곤",e:"땅",t:"중립",ad:false,tr:false},
+{n:"기간티스",e:"땅",t:"중립",ad:false,tr:false},
+{n:"데모니오",e:"불",t:"공격",ad:false,tr:false},
+{n:"게스 드래곤",e:"물",t:"중립",ad:false,tr:false},
+{n:"베라 드래곤",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"디요나",e:"빛",t:"중립",ad:false,tr:false},
+{n:"콘라드",e:"땅",t:"중립",ad:false,tr:false},
+{n:"파브레가스",e:"바람",t:"중립",ad:false,tr:false},
+{n:"파이어퓨리",e:"불",t:"중립",ad:false,tr:false},
+{n:"스테고 드래곤",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"레텐토르",e:"땅",t:"중립",ad:false,tr:false},
+{n:"미스트 드래곤",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"리쿠루 드래곤",e:"물",t:"중립",ad:false,tr:false},
+{n:"페트라 드래곤",e:"불",t:"중립",ad:false,tr:false},
+{n:"크룩커스",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"밴시",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"할로우",e:"불",t:"중립",ad:false,tr:false},
+{n:"루포",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"데칼",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"카오스",e:"바람",t:"체공",ad:true,tr:true},
+{n:"일레마",e:"불",t:"중립",ad:false,tr:false},
+{n:"블랙코어",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"오딘",e:"빛",t:"중립",ad:false,tr:false},
+{n:"프리러너",e:"땅",t:"중립",ad:false,tr:false},
+{n:"타임머신",e:"어둠",t:"공격",ad:true,tr:true},
+{n:"시타엘",e:"빛",t:"체력",ad:true,tr:true},
+{n:"그라치아",e:"물",t:"중립",ad:false,tr:false},
+{n:"마가",e:"바람",t:"중립",ad:false,tr:false},
+{n:"스쿠룸",e:"불",t:"중립",ad:false,tr:false},
+{n:"콜로서스",e:"땅",t:"체공",ad:true,tr:true},
+{n:"원더 드래곤",e:"어둠",t:"체력",ad:true,tr:true},
+{n:"아이스 드레이크",e:"물",t:"공방",ad:true,tr:true},
+{n:"오미야콘",e:"물",t:"중립",ad:false,tr:false},
+{n:"니플하임",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"루돌프 드래곤",e:"빛",t:"중립",ad:false,tr:false},
+{n:"바르라아",e:"빛",t:"공방",ad:true,tr:true},
+{n:"루틸루스",e:"불",t:"중립",ad:false,tr:false},
+{n:"청양 드래곤",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"옵타툽",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"아실리",e:"빛",t:"체방",ad:true,tr:true},
+{n:"블랙찡또",e:"어둠",t:"체력",ad:false,tr:true},
+{n:"아폴로누스",e:"불",t:"중립",ad:false,tr:false},
+{n:"로루스",e:"빛",t:"방어",ad:true,tr:true},
+{n:"러스트",e:"땅",t:"중립",ad:false,tr:false},
+{n:"슬레이어",e:"불",t:"중립",ad:false,tr:false},
+{n:"파이어리 블랜드",e:"불",t:"중립",ad:false,tr:false},
+{n:"문라이트",e:"어둠",t:"체력",ad:true,tr:true},
+{n:"코랄",e:"물",t:"중립",ad:false,tr:false},
+{n:"아브밸리",e:"바람",t:"중립",ad:false,tr:false},
+{n:"가이안",e:"땅",t:"중립",ad:false,tr:false},
+{n:"오쿠러스",e:"물",t:"중립",ad:false,tr:false},
+{n:"위드미",e:"물",t:"방어",ad:true,tr:true},
+{n:"헤이즈",e:"빛",t:"방어",ad:true,tr:true},
+{n:"라우아",e:"물",t:"중립",ad:false,tr:false},
+{n:"듀펜",e:"땅",t:"중립",ad:false,tr:false},
+{n:"메이플 드래곤",e:"땅",t:"중립",ad:false,tr:false},
+{n:"딜랑",e:"빛",t:"중립",ad:false,tr:false},
+{n:"스트라이커",e:"바람",t:"공격",ad:true,tr:true},
+{n:"가루다",e:"불",t:"공방",ad:true,tr:true},
+{n:"리베라",e:"바람",t:"중립",ad:false,tr:false},
+{n:"티라노 드래곤",e:"땅",t:"중립",ad:false,tr:false},
+{n:"파티 드래곤",e:"빛",t:"중립",ad:false,tr:false},
+{n:"오르도",e:"빛",t:"공격",ad:true,tr:true},
+{n:"세크레타",e:"물",t:"공방",ad:true,tr:true},
+{n:"푸투룸",e:"불",t:"체방",ad:true,tr:true},
+{n:"할리벨",e:"여명",t:"체공",ad:true,tr:true},
+{n:"타아비레",e:"여명",t:"체공",ad:true,tr:true},
+{n:"발라크",e:"황혼",t:"체방",ad:true,tr:true},
+{n:"베팔",e:"황혼",t:"공방",ad:true,tr:true},
+{n:"단탈리온",e:"악몽",t:"체력",ad:true,tr:true},
+{n:"자간",e:"악몽",t:"공방",ad:true,tr:true},
+{n:"어비스 엣지",e:"물",t:"중립",ad:false,tr:false},
+{n:"적오드래곤",e:"불",t:"중립",ad:false,tr:false},
+{n:"헬가스트",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"마르바스",e:"어둠",t:"공방",ad:true,tr:true},
+{n:"칸",e:"빛",t:"중립",ad:false,tr:false},
+{n:"위그드라실",e:"땅",t:"중립",ad:false,tr:false},
+{n:"와일드 드래곤",e:"불",t:"방어",ad:true,tr:true},
+{n:"좀비 드래곤",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"레이어스",e:"땅",t:"체공",ad:true,tr:true},
+{n:"웨일 드래곤",e:"물",t:"중립",ad:false,tr:false},
+{n:"베놈 드래곤",e:"물",t:"체공",ad:true,tr:true},
+{n:"발라 드래곤",e:"땅",t:"중립",ad:false,tr:false},
+{n:"루가르 드래곤",e:"불",t:"방어",ad:true,tr:true},
+{n:"아틀란티스",e:"물",t:"중립",ad:false,tr:false},
+{n:"유니버스",e:"어둠",t:"체방",ad:true,tr:true},
+{n:"빙설룡",e:"물",t:"중립",ad:false,tr:false},
+{n:"점프 드래곤",e:"바람",t:"중립",ad:false,tr:false},
+{n:"아스티",e:"바람",t:"공격",ad:true,tr:true},
+{n:"지마",e:"물",t:"중립",ad:false,tr:false},
+{n:"갤러스",e:"물",t:"중립",ad:false,tr:false},
+{n:"퓨미스",e:"불",t:"중립",ad:false,tr:false},
+{n:"베히모스",e:"어둠",t:"체방",ad:true,tr:true},
+{n:"스틸윙",e:"바람",t:"방어",ad:true,tr:true},
+{n:"소울",e:"빛",t:"중립",ad:false,tr:false},
+{n:"이슬룡",e:"물",t:"중립",ad:false,tr:false},
+{n:"데르",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"렉몰",e:"여명",t:"중립",ad:false,tr:false},
+{n:"화랑",e:"불",t:"중립",ad:false,tr:false},
+{n:"그레이탄",e:"바람",t:"공방",ad:true,tr:true},
+{n:"미스틱티니",e:"바람",t:"중립",ad:false,tr:false},
+{n:"다로스",e:"땅",t:"공방",ad:true,tr:true},
+{n:"자루카",e:"불",t:"중립",ad:false,tr:false},
+{n:"다크혼",e:"황혼",t:"중립",ad:false,tr:false},
+{n:"스타에이스",e:"빛",t:"체방",ad:true,tr:true},
+{n:"말로단",e:"어둠",t:"체력",ad:true,tr:true},
+{n:"아이가스",e:"빛",t:"중립",ad:false,tr:false},
+{n:"포포모",e:"불",t:"체력",ad:true,tr:true},
+{n:"테디 드래곤",e:"빛",t:"체방",ad:true,tr:true},
+{n:"나기",e:"바람",t:"중립",ad:false,tr:false},
+{n:"그리핀",e:"불",t:"중립",ad:false,tr:false},
+{n:"블랙쇼커",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"트리페어윙",e:"빛",t:"중립",ad:false,tr:false},
+{n:"리바이어던",e:"물",t:"중립",ad:false,tr:false},
+{n:"스케어",e:"어둠",t:"공방",ad:false,tr:false},
+{n:"블루벨",e:"바람",t:"중립",ad:false,tr:false},
+{n:"화이트스톰",e:"물",t:"중립",ad:false,tr:false},
+{n:"네펜데스",e:"땅",t:"중립",ad:false,tr:false},
+{n:"아그나드",e:"불",t:"중립",ad:false,tr:false},
+{n:"버블 드래곤",e:"물",t:"중립",ad:false,tr:false},
+{n:"합라",e:"여명",t:"공격",ad:true,tr:true},
+{n:"레블롭틴",e:"빛",t:"중립",ad:false,tr:false},
+{n:"레인보우배트곤",e:"바람",t:"공방",ad:false,tr:false},
+{n:"아라카",e:"바람",t:"공격",ad:true,tr:true},
+{n:"라지카스",e:"물",t:"중립",ad:false,tr:false},
+{n:"미스틸테인",e:"땅",t:"중립",ad:false,tr:false},
+{n:"시소르",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"루",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"플래그너",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"셀마사",e:"여명",t:"공격",ad:true,tr:true},
+{n:"청화풍",e:"불",t:"중립",ad:false,tr:false},
+{n:"카라선",e:"황혼",t:"공격",ad:true,tr:true},
+{n:"아쿠아리움",e:"물",t:"중립",ad:false,tr:false},
+{n:"일로스",e:"물",t:"중립",ad:false,tr:false},
+{n:"렉스톤",e:"황혼",t:"공격",ad:true,tr:true},
+{n:"포메쿨",e:"황혼",t:"공방",ad:true,tr:true},
+{n:"카르나",e:"어둠",t:"방어",ad:true,tr:true},
+{n:"아르주나",e:"불",t:"중립",ad:false,tr:false},
+{n:"마룡",e:"불",t:"공방",ad:true,tr:true},
+{n:"블랙혼",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"얼티밋 드래곤",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"매직스타 드래곤",e:"악몽",t:"중립",ad:false,tr:false},
+{n:"아르테미스 드래곤",e:"빛",t:"공방",ad:true,tr:true},
+{n:"할루시",e:"바람",t:"중립",ad:false,tr:false},
+{n:"페르마타",e:"악몽",t:"중립",ad:false,tr:false},
+{n:"앙그라",e:"바람",t:"중립",ad:false,tr:false},
+{n:"옴므니아",e:"악몽",t:"중립",ad:false,tr:false},
+{n:"코므니아",e:"황혼",t:"중립",ad:false,tr:false},
+{n:"다므니아",e:"불",t:"중립",ad:false,tr:false},
+{n:"드므니아",e:"바람",t:"중립",ad:false,tr:false},
+{n:"맘므니아",e:"물",t:"중립",ad:false,tr:false},
+{n:"흐므니아",e:"땅",t:"중립",ad:false,tr:false},
+{n:"엠파이어",e:"바람",t:"체력",ad:true,tr:true},
+{n:"루시페르",e:"불",t:"중립",ad:false,tr:false},
+{n:"네크로멘서",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"지진",e:"땅",t:"체력",ad:true,tr:true},
+{n:"니케",e:"빛",t:"중립",ad:false,tr:false},
+{n:"아스트라이나",e:"빛",t:"중립",ad:false,tr:false},
+{n:"하레스",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"나이트메어",e:"악몽",t:"중립",ad:false,tr:false},
+{n:"스윗클라우드",e:"불",t:"중립",ad:false,tr:false},
+{n:"데네브",e:"빛",t:"중립",ad:false,tr:false},
+{n:"박쥐곤",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"우파룸",e:"불",t:"중립",ad:false,tr:false},
+{n:"부두룡",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"화주사",e:"불",t:"중립",ad:false,tr:false},
+{n:"미트라",e:"빛",t:"중립",ad:false,tr:false},
+{n:"보상이용",e:"여명",t:"체공",ad:true,tr:true},
+{n:"다크베인",e:"불",t:"중립",ad:false,tr:false},
+{n:"블러디터스크",e:"악몽",t:"중립",ad:false,tr:false},
+{n:"포이즌리버",e:"땅",t:"체력",ad:true,tr:true},
+{n:"유리온",e:"황혼",t:"중립",ad:false,tr:false},
+{n:"터들톰톰",e:"여명",t:"중립",ad:false,tr:false},
+{n:"타이게타",e:"바람",t:"중립",ad:false,tr:false},
+{n:"선인장 드래곤",e:"악몽",t:"중립",ad:false,tr:false},
+{n:"베르나",e:"빛",t:"체방",ad:true,tr:true},
+{n:"룩소린",e:"빛",t:"중립",ad:false,tr:false},
+{n:"혼",e:"바람",t:"체력",ad:true,tr:true},
+{n:"나트론",e:"물",t:"체방",ad:true,tr:true},
+{n:"살라",e:"황혼",t:"중립",ad:false,tr:false},
+{n:"움브라",e:"악몽",t:"체공",ad:false,tr:false},
+{n:"솔라",e:"빛",t:"공격",ad:true,tr:true},
+{n:"포폰",e:"땅",t:"체력",ad:true,tr:true},
+{n:"제피로스",e:"바람",t:"체공",ad:true,tr:true},
+{n:"드래곤 슬레이어",e:"어둠",t:"공방",ad:true,tr:true},
+{n:"헬카이저",e:"황혼",t:"중립",ad:false,tr:false},
+{n:"레버넌트",e:"악몽",t:"중립",ad:false,tr:false},
+{n:"이블 던",e:"여명",t:"중립",ad:false,tr:false},
+{n:"디멘션 드래곤",e:"악몽",t:"공격",ad:true,tr:true},
+{n:"픽셀 드래곤",e:"빛",t:"중립",ad:false,tr:false},
+{n:"그랑 세이버",e:"바람",t:"중립",ad:false,tr:false},
+{n:"킨더 드래곤",e:"여명",t:"공방",ad:true,tr:true},
+{n:"푸딩곤",e:"땅",t:"중립",ad:false,tr:false},
+{n:"엔틱 드래곤",e:"땅",t:"중립",ad:false,tr:false},
+{n:"트와일라잇",e:"황혼",t:"중립",ad:false,tr:false},
+{n:"플로리안",e:"땅",t:"중립",ad:false,tr:false},
+{n:"라루스",e:"빛",t:"중립",ad:false,tr:false},
+{n:"프로딘",e:"악몽",t:"중립",ad:false,tr:false},
+{n:"틸키",e:"황혼",t:"공격",ad:true,tr:true},
+{n:"이그나",e:"불",t:"체방",ad:true,tr:true},
+{n:"블리자드",e:"물",t:"공격",ad:true,tr:true},
+{n:"다크나이트",e:"어둠",t:"체방",ad:true,tr:true},
+{n:"엔더 드래곤",e:"땅",t:"중립",ad:false,tr:false},
+{n:"거스트 드래곤",e:"바람",t:"공격",ad:true,tr:true},
+{n:"샤프테일 드래곤",e:"땅",t:"중립",ad:false,tr:false},
+{n:"화이트썬더 드래곤",e:"빛",t:"공방",ad:true,tr:true},
+{n:"카루라",e:"빛",t:"공격",ad:true,tr:true},
+{n:"간다르바",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"호크아이",e:"땅",t:"중립",ad:false,tr:false},
+{n:"루아셰아 드래곤",e:"악몽",t:"중립",ad:false,tr:false},
+{n:"루네라 드래곤",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"미나스 드래곤",e:"빛",t:"체공",ad:true,tr:true},
+{n:"헬스페로우",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"쿠베라",e:"어둠",t:"방어",ad:true,tr:true},
+{n:"칼라빈카",e:"불",t:"중립",ad:false,tr:false},
+{n:"직소 드래곤",e:"땅",t:"중립",ad:false,tr:false},
+{n:"카이저번",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"골락",e:"땅",t:"중립",ad:false,tr:false},
+{n:"렉몰 리버스",e:"황혼",t:"체공",ad:true,tr:true},
+{n:"앳지버",e:"악몽",t:"중립",ad:false,tr:false},
+{n:"센투라",e:"바람",t:"체방",ad:true,tr:true},
+{n:"아프리트",e:"불",t:"중립",ad:false,tr:false},
+{n:"에트왈 드래곤",e:"바람",t:"공방",ad:true,tr:true},
+{n:"넬로 드래곤",e:"물",t:"중립",ad:false,tr:false},
+{n:"썬더레인 드래곤",e:"빛",t:"중립",ad:false,tr:false},
+{n:"즈믄",e:"땅",t:"공방",ad:true,tr:true},
+{n:"리베티",e:"땅",t:"체공",ad:true,tr:true},
+{n:"브리트라",e:"물",t:"체공",ad:true,tr:true},
+{n:"타크샤카",e:"물",t:"중립",ad:false,tr:false},
+{n:"슈넬 드래곤",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"키갈",e:"바람",t:"방어",ad:true,tr:true},
+{n:"아델라",e:"땅",t:"중립",ad:false,tr:false},
+{n:"슬리즈 드래곤",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"칸타카",e:"땅",t:"체방",ad:true,tr:true},
+{n:"지타쿨라",e:"물",t:"중립",ad:false,tr:false},
+{n:"파고스 드래곤",e:"물",t:"중립",ad:false,tr:false},
+{n:"본샤스 드래곤",e:"바람",t:"중립",ad:false,tr:false},
+{n:"갤럭시아 드래곤",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"알리스 드래곤",e:"불",t:"중립",ad:false,tr:false},
+{n:"마브리카 드래곤",e:"빛",t:"중립",ad:false,tr:false},
+{n:"소서러 드래곤",e:"땅",t:"중립",ad:false,tr:false},
+{n:"아톤",e:"빛",t:"공격",ad:true,tr:true},
+{n:"탈릿사",e:"빛",t:"공방",ad:true,tr:true},
+{n:"쿠즈마라",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"하리카",e:"황혼",t:"공격",ad:true,tr:true},
+{n:"톤톤",e:"땅",t:"중립",ad:false,tr:false},
+{n:"아쿠아펄",e:"물",t:"중립",ad:false,tr:false},
+{n:"키리온",e:"불",t:"중립",ad:false,tr:false},
+{n:"애플칙",e:"땅",t:"체력",ad:true,tr:true},
+{n:"트로페우스",e:"물",t:"공방",ad:true,tr:true},
+{n:"니케이",e:"빛",t:"중립",ad:false,tr:false},
+{n:"니케다",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"니케라이",e:"불",t:"중립",ad:false,tr:false},
+{n:"니케플로",e:"물",t:"중립",ad:false,tr:false},
+{n:"니케벤토",e:"바람",t:"중립",ad:false,tr:false},
+{n:"니케테라",e:"땅",t:"중립",ad:false,tr:false},
+{n:"판므니아",e:"여명",t:"중립",ad:false,tr:false},
+{n:"라므니아",e:"황혼",t:"중립",ad:false,tr:false},
+{n:"닌므니아",e:"악몽",t:"중립",ad:false,tr:false},
+{n:"아스타테",e:"땅",t:"체방",ad:true,tr:true},
+{n:"시리스",e:"바람",t:"중립",ad:false,tr:false},
+{n:"엘더 드래곤",e:"빛",t:"중립",ad:false,tr:false},
+{n:"수라 드래곤",e:"불",t:"공격",ad:true,tr:true},
+{n:"타로스",e:"불",t:"중립",ad:false,tr:false},
+{n:"익시아",e:"바람",t:"중립",ad:false,tr:false},
+{n:"엔젤주니어",e:"빛",t:"체력",ad:true,tr:true},
+{n:"허리케인",e:"바람",t:"중립",ad:false,tr:false},
+{n:"하데스",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"프레데터",e:"땅",t:"중립",ad:false,tr:false},
+{n:"엔퓨",e:"여명",t:"중립",ad:false,tr:false},
+{n:"가스트",e:"바람",t:"중립",ad:false,tr:false},
+{n:"엔투라스",e:"불",t:"공격",ad:true,tr:true},
+{n:"액스칼리버",e:"빛",t:"중립",ad:false,tr:false},
+{n:"일란",e:"바람",t:"중립",ad:false,tr:false},
+{n:"코스모",e:"여명",t:"중립",ad:false,tr:false},
+{n:"파베르",e:"악몽",t:"중립",ad:false,tr:false},
+{n:"앵커",e:"물",t:"중립",ad:false,tr:false},
+{n:"말덱",e:"땅",t:"중립",ad:false,tr:false},
+{n:"스트라",e:"바람",t:"중립",ad:false,tr:false},
+{n:"헤네스",e:"빛",t:"중립",ad:false,tr:false},
+{n:"데스락",e:"황혼",t:"방어",ad:true,tr:true},
+{n:"애니마라",e:"악몽",t:"체방",ad:true,tr:true},
+{n:"설리반",e:"빛",t:"중립",ad:false,tr:false},
+{n:"파프닐",e:"악몽",t:"중립",ad:false,tr:false},
+{n:"아비온",e:"바람",t:"중립",ad:false,tr:false},
+{n:"아자크",e:"어둠",t:"공격",ad:true,tr:true},
+{n:"프로즌",e:"물",t:"체공",ad:true,tr:true},
+{n:"아비스",e:"바람",t:"중립",ad:false,tr:false},
+{n:"차콜플레임",e:"불",t:"중립",ad:false,tr:false},
+{n:"궁니르",e:"물",t:"중립",ad:false,tr:false},
+{n:"루드오어",e:"악몽",t:"체공",ad:true,tr:true},
+{n:"스워드",e:"빛",t:"공격",ad:true,tr:true},
+{n:"케이나인",e:"악몽",t:"중립",ad:false,tr:false},
+{n:"에이라",e:"여명",t:"중립",ad:false,tr:false},
+{n:"스칼렛",e:"황혼",t:"중립",ad:false,tr:false},
+{n:"쉔",e:"바람",t:"중립",ad:false,tr:false},
+{n:"베리스",e:"여명",t:"체력",ad:true,tr:true},
+{n:"템페스트",e:"물",t:"중립",ad:false,tr:false},
+{n:"선셋 드래곤",e:"불",t:"중립",ad:false,tr:false},
+{n:"포말하우트",e:"물",t:"중립",ad:false,tr:false},
+{n:"마카라",e:"어둠",t:"공방",ad:true,tr:true},
+{n:"아누라다",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"이클립스",e:"황혼",t:"체력",ad:true,tr:true},
+{n:"벨레드",e:"악몽",t:"방어",ad:true,tr:true},
+{n:"미티어",e:"여명",t:"중립",ad:false,tr:false},
+{n:"카모플라쥬",e:"황혼",t:"중립",ad:false,tr:false},
+{n:"엘리고스",e:"여명",t:"방어",ad:true,tr:true},
+{n:"범",e:"불",t:"중립",ad:false,tr:false},
+{n:"이모션",e:"바람",t:"중립",ad:false,tr:false},
+{n:"미미르",e:"여명",t:"체방",ad:true,tr:true},
+{n:"샬롯",e:"땅",t:"중립",ad:false,tr:false},
+{n:"이지스",e:"빛",t:"중립",ad:false,tr:false},
+{n:"레이징",e:"불",t:"중립",ad:false,tr:false},
+{n:"페이몬",e:"불",t:"중립",ad:false,tr:false},
+{n:"암두시아스",e:"여명",t:"공방",ad:true,tr:true},
+{n:"백택곤",e:"여명",t:"중립",ad:false,tr:false},
+{n:"레오벡터",e:"땅",t:"공격",ad:true,tr:true},
+{n:"네비아",e:"여명",t:"체방",ad:true,tr:true},
+{n:"썬더버드",e:"바람",t:"중립",ad:false,tr:false},
+{n:"보레아스",e:"바람",t:"체공",ad:true,tr:true},
+{n:"쿠알레",e:"물",t:"중립",ad:false,tr:false},
+{n:"코즈메키온",e:"황혼",t:"중립",ad:false,tr:false},
+{n:"화귀 드래곤",e:"불",t:"체방",ad:true,tr:true},
+{n:"헤카테",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"밀라",e:"바람",t:"중립",ad:false,tr:false},
+{n:"라울",e:"바람",t:"중립",ad:false,tr:false},
+{n:"스탑튠",e:"빛",t:"중립",ad:false,tr:false},
+{n:"다크스퀘어",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"고귀한 헬카이저",e:"황혼",t:"중립",ad:false,tr:false},
+{n:"마소티스",e:"물",t:"공방",ad:true,tr:true},
+{n:"리치몬드",e:"어둠",t:"공방",ad:true,tr:true},
+{n:"크로마 리치몬드",e:"어둠",t:"공방",ad:true,tr:true},
+{n:"톡시닉",e:"땅",t:"중립",ad:false,tr:false},
+{n:"이터널",e:"여명",t:"중립",ad:false,tr:false},
+{n:"개틀링곤",e:"빛",t:"방어",ad:true,tr:true},
+{n:"베른하르트",e:"물",t:"공격",ad:true,tr:true},
+{n:"로티스",e:"물",t:"중립",ad:false,tr:false},
+{n:"스노우볼",e:"황혼",t:"중립",ad:false,tr:false},
+{n:"고귀한 블러디터스크",e:"악몽",t:"중립",ad:false,tr:false},
+{n:"젤리피쉬",e:"물",t:"중립",ad:false,tr:false},
+{n:"펜리르",e:"땅",t:"중립",ad:false,tr:false},
+{n:"티르",e:"바람",t:"체방",ad:true,tr:true},
+{n:"아만타",e:"빛",t:"공방",ad:true,tr:true},
+{n:"코멧",e:"여명",t:"중립",ad:false,tr:false},
+{n:"화이트 디스트로이어",e:"빛",t:"중립",ad:false,tr:false},
+{n:"피미루",e:"악몽",t:"중립",ad:false,tr:false},
+{n:"샤흐",e:"빛",t:"공방",ad:true,tr:true},
+{n:"고귀한 다크베인",e:"불",t:"중립",ad:false,tr:false},
+{n:"에오스",e:"여명",t:"중립",ad:false,tr:false},
+{n:"네뷸라",e:"황혼",t:"체공",ad:true,tr:true},
+{n:"레굴루스",e:"물",t:"체방",ad:true,tr:true},
+{n:"크로마 레굴루스",e:"물",t:"체방",ad:true,tr:true},
+{n:"알데바란",e:"땅",t:"체력",ad:true,tr:true},
+{n:"강림 강화곤",e:"빛",t:"중립",ad:false,tr:false},
+{n:"다르누스",e:"황혼",t:"중립",ad:false,tr:false},
+{n:"페트로아",e:"불",t:"중립",ad:false,tr:false},
+{n:"롱기누스",e:"악몽",t:"체방",ad:true,tr:true},
+{n:"고귀한 엔더 드래곤",e:"땅",t:"중립",ad:false,tr:false},
+{n:"지바타르",e:"바람",t:"중립",ad:false,tr:false},
+{n:"미스핏",e:"악몽",t:"방어",ad:true,tr:true},
+{n:"염화룡",e:"불",t:"체력",ad:true,tr:true},
+{n:"마니메칼라",e:"물",t:"중립",ad:false,tr:false},
+{n:"폴투누스",e:"물",t:"방어",ad:true,tr:true},
+{n:"세에레",e:"황혼",t:"방어",ad:true,tr:true},
+{n:"바르그",e:"빛",t:"공격",ad:true,tr:true},
+{n:"마스테마",e:"악몽",t:"체방",ad:true,tr:true},
+{n:"카스티타스",e:"바람",t:"중립",ad:false,tr:false},
+{n:"고귀한 이지스",e:"빛",t:"중립",ad:false,tr:false},
+{n:"타나토스",e:"불",t:"체방",ad:true,tr:true},
+{n:"칼리시",e:"물",t:"중립",ad:false,tr:false},
+{n:"크로마 칼리시",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"프라이드",e:"황혼",t:"공방",ad:true,tr:true},
+{n:"고귀한 아델라",e:"땅",t:"중립",ad:false,tr:false},
+{n:"라스",e:"여명",t:"방어",ad:true,tr:true},
+{n:"밀라타스",e:"빛",t:"중립",ad:false,tr:false},
+{n:"크로마 밀라타스",e:"여명",t:"중립",ad:false,tr:false},
+{n:"고귀한 넬로 드래곤",e:"물",t:"중립",ad:false,tr:false},
+{n:"토트",e:"불",t:"방어",ad:true,tr:true},
+{n:"인스트리아",e:"빛",t:"중립",ad:false,tr:false},
+{n:"크로마 인스트리아",e:"물",t:"중립",ad:false,tr:false},
+{n:"네무스",e:"악몽",t:"체력",ad:true,tr:true},
+{n:"베네보렌티아",e:"불",t:"중립",ad:false,tr:false},
+{n:"크로마 베네보렌티아",e:"물",t:"중립",ad:false,tr:false},
+{n:"고귀한 갤러헤드",e:"땅",t:"중립",ad:false,tr:false},
+{n:"고귀한 이블던",e:"여명",t:"중립",ad:false,tr:false},
+{n:"뇌신",e:"땅",t:"중립",ad:false,tr:false},
+{n:"크로마 뇌신",e:"불",t:"중립",ad:false,tr:false},
+{n:"크레바스",e:"악몽",t:"체공",ad:true,tr:true},
+{n:"라센티",e:"불",t:"공격",ad:true,tr:true},
+{n:"마문드",e:"빛",t:"중립",ad:false,tr:false},
+{n:"고트",e:"어둠",t:"체방",ad:true,tr:true},
+{n:"고귀한 레버넌트",e:"악몽",t:"중립",ad:false,tr:false},
+{n:"파키",e:"땅",t:"방어",ad:true,tr:true},
+{n:"호저리",e:"여명",t:"중립",ad:false,tr:false},
+{n:"타라",e:"불",t:"중립",ad:false,tr:false},
+{n:"고귀한 카이저번",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"피타야",e:"바람",t:"공방",ad:true,tr:true},
+{n:"구미호",e:"악몽",t:"중립",ad:false,tr:false},
+{n:"루송",e:"불",t:"중립",ad:false,tr:false},
+{n:"아말테아",e:"여명",t:"체력",ad:true,tr:true},
+{n:"니티",e:"황혼",t:"중립",ad:false,tr:false},
+{n:"케찰코아틀",e:"땅",t:"체공",ad:true,tr:true},
+{n:"조화룡",e:"여명",t:"방어",ad:true,tr:true},
+{n:"아바돈",e:"불",t:"중립",ad:false,tr:false},
+{n:"큐아네드",e:"물",t:"중립",ad:false,tr:false},
+{n:"고귀한 스트라",e:"바람",t:"중립",ad:false,tr:false},
+{n:"마그나스",e:"어둠",t:"체력",ad:true,tr:true},
+{n:"크로마 벨레드",e:"악몽",t:"방어",ad:true,tr:true},
+{n:"포르타",e:"어둠",t:"방어",ad:true,tr:true},
+{n:"페로스",e:"바람",t:"중립",ad:false,tr:false},
+{n:"디아누",e:"땅",t:"중립",ad:false,tr:false},
+{n:"초림",e:"바람",t:"중립",ad:false,tr:false},
+{n:"루드라",e:"물",t:"공격",ad:true,tr:true},
+{n:"고귀한 말덱",e:"땅",t:"중립",ad:false,tr:false},
+{n:"강강",e:"빛",t:"중립",ad:false,tr:false},
+{n:"술래",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"차차웅",e:"황혼",t:"방어",ad:true,tr:true},
+{n:"데바",e:"땅",t:"중립",ad:false,tr:false},
+{n:"그라노스",e:"빛",t:"중립",ad:false,tr:false},
+{n:"스텔스 드래곤",e:"여명",t:"중립",ad:false,tr:false},
+{n:"코르투스",e:"여명",t:"공방",ad:true,tr:true},
+{n:"레오파드",e:"물",t:"중립",ad:false,tr:false},
+{n:"고귀한 헤네스",e:"빛",t:"중립",ad:false,tr:false},
+{n:"에피트",e:"황혼",t:"체방",ad:true,tr:true},
+{n:"스킨크 드래곤",e:"땅",t:"중립",ad:false,tr:false},
+{n:"크레스티드 드래곤",e:"바람",t:"중립",ad:false,tr:false},
+{n:"에그마용",e:"땅",t:"체력",ad:true,tr:true},
+{n:"블루썬더",e:"바람",t:"공격",ad:true,tr:true},
+{n:"크로마 블루썬더",e:"바람",t:"공격",ad:true,tr:true},
+{n:"고귀한 페로스",e:"바람",t:"중립",ad:false,tr:false},
+{n:"솔루카니스",e:"빛",t:"방어",ad:true,tr:true},
+{n:"주작",e:"불",t:"중립",ad:false,tr:false},
+{n:"백호",e:"땅",t:"중립",ad:false,tr:false},
+{n:"루살카",e:"물",t:"체공",ad:true,tr:true},
+{n:"베타라",e:"어둠",t:"공격",ad:true,tr:true},
+{n:"크로마 베타라",e:"어둠",t:"공격",ad:true,tr:true},
+{n:"루크바트",e:"여명",t:"체공",ad:true,tr:true},
+{n:"카스룩스",e:"어둠",t:"체력",ad:true,tr:true},
+{n:"고귀한 디아누",e:"땅",t:"중립",ad:false,tr:false},
+{n:"알투스",e:"빛",t:"체공",ad:true,tr:true},
+{n:"에슈",e:"황혼",t:"중립",ad:false,tr:false},
+{n:"기린",e:"바람",t:"중립",ad:false,tr:false},
+{n:"락샤사",e:"물",t:"중립",ad:false,tr:false},
+{n:"루민디스",e:"빛",t:"중립",ad:false,tr:false},
+{n:"피데스",e:"어둠",t:"체공",ad:true,tr:true},
+{n:"비어디 드래곤",e:"악몽",t:"중립",ad:false,tr:false},
+{n:"불나래",e:"불",t:"공방",ad:true,tr:true},
+{n:"크로마 불나래",e:"불",t:"공방",ad:true,tr:true},
+{n:"유르카",e:"물",t:"체력",ad:true,tr:true},
+{n:"고귀한 아누라다",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"쉴로시",e:"악몽",t:"공격",ad:true,tr:true},
+{n:"골디",e:"여명",t:"중립",ad:false,tr:false},
+{n:"라키온",e:"땅",t:"중립",ad:false,tr:false},
+{n:"옥타",e:"물",t:"공방",ad:true,tr:true},
+{n:"크로마 옥타",e:"물",t:"공방",ad:true,tr:true},
+{n:"커스리퍼",e:"악몽",t:"공방",ad:true,tr:true},
+{n:"울르",e:"여명",t:"공격",ad:true,tr:true},
+{n:"엔젤캣",e:"빛",t:"중립",ad:false,tr:false},
+{n:"아프로디테",e:"여명",t:"체방",ad:true,tr:true},
+{n:"그리파르",e:"불",t:"중립",ad:false,tr:false},
+{n:"글라오네",e:"땅",t:"중립",ad:false,tr:false},
+{n:"고귀한 루네라 드래곤",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"블레이즈 드래곤",e:"불",t:"체공",ad:true,tr:true},
+{n:"에버네일",e:"빛",t:"중립",ad:false,tr:false},
+{n:"토네스",e:"악몽",t:"중립",ad:false,tr:false},
+{n:"고귀한 익시아",e:"바람",t:"중립",ad:false,tr:false},
+{n:"프로텍트 드래곤",e:"빛",t:"방어",ad:true,tr:true},
+{n:"크로마 프로텍트 드래곤",e:"빛",t:"방어",ad:true,tr:true},
+{n:"템피오스",e:"황혼",t:"체력",ad:true,tr:true},
+{n:"거들테일 드래곤",e:"땅",t:"중립",ad:false,tr:false},
+{n:"진",e:"악몽",t:"공방",ad:true,tr:true},
+{n:"마카롱",e:"여명",t:"중립",ad:false,tr:false},
+{n:"아르켈론",e:"물",t:"중립",ad:false,tr:false},
+{n:"고귀한 다크혼",e:"황혼",t:"중립",ad:false,tr:false},
+{n:"인베르소",e:"황혼",t:"체공",ad:true,tr:true},
+{n:"티키톡",e:"여명",t:"중립",ad:false,tr:false},
+{n:"레베리",e:"악몽",t:"중립",ad:false,tr:false},
+{n:"리티오",e:"바람",t:"방어",ad:true,tr:true},
+{n:"크로마 리티오",e:"바람",t:"방어",ad:true,tr:true},
+{n:"페이렉스",e:"바람",t:"중립",ad:false,tr:false},
+{n:"스카트",e:"물",t:"방어",ad:true,tr:true},
+{n:"알레샤",e:"물",t:"체력",ad:true,tr:true},
+{n:"크로마 알레샤",e:"물",t:"체력",ad:true,tr:true},
+{n:"야누스",e:"여명",t:"체력",ad:true,tr:true},
+{n:"파이거",e:"불",t:"체력",ad:true,tr:true},
+{n:"크로마 파이거",e:"불",t:"체력",ad:true,tr:true},
+{n:"스카투스",e:"불",t:"방어",ad:true,tr:true},
+{n:"크로마 스카투스",e:"불",t:"방어",ad:true,tr:true},
+{n:"로키",e:"물",t:"방어",ad:true,tr:true},
+{n:"파프니르",e:"불",t:"중립",ad:false,tr:false},
+{n:"후긴",e:"빛",t:"중립",ad:false,tr:false},
+{n:"무닌",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"헤임달",e:"땅",t:"체방",ad:true,tr:true},
+{n:"볼바",e:"물",t:"체력",ad:true,tr:true},
+{n:"토르",e:"바람",t:"공방",ad:true,tr:true},
+{n:"요르문간드",e:"어둠",t:"체공",ad:true,tr:true},
+{n:"마누스",e:"황혼",t:"체방",ad:true,tr:true},
+{n:"잠식된 요르문간드",e:"악몽",t:"공격",ad:true,tr:true},
+{n:"야즈니르",e:"빛",t:"공격",ad:true,tr:true},
+{n:"고귀한 설리반",e:"빛",t:"중립",ad:false,tr:false},
+{n:"논",e:"땅",t:"체방",ad:true,tr:true},
+{n:"플로레",e:"여명",t:"중립",ad:false,tr:false},
+{n:"루시오",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"장고",e:"땅",t:"중립",ad:false,tr:false},
+{n:"레무레스",e:"악몽",t:"공격",ad:true,tr:true},
+{n:"아카이아",e:"땅",t:"공방",ad:true,tr:true},
+{n:"크로마 아카이아",e:"땅",t:"공방",ad:true,tr:true},
+{n:"티아매트",e:"어둠",t:"체공",ad:true,tr:true},
+{n:"리브로",e:"땅",t:"중립",ad:false,tr:false},
+{n:"오벡스",e:"어둠",t:"공격",ad:true,tr:true},
+{n:"흐레스벨그",e:"황혼",t:"체력",ad:true,tr:true},
+{n:"호드",e:"물",t:"중립",ad:false,tr:false},
+{n:"슬레이프니르",e:"땅",t:"중립",ad:false,tr:false},
+{n:"고귀한 펜리르",e:"땅",t:"중립",ad:false,tr:false},
+{n:"하트샤",e:"어둠",t:"공방",ad:true,tr:true},
+{n:"꽁꽁이",e:"빛",t:"중립",ad:false,tr:false},
+{n:"파루파루",e:"불",t:"중립",ad:false,tr:false},
+{n:"발레포르",e:"악몽",t:"체공",ad:true,tr:true},
+{n:"크로마 발레포르",e:"악몽",t:"체공",ad:true,tr:true},
+{n:"메라크",e:"빛",t:"체공",ad:true,tr:true},
+{n:"레긴레이프",e:"황혼",t:"체공",ad:true,tr:true},
+{n:"크로마 레긴레이프",e:"황혼",t:"체공",ad:true,tr:true},
+{n:"적마룡",e:"불",t:"체공",ad:true,tr:true},
+{n:"고귀한 허리케인",e:"바람",t:"중립",ad:false,tr:false},
+{n:"피싱테일 드래곤",e:"물",t:"공격",ad:true,tr:true},
+{n:"까마귀 드래곤",e:"악몽",t:"중립",ad:false,tr:false},
+{n:"까치 드래곤",e:"어둠",t:"중립",ad:false,tr:false},
+{n:"루루",e:"바람",t:"체방",ad:true,tr:true},
+{n:"크로마 루루",e:"바람",t:"체방",ad:true,tr:true},
+{n:"바스카",e:"땅",t:"공격",ad:true,tr:true},
+{n:"블라드",e:"악몽",t:"체력",ad:true,tr:true}
+];
+
+
+
+function switchMainTab(tab) {
+  document.getElementById('section-raid').style.display = tab==='raid' ? '' : 'none';
+  document.getElementById('section-daily').style.display = tab==='daily' ? '' : 'none';
+  document.querySelectorAll('.main-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('main-tab-'+tab).classList.add('active');
+  if(tab!=='raid') document.getElementById('result').style.display='none';
+}
+
+const BOSS_PATTERNS = {
+  dimension: [
+    {name:'(1) 피격 회피증가', elem:'불', type:'ATK-DEF', elemCnt:2, typeCnt:2},
+    {name:'(2) 랜덤 강력 피해', elem:'악몽', type:'HP', elemCnt:2, typeCnt:2},
+    {name:'(3) 피해 감소', elem:'여명', type:'HP-ATK', elemCnt:2, typeCnt:2},
+    {name:'(4) 피해 반사', elem:'빛', type:'HP-DEF', elemCnt:2, typeCnt:2},
+    {name:'(5) 체력 회복', elem:'어둠', type:'ATK', elemCnt:2, typeCnt:2},
+  ],
+  deathlock: [
+    {name:'(1) 체력 회복', elem:'바람', type:'HP', elemCnt:2, typeCnt:2},
+    {name:'(2) 공격력 증가', elem:'어둠', type:'ATK-DEF', elemCnt:2, typeCnt:2},
+    {name:'(3) 방어력 증가', elem:'여명', type:null, elemCnt:2, typeCnt:0},
+    {name:'(4) 사슬 해제', elem:'빛', type:'ATK', elemCnt:3, typeCnt:3},
+    {name:'(5) 방어력 버프', elem:'땅', type:'DEF', elemCnt:2, typeCnt:2},
+  ],
+};
+let currentBoss = 'dimension';
+
+function selectBoss(boss) {
+  currentBoss = boss;
+  document.querySelectorAll('.boss-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('boss-btn-' + boss).classList.add('active');
+  document.querySelectorAll('.boss-dimension').forEach(el => el.style.display = boss==='dimension' ? '' : 'none');
+  document.querySelectorAll('.boss-deathlock').forEach(el => el.style.display = boss==='deathlock' ? '' : 'none');
+  const imgMap = {dimension:'https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/6.png', deathlock:'https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/7.png'};
+  document.getElementById('boss-select-bg').style.backgroundImage = `url('${imgMap[boss]}')`;
+}
+
+// 패턴 정의 (레거시)
+const PATTERNS = {
+  1: {name:'(1) 피격 회피증가', elem:'불', type:'ATK-DEF', elemCnt:2, typeCnt:2},
+  2: {name:'(2) 랜덤 강력 피해', elem:'악몽', type:'HP', elemCnt:2, typeCnt:2},
+  3: {name:'(3) 피해 감소', elem:'여명', type:'HP-ATK', elemCnt:2, typeCnt:2},
+  4: {name:'(4) 피해 반사', elem:'빛', type:'HP-DEF', elemCnt:2, typeCnt:2},
+  5: {name:'(5) 체력 회복', elem:'어둠', type:'ATK', elemCnt:2, typeCnt:2},
+};
+
+const selectedPatterns = new Set([1,2,3,4,5]);
+const playerDragons = [[],[],[],[]]; // 각 플레이어 드래곤 목록
+
+// 초기화
+function init() {
+  const grid = document.getElementById('players-grid');
+  grid.innerHTML = '';
+  for(let i=0; i<4; i++) {
+    grid.innerHTML += `
+    <div class="player-card">
+      <div class="player-title">
+        <div class="player-num">${i+1}</div>
+        <span>${i+1}번 플레이어</span>
+      </div>
+      <div class="dragon-search">
+        <input type="text" placeholder="이름 검색 또는 쉼표로 여러 마리 입력" 
+          oninput="showAC(${i}, this.value)"
+          onfocus="showAC(${i}, this.value)"
+          onblur="setTimeout(()=>hideAC(${i}),150)"
+          onkeydown="handleBulkInput(event, ${i})"
+          id="search-${i}">
+        <div class="autocomplete" id="ac-${i}"></div>
+      </div>
+      <div class="dragon-list" id="list-${i}"></div>
+    </div>`;
+  }
+}
+
+
+
+
+
+// 자동완성
+const transcendDragons = allDragons.filter(d => d.tr);
+
+
+function handleBulkInput(e, playerIdx) {
+  if(e.key !== 'Enter') return;
+  const val = document.getElementById('search-'+playerIdx).value.trim();
+  if(!val) return;
+  if(val.includes(',')) {
+    const names = val.split(',').map(n=>n.trim()).filter(n=>n);
+    names.forEach(query => {
+      const d = transcendDragons.find(x => x.n === query) || transcendDragons.find(x => x.n.includes(query));
+      if(d) addDragon(playerIdx, d.n);
+    });
+  } else {
+    const d = transcendDragons.find(x => x.n === val) || transcendDragons.find(x => x.n.includes(val));
+    if(d) addDragon(playerIdx, d.n);
+  }
+  document.getElementById('search-'+playerIdx).value = '';
+  hideAC(playerIdx);
+}
+
+function showAC(playerIdx, query) {
+  const ac = document.getElementById('ac-'+playerIdx);
+  const results = query
+    ? transcendDragons.filter(d => d.n.includes(query)).slice(0, 20)
+    : transcendDragons.slice(0, 20);
+  if(!results.length) { ac.classList.remove('open'); return; }
+  ac.innerHTML = results.map(d =>
+    `<div class="ac-item" onmousedown="addDragon(${playerIdx}, '${d.n.replace(/'/g,"\'")}')">
+      ${d.n}
+    </div>`
+  ).join('');
+  ac.classList.add('open');
+}
+function hideAC(i) { document.getElementById('ac-'+i).classList.remove('open'); }
+
+function addDragon(playerIdx, name) {
+  const d = allDragons.find(x => x.n === name);
+  if(!d) return;
+  // 중복 체크
+  if(playerDragons[playerIdx].find(x => x.n === name)) {
+    document.getElementById('search-'+playerIdx).value = '';
+    return;
+  }
+  playerDragons[playerIdx].push(d);
+  document.getElementById('search-'+playerIdx).value = '';
+  renderList(playerIdx);
+}
+
+function removeDragon(playerIdx, name) {
+  playerDragons[playerIdx] = playerDragons[playerIdx].filter(d => d.n !== name);
+  renderList(playerIdx);
+}
+
+function renderList(playerIdx) {
+  const el = document.getElementById('list-'+playerIdx);
+  const list = playerDragons[playerIdx];
+  if(!list.length) { el.innerHTML = '<div style="font-size:11px;color:#555;padding:4px">드래곤을 추가하세요</div>'; return; }
+  el.innerHTML = list.map((d,idx) => {
+    return `<div class="dragon-tag">
+      <div class="dragon-tag-info">
+        <span class="dragon-tag-elem e-${d.e}">${d.e}</span>
+        <span class="dragon-tag-name">${d.n}</span>
+        <span class="dragon-tag-type">${d.t}</span>
+      </div>
+      <button class="dragon-tag-remove" onclick="playerDragons[${playerIdx}].splice(${idx},1);renderList(${playerIdx})">×</button>
+    </div>`;
+  }).join('');
+}
+
+// ===== 핵심 조합 로직 =====
+function calculate() {
+  // 유효성 검사
+  for(let i=0; i<4; i++) {
+    if(playerDragons[i].length < 3) {
+      alert(`${i+1}번 플레이어의 드래곤이 3마리 미만입니다.`);
+      return;
+    }
+  }
+
+  // 현재 보스 패턴 조건 수집
+  const conditions = {};
+  for(const p of BOSS_PATTERNS[currentBoss]) {
+    conditions[p.elem] = (conditions[p.elem]||0) + p.elemCnt;
+    if(p.type && p.typeCnt > 0) conditions[p.type+'_type'] = (conditions[p.type+'_type']||0) + p.typeCnt;
+  }
+
+  // 각 플레이어에서 3마리씩 선택하는 모든 조합 시도
+  // 각 플레이어 조합 후보
+  function getCombos(arr, k) {
+    const result = [];
+    function pick(start, chosen) {
+      if(chosen.length === k) { result.push([...chosen]); return; }
+      for(let i=start; i<arr.length; i++) pick(i+1, [...chosen, arr[i]]);
+    }
+    pick(0, []);
+    return result;
+  }
+
+  const combos = [0,1,2,3].map(i => getCombos(playerDragons[i], 3));
+
+  // 최적 조합 찾기 (브루트포스 - 각 플레이어 3마리씩)
+  let bestResult = null;
+  let bestScore = -1;
+
+  // 4명 각각의 조합 수가 많을 수 있으므로 스마트하게 처리
+  const limit = 50; // 각 플레이어 최대 조합 수 제한
+  for(const c0 of combos[0].slice(0,limit)) {
+  for(const c1 of combos[1].slice(0,limit)) {
+  for(const c2 of combos[2].slice(0,limit)) {
+  for(const c3 of combos[3].slice(0,limit)) {
+    const all12 = [...c0,...c1,...c2,...c3];
+    const score = evalCombo(all12, conditions);
+    if(score > bestScore) {
+      bestScore = score;
+      bestResult = [c0,c1,c2,c3];
+      if(score === 1000) break; // 완벽한 조합 찾으면 중단
+    }
+  }
+  if(bestScore===1000) break;
+  }
+  if(bestScore===1000) break;
+  }
+  if(bestScore===1000) break;
+  }
+
+  showResult(bestResult, conditions);
+}
+
+function evalCombo(all12, conditions) {
+  // 속성/타입 카운트
+  const elemCount = {};
+  const typeCount = {};
+  for(const d of all12) {
+    elemCount[d.e] = (elemCount[d.e]||0) + 1;
+    typeCount[d.t] = (typeCount[d.t]||0) + 1;
+  }
+
+  // 조건 체크 - 정확히 맞아야 함 (초과 금지)
+  let score = 0;
+  let perfect = true;
+  for(const [key, cnt] of Object.entries(conditions)) {
+    let actual;
+    if(key.endsWith('_type')) actual = typeCount[key.replace('_type','')] || 0;
+    else actual = elemCount[key] || 0;
+    if(actual === cnt) score += 200;
+    else { perfect = false; score -= Math.abs(actual - cnt) * 100; }
+  }
+  return perfect && Object.keys(conditions).length > 0 ? 1000 : Math.max(0, score);
+}
+
+function showResult(result, conditions) {
+  const all12 = result.flat();
+  const elemCount = {};
+  const typeCount = {};
+  for(const d of all12) {
+    elemCount[d.e] = (elemCount[d.e]||0) + 1;
+    typeCount[d.t] = (typeCount[d.t]||0) + 1;
+  }
+
+  // 패턴 충족 여부
+  let allOk = true;
+  const checkHtml = [];
+  for(const p of BOSS_PATTERNS[currentBoss]) {
+    const ec = elemCount[p.elem]||0;
+    const eOk = ec === p.elemCnt;
+    if(!eOk) allOk = false;
+    checkHtml.push(`
+      <div class="check-item">
+        <span class="${eOk?'check-ok':'check-fail'}">${eOk?'✓':'✗'}</span>
+        <span>${p.name} — ${p.elem}속성 ${ec}/${p.elemCnt}마리</span>
+      </div>`);
+    if(p.type && p.typeCnt > 0) {
+      const tc = typeCount[p.type]||0;
+      const tOk = tc === p.typeCnt;
+      if(!tOk) allOk = false;
+      checkHtml.push(`
+        <div class="check-item">
+          <span class="${tOk?'check-ok':'check-fail'}">${tOk?'✓':'✗'}</span>
+          <span>${p.name} — ${p.type}타입 ${tc}/${p.typeCnt}마리</span>
+        </div>`);
+    }
+  }
+}
+
+init();
+
+</script>
+</body>
+</html>

@@ -153,7 +153,6 @@ h1{font-size:20px;color:#aaa;margin-bottom:16px}
   <a href="./dex.html" class="tab-btn">드래곤 도감</a>
   <a href="./sss.html" class="tab-btn">SSS 랭킹</a>
   <a href="./raid.html" class="tab-btn">아르하 입구</a>
-  <a href="./raid_info.html" class="tab-btn">레이드 정보</a>
 </div>
 
 <div style="display:flex;gap:0;border-bottom:1px solid #333;margin-bottom:16px">
@@ -1147,18 +1146,18 @@ function switchMainTab(tab) {
 
 const BOSS_PATTERNS = {
   dimension: [
-    {name:'(1) 피격 회피증가', elem:'불', type:'ATK-DEF', elemCnt:2, typeCnt:2},
-    {name:'(2) 랜덤 강력 피해', elem:'악몽', type:'HP', elemCnt:2, typeCnt:2},
-    {name:'(3) 피해 감소', elem:'여명', type:'HP-ATK', elemCnt:2, typeCnt:2},
-    {name:'(4) 피해 반사', elem:'빛', type:'HP-DEF', elemCnt:2, typeCnt:2},
-    {name:'(5) 체력 회복', elem:'어둠', type:'ATK', elemCnt:2, typeCnt:2},
+    {name:'(1) 피격 회피증가', elem:'불', type:'공방', elemCnt:2, typeCnt:2},
+    {name:'(2) 랜덤 강력 피해', elem:'악몽', type:'체력', elemCnt:2, typeCnt:2},
+    {name:'(3) 피해 감소', elem:'여명', type:'체공', elemCnt:2, typeCnt:2},
+    {name:'(4) 피해 반사', elem:'빛', type:'체방', elemCnt:2, typeCnt:2},
+    {name:'(5) 체력 회복', elem:'어둠', type:'공격', elemCnt:2, typeCnt:2},
   ],
   deathlock: [
-    {name:'(1) 체력 회복', elem:'바람', type:'HP', elemCnt:2, typeCnt:2},
-    {name:'(2) 공격력 증가', elem:'어둠', type:'ATK-DEF', elemCnt:2, typeCnt:2},
+    {name:'(1) 체력 회복', elem:'바람', type:'체력', elemCnt:2, typeCnt:2},
+    {name:'(2) 공격력 증가', elem:'어둠', type:'공방', elemCnt:2, typeCnt:2},
     {name:'(3) 방어력 증가', elem:'여명', type:null, elemCnt:2, typeCnt:0},
-    {name:'(4) 사슬 해제', elem:'빛', type:'ATK', elemCnt:3, typeCnt:3},
-    {name:'(5) 방어력 버프', elem:'땅', type:'DEF', elemCnt:2, typeCnt:2},
+    {name:'(4) 사슬 해제', elem:'빛', type:'공격', elemCnt:3, typeCnt:3},
+    {name:'(5) 방어력 버프', elem:'땅', type:'방어', elemCnt:2, typeCnt:2},
   ],
 };
 let currentBoss = 'dimension';

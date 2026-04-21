@@ -34,8 +34,6 @@ h1{font-size:20px;color:#aaa;margin-bottom:16px}
 .pattern-name{font-size:12px;font-weight:600;color:#eee}
 .pattern-cond{font-size:11px;color:#f5c842;margin-top:4px}
 
-
-
 /* 플레이어 섹션 */
 .players-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
 .player-card{background:#252538;border:1px solid #333;border-radius:10px;padding:14px}
@@ -106,15 +104,23 @@ h1{font-size:20px;color:#aaa;margin-bottom:16px}
 .check-fail{color:#ef5350;font-size:14px}
 .check-warn{color:#f5c842;font-size:14px}
 
-
-
 .main-tab{padding:8px 20px;font-size:13px;font-weight:600;background:none;border:none;border-bottom:2px solid transparent;color:#888;cursor:pointer;font-family:inherit;margin-bottom:-1px}
 .main-tab:hover{color:#ccc}
 .main-tab.active{color:#5dcff5;border-bottom:2px solid #5dcff5}
 
+/* 보스 탭 스타일 */
+.boss-tab{padding:8px 20px;font-size:13px;font-weight:600;background:none;border:none;border-bottom:2px solid transparent;color:#888;cursor:pointer;font-family:inherit;margin-bottom:-1px}
+.boss-tab:hover{color:#ccc}
+.boss-tab.active{color:#5dcff5;border-bottom:2px solid #5dcff5}
+.boss-tab{padding:8px 20px;font-size:13px;font-weight:600;background:none;border:none;border-bottom:2px solid transparent;color:#888;cursor:pointer;font-family:inherit;margin-bottom:-1px}
+.boss-tab:hover{color:#ccc}
+.boss-tab.active{color:#5dcff5;border-bottom:2px solid #5dcff5}
 .boss-btn{padding:8px 20px;border-radius:8px;border:1px solid #444;background:#2a2a3e;color:#aaa;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.15s}
 .boss-btn:hover{border-color:#555;color:#eee}
 .boss-btn.active{background:#4a90d9;color:#fff;border-color:#4a90d9}
+.boss-tab{padding:8px 20px;font-size:13px;font-weight:600;background:none;border:none;border-bottom:2px solid transparent;color:#888;cursor:pointer;font-family:inherit;margin-bottom:-1px}
+.boss-tab:hover{color:#ccc}
+.boss-tab.active{color:#5dcff5;border-bottom:2px solid #5dcff5}
 #boss-select-section{max-width:480px;position:relative;overflow:hidden;transition:background-image 0.3s}
 #boss-select-bg{position:absolute;right:0;top:0;width:50%;height:100%;background-size:contain;background-repeat:no-repeat;background-position:right center;opacity:0.25;pointer-events:none;transition:background-image 0.3s}
 #boss-select-content{position:relative;z-index:1}
@@ -133,12 +139,12 @@ h1{font-size:20px;color:#aaa;margin-bottom:16px}
   .boss-portrait{width:48px;height:48px}
 }
 
-
-
+/* 툴팁 */
 .info-icon{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:#4a90d9;color:#fff;font-size:10px;font-weight:700;cursor:pointer;margin-left:6px;position:relative;flex-shrink:0;vertical-align:middle}
 .info-tooltip{display:none;position:absolute;left:50%;transform:translateX(-50%);bottom:calc(100% + 8px);background:#252538;border:1px solid #4a90d9;border-radius:8px;padding:14px 16px;width:420px;font-size:12px;color:#ddd;line-height:2;z-index:200;white-space:normal;text-align:left;box-shadow:0 4px 20px rgba(0,0,0,0.5)}
 .info-tooltip::after{content:"";position:absolute;left:50%;transform:translateX(-50%);top:100%;border:6px solid transparent;border-top-color:#4a90d9}
-.info-icon:hover .info-tooltip{display:block}
+.info-icon:hover .info-tooltip,
+.info-icon.active .info-tooltip{display:block}
 .info-tooltip b{color:#5dcff5}
 
 .fail-msg{background:rgba(239,83,80,0.1);border:1px solid rgba(239,83,80,0.3);border-radius:8px;padding:12px;font-size:12px;color:#ef5350;margin-top:8px}
@@ -148,9 +154,9 @@ h1{font-size:20px;color:#aaa;margin-bottom:16px}
 
 <div id="tab-bar">
   <a href="./index.html" id="site-title">
-  <span class="title-main">메인화면 이동</span>
-  <span class="title-sub">made by 닉스</span>
-</a>
+    <span class="title-main">메인화면 이동</span>
+    <span class="title-sub">made by 닉스</span>
+  </a>
   <a href="./tier.html" class="tab-btn">초월 등급표</a>
   <a href="./dex.html" class="tab-btn">드래곤 도감</a>
   <a href="./sss.html" class="tab-btn">SSS 랭킹</a>
@@ -164,16 +170,33 @@ h1{font-size:20px;color:#aaa;margin-bottom:16px}
 </div>
 
 <div id="section-raid">
-<h1>아르하 입구</h1>
+<h1>아르하 입구
+  <span class="info-icon" onclick="toggleTooltip(this)">!
+    <div class="info-tooltip" style="left:0;transform:none;width:300px;bottom:auto;top:calc(100% + 8px)">
+      모스벨: 조합 (1) 파훼 권장<br>
+      잉카라: 조합 (1) 파훼 권장<br>
+      타우킹: 조합 (1), (2) 파훼 상관X<br>
+      (타우킹의 경우 강제종료로 파훼 권장)<br>
+      골락: 조합 (1) 파훼 권장<br>
+      카이저번: 조합 (1) 파훼 권장
+    </div>
+  </span>
+</h1>
 
 <!-- 보스 선택 -->
 <div class="section" id="boss-select-section">
   <div id="boss-select-bg" style="background-image:url('https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/6.png')"></div>
   <div id="boss-select-content">
     <div class="section-title">보스 선택</div>
-    <div style="display:flex;gap:8px">
-      <button class="boss-btn active" id="boss-btn-dimension" onclick="selectBoss('dimension')">디멘션</button>
-      <button class="boss-btn" id="boss-btn-deathlock" onclick="selectBoss('deathlock')">데스락</button>
+    <div style="display:flex;gap:0;border-bottom:1px solid #333;margin-bottom:12px">
+      <button class="boss-tab active" id="boss-btn-dimension" onclick="selectBoss('dimension')">디멘션</button>
+      <button class="boss-tab" id="boss-btn-deathlock" onclick="selectBoss('deathlock')">데스락</button>
+    </div>
+    <div id="boss-desc-dimension" style="font-size:11px;color:#5dcff5;font-weight:400;line-height:1.7">
+      일요일 보스(설리반 등)를 클리어하거나, 일반 보스의 조합에서 한가지의 패턴만 파훼 후 승리시 디멘션 출현.
+    </div>
+    <div id="boss-desc-deathlock" style="display:none;font-size:11px;color:#5dcff5;font-weight:400;line-height:1.7">
+      황혼, 바람, 물 등 디멘션 조합에서 쓰이지 않는 조합으로 디멘션 전투 패배시 데스락 출현.
     </div>
   </div>
 </div>
@@ -218,6 +241,7 @@ h1{font-size:20px;color:#aaa;margin-bottom:16px}
         <div class="pattern-cond">어둠속성 2마리 · 공격타입 2마리</div>
       </div>
     </div>
+    
     <!-- 데스락 패턴 -->
     <div class="pattern-item boss-deathlock" style="display:none">
       <div>
@@ -250,7 +274,7 @@ h1{font-size:20px;color:#aaa;margin-bottom:16px}
     <div class="pattern-item boss-deathlock" style="display:none">
       <div>
         <div class="pattern-name">(5) 방어력 1.5배 버프</div>
-        <div class="pattern-desc">아군의 방어력 1.5배 상승 (★★☆)</div>
+        <div class="pattern-desc">아군의 방어력 1.5배 상승</div>
         <div class="pattern-cond">땅속성 2마리 · 방어타입 2마리</div>
       </div>
     </div>
@@ -290,7 +314,13 @@ h1{font-size:20px;color:#aaa;margin-bottom:16px}
 
 </div><!-- /section-raid -->
 <div id="section-daily" style="display:none">
-<h1 style="margin-bottom:16px">일반 보스 패턴</h1>
+<h1 style="margin-bottom:16px">일반 보스 패턴
+  <span style="display:block; font-size:13px; color:#888; font-weight:normal; margin-top:4px">
+    일요일 보스들의 경우, 크리티컬을 올려주는 장신구를 사용합니다.
+    <br>기본적으로 스텟은 체력, 공격, 방어 순서로 1200 @ 300 정도를 맞춥니다.
+    <br>수요일 - 타우킹의 경우, 모든 스텟을 공격력으로 몰아줍니다.
+  </span>
+</h1>
 
 <!-- 월요일 -->
 <div class="section boss-section">
@@ -298,6 +328,7 @@ h1{font-size:20px;color:#aaa;margin-bottom:16px}
     <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/1.png" class="boss-portrait" alt="월요일 — 모스벨">
     <div class="boss-header-text">
       <div class="section-title">월요일 — 모스벨</div>
+      <div style="font-size:11px;color:#888">(체력 19.000, 공격 2.300, 방어 60)</div>
       <div style="font-size:11px;color:#888">드롭: 달의 정수 &nbsp;|&nbsp; 1인 최소 EVAL: 10000~11000</div>
     </div>
   </div>
@@ -325,6 +356,7 @@ h1{font-size:20px;color:#aaa;margin-bottom:16px}
     <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/2.png" class="boss-portrait" alt="화요일 — 잉카라">
     <div class="boss-header-text">
       <div class="section-title">화요일 — 잉카라</div>
+      <div style="font-size:11px;color:#888">(체력 9.000, 공격 3.000, 방어 100)</div>
       <div style="font-size:11px;color:#888">드롭: 불의 정수 &nbsp;|&nbsp; 1인 최소 EVAL: 10000~11000</div>
     </div>
   </div>
@@ -332,14 +364,16 @@ h1{font-size:20px;color:#aaa;margin-bottom:16px}
     <div class="pattern-item">
       <div>
         <div class="pattern-name">(1) 광역 3배 피해</div>
-        <div class="pattern-desc">기본공격 시 랜덤 4마리에 3배 피해</div>
+        <div class="pattern-desc">기본공격 시 랜덤 4마리에 3배 피해
+          <br>(단일 공격에는 적용되지 않음)</div>
         <div class="pattern-cond">물속성 3마리 · 중립타입 3마리</div>
       </div>
     </div>
     <div class="pattern-item">
       <div>
         <div class="pattern-name">(2) 광역 2배 피해</div>
-        <div class="pattern-desc">기본공격 시 랜덤 3마리에 2배 피해</div>
+        <div class="pattern-desc">기본공격 시 랜덤 3마리에 2배 피해
+          <br>(단일 공격에는 적용되지 않음)</div>
         <div class="pattern-cond">땅속성 3마리 · 공격타입 3마리</div>
       </div>
     </div>
@@ -352,6 +386,7 @@ h1{font-size:20px;color:#aaa;margin-bottom:16px}
     <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/3.png" class="boss-portrait" alt="수요일 — 타우킹">
     <div class="boss-header-text">
       <div class="section-title">수요일 — 타우킹</div>
+      <div style="font-size:11px;color:#888">(체력 160.000, 공격 ???, 방어f ???)</div>
       <div style="font-size:11px;color:#888">드롭: 물의 정수 &nbsp;|&nbsp; 1인 최소 EVAL: 7000</div>
     </div>
   </div>
@@ -379,6 +414,7 @@ h1{font-size:20px;color:#aaa;margin-bottom:16px}
     <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/4.png" class="boss-portrait" alt="목요일 — 골락">
     <div class="boss-header-text">
       <div class="section-title">목요일 — 골락</div>
+      <div style="font-size:11px;color:#888">(체력 6.000, 공격 1.600, 방어 300)</div>
       <div style="font-size:11px;color:#888">드롭: 땅의 정수, 골락의 알 C~A &nbsp;|&nbsp; 1인 최소 EVAL: 11000~12000</div>
     </div>
   </div>
@@ -406,6 +442,7 @@ h1{font-size:20px;color:#aaa;margin-bottom:16px}
     <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/5.png" class="boss-portrait" alt="금요일 — 카이저 번">
     <div class="boss-header-text">
       <div class="section-title">금요일 — 카이저 번</div>
+      <div style="font-size:11px;color:#888">(체력 20.000, 공격 2.500, 방어 60)</div>
       <div style="font-size:11px;color:#888">드롭: 태양의 정수, 카이저 번의 알 C~A &nbsp;|&nbsp; 1인 최소 EVAL: 11000~12000</div>
     </div>
   </div>
@@ -427,6 +464,140 @@ h1{font-size:20px;color:#aaa;margin-bottom:16px}
   </div>
 </div>
 
+<div class="section boss-section">
+  <div class="boss-header">
+    <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/57.png" class="boss-portrait" alt="일요일 — 포이즌리버">
+    <div class="boss-header-text">
+      <div class="section-title">일요일 — 포이즌리버</div>
+      <div style="font-size:11px;color:#888">(체력 15,000, 공격 ???, 방어 ???)</div>
+      <div style="font-size:11px;color:#888">드롭: 랜덤 정수, 포이즌리버의 알 &nbsp;|&nbsp; 1인 최소 EVAL: 13000이상</div>
+    </div>
+  </div>
+  <div class="pattern-grid">
+    <div class="pattern-item">
+      <div>
+        <div class="pattern-name">(1) 아군의 공격력 1.5배 상승</div>
+        <div class="pattern-desc">?</div>
+        <div class="pattern-cond">한가지 '속성'통일 12마리</div>
+      </div>
+    </div>
+    <div class="pattern-item">
+      <div>
+        <div class="pattern-name">(2) 아군의 방어력 1.5배 상승</div>
+        <div class="pattern-desc">?</div>
+        <div class="pattern-cond">한가지 '타입'통일 12마리</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section boss-section">
+  <div class="boss-header">
+    <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/58.png" class="boss-portrait" alt="일요일 — 다크베인">
+    <div class="boss-header-text">
+      <div class="section-title">일요일 — 다크베인</div>
+      <div style="font-size:11px;color:#888">(체력 30.000, 공격 ???, 방어 ???)</div>
+      <div style="font-size:11px;color:#888">드롭: 랜덤 정수, 다크베인의 알 C~A &nbsp;|&nbsp; 1인 최소 EVAL: 14000이상</div>
+    </div>
+  </div>
+  <div class="pattern-grid">
+    <div class="pattern-item">
+      <div>
+        <div class="pattern-name">(1) 아군의 공격력 1.5배 상승</div>
+        <div class="pattern-desc">?</div>
+        <div class="pattern-cond">한가지 '속성'통일 12마리</div>
+      </div>
+    </div>
+    <div class="pattern-item">
+      <div>
+        <div class="pattern-name">(2) 아군의 방어력 1.5배 상승</div>
+        <div class="pattern-desc">?</div>
+        <div class="pattern-cond">한가지 '타입'통일 12마리</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section boss-section">
+  <div class="boss-header">
+    <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/59.png" class="boss-portrait" alt="일요일 — 설리반">
+    <div class="boss-header-text">
+      <div class="section-title">일요일 — 설리반</div>
+      <div style="font-size:11px;color:#888">(체력 4.500, 공격 ???, 방어 ???)</div>
+      <div style="font-size:11px;color:#888">드롭: 랜덤 정수, 설리반의 알 C~A &nbsp;|&nbsp; 1인 최소 EVAL: 15500이상</div>
+    </div>
+  </div>
+  <div class="pattern-grid">
+    <div class="pattern-item">
+      <div>
+        <div class="pattern-name">(1) 아군의 공격력 1.5배 상승</div>
+        <div class="pattern-desc">?</div>
+        <div class="pattern-cond">한가지 '속성'통일 12마리</div>
+      </div>
+    </div>
+    <div class="pattern-item">
+      <div>
+        <div class="pattern-name">(2) 아군의 방어력 1.5배 상승</div>
+        <div class="pattern-desc">?</div>
+        <div class="pattern-cond">한가지 '타입'통일 12마리</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section boss-section">
+  <div class="boss-header">
+    <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/60.png" class="boss-portrait" alt="일요일 — 블러디터스크">
+    <div class="boss-header-text">
+      <div class="section-title">일요일 — 블러디터스크</div>
+      <div style="font-size:11px;color:#888">(체력 5.500, 공격 ???, 방어 ???)</div>
+      <div style="font-size:11px;color:#888">드롭: 랜덤 정수, 블러디터스크의 알 C~A &nbsp;|&nbsp; 1인 최소 EVAL: 15000이상</div>
+    </div>
+  </div>
+  <div class="pattern-grid">
+    <div class="pattern-item">
+      <div>
+        <div class="pattern-name">(1) 아군의 공격력 1.5배 상승</div>
+        <div class="pattern-desc">?</div>
+        <div class="pattern-cond">한가지 '속성'통일 12마리</div>
+      </div>
+    </div>
+    <div class="pattern-item">
+      <div>
+        <div class="pattern-name">(2) 아군의 방어력 1.5배 상승</div>
+        <div class="pattern-desc">?</div>
+        <div class="pattern-cond">한가지 '타입'통일 12마리</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section boss-section">
+  <div class="boss-header">
+    <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/61.png" class="boss-portrait" alt="일요일 — 애니마라">
+    <div class="boss-header-text">
+      <div class="section-title">일요일 — 애니마라</div>
+      <div style="font-size:11px;color:#888">(체력 15,000, 공격 ???, 방어 ???)</div>
+      <div style="font-size:11px;color:#888">드롭: 랜덤 정수, 애니마라의 알 &nbsp;|&nbsp; 1인 최소 EVAL: 15000이상</div>
+    </div>
+  </div>
+  <div class="pattern-grid">
+    <div class="pattern-item">
+      <div>
+        <div class="pattern-name">(1) 아군의 공격력 1.5배 상승</div>
+        <div class="pattern-desc">?</div>
+        <div class="pattern-cond">한가지 '속성'통일 12마리</div>
+      </div>
+    </div>
+    <div class="pattern-item">
+      <div>
+        <div class="pattern-name">(2) 아군의 방어력 1.5배 상승</div>
+        <div class="pattern-desc">?</div>
+        <div class="pattern-cond">한가지 '타입'통일 12마리</div>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- 토요일 -->
 <div class="section">
   <div class="section-title">토요일 — 랜덤 보스</div>
@@ -1137,8 +1308,6 @@ const allDragons=[
 {n:"블라드",e:"악몽",t:"체력",ad:true,tr:true}
 ];
 
-
-
 function switchMainTab(tab) {
   document.getElementById('section-raid').style.display = tab==='raid' ? '' : 'none';
   document.getElementById('section-daily').style.display = tab==='daily' ? '' : 'none';
@@ -1167,28 +1336,28 @@ let currentBoss = 'dimension';
 
 function selectBoss(boss) {
   currentBoss = boss;
-  document.querySelectorAll('.boss-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.boss-tab').forEach(b => b.classList.remove('active'));
   document.getElementById('boss-btn-' + boss).classList.add('active');
   document.querySelectorAll('.boss-dimension').forEach(el => el.style.display = boss==='dimension' ? '' : 'none');
   document.querySelectorAll('.boss-deathlock').forEach(el => el.style.display = boss==='deathlock' ? '' : 'none');
+  document.getElementById('boss-desc-dimension').style.display = boss==='dimension' ? '' : 'none';
+  document.getElementById('boss-desc-deathlock').style.display = boss==='deathlock' ? '' : 'none';
   const imgMap = {dimension:'https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/6.png', deathlock:'https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/7.png'};
   document.getElementById('boss-select-bg').style.backgroundImage = `url('${imgMap[boss]}')`;
   saveToStorage();
 }
 
-// 패턴 정의 (레거시)
 const PATTERNS = {
-  1: {name:'(1) 피격 회피증가', elem:'불', type:'ATK-DEF', elemCnt:2, typeCnt:2},
-  2: {name:'(2) 랜덤 강력 피해', elem:'악몽', type:'HP', elemCnt:2, typeCnt:2},
-  3: {name:'(3) 피해 감소', elem:'여명', type:'HP-ATK', elemCnt:2, typeCnt:2},
-  4: {name:'(4) 피해 반사', elem:'빛', type:'HP-DEF', elemCnt:2, typeCnt:2},
-  5: {name:'(5) 체력 회복', elem:'어둠', type:'ATK', elemCnt:2, typeCnt:2},
+  1: {name:'(1) 피격 회피증가', elem:'불', type:'공방', elemCnt:2, typeCnt:2},
+  2: {name:'(2) 랜덤 강력 피해', elem:'악몽', type:'체력', elemCnt:2, typeCnt:2},
+  3: {name:'(3) 피해 감소', elem:'여명', type:'체공', elemCnt:2, typeCnt:2},
+  4: {name:'(4) 피해 반사', elem:'빛', type:'체방', elemCnt:2, typeCnt:2},
+  5: {name:'(5) 체력 회복', elem:'어둠', type:'공격', elemCnt:2, typeCnt:2},
 };
 
 const selectedPatterns = new Set([1,2,3,4,5]);
-const playerDragons = [[],[],[],[]]; // 각 플레이어 드래곤 목록
+const playerDragons = [[],[],[],[]];
 
-// 초기화
 function init() {
   const grid = document.getElementById('players-grid');
   grid.innerHTML = '';
@@ -1214,24 +1383,18 @@ function init() {
   }
 }
 
-
-
-
-
-// 자동완성
-
 function saveToStorage() {
   try {
-    localStorage.setItem('raid_boss', currentBoss);
-    localStorage.setItem('raid_dragons', JSON.stringify(playerDragons));
+    localStorage.setItem('raid_boss_kr', currentBoss);
+    localStorage.setItem('raid_dragons_kr', JSON.stringify(playerDragons));
   } catch(e) {}
 }
 
 function loadFromStorage() {
   try {
-    const boss = localStorage.getItem('raid_boss');
+    const boss = localStorage.getItem('raid_boss_kr');
     if(boss) selectBoss(boss);
-    const dragons = localStorage.getItem('raid_dragons');
+    const dragons = localStorage.getItem('raid_dragons_kr');
     if(dragons) {
       const saved = JSON.parse(dragons);
       saved.forEach((list, i) => {
@@ -1248,7 +1411,6 @@ function loadFromStorage() {
 }
 
 const transcendDragons = allDragons.filter(d => d.tr);
-
 
 function handleBulkInput(e, playerIdx) {
   if(e.key !== 'Enter') return;
@@ -1267,7 +1429,6 @@ function handleBulkInput(e, playerIdx) {
   document.getElementById('search-'+playerIdx).value = '';
   hideAC(playerIdx);
 }
-
 
 function resetPlayer(playerIdx) {
   playerDragons[playerIdx] = [];
@@ -1293,7 +1454,6 @@ function hideAC(i) { document.getElementById('ac-'+i).classList.remove('open'); 
 function addDragon(playerIdx, name) {
   const d = allDragons.find(x => x.n === name);
   if(!d) return;
-  // 중복 체크
   if(playerDragons[playerIdx].find(x => x.n === name)) {
     document.getElementById('search-'+playerIdx).value = '';
     return;
@@ -1325,11 +1485,7 @@ function renderList(playerIdx) {
   }).join('');
 }
 
-// ===== 핵심 조합 로직 =====
 function calculate() {
-  console.log("calculate 실행됨");
-  console.log("playerDragons:", playerDragons.map(p=>p.length));
-  // 유효성 검사
   for(let i=0; i<4; i++) {
     if(playerDragons[i].length < 3) {
       alert(`${i+1}번 플레이어의 드래곤이 3마리 미만입니다. 현재 ${playerDragons[i].length}마리`);
@@ -1337,18 +1493,12 @@ function calculate() {
     }
   }
 
-  // 현재 보스 패턴 조건 수집
   const conditions = {};
   for(const p of BOSS_PATTERNS[currentBoss]) {
     conditions[p.elem] = (conditions[p.elem]||0) + p.elemCnt;
     if(p.type && p.typeCnt > 0) conditions[p.type+'_type'] = (conditions[p.type+'_type']||0) + p.typeCnt;
   }
 
-  // 조건: 각 속성/타입 정확히 N마리
-  // 전략: 각 조건 속성+타입 쌍을 서로 다른 플레이어에게 1마리씩 배정
-  // 같은 플레이어에게 같은 조건속성 2마리 배정 금지
-
-  // 필요한 드래곤 슬롯 목록 생성
   const reqSlots = [];
   for(const p of BOSS_PATTERNS[currentBoss]) {
     const paired = Math.min(p.elemCnt, p.typeCnt || 0);
@@ -1361,20 +1511,15 @@ function calculate() {
   const result = [[],[],[],[]];
   const condElems = new Set(BOSS_PATTERNS[currentBoss].map(p=>p.elem));
   const condTypes = new Set(BOSS_PATTERNS[currentBoss].filter(p=>p.type).map(p=>p.type));
+  const playerCondElem = [{},{},{},{}];
+  const playerCondType = [{},{},{},{}];
 
-  // 플레이어별 사용된 조건속성/타입 추적
-  const playerCondElem = [{},{},{},{}]; // pi -> {속성: count}
-  const playerCondType = [{},{},{},{}]; // pi -> {타입: count}
-
-  // 조건 슬롯 채우기 - 한 플레이어에게 같은 조건속성 1마리만 허용
   for(const slot of reqSlots) {
     if(slot.done) continue;
     for(let pi=0; pi<4; pi++) {
       if(result[pi].length >= 3) continue;
-      // 이 플레이어에 이미 이 조건속성 드래곤이 있으면 skip
       if(slot.elem && (playerCondElem[pi][slot.elem]||0) >= 1) continue;
       if(slot.type && (playerCondType[pi][slot.type]||0) >= 1) continue;
-
       const d = playerDragons[pi].find(x =>
         !globalUsed.has(x.n) &&
         (slot.elem ? x.e === slot.elem : true) &&
@@ -1391,7 +1536,6 @@ function calculate() {
     }
   }
 
-  // 나머지 자리 채우기 - 전체 조건 카운트 초과 방지
   for(let pi=0; pi<4; pi++) {
     while(result[pi].length < 3) {
       const allSoFar = result.flat();
@@ -1401,12 +1545,8 @@ function calculate() {
         usedElem[x.e] = (usedElem[x.e]||0)+1;
         usedType[x.t] = (usedType[x.t]||0)+1;
       }
-
-      // 조건 수에 이미 도달한 속성/타입은 절대 사용 금지
       const blockedElems = new Set(Object.keys(conditions).filter(k=>!k.endsWith('_type') && (usedElem[k]||0) >= conditions[k]));
       const blockedTypes = new Set(Object.keys(conditions).filter(k=>k.endsWith('_type') && (usedType[k.replace('_type','')]||0) >= conditions[k]).map(k=>k.replace('_type','')));
-
-      // 조건 속성 아닌 것 우선, blocked 제외
       let d = playerDragons[pi].find(x =>
         !globalUsed.has(x.n) && !blockedElems.has(x.e) && !blockedTypes.has(x.t) && !condElems.has(x.e) && !condTypes.has(x.t)
       );
@@ -1416,7 +1556,6 @@ function calculate() {
       if(!d) d = playerDragons[pi].find(x =>
         !globalUsed.has(x.n) && !blockedElems.has(x.e) && !blockedTypes.has(x.t)
       );
-      // blocked는 절대 넣지 않음 - 못 채워도 그냥 넘어감
       if(!d) break;
       result[pi].push(d);
       globalUsed.add(d.n);
@@ -1424,35 +1563,6 @@ function calculate() {
   }
 
   showResult(result, conditions);
-}
-
-function evalCombo(all12, conditions) {
-  const elemCount = {};
-  const typeCount = {};
-  for(const d of all12) {
-    elemCount[d.e] = (elemCount[d.e]||0) + 1;
-    typeCount[d.t] = (typeCount[d.t]||0) + 1;
-  }
-
-  // 초과 체크 - 하나라도 초과하면 즉시 탈락
-  for(const [key, cnt] of Object.entries(conditions)) {
-    let actual;
-    if(key.endsWith('_type')) actual = typeCount[key.replace('_type','')] || 0;
-    else actual = elemCount[key] || 0;
-    if(actual > cnt) return -Infinity; // 초과 = 절대 안됨
-  }
-
-  // 미달 체크 - 조건 충족 개수로 점수
-  let score = 0;
-  let perfect = true;
-  for(const [key, cnt] of Object.entries(conditions)) {
-    let actual;
-    if(key.endsWith('_type')) actual = typeCount[key.replace('_type','')] || 0;
-    else actual = elemCount[key] || 0;
-    if(actual === cnt) score += 200;
-    else { perfect = false; score -= (cnt - actual) * 100; }
-  }
-  return perfect && Object.keys(conditions).length > 0 ? 1000 : score;
 }
 
 function showResult(result, conditions) {
@@ -1464,7 +1574,6 @@ function showResult(result, conditions) {
     typeCount[d.t] = (typeCount[d.t]||0) + 1;
   }
 
-  // 패턴 충족 여부
   let allOk = true;
   const checkHtml = [];
   for(const p of BOSS_PATTERNS[currentBoss]) {
@@ -1488,7 +1597,6 @@ function showResult(result, conditions) {
     }
   }
 
-  // 결과 렌더링
   document.getElementById('result').style.display = 'block';
   document.getElementById('result-badge').className = 'result-badge ' + (allOk?'badge-ok':'badge-fail');
   document.getElementById('result-badge').textContent = allOk ? '✓ 모든 패턴 파훼 가능' : '✗ 일부 패턴 미충족';
@@ -1514,6 +1622,19 @@ function showResult(result, conditions) {
 
 init();
 loadFromStorage();
+
+function toggleTooltip(el) {
+  el.classList.toggle('active');
+  document.querySelectorAll('.info-icon.active').forEach(other => {
+    if(other !== el) other.classList.remove('active');
+  });
+}
+
+document.addEventListener('click', function(e) {
+  if(!e.target.closest('.info-icon')) {
+    document.querySelectorAll('.info-icon.active').forEach(el => el.classList.remove('active'));
+  }
+});
 
 </script>
 </body>

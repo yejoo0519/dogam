@@ -164,31 +164,16 @@ h1{font-size:20px;color:#aaa;margin-bottom:16px}
 </div>
 
 <div id="section-raid">
-<h1>아르하 입구
-  <span class="info-icon" onclick="toggleTooltip(this)">!
-    <div class="info-tooltip" style="left:0;transform:none;width:300px;bottom:auto;top:calc(100% + 8px)">
-      모스벨: 조합 (1) 파훼 권장<br>
-      잉카라: 조합 (1) 파훼 권장<br>
-      타우킹: 조합 (1), (2) 파훼 상관X (강제종료로 파훼 권장)<br>
-      골락: 조합 (1) 파훼 권장<br>
-      카이저번: 조합 (1) 파훼 권장
-    </div>
-  </span>
-</h1>
+<h1>아르하 입구</h1>
 
 <!-- 보스 선택 -->
 <div class="section" id="boss-select-section">
   <div id="boss-select-bg" style="background-image:url('https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/6.png')"></div>
   <div id="boss-select-content">
     <div class="section-title">보스 선택</div>
-    <div style="display:flex;gap:0;border-bottom:1px solid #333;margin-bottom:12px">
-      <button class="boss-tab active" id="boss-btn-dimension" onclick="selectBoss('dimension')">Dimension</button>
-      <button class="boss-tab" id="boss-btn-deathlock" onclick="selectBoss('deathlock')">Deathlock</button>
-    </div>
-    <div id="boss-desc-dimension" style="font-size:11px;color:#5dcff5;font-weight:400;line-height:1.7">
-      일반 보스의 조합에서 한가지의 패턴만 파훼 후 승리시 디멘션 출현.
-    <div id="boss-desc-deathlock" style="display:none;font-size:11px;color:#5dcff5;font-weight:400;line-height:1.7">
-      황혼, 바람, 물 등 디멘션 조합에서 쓰이지 않는 조합으로 디멘션 전투 패배시 데스락 출현.
+    <div style="display:flex;gap:8px">
+      <button class="boss-btn active" id="boss-btn-dimension" onclick="selectBoss('dimension')">디멘션</button>
+      <button class="boss-btn" id="boss-btn-deathlock" onclick="selectBoss('deathlock')">데스락</button>
     </div>
   </div>
 </div>
@@ -265,7 +250,7 @@ h1{font-size:20px;color:#aaa;margin-bottom:16px}
     <div class="pattern-item boss-deathlock" style="display:none">
       <div>
         <div class="pattern-name">(5) 방어력 1.5배 버프</div>
-        <div class="pattern-desc">아군의 방어력 1.5배 상승</div>
+        <div class="pattern-desc">아군의 방어력 1.5배 상승 (★★☆)</div>
         <div class="pattern-cond">땅속성 2마리 · 방어타입 2마리</div>
       </div>
     </div>
@@ -305,13 +290,7 @@ h1{font-size:20px;color:#aaa;margin-bottom:16px}
 
 </div><!-- /section-raid -->
 <div id="section-daily" style="display:none">
-<h1 style="margin-bottom:16px">일반 보스 패턴
-  <span style="display:block; font-size:13px; color:#888; font-weight:normal; margin-top:4px">
-    요청 드래곤을 3마리 미만 또는 5마리 초과로 사용하면 해당 조합이 파훼됩니다.
-    조합을 하나 이상 미파훼 상태로 보스를 처치하면 디멘션 게이트가 열립니다.
-  </span>
-</h1>
-  
+<h1 style="margin-bottom:16px">일반 보스 패턴</h1>
 
 <!-- 월요일 -->
 <div class="section boss-section">
@@ -319,7 +298,6 @@ h1{font-size:20px;color:#aaa;margin-bottom:16px}
     <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/1.png" class="boss-portrait" alt="월요일 — 모스벨">
     <div class="boss-header-text">
       <div class="section-title">월요일 — 모스벨</div>
-      <div style="font-size:11px;color:#888">(체력 19.000, 공격 2.300, 방어 60)</div>
       <div style="font-size:11px;color:#888">드롭: 달의 정수 &nbsp;|&nbsp; 1인 최소 EVAL: 10000~11000</div>
     </div>
   </div>
@@ -347,7 +325,6 @@ h1{font-size:20px;color:#aaa;margin-bottom:16px}
     <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/2.png" class="boss-portrait" alt="화요일 — 잉카라">
     <div class="boss-header-text">
       <div class="section-title">화요일 — 잉카라</div>
-      <div style="font-size:11px;color:#888">(체력 9.000, 공격 3.000, 방어 100)</div>
       <div style="font-size:11px;color:#888">드롭: 불의 정수 &nbsp;|&nbsp; 1인 최소 EVAL: 10000~11000</div>
     </div>
   </div>
@@ -375,7 +352,6 @@ h1{font-size:20px;color:#aaa;margin-bottom:16px}
     <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/3.png" class="boss-portrait" alt="수요일 — 타우킹">
     <div class="boss-header-text">
       <div class="section-title">수요일 — 타우킹</div>
-      <div style="font-size:11px;color:#888">(체력 160.000, 공격 ???, 방어f ???)</div>
       <div style="font-size:11px;color:#888">드롭: 물의 정수 &nbsp;|&nbsp; 1인 최소 EVAL: 7000</div>
     </div>
   </div>
@@ -403,7 +379,6 @@ h1{font-size:20px;color:#aaa;margin-bottom:16px}
     <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/4.png" class="boss-portrait" alt="목요일 — 골락">
     <div class="boss-header-text">
       <div class="section-title">목요일 — 골락</div>
-      <div style="font-size:11px;color:#888">(체력 6.000, 공격 1.600, 방어 300)</div>
       <div style="font-size:11px;color:#888">드롭: 땅의 정수, 골락의 알 C~A &nbsp;|&nbsp; 1인 최소 EVAL: 11000~12000</div>
     </div>
   </div>
@@ -431,7 +406,6 @@ h1{font-size:20px;color:#aaa;margin-bottom:16px}
     <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/5.png" class="boss-portrait" alt="금요일 — 카이저 번">
     <div class="boss-header-text">
       <div class="section-title">금요일 — 카이저 번</div>
-      <div style="font-size:11px;color:#888">(체력 20.000, 공격 2.500, 방어 60)</div>
       <div style="font-size:11px;color:#888">드롭: 태양의 정수, 카이저 번의 알 C~A &nbsp;|&nbsp; 1인 최소 EVAL: 11000~12000</div>
     </div>
   </div>
@@ -453,7 +427,6 @@ h1{font-size:20px;color:#aaa;margin-bottom:16px}
   </div>
 </div>
 
-  
 <!-- 토요일 -->
 <div class="section">
   <div class="section-title">토요일 — 랜덤 보스</div>

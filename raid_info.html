@@ -39,7 +39,22 @@ h1{font-size:20px;color:#aaa;margin-bottom:16px}
 .tip-item{padding:7px 10px;border-left:2px solid #5dcff5;background:rgba(93,207,245,0.05);border-radius:0 6px 6px 0;margin-bottom:6px;font-size:12px;color:#ddd;line-height:1.5}
 .tip-item:last-child{margin-bottom:0}
 #boss-detail-content .boss-name{font-size:15px;font-weight:700;color:#eee;margin-bottom:10px}
-
+#boss-detail-bg{
+  position:absolute;
+  inset:0;
+  background-size:contain;
+  background-position:right center;
+  background-repeat:no-repeat;
+  opacity:0.15;
+  pointer-events:none;
+  width: 70%;
+  
+}
+@media(max-width:600px){
+  #boss-detail-content img {
+    display: none;
+  }
+}
 
 
 </style>
@@ -134,8 +149,8 @@ h1{font-size:20px;color:#aaa;margin-bottom:16px}
       <div class="boss-icon-name">블루썬더</div>
     </div>
     <div class="boss-icon-card" onclick="showBossInfo(23, this)">
-      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/23.png" alt="베테라">
-      <div class="boss-icon-name">베테라</div>
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/23.png" alt="베타라">
+      <div class="boss-icon-name">베타라</div>
     </div>
     <div class="boss-icon-card" onclick="showBossInfo(24, this)">
       <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/24.png" alt="불나래">
@@ -231,7 +246,7 @@ const bossNames = {
   20: "레굴루스",
   21: "벨레드",
   22: "블루썬더",
-  23: "베테라",
+  23: "베타라",
   24: "불나래",
   25: "옥타",
   26: "프로텍트",
@@ -248,7 +263,888 @@ const bossNames = {
   42: "선셋",
   43: "알레샤"
 };
-const bossData = {};
+const bossData = {
+
+  8: {
+    name: `블리자드 <span style="font-size:13px;font-weight:400;color:#888;margin-left:4px">
+      <br>약점 속성 : <span style="color:#020202;background:#c29160;padding:1px 6px;border-radius:4px;font-size:13px">땅</span>`,
+    desc: `
+      <div style="display:flex;gap:16px;align-items:center">
+        <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/8.png"
+             style="width:100px;height:300px;object-fit:contain;border-radius:8px;flex-shrink:0">
+        <div>
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">약점공략시 버프</span>
+            <br>방어력 2배(피격데미지 1/2)
+          </div>
+          <div class="tip-item"> 해당 보스 공략의 경우,
+<br>자세한 내용을 찾기 어려워 관련 내용 관련해서 공략글 작성해주실분은 카카오톡, 또는 디스코드로 연락 부탁드립니다.</div>
+           
+        </div>
+      </div>
+    `
+  },
+
+  9: {
+    name: `이그나 <span style="font-size:13px;font-weight:400;color:#888;margin-left:4px">
+      <br>약점 속성 : <span style="color:#020202;background:#1989e5;padding:1px 6px;border-radius:4px;font-size:13px">물</span>`,
+    desc: `
+      <div style="display:flex;gap:16px;align-items:center">
+        <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/9.png"
+             style="width:100px;height:300px;object-fit:contain;border-radius:8px;flex-shrink:0">
+        <div>
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">약점공략시 버프</span>
+            <br>공격력 2배(공격데미지 x2)
+          </div>
+          <div class="tip-item"> 해당 보스 공략의 경우,
+<br>자세한 내용을 찾기 어려워 관련 내용 관련해서 공략글 작성해주실분은 카카오톡, 또는 디스코드로 연락 부탁드립니다.</div>
+           
+        </div>
+      </div>
+    `
+  },
+
+  10: {
+    name: `다크나이트 <span style="font-size:13px;font-weight:400;color:#888;margin-left:4px">
+      <br>약점 속성 : <span style="color:#020202;background:#f2e463;padding:1px 6px;border-radius:4px;font-size:13px">빛</span>`,
+    desc: `
+      <div style="display:flex;gap:16px;align-items:center">
+        <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/10.png"
+             style="width:100px;height:300px;object-fit:contain;border-radius:8px;flex-shrink:0">
+        <div>
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">약점공략시 버프</span>
+            <br>방어력 2배(피격데미지1/2)
+          </div>
+          <div class="tip-item"> 해당 보스 공략의 경우,
+<br>자세한 내용을 찾기 어려워 관련 내용 관련해서 공략글 작성해주실분은 카카오톡, 또는 디스코드로 연락 부탁드립니다.</div>
+           
+        </div>
+      </div>
+    `
+  },
+
+  11: {
+    name: `말덱 <span style="font-size:13px;font-weight:400;color:#888;margin-left:4px">
+      <br>약점 속성 : <span style="color:#020202;background:#91f29b;padding:1px 6px;border-radius:4px;font-size:13px">바람</span>`,
+    desc: `
+      <div style="display:flex;gap:16px;align-items:center">
+        <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/11.png"
+             style="width:100px;height:300px;object-fit:contain;border-radius:8px;flex-shrink:0">
+        <div>
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">약점공략시 버프</span>
+            <br>방어력 2.5배(피격데미지 2/5)
+          </div>
+          <div class="tip-item"> 해당 보스 공략의 경우,
+<br>자세한 내용을 찾기 어려워 관련 내용 관련해서 공략글 작성해주실분은 카카오톡, 또는 디스코드로 연락 부탁드립니다.</div>
+           
+        </div>
+      </div>
+    `
+  },
+
+  12: {
+    name: `스트라 <span style="font-size:13px;font-weight:400;color:#888;margin-left:4px">
+      <br>약점 속성 : <span style="color:#020202;background:#e24040;padding:1px 6px;border-radius:4px;font-size:13px">불</span>`,
+    desc: `
+      <div style="display:flex;gap:16px;align-items:center">
+        <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/12.png"
+             style="width:100px;height:300px;object-fit:contain;border-radius:8px;flex-shrink:0">
+        <div>
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">약점공략시 버프</span>
+            <br>방어력 2배(피격데미지 1/2)
+          </div>
+          <div class="tip-item"> 해당 보스 공략의 경우,
+<br>자세한 내용을 찾기 어려워 관련 내용 관련해서 공략글 작성해주실분은 카카오톡, 또는 디스코드로 연락 부탁드립니다.</div>
+           
+        </div>
+      </div>
+    `
+  },
+
+  13: {
+    name: `헤네스 <span style="font-size:13px;font-weight:400;color:#888;margin-left:4px">
+      <br>약점 속성 : <span style="color:#020202;background:#c29160;padding:1px 6px;border-radius:4px;font-size:13px">땅</span>
+      <span style="color:#020202;background:#1989e5;padding:1px 6px;border-radius:4px;font-size:13px">물</span>
+      <span style="color:#020202;background:#e24040;padding:1px 6px;border-radius:4px;font-size:13px">불</span>
+      <span style="color:#020202;background:#91f29b;padding:1px 6px;border-radius:4px;font-size:13px">바람</span>`,
+    desc: `
+      <div style="display:flex;gap:16px;align-items:center">
+        <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/13.png"
+             style="width:100px;height:300px;object-fit:contain;border-radius:8px;flex-shrink:0">
+        <div>
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">약점공략시 버프</span>
+            <br>방어력 1.5배(피격데미지 2/3)
+          </div>
+          <div class="tip-item"> 해당 보스 공략의 경우,
+<br>자세한 내용을 찾기 어려워 관련 내용 관련해서 공략글 작성해주실분은 카카오톡, 또는 디스코드로 연락 부탁드립니다.</div>
+           
+        </div>
+      </div>
+    `
+  },
+
+  14: {
+    name: `포포모 <span style="font-size:13px;font-weight:400;color:#888;margin-left:4px">
+      <br>약점 속성 : <span style="color:#020202;background:#1989e5;padding:1px 6px;border-radius:4px;font-size:13px">물</span> 약점 타입 : <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">공격형</span>`,
+    desc: `
+      <div style="display:flex;gap:16px;align-items:center">
+        <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/14.png"
+             style="width:100px;height:300px;object-fit:contain;border-radius:8px;flex-shrink:0">
+        <div>
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴</span>
+            <br>패턴이 존재하지 않는 레이드입니다.
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴 파훼</span>
+            <br>패턴이 존재하지 않는 레이드입니다.
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">추천 조합</span>
+            <br>탱커 1, 딜러 2
+            <br>딜러의 경우 <span style="color:#020202;background:#1989e5;padding:1px 6px;border-radius:4px;font-size:13px">물</span>
+            <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">공격형</span>
+            물 공격 두마리 사용을 권장드립니다.
+          </div>
+        </div>
+      </div>
+    `
+  },
+
+  15: {
+    name: `테디 <span style="font-size:13px;font-weight:400;color:#888;margin-left:4px">
+      <br>약점 속성 : <span style="color:#020202;background:#c29160;padding:1px 6px;border-radius:4px;font-size:13px">땅</span>
+      <span style="color:#020202;background:#1989e5;padding:1px 6px;border-radius:4px;font-size:13px">물</span>
+      <span style="color:#020202;background:#e24040;padding:1px 6px;border-radius:4px;font-size:13px">불</span>
+      <span style="color:#020202;background:#91f29b;padding:1px 6px;border-radius:4px;font-size:13px">바람</span>
+      약점 타입 : <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">체력</span></span>`,
+    desc: `
+      <div style="display:flex;gap:16px;align-items:center">
+        <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/15.png"
+             style="width:100px;height:300px;object-fit:contain;border-radius:8px;flex-shrink:0">
+        <div>
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴</span>
+            <br>패턴이 존재하지 않는 레이드입니다.
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴 파훼</span>
+            <br>패턴이 존재하지 않는 레이드입니다.
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">추천 조합</span>
+            <br>탱커 1, 딜러 2
+            <br>딜러의 경우 <span style="color:#020202;background:#c29160;padding:1px 6px;border-radius:4px;font-size:13px">땅</span>
+      <span style="color:#020202;background:#1989e5;padding:1px 6px;border-radius:4px;font-size:13px">물</span>
+      <span style="color:#020202;background:#e24040;padding:1px 6px;border-radius:4px;font-size:13px">불</span>
+      <span style="color:#020202;background:#91f29b;padding:1px 6px;border-radius:4px;font-size:13px">바람</span>
+            <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px"> 공격형</span>
+            /
+            <span style="color:#020202;background:#c29160;padding:1px 6px;border-radius:4px;font-size:13px">땅</span>
+      <span style="color:#020202;background:#1989e5;padding:1px 6px;border-radius:4px;font-size:13px">물</span>
+      <span style="color:#020202;background:#e24040;padding:1px 6px;border-radius:4px;font-size:13px">불</span>
+      <span style="color:#020202;background:#91f29b;padding:1px 6px;border-radius:4px;font-size:13px">바람</span>
+            <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px"> 체력형</span> 추천
+            <br> 딜 차이가 거의 없지만, 공격형의 고점이 더 높습니다.
+          </div>
+        </div>
+      </div>
+    `
+  },
+
+  16: {
+    name: `움브라 <span style="font-size:13px;font-weight:400;color:#888;margin-left:4px">
+      <br>약점 속성 : <span style="color:#020202;background:#f2e463;padding:1px 6px;border-radius:4px;font-size:13px">빛</span> 약점 타입 : <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">체방형</span>`,
+    desc: `
+      <div style="display:flex;gap:16px;align-items:center">
+        <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/16.png"
+             style="width:100px;height:300px;object-fit:contain;border-radius:8px;flex-shrink:0">
+        <div>
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴</span>
+            <br>패턴이 존재하지 않는 레이드입니다.
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴 파훼</span>
+            <br>패턴이 존재하지 않는 레이드입니다.
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">추천 조합</span>
+            <br>탱커 1, 딜러 2
+            <br>딜러의 경우 <span style="color:#020202;background:#f2e463;padding:1px 6px;border-radius:4px;font-size:13px">빛</span>
+            <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px"> 공격형</span>
+            /
+            <span style="color:#020202;background:#f2e463;padding:1px 6px;border-radius:4px;font-size:13px">빛</span>
+            <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px"> 공방형</span> 추천
+          </div>
+        </div>
+      </div>
+    `
+  },
+
+  17: {
+    name: `엘리고스 <span style="font-size:13px;font-weight:400;color:#888;margin-left:4px">
+      <br>약점 속성 : <span style="color:#1565c0;background:#e3f2fd;padding:1px 6px;border-radius:4px;font-size:13px">X</span> 약점 타입 : <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">체공형</span>`,
+    desc: `
+      <div style="display:flex;gap:16px;align-items:center">
+        <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/17.png"
+             style="width:100px;height:300px;object-fit:contain;border-radius:8px;flex-shrink:0">
+        <div>
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴</span>
+            <br>패턴이 존재하지 않는 레이드입니다.
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴 파훼</span>
+            <br>패턴이 존재하지 않는 레이드입니다.
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">추천 조합</span>
+            <br>탱커 1, 딜러 2
+            <br>딜러의 경우 <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">체공형</span> 딜러를 필수로 사용합니다.
+            <br> (체공형 사용을 권장드립니다.)
+          </div>
+        </div>
+      </div>
+    `
+  },
+
+  18: {
+    name: `로키 <span style="font-size:13px;font-weight:400;color:#888;margin-left:4px">
+      <br>약점 속성 : <span style="color:#020202;background:#c29160;padding:1px 6px;border-radius:4px;font-size:13px">땅</span> 약점 타입 : <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">체공형</span>`,
+    desc: `
+      <div style="display:flex;gap:16px;align-items:center">
+        <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/18.png"
+             style="width:100px;height:300px;object-fit:contain;border-radius:8px;flex-shrink:0">
+        <div>
+           
+          <div class="tip-item"> 해당 보스 공략의 경우,
+<br>자세한 내용을 찾기 어려워 관련 내용 관련해서 공략글 작성해주실분은 카카오톡, 또는 디스코드로 연락 부탁드립니다.</div>
+           
+        </div>
+      </div>
+    `
+  },
+
+  19: {
+    name: `리치몬드 <span style="font-size:13px;font-weight:400;color:#888;margin-left:4px">
+      <br>약점 속성 : <span style="color:#020202;background:#f2e463;padding:1px 6px;border-radius:4px;font-size:13px">빛</span> 약점 타입 : <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">방어형</span></span>`,
+    desc: `
+      <div style="display:flex;gap:16px;align-items:center">
+        <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/19.png"
+             style="width:100px;height:300px;object-fit:contain;border-radius:8px;flex-shrink:0">
+        <div>
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴</span>
+            <br>패턴이 존재하지 않는 레이드입니다.
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴 파훼</span>
+            <br>패턴이 존재하지 않는 레이드입니다.
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">추천 조합</span>
+            <br>딜러 3마리 사용
+            <br>딜러의 경우 <span style="color:#020202;background:#f2e463;padding:1px 6px;border-radius:4px;font-size:13px">빛</span>
+            <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px"> 방어형</span>
+            .
+             <span style="color:#020202;background:#f2e463;padding:1px 6px;border-radius:4px;font-size:13px">빛</span>
+            <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px"> 방어형</span> 사용을 필수로 권장드립니다.
+          </div>
+        </div>
+      </div>
+    `
+  },
+
+  20: {
+    name: `레굴루스 <span style="font-size:13px;font-weight:400;color:#888;margin-left:4px">
+      <br>약점 속성 : <span style="color:#020202;background:#c29160;padding:1px 6px;border-radius:4px;font-size:13px">땅</span> 약점 타입 : <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">체력형</span>`,
+    desc: `
+      <div style="display:flex;gap:16px;align-items:center">
+        <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/20.png"
+             style="width:100px;height:300px;object-fit:contain;border-radius:8px;flex-shrink:0">
+        <div>
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴</span>
+            <br>(크로마 레굴루스의 경우 조합에 해당되지 않습니다.)
+            <br>조합을 맞추지 않을 경우, 일정 턴마다 레굴루스의 방어력 증가
+            <br><span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">체력형</span> 세마리를 사용할 경우, 레굴루스가 매우 강력해짐.
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴 파훼</span>
+            <br><span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">체력형</span> 한마리,
+            <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">방어형</span> 두마리를 사용시 레굴루스가 방어력 증가패턴을 사용하지 않습니다.
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">추천 조합</span>
+            <br>탱커 1, 딜러 2
+            <br>딜러 조합 <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">체력형</span>,
+            <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">방어형</span> 두마리를 사용해 패턴을 파훼한 조합
+            <br>조합을 맞추지 않고, <span style="color:#020202;background:#69d1e6;padding:1px 6px;border-radius:4px;font-size:13px">보너스</span> 드래곤을 이용한 조합
+            <br>보너스 드래곤이 잘 뜬 경우, 보너스 사용을 권장드립니다.
+          </div>
+        </div>
+      </div>
+    `
+  },
+
+  21: {
+    name: `벨레드 <span style="font-size:13px;font-weight:400;color:#888;margin-left:4px">
+      <br>약점 속성 : <span style="color:#020202;background:#e3f2fd;padding:1px 6px;border-radius:4px;font-size:13px">여명</span> 약점 타입 : <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">방어형</span></span>`,
+    desc: `
+      <div style="display:flex;gap:16px;align-items:center">
+        <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/21.png"
+             style="width:100px;height:300px;object-fit:contain;border-radius:8px;flex-shrink:0">
+        <div>
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴</span>
+            <br>일정 횟수마다 강력한 광역 공격 후 3턴간 아군 드래곤 딜 대폭 증가
+            <br>*턴 카운팅의 경우 '1턴=보스의 공격'으로 카운팅합니다.*
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴 파훼</span>
+            <br><span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">체방형</span>,
+            <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">방어형</span> 두마리를 사용시 광역공격 데미지가 감소합니다.
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">추천 조합</span>
+            <br>탱커 1, 딜러 2
+            <br>탱커의 경우<span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">체방형</span>,
+            딜러의 경우 <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">방어형</span> 두마리를 사용합니다.
+            <br>벨레드의 경우, *3보너스 조합X < 0보너스 조합*이므로 조합을 필수적으로 사용합니다.
+          </div>
+        </div>
+      </div>
+    `
+  },
+
+  22: {
+    name: `블루썬더 <span style="font-size:13px;font-weight:400;color:#888;margin-left:4px">
+      <br>약점 속성 : <span style="color:#020202;background:#e24040;padding:1px 6px;border-radius:4px;font-size:13px">불</span> 약점 타입 : 약점 타입 : <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">체방형</span>`,
+    desc: `
+      <div style="display:flex;gap:16px;align-items:center">
+        <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/22.png"
+             style="width:100px;height:300px;object-fit:contain;border-radius:8px;flex-shrink:0">
+        <div>
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴</span>
+            <br>드래곤의 방어력을 무시하는 패턴이 존재합니다.
+            <br>회피가 발동한 경우, 아군 드래곤중 한마리만 딜을 받고 2마리는 확정 회피
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴 파훼</span>
+            <br>패턴 파훼 조합이 존재하지 않는 레이드입니다.
+            <br>회피 기믹으로 인해, 크리티컬 물약이 아닌 회피 물약을 사용
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">추천 조합</span>
+            <br>딜러 3마리를 사용합니다.
+            <br>보너스 드래곤이 없을 경우, <span style="color:#020202;background:#69d1e6;padding:1px 6px;border-radius:4px;font-size:13px">불</span>
+            <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">체공형</span> 딜러를 사용합니다.
+            <br> 
+          </div>
+        </div>
+      </div>
+    `
+  },
+
+  23: {
+    name: `베타라 <span style="font-size:13px;font-weight:400;color:#888;margin-left:4px">
+      <br>약점 속성 : <span style="color:#020202;background:#f2e463;padding:1px 6px;border-radius:4px;font-size:13px">빛</span> 약점 타입 : <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">공방형</span>`,
+    desc: `
+      <div style="display:flex;gap:16px;align-items:center">
+        <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/23.png"
+             style="width:100px;height:300px;object-fit:contain;border-radius:8px;flex-shrink:0">
+        <div>
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴</span>
+            <br>드래곤의 방어력을 무시하는 패턴이 존재합니다.
+            <br>회피가 발동한 경우, 아군 드래곤중 한마리만 딜을 받고 2마리는 확정 회피
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴 파훼</span>
+            <br>패턴 파훼 조합이 존재하지 않는 레이드입니다.
+            <br>회피 기믹으로 인해, 크리티컬 물약이 아닌 회피 물약을 사용
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">추천 조합</span>
+            <br>딜러 3마리를 사용합니다.
+            <br>보너스 드래곤이 없을 경우, <span style="color:#020202;background:#f2e463;padding:1px 6px;border-radius:4px;font-size:13px">빛</span>
+            <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">공방형</span> 딜러를 사용합니다.
+            <br> 
+          </div>
+        </div>
+      </div>
+    `
+  },
+
+  24: {
+    name: `불나래 <span style="font-size:13px;font-weight:400;color:#888;margin-left:4px">
+      <br>약점 속성 : <span style="color:#020202;background:#1989e5;padding:1px 6px;border-radius:4px;font-size:13px">물</span> 약점 타입 : <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">방어형</span>`,
+    desc: `
+      <div style="display:flex;gap:16px;align-items:center">
+        <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/24.png"
+             style="width:100px;height:300px;object-fit:contain;border-radius:8px;flex-shrink:0">
+        <div>
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴</span>
+            <br>일정 횟수마다 받는 데미지 감소 패턴 (파훼 불가능)
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴 파훼</span>
+            <br>패턴 파훼법이 존재하지 않는 레이드입니다.
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">추천 조합</span>
+            <br>탱커 1, 딜러 2
+            <br>딜러의 경우 <span style="color:#020202;background:#1989e5;padding:1px 6px;border-radius:4px;font-size:13px">물</span>
+            <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">공격형</span>
+            ,
+            <span style="color:#020202;background:#1989e5;padding:1px 6px;border-radius:4px;font-size:13px">물</span>
+            <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">방어형</span>
+             사용을 추천드립니다.
+          </div>
+        </div>
+      </div>
+    `
+  },
+
+  25: {
+    name: `옥타 <span style="font-size:13px;font-weight:400;color:#888;margin-left:4px">
+      <br>약점 속성 : <span style="color:#020202;background:#c29160;padding:1px 6px;border-radius:4px;font-size:13px">땅</span> 약점 타입 : <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">방어형</span>`,
+    desc: `
+      <div style="display:flex;gap:16px;align-items:center">
+        <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/25.png"
+             style="width:100px;height:300px;object-fit:contain;border-radius:8px;flex-shrink:0">
+        <div>
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴</span>
+            <br>일정 횟수마다 강력한 광역 공격 후, 3턴간 아군 드래곤 딜 대폭 증가
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴 파훼</span>
+            <br>
+            <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">체력형</span> 두마리,
+            <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">방어형</span> 한마리 사용시  보스의 광역 공격이 1/4로 감소
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">추천 조합</span>
+            <br>탱커 1, 딜러 2
+            <br>탱커의 경우 <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">방어형</span>,
+            딜러의 경우 <span style="color:#020202;background:#c29160;padding:1px 6px;border-radius:4px;font-size:13px">땅</span>
+            <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">체력형</span> 두마리를 딜러를 사용합니다.
+            <br>템페스트의 경우 체력형을 딜러로 사용시 딜버프를 최대로 운용 가능
+          </div> 
+        </div>
+      </div>
+    `
+  },
+
+  26: {
+    name: `프로텍트 <span style="font-size:13px;font-weight:400;color:#888;margin-left:4px">
+      <br>약점 속성 : <span style="color:#020202;background:#c29160;padding:1px 6px;border-radius:4px;font-size:13px">땅</span>
+      <span style="color:#020202;background:#1989e5;padding:1px 6px;border-radius:4px;font-size:13px">물</span>
+      <span style="color:#020202;background:#e24040;padding:1px 6px;border-radius:4px;font-size:13px">불</span>
+      <span style="color:#020202;background:#91f29b;padding:1px 6px;border-radius:4px;font-size:13px">바람</span>
+      약점 타입 : <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">체공형</span>`,
+    desc: `
+      <div style="display:flex;gap:16px;align-items:center">
+        <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/26.png"
+             style="width:100px;height:300px;object-fit:contain;border-radius:8px;flex-shrink:0">
+        <div>
+           
+          <div class="tip-item"> 해당 보스 공략의 경우,
+<br>자세한 내용을 찾기 어려워 관련 내용 관련해서 공략글 작성해주실분은 카카오톡, 또는 디스코드로 연락 부탁드립니다.</div>
+           
+        </div>
+      </div>
+    `
+  },
+
+  27: {
+    name: `리티오 <span style="font-size:13px;font-weight:400;color:#888;margin-left:4px">
+      <br>약점 속성 : <span style="color:#020202;background:#e24040;padding:1px 6px;border-radius:4px;font-size:13px">불</span> 약점 타입 : <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">공격형</span>`,
+    desc: `
+      <div style="display:flex;gap:16px;align-items:center">
+        <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/27.png"
+             style="width:100px;height:300px;object-fit:contain;border-radius:8px;flex-shrink:0">
+        <div>
+          
+           <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴</span>
+            <br>평타가 단체 공격인 패턴을 보유한 레이드
+            <br>단체 공격을 한 후 매턴 60씩 회복
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴 파훼</span>
+            <br>
+            <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">공격형</span> 공격형 1마리 이상을 사용시 딜 감소 기믹이 사라집니다. 단 공격형 3마리를 사용할 경우 역으로 딜이 감소되는 기믹
+            <br>
+            <span style="color:#020202;background:#e24040;padding:1px 6px;border-radius:4px;font-size:13px">불</span> 불 속성 통일. 불 속성 3마리를 쓸 경우 리티오의 매턴 60 회복이 없어짐
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">추천 조합</span>
+            <br>보너스 사용시 불속성 공격형+보너스 2마리,
+            <br>보너스를 사용하지 않을 경우 불속성 공격형+불속성 체공형 2마리 권장
+          </div>
+
+        </div>
+      </div>
+    `
+  },
+
+  28: {
+    name: `스카투스 <span style="font-size:13px;font-weight:400;color:#888;margin-left:4px">
+      <br>약점 속성 : <span style="color:#020202;background:#1989e5;padding:1px 6px;border-radius:4px;font-size:13px">물</span> 약점 타입 : <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">체공형</span>`,
+    desc: `
+      <div style="display:flex;gap:16px;align-items:center">
+        <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/28.png"
+             style="width:100px;height:300px;object-fit:contain;border-radius:8px;flex-shrink:0">
+        <div>
+           
+          <div class="tip-item"> 해당 보스 공략의 경우,
+<br>자세한 내용을 찾기 어려워 관련 내용 관련해서 공략글 작성해주실분은 카카오톡, 또는 디스코드로 연락 부탁드립니다.</div>
+           
+        </div>
+      </div>
+    `
+  },
+
+  29: {
+    name: `아카이아 <span style="font-size:13px;font-weight:400;color:#888;margin-left:4px">
+      <br>약점 속성 : <span style="color:#020202;background:#91f29b;padding:1px 6px;border-radius:4px;font-size:13px">바람</span> 약점 타입 : <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">방어형</span></span>`,
+    desc: `
+      <div style="display:flex;gap:16px;align-items:center">
+        <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/29.png"
+             style="width:100px;height:300px;object-fit:contain;border-radius:8px;flex-shrink:0">
+        <div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴</span>
+            <br>조우시 5번의 단일 공격 후 단체공격 5회
+            <br>그 이후 10번의 단일 공격 후 단체 공격 5회 반복되는 패턴
+            <br>아카이아가 단체 공격을 한 후 5턴동안 아군의 공격력이 증가
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴 파훼</span>
+            <br>
+            <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">방어형</span> 2마리 이상 사용시 아카이아의 피해량이 1/3로 감소
+            <br>
+            <span style="color:#020202;background:#91f29b;padding:1px 6px;border-radius:4px;font-size:13px">바람</span> 속성 드래곤을 사용시 아군 드래곤 전체 데미지 증가
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">추천 조합</span>
+            <br>방어형 두마리를 필수로 사용을 권장드립니다.
+            <br>바람속성 한마리 사용을 권장드립니다.
+          </div>
+
+        </div>
+      </div>
+    `
+  },
+
+  30: {
+    name: `루루 <span style="font-size:13px;font-weight:400;color:#888;margin-left:4px">
+      <br>약점 속성 : <span style="color:#020202;background:#e24040;padding:1px 6px;border-radius:4px;font-size:13px">불</span> 약점 타입 : <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">공격형</span>`,
+    desc: `
+      <div style="display:flex;gap:16px;align-items:center">
+        <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/30.png"
+             style="width:100px;height:300px;object-fit:contain;border-radius:8px;flex-shrink:0">
+        <div>
+           <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴</span>
+            <br>평타가 단체 공격인 패턴을 보유한 레이드
+            <br>단체 공격을 한 후 매턴 50씩 회복
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴 파훼</span>
+            <br>
+            <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">공격형</span> 공격형 1마리 이상을 사용시 딜 감소 기믹이 사라집니다. 루루는 공격형3마리 사용시에도 딜이 감소되는 기믹이 존재하지 않습니다.
+            <br>
+            <span style="color:#020202;background:#e24040;padding:1px 6px;border-radius:4px;font-size:13px">불</span> 불 속성 통일. 불 속성 3마리를 쓸 경우 루루의 매턴 50 회복이 없어짐
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">추천 조합</span>
+            <br>공격형 한마리를 사용을 권장드립니다.
+            <br>불속성 세마리를 필수로 사용을 권장드립니다.
+          </div>
+        </div>
+      </div>
+    `
+  },
+
+  31: {
+    name: `펜리르 <span style="font-size:13px;font-weight:400;color:#888;margin-left:4px">
+      <br>약점 속성 : <span style="color:#020202;background:#91f29b;padding:1px 6px;border-radius:4px;font-size:13px">바람</span> 약점 타입 : <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">체방형</span>`,
+    desc: `
+      <div style="display:flex;gap:16px;align-items:center">
+        <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/31.png"
+             style="width:100px;height:300px;object-fit:contain;border-radius:8px;flex-shrink:0">
+        <div>
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴</span>
+            <br>시간이 지날수록이 아닌, 턴이 증가할수록 아군 드래곤 딜 증가
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴 파훼</span>
+            <br>패턴이 존재하지 않는 레이드입니다.
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">추천 조합</span>
+            <br>탱커 1, 딜러 2
+            <br>딜러의 경우 <span style="color:#020202;background:#69d1e6;padding:1px 6px;border-radius:4px;font-size:13px">바람</span>
+            <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">공격형</span>
+            ,
+            <span style="color:#020202;background:#69d1e6;padding:1px 6px;border-radius:4px;font-size:13px">바람</span>
+            <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">공방형</span>
+            딜러를 사용합니다.
+            <br>공방형을 추천하는 이유는, 빈도높은 광역공격 데미지를 절감하기 위함
+          </div>
+        </div>
+      </div>
+    `
+  },
+
+  32: {
+    name: `지바타르 <span style="font-size:13px;font-weight:400;color:#888;margin-left:4px">
+      <br>약점 속성 : <span style="color:#020202;background:#e24040;padding:1px 6px;border-radius:4px;font-size:13px">불</span> 약점 타입 : <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">체방형</span>`,
+    desc: `
+      <div style="display:flex;gap:16px;align-items:center">
+        <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/32.png"
+             style="width:100px;height:300px;object-fit:contain;border-radius:8px;flex-shrink:0">
+        <div>
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴</span>
+            <br>시간이 지날수록이 아닌, 턴이 증가할수록 아군 드래곤 딜 증가
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴 파훼</span>
+            <br>패턴이 존재하지 않는 레이드입니다.
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">추천 조합</span>
+            <br>탱커 1, 딜러 2
+            <br>딜러의 경우 <span style="color:#020202;background:#69d1e6;padding:1px 6px;border-radius:4px;font-size:13px">불</span>
+            <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">공격형</span>
+            ,
+            <span style="color:#020202;background:#69d1e6;padding:1px 6px;border-radius:4px;font-size:13px">불</span>
+            <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">공방형</span>
+            딜러를 사용합니다.
+            <br>공방형을 추천하는 이유는, 빈도높은 광역공격 데미지를 절감하기 위함
+          </div>
+        </div>
+      </div>
+    `
+  },
+
+  33: {
+    name: `카모플라쥬 <span style="font-size:13px;font-weight:400;color:#888;margin-left:4px">
+      <br>약점 속성 : <span style="color:#1565c0;background:#e3f2fd;padding:1px 6px;border-radius:4px;font-size:13px">X</span> 약점 타입 : <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">공방형</span>`,
+    desc: `
+      <div style="display:flex;gap:16px;align-items:center">
+        <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/33.png"
+             style="width:100px;height:300px;object-fit:contain;border-radius:8px;flex-shrink:0">
+        <div>
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴</span>
+            <br>시간이 지날수록이 아닌, 턴이 증가할수록 아군 드래곤 딜 증가
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴 파훼</span>
+            <br>패턴이 존재하지 않는 레이드입니다.
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">추천 조합</span>
+            <br>탱커 1, 딜러 2
+            <br>딜러의 경우 속성 약점이 존재하지 않기때문에,
+            <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">공방형</span>
+            딜러를 사용합니다.
+            <br>공방형을 추천하는 이유는, 빈도높은 광역공격 데미지를 절감하기 위함
+          </div>
+        </div>
+      </div>
+    `
+  },
+
+  34: {
+    name: `파프니르 <span style="font-size:13px;font-weight:400;color:#888;margin-left:4px">
+      <br>약점 속성 : <span style="color:#020202;background:#1989e5;padding:1px 6px;border-radius:4px;font-size:13px">물</span> 약점 타입 : <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">공방형</span>`,
+    desc: `
+      <div style="display:flex;gap:16px;align-items:center">
+        <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/34.png"
+             style="width:100px;height:300px;object-fit:contain;border-radius:8px;flex-shrink:0">
+        <div>
+           
+          <div class="tip-item"> 해당 보스 공략의 경우,
+<br>자세한 내용을 찾기 어려워 관련 내용 관련해서 공략글 작성해주실분은 카카오톡, 또는 디스코드로 연락 부탁드립니다.</div>
+           
+        </div>
+      </div>
+    `
+  },
+
+  40: {
+    name: `엔젤주니어 <span style="font-size:13px;font-weight:400;color:#888;margin-left:4px">
+      <br>약점 속성 : <span style="color:#020202;background:#c29160;padding:1px 6px;border-radius:4px;font-size:13px">땅</span>
+      <span style="color:#020202;background:#1989e5;padding:1px 6px;border-radius:4px;font-size:13px">물</span>
+      <span style="color:#020202;background:#e24040;padding:1px 6px;border-radius:4px;font-size:13px">불</span>
+      <span style="color:#020202;background:#91f29b;padding:1px 6px;border-radius:4px;font-size:13px">바람</span>
+      약점 타입 : <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">공격</span></span>`,
+    desc: `
+      <div style="display:flex;gap:16px;align-items:center">
+        <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/40.png"
+             style="width:100px;height:300px;object-fit:contain;border-radius:8px;flex-shrink:0">
+        <div>
+          <div>
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴</span>
+            <br>패턴이 존재하지 않는 레이드입니다.
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴 파훼</span>
+            <br>패턴이 존재하지 않는 레이드입니다.
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">추천 조합</span>
+            <br>탱커 1, 딜러 2
+            <br>딜러의 경우 <span style="color:#020202;background:#c29160;padding:1px 6px;border-radius:4px;font-size:13px">땅</span>
+           <span style="color:#020202;background:#1989e5;padding:1px 6px;border-radius:4px;font-size:13px">물</span>
+           <span style="color:#020202;background:#e24040;padding:1px 6px;border-radius:4px;font-size:13px">불</span>
+           <span style="color:#020202;background:#91f29b;padding:1px 6px;border-radius:4px;font-size:13px">바람</span>
+           해당 속성의
+            <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">공격형</span>
+            두마리 사용을 권장드립니다.
+          </div>
+        </div>
+      </div>
+    `
+  },
+
+  41: {
+    name: `템페스트 <span style="font-size:13px;font-weight:400;color:#888;margin-left:4px">
+      <br>약점 속성 : <span style="color:#020202;background:#c29160;padding:1px 6px;border-radius:4px;font-size:13px">땅</span> 약점 타입 : <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">체력</span></span>`,
+    desc: `
+      <div style="display:flex;gap:16px;align-items:center">
+        <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/41.png"
+             style="width:100px;height:300px;object-fit:contain;border-radius:8px;flex-shrink:0">
+        <div>
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴</span>
+            <br>일정 횟수마다 강력한 광역 공격 후, 3턴간 아군 드래곤 딜 대폭 증가
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴 파훼</span>
+            <br>
+            <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">체력형</span> 두마리,
+            <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">방어형</span> 한마리 사용시  보스의 광역 공격이 1/4로 감소
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">추천 조합</span>
+            <br>탱커 1, 딜러 2
+            <br>탱커의 경우 <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">방어형</span>,
+            딜러의 경우 <span style="color:#020202;background:#c29160;padding:1px 6px;border-radius:4px;font-size:13px">땅</span>
+            <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">체력형</span> 두마리를 딜러를 사용합니다.
+            <br>템페스트의 경우 체력형을 딜러로 사용시 딜버프를 최대로 운용 가능
+          </div> 
+        </div>
+      </div>
+    `
+  },
+
+  42: {
+    name: `선셋 <span style="font-size:13px;font-weight:400;color:#888;margin-left:4px">
+      <br>약점 속성 : <span style="color:#020202;background:#1989e5;padding:1px 6px;border-radius:4px;font-size:13px">물</span> 약점 타입 : <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">체방</span></span>`,
+    desc: `
+      <div style="display:flex;gap:16px;align-items:center">
+        <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/42.png"
+             style="width:100px;height:300px;object-fit:contain;border-radius:8px;flex-shrink:0">
+        <div>
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴</span>
+            <br>매턴 광역공격이 평타로 들어오는 레이드
+            <br>일정 횟수마다 강력한 단일공격 후, 3턴동안 아군 딜 대폭 증가
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">패턴 파훼</span>
+            <br>
+            <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">체방형</span> 두마리,
+            <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">공방형</span> 한마리 사용시  일정 횟수마다 들어오는 강력한 단일공격의 딜이 대폭 감소
+          </div>
+
+          <div class="tip-item">
+            <span style="color:#020202;background:#ee7676;padding:1px 6px;border-radius:4px;font-size:13px">추천 조합</span>
+            <br>평타가 광역공격이므로 탱커가 필요하지 않습니다.
+            <br>딜러 3마리를 사용합니다.
+            <br>패턴이 파훼되는 세마리 모두 딜러로 사용하면 됩니다.
+          </div> 
+
+        </div>
+      </div>
+    `
+  },
+
+  43: {
+    name: `알레샤 <span style="font-size:13px;font-weight:400;color:#888;margin-left:4px">
+      <br>약점 속성 : <span style="color:#020202;background:#c29160;padding:1px 6px;border-radius:4px;font-size:13px">땅</span> 약점 타입 : <span style="color:#020202;background:#e0e0e0;padding:1px 6px;border-radius:4px;font-size:13px">공격</span></span>`,
+    desc: `
+      <div style="display:flex;gap:16px;align-items:center">
+        <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/43.png"
+             style="width:100px;height:300px;object-fit:contain;border-radius:8px;flex-shrink:0">
+        <div>
+           
+          <div class="tip-item"> 해당 보스 공략의 경우,
+<br>자세한 내용을 찾기 어려워 관련 내용 관련해서 공략글 작성해주실분은 카카오톡, 또는 디스코드로 연락 부탁드립니다.</div>
+           
+        </div>
+      </div>
+    `
+  }
+
+};
 
 function switchSubTab(tab) {
   ['arha','normal','lemuria'].forEach(t => {
@@ -266,7 +1162,13 @@ function showBossInfo(num, el) {
     ? `<div class="boss-name">${data.name}</div>${data.desc}`
     : `<div class="boss-name">${bossNames[num] || '보스 #'+num}</div><div style="color:#666;font-size:13px">데이터 준비 중입니다.</div>`;
   document.getElementById('boss-detail-content').innerHTML = content;
-  document.getElementById('boss-detail-bg').style.backgroundImage = `url('https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/${num}-1.png')`;
+
+const altBosses = new Set([19,20,21,22,23,24,25,26,27,28,29,30,43]);
+const chance = 0.05
+const isAlt = altBosses.has(num) && Math.random() < chance;
+const imgVersion = isAlt ? "-2" : "-1";
+document.getElementById('boss-detail-bg').style.backgroundImage =
+  `url('https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/${num}${imgVersion}.png')`;
   document.getElementById('boss-detail').style.display = '';
   document.getElementById('boss-detail').scrollIntoView({behavior:'smooth', block:'nearest'});
 }

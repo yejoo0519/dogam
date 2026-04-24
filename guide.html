@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>공략 & 가이드</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic',sans-serif;background:#1a1a2e;color:#eee;padding:12px}
+.back-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1px solid #333;background:#1e1e30;color:#aaa;font-size:12px;text-decoration:none;margin-bottom:16px;transition:all 0.15s}
+.back-btn:hover{border-color:#5dcff5;color:#eee}
+
+h1{font-size:20px;color:#aaa;margin-bottom:12px}
+
+/* 필터 */
+.filter-wrap{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.filter-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.filter-label{font-size:11px;color:#666;width:40px;flex-shrink:0}
+.filter-btn{padding:4px 12px;border-radius:20px;border:1px solid #333;background:none;color:#888;font-size:11px;cursor:pointer;font-family:inherit;transition:all 0.15s}
+.filter-btn:hover{border-color:#5dcff5;color:#ccc}
+.filter-btn.active{border-color:#5dcff5;background:rgba(93,207,245,0.1);color:#5dcff5}
+
+/* 태그 뱃지 */
+.tag-badge{display:inline-block;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600;margin-right:4px}
+.tag-시나리오{background:rgba(102,187,106,0.15);color:#66bb6a;border:1px solid rgba(102,187,106,0.3)}
+.tag-육성{background:rgba(93,207,245,0.15);color:#5dcff5;border:1px solid rgba(93,207,245,0.3)}
+.tag-정령{background:rgba(245,200,66,0.15);color:#f5c842;border:1px solid rgba(245,200,66,0.3)}
+.tag-기타{background:rgba(255,255,255,0.08);color:#aaa;border:1px solid #444}
+.tag-기초{background:rgba(102,187,106,0.1);color:#81c784;border:1px solid rgba(102,187,106,0.2)}
+.tag-중급{background:rgba(255,167,38,0.1);color:#ffb74d;border:1px solid rgba(255,167,38,0.2)}
+.tag-심화{background:rgba(239,83,80,0.1);color:#ef9a9a;border:1px solid rgba(239,83,80,0.2)}
+
+.guide-table{width:100%;border-collapse:collapse;background:#1e1e30;border:1px solid #333;border-radius:10px;overflow:hidden}
+.guide-table th{background:#252538;padding:10px 14px;font-size:12px;font-weight:700;color:#5dcff5;text-align:left;border-bottom:1px solid #333}
+.guide-table th.num{width:60px;text-align:center}
+.guide-table th.date{width:110px;text-align:center}
+.guide-table td{padding:12px 14px;font-size:13px;border-bottom:1px solid #2a2a3e;color:#ddd}
+.guide-table td.num{text-align:center;color:#666;font-size:12px}
+.guide-table td.date{text-align:center;color:#666;font-size:12px}
+.guide-table tr:last-child td{border-bottom:none}
+.guide-table tr:hover td{background:#252538;cursor:pointer}
+.guide-title-link{color:#ddd;text-decoration:none;font-size:13px}
+.guide-title-link:hover{color:#5dcff5}
+.no-result{text-align:center;color:#555;font-size:13px;padding:32px 0}
+</style>
+</head>
+<body>
+
+<a href="./index.html" class="back-btn">← 메인으로</a>
+<h1>공략 & 가이드</h1>
+
+<div class="filter-wrap">
+  <div class="filter-row">
+    <span class="filter-label">분류</span>
+    <button class="filter-btn active" onclick="setFilter('category', '', this)">전체</button>
+    <button class="filter-btn" onclick="setFilter('category', '시나리오', this)">시나리오</button>
+    <button class="filter-btn" onclick="setFilter('category', '육성', this)">육성</button>
+    <button class="filter-btn" onclick="setFilter('category', '정령', this)">정령</button>
+    <button class="filter-btn" onclick="setFilter('category', '기타', this)">기타</button>
+  </div>
+  <div class="filter-row">
+    <span class="filter-label">난이도</span>
+    <button class="filter-btn active" onclick="setFilter('level', '', this)">전체</button>
+    <button class="filter-btn" onclick="setFilter('level', '기초', this)">기초</button>
+    <button class="filter-btn" onclick="setFilter('level', '중급', this)">중급</button>
+    <button class="filter-btn" onclick="setFilter('level', '심화', this)">심화</button>
+  </div>
+</div>
+
+<table class="guide-table">
+  <thead>
+    <tr>
+      <th class="num">번호</th>
+      <th>제목</th>
+      <th class="date">수정일</th>
+    </tr>
+  </thead>
+  <tbody id="guide-list-body"></tbody>
+</table>
+
+<script src="./data/guide_list.js"></script>
+<script>
+const categoryTags = ['시나리오','육성','정령','기타'];
+const levelTags = ['기초','중급','심화'];
+
+let activeCategory = '';
+let activeLevel = '';
+
+function setFilter(type, value, el) {
+  if(type === 'category') {
+    activeCategory = value;
+    document.querySelectorAll('.filter-row:nth-child(1) .filter-btn').forEach(b => b.classList.remove('active'));
+  } else {
+    activeLevel = value;
+    document.querySelectorAll('.filter-row:nth-child(2) .filter-btn').forEach(b => b.classList.remove('active'));
+  }
+  el.classList.add('active');
+  renderList();
+}
+
+function renderList() {
+  const tbody = document.getElementById('guide-list-body');
+  tbody.innerHTML = '';
+
+  const filtered = guideList.filter(g => {
+    const tags = g.tags || [];
+    const categoryOk = !activeCategory || tags.includes(activeCategory);
+    const levelOk = !activeLevel || tags.includes(activeLevel);
+    return categoryOk && levelOk;
+  });
+
+  if(filtered.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="3" class="no-result">해당하는 글이 없습니다.</td></tr>';
+    return;
+  }
+
+  filtered.forEach(g => {
+    const tags = g.tags || [];
+    const tagHtml = tags.map(t => `<span class="tag-badge tag-${t}">${t}</span>`).join('');
+    const tr = document.createElement('tr');
+    tr.onclick = () => location.href = `./guide_view.html?id=${g.id}`;
+    tr.innerHTML = `
+      <td class="num">${g.id}</td>
+      <td>
+        <a class="guide-title-link" href="./guide_view.html?id=${g.id}">${g.title}</a>
+        ${tagHtml}
+      </td>
+      <td class="date">${g.date}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+renderList();
+</script>
+</body>
+</html>

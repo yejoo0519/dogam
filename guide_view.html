@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>공략 & 가이드</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic',sans-serif;background:#1a1a2e;color:#eee;padding:16px}
+
+.back-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1px solid #333;background:#1e1e30;color:#aaa;font-size:12px;text-decoration:none;margin-bottom:20px;transition:all 0.15s}
+.back-btn:hover{border-color:#5dcff5;color:#eee}
+
+/* 글 헤더 */
+.post-header{border-bottom:1px solid #333;padding-bottom:16px;margin-bottom:24px}
+.post-title{font-size:22px;font-weight:700;color:#eee;margin-bottom:12px;line-height:1.4}
+.post-meta{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.post-meta-item{font-size:12px;color:#666}
+.post-meta-item span{color:#aaa;margin-left:4px}
+.copy-btn{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:12px;border:1px solid #444;background:none;color:#888;font-size:11px;cursor:pointer;font-family:inherit;transition:all 0.15s;margin-left:auto}
+.copy-btn:hover{border-color:#5dcff5;color:#5dcff5}
+
+/* 글 본문 */
+.post-body{max-width:780px;line-height:1.9;font-size:14px;color:#ccc}
+
+/* 소제목 */
+.post-body .section-title{font-size:15px;font-weight:700;color:#5dcff5;margin:28px 0 10px;padding-bottom:6px;border-bottom:1px solid #2a2a3e}
+
+/* 텍스트 단락 */
+.post-body p{margin-bottom:10px;word-break:keep-all}
+
+/* 이미지 */
+.post-body .post-img{width:100%;max-width:600px;border-radius:8px;margin:12px 0;display:block}
+
+/* 구분선 */
+.post-body hr{border:none;border-top:1px solid #2a2a3e;margin:24px 0}
+
+/* 강조 텍스트 */
+.post-body .highlight{color:#f5c842;font-weight:600}
+
+/* 인용 박스 */
+.post-body .quote{background:#252538;border-left:3px solid #5dcff5;border-radius:0 6px 6px 0;padding:10px 14px;margin:12px 0;font-size:13px;color:#aaa;line-height:1.7}
+
+/* 태그 뱃지 */
+.post-body .tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;margin:0 2px;vertical-align:middle}
+.tag-water{background:#e3f2fd;color:#1565c0}
+.tag-fire{background:#fce4ec;color:#b71c1c}
+.tag-wind{background:#e8f5e9;color:#1b5e20}
+.tag-earth{background:#fff3e0;color:#e65100}
+.tag-light{background:#fffde7;color:#f57f17}
+.tag-dark{background:#ede7f6;color:#4a148c}
+.tag-dawn{background:#fff8e1;color:#6d4c41}
+.tag-dusk{background:#fdf2f8;color:#880e4f}
+.tag-nightmare{background:#f3e5f5;color:#6a1b9a}
+.tag-atk{background:#2a2a3e;color:#aaa;border:1px solid #444}
+.tag-def{background:#2a2a3e;color:#aaa;border:1px solid #444}
+.tag-hp{background:#2a2a3e;color:#aaa;border:1px solid #444}
+
+/* 하단 */
+.post-footer{margin-top:40px;padding-top:16px;border-top:1px solid #333}
+</style>
+</head>
+<body>
+
+<a href="./guide.html" class="back-btn">← 목록으로</a>
+
+<div class="post-header">
+  <div class="post-title" id="post-title">제목 로딩 중...</div>
+  <div class="post-meta">
+    <div class="post-meta-item">작성일 <span id="post-created">-</span></div>
+    <div class="post-meta-item">수정일 <span id="post-updated">-</span></div>
+    <button class="copy-btn" onclick="copyLink()">🔗 링크 복사</button>
+  </div>
+</div>
+
+<div class="post-body" id="post-body">
+  로딩 중...
+</div>
+
+<div class="post-footer">
+  <a href="./guide.html" class="back-btn">← 목록으로</a>
+</div>
+
+<script>
+function copyLink() {
+  navigator.clipboard.writeText(location.href).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent = '✓ 복사됨';
+    setTimeout(() => btn.innerHTML = '🔗 링크 복사', 2000);
+  });
+}
+
+const params = new URLSearchParams(location.search);
+const id = params.get('id');
+
+if(id) {
+  const script = document.createElement('script');
+  script.src = `./data/guide${id}.js`;
+  script.onload = () => {
+    document.title = guideContent.title + ' - 공략&가이드';
+    document.getElementById('post-title').textContent = guideContent.title;
+    document.getElementById('post-created').textContent = guideContent.created;
+    document.getElementById('post-updated').textContent = guideContent.updated;
+    document.getElementById('post-body').innerHTML = guideContent.body;
+  };
+  script.onerror = () => {
+    document.getElementById('post-body').innerHTML = '<div style="color:#666;padding:40px 0;text-align:center">글을 찾을 수 없습니다.</div>';
+  };
+  document.head.appendChild(script);
+}
+</script>
+</body>
+</html>

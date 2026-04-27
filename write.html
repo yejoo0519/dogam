@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>글쓰기</title>
+<link id="theme-css" rel="stylesheet" href="./theme-dark.css">
+<script src="./theme.js"></script>
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--text);padding:16px}
+.back-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;text-decoration:none;margin-bottom:16px;transition:all 0.15s}
+.back-btn:hover{border-color:var(--accent);color:var(--text)}
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.header h1{font-size:20px;color:var(--text2)}
+.board-label{font-size:12px;padding:3px 10px;border-radius:10px;background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-border)}
+.form-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;max-width:860px}
+.field{margin-bottom:14px}
+.field label{font-size:12px;color:var(--text2);margin-bottom:6px;display:block;font-weight:600}
+.field input,.field select{width:100%;padding:10px 14px;background:var(--bg3);border:1px solid var(--border3);border-radius:8px;color:var(--text);font-size:14px;font-family:inherit}
+.field input:focus,.field select:focus{outline:none;border-color:var(--accent)}
+.field-row{display:flex;gap:8px}
+.field-row .field{flex:1}
+.form-btns{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+.btn{padding:9px 20px;border-radius:20px;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.15s}
+.btn-primary{background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-border)}
+.btn-primary:hover{background:rgba(93,207,245,0.25)}
+.btn-gray{background:var(--bg3);color:var(--text2);border:1px solid var(--border)}
+.btn-gray:hover{border-color:var(--accent);color:var(--text)}
+.tag-group{margin-bottom:10px}
+.tag-group-label{font-size:11px;color:var(--text3);margin-bottom:6px}
+.tag-options{display:flex;flex-wrap:wrap;gap:6px}
+.tag-btn{padding:4px 12px;border-radius:20px;border:1px solid var(--border);background:none;color:var(--text3);font-size:12px;cursor:pointer;font-family:inherit;transition:all 0.15s}
+.tag-btn:hover{border-color:var(--accent);color:var(--text2)}
+.tag-btn.active{border-color:var(--accent);background:var(--accent-bg);color:var(--accent)}
+.ql-toolbar{background:var(--bg3);border:1px solid var(--border3)!important;border-radius:8px 8px 0 0}
+.ql-container{background:var(--bg3);border:1px solid var(--border3)!important;border-top:none!important;border-radius:0 0 8px 8px;font-family:'Malgun Gothic',sans-serif;font-size:14px}
+.ql-editor{color:var(--text);min-height:400px}
+.ql-editor.ql-blank::before{color:var(--text4)}
+.ql-snow .ql-stroke{stroke:var(--text2)!important}
+.ql-snow .ql-fill{fill:var(--text2)!important}
+.ql-snow .ql-picker{color:var(--text2)!important}
+.ql-snow .ql-picker-options{background:var(--bg2)!important;border-color:var(--border)!important}
+.ql-snow.ql-toolbar button:hover .ql-stroke{stroke:var(--accent)!important}
+.ql-snow.ql-toolbar button.ql-active .ql-stroke{stroke:var(--accent)!important}
+</style>
+</head>
+<body>
+
+<a id="back-btn" href="./community.html" class="back-btn">← 목록으로</a>
+
+<div class="header">
+  <h1>글쓰기</h1>
+  <span class="board-label" id="board-label">묻고답하기</span>
+</div>
+
+<div class="form-wrap">
+  <div class="field">
+    <label>제목</label>
+    <input id="post-title" type="text" placeholder="제목을 입력하세요">
+  </div>
+  <div class="field-row" id="guide-options" style="display:none">
+    <div class="field">
+      <label>분류</label>
+      <select id="post-category">
+        <option value="기타">기타</option>
+        <option value="시나리오">시나리오</option>
+        <option value="육성">육성</option>
+        <option value="정령">정령</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>난이도</label>
+      <select id="post-level">
+        <option value="기초">기초</option>
+        <option value="중급">중급</option>
+        <option value="심화">심화</option>
+      </select>
+    </div>
+  </div>
+  <div id="guild-options" style="display:none">
+    <div class="field">
+      <label>길드 아이콘 URL <span style="color:var(--text4);font-weight:400">(선택)</span></label>
+      <input id="guild-icon" type="text" placeholder="이미지 URL 입력 (없으면 기본 이미지 사용)">
+    </div>
+    <div class="field">
+      <label>면접방 링크 <span style="color:var(--text4);font-weight:400">(선택)</span></label>
+      <input id="guild-interview" type="text" placeholder="카카오 오픈채팅 등 링크 입력">
+    </div>
+    <div class="field">
+      <label>태그</label>
+      <div class="tag-group">
+        <div class="tag-group-label">길드 컨텐츠 <span style="color:var(--text4)">(중복 선택 가능)</span></div>
+        <div class="tag-options">
+          <button class="tag-btn" onclick="toggleGuildTag(this,'길드전')">길드전</button>
+          <button class="tag-btn" onclick="toggleGuildTag(this,'광산')">광산</button>
+          <button class="tag-btn" onclick="toggleGuildTag(this,'길드레이드')">길드레이드</button>
+          <button class="tag-btn" onclick="toggleGuildTag(this,'길드포인트')">길드포인트</button>
+        </div>
+      </div>
+      <div class="tag-group" style="margin-top:8px">
+        <div class="tag-group-label">나이</div>
+        <div class="tag-options">
+          <button class="tag-btn" id="age-adult" onclick="selectAgeTag(this,'성인')">성인</button>
+          <button class="tag-btn" id="age-any" onclick="selectAgeTag(this,'상관X')">상관X</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="friend-options" style="display:none">
+    <div class="field">
+      <label>내 친구코드</label>
+      <div style="padding:10px 14px;background:var(--bg3);border:1px solid var(--border3);border-radius:8px;font-size:14px;color:var(--accent);font-family:monospace;font-weight:700;letter-spacing:2px" id="friend-code-display">-</div>
+      <div style="font-size:11px;color:var(--text4);margin-top:4px">가입 시 등록한 친구코드가 자동으로 표시됩니다.</div>
+    </div>
+    <div class="field">
+      <label>태그</label>
+      <select id="friend-tag">
+        <option value="정기친구">정기친구</option>
+        <option value="레이드프리미엄">레이드 프리미엄</option>
+        <option value="기타">기타</option>
+      </select>
+    </div>
+  </div>
+  <div class="field">
+    <label>내용</label>
+    <div id="quill-editor"></div>
+  </div>
+  <div class="form-btns">
+    <button class="btn btn-gray" onclick="goBack()">취소</button>
+    <button class="btn btn-primary" onclick="submitPost()">등록</button>
+  </div>
+</div>
+
+<script src="./sb_config.js"></script>
+<script>
+const params = new URLSearchParams(location.search);
+const board = params.get('board') || 'qna';
+const user = getUser();
+
+if(!user) { alert('로그인이 필요합니다.'); location.href = './login.html?from=' + encodeURIComponent(location.href.split('/').pop()); }
+
+const boardConfig = {
+  qna:    { name: '묻고답하기',    back: './community.html', placeholder: '내용을 입력하세요' },
+  guide:  { name: '공략 & 가이드', back: './guide.html',     placeholder: '공략 내용을 입력하세요' },
+  guild:  { name: '길드 홍보',     back: './guild.html',     placeholder: '길드 소개, 모집 조건 등을 입력하세요' },
+  friend: { name: '친구요청',      back: './friend.html',    placeholder: '친구 요청 내용을 입력하세요' }
+};
+const config = boardConfig[board] || boardConfig.qna;
+
+document.getElementById('board-label').textContent = config.name;
+document.getElementById('back-btn').href = config.back;
+if(board === 'guide') document.getElementById('guide-options').style.display = '';
+if(board === 'guild') document.getElementById('guild-options').style.display = '';
+if(board === 'friend') {
+  document.getElementById('friend-options').style.display = '';
+  const fc = user.friend_code || '미등록';
+  document.getElementById('friend-code-display').textContent = fc;
+}
+
+// 길드 태그 관리
+let selectedContentTags = [];
+let selectedAgeTag = '';
+
+function toggleGuildTag(el, tag) {
+  if(selectedContentTags.includes(tag)) {
+    selectedContentTags = selectedContentTags.filter(t => t !== tag);
+    el.classList.remove('active');
+  } else {
+    selectedContentTags.push(tag);
+    el.classList.add('active');
+  }
+}
+
+function selectAgeTag(el, tag) {
+  selectedAgeTag = selectedAgeTag === tag ? '' : tag;
+  document.querySelectorAll('#age-adult,#age-any').forEach(b => b.classList.remove('active'));
+  if(selectedAgeTag) el.classList.add('active');
+}
+
+const quill = new Quill('#quill-editor', {
+  theme: 'snow',
+  placeholder: config.placeholder,
+  modules: {
+    toolbar: [
+      ['bold','italic','underline','strike'],
+      [{'color':[]},{'background':[]}],
+      [{'size':['small',false,'large','huge']}],
+      [{'header':[1,2,3,false]}],
+      ['link','image'],
+      [{'list':'ordered'},{'list':'bullet'}],
+      ['blockquote','code-block'],
+      ['clean']
+    ]
+  }
+});
+
+function goBack() { location.href = config.back; }
+
+async function submitPost() {
+  const title = document.getElementById('post-title').value.trim();
+  const content = quill.root.innerHTML;
+  const textOnly = quill.getText().trim();
+  if(!title) { alert('제목을 입력해주세요.'); return; }
+  if(!textOnly) { alert('내용을 입력해주세요.'); return; }
+
+  const postData = {
+    user_id: user.id,
+    username: user.username,
+    nickname: user.nickname || user.username,
+    board,
+    title,
+    content,
+    updated_at: new Date().toISOString()
+  };
+
+  if(board === 'guide') {
+    const category = document.getElementById('post-category').value;
+    const level = document.getElementById('post-level').value;
+    postData.tags = JSON.stringify([category, level]);
+  }
+  if(board === 'guild') {
+    const icon = document.getElementById('guild-icon').value.trim();
+    const interview = document.getElementById('guild-interview').value.trim();
+    if(icon) postData.guild_icon = icon;
+    if(interview) postData.guild_interview = interview;
+    const allTags = [...selectedContentTags];
+    if(selectedAgeTag) allTags.push(selectedAgeTag);
+    postData.tags = JSON.stringify(allTags);
+  }
+  if(board === 'friend') {
+    const tag = document.getElementById('friend-tag').value;
+    const fc = user.friend_code || '';
+    postData.tags = JSON.stringify([tag]);
+    postData.friend_code = fc;
+  }
+
+  try {
+    await supabase('POST', 'posts', postData);
+    alert('등록됐어요!');
+    location.href = config.back;
+  } catch(e) { alert('오류: ' + e.message); }
+}
+</script>
+</body>
+</html>

@@ -9,73 +9,82 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/main.jpg">
 <meta property="og:url" content="https://yejoo0519.github.io/dogam">
 <meta property="og:type" content="website">
+<link id="theme-css" rel="stylesheet" href="./theme-dark.css">
+<script src="./theme.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Malgun Gothic',sans-serif;background:#1a1a2e;color:#eee;min-height:100vh;padding:24px}
+body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:24px}
 .patch-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:500;align-items:center;justify-content:center}
 .patch-modal-overlay.open{display:flex}
-.patch-modal{background:#1e1e30;border:1px solid #333;border-radius:12px;padding:24px;width:90%;max-width:480px;max-height:70vh;overflow-y:auto;position:relative}
-.patch-modal-title{font-size:16px;font-weight:700;color:#eee;margin-bottom:16px;display:flex;align-items:center;gap:8px}
-.patch-modal-close{position:absolute;top:14px;right:16px;background:none;border:none;color:#aaa;font-size:18px;cursor:pointer}
-.patch-modal-close:hover{color:#eee}
-.patch-item{margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #2a2a3e}
+.patch-modal{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;width:90%;max-width:480px;max-height:70vh;overflow-y:auto;position:relative}
+.patch-modal-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.patch-modal-close{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--text2);font-size:18px;cursor:pointer}
+.patch-modal-close:hover{color:var(--text)}
+.patch-item{margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border2)}
 .patch-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
 .patch-item-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.patch-item-ver{font-size:13px;font-weight:700;color:#5dcff5}
-.patch-item-date{font-size:11px;color:#666}
+.patch-item-ver{font-size:13px;font-weight:700;color:var(--accent)}
+.patch-item-date{font-size:11px;color:var(--text4)}
 .patch-item-badge{font-size:10px;padding:2px 8px;border-radius:10px;margin-left:auto}
 .badge-new{background:rgba(102,187,106,0.15);color:#66bb6a;border:1px solid rgba(102,187,106,0.3)}
 .badge-fix{background:rgba(239,83,80,0.15);color:#ef5350;border:1px solid rgba(239,83,80,0.3)}
-.badge-update{background:rgba(93,207,245,0.15);color:#5dcff5;border:1px solid rgba(93,207,245,0.3)}
-.patch-item-content{font-size:12px;color:#aaa;line-height:2}
+.badge-update{background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-border)}
+.patch-item-content{font-size:12px;color:var(--text2);line-height:2}
 .patch-item-content li{list-style:none;padding-left:12px;position:relative}
-.patch-item-content li::before{content:"·";position:absolute;left:0;color:#5dcff5}
-.patch-more-btn{display:block;width:100%;margin-top:16px;padding:10px;background:#252538;border:1px solid #444;border-radius:8px;color:#5dcff5;font-size:13px;font-weight:600;cursor:pointer;text-align:center;text-decoration:none;font-family:inherit}
-.patch-more-btn:hover{background:#2e2e48;border-color:#5dcff5}
-.patch-note-btn{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1px solid #333;background:#1e1e30;color:#aaa;font-size:12px;cursor:pointer;font-family:inherit;transition:all 0.15s}
-.patch-note-btn:hover{border-color:#5dcff5;color:#eee;background:#252540}
+.patch-item-content li::before{content:"·";position:absolute;left:0;color:var(--accent)}
+.patch-more-btn{display:block;width:100%;margin-top:16px;padding:10px;background:var(--bg3);border:1px solid var(--border3);border-radius:8px;color:var(--accent);font-size:13px;font-weight:600;cursor:pointer;text-align:center;text-decoration:none;font-family:inherit}
+.patch-more-btn:hover{border-color:var(--accent)}
+.patch-note-btn{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;cursor:pointer;font-family:inherit;transition:all 0.15s}
+.patch-note-btn:hover{border-color:var(--accent);color:var(--text)}
 .patch-note-icon{font-size:14px}
-.day-icon-btn{width:40px;height:40px;border-radius:50%;border:1.5px solid #444;background:#1e1e30;cursor:pointer;padding:0;overflow:hidden;transition:border-color 0.15s;flex-shrink:0}
-.day-icon-btn:hover{border-color:#5dcff5}
+.day-icon-btn{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--border3);background:var(--bg2);cursor:pointer;padding:0;overflow:hidden;transition:border-color 0.15s;flex-shrink:0}
+.day-icon-btn:hover{border-color:var(--accent)}
 .day-icon-btn img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 .item-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:600;align-items:center;justify-content:center}
 .item-modal-overlay.open{display:flex}
-.item-modal{background:#1e1e30;border:1px solid #333;border-radius:12px;padding:20px;width:90%;max-width:400px;position:relative;text-align:center}
-.item-modal-close{position:absolute;top:12px;right:14px;background:none;border:none;color:#aaa;font-size:18px;cursor:pointer}
-.item-modal-close:hover{color:#eee}
-.item-modal-title{font-size:14px;font-weight:700;color:#5dcff5;margin-bottom:12px}
+.item-modal{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;width:90%;max-width:400px;position:relative;text-align:center}
+.item-modal-close{position:absolute;top:12px;right:14px;background:none;border:none;color:var(--text2);font-size:18px;cursor:pointer}
+.item-modal-close:hover{color:var(--text)}
+.item-modal-title{font-size:14px;font-weight:700;color:var(--accent);margin-bottom:12px}
 .item-modal img{width:100%;border-radius:8px;display:block}
-.contact-bar{display:flex;gap:12px;justify-content:center;margin-bottom:32px}
-.contact-btn{display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:20px;border:1px solid #333;background:#1e1e30;text-decoration:none;color:#aaa;font-size:12px;transition:all 0.15s}
-.contact-btn:hover{border-color:#5dcff5;color:#eee;background:#252540}
+.contact-bar{display:flex;gap:12px;justify-content:center;margin-bottom:16px}
+.contact-btn{display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:20px;border:1px solid var(--border);background:var(--bg2);text-decoration:none;color:var(--text2);font-size:12px;transition:all 0.15s}
+.contact-btn:hover{border-color:var(--accent);color:var(--text)}
 .contact-icon{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
 .contact-kakao .contact-icon{background:#FEE500;color:#3C1E1E}
 .contact-discord .contact-icon{background:#5865F2;color:#fff}
-.card{background:#1e1e30;border:1px solid #333;border-radius:12px;padding:24px;cursor:pointer;text-decoration:none;display:block;transition:border-color 0.15s,background 0.15s;position:relative}
-.card:hover{border-color:#5dcff5;background:#252540}
-.card-title{font-size:18px;font-weight:700;color:#eee;margin-bottom:8px}
-.card-desc{font-size:12px;color:#888;line-height:1.6}
-.card-badge{position:absolute;top:16px;right:16px;font-size:10px;padding:3px 8px;border-radius:10px;background:rgba(93,207,245,0.15);color:#5dcff5;border:1px solid rgba(93,207,245,0.3)}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;cursor:pointer;text-decoration:none;display:block;transition:border-color 0.15s,background 0.15s;position:relative}
+.card:hover{border-color:var(--accent);background:var(--bg3)}
+.card-title{font-size:18px;font-weight:700;color:var(--text);margin-bottom:8px}
+.card-desc{font-size:12px;color:var(--text3);line-height:1.6}
+.card-badge{position:absolute;top:16px;right:16px;font-size:10px;padding:3px 8px;border-radius:10px;background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-border)}
 .card-badge-guide{background:rgba(245,200,66,0.15);color:#f5c842;border:1px solid rgba(245,200,66,0.3)}
+.card-badge-community{background:rgba(102,187,106,0.15);color:#66bb6a;border:1px solid rgba(102,187,106,0.3)}
+
+/* 방문자 카운터 */
+.stats-bar{display:flex;gap:16px;justify-content:center;margin-bottom:20px;flex-wrap:wrap}
+.stat-item{font-size:11px;color:var(--text4);display:flex;align-items:center;gap:4px}
+.stat-item span{color:var(--accent);font-weight:700}
+
 .mobile-layout{display:flex;flex-direction:column;align-items:center}
 .mobile-layout h1{font-size:28px;margin-bottom:8px;text-align:center}
-.mobile-layout .subtitle{font-size:13px;color:#888;margin-bottom:20px;text-align:center}
+.mobile-layout .subtitle{font-size:13px;color:var(--text3);margin-bottom:20px;text-align:center}
 .pc-layout{display:none;max-width:1100px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:60px 24px}
 .pc-header{text-align:center;margin-bottom:40px}
 .pc-header h1{font-size:28px;margin-bottom:8px}
-.pc-header .subtitle{font-size:13px;color:#888}
+.pc-header .subtitle{font-size:13px;color:var(--text3)}
 .pc-body{display:flex;gap:0}
-.pc-tabs{display:flex;flex-direction:column;gap:4px;width:160px;flex-shrink:0;padding-right:24px;border-right:1px solid #333}
-.pc-tab{padding:12px 16px;border-radius:8px;font-size:13px;font-weight:600;color:#888;cursor:pointer;transition:all 0.15s;border:none;background:none;text-align:left;font-family:inherit}
-.pc-tab:hover{color:#ccc;background:#252538}
-.pc-tab.active{color:#5dcff5;background:rgba(93,207,245,0.08);border-left:2px solid #5dcff5;padding-left:14px}
+.pc-tabs{display:flex;flex-direction:column;gap:4px;width:160px;flex-shrink:0;padding-right:24px;border-right:1px solid var(--border)}
+.pc-tab{padding:12px 16px;border-radius:8px;font-size:13px;font-weight:600;color:var(--text3);cursor:pointer;transition:all 0.15s;border:none;background:none;text-align:left;font-family:inherit}
+.pc-tab:hover{color:var(--text2);background:var(--bg3)}
+.pc-tab.active{color:var(--accent);background:var(--accent-bg);border-left:2px solid var(--accent);padding-left:14px}
 .pc-cards{flex:1;padding-left:28px}
 .pc-category{display:none}
 .pc-category.active{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
-.mobile-tabs{display:flex;gap:0;border-bottom:1px solid #333;margin-bottom:16px;width:100%;max-width:900px}
-.mobile-tab{flex:1;padding:10px;font-size:13px;font-weight:600;background:none;border:none;border-bottom:2px solid transparent;color:#888;cursor:pointer;font-family:inherit;margin-bottom:-1px}
-.mobile-tab:hover{color:#ccc}
-.mobile-tab.active{color:#5dcff5;border-bottom:2px solid #5dcff5}
+.mobile-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:16px;width:100%;max-width:900px;overflow-x:auto}
+.mobile-tab{flex:1;min-width:fit-content;padding:10px 14px;font-size:13px;font-weight:600;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);cursor:pointer;font-family:inherit;margin-bottom:-1px;white-space:nowrap}
+.mobile-tab:hover{color:var(--text2)}
+.mobile-tab.active{color:var(--accent);border-bottom:2px solid var(--accent)}
 .mobile-category{display:none;width:100%;max-width:900px}
 .mobile-category.active{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
 @media(max-width:700px){.mobile-layout{display:flex}.pc-layout{display:none!important}}
@@ -88,26 +97,33 @@ body{font-family:'Malgun Gothic',sans-serif;background:#1a1a2e;color:#eee;min-he
 <div class="mobile-layout">
   <h1>종합 정보사이트<br>made by 닉스</h1>
   <p class="subtitle">원하는 메뉴를 선택하세요</p>
-<div style="display:flex;justify-content:center;margin-bottom:12px">
-  <button class="patch-note-btn" onclick="openPatchModal()">
-    <span class="patch-note-icon">📋</span> 패치노트
-  </button>
-</div>
-<div class="contact-bar">
-  <a href="https://open.kakao.com/o/sgNwijri" target="_blank" class="contact-btn contact-kakao">
-    <span class="contact-icon">K</span>카카오톡
-  </a>
-  <a href="https://discord.com/users/629966669875511296" target="_blank" class="contact-btn contact-discord">
-    <span class="contact-icon">D</span>디스코드
-  </a>
-  <button class="day-icon-btn" onclick="openItemModal()">
-    <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/Day.png" alt="일일 보상">
-  </button>
-</div>
+  <div class="stats-bar" id="mobile-stats">
+    <div class="stat-item">오늘 방문자 <span id="m-today">-</span>명</div>
+    <div class="stat-item">누적 방문자 <span id="m-total">-</span>명</div>
+    <div class="stat-item">회원 <span id="m-members">-</span>명</div>
+  </div>
+  <div style="display:flex;justify-content:center;margin-bottom:12px;gap:8px">
+    <button class="patch-note-btn" onclick="openPatchModal()">
+      <span class="patch-note-icon">📋</span> 패치노트
+    </button>
+    <button onclick="openThemeModal()" style="padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;cursor:pointer;font-family:inherit">🎨 테마</button>
+  </div>
+  <div class="contact-bar">
+    <a href="https://open.kakao.com/o/sgNwijri" target="_blank" class="contact-btn contact-kakao">
+      <span class="contact-icon">K</span>카카오톡
+    </a>
+    <a href="https://discord.com/users/629966669875511296" target="_blank" class="contact-btn contact-discord">
+      <span class="contact-icon">D</span>디스코드
+    </a>
+    <button class="day-icon-btn" onclick="openItemModal()">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/Day.png" alt="방랑상인">
+    </button>
+  </div>
   <div class="mobile-tabs">
     <button class="mobile-tab active" onclick="switchMobileTab('info', this)">정보</button>
     <button class="mobile-tab" onclick="switchMobileTab('guide', this)">공략&가이드</button>
     <button class="mobile-tab" onclick="switchMobileTab('weekly', this)">주간</button>
+    <button class="mobile-tab" onclick="switchMobileTab('community', this)">커뮤니티</button>
   </div>
   <div class="mobile-category active" id="mobile-info">
     <a href="./tier.html" class="card"><span class="card-badge">정보</span><div class="card-title">초월 등급표</div><div class="card-desc">속성별 초월 드래곤 등급 정보<br>속성 · 타입 필터 지원</div></a>
@@ -122,6 +138,11 @@ body{font-family:'Malgun Gothic',sans-serif;background:#1a1a2e;color:#eee;min-he
   <div class="mobile-category" id="mobile-weekly">
     <a href="./weekly.html" class="card"><span class="card-badge" style="background:rgba(245,200,66,0.15);color:#f5c842;border:1px solid rgba(245,200,66,0.3)">주간</span><div class="card-title">주간 정보</div><div class="card-desc">레무리아 · 레이드 · 길드전<br>매주 업데이트되는 주간 정보</div></a>
   </div>
+  <div class="mobile-category" id="mobile-community">
+    <a href="./guild.html" class="card"><span class="card-badge card-badge-community">커뮤니티</span><div class="card-title">길드</div><div class="card-desc">길드 홍보 및 모집 정보</div></a>
+    <a href="./community.html" class="card"><span class="card-badge card-badge-community">커뮤니티</span><div class="card-title">묻고답하기</div><div class="card-desc">질문하고 답변 받는 게시판<br>로그인 후 이용 가능</div></a>
+    <a href="./friend.html" class="card"><span class="card-badge card-badge-community">커뮤니티</span><div class="card-title">친구요청</div><div class="card-desc">정기친구 · 레이드 프리미엄<br>친구 구하는 게시판</div></a>
+  </div>
 </div>
 
 <!-- PC -->
@@ -129,27 +150,35 @@ body{font-family:'Malgun Gothic',sans-serif;background:#1a1a2e;color:#eee;min-he
   <div class="pc-header">
     <h1>종합 정보사이트 made by 닉스</h1>
     <p class="subtitle"> </p>
-<div style="display:flex;justify-content:center;margin-bottom:12px">
-  <button class="patch-note-btn" onclick="openPatchModal()">
-    <span class="patch-note-icon">📋</span> 패치노트
-  </button>
-</div>
-<div class="contact-bar">
-  <a href="https://open.kakao.com/o/sgNwijri" target="_blank" class="contact-btn contact-kakao">
-    <span class="contact-icon">K</span>카카오톡
-  </a>
-  <a href="https://discord.com/users/629966669875511296" target="_blank" class="contact-btn contact-discord">
-    <span class="contact-icon">D</span>디스코드
-  </a>
-  <button class="day-icon-btn" onclick="openItemModal()">
-    <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/Day.png" alt="수요일, 목요일 오전9시~오후9시 사이<br>업데이트 예정입니다.">
-  </button>
-</div>
+    <div class="stats-bar" id="pc-stats">
+      <div class="stat-item">오늘 방문자 <span id="p-today">-</span>명</div>
+      <div class="stat-item">누적 방문자 <span id="p-total">-</span>명</div>
+      <div class="stat-item">회원 <span id="p-members">-</span>명</div>
+    </div>
+    <div style="display:flex;justify-content:center;margin-bottom:12px;gap:8px">
+      <button class="patch-note-btn" onclick="openPatchModal()">
+        <span class="patch-note-icon">📋</span> 패치노트
+      </button>
+      <button onclick="openThemeModal()" style="padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;cursor:pointer;font-family:inherit">🎨 테마</button>
+    </div>
+    <div class="contact-bar">
+      <a href="https://open.kakao.com/o/sgNwijri" target="_blank" class="contact-btn contact-kakao">
+        <span class="contact-icon">K</span>카카오톡
+      </a>
+      <a href="https://discord.com/users/629966669875511296" target="_blank" class="contact-btn contact-discord">
+        <span class="contact-icon">D</span>디스코드
+      </a>
+      <button class="day-icon-btn" onclick="openItemModal()">
+        <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/Day.png" alt="방랑상인">
+      </button>
+    </div>
+  </div>
   <div class="pc-body">
     <div class="pc-tabs">
       <button class="pc-tab active" onclick="switchPCTab('info')">정보</button>
       <button class="pc-tab" onclick="switchPCTab('guide')">공략 &amp; 가이드</button>
       <button class="pc-tab" onclick="switchPCTab('weekly')">주간</button>
+      <button class="pc-tab" onclick="switchPCTab('community')">커뮤니티</button>
     </div>
     <div class="pc-cards">
       <div class="pc-category active" id="pc-info">
@@ -165,6 +194,11 @@ body{font-family:'Malgun Gothic',sans-serif;background:#1a1a2e;color:#eee;min-he
       <div class="pc-category" id="pc-weekly">
         <a href="./weekly.html" class="card"><span class="card-badge" style="background:rgba(245,200,66,0.15);color:#f5c842;border:1px solid rgba(245,200,66,0.3)">주간</span><div class="card-title">주간 정보</div><div class="card-desc">레무리아 · 레이드 · 길드전<br>매주 업데이트되는 주간 정보</div></a>
       </div>
+      <div class="pc-category" id="pc-community">
+        <a href="./guild.html" class="card"><span class="card-badge card-badge-community">커뮤니티</span><div class="card-title">길드</div><div class="card-desc">길드 홍보 및 모집 정보</div></a>
+        <a href="./community.html" class="card"><span class="card-badge card-badge-community">커뮤니티</span><div class="card-title">묻고답하기</div><div class="card-desc">질문하고 답변 받는 게시판<br>로그인 후 이용 가능</div></a>
+        <a href="./friend.html" class="card"><span class="card-badge card-badge-community">커뮤니티</span><div class="card-title">친구요청</div><div class="card-desc">정기친구 · 레이드 프리미엄<br>친구 구하는 게시판</div></a>
+      </div>
     </div>
   </div>
 </div>
@@ -175,36 +209,38 @@ body{font-family:'Malgun Gothic',sans-serif;background:#1a1a2e;color:#eee;min-he
     <button class="patch-modal-close" onclick="closePatchModal()">✕</button>
     <div class="patch-modal-title">📋 패치노트</div>
     <div id="patch-modal-body">
-<div class="patch-item">
-  <div class="patch-item-header">
-    <span class="patch-version">v0.0.4</span>
-    <span class="patch-date">2026-04-24</span>
-    <span class="patch-item-badge badge-new">NEW</span>
-  </div>
-  <ul class="patch-item-content">
-    <li>주간 버프 추가 (레무리아, 레이드, 길드전)</li>
-    <li style="color:#666">└ 길드전 길은 이미지 준비중입니다.</li>
-    <li>방랑상인 추가</li>
-    <li style="color:#666">└ 방랑상인 아이템이 공개될 경우 업데이트 됩니다.</li>
-    <li>공략 &amp; 가이드 탭 추가</li>
-    <li style="color:#666">└ 내용은 차근차근 업데이트 예정입니다.</li>
-    <li>알레샤 공략 추가</li>
-  </ul>
-</div>
+      <div class="patch-item">
+        <div class="patch-item-header">
+          <span class="patch-version">v0.0.5</span>
+          <span class="patch-date">2026-04-27</span>
+          <span class="patch-item-badge badge-new">NEW</span>
+        </div>
+        <ul class="patch-item-content">
+              <li>Ui 개선</li>
+              <li style="color:#666">└ 커스텀 테마가 추가됩니다.</li>
+              <li>로그인 기능 및 작성 기능 추가</li>
+              <li style="color:#666">└ 연동되는 여러 기능 추가예정</li>
+              <li>길드홍보 &amp; 커뮤니티 탭 추가</li>
+              <li style="color:#666">└ 직접 원하는 카테고리에서 작성하시면 됩니다.</li>
+              <li>이용해주셔서 항상 감사드립니다.</li>
+              <li style="color:#666">좋은하루 되세요(_ _)</li>
+        </ul>
+      </div>
     </div>
     <a href="./patchnote.html" class="patch-more-btn">전체 패치노트 보기 →</a>
   </div>
 </div>
 
-<!-- 일일 보상 모달 -->
+<!-- 방랑상인 모달 -->
 <div class="item-modal-overlay" id="item-modal-overlay" onclick="closeItemModal(event)">
   <div class="item-modal">
     <button class="item-modal-close" onclick="closeItemModal()">✕</button>
     <div class="item-modal-title">방랑상인 품목</div>
-    <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/item.png" alt="수요일, 목요일 오전9시~오후9시 사이 업데이트 예정입니다.">
+    <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/item.png" alt="방랑상인">
   </div>
 </div>
 
+<script src="./sb_config.js"></script>
 <script>
 function openPatchModal(){document.getElementById('patch-modal-overlay').classList.add('open')}
 function closePatchModal(e){if(!e||e.target===document.getElementById('patch-modal-overlay'))document.getElementById('patch-modal-overlay').classList.remove('open')}
@@ -212,6 +248,40 @@ function openItemModal(){document.getElementById('item-modal-overlay').classList
 function closeItemModal(e){if(!e||e.target===document.getElementById('item-modal-overlay'))document.getElementById('item-modal-overlay').classList.remove('open')}
 function switchPCTab(tab){document.querySelectorAll('.pc-tab').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.pc-category').forEach(c=>c.classList.remove('active'));event.currentTarget.classList.add('active');document.getElementById('pc-'+tab).classList.add('active')}
 function switchMobileTab(tab,el){document.querySelectorAll('.mobile-tab').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.mobile-category').forEach(c=>c.classList.remove('active'));el.classList.add('active');document.getElementById('mobile-'+tab).classList.add('active')}
+
+// 방문자 카운터
+async function trackVisitor() {
+  try {
+    const today = new Date().toISOString().slice(0,10);
+    const lastVisit = localStorage.getItem('last_visit');
+
+    // 오늘 처음 방문이면 기록
+    if(lastVisit !== today) {
+      await supabase('POST', 'visitors', { visited_at: today });
+      localStorage.setItem('last_visit', today);
+    }
+
+    // 오늘 방문자
+    const todayRows = await supabase('GET', 'visitors', null, `?visited_at=eq.${today}&select=id`);
+    // 누적 방문자
+    const totalRows = await supabase('GET', 'visitors', null, '?select=id');
+    // 회원수
+    const memberRows = await supabase('GET', 'users', null, '?select=id');
+
+    const todayCount = todayRows ? todayRows.length : 0;
+    const totalCount = totalRows ? totalRows.length : 0;
+    const memberCount = memberRows ? memberRows.length : 0;
+
+    document.getElementById('m-today').textContent = todayCount.toLocaleString();
+    document.getElementById('m-total').textContent = totalCount.toLocaleString();
+    document.getElementById('m-members').textContent = memberCount.toLocaleString();
+    document.getElementById('p-today').textContent = todayCount.toLocaleString();
+    document.getElementById('p-total').textContent = totalCount.toLocaleString();
+    document.getElementById('p-members').textContent = memberCount.toLocaleString();
+  } catch(e) { console.error(e); }
+}
+
+trackVisitor();
 </script>
 </body>
 </html>

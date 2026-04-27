@@ -1,0 +1,17 @@
+/* 다크 테마 (기본) */
+:root {
+  --bg: #1a1a2e;
+  --bg2: #1e1e30;
+  --bg3: #252538;
+  --border: #333;
+  --border2: #2a2a3e;
+  --border3: #444;
+  --text: #eee;
+  --text2: #aaa;
+  --text3: #888;
+  --text4: #666;
+  --accent: #5dcff5;
+  --accent-bg: rgba(93,207,245,0.1);
+  --accent-border: rgba(93,207,245,0.3);
+}
+body { background: var(--bg); color: var(--text); }

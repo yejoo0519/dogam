@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>로그인</title>
+<link id="theme-css" rel="stylesheet" href="./theme-dark.css">
+<script src="./theme.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px}
+.box{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:28px;width:100%;max-width:380px}
+.box h2{font-size:18px;color:var(--text);margin-bottom:20px;text-align:center}
+.field{margin-bottom:14px}
+.field label{font-size:12px;color:var(--text2);margin-bottom:5px;display:block}
+.field input{width:100%;padding:9px 12px;background:var(--bg3);border:1px solid var(--border3);border-radius:8px;color:var(--text);font-size:13px;font-family:inherit}
+.field input:focus{outline:none;border-color:var(--accent)}
+.btn{width:100%;padding:11px;background:linear-gradient(90deg,#4a90d9,#5dcff5);border:none;border-radius:8px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:4px}
+.btn:hover{opacity:0.9}
+.msg{font-size:12px;margin-top:10px;text-align:center}
+.msg.error{color:#ef5350}
+.msg.success{color:#66bb6a}
+.link{text-align:center;margin-top:14px;font-size:12px;color:var(--text4)}
+.link a{color:var(--accent);text-decoration:none}
+</style>
+</head>
+<body>
+<div class="box">
+  <h2>로그인</h2>
+  <div class="field">
+    <label>아이디</label>
+    <input id="username" type="text" placeholder="아이디 입력">
+  </div>
+  <div class="field">
+    <label>비밀번호</label>
+    <input id="password" type="password" placeholder="비밀번호 입력">
+  </div>
+  <button class="btn" onclick="login()">로그인</button>
+  <div class="msg" id="msg"></div>
+  <div class="link"><a href="./register.html">계정이 없어요 → 회원가입</a></div>
+</div>
+<script src="./sb_config.js"></script>
+<script>
+async function login() {
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+  const msg = document.getElementById('msg');
+  if(!username || !password){ msg.className='msg error'; msg.textContent='아이디와 비밀번호를 입력해주세요.'; return; }
+  try {
+    const hashed = await hashPassword(password);
+    const rows = await supabase('GET', 'users', null, `?username=eq.${encodeURIComponent(username)}&password=eq.${hashed}`);
+    if(!rows || rows.length === 0){ msg.className='msg error'; msg.textContent='아이디 또는 비밀번호가 틀렸습니다.'; return; }
+    const user = rows[0];
+    if(user.is_banned){ msg.className='msg error'; msg.textContent='이용이 제한된 계정입니다.'; return; }
+    setUser({
+      id: user.id,
+      username: user.username,
+      nickname: user.nickname || user.username,
+      friend_code: user.friend_code || '',
+      is_admin: user.is_admin
+    });
+    msg.className='msg success'; msg.textContent='로그인 성공!';
+    const params = new URLSearchParams(location.search);
+    const redirectTo = params.get('from') || './community.html';
+    setTimeout(() => location.href=redirectTo, 800);
+  } catch(e) {
+    msg.className='msg error'; msg.textContent='오류: ' + e.message;
+  }
+}
+document.addEventListener('keydown', e => { if(e.key==='Enter') login(); });
+</script>
+</body>
+</html>

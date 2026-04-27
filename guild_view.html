@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>길드 정보</title>
+<link id="theme-css" rel="stylesheet" href="./theme-dark.css">
+<script src="./theme.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--text);padding:16px}
+.back-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;text-decoration:none;margin-bottom:20px;transition:all 0.15s}
+.back-btn:hover{border-color:var(--accent);color:var(--text)}
+.guild-header{display:flex;align-items:center;gap:16px;margin-bottom:24px;max-width:780px}
+.guild-logo{width:72px;height:72px;border-radius:12px;object-fit:cover;border:1px solid var(--border);background:var(--bg3);flex-shrink:0}
+.guild-logo-placeholder{width:72px;height:72px;border-radius:12px;border:1px dashed var(--border3);background:var(--bg3);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:28px}
+.guild-header-info{}
+.guild-title{font-size:22px;font-weight:700;color:var(--text);margin-bottom:4px}
+.guild-level{font-size:13px;color:var(--accent);font-weight:600}
+.post-body{max-width:780px;font-size:14px;color:var(--text2);line-height:1.9}
+.post-body .section-title{font-size:15px;font-weight:700;color:var(--accent);margin:24px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border2)}
+.post-body p{margin-bottom:8px;word-break:keep-all}
+.post-body hr{border:none;border-top:1px solid var(--border2);margin:20px 0}
+.interview-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;max-width:780px;margin-top:24px;padding:14px;background:#FEE500;border:none;border-radius:10px;color:#3C1E1E;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;font-family:inherit;transition:opacity 0.15s}
+.interview-btn:hover{opacity:0.85}
+</style>
+</head>
+<body>
+<a href="./guild.html" class="back-btn">← 목록으로</a>
+<div id="guild-header-wrap"></div>
+<div class="post-body" id="guild-body">로딩 중...</div>
+<div id="interview-btn-wrap"></div>
+
+<script>
+const params = new URLSearchParams(location.search);
+const id = params.get('id');
+if(id) {
+  const script = document.createElement('script');
+  script.src = `./data2/guild${id}.js`;
+  script.onload = () => {
+    document.title = guildContent.title + ' - 길드';
+
+    // 헤더 (로고 + 타이틀 + 레벨)
+    const headerWrap = document.getElementById('guild-header-wrap');
+    const logoUrl = guildContent.logo;
+    headerWrap.innerHTML = `
+      <div class="guild-header">
+        <img class="guild-logo" src="${logoUrl || 'https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/guild.png'}" alt="${guildContent.title}">
+        <div class="guild-header-info">
+          <div class="guild-title">${guildContent.title}</div>
+          <div class="guild-level">${guildContent.level || ''} 길드</div>
+        </div>
+      </div>
+    `;
+
+    // 본문
+    document.getElementById('guild-body').innerHTML = guildContent.body;
+
+    // 면접방 버튼
+    if(guildContent.interview) {
+      document.getElementById('interview-btn-wrap').innerHTML = `
+        <a href="${guildContent.interview}" target="_blank" class="interview-btn">
+          K&nbsp; 길드 면접방 입장하기
+        </a>
+      `;
+    }
+  };
+  script.onerror = () => {
+    document.getElementById('guild-body').innerHTML = '<div style="color:var(--text4);padding:40px 0;text-align:center">길드 정보를 찾을 수 없습니다.</div>';
+  };
+  document.head.appendChild(script);
+}
+</script>
+</body>
+</html>

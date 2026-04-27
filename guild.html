@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>길드</title>
+<link id="theme-css" rel="stylesheet" href="./theme-dark.css">
+<script src="./theme.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--text);padding:12px}
+.back-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;text-decoration:none;margin-bottom:16px;transition:all 0.15s}
+.back-btn:hover{border-color:var(--accent);color:var(--text)}
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.header h1{font-size:20px;color:var(--text2)}
+.header-right{display:flex;align-items:center;gap:8px}
+.user-info{font-size:12px;color:var(--accent);font-weight:600}
+.btn{padding:7px 14px;border-radius:20px;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.15s}
+.btn-primary{background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-border)}
+.btn-primary:hover{background:rgba(93,207,245,0.25)}
+.btn-gray{background:var(--bg3);color:var(--text2);border:1px solid var(--border)}
+.btn-gray:hover{border-color:var(--accent);color:var(--text)}
+.btn-danger{background:rgba(239,83,80,0.1);color:#ef5350;border:1px solid rgba(239,83,80,0.2)}
+.filter-wrap{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.filter-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.filter-label{font-size:11px;color:var(--text4);width:60px;flex-shrink:0}
+.filter-btn{padding:4px 12px;border-radius:20px;border:1px solid var(--border);background:none;color:var(--text3);font-size:11px;cursor:pointer;font-family:inherit;transition:all 0.15s}
+.filter-btn:hover{border-color:var(--accent);color:var(--text2)}
+.filter-btn.active{border-color:var(--accent);background:var(--accent-bg);color:var(--accent)}
+.tag-badge{display:inline-block;padding:2px 6px;border-radius:8px;font-size:10px;font-weight:600;margin-right:3px}
+.tag-길드전{background:rgba(93,207,245,0.15);color:var(--accent);border:1px solid var(--accent-border)}
+.tag-광산{background:rgba(102,187,106,0.15);color:#66bb6a;border:1px solid rgba(102,187,106,0.3)}
+.tag-길드레이드{background:rgba(245,200,66,0.15);color:#f5c842;border:1px solid rgba(245,200,66,0.3)}
+.tag-길드포인트{background:rgba(255,167,38,0.15);color:#ffb74d;border:1px solid rgba(255,167,38,0.3)}
+.tag-성인{background:rgba(239,83,80,0.1);color:#ef9a9a;border:1px solid rgba(239,83,80,0.2)}
+.tag-상관X{background:rgba(255,255,255,0.08);color:var(--text2);border:1px solid var(--border)}
+.guild-table{width:100%;border-collapse:collapse;background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.guild-table th{background:var(--bg3);padding:10px 14px;font-size:12px;font-weight:700;color:var(--accent);text-align:left;border-bottom:1px solid var(--border)}
+.guild-table th.num{width:60px;text-align:center}
+.guild-table th.author{width:90px;text-align:center}
+.guild-table th.likes{width:60px;text-align:center}
+.guild-table th.date{width:110px;text-align:center}
+.guild-table td{padding:12px 14px;font-size:13px;border-bottom:1px solid var(--border2);color:var(--text)}
+.guild-table td.num{text-align:center;color:var(--text4);font-size:12px}
+.guild-table td.author{text-align:center;color:var(--text2);font-size:12px}
+.guild-table td.likes{text-align:center;color:#f5c842;font-size:12px}
+.guild-table td.date{text-align:center;color:var(--text4);font-size:12px}
+.guild-table tr:last-child td{border-bottom:none}
+.guild-table tr:hover td{background:var(--bg3);cursor:pointer}
+.guild-title-link{color:var(--text);text-decoration:none;font-size:13px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.guild-title-link:hover{color:var(--accent)}
+.guild-logo-small{width:28px;height:28px;border-radius:6px;object-fit:cover;border:1px solid var(--border);background:var(--bg3);flex-shrink:0}
+.empty{text-align:center;color:var(--text4);font-size:13px;padding:32px 0}
+.verify-badge{font-size:12px}
+.block-btn{font-size:10px;padding:2px 6px;border-radius:4px;border:1px solid var(--border3);background:none;color:var(--text4);cursor:pointer;font-family:inherit;margin-left:4px}
+.block-btn:hover{border-color:#ef5350;color:#ef5350}
+.blocked-count{font-size:11px;color:var(--text4);text-align:right;margin-bottom:6px}
+.blocked-count a{color:var(--accent);cursor:pointer;text-decoration:none}
+</style>
+</head>
+<body>
+<a href="./index.html" class="back-btn">← 메인으로</a>
+
+<div class="header">
+  <h1>길드</h1>
+  <div class="header-right" id="header-right">
+    <span class="user-info" id="user-info"></span>
+    <button class="btn btn-gray" id="auth-btn"></button>
+    <button class="btn btn-primary" id="write-btn" style="display:none" onclick="location.href='./write.html?board=guild'">홍보 글쓰기</button>
+  </div>
+</div>
+
+<div id="blocked-info"></div>
+
+<div class="filter-wrap">
+  <div class="filter-row">
+    <span class="filter-label">컨텐츠</span>
+    <button class="filter-btn active" onclick="setFilter('content','',this)">전체</button>
+    <button class="filter-btn" onclick="setFilter('content','길드전',this)">길드전</button>
+    <button class="filter-btn" onclick="setFilter('content','광산',this)">광산</button>
+    <button class="filter-btn" onclick="setFilter('content','길드레이드',this)">길드레이드</button>
+    <button class="filter-btn" onclick="setFilter('content','길드포인트',this)">길드포인트</button>
+  </div>
+  <div class="filter-row">
+    <span class="filter-label">나이</span>
+    <button class="filter-btn active" onclick="setFilter('age','',this)">전체</button>
+    <button class="filter-btn" onclick="setFilter('age','성인',this)">성인</button>
+    <button class="filter-btn" onclick="setFilter('age','상관X',this)">상관X</button>
+  </div>
+</div>
+
+<table class="guild-table">
+  <thead>
+    <tr>
+      <th class="num">번호</th>
+      <th>길드명</th>
+      <th class="author">작성자</th>
+      <th class="likes">추천</th>
+      <th class="date">등록일</th>
+    </tr>
+  </thead>
+  <tbody id="guild-list-body"></tbody>
+</table>
+
+<script src="./sb_config.js"></script>
+<script src="./data2/guild_list.js"></script>
+<script>
+const user = getUser();
+let activeContent = '';
+let activeAge = '';
+let allDbPosts = [];
+
+function getBlockList() { try { return JSON.parse(localStorage.getItem('block_list') || '[]'); } catch { return []; } }
+function saveBlockList(list) { localStorage.setItem('block_list', JSON.stringify(list)); }
+function blockUser(userId, nickname) {
+  if(!confirm(`"${nickname}"님을 차단할까요?`)) return;
+  const list = getBlockList();
+  if(!list.includes(userId)) { list.push(userId); saveBlockList(list); }
+  renderList();
+}
+function showBlockList() {
+  const list = getBlockList();
+  if(list.length === 0) { alert('차단한 유저가 없어요.'); return; }
+  if(confirm(`차단된 유저 ${list.length}명\n\n전체 차단 해제할까요?`)) { saveBlockList([]); renderList(); }
+}
+
+if(user) {
+  document.getElementById('user-info').textContent = user.nickname || user.username;
+  document.getElementById('auth-btn').textContent = '로그아웃';
+  document.getElementById('auth-btn').onclick = logout;
+  document.getElementById('write-btn').style.display = '';
+  if(user.is_admin) {
+    const adminBtn = document.createElement('button');
+    adminBtn.className = 'btn btn-danger';
+    adminBtn.textContent = '관리자';
+    adminBtn.onclick = () => location.href = './admin.html';
+    document.getElementById('header-right').appendChild(adminBtn);
+  }
+} else {
+  document.getElementById('auth-btn').textContent = '로그인';
+  document.getElementById('auth-btn').onclick = () => location.href = './login.html?from=' + encodeURIComponent(location.href.split('/').pop());
+}
+
+function setFilter(type, value, el) {
+  if(type === 'content') {
+    activeContent = value;
+    document.querySelectorAll('.filter-row:nth-child(1) .filter-btn').forEach(b => b.classList.remove('active'));
+  } else {
+    activeAge = value;
+    document.querySelectorAll('.filter-row:nth-child(2) .filter-btn').forEach(b => b.classList.remove('active'));
+  }
+  el.classList.add('active');
+  renderList();
+}
+
+function renderList() {
+  const tbody = document.getElementById('guild-list-body');
+  const blockList = getBlockList();
+
+  const blockedInfo = document.getElementById('blocked-info');
+  blockedInfo.innerHTML = blockList.length > 0 ? `<div class="blocked-count">차단된 유저 ${blockList.length}명 · <a onclick="showBlockList()">차단 관리</a></div>` : '';
+
+  const filtered = allDbPosts.filter(p => {
+    if(blockList.includes(p.user_id)) return false;
+    let tags = [];
+    try { tags = JSON.parse(p.tags || '[]'); } catch {}
+    const contentOk = !activeContent || tags.includes(activeContent);
+    const ageOk = !activeAge || tags.includes(activeAge);
+    return contentOk && ageOk;
+  });
+
+  tbody.innerHTML = '';
+
+  if(filtered.length > 0) {
+    const normalPosts = filtered.filter(p => !p.is_pinned);
+    filtered.forEach(p => {
+      let tags = [];
+      try { tags = JSON.parse(p.tags || '[]'); } catch {}
+      const tagHtml = '';
+      const num = p.is_pinned ? '📌' : normalPosts.length - normalPosts.indexOf(p);
+      const isMe = user && user.id === p.user_id;
+      const blockBtn = user && !isMe ? `<button class="block-btn" onclick="event.stopPropagation();blockUser('${p.user_id}','${p.nickname||p.username}')">차단</button>` : '';
+      const tr = document.createElement('tr');
+      tr.onclick = () => location.href = `./community_view.html?id=${p.id}&back=guild`;
+      tr.innerHTML = `
+        <td class="num">${num}</td>
+        <td>
+          <a class="guild-title-link" href="./community_view.html?id=${p.id}&back=guild">
+            ${p.is_verified ? '<span class="verify-badge">✅</span>' : ''}
+            ${p.title}
+            ${tagHtml}
+          </a>
+        </td>
+        <td class="author">${p.nickname || p.username}${blockBtn}</td>
+        <td class="likes">❤ ${p.likes || 0}</td>
+        <td class="date">${(p.updated_at || p.created_at).slice(0,10).replace(/-/g,'.')}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  if(guildList && guildList.length > 0 && !activeContent && !activeAge) {
+    guildList.forEach(g => {
+      const tr = document.createElement('tr');
+      tr.onclick = () => location.href = `./guild_view.html?id=${g.id}`;
+      tr.innerHTML = `
+        <td class="num">${g.id}</td>
+        <td>
+          <a class="guild-title-link" href="./guild_view.html?id=${g.id}">
+            <img class="guild-logo-small" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/guild/${g.id}.png" alt="">
+            <span class="verify-badge">✅</span>
+            ${g.title}
+          </a>
+        </td>
+        <td class="author">닉스</td>
+        <td class="likes">-</td>
+        <td class="date">${g.date}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  if(filtered.length === 0 && (!guildList || guildList.length === 0 || activeContent || activeAge)) {
+    tbody.innerHTML = '<tr><td colspan="5" class="empty">해당하는 길드가 없습니다.</td></tr>';
+  }
+}
+
+async function loadDbPosts() {
+  const tbody = document.getElementById('guild-list-body');
+  tbody.innerHTML = '<tr><td colspan="5" class="empty">로딩 중...</td></tr>';
+  try {
+    const dbPosts = await supabase('GET', 'posts', null, '?board=eq.guild&order=is_pinned.desc,updated_at.desc');
+    allDbPosts = dbPosts || [];
+    renderList();
+  } catch(e) { tbody.innerHTML = `<tr><td colspan="5" class="empty">불러오기 실패: ${e.message}</td></tr>`; }
+}
+
+loadDbPosts();
+</script>
+</body>
+</html>

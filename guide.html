@@ -4,50 +4,85 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>공략 & 가이드</title>
+<link id="theme-css" rel="stylesheet" href="./theme-dark.css">
+<script src="./theme.js"></script>
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Malgun Gothic',sans-serif;background:#1a1a2e;color:#eee;padding:12px}
-.back-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1px solid #333;background:#1e1e30;color:#aaa;font-size:12px;text-decoration:none;margin-bottom:16px;transition:all 0.15s}
-.back-btn:hover{border-color:#5dcff5;color:#eee}
-
-h1{font-size:20px;color:#aaa;margin-bottom:12px}
-
-/* 필터 */
-.filter-wrap{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--text);padding:12px}
+.back-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;text-decoration:none;margin-bottom:16px;transition:all 0.15s}
+.back-btn:hover{border-color:var(--accent);color:var(--text)}
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.header h1{font-size:20px;color:var(--text2)}
+.header-right{display:flex;align-items:center;gap:8px}
+.user-info{font-size:12px;color:var(--accent);font-weight:600}
+.btn{padding:7px 14px;border-radius:20px;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.15s}
+.btn-primary{background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-border)}
+.btn-primary:hover{background:rgba(93,207,245,0.25)}
+.btn-gray{background:var(--bg3);color:var(--text2);border:1px solid var(--border)}
+.btn-gray:hover{border-color:var(--accent);color:var(--text)}
+.btn-danger{background:rgba(239,83,80,0.1);color:#ef5350;border:1px solid rgba(239,83,80,0.2)}
+.filter-wrap{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
 .filter-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.filter-label{font-size:11px;color:#666;width:40px;flex-shrink:0}
-.filter-btn{padding:4px 12px;border-radius:20px;border:1px solid #333;background:none;color:#888;font-size:11px;cursor:pointer;font-family:inherit;transition:all 0.15s}
-.filter-btn:hover{border-color:#5dcff5;color:#ccc}
-.filter-btn.active{border-color:#5dcff5;background:rgba(93,207,245,0.1);color:#5dcff5}
-
-/* 태그 뱃지 */
+.filter-label{font-size:11px;color:var(--text4);width:40px;flex-shrink:0}
+.filter-btn{padding:4px 12px;border-radius:20px;border:1px solid var(--border);background:none;color:var(--text3);font-size:11px;cursor:pointer;font-family:inherit;transition:all 0.15s}
+.filter-btn:hover{border-color:var(--accent);color:var(--text2)}
+.filter-btn.active{border-color:var(--accent);background:var(--accent-bg);color:var(--accent)}
 .tag-badge{display:inline-block;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600;margin-right:4px}
 .tag-시나리오{background:rgba(102,187,106,0.15);color:#66bb6a;border:1px solid rgba(102,187,106,0.3)}
-.tag-육성{background:rgba(93,207,245,0.15);color:#5dcff5;border:1px solid rgba(93,207,245,0.3)}
+.tag-육성{background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-border)}
 .tag-정령{background:rgba(245,200,66,0.15);color:#f5c842;border:1px solid rgba(245,200,66,0.3)}
-.tag-기타{background:rgba(255,255,255,0.08);color:#aaa;border:1px solid #444}
+.tag-기타{background:rgba(255,255,255,0.08);color:var(--text2);border:1px solid var(--border)}
 .tag-기초{background:rgba(102,187,106,0.1);color:#81c784;border:1px solid rgba(102,187,106,0.2)}
 .tag-중급{background:rgba(255,167,38,0.1);color:#ffb74d;border:1px solid rgba(255,167,38,0.2)}
 .tag-심화{background:rgba(239,83,80,0.1);color:#ef9a9a;border:1px solid rgba(239,83,80,0.2)}
-
-.guide-table{width:100%;border-collapse:collapse;background:#1e1e30;border:1px solid #333;border-radius:10px;overflow:hidden}
-.guide-table th{background:#252538;padding:10px 14px;font-size:12px;font-weight:700;color:#5dcff5;text-align:left;border-bottom:1px solid #333}
+.search-wrap{position:relative;margin-bottom:16px}
+.search-wrap input{width:100%;padding:9px 36px 9px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;font-family:inherit}
+.search-wrap input:focus{outline:none;border-color:var(--accent)}
+.search-wrap input::placeholder{color:var(--text4)}
+.search-icon{position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--text4);font-size:14px;pointer-events:none}
+.search-highlight{background:rgba(93,207,245,0.25);border-radius:2px;color:var(--accent)}
+.guide-table{width:100%;border-collapse:collapse;background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.guide-table th{background:var(--bg3);padding:10px 14px;font-size:12px;font-weight:700;color:var(--accent);text-align:left;border-bottom:1px solid var(--border)}
 .guide-table th.num{width:60px;text-align:center}
+.guide-table th.author{width:90px;text-align:center}
+.guide-table th.likes{width:60px;text-align:center}
 .guide-table th.date{width:110px;text-align:center}
-.guide-table td{padding:12px 14px;font-size:13px;border-bottom:1px solid #2a2a3e;color:#ddd}
-.guide-table td.num{text-align:center;color:#666;font-size:12px}
-.guide-table td.date{text-align:center;color:#666;font-size:12px}
+.guide-table td{padding:12px 14px;font-size:13px;border-bottom:1px solid var(--border2);color:var(--text)}
+.guide-table td.num{text-align:center;color:var(--text4);font-size:12px}
+.guide-table td.author{text-align:center;color:var(--text2);font-size:12px}
+.guide-table td.likes{text-align:center;color:#f5c842;font-size:12px}
+.guide-table td.date{text-align:center;color:var(--text4);font-size:12px}
 .guide-table tr:last-child td{border-bottom:none}
-.guide-table tr:hover td{background:#252538;cursor:pointer}
-.guide-title-link{color:#ddd;text-decoration:none;font-size:13px}
-.guide-title-link:hover{color:#5dcff5}
-.no-result{text-align:center;color:#555;font-size:13px;padding:32px 0}
+.guide-table tr:hover td{background:var(--bg3);cursor:pointer}
+.guide-title-link{color:var(--text);text-decoration:none;font-size:13px}
+.guide-title-link:hover{color:var(--accent)}
+.no-result{text-align:center;color:var(--text4);font-size:13px;padding:32px 0}
+.block-btn{font-size:10px;padding:2px 6px;border-radius:4px;border:1px solid var(--border3);background:none;color:var(--text4);cursor:pointer;font-family:inherit;margin-left:4px}
+.block-btn:hover{border-color:#ef5350;color:#ef5350}
+.blocked-count{font-size:11px;color:var(--text4);text-align:right;margin-bottom:6px}
+.blocked-count a{color:var(--accent);cursor:pointer;text-decoration:none}
+@media(max-width:600px){
+  .guide-table th.date,
+  .guide-table td.date{display:none}
+}
 </style>
 </head>
 <body>
 
 <a href="./index.html" class="back-btn">← 메인으로</a>
-<h1>공략 & 가이드</h1>
+
+<div class="header">
+  <h1>공략 & 가이드</h1>
+  <div class="header-right" id="header-right">
+    <span class="user-info" id="user-info"></span>
+    <button class="btn btn-gray" id="auth-btn"></button>
+    <button class="btn btn-primary" id="write-btn" style="display:none" onclick="location.href='./write.html?board=guide'">글쓰기</button>
+  </div>
+</div>
+
+<div id="blocked-info"></div>
 
 <div class="filter-wrap">
   <div class="filter-row">
@@ -67,24 +102,70 @@ h1{font-size:20px;color:#aaa;margin-bottom:12px}
   </div>
 </div>
 
+<div class="search-wrap">
+  <input id="search-input" type="text" placeholder="제목 검색..." oninput="renderList()">
+  <span class="search-icon">🔍</span>
+</div>
+
 <table class="guide-table">
   <thead>
     <tr>
       <th class="num">번호</th>
       <th>제목</th>
-      <th class="date">수정일</th>
+      <th class="author">작성자</th>
+      <th class="likes">추천</th>
+      <th class="date">날짜</th>
     </tr>
   </thead>
   <tbody id="guide-list-body"></tbody>
 </table>
 
+<script src="./sb_config.js"></script>
 <script src="./data/guide_list.js"></script>
 <script>
-const categoryTags = ['시나리오','육성','정령','기타'];
-const levelTags = ['기초','중급','심화'];
-
+const user = getUser();
 let activeCategory = '';
 let activeLevel = '';
+let dbPosts = [];
+
+function getBlockList() { try { return JSON.parse(localStorage.getItem('block_list') || '[]'); } catch { return []; } }
+function saveBlockList(list) { localStorage.setItem('block_list', JSON.stringify(list)); }
+function blockUser(userId, nickname) {
+  if(!confirm(`"${nickname}"님을 차단할까요?`)) return;
+  const list = getBlockList();
+  if(!list.includes(userId)) { list.push(userId); saveBlockList(list); }
+  renderList();
+}
+function showBlockList() {
+  const list = getBlockList();
+  if(list.length === 0) { alert('차단한 유저가 없어요.'); return; }
+  if(confirm(`차단된 유저 ${list.length}명\n\n전체 차단 해제할까요?`)) { saveBlockList([]); renderList(); }
+}
+
+if(user) {
+  document.getElementById('user-info').textContent = user.nickname || user.username;
+  document.getElementById('auth-btn').textContent = '로그아웃';
+  document.getElementById('auth-btn').onclick = logout;
+  document.getElementById('write-btn').style.display = '';
+  if(user.is_admin) {
+    const adminBtn = document.createElement('button');
+    adminBtn.className = 'btn btn-danger';
+    adminBtn.textContent = '관리자';
+    adminBtn.onclick = () => location.href = './admin.html';
+    document.getElementById('header-right').appendChild(adminBtn);
+  }
+} else {
+  document.getElementById('auth-btn').textContent = '로그인';
+  document.getElementById('auth-btn').onclick = () => location.href = './login.html?from=' + encodeURIComponent(location.href.split('/').pop());
+}
+
+async function loadDbPosts() {
+  try {
+    const posts = await supabase('GET', 'posts', null, '?board=eq.guide&order=created_at.desc');
+    dbPosts = posts || [];
+    renderList();
+  } catch(e) { console.error(e); }
+}
 
 function setFilter(type, value, el) {
   if(type === 'category') {
@@ -98,40 +179,74 @@ function setFilter(type, value, el) {
   renderList();
 }
 
+function highlight(text, query) {
+  if(!query) return text;
+  const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return text.replace(new RegExp(escaped, 'gi'), m => `<span class="search-highlight">${m}</span>`);
+}
+
 function renderList() {
   const tbody = document.getElementById('guide-list-body');
+  const searchQuery = document.getElementById('search-input').value.trim();
+  const blockList = getBlockList();
   tbody.innerHTML = '';
 
-  const filtered = guideList.filter(g => {
+  const blockedInfo = document.getElementById('blocked-info');
+  blockedInfo.innerHTML = blockList.length > 0 ? `<div class="blocked-count">차단된 유저 ${blockList.length}명 · <a onclick="showBlockList()">차단 관리</a></div>` : '';
+
+  const staticFiltered = guideList.filter(g => {
     const tags = g.tags || [];
-    const categoryOk = !activeCategory || tags.includes(activeCategory);
-    const levelOk = !activeLevel || tags.includes(activeLevel);
-    return categoryOk && levelOk;
+    return (!activeCategory || tags.includes(activeCategory)) && (!activeLevel || tags.includes(activeLevel)) && (!searchQuery || g.title.includes(searchQuery));
   });
 
-  if(filtered.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="3" class="no-result">해당하는 글이 없습니다.</td></tr>';
+  const dbFiltered = dbPosts.filter(p => {
+    if(blockList.includes(p.user_id)) return false;
+    try {
+      const tags = JSON.parse(p.tags || '[]');
+      return (!activeCategory || tags.includes(activeCategory)) && (!activeLevel || tags.includes(activeLevel)) && (!searchQuery || p.title.includes(searchQuery));
+    } catch { return !activeCategory && !activeLevel && (!searchQuery || p.title.includes(searchQuery)); }
+  });
+
+  if(staticFiltered.length === 0 && dbFiltered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="5" class="no-result">${searchQuery ? `"${searchQuery}" 검색 결과가 없습니다.` : '해당하는 글이 없습니다.'}</td></tr>`;
     return;
   }
 
-  filtered.forEach(g => {
+  dbFiltered.forEach(p => {
+    let tags = [];
+    try { tags = JSON.parse(p.tags || '[]'); } catch {}
+    const tagHtml = tags.map(t => `<span class="tag-badge tag-${t}">${t}</span>`).join('');
+    const isMe = user && user.id === p.user_id;
+    const blockBtn = user && !isMe ? `<button class="block-btn" onclick="event.stopPropagation();blockUser('${p.user_id}','${p.nickname||p.username}')">차단</button>` : '';
+    const tr = document.createElement('tr');
+    tr.onclick = () => location.href = `./community_view.html?id=${p.id}&back=guide`;
+    tr.innerHTML = `
+      <td class="num">-</td>
+      <td><a class="guide-title-link" href="./community_view.html?id=${p.id}&back=guide">${highlight(p.title, searchQuery)}</a> ${tagHtml}</td>
+      <td class="author">${p.nickname || p.username}${blockBtn}</td>
+      <td class="likes">❤ ${p.likes || 0}</td>
+      <td class="date">${p.created_at.slice(0,10).replace(/-/g,'.')}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  staticFiltered.forEach(g => {
     const tags = g.tags || [];
     const tagHtml = tags.map(t => `<span class="tag-badge tag-${t}">${t}</span>`).join('');
     const tr = document.createElement('tr');
     tr.onclick = () => location.href = `./guide_view.html?id=${g.id}`;
     tr.innerHTML = `
       <td class="num">${g.id}</td>
-      <td>
-        <a class="guide-title-link" href="./guide_view.html?id=${g.id}">${g.title}</a>
-        ${tagHtml}
-      </td>
+      <td><a class="guide-title-link" href="./guide_view.html?id=${g.id}">${highlight(g.title, searchQuery)}</a> ${tagHtml}</td>
+      <td class="author">닉스</td>
+      <td class="likes">-</td>
       <td class="date">${g.date}</td>
     `;
     tbody.appendChild(tr);
   });
 }
 
-renderList();
+loadDbPosts();
 </script>
 </body>
 </html>

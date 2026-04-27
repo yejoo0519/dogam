@@ -4,51 +4,37 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>초월 등급표</title>
+<link id="theme-css" rel="stylesheet" href="./theme-dark.css">
+<script src="./theme.js"></script>
 <style>
 
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Malgun Gothic',sans-serif;background:#1a1a2e;color:#eee;padding:12px}
-
-/* 탭 */
+body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--text);padding:12px}
 #site-header{display:flex;align-items:center;gap:0;margin-bottom:0}
-#tab-bar{display:flex;gap:0;margin-bottom:16px;border-bottom:2px solid #333;align-items:flex-end}
-#site-title{display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;margin-right:16px;margin-bottom:6px;border:1.5px solid #444;border-radius:20px;padding:10px 18px;transition:border-color 0.15s;flex-shrink:0}
-#site-title:hover{border-color:#5dcff5}
-#site-title .title-main{font-size:16px;font-weight:700;color:#aaa;line-height:1.4}
-#site-title .title-sub{font-size:12px;color:#666;line-height:1.4}
-
-.tab-btn{padding:10px 20px;font-size:13px;font-weight:500;background:none;border:none;color:#888;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px}
-.tab-btn:hover{color:#ccc}
-.tab-btn.active{color:#5dcff5;border-bottom:2px solid #5dcff5}
+#tab-bar{display:flex;gap:0;margin-bottom:16px;border-bottom:2px solid var(--border);align-items:flex-end}
+#site-title{display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;margin-right:16px;margin-bottom:6px;border:1.5px solid var(--border3);border-radius:20px;padding:10px 18px;transition:border-color 0.15s;flex-shrink:0}
+#site-title:hover{border-color:var(--accent)}
+#site-title .title-main{font-size:16px;font-weight:700;color:var(--text2);line-height:1.4}
+#site-title .title-sub{font-size:12px;color:var(--text4);line-height:1.4}
+.tab-btn{padding:10px 20px;font-size:13px;font-weight:500;background:none;border:none;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px}
+.tab-btn:hover{color:var(--text2)}
+.tab-btn.active{color:var(--accent);border-bottom:2px solid var(--accent)}
 @media(max-width:600px){.tab-btn{display:none}}
 .tab-content{display:none}
 .tab-content.active{display:block}
-
-/* 초월 등급표 */
-
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Malgun Gothic',sans-serif;background:#1a1a2e;color:#eee;padding:12px}
-
-/* 검색/필터 */
 #top{margin-bottom:12px}
 #search-bar{display:flex;gap:8px;margin-bottom:8px}
-#search-bar input{flex:1;padding:16px 20px;border:1px solid #444;border-radius:8px;font-size:16px;background:#2a2a3e;color:#eee}
-#search-bar input::placeholder{color:#888}
+#search-bar input{flex:1;padding:16px 20px;border:1px solid var(--border3);border-radius:8px;font-size:16px;background:var(--bg3);color:var(--text)}
+#search-bar input::placeholder{color:var(--text4)}
 #filter-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}
-.ftag{padding:4px 10px;border-radius:20px;font-size:11px;border:1px solid #555;cursor:pointer;background:#2a2a3e;color:#aaa}
+.ftag{padding:4px 10px;border-radius:20px;font-size:11px;border:1px solid var(--border3);cursor:pointer;background:var(--bg3);color:var(--text2)}
 .ftag.active{background:#4a90d9;color:#fff;border-color:#4a90d9}
-#count{font-size:12px;color:#888;margin-bottom:8px}
-
-/* 속성 패널 그리드 */
+#count{font-size:12px;color:var(--text3);margin-bottom:8px}
 #panels{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
-
-/* 패널 */
-.panel{border-radius:10px;overflow:hidden;border:1px solid #333}
+.panel{border-radius:10px;overflow:hidden;border:1px solid var(--border)}
 .panel-header{display:flex;align-items:center;gap:10px;padding:10px 14px;font-size:15px;font-weight:700}
 .panel-header .elem-icon{width:36px;height:36px;border-radius:6px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:20px;background:rgba(0,0,0,0.2)}
 .panel-header .elem-icon img{width:100%;height:100%;object-fit:cover}
-
-/* 속성별 헤더 색상 */
 .panel-땅 .panel-header{background:linear-gradient(90deg,#b5651d,#d4863a)}
 .panel-물 .panel-header{background:linear-gradient(90deg,#1565c0,#1e88e5)}
 .panel-불 .panel-header{background:linear-gradient(90deg,#b71c1c,#e53935)}
@@ -58,119 +44,79 @@ body{font-family:'Malgun Gothic',sans-serif;background:#1a1a2e;color:#eee;paddin
 .panel-황혼 .panel-header{background:linear-gradient(90deg,#880e4f,#c2185b)}
 .panel-여명 .panel-header{background:linear-gradient(90deg,#4e342e,#795548)}
 .panel-악몽 .panel-header{background:linear-gradient(90deg,#4a148c,#7b1fa2)}
-
-/* 테이블 */
-.panel table{width:100%;border-collapse:collapse;font-size:12px;background:#1e1e30;min-width:0}
-.panel thead tr{background:#252538}
-.panel th{padding:6px 8px;text-align:center;font-weight:500;color:#aaa;border-bottom:1px solid #333;white-space:nowrap;font-size:11px}
+.panel table{width:100%;border-collapse:collapse;font-size:12px;background:var(--bg2);min-width:0}
+.panel thead tr{background:var(--bg3)}
+.panel th{padding:6px 8px;text-align:center;font-weight:500;color:var(--text2);border-bottom:1px solid var(--border);white-space:nowrap;font-size:11px}
 .panel th.left{text-align:left}
-.panel td{padding:5px 8px;border-bottom:0.5px solid #2a2a3e;vertical-align:middle;color:#ddd}
+.panel td{padding:5px 8px;border-bottom:0.5px solid var(--border2);vertical-align:middle;color:var(--text)}
 .panel td.center{text-align:center}
-.panel tr:hover td{background:#252540}
-
-/* 순위 */
-.rank{font-size:11px;color:#888;text-align:center;width:24px}
-
-/* 드래곤 이미지 */
+.panel tr:hover td{background:var(--bg3)}
+.rank{font-size:11px;color:var(--text3);text-align:center;width:24px}
 .dragon-img{width:36px;height:36px;border-radius:6px;object-fit:cover;display:block}
-.img-placeholder{width:36px;height:36px;border-radius:6px;background:#2a2a3e;border:1px dashed #444;display:flex;align-items:center;justify-content:center;color:#555;font-size:10px}
-
-/* 타입 뱃지 */
-.badge-type{font-size:10px;padding:2px 5px;border-radius:6px;background:#2e2e4a;color:#aaa;white-space:nowrap}
-
-/* 레벨업 */
+.img-placeholder{width:36px;height:36px;border-radius:6px;background:var(--bg3);border:1px dashed var(--border3);display:flex;align-items:center;justify-content:center;color:var(--text4);font-size:10px}
+.badge-type{font-size:10px;padding:2px 5px;border-radius:6px;background:var(--bg3);color:var(--text2);white-space:nowrap}
 .lv-o{color:#66bb6a;font-weight:700}
 .lv-x{color:#ef5350;font-weight:700}
-
-/* 등급 색상 */
-.t-blue  {color:#5dcff5 !important;font-weight:700;font-size:13px;text-shadow:0 0 6px rgba(93,207,245,0.6)}
-.t-gold  {color:#f5c842 !important;font-weight:700;font-size:13px;text-shadow:0 0 6px rgba(245,200,66,0.5)}
+.t-blue{color:#5dcff5 !important;font-weight:700;font-size:13px;text-shadow:0 0 6px rgba(93,207,245,0.6)}
+.t-gold{color:#f5c842 !important;font-weight:700;font-size:13px;text-shadow:0 0 6px rgba(245,200,66,0.5)}
 .t-silver{color:#a8b4c0 !important;font-weight:700;font-size:13px;text-shadow:0 0 4px rgba(168,180,192,0.4)}
-.t-pink  {color:#c4879e !important;font-weight:700;font-size:13px;text-shadow:0 0 4px rgba(196,135,158,0.4)}
-.t-neg   {color:#ef5350 !important;font-weight:700;font-size:13px}
-
-.no-data td{text-align:center;padding:1rem;color:#555}
-/* 속성별 행 그라데이션 */
-.panel-땅 tr.ex-true { background: linear-gradient(90deg, rgba(181,101,29,0.25) 0%, transparent 30%); }
-.panel-물 tr.ex-true { background: linear-gradient(90deg, rgba(21,101,192,0.25) 0%, transparent 30%); }
-.panel-불 tr.ex-true { background: linear-gradient(90deg, rgba(183,28,28,0.25) 0%, transparent 30%); }
-.panel-바람 tr.ex-true { background: linear-gradient(90deg, rgba(27,94,32,0.25) 0%, transparent 30%); }
-.panel-빛 tr.ex-true { background: linear-gradient(90deg, rgba(230,81,0,0.25) 0%, transparent 30%); }
-.panel-어둠 tr.ex-true { background: linear-gradient(90deg, rgba(49,27,146,0.25) 0%, transparent 30%); }
-.panel-황혼 tr.ex-true { background: linear-gradient(90deg, rgba(136,14,79,0.25) 0%, transparent 30%); }
-.panel-여명 tr.ex-true { background: linear-gradient(90deg, rgba(78,52,46,0.3) 0%, transparent 30%); }
-.panel-악몽 tr.ex-true { background: linear-gradient(90deg, rgba(74,20,140,0.25) 0%, transparent 30%); }
-
-
-
-
-/* 속성 아이콘 이미지 경로 — 직접 수정하세요 */
-/* 예: ./images/icon_earth.png */
-
-
-/* 도감 */
-
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Malgun Gothic',sans-serif;background:#1a1a2e;color:#eee;padding:12px}
-h1{font-size:24px;margin-bottom:12px;color:#aaa}
-
-/* 필터 */
+.t-pink{color:#c4879e !important;font-weight:700;font-size:13px;text-shadow:0 0 4px rgba(196,135,158,0.4)}
+.t-neg{color:#ef5350 !important;font-weight:700;font-size:13px}
+.no-data td{text-align:center;padding:1rem;color:var(--text4)}
+.panel-땅 tr.ex-true{background:linear-gradient(90deg,rgba(181,101,29,0.25) 0%,transparent 30%)}
+.panel-물 tr.ex-true{background:linear-gradient(90deg,rgba(21,101,192,0.25) 0%,transparent 30%)}
+.panel-불 tr.ex-true{background:linear-gradient(90deg,rgba(183,28,28,0.25) 0%,transparent 30%)}
+.panel-바람 tr.ex-true{background:linear-gradient(90deg,rgba(27,94,32,0.25) 0%,transparent 30%)}
+.panel-빛 tr.ex-true{background:linear-gradient(90deg,rgba(230,81,0,0.25) 0%,transparent 30%)}
+.panel-어둠 tr.ex-true{background:linear-gradient(90deg,rgba(49,27,146,0.25) 0%,transparent 30%)}
+.panel-황혼 tr.ex-true{background:linear-gradient(90deg,rgba(136,14,79,0.25) 0%,transparent 30%)}
+.panel-여명 tr.ex-true{background:linear-gradient(90deg,rgba(78,52,46,0.3) 0%,transparent 30%)}
+.panel-악몽 tr.ex-true{background:linear-gradient(90deg,rgba(74,20,140,0.25) 0%,transparent 30%)}
+h1{font-size:24px;margin-bottom:12px;color:var(--text2)}
 #filter-area{margin-bottom:10px}
-#search-bar{display:flex;gap:8px;margin-bottom:8px}
-#search-bar input{flex:1;padding:10px 14px;border:1px solid #444;border-radius:8px;font-size:14px;background:#2a2a3e;color:#eee}
-#search-bar input::placeholder{color:#888}
 #dex-search-bar{display:flex;gap:8px;margin-bottom:8px}
-#dex-search-bar input{flex:1;padding:10px 14px;border:1px solid #444;border-radius:8px;font-size:14px;background:#2a2a3e;color:#eee}
-#dex-search-bar input::placeholder{color:#888}
-#filter-row{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:8px}
-.ftag{padding:5px 12px;border-radius:20px;font-size:12px;border:1px solid #555;cursor:pointer;background:#2a2a3e;color:#aaa}
-.ftag.active{background:#4a90d9;color:#fff;border-color:#4a90d9}
-#count{font-size:12px;color:#888;margin-bottom:8px}
-
-/* 테이블 */
+#dex-search-bar input{flex:1;padding:10px 14px;border:1px solid var(--border3);border-radius:8px;font-size:14px;background:var(--bg3);color:var(--text)}
+#dex-search-bar input::placeholder{color:var(--text4)}
 .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.td-pc{display:table-cell}
+.td-mobile{display:none}
+@media(max-width:600px){
+  .tbl-wrap table{min-width:0!important}
+  .tbl-wrap thead{display:none}
+  .tbl-wrap tbody tr{display:block;padding:8px;border-bottom:1px solid var(--border2)}
+  .td-pc{display:none!important}
+  .td-mobile{display:flex!important}
+  .row1{align-items:center;gap:8px;margin-bottom:6px}
+  .row2{gap:0;justify-content:space-around;background:var(--bg3);border-radius:6px;padding:5px 0}
+  .row2-cell{text-align:center;flex:1}
+  .row2-cell .r2-label{font-size:10px;color:var(--text3);display:block}
+  .row2-cell .r2-val{font-size:11px;display:block}
+}
 .tbl-wrap table{width:100%;border-collapse:collapse;font-size:12px;background:transparent;min-width:520px}
-.tbl-wrap thead tr{background:#252538}
-.tbl-wrap th{padding:7px 8px;text-align:center;font-weight:500;color:#aaa;border-bottom:1px solid #333;white-space:nowrap;font-size:11px}
+.tbl-wrap thead tr{background:var(--bg3)}
+.tbl-wrap th{padding:7px 8px;text-align:center;font-weight:500;color:var(--text2);border-bottom:1px solid var(--border);white-space:nowrap;font-size:11px}
 .tbl-wrap th.left{text-align:left}
-.tbl-wrap td{padding:10px 8px;border-bottom:0.5px solid #2a2a3e;vertical-align:middle;color:#ddd;text-align:center;background:transparent}
+.tbl-wrap td{padding:10px 8px;border-bottom:0.5px solid var(--border2);vertical-align:middle;color:var(--text);text-align:center;background:transparent}
 .tbl-wrap td.left{text-align:left;white-space:nowrap}
-.tbl-wrap tr:hover td{background:#252540}
-.tbl-wrap tbody{background:#1e1e30}
-
-/* 속성 뱃지 */
+.tbl-wrap tr:hover td{background:var(--bg3)!important}
+.tbl-wrap tbody{background:var(--bg2)}
 .badge-elem{font-size:10px;padding:2px 6px;border-radius:6px;font-weight:500;white-space:nowrap}
-.badge-type{font-size:10px;padding:2px 5px;border-radius:6px;background:#2e2e4a;color:#aaa;white-space:nowrap}
-
-/* 체크 */
 .chk-y{color:#66bb6a !important;font-weight:700;font-size:13px}
 .chk-n{color:#ef5350 !important;font-weight:700;font-size:13px}
-
-/* 코드화 */
 .cd-yes{color:#66bb6a;font-size:11px;font-weight:500}
 .cd-no{color:#ef5350;font-size:11px;font-weight:500}
 .cd-cs{color:#f5c842;font-size:11px;font-weight:500}
-
-/* 드래곤 이미지 */
-.dragon-img{width:36px;height:36px;border-radius:6px;object-fit:cover;display:block}
-.img-placeholder{width:36px;height:36px;border-radius:6px;background:#2a2a3e;border:1px dashed #444}
 .dex-elem-icon{width:24px;height:24px;border-radius:4px;object-fit:cover;display:block;margin:0 auto}
-.dex-elem-icon-placeholder{width:24px;height:24px;border-radius:4px;background:#2a2a3e;border:1px dashed #333;margin:0 auto}
-
-/* 상세보기 버튼 */
-.detail-btn{font-size:10px;padding:2px 8px;border-radius:4px;border:1px solid #444;background:#2a2a3e;color:#aaa;cursor:pointer}
-.detail-btn:hover{background:#333;color:#eee}
-
-/* 모달 */
+.dex-elem-icon-placeholder{width:24px;height:24px;border-radius:4px;background:var(--bg3);border:1px dashed var(--border);margin:0 auto}
+.detail-btn{font-size:10px;padding:2px 8px;border-radius:4px;border:1px solid var(--border3);background:var(--bg3);color:var(--text2);cursor:pointer}
+.detail-btn:hover{background:var(--border);color:var(--text)}
 #modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1000;align-items:center;justify-content:center}
 #modal-overlay.open{display:flex}
-#modal{background:#1e1e30;border:1px solid #444;border-radius:12px;padding:24px;min-width:280px;max-width:90vw;position:relative}
-#modal-close{position:absolute;top:12px;right:14px;background:none;border:none;color:#aaa;font-size:18px;cursor:pointer}
-#modal-close:hover{color:#eee}
-#modal-title{font-size:16px;font-weight:700;color:#eee;margin-bottom:16px}
-#modal-body{font-size:13px;color:#aaa;line-height:1.8}
-
-/* 속성별 색상 */
+#modal{background:var(--bg2);border:1px solid var(--border3);border-radius:12px;padding:24px;min-width:280px;max-width:90vw;position:relative}
+#modal-close{position:absolute;top:12px;right:14px;background:none;border:none;color:var(--text2);font-size:18px;cursor:pointer}
+#modal-close:hover{color:var(--text)}
+#modal-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:16px}
+#modal-body{font-size:13px;color:var(--text2);line-height:1.8}
 .e-땅{background:#fff3e0;color:#e65100}
 .e-물{background:#e3f2fd;color:#1565c0}
 .e-불{background:#fce4ec;color:#b71c1c}
@@ -180,21 +126,16 @@ h1{font-size:24px;margin-bottom:12px;color:#aaa}
 .e-황혼{background:#fdf2f8;color:#880e4f}
 .e-여명{background:#fff8e1;color:#6d4c41}
 .e-악몽{background:#f3e5f5;color:#6a1b9a}
-
-/* 속성별 행 그라데이션 */
-tr.e-row-땅  {background:linear-gradient(90deg,rgba(181,101,29,0.12) 0%,transparent 20%)}
-tr.e-row-물  {background:linear-gradient(90deg,rgba(21,101,192,0.12) 0%,transparent 20%)}
-tr.e-row-불  {background:linear-gradient(90deg,rgba(183,28,28,0.12) 0%,transparent 20%)}
+tr.e-row-땅{background:linear-gradient(90deg,rgba(181,101,29,0.12) 0%,transparent 20%)}
+tr.e-row-물{background:linear-gradient(90deg,rgba(21,101,192,0.12) 0%,transparent 20%)}
+tr.e-row-불{background:linear-gradient(90deg,rgba(183,28,28,0.12) 0%,transparent 20%)}
 tr.e-row-바람{background:linear-gradient(90deg,rgba(27,94,32,0.12) 0%,transparent 20%)}
-tr.e-row-빛  {background:linear-gradient(90deg,rgba(230,81,0,0.12) 0%,transparent 20%)}
+tr.e-row-빛{background:linear-gradient(90deg,rgba(230,81,0,0.12) 0%,transparent 20%)}
 tr.e-row-어둠{background:linear-gradient(90deg,rgba(49,27,146,0.12) 0%,transparent 20%)}
 tr.e-row-황혼{background:linear-gradient(90deg,rgba(136,14,79,0.12) 0%,transparent 20%)}
 tr.e-row-여명{background:linear-gradient(90deg,rgba(78,52,46,0.15) 0%,transparent 20%)}
 tr.e-row-악몽{background:linear-gradient(90deg,rgba(74,20,140,0.12) 0%,transparent 20%)}
-tr:hover td{background:#252540!important}
-
-
-/* 탭 네비 링크 스타일 */
+tr:hover td{background:var(--bg3)!important}
 #tab-bar a{text-decoration:none}
 
 </style>

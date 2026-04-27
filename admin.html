@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>관리자 페이지</title>
+<link id="theme-css" rel="stylesheet" href="./theme-dark.css">
+<script src="./theme.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--text);padding:12px}
+.back-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;text-decoration:none;margin-bottom:16px;transition:all 0.15s}
+.back-btn:hover{border-color:var(--accent);color:var(--text)}
+h1{font-size:20px;color:#ef5350;margin-bottom:20px}
+h2{font-size:15px;color:var(--text2);margin-bottom:12px;margin-top:24px}
+.table{width:100%;border-collapse:collapse;background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px}
+.table th{background:var(--bg3);padding:10px 14px;font-size:12px;font-weight:700;color:var(--accent);text-align:left;border-bottom:1px solid var(--border)}
+.table td{padding:10px 14px;font-size:13px;border-bottom:1px solid var(--border2);color:var(--text)}
+.table tr:last-child td{border-bottom:none}
+.btn{padding:5px 10px;border-radius:6px;border:none;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;margin-right:4px}
+.btn-danger{background:rgba(239,83,80,0.15);color:#ef5350;border:1px solid rgba(239,83,80,0.3)}
+.btn-danger:hover{background:rgba(239,83,80,0.3)}
+.btn-warn{background:rgba(245,200,66,0.15);color:#f5c842;border:1px solid rgba(245,200,66,0.3)}
+.btn-warn:hover{background:rgba(245,200,66,0.3)}
+.btn-ok{background:rgba(102,187,106,0.15);color:#66bb6a;border:1px solid rgba(102,187,106,0.3)}
+.btn-ok:hover{background:rgba(102,187,106,0.3)}
+.btn-pin{background:rgba(255,167,38,0.15);color:#ffb74d;border:1px solid rgba(255,167,38,0.3)}
+.btn-pin:hover{background:rgba(255,167,38,0.3)}
+.btn-unpin{background:rgba(255,255,255,0.05);color:var(--text3);border:1px solid var(--border3)}
+.btn-unpin:hover{background:rgba(255,255,255,0.1)}
+.btn-verify{background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-border)}
+.btn-verify:hover{background:rgba(93,207,245,0.3)}
+.btn-unverify{background:rgba(255,255,255,0.05);color:var(--text3);border:1px solid var(--border3)}
+.btn-unverify:hover{background:rgba(255,255,255,0.1)}
+.badge-banned{color:#ef5350;font-size:11px}
+.badge-ok{color:#66bb6a;font-size:11px}
+.board-badge{font-size:10px;padding:2px 6px;border-radius:4px;margin-left:4px}
+.board-qna{background:var(--accent-bg);color:var(--accent)}
+.board-guide{background:rgba(245,200,66,0.15);color:#f5c842}
+.board-guild{background:rgba(102,187,106,0.15);color:#66bb6a}
+.pin-badge{font-size:10px;color:#ffb74d;margin-right:4px}
+.verify-badge{font-size:10px;color:var(--accent);margin-right:4px}
+.friend-code{font-size:11px;color:var(--text3);font-family:monospace;background:var(--bg3);padding:2px 6px;border-radius:4px}
+.monthly-winner{background:var(--bg2);border:1px solid rgba(245,200,66,0.3);border-radius:10px;padding:16px;margin-bottom:16px;display:flex;align-items:center;gap:12px}
+.monthly-crown{font-size:24px}
+.monthly-info{flex:1}
+.monthly-title{font-size:12px;color:var(--text3);margin-bottom:4px}
+.monthly-name{font-size:16px;font-weight:700;color:#f5c842}
+.monthly-likes{font-size:12px;color:var(--text3);margin-top:2px}
+</style>
+</head>
+<body>
+
+<a onclick="history.back()" class="back-btn" style="cursor:pointer">← 돌아가기</a>
+<h1>관리자 페이지</h1>
+
+<h2>🏆 이달의 추천왕</h2>
+<div id="monthly-winner-box">로딩 중...</div>
+
+<h2>유저 관리</h2>
+<table class="table">
+  <thead>
+    <tr>
+      <th>아이디</th>
+      <th>닉네임</th>
+      <th>친구코드</th>
+      <th>상태</th>
+      <th>가입일</th>
+      <th>관리</th>
+    </tr>
+  </thead>
+  <tbody id="user-list"></tbody>
+</table>
+
+<h2>게시글 관리</h2>
+<table class="table">
+  <thead>
+    <tr>
+      <th>제목</th>
+      <th>작성자</th>
+      <th>게시판</th>
+      <th>날짜</th>
+      <th>관리</th>
+    </tr>
+  </thead>
+  <tbody id="post-list"></tbody>
+</table>
+
+<script src="./sb_config.js"></script>
+<script>
+const user = getUser();
+if(!user || !user.is_admin) { alert('관리자만 접근 가능합니다.'); location.href = './community.html'; }
+
+const boardNames = { qna: '묻고답하기', guide: '공략', guild: '길드홍보' };
+
+async function loadMonthlyWinner() {
+  const box = document.getElementById('monthly-winner-box');
+  try {
+    const now = new Date();
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+    const posts = await supabase('GET', 'posts', null, `?created_at=gte.${firstDay}&order=likes.desc&limit=1`);
+    if(!posts || posts.length === 0 || !posts[0].likes) {
+      box.innerHTML = '<div style="color:var(--text4);font-size:13px;padding:8px 0">이번 달 추천받은 글이 없어요.</div>';
+      return;
+    }
+    const p = posts[0];
+    box.innerHTML = `
+      <div class="monthly-winner">
+        <div class="monthly-crown">🏆</div>
+        <div class="monthly-info">
+          <div class="monthly-title">${now.getMonth()+1}월 추천왕</div>
+          <div class="monthly-name">${p.nickname || p.username}</div>
+          <div class="monthly-likes">❤ ${p.likes}추천 · "${p.title}"</div>
+        </div>
+      </div>
+    `;
+  } catch(e) {
+    box.innerHTML = '<div style="color:var(--text4);font-size:13px">불러오기 실패</div>';
+  }
+}
+
+async function loadUsers() {
+  const rows = await supabase('GET', 'users', null, '?order=created_at.asc');
+  document.getElementById('user-list').innerHTML = rows.map(u => `
+    <tr>
+      <td>${u.username} ${u.is_admin ? '<span style="color:var(--accent);font-size:10px">[관리자]</span>' : ''}</td>
+      <td>${u.nickname || '-'}</td>
+      <td>${u.friend_code ? `<span class="friend-code">${u.friend_code}</span>` : '<span style="color:var(--text4);font-size:11px">미입력</span>'}</td>
+      <td>${u.is_banned ? '<span class="badge-banned">밴됨</span>' : '<span class="badge-ok">정상</span>'}</td>
+      <td>${u.created_at.slice(0,10).replace(/-/g,'.')}</td>
+      <td>
+        ${!u.is_admin ? (u.is_banned
+          ? `<button class="btn btn-ok" onclick="toggleBan('${u.id}', false)">밴 해제</button>`
+          : `<button class="btn btn-warn" onclick="toggleBan('${u.id}', true)">밴</button>`) : '-'}
+      </td>
+    </tr>
+  `).join('');
+}
+
+async function toggleBan(id, ban) {
+  if(!confirm(ban ? '이 유저를 밴할까요?' : '밴을 해제할까요?')) return;
+  await supabase('PATCH', 'users', { is_banned: ban }, `?id=eq.${id}`);
+  loadUsers();
+}
+
+async function loadPosts() {
+  const rows = await supabase('GET', 'posts', null, '?order=is_pinned.desc,created_at.desc');
+  document.getElementById('post-list').innerHTML = rows.map(p => {
+    const boardName = boardNames[p.board] || p.board || '-';
+    const boardClass = `board-${p.board || 'qna'}`;
+    return `
+      <tr>
+        <td>
+          ${p.is_pinned ? '<span class="pin-badge">📌</span>' : ''}
+          ${p.is_verified ? '<span class="verify-badge">✅</span>' : ''}
+          ${p.title}
+        </td>
+        <td>${p.nickname || p.username}</td>
+        <td><span class="board-badge ${boardClass}">${boardName}</span></td>
+        <td>${p.created_at.slice(0,10).replace(/-/g,'.')}</td>
+        <td>
+          ${p.is_pinned
+            ? `<button class="btn btn-unpin" onclick="togglePin(${p.id}, false)">핀 해제</button>`
+            : `<button class="btn btn-pin" onclick="togglePin(${p.id}, true)">📌 핀</button>`
+          }
+          ${p.board === 'guild' ? (p.is_verified
+            ? `<button class="btn btn-unverify" onclick="toggleVerify(${p.id}, false)">인증 해제</button>`
+            : `<button class="btn btn-verify" onclick="toggleVerify(${p.id}, true)">✅ 인증</button>`
+          ) : ''}
+          <button class="btn btn-danger" onclick="deletePost(${p.id})">삭제</button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+async function togglePin(id, pin) {
+  await supabase('PATCH', 'posts', { is_pinned: pin }, `?id=eq.${id}`);
+  loadPosts();
+}
+
+async function toggleVerify(id, verify) {
+  await supabase('PATCH', 'posts', { is_verified: verify }, `?id=eq.${id}`);
+  loadPosts();
+}
+
+async function deletePost(id) {
+  if(!confirm('이 글을 삭제할까요?')) return;
+  await supabase('DELETE', 'posts', null, `?id=eq.${id}`);
+  loadPosts();
+}
+
+loadMonthlyWinner();
+loadUsers();
+loadPosts();
+</script>
+</body>
+</html>

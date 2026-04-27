@@ -4,44 +4,27 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>공략 & 가이드</title>
+<link id="theme-css" rel="stylesheet" href="./theme-dark.css">
+<script src="./theme.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Malgun Gothic',sans-serif;background:#1a1a2e;color:#eee;padding:16px}
-
-.back-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1px solid #333;background:#1e1e30;color:#aaa;font-size:12px;text-decoration:none;margin-bottom:20px;transition:all 0.15s}
-.back-btn:hover{border-color:#5dcff5;color:#eee}
-
-/* 글 헤더 */
-.post-header{border-bottom:1px solid #333;padding-bottom:16px;margin-bottom:24px}
-.post-title{font-size:22px;font-weight:700;color:#eee;margin-bottom:12px;line-height:1.4}
+body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--text);padding:16px}
+.back-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;text-decoration:none;margin-bottom:20px;transition:all 0.15s}
+.back-btn:hover{border-color:var(--accent);color:var(--text)}
+.post-header{border-bottom:1px solid var(--border);padding-bottom:16px;margin-bottom:24px}
+.post-title{font-size:22px;font-weight:700;color:var(--text);margin-bottom:12px;line-height:1.4}
 .post-meta{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-.post-meta-item{font-size:12px;color:#666}
-.post-meta-item span{color:#aaa;margin-left:4px}
-.copy-btn{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:12px;border:1px solid #444;background:none;color:#888;font-size:11px;cursor:pointer;font-family:inherit;transition:all 0.15s;margin-left:auto}
-.copy-btn:hover{border-color:#5dcff5;color:#5dcff5}
-
-/* 글 본문 */
-.post-body{max-width:780px;line-height:1.9;font-size:14px;color:#ccc}
-
-/* 소제목 */
-.post-body .section-title{font-size:15px;font-weight:700;color:#5dcff5;margin:28px 0 10px;padding-bottom:6px;border-bottom:1px solid #2a2a3e}
-
-/* 텍스트 단락 */
+.post-meta-item{font-size:12px;color:var(--text4)}
+.post-meta-item span{color:var(--text2);margin-left:4px}
+.copy-btn{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:12px;border:1px solid var(--border3);background:none;color:var(--text3);font-size:11px;cursor:pointer;font-family:inherit;transition:all 0.15s;margin-left:auto}
+.copy-btn:hover{border-color:var(--accent);color:var(--accent)}
+.post-body{max-width:780px;line-height:1.9;font-size:14px;color:var(--text2)}
+.post-body .section-title{font-size:15px;font-weight:700;color:var(--accent);margin:28px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border2)}
 .post-body p{margin-bottom:10px;word-break:keep-all}
-
-/* 이미지 */
 .post-body .post-img{width:100%;max-width:600px;border-radius:8px;margin:12px 0;display:block}
-
-/* 구분선 */
-.post-body hr{border:none;border-top:1px solid #2a2a3e;margin:24px 0}
-
-/* 강조 텍스트 */
+.post-body hr{border:none;border-top:1px solid var(--border2);margin:24px 0}
 .post-body .highlight{color:#f5c842;font-weight:600}
-
-/* 인용 박스 */
-.post-body .quote{background:#252538;border-left:3px solid #5dcff5;border-radius:0 6px 6px 0;padding:10px 14px;margin:12px 0;font-size:13px;color:#aaa;line-height:1.7}
-
-/* 태그 뱃지 */
+.post-body .quote{background:var(--bg3);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:10px 14px;margin:12px 0;font-size:13px;color:var(--text2);line-height:1.7}
 .post-body .tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;margin:0 2px;vertical-align:middle}
 .tag-water{background:#e3f2fd;color:#1565c0}
 .tag-fire{background:#fce4ec;color:#b71c1c}
@@ -52,12 +35,10 @@ body{font-family:'Malgun Gothic',sans-serif;background:#1a1a2e;color:#eee;paddin
 .tag-dawn{background:#fff8e1;color:#6d4c41}
 .tag-dusk{background:#fdf2f8;color:#880e4f}
 .tag-nightmare{background:#f3e5f5;color:#6a1b9a}
-.tag-atk{background:#2a2a3e;color:#aaa;border:1px solid #444}
-.tag-def{background:#2a2a3e;color:#aaa;border:1px solid #444}
-.tag-hp{background:#2a2a3e;color:#aaa;border:1px solid #444}
-
-/* 하단 */
-.post-footer{margin-top:40px;padding-top:16px;border-top:1px solid #333}
+.tag-atk{background:var(--bg3);color:var(--text2);border:1px solid var(--border3)}
+.tag-def{background:var(--bg3);color:var(--text2);border:1px solid var(--border3)}
+.tag-hp{background:var(--bg3);color:var(--text2);border:1px solid var(--border3)}
+.post-footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--border)}
 </style>
 </head>
 <body>

@@ -1,0 +1,17 @@
+/* 라이트 테마 */
+:root {
+  --bg: #f0f2f5;
+  --bg2: #ffffff;
+  --bg3: #e8eaed;
+  --border: #d0d3d8;
+  --border2: #e0e2e6;
+  --border3: #b0b3b8;
+  --text: #1a1a2e;
+  --text2: #444;
+  --text3: #666;
+  --text4: #888;
+  --accent: #3a8fbf;
+  --accent-bg: rgba(58,143,191,0.1);
+  --accent-border: rgba(58,143,191,0.3);
+}
+body { background: var(--bg); color: var(--text); }

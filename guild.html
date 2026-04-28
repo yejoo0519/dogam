@@ -27,15 +27,6 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
 .filter-btn{padding:4px 12px;border-radius:20px;border:1px solid var(--border);background:none;color:var(--text3);font-size:11px;cursor:pointer;font-family:inherit;transition:all 0.15s}
 .filter-btn:hover{border-color:var(--accent);color:var(--text2)}
 .filter-btn.active{border-color:var(--accent);background:var(--accent-bg);color:var(--accent)}
-.tag-badge{display:inline-block;padding:2px 6px;border-radius:8px;font-size:10px;font-weight:600;margin-right:3px}
-.tag-길드전{background:rgba(93,207,245,0.15);color:var(--accent);border:1px solid var(--accent-border)}
-.tag-광산{background:rgba(102,187,106,0.15);color:#66bb6a;border:1px solid rgba(102,187,106,0.3)}
-.tag-길드레이드{background:rgba(245,200,66,0.15);color:#f5c842;border:1px solid rgba(245,200,66,0.3)}
-.tag-길드포인트{background:rgba(255,167,38,0.15);color:#ffb74d;border:1px solid rgba(255,167,38,0.3)}
-.tag-성인{background:rgba(239,83,80,0.1);color:#ef9a9a;border:1px solid rgba(239,83,80,0.2)}
-.tag-상관X{background:rgba(255,255,255,0.08);color:var(--text2);border:1px solid var(--border)}
-
-/* 테이블 */
 .guild-table{width:100%;border-collapse:collapse;background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;table-layout:fixed}
 .guild-table th{background:var(--bg3);padding:10px 8px;font-size:12px;font-weight:700;color:var(--accent);text-align:left;border-bottom:1px solid var(--border)}
 .guild-table th.num{width:40px;text-align:center}
@@ -47,14 +38,11 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
 .guild-table td.meta{text-align:center;width:80px}
 .guild-table tr:last-child td{border-bottom:none}
 .guild-table tr:hover td{background:var(--bg3);cursor:pointer}
-
-/* 작성자+추천 묶음 */
 .meta-wrap{display:flex;flex-direction:column;align-items:center;gap:3px}
 .meta-author{color:var(--text2);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:76px}
 .meta-likes{color:#f5c842;font-size:11px}
 .block-btn{font-size:10px;padding:1px 5px;border-radius:4px;border:1px solid var(--border3);background:none;color:var(--text4);cursor:pointer;font-family:inherit;margin-top:2px}
 .block-btn:hover{border-color:#ef5350;color:#ef5350}
-
 .guild-title-link{color:var(--text);text-decoration:none;font-size:13px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .guild-title-link:hover{color:var(--accent)}
 .guild-logo-small{width:26px;height:26px;border-radius:6px;object-fit:cover;border:1px solid var(--border);background:var(--bg3);flex-shrink:0}
@@ -65,7 +53,8 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
 </style>
 </head>
 <body>
-<a href="./index.html" class="back-btn">← 메인으로</a>
+
+<a id="back-btn" href="./index.html" class="back-btn">← 메인으로</a>
 
 <div class="header">
   <h1>길드</h1>
@@ -109,6 +98,16 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
 <script src="./sb_config.js"></script>
 <script src="./data2/guild_list.js"></script>
 <script>
+// ?from= 파라미터를 읽어서 뒤로가기 URL 결정
+(function() {
+  const from = new URLSearchParams(location.search).get('from');
+  const allowed = ['community','weekly','guide','info'];
+  const backBtn = document.getElementById('back-btn');
+  if(from && allowed.includes(from)) {
+    backBtn.href = `./index.html?tab=${from}`;
+  }
+})();
+
 const user = getUser();
 let activeContent = '';
 let activeAge = '';
@@ -160,7 +159,6 @@ function setFilter(type, value, el) {
 function renderList() {
   const tbody = document.getElementById('guild-list-body');
   const blockList = getBlockList();
-
   const blockedInfo = document.getElementById('blocked-info');
   blockedInfo.innerHTML = blockList.length > 0 ? `<div class="blocked-count">차단된 유저 ${blockList.length}명 · <a onclick="showBlockList()">차단 관리</a></div>` : '';
 

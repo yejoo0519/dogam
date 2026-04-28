@@ -27,6 +27,8 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
 .filter-btn{padding:4px 12px;border-radius:20px;border:1px solid var(--border);background:none;color:var(--text3);font-size:11px;cursor:pointer;font-family:inherit;transition:all 0.15s}
 .filter-btn:hover{border-color:var(--accent);color:var(--text2)}
 .filter-btn.active{border-color:var(--accent);background:var(--accent-bg);color:var(--accent)}
+
+/* 테이블 */
 .guild-table{width:100%;border-collapse:collapse;background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;table-layout:fixed}
 .guild-table th{background:var(--bg3);padding:10px 8px;font-size:12px;font-weight:700;color:var(--accent);text-align:left;border-bottom:1px solid var(--border)}
 .guild-table th.num{width:40px;text-align:center}
@@ -38,11 +40,14 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
 .guild-table td.meta{text-align:center;width:80px}
 .guild-table tr:last-child td{border-bottom:none}
 .guild-table tr:hover td{background:var(--bg3);cursor:pointer}
+
+/* 작성자+추천 묶음 */
 .meta-wrap{display:flex;flex-direction:column;align-items:center;gap:3px}
 .meta-author{color:var(--text2);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:76px}
 .meta-likes{color:#f5c842;font-size:11px}
 .block-btn{font-size:10px;padding:1px 5px;border-radius:4px;border:1px solid var(--border3);background:none;color:var(--text4);cursor:pointer;font-family:inherit;margin-top:2px}
 .block-btn:hover{border-color:#ef5350;color:#ef5350}
+
 .guild-title-link{color:var(--text);text-decoration:none;font-size:13px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .guild-title-link:hover{color:var(--accent)}
 .guild-logo-small{width:26px;height:26px;border-radius:6px;object-fit:cover;border:1px solid var(--border);background:var(--bg3);flex-shrink:0}

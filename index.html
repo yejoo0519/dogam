@@ -60,12 +60,9 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
 .card-badge{position:absolute;top:16px;right:16px;font-size:10px;padding:3px 8px;border-radius:10px;background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-border)}
 .card-badge-guide{background:rgba(245,200,66,0.15);color:#f5c842;border:1px solid rgba(245,200,66,0.3)}
 .card-badge-community{background:rgba(102,187,106,0.15);color:#66bb6a;border:1px solid rgba(102,187,106,0.3)}
-
-/* 방문자 카운터 */
 .stats-bar{display:flex;gap:16px;justify-content:center;margin-bottom:20px;flex-wrap:wrap}
 .stat-item{font-size:11px;color:var(--text4);display:flex;align-items:center;gap:4px}
 .stat-item span{color:var(--accent);font-weight:700}
-
 .mobile-layout{display:flex;flex-direction:column;align-items:center}
 .mobile-layout h1{font-size:28px;margin-bottom:8px;text-align:center}
 .mobile-layout .subtitle{font-size:13px;color:var(--text3);margin-bottom:20px;text-align:center}
@@ -133,15 +130,18 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
     <a href="./raid_info.html" class="card"><span class="card-badge">정보</span><div class="card-title">레이드 정보</div><div class="card-desc">아르하필드 · 일반 레이드 · 레무리아<br>보스별 상세 정보</div></a>
   </div>
   <div class="mobile-category" id="mobile-guide">
-    <a href="./guide.html" class="card"><span class="card-badge card-badge-guide">공략</span><div class="card-title">공략 & 가이드</div><div class="card-desc">드래곤 공략 및 레이드 가이드<br>글 목록 보기</div></a>
+    <!-- from=guide 추가 -->
+    <a href="./guide.html?from=guide" class="card"><span class="card-badge card-badge-guide">공략</span><div class="card-title">공략 & 가이드</div><div class="card-desc">드래곤 공략 및 레이드 가이드<br>글 목록 보기</div></a>
   </div>
   <div class="mobile-category" id="mobile-weekly">
-    <a href="./weekly.html" class="card"><span class="card-badge" style="background:rgba(245,200,66,0.15);color:#f5c842;border:1px solid rgba(245,200,66,0.3)">주간</span><div class="card-title">주간 정보</div><div class="card-desc">레무리아 · 레이드 · 길드전<br>매주 업데이트되는 주간 정보</div></a>
+    <!-- from=weekly 추가 -->
+    <a href="./weekly.html?from=weekly" class="card"><span class="card-badge" style="background:rgba(245,200,66,0.15);color:#f5c842;border:1px solid rgba(245,200,66,0.3)">주간</span><div class="card-title">주간 정보</div><div class="card-desc">레무리아 · 레이드 · 길드전<br>매주 업데이트되는 주간 정보</div></a>
   </div>
   <div class="mobile-category" id="mobile-community">
-    <a href="./guild.html" class="card"><span class="card-badge card-badge-community">커뮤니티</span><div class="card-title">길드</div><div class="card-desc">길드 홍보 및 모집 정보</div></a>
-    <a href="./community.html" class="card"><span class="card-badge card-badge-community">커뮤니티</span><div class="card-title">묻고답하기</div><div class="card-desc">질문하고 답변 받는 게시판<br>로그인 후 이용 가능</div></a>
-    <a href="./friend.html" class="card"><span class="card-badge card-badge-community">커뮤니티</span><div class="card-title">친구요청</div><div class="card-desc">정기친구 · 레이드 프리미엄<br>친구 구하는 게시판</div></a>
+    <!-- from=community 추가 -->
+    <a href="./guild.html?from=community" class="card"><span class="card-badge card-badge-community">커뮤니티</span><div class="card-title">길드</div><div class="card-desc">길드 홍보 및 모집 정보</div></a>
+    <a href="./community.html?from=community" class="card"><span class="card-badge card-badge-community">커뮤니티</span><div class="card-title">묻고답하기</div><div class="card-desc">질문하고 답변 받는 게시판<br>로그인 후 이용 가능</div></a>
+    <a href="./friend.html?from=community" class="card"><span class="card-badge card-badge-community">커뮤니티</span><div class="card-title">친구요청</div><div class="card-desc">정기친구 · 레이드 프리미엄<br>친구 구하는 게시판</div></a>
   </div>
 </div>
 
@@ -189,15 +189,18 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
         <a href="./raid_info.html" class="card"><span class="card-badge">정보</span><div class="card-title">레이드 정보</div><div class="card-desc">아르하필드 · 일반 레이드 · 레무리아<br>보스별 상세 정보</div></a>
       </div>
       <div class="pc-category" id="pc-guide">
-        <a href="./guide.html" class="card"><span class="card-badge card-badge-guide">공략</span><div class="card-title">공략 & 가이드</div><div class="card-desc">드래곤 공략 및 레이드 가이드<br>글 목록 보기</div></a>
+        <!-- from=guide 추가 -->
+        <a href="./guide.html?from=guide" class="card"><span class="card-badge card-badge-guide">공략</span><div class="card-title">공략 & 가이드</div><div class="card-desc">드래곤 공략 및 레이드 가이드<br>글 목록 보기</div></a>
       </div>
       <div class="pc-category" id="pc-weekly">
-        <a href="./weekly.html" class="card"><span class="card-badge" style="background:rgba(245,200,66,0.15);color:#f5c842;border:1px solid rgba(245,200,66,0.3)">주간</span><div class="card-title">주간 정보</div><div class="card-desc">레무리아 · 레이드 · 길드전<br>매주 업데이트되는 주간 정보</div></a>
+        <!-- from=weekly 추가 -->
+        <a href="./weekly.html?from=weekly" class="card"><span class="card-badge" style="background:rgba(245,200,66,0.15);color:#f5c842;border:1px solid rgba(245,200,66,0.3)">주간</span><div class="card-title">주간 정보</div><div class="card-desc">레무리아 · 레이드 · 길드전<br>매주 업데이트되는 주간 정보</div></a>
       </div>
       <div class="pc-category" id="pc-community">
-        <a href="./guild.html" class="card"><span class="card-badge card-badge-community">커뮤니티</span><div class="card-title">길드</div><div class="card-desc">길드 홍보 및 모집 정보</div></a>
-        <a href="./community.html" class="card"><span class="card-badge card-badge-community">커뮤니티</span><div class="card-title">묻고답하기</div><div class="card-desc">질문하고 답변 받는 게시판<br>로그인 후 이용 가능</div></a>
-        <a href="./friend.html" class="card"><span class="card-badge card-badge-community">커뮤니티</span><div class="card-title">친구요청</div><div class="card-desc">정기친구 · 레이드 프리미엄<br>친구 구하는 게시판</div></a>
+        <!-- from=community 추가 -->
+        <a href="./guild.html?from=community" class="card"><span class="card-badge card-badge-community">커뮤니티</span><div class="card-title">길드</div><div class="card-desc">길드 홍보 및 모집 정보</div></a>
+        <a href="./community.html?from=community" class="card"><span class="card-badge card-badge-community">커뮤니티</span><div class="card-title">묻고답하기</div><div class="card-desc">질문하고 답변 받는 게시판<br>로그인 후 이용 가능</div></a>
+        <a href="./friend.html?from=community" class="card"><span class="card-badge card-badge-community">커뮤니티</span><div class="card-title">친구요청</div><div class="card-desc">정기친구 · 레이드 프리미엄<br>친구 구하는 게시판</div></a>
       </div>
     </div>
   </div>
@@ -249,29 +252,20 @@ function closeItemModal(e){if(!e||e.target===document.getElementById('item-modal
 function switchPCTab(tab){document.querySelectorAll('.pc-tab').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.pc-category').forEach(c=>c.classList.remove('active'));event.currentTarget.classList.add('active');document.getElementById('pc-'+tab).classList.add('active')}
 function switchMobileTab(tab,el){document.querySelectorAll('.mobile-tab').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.mobile-category').forEach(c=>c.classList.remove('active'));el.classList.add('active');document.getElementById('mobile-'+tab).classList.add('active')}
 
-// 방문자 카운터
 async function trackVisitor() {
   try {
     const today = new Date().toISOString().slice(0,10);
     const lastVisit = localStorage.getItem('last_visit');
-
-    // 오늘 처음 방문이면 기록
     if(lastVisit !== today) {
       await supabase('POST', 'visitors', { visited_at: today });
       localStorage.setItem('last_visit', today);
     }
-
-    // 오늘 방문자
     const todayRows = await supabase('GET', 'visitors', null, `?visited_at=eq.${today}&select=id`);
-    // 누적 방문자
     const totalRows = await supabase('GET', 'visitors', null, '?select=id');
-    // 회원수
     const memberRows = await supabase('GET', 'users', null, '?select=id');
-
     const todayCount = todayRows ? todayRows.length : 0;
     const totalCount = totalRows ? totalRows.length : 0;
     const memberCount = memberRows ? memberRows.length : 0;
-
     document.getElementById('m-today').textContent = todayCount.toLocaleString();
     document.getElementById('m-total').textContent = totalCount.toLocaleString();
     document.getElementById('m-members').textContent = memberCount.toLocaleString();
@@ -282,6 +276,30 @@ async function trackVisitor() {
 }
 
 trackVisitor();
+
+// ?tab= 파라미터가 있으면 해당 탭 자동 활성화
+(function() {
+  const tab = new URLSearchParams(location.search).get('tab');
+  if(!tab) return;
+  // 모바일
+  const mobileBtn = document.querySelector(`.mobile-tab[onclick*="'${tab}'"]`);
+  if(mobileBtn) {
+    document.querySelectorAll('.mobile-tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.mobile-category').forEach(c => c.classList.remove('active'));
+    mobileBtn.classList.add('active');
+    const cat = document.getElementById('mobile-' + tab);
+    if(cat) cat.classList.add('active');
+  }
+  // PC
+  const pcBtn = document.querySelector(`.pc-tab[onclick*="'${tab}'"]`);
+  if(pcBtn) {
+    document.querySelectorAll('.pc-tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.pc-category').forEach(c => c.classList.remove('active'));
+    pcBtn.classList.add('active');
+    const cat = document.getElementById('pc-' + tab);
+    if(cat) cat.classList.add('active');
+  }
+})();
 </script>
 </body>
 </html>

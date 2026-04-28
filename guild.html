@@ -23,7 +23,7 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
 .btn-danger{background:rgba(239,83,80,0.1);color:#ef5350;border:1px solid rgba(239,83,80,0.2)}
 .filter-wrap{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
 .filter-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.filter-label{font-size:11px;color:var(--text4);width:60px;flex-shrink:0}
+.filter-label{font-size:11px;color:var(--text4);width:40px;flex-shrink:0}
 .filter-btn{padding:4px 12px;border-radius:20px;border:1px solid var(--border);background:none;color:var(--text3);font-size:11px;cursor:pointer;font-family:inherit;transition:all 0.15s}
 .filter-btn:hover{border-color:var(--accent);color:var(--text2)}
 .filter-btn.active{border-color:var(--accent);background:var(--accent-bg);color:var(--accent)}
@@ -34,26 +34,32 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
 .tag-길드포인트{background:rgba(255,167,38,0.15);color:#ffb74d;border:1px solid rgba(255,167,38,0.3)}
 .tag-성인{background:rgba(239,83,80,0.1);color:#ef9a9a;border:1px solid rgba(239,83,80,0.2)}
 .tag-상관X{background:rgba(255,255,255,0.08);color:var(--text2);border:1px solid var(--border)}
-.guild-table{width:100%;border-collapse:collapse;background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden}
-.guild-table th{background:var(--bg3);padding:10px 14px;font-size:12px;font-weight:700;color:var(--accent);text-align:left;border-bottom:1px solid var(--border)}
-.guild-table th.num{width:60px;text-align:center}
-.guild-table th.author{width:90px;text-align:center}
-.guild-table th.likes{width:60px;text-align:center}
-.guild-table th.date{width:110px;text-align:center}
-.guild-table td{padding:12px 14px;font-size:13px;border-bottom:1px solid var(--border2);color:var(--text)}
-.guild-table td.num{text-align:center;color:var(--text4);font-size:12px}
-.guild-table td.author{text-align:center;color:var(--text2);font-size:12px}
-.guild-table td.likes{text-align:center;color:#f5c842;font-size:12px}
-.guild-table td.date{text-align:center;color:var(--text4);font-size:12px}
+
+/* 테이블 */
+.guild-table{width:100%;border-collapse:collapse;background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;table-layout:fixed}
+.guild-table th{background:var(--bg3);padding:10px 8px;font-size:12px;font-weight:700;color:var(--accent);text-align:left;border-bottom:1px solid var(--border)}
+.guild-table th.num{width:40px;text-align:center}
+.guild-table th.title{text-align:left}
+.guild-table th.meta{width:80px;text-align:center}
+.guild-table td{padding:10px 8px;font-size:13px;border-bottom:1px solid var(--border2);color:var(--text);vertical-align:middle}
+.guild-table td.num{text-align:center;color:var(--text4);font-size:12px;width:40px}
+.guild-table td.title{word-break:break-all}
+.guild-table td.meta{text-align:center;width:80px}
 .guild-table tr:last-child td{border-bottom:none}
 .guild-table tr:hover td{background:var(--bg3);cursor:pointer}
+
+/* 작성자+추천 묶음 */
+.meta-wrap{display:flex;flex-direction:column;align-items:center;gap:3px}
+.meta-author{color:var(--text2);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:76px}
+.meta-likes{color:#f5c842;font-size:11px}
+.block-btn{font-size:10px;padding:1px 5px;border-radius:4px;border:1px solid var(--border3);background:none;color:var(--text4);cursor:pointer;font-family:inherit;margin-top:2px}
+.block-btn:hover{border-color:#ef5350;color:#ef5350}
+
 .guild-title-link{color:var(--text);text-decoration:none;font-size:13px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .guild-title-link:hover{color:var(--accent)}
-.guild-logo-small{width:28px;height:28px;border-radius:6px;object-fit:cover;border:1px solid var(--border);background:var(--bg3);flex-shrink:0}
+.guild-logo-small{width:26px;height:26px;border-radius:6px;object-fit:cover;border:1px solid var(--border);background:var(--bg3);flex-shrink:0}
 .empty{text-align:center;color:var(--text4);font-size:13px;padding:32px 0}
-.verify-badge{font-size:12px}
-.block-btn{font-size:10px;padding:2px 6px;border-radius:4px;border:1px solid var(--border3);background:none;color:var(--text4);cursor:pointer;font-family:inherit;margin-left:4px}
-.block-btn:hover{border-color:#ef5350;color:#ef5350}
+.verify-badge{font-size:12px;flex-shrink:0}
 .blocked-count{font-size:11px;color:var(--text4);text-align:right;margin-bottom:6px}
 .blocked-count a{color:var(--accent);cursor:pointer;text-decoration:none}
 </style>
@@ -93,10 +99,8 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
   <thead>
     <tr>
       <th class="num">번호</th>
-      <th>길드명</th>
-      <th class="author">작성자</th>
-      <th class="likes">추천</th>
-      <th class="date">등록일</th>
+      <th class="title">길드명</th>
+      <th class="meta">작성자 / 추천</th>
     </tr>
   </thead>
   <tbody id="guild-list-body"></tbody>
@@ -174,9 +178,6 @@ function renderList() {
   if(filtered.length > 0) {
     const normalPosts = filtered.filter(p => !p.is_pinned);
     filtered.forEach(p => {
-      let tags = [];
-      try { tags = JSON.parse(p.tags || '[]'); } catch {}
-      const tagHtml = '';
       const num = p.is_pinned ? '📌' : normalPosts.length - normalPosts.indexOf(p);
       const isMe = user && user.id === p.user_id;
       const blockBtn = user && !isMe ? `<button class="block-btn" onclick="event.stopPropagation();blockUser('${p.user_id}','${p.nickname||p.username}')">차단</button>` : '';
@@ -184,16 +185,19 @@ function renderList() {
       tr.onclick = () => location.href = `./community_view.html?id=${p.id}&back=guild`;
       tr.innerHTML = `
         <td class="num">${num}</td>
-        <td>
+        <td class="title">
           <a class="guild-title-link" href="./community_view.html?id=${p.id}&back=guild">
             ${p.is_verified ? '<span class="verify-badge">✅</span>' : ''}
             ${p.title}
-            ${tagHtml}
           </a>
         </td>
-        <td class="author">${p.nickname || p.username}${blockBtn}</td>
-        <td class="likes">❤ ${p.likes || 0}</td>
-        <td class="date">${(p.updated_at || p.created_at).slice(0,10).replace(/-/g,'.')}</td>
+        <td class="meta">
+          <div class="meta-wrap">
+            <span class="meta-author">${p.nickname || p.username}</span>
+            <span class="meta-likes">❤ ${p.likes || 0}</span>
+            ${blockBtn}
+          </div>
+        </td>
       `;
       tbody.appendChild(tr);
     });
@@ -205,34 +209,37 @@ function renderList() {
       tr.onclick = () => location.href = `./guild_view.html?id=${g.id}`;
       tr.innerHTML = `
         <td class="num">${g.id}</td>
-        <td>
+        <td class="title">
           <a class="guild-title-link" href="./guild_view.html?id=${g.id}">
             <img class="guild-logo-small" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/guild/${g.id}.png" alt="">
             <span class="verify-badge">✅</span>
             ${g.title}
           </a>
         </td>
-        <td class="author">닉스</td>
-        <td class="likes">-</td>
-        <td class="date">${g.date}</td>
+        <td class="meta">
+          <div class="meta-wrap">
+            <span class="meta-author">닉스</span>
+            <span class="meta-likes">-</span>
+          </div>
+        </td>
       `;
       tbody.appendChild(tr);
     });
   }
 
   if(filtered.length === 0 && (!guildList || guildList.length === 0 || activeContent || activeAge)) {
-    tbody.innerHTML = '<tr><td colspan="5" class="empty">해당하는 길드가 없습니다.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="3" class="empty">해당하는 길드가 없습니다.</td></tr>';
   }
 }
 
 async function loadDbPosts() {
   const tbody = document.getElementById('guild-list-body');
-  tbody.innerHTML = '<tr><td colspan="5" class="empty">로딩 중...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="3" class="empty">로딩 중...</td></tr>';
   try {
     const dbPosts = await supabase('GET', 'posts', null, '?board=eq.guild&order=is_pinned.desc,updated_at.desc');
     allDbPosts = dbPosts || [];
     renderList();
-  } catch(e) { tbody.innerHTML = `<tr><td colspan="5" class="empty">불러오기 실패: ${e.message}</td></tr>`; }
+  } catch(e) { tbody.innerHTML = `<tr><td colspan="3" class="empty">불러오기 실패: ${e.message}</td></tr>`; }
 }
 
 loadDbPosts();

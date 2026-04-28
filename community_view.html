@@ -317,8 +317,10 @@ async function deleteComment(id) {
   loadComments();
 }
 
-loadPost();
-loadComments();
+(async () => {
+  await loadPost();
+  loadComments();
+})();
 </script>
 </body>
 </html>

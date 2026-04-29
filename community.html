@@ -193,7 +193,7 @@ async function loadPosts() {
   }
 
   try {
-    const posts = await supabase('GET', 'posts', null, '?board=eq.qna&order=is_pinned.desc,created_at.desc');
+    const posts = await supabase('GET', 'posts_with_comment_count', null, '?board=eq.qna&order=is_pinned.desc,created_at.desc');
     if(!posts || posts.length === 0) {
       tbody.innerHTML = '<tr><td colspan="5" class="empty">아직 글이 없어요. 첫 글을 남겨보세요!</td></tr>';
       cardWrap.innerHTML = '<div class="empty">아직 글이 없어요. 첫 글을 남겨보세요!</div>';
@@ -217,7 +217,7 @@ async function loadPosts() {
       const numDisplay = p.is_pinned ? '📌' : num--;
       const titlePrefix = p.is_pinned ? '<span class="pin-icon">📌</span>' : '';
       const dateStr = p.created_at.slice(0,10).replace(/-/g,'.');
-      const replyCount = p.reply_count || 0;
+      const replyCount = p.comment_count || 0;
 
       // PC 테이블 행
       rows.table.push(`

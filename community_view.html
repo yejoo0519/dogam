@@ -39,6 +39,7 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
 .edit-form{margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
 .edit-form input{width:100%;padding:9px 12px;background:var(--bg3);border:1px solid var(--border3);border-radius:8px;color:var(--text);font-size:13px;font-family:inherit;margin-bottom:8px}
 .edit-form input:focus{outline:none;border-color:var(--accent)}
+.edit-form label{font-size:12px;color:var(--text2);margin-bottom:4px;display:block;font-weight:600}
 .edit-form-btns{display:flex;justify-content:flex-end;gap:8px;margin-top:8px}
 .ql-toolbar{background:var(--bg3);border:1px solid var(--border3)!important;border-radius:8px 8px 0 0}
 .ql-container{background:var(--bg3);border:1px solid var(--border3)!important;border-top:none!important;border-radius:0 0 8px 8px;font-family:'Malgun Gothic',sans-serif;font-size:13px}
@@ -108,7 +109,6 @@ if(backBoard === 'guild') document.getElementById('back-link').href = './guild.h
 else if(backBoard === 'guide') document.getElementById('back-link').href = './guide.html';
 else if(backBoard === 'friend') document.getElementById('back-link').href = './friend.html';
 
-// 관리자 ID 목록 로드
 async function loadAdmins() {
   try {
     const rows = await supabase('GET', 'users', null, '?is_admin=eq.true&select=id');
@@ -141,7 +141,7 @@ async function loadPost() {
 
     postBox.innerHTML = `
       ${currentPost.is_pinned ? '<div class="pin-label">📌 공지 / 고정글</div>' : ''}
-      ${currentPost.board === 'guild' && (currentPost.guild_icon || currentPost.guild_interview) ? `
+      ${isGuild && (currentPost.guild_icon || currentPost.guild_interview) ? `
         <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
           ${currentPost.guild_icon ? `<img src="${currentPost.guild_icon}" style="width:56px;height:56px;border-radius:10px;object-fit:cover;border:1px solid var(--border);background:var(--bg3)">` : ''}
         </div>
@@ -158,7 +158,13 @@ async function loadPost() {
 
       ${isGuild && isOwner ? `
         <div class="edit-form" id="edit-form" style="display:none">
+          <label>제목</label>
           <input id="edit-title" type="text" value="${currentPost.title.replace(/"/g,'&quot;')}">
+          <label>길드 아이콘 URL <span style="color:var(--text4);font-weight:400">(선택)</span></label>
+          <input id="edit-guild-icon" type="text" placeholder="이미지 URL 입력 (없으면 기본 이미지 사용)" value="${(currentPost.guild_icon||'').replace(/"/g,'&quot;')}">
+          <label>면접방 링크 <span style="color:var(--text4);font-weight:400">(선택)</span></label>
+          <input id="edit-guild-interview" type="text" placeholder="카카오 오픈채팅 등 링크 입력" value="${(currentPost.guild_interview||'').replace(/"/g,'&quot;')}">
+          <label>내용</label>
           <div id="edit-quill"></div>
           <div class="edit-form-btns">
             <button class="btn-gray" onclick="toggleEdit()">취소</button>
@@ -179,7 +185,7 @@ async function loadPost() {
           ${canDelete ? `<button class="btn btn-danger" onclick="deletePost(${currentPost.id})">삭제</button>` : ''}
         </div>
       </div>
-      ${currentPost.board === 'guild' && currentPost.guild_interview ? `
+      ${isGuild && currentPost.guild_interview ? `
         <a href="${currentPost.guild_interview}" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:14px;padding:13px;background:#FEE500;border:none;border-radius:10px;color:#3C1E1E;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none">
           K&nbsp; 길드 면접방 입장하기
         </a>
@@ -214,11 +220,19 @@ function toggleEdit() {
 
 async function saveEdit() {
   const title = document.getElementById('edit-title').value.trim();
+  const guildIcon = document.getElementById('edit-guild-icon').value.trim();
+  const guildInterview = document.getElementById('edit-guild-interview').value.trim();
   const content = editQuill ? editQuill.root.innerHTML : '';
   const textOnly = editQuill ? editQuill.getText().trim() : '';
   if(!title || !textOnly) { alert('제목과 내용을 입력해주세요.'); return; }
   try {
-    await supabase('PATCH', 'posts', { title, content, updated_at: new Date().toISOString() }, `?id=eq.${postId}`);
+    await supabase('PATCH', 'posts', {
+      title,
+      content,
+      guild_icon: guildIcon || null,
+      guild_interview: guildInterview || null,
+      updated_at: new Date().toISOString()
+    }, `?id=eq.${postId}`);
     alert('수정됐어요!');
     location.reload();
   } catch(e) { alert('오류: ' + e.message); }

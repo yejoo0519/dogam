@@ -260,12 +260,9 @@ async function trackVisitor() {
       await supabase('POST', 'visitors', { visited_at: today });
       localStorage.setItem('last_visit', today);
     }
-    const todayRows = await supabase('GET', 'visitors', null, `?visited_at=eq.${today}&select=id`);
-    const totalRows = await supabase('GET', 'visitors', null, '?select=id');
-    const memberRows = await supabase('GET', 'users', null, '?select=id');
-    const todayCount = todayRows ? todayRows.length : 0;
-    const totalCount = totalRows ? totalRows.length : 0;
-    const memberCount = memberRows ? memberRows.length : 0;
+    const todayCount = await getCount('visitors', `?visited_at=eq.${today}`);
+    const totalCount = await getCount('visitors');
+    const memberCount = await getCount('users');
     document.getElementById('m-today').textContent = todayCount.toLocaleString();
     document.getElementById('m-total').textContent = totalCount.toLocaleString();
     document.getElementById('m-members').textContent = memberCount.toLocaleString();

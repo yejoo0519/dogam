@@ -1,0 +1,2909 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>드래곤빌리지1 비밸 시뮬레이터</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+<script src="./dragon-data.js"></script>
+<style>
+:root{--bg:#0d0f1a;--sf:#141828;--sf2:#1c2240;--bd:#252d50;--gold:#e8b84b;--gold2:#c49a30;--blue:#60a5fa;--red:#f87171;--green:#4ade80;--purple:#c084fc;--orange:#fb923c;--text:#dde2f5;--dim:#7a87b0;--dimmer:#3a4570;--hpc:#fbbf24;--atc:#f87171;--dfc:#60a5fa}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nanum Gothic',-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
+.hd{display:flex;align-items:center;gap:14px;padding:12px 20px;background:var(--sf);border-bottom:2px solid var(--gold);position:sticky;top:0;z-index:100}
+.hd-icon{font-size:26px}.hd-t{font-size:15px;font-weight:800;color:var(--gold)}.hd-s{font-size:11px;color:var(--dim);margin-top:2px}
+.tabs{display:flex;background:var(--sf);border-bottom:1px solid var(--bd);position:sticky;top:50px;z-index:99}
+.tab-btn{flex:1;padding:12px 20px;background:none;border:none;border-bottom:3px solid transparent;color:var(--dim);font-family:'Nanum Gothic',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s}
+.tab-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
+.tc{display:none}.tc.active{display:block}
+.ti{max-width:100%;padding:14px 24px}.ti-sim{max-width:1200px;margin:0 auto;padding:14px 24px}
+.ti-dragon{max-width:1240px;margin:0 auto;padding:14px 24px}
+.sec{background:var(--sf);border:1px solid var(--bd);border-radius:8px;margin-bottom:14px;overflow:hidden}
+.sec-hd{display:flex;align-items:center;justify-content:space-between;padding:9px 16px;background:var(--sf2);border-bottom:1px solid var(--bd);font-size:11px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.5px}
+.sec-bd{padding:14px 16px}
+select,input[type=number],input[type=text]{background:var(--sf2);border:1px solid var(--bd);color:var(--text);padding:5px 9px;border-radius:5px;font-family:'Nanum Gothic',sans-serif;font-size:13px}
+select:focus,input:focus{outline:none;border-color:var(--gold)}
+select:disabled,input:disabled{opacity:.3;cursor:not-allowed}
+.readonly-field{background:var(--sf2);border:1px solid var(--bd);color:var(--dim);padding:5px 9px;border-radius:5px;font-family:'Nanum Gothic',sans-serif;font-size:13px;min-height:29px;display:flex;align-items:center}
+.dragon-type-field{color:#fff}
+.acc-srch{width:100%;padding:8px 12px;margin-bottom:10px;background:var(--sf2);border:1px solid var(--bd);border-radius:5px;color:var(--text);font-family:'Nanum Gothic',sans-serif;font-size:13px}
+.acc-srch:focus{outline:none;border-color:var(--gold)}
+.acc-list{max-height:260px;overflow-y:auto;padding-right:2px}
+.acc-row{display:flex;align-items:center;gap:8px;padding:5px 6px;border-radius:4px}
+.acc-row:hover{background:var(--sf2)}
+.acc-row input[type=checkbox]{accent-color:var(--gold);cursor:pointer;flex-shrink:0}
+.acc-row label{flex:1;cursor:pointer;font-size:13px}
+.acc-st{font-size:11px;min-width:68px}
+.acc-card{background:var(--sf2);border:1px solid var(--bd);border-radius:6px;padding:8px 12px;margin-bottom:8px}
+.acc-card-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.acc-search-wrap{position:relative;flex:1;min-width:140px}
+.acc-search-input{width:100%;background:var(--sf2);border:1px solid var(--bd);color:var(--text);padding:5px 9px;border-radius:5px;font-family:'Nanum Gothic',sans-serif;font-size:13px}
+.acc-search-input:focus{outline:none;border-color:var(--gold)}
+.acc-search-input::placeholder{color:var(--dimmer)}
+.acc-dropdown{position:absolute;top:100%;left:0;right:0;background:var(--sf2);border:1px solid var(--gold);border-radius:5px;max-height:200px;overflow-y:auto;z-index:200;margin-top:2px;display:none}
+.acc-dropdown.open{display:block}
+.acc-drop-item{padding:6px 10px;font-size:13px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:8px;color:var(--text);font-family:'Nanum Gothic',sans-serif}
+.acc-drop-item:hover{background:rgba(232,184,75,.12)}
+.acc-drop-item.focused{background:rgba(232,184,75,.2);outline:none}
+.acc-drop-name{flex:1}
+.acc-preset-row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;padding:10px 16px;border-bottom:1px solid var(--bd);background:rgba(255,255,255,.015)}
+.acc-preset-row button{padding:6px 4px}
+.pend-preset-row{display:flex;justify-content:flex-end;padding:10px 16px;border-bottom:1px solid var(--bd);background:rgba(255,255,255,.015)}
+.pend-preset-row button{padding:6px 13px}
+.gem-grid{display:grid;grid-template-columns:42px repeat(3,1fr);gap:6px;align-items:center}
+.gem-hdr{font-size:11px;color:var(--dim);text-align:center}
+.gem-lbl{font-weight:800;font-size:13px}
+.gem-grid input{width:100%;text-align:center;padding:5px;font-size:13px}
+.gem-grid input[type=number]::-webkit-outer-spin-button,.gem-grid input[type=number]::-webkit-inner-spin-button{-webkit-appearance:auto!important;margin:0}
+.gem-grid input[type=number]{appearance:auto;-moz-appearance:number-input!important}
+.pcard{background:var(--sf2);border:1px solid var(--bd);border-radius:6px;padding:12px;margin-bottom:10px}
+.pcard-hd{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.popt-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:13px}
+.popt-idx{color:var(--dim);min-width:22px;font-size:11px}
+.sp-top{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.fg label{display:block;font-size:11px;color:var(--dim);margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px}
+.fg select,.fg input{width:100%}
+.sp-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.sp-ocard{display:flex;align-items:center;gap:7px;padding:8px 10px;background:var(--sf);border:1px solid var(--bd);border-radius:5px}
+.sp-ocard.dis{opacity:.3}
+.sp-onum{color:var(--gold);font-size:11px;font-weight:800;min-width:18px}
+.sp-ocard select{flex:1;font-size:12px}
+.sp-oval{color:var(--green);font-size:11px;min-width:46px;text-align:right}
+.sp-preset-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-bottom:10px}
+.sp-preset-btn{background:var(--sf2);border:1px solid var(--bd);border-radius:5px;padding:6px 8px;color:var(--text);cursor:pointer;font-family:'Nanum Gothic',sans-serif;text-align:center;transition:all .15s;min-height:34px;white-space:nowrap}
+.sp-preset-btn:hover{border-color:var(--gold);background:rgba(232,184,75,.08)}
+.sp-preset-btn.active{border-color:var(--gold);background:rgba(232,184,75,.14)}
+.sp-preset-name{display:inline;font-size:12px;font-weight:800;color:var(--gold)}
+.sp-preset-desc{display:inline;font-size:11px;color:#fff;margin-left:5px}
+.coll-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.coll-g label{display:block;font-size:12px;color:var(--dim);margin-bottom:4px}
+.coll-g input{width:100%;text-align:center}
+.btn-white{background:none;border:1px solid #fff;color:#fff;padding:6px 13px;border-radius:5px;cursor:pointer;font-family:'Nanum Gothic',sans-serif;font-size:13px;font-weight:700}
+.btn-white:hover{background:rgba(255,255,255,.1)}
+.btn-gold{background:none;border:1px solid var(--gold);color:var(--gold);padding:6px 13px;border-radius:5px;cursor:pointer;font-family:'Nanum Gothic',sans-serif;font-size:13px;font-weight:700}
+.btn-gold:hover{background:rgba(232,184,75,.1)}
+.btn-red{background:none;border:1px solid var(--red);color:var(--red);padding:3px 9px;border-radius:4px;cursor:pointer;font-family:'Nanum Gothic',sans-serif;font-size:12px}
+.btn-reset{background:none;border:1px solid var(--red);color:var(--red);padding:6px 13px;border-radius:5px;cursor:pointer;font-family:'Nanum Gothic',sans-serif;font-size:13px;font-weight:700}
+.btn-reset:hover{background:rgba(248,113,113,.1)}
+.btn-save{background:var(--gold);border:none;color:#0a0c18;padding:10px 28px;border-radius:6px;cursor:pointer;font-family:'Nanum Gothic',sans-serif;font-size:14px;font-weight:800}
+.btn-save:hover{background:var(--gold2)}
+.save-row{display:flex;align-items:center;justify-content:flex-end;gap:14px;margin-top:4px}
+.save-msg{font-size:12px;color:var(--green)}
+.sim-cfg{display:flex;justify-content:flex-end;gap:14px;margin-top:14px}
+.cfg-lbl{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-bottom:7px}
+.btn-grp{display:flex;gap:4px}
+.btn-grp button{flex:1;padding:8px 4px;background:var(--sf2);border:1px solid var(--bd);border-radius:4px;color:var(--dim);cursor:pointer;font-family:'Nanum Gothic',sans-serif;font-size:13px;font-weight:700;transition:all .15s}
+.btn-grp button.active{background:rgba(232,184,75,.12);border-color:var(--gold);color:var(--gold)}
+.radio-opts label{display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;margin-bottom:5px}
+.radio-opts input[type=radio]{accent-color:var(--gold)}
+.buff-setting-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:0}
+.buff-setting-panel{border:1px solid var(--bd);border-radius:6px;overflow:hidden;background:var(--sf)}
+.buff-setting-title{background:var(--sf2);border-bottom:1px solid var(--bd);padding:8px;text-align:center;color:var(--gold);font-size:13px;font-weight:800}
+.buff-setting-body{display:grid;grid-template-columns:1fr 1fr}
+.buff-setting-cell{min-height:74px;padding:8px;border-right:1px solid var(--bd);border-bottom:1px solid var(--bd);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px}
+.buff-setting-cell:nth-child(2n){border-right:none}
+.buff-setting-cell:nth-last-child(-n+2){border-bottom:none}
+.buff-setting-lbl{font-size:11px;color:#fff;font-weight:800}
+.buff-setting-cell select{width:100%;max-width:150px;text-align:center}
+.buff-attr-icon{width:48px;height:48px;object-fit:contain}
+.btn-sim{width:100%;padding:14px;background:linear-gradient(135deg,var(--gold2),var(--gold));border:none;border-radius:8px;color:#0a0c18;font-family:'Nanum Gothic',sans-serif;font-size:16px;font-weight:800;cursor:pointer;margin:12px 0;letter-spacing:-.5px;transition:opacity .15s,transform .1s}
+.btn-sim:hover{opacity:.92}.btn-sim:active{transform:scale(.99)}.btn-sim:disabled{opacity:.5;cursor:not-allowed}
+.res-wrap{overflow-x:auto}
+table.rtbl{width:100%;border-collapse:collapse;min-width:640px}
+.rtbl th{background:var(--sf2);padding:9px 11px;text-align:left;font-size:11px;color:var(--dim);border-bottom:1px solid var(--bd);white-space:nowrap}
+.rtbl td{padding:10px 11px;border-bottom:1px solid var(--bd);font-size:13px;vertical-align:middle}
+.rtbl tr:last-child td{border-bottom:none}
+.rtbl tbody tr:hover td{background:rgba(255,255,255,.015)}
+.medal{font-size:20px}.rank-n{font-weight:800;color:var(--dim)}
+.dtype-b{display:inline-block;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:800;border:1px solid}
+.res-attr-type{display:flex;align-items:center;gap:7px;white-space:nowrap}
+.res-attr-icon{width:28px;height:28px;object-fit:contain;flex-shrink:0}
+.bv-cell{font-family:'Courier New',monospace;font-size:14px;font-weight:800;color:var(--gold);white-space:nowrap}
+.st-cell{font-family:'Courier New',monospace;font-size:12px;white-space:nowrap}
+.gem-tags{display:flex;flex-wrap:wrap;gap:3px}
+.gem-tag{padding:2px 6px;border-radius:3px;font-size:11px;font-weight:700;background:rgba(255,255,255,.07)}
+.enc-b{display:inline-block;padding:1px 7px;border-radius:3px;font-size:11px;font-weight:700;border:1px solid var(--green);color:var(--green);background:rgba(74,222,128,.1)}
+.enc-none{border-color:var(--dimmer);color:var(--dimmer);background:none}
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+input[type=number]{appearance:textfield;-moz-appearance:textfield}
+.spec-layout{display:flex;flex-direction:column;gap:36px;align-items:stretch}
+.spec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:start}
+.spec-col{display:flex;flex-direction:column;gap:14px}
+.spec-col .sec{margin-bottom:0}
+.dragon-cats{display:flex;flex-direction:column;gap:8px}
+.dragon-cat{background:var(--sf2);border:1px solid var(--bd);border-radius:6px;overflow:hidden}
+.dragon-cat summary{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;color:var(--text);font-weight:400;cursor:pointer;list-style:none}
+.dragon-cat summary::-webkit-details-marker{display:none}
+.dragon-cat summary::after{content:'+';color:var(--gold);font-size:16px;line-height:1}
+.dragon-cat[open] summary{border-bottom:1px solid var(--bd);color:var(--gold)}
+.dragon-cat[open] summary::after{content:'-'}
+.dragon-cat-title{display:flex;align-items:center;gap:8px}
+.dragon-cat-icon{width:24px;height:24px;object-fit:contain;flex-shrink:0}
+.dragon-cat-count{color:var(--dim);font-size:12px}
+.dragon-cat-body{min-height:48px;padding:12px 14px;color:var(--dim);font-size:13px}
+.dragon-cat-actions{display:none;margin-left:auto;margin-right:12px;gap:6px}
+.dragon-cat[open] .dragon-cat-actions{display:flex}
+.dragon-card{background:var(--sf);border:1px solid var(--bd);border-radius:6px;padding:12px;margin-bottom:10px}
+.dragon-card:last-child{margin-bottom:0}
+.dragon-card-hd{display:grid;grid-template-columns:minmax(0,1.25fr) auto minmax(0,.85fr) minmax(0,.85fr) minmax(0,.55fr) auto;gap:8px;align-items:center;margin-bottom:10px}
+.dragon-name-cell{display:flex;align-items:center;gap:8px;min-width:0}
+.dragon-card-no{color:#fff;font-size:12px;font-weight:800;min-width:18px;text-align:right}
+.dragon-name-input{width:100%;min-width:0}
+.dragon-view-toggle{display:flex;gap:6px;margin-bottom:12px;}
+.dragon-view-btn{padding:5px 14px;border-radius:5px;border:1px solid var(--bd);background:var(--sf2);color:var(--dim);font-size:12px;cursor:pointer;}
+.dragon-view-btn.active{background:var(--gold);color:#000;border-color:var(--gold);font-weight:700;}
+#dragon-gallery{display:none;}
+#dragon-gallery.active{display:block;}
+#dragon-form-view.hidden{display:none;}
+.gallery-section{margin-bottom:16px;}
+.gallery-section-title{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--gold);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--bd);}
+.gallery-grid{display:flex;flex-wrap:wrap;gap:10px;}
+.gallery-card{width:60px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px;border-radius:8px;border:1px solid var(--bd);background:var(--sf2);transition:border-color .15s,background .15s;}
+.gallery-card:hover{border-color:var(--gold);background:var(--sf);}
+.gallery-card img{width:44px;height:44px;object-fit:contain;border-radius:6px;}
+.gallery-card .gc-name{font-size:9px;color:var(--dim);text-align:center;word-break:keep-all;line-height:1.3;}
+.gallery-panel-wrap{position:relative;}
+.gallery-panel{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--sf2);border:1px solid var(--gold);border-radius:12px;padding:20px;z-index:500;min-width:280px;max-width:360px;box-shadow:0 8px 32px rgba(0,0,0,.5);}
+.gallery-panel.open{display:block;}
+.gallery-panel-overlay{display:none;position:fixed;inset:0;z-index:499;background:rgba(0,0,0,.4);}
+.gallery-panel-overlay.open{display:block;}
+.gp-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.gp-img{width:56px;height:56px;object-fit:contain;border-radius:8px;background:var(--sf);border:1px solid var(--bd);}
+.gp-title{flex:1;}
+.gp-name{font-size:15px;font-weight:700;color:var(--text);}
+.gp-type{font-size:12px;color:var(--dim);margin-top:2px;}
+.gp-close{background:none;border:none;color:var(--dim);font-size:18px;cursor:pointer;padding:0 4px;}
+.gp-close:hover{color:var(--text);}
+.gp-rows{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px;}
+.gp-row{background:var(--sf);border-radius:6px;padding:6px 10px;}
+.gp-label{font-size:10px;color:var(--dim);margin-bottom:2px;}
+.gp-val{font-size:12px;font-weight:700;color:var(--text);}
+.gp-opts{margin-bottom:14px;}
+.gp-opt-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--bd);font-size:12px;}
+.gp-opt-row:last-child{border-bottom:none;}
+.gp-opt-label{color:var(--dim);}
+.gp-opt-val{color:var(--green);font-weight:700;}
+.gp-edit-btn{width:100%;padding:8px;border-radius:6px;background:var(--gold);border:none;color:#000;font-weight:700;font-size:13px;cursor:pointer;}
+.gp-edit-btn:hover{opacity:.85;}
+
+.dragon-img-icon{width:32px;height:32px;object-fit:contain;border-radius:4px;flex-shrink:0;border:1px solid var(--bd);background:var(--sf2);}
+.dragon-img-placeholder{width:32px;height:32px;border-radius:4px;flex-shrink:0;border:1px solid var(--bd);background:var(--sf2);}
+.dragon-name-wrap{position:relative;flex:1;min-width:0;}
+.dragon-drop{position:fixed;background:var(--sf2);border:1px solid var(--gold);border-radius:4px;z-index:1000;max-height:220px;overflow-y:auto;display:none;}
+.dragon-drop.open{display:block;}
+.dragon-drop .acc-drop-item{padding:5px 10px;cursor:pointer;display:flex;align-items:center;font-size:13px;}
+.dragon-drop .acc-drop-item:hover{background:var(--sf);}
+.dragon-dupe-check{display:flex;align-items:center;gap:5px;color:#fff;font-size:12px;white-space:nowrap;margin-left:10px}
+.dragon-dupe-check input{accent-color:var(--gold)}
+.dragon-card-hd select,.dragon-card-hd .dragon-type-field{width:100%;min-width:0}
+.dragon-reset-btn{justify-self:end;width:40px;height:30px;padding:0;font-size:13px;line-height:1}
+.dragon-delete-btn{height:30px;white-space:nowrap}
+.dragon-preset-row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr)) auto;gap:6px;align-items:center;margin-bottom:10px}
+.dragon-preset-row .sp-preset-btn{min-height:30px;padding:4px 6px}
+.dragon-preset-row .sp-preset-name{font-size:12px;font-weight:400}
+.dragon-preset-row .sp-preset-desc{font-size:12px;margin-left:4px}
+.dragon-spirit-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:10px}
+.dragon-opt-card{display:grid;grid-template-columns:24px minmax(0,1fr) minmax(0,1fr) 48px;gap:8px;padding:6px 10px}
+.dragon-opt-card select{width:100%;min-width:0}
+.dragon-opt-card .sp-onum{align-self:center;white-space:nowrap}
+.dragon-opt-card .sp-oval{align-self:center;color:var(--green);font-weight:800}
+.dragon-bonus-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.dragon-bonus-fields{display:grid;grid-template-columns:56px minmax(0,1fr);gap:8px;align-items:center;min-width:220px}
+.dragon-bonus-fields select{width:90%;min-width:0;justify-self:end}
+.dragon-bonus-fields label{color:var(--dim);font-size:12px;text-align:center}
+@media(max-width:1100px) and (min-width:701px){.spec-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){.spec-grid{grid-template-columns:1fr}}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+@media(max-width:580px){.sim-cfg{grid-template-columns:1fr}.buff-setting-grid{grid-template-columns:1fr}.sp-top{grid-template-columns:1fr}.sp-preset-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.sp-preset-btn{white-space:normal}}
+.res-tab-btn{padding:9px 18px;background:none;border:none;border-bottom:3px solid transparent;color:var(--dim);font-family:'Nanum Gothic',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s}
+.res-tab-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
+</style>
+</head>
+<body>
+
+<div class="hd">
+  <a href="./index.html?tab=calculator" style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;border:1px solid var(--bd);background:var(--sf2);color:var(--text2);text-decoration:none;font-size:16px;flex-shrink:0;transition:all 0.15s" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--bd)';this.style.color='var(--text2)'">←</a>
+  <div class="hd-icon">🐉</div>
+  <div><div class="hd-t">(뉴비용)길드전 시뮬레이터</div><div class="hd-s">비밸(체력 × 공격 × 방어) 최적화</div></div>
+  <div style="margin-left:auto;font-size:12px;color:#fff;text-align:right">Made by 리레프<br>
+</div>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" id="tab-btn-spec" onclick="switchTab('spec')">내 스펙</button>
+  <button class="tab-btn" id="tab-btn-dragon" onclick="switchTab('dragon')">내 용 정보</button>
+  <button class="tab-btn" id="tab-btn-sim" onclick="switchTab('sim')">3vs3 세팅</button>
+</div>
+
+<!-- ■ 내 스펙 탭 -->
+<div id="tab-spec" class="tc active"><div class="ti">
+  <div class="save-row" style="margin-bottom:10px">
+    <span class="save-msg" id="save-msg"></span>
+    <button class="btn-reset" onclick="resetAll()">↺ 전체 초기화</button>
+    <button class="btn-save" onclick="doSave()">💾 저장</button>
+  </div>
+  <div class="spec-layout">
+
+    <!-- 하단: 3열 그리드 -->
+    <div class="spec-grid">
+
+      <!-- 1구역: 젬 + 컬렉션 -->
+      <div class="spec-col">
+        <div class="sec">
+          <div class="sec-hd">
+            <span>💎 젬 보유량</span>
+            <button class="btn-reset" onclick="resetGems()">↺</button>
+          </div>
+          <div class="sec-bd">
+            <div class="gem-grid">
+              <div class="gem-hdr"></div>
+              <div class="gem-hdr" style="color:var(--hpc)">체</div>
+              <div class="gem-hdr" style="color:var(--atc)">공</div>
+              <div class="gem-hdr" style="color:var(--dfc)">방</div>
+              <div class="gem-lbl">37젬</div>
+              <input type="number" id="gem-hp-37" min="0" value="0" oninput="onGem('hp',37,this.value,this)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+              <input type="number" id="gem-atk-37" min="0" value="0" oninput="onGem('atk',37,this.value,this)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+              <input type="number" id="gem-def-37" min="0" value="0" oninput="onGem('def',37,this.value,this)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+              <div class="gem-lbl">38젬</div>
+              <input type="number" id="gem-hp-38" min="0" value="0" oninput="onGem('hp',38,this.value,this)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+              <input type="number" id="gem-atk-38" min="0" value="0" oninput="onGem('atk',38,this.value,this)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+              <input type="number" id="gem-def-38" min="0" value="0" oninput="onGem('def',38,this.value,this)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+              <div class="gem-lbl">39젬</div>
+              <input type="number" id="gem-hp-39" min="0" value="0" oninput="onGem('hp',39,this.value,this)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+              <input type="number" id="gem-atk-39" min="0" value="0" oninput="onGem('atk',39,this.value,this)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+              <input type="number" id="gem-def-39" min="0" value="0" oninput="onGem('def',39,this.value,this)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+              <div class="gem-lbl">40젬</div>
+              <input type="number" id="gem-hp-40" min="0" value="0" oninput="onGem('hp',40,this.value,this)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+              <input type="number" id="gem-atk-40" min="0" value="0" oninput="onGem('atk',40,this.value,this)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+              <input type="number" id="gem-def-40" min="0" value="0" oninput="onGem('def',40,this.value,this)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+            </div>
+          </div>
+        </div>
+        <div class="sec">
+          <div class="sec-hd">
+            <span>📚 컬렉션 스탯</span>
+            <button class="btn-white" onclick="setFullCollection()">풀컬</button>
+          </div>
+          <div class="sec-bd">
+            <div class="coll-grid">
+              <div class="coll-g"><label>체력</label><input type="number" id="coll-hp" min="0" value="0" oninput="onColl('hp',this.value,this)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()"></div>
+              <div class="coll-g"><label>공격</label><input type="number" id="coll-atk" min="0" value="0" oninput="onColl('atk',this.value,this)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()"></div>
+              <div class="coll-g"><label>방어</label><input type="number" id="coll-def" min="0" value="0" oninput="onColl('def',this.value,this)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2구역: 장신구 -->
+      <div class="spec-col">
+        <div class="sec">
+          <div class="sec-hd">
+            <span>⚒ 장신구 &nbsp;&nbsp;<label style="font-size:11px;font-weight:400;color:#fff;cursor:pointer">스탯장신구만 &nbsp;<input type="checkbox" id="chk-stat-only" checked onchange="renderAcc()" style="accent-color:var(--gold);margin-right:5px"></label></span>
+            <div style="display:flex;gap:6px">
+              <button class="btn-reset" onclick="resetAcc()">↺</button>
+              <button class="btn-gold" onclick="sortAccCards();renderAcc();qSave()">정렬</button>
+              <button class="btn-white" onclick="addAcc()">+ 추가</button>
+            </div>
+          </div>
+          <div class="acc-preset-row">
+            <button class="btn-white" onclick="addAccBulk(16)">16</button>
+            <button class="btn-white" onclick="addAccBulk(17)">17</button>
+            <button class="btn-white" onclick="addAccBulk(18)">18</button>
+            <button class="btn-white" onclick="addAccBulk(19)">19</button>
+            <button class="btn-white" onclick="addAccBulk(20)">20</button>
+          </div>
+          <div class="sec-bd"><div id="acc-list"><div style="color:var(--dimmer);font-size:13px">보유 장신구 없음</div></div></div>
+        </div>
+      </div>
+
+      <!-- 3구역: 펜던트 -->
+      <div class="spec-col">
+        <div class="sec">
+          <div class="sec-hd">
+            <span>🌙 펜던트</span>
+            <div style="display:flex;gap:6px">
+              <button class="btn-reset" onclick="resetPend()">↺</button>
+              <button class="btn-gold" onclick="sortPendants();renderPends();qSave()">정렬</button>
+              <button class="btn-white" onclick="addPendant()">+ 추가</button>
+            </div>
+          </div>
+          <div class="pend-preset-row">
+            <button class="btn-white" onclick="addMoonPendantSet()">달펜 세트</button>
+          </div>
+          <div class="sec-bd"><div id="pend-list"><div style="color:var(--dimmer);font-size:13px">보유 펜던트 없음 (시뮬 시 펜던트 효과 미적용)</div></div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div></div>
+
+<!-- ■ 내 용 정보 탭 -->
+<div id="tab-dragon" class="tc"><div class="ti-dragon">
+  <div class="sec">
+    <div class="sec-hd">
+      <span>내 용 정보</span>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="dragon-view-toggle">
+          <button class="dragon-view-btn active" id="btn-dragon-form" onclick="switchDragonView('form')">내 용 정보</button>
+          <button class="dragon-view-btn" id="btn-dragon-gallery" onclick="switchDragonView('gallery')">모아보기</button>
+        </div>
+        <button class="btn-reset" onclick="resetAllDragonInfo()">전체 초기화</button>
+      </div>
+    </div>
+    <div class="sec-bd">
+      <div id="dragon-form-view">
+      <div class="dragon-cats">
+        <details class="dragon-cat"><summary><span class="dragon-cat-title"><img class="dragon-cat-icon" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/11.png" alt="">땅 <span class="dragon-cat-count" data-dragon-count="땅">(0마리)</span></span><span class="dragon-cat-actions"><button class="btn-red" onclick="clearDragonCat('땅',event)">일괄 삭제</button><button class="btn-white" onclick="addDragonCard('땅',event)">추가</button></span></summary><div class="dragon-cat-body" data-dragon-list="땅"></div></details>
+        <details class="dragon-cat"><summary><span class="dragon-cat-title"><img class="dragon-cat-icon" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/12.png" alt="">물 <span class="dragon-cat-count" data-dragon-count="물">(0마리)</span></span><span class="dragon-cat-actions"><button class="btn-red" onclick="clearDragonCat('물',event)">일괄 삭제</button><button class="btn-white" onclick="addDragonCard('물',event)">추가</button></span></summary><div class="dragon-cat-body" data-dragon-list="물"></div></details>
+        <details class="dragon-cat"><summary><span class="dragon-cat-title"><img class="dragon-cat-icon" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/13.png" alt="">불 <span class="dragon-cat-count" data-dragon-count="불">(0마리)</span></span><span class="dragon-cat-actions"><button class="btn-red" onclick="clearDragonCat('불',event)">일괄 삭제</button><button class="btn-white" onclick="addDragonCard('불',event)">추가</button></span></summary><div class="dragon-cat-body" data-dragon-list="불"></div></details>
+        <details class="dragon-cat"><summary><span class="dragon-cat-title"><img class="dragon-cat-icon" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/14.png" alt="">바람 <span class="dragon-cat-count" data-dragon-count="바람">(0마리)</span></span><span class="dragon-cat-actions"><button class="btn-red" onclick="clearDragonCat('바람',event)">일괄 삭제</button><button class="btn-white" onclick="addDragonCard('바람',event)">추가</button></span></summary><div class="dragon-cat-body" data-dragon-list="바람"></div></details>
+        <details class="dragon-cat"><summary><span class="dragon-cat-title"><img class="dragon-cat-icon" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/84.png" alt="">빛 <span class="dragon-cat-count" data-dragon-count="빛">(0마리)</span></span><span class="dragon-cat-actions"><button class="btn-red" onclick="clearDragonCat('빛',event)">일괄 삭제</button><button class="btn-white" onclick="addDragonCard('빛',event)">추가</button></span></summary><div class="dragon-cat-body" data-dragon-list="빛"></div></details>
+        <details class="dragon-cat"><summary><span class="dragon-cat-title"><img class="dragon-cat-icon" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/87.png" alt="">어둠 <span class="dragon-cat-count" data-dragon-count="어둠">(0마리)</span></span><span class="dragon-cat-actions"><button class="btn-red" onclick="clearDragonCat('어둠',event)">일괄 삭제</button><button class="btn-white" onclick="addDragonCard('어둠',event)">추가</button></span></summary><div class="dragon-cat-body" data-dragon-list="어둠"></div></details>
+        <details class="dragon-cat"><summary><span class="dragon-cat-title"><img class="dragon-cat-icon" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/486.png" alt="">여명 <span class="dragon-cat-count" data-dragon-count="여명">(0마리)</span></span><span class="dragon-cat-actions"><button class="btn-red" onclick="clearDragonCat('여명',event)">일괄 삭제</button><button class="btn-white" onclick="addDragonCard('여명',event)">추가</button></span></summary><div class="dragon-cat-body" data-dragon-list="여명"></div></details>
+        <details class="dragon-cat"><summary><span class="dragon-cat-title"><img class="dragon-cat-icon" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/487.png" alt="">황혼 <span class="dragon-cat-count" data-dragon-count="황혼">(0마리)</span></span><span class="dragon-cat-actions"><button class="btn-red" onclick="clearDragonCat('황혼',event)">일괄 삭제</button><button class="btn-white" onclick="addDragonCard('황혼',event)">추가</button></span></summary><div class="dragon-cat-body" data-dragon-list="황혼"></div></details>
+        <details class="dragon-cat"><summary><span class="dragon-cat-title"><img class="dragon-cat-icon" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/488.png" alt="">악몽 <span class="dragon-cat-count" data-dragon-count="악몽">(0마리)</span></span><span class="dragon-cat-actions"><button class="btn-red" onclick="clearDragonCat('악몽',event)">일괄 삭제</button><button class="btn-white" onclick="addDragonCard('악몽',event)">추가</button></span></summary><div class="dragon-cat-body" data-dragon-list="악몽"></div></details>
+      </div>
+      </div><!-- /dragon-form-view -->
+      <div id="dragon-gallery">
+        <!-- JS로 채움 -->
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<!-- 갤러리 패널 오버레이 -->
+<div class="gallery-panel-overlay" id="gp-overlay" onclick="closeGalleryPanel()"></div>
+<div class="gallery-panel" id="gallery-panel">
+  <div class="gp-header">
+    <img class="gp-img" id="gp-img" src="" alt="">
+    <div class="gp-title">
+      <div class="gp-name" id="gp-name"></div>
+      <div class="gp-type" id="gp-type"></div>
+    </div>
+    <button class="gp-close" onclick="closeGalleryPanel()">✕</button>
+  </div>
+  <div class="gp-rows" id="gp-rows"></div>
+  <div class="gp-opts" id="gp-opts"></div>
+  <button class="gp-edit-btn" id="gp-edit-btn" onclick="goEditDragon()">✏️ 수정하기</button>
+</div>
+
+<!-- ■ 시뮬레이터 탭 -->
+<div id="tab-sim" class="tc"><div class="ti ti-sim">
+
+  <div class="sec">
+    <div class="sec-hd">⚙ 시뮬레이션 설정</div>
+    <div class="sec-bd">
+      <div id="setting-buffs"></div>
+      <div class="sim-cfg">
+        <div>
+          <div class="cfg-lbl">인챈트 옵션</div>
+          <div class="radio-opts">
+            <label><input type="radio" name="enc-mode" value="fixed"> 내 장신구+인챈트 사용</label>
+            <label><input type="radio" name="enc-mode" value="infinite" checked> 내 장신구만 사용(승계가 가능한 경우)</label>
+          </div>
+        </div>
+        <div>
+          <div class="cfg-lbl">디버프 설정</div>
+          <div class="radio-opts">
+            <label><input type="checkbox" id="include-debuff"> 디버프 대상도 결과에 포함</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-sim" id="sim-btn" onclick="runSim()">🐉 시뮬레이션 실행</button>
+
+  <div class="sec" id="res-sec" style="display:none">
+  <div class="sec-hd">🏆 시뮬레이션 결과 — 최강 3마리</div>
+  <div class="res-wrap"><div id="res-body-avg"></div></div>
+</div>
+
+</div></div>
+
+<script>
+// ================================================================
+// 게임 데이터
+// ================================================================
+
+
+const TEM_BASE='https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/tem';
+const ACC_IMG_MAP={
+  '20':{'빛뿔':12,'바뿔':13,'악보':20,'황보':21,'여보':22,'대뿔':1433,'물뿔':1435,'불뿔':1437},
+  '19':{'악보':1273,'황보':1274,'여보':1275,'대뿔':1306,'물뿔':1308,'불뿔':1310},
+  '18':{'빛뿔':1209,'악보':1205,'황보':1206,'여보':1207,'바뿔':1202,'대뿔':1247,'물뿔':1249,'불뿔':1251},
+  '17':{'악보':1102,'황보':1103,'여보':1104,'대뿔':1139,'물뿔':1132,'불뿔':1134},
+  '16':{'악보':1046,'황보':1047,'여보':1048,'바뿔':1049,'대뿔':1130,'물뿔':1132,'불뿔':1134},
+};
+const accImg=(lv,name)=>{const n=ACC_IMG_MAP[String(lv)]?.[name];return n?`${TEM_BASE}/${n}.png`:'';};
+const DRAGON_IMG_NUM={
+  "패트":1,
+  "타이거":2,
+  "램곤":3,
+  "헝그리":4,
+  "머드":5,
+  "오렌지리프":6,
+  "지진":7,
+  "포이즌리버":8,
+  "포폰":9,
+  "애플칙":10,
+  "알데바란":11,
+  "에그마용":12,
+  "파워":13,
+  "데빌곤":14,
+  "베가본드":15,
+  "레오벡터":16,
+  "바스카":17,
+  "바위":18,
+  "지하땅굴":19,
+  "에그":20,
+  "리프":21,
+  "스마트":22,
+  "타투":23,
+  "팀버":24,
+  "플라워":25,
+  "파키":26,
+  "히드라곤":27,
+  "콜로서스":28,
+  "레이어스":29,
+  "리베티":30,
+  "케찰코아틀":31,
+  "골든혼":32,
+  "머스타드해머":33,
+  "칸타카":34,
+  "아스타테":35,
+  "헤임달":36,
+  "논":37,
+  "파이썬":38,
+  "헤라클레스":39,
+  "스파인":40,
+  "스콜피온":41,
+  "다로스":42,
+  "즈믄":43,
+  "아카이아":44,
+  "크로마 아카이아":45,
+  "네시":46,
+  "스왐프":47,
+  "툰드라":48,
+  "유르카":49,
+  "알레샤":50,
+  "크로마 알레샤":51,
+  "볼바":52,
+  "빙하고룡":53,
+  "페어리":54,
+  "샤크곤":55,
+  "메갈로돈":56,
+  "블리자드":57,
+  "베른하르트":58,
+  "루드라":59,
+  "피싱테일":60,
+  "루미네스":61,
+  "프로그":62,
+  "현무":63,
+  "루피아":64,
+  "스터드":65,
+  "위드미":66,
+  "폴투누스":67,
+  "스카트":68,
+  "로키":69,
+  "블루라이트닝":70,
+  "바이올렛":71,
+  "해마곤":72,
+  "베놈":73,
+  "브리트라":74,
+  "프로즌":75,
+  "루살카":76,
+  "테일":77,
+  "수룡":78,
+  "슬라임":79,
+  "퍼플립스":80,
+  "마리노":81,
+  "나트론":82,
+  "레굴루스":83,
+  "크로마 레굴루스":84,
+  "미니":85,
+  "아쿠아":86,
+  "아이스 드레이크":87,
+  "세크레타":88,
+  "트로페우스":89,
+  "마소티스":90,
+  "옥타":91,
+  "크로마 옥타":92,
+  "붐버":93,
+  "포포모":94,
+  "염화룡":95,
+  "파이거":96,
+  "크로마 파이거":97,
+  "파이어":98,
+  "피닉스":99,
+  "레드와이번":100,
+  "말소자":101,
+  "수라":102,
+  "엔투라스":103,
+  "라센티":104,
+  "배틀":105,
+  "번네스":106,
+  "데모니오":107,
+  "스파이크":108,
+  "너티빌런":109,
+  "와일드":110,
+  "루가르":111,
+  "토트":112,
+  "스카투스":113,
+  "크로마 스카투스":114,
+  "아이언":115,
+  "번개고룡":116,
+  "라바":117,
+  "본헤드":118,
+  "플레임":119,
+  "레드불":120,
+  "므네이아":121,
+  "블레이즈":122,
+  "적마룡":123,
+  "자룡":124,
+  "금오":125,
+  "푸투룸":126,
+  "이그나":127,
+  "화귀":128,
+  "타나토스":129,
+  "헬":130,
+  "인섹트":131,
+  "샌드":132,
+  "볼케이노":133,
+  "이그니스":134,
+  "가루다":135,
+  "마룡":136,
+  "불나래":137,
+  "크로마 불나래":138,
+  "윈드":139,
+  "식스 레그 혼":140,
+  "뮤직":141,
+  "가디언":142,
+  "토템":143,
+  "클라우드":144,
+  "핑크벨":145,
+  "엠파이어":146,
+  "혼":147,
+  "청룡":148,
+  "페이퍼":149,
+  "스트라이커":150,
+  "아스티":151,
+  "아라카":152,
+  "거스트":153,
+  "블루썬더":154,
+  "크로마 블루썬더":155,
+  "프로스티":156,
+  "해태":157,
+  "스틸윙":158,
+  "키갈":159,
+  "리티오":160,
+  "크로마 리티오":161,
+  "제트":162,
+  "스왈로우":163,
+  "카오스":164,
+  "제피로스":165,
+  "보레아스":166,
+  "레이디":167,
+  "타이푼":168,
+  "태엽":169,
+  "센투라":170,
+  "티르":171,
+  "루루":172,
+  "크로마 루루":173,
+  "에일리언":174,
+  "윙스":175,
+  "메탈 마그넷":176,
+  "i곤":177,
+  "피스":178,
+  "그레이탄":179,
+  "레인보우배트곤":180,
+  "에트왈":181,
+  "피타야":182,
+  "토르":183,
+  "오로":184,
+  "카멜레용":185,
+  "레인보우":186,
+  "샴":187,
+  "삐에로":188,
+  "시타엘":189,
+  "엔젤주니어":190,
+  "큐피트":191,
+  "모리카":192,
+  "오르도":193,
+  "솔라":194,
+  "카루라":195,
+  "아톤":196,
+  "스워드":197,
+  "바르그":198,
+  "야즈니르":199,
+  "아르고":200,
+  "나이트":201,
+  "순둥곤":202,
+  "사나래":203,
+  "로루스":204,
+  "헤이즈":205,
+  "개틀링곤":206,
+  "솔루카니스":207,
+  "프로텍트":208,
+  "크로마 프로텍트":209,
+  "크리마용":210,
+  "라이곤":211,
+  "캥거레빗":212,
+  "네온":213,
+  "슈팅스타":214,
+  "깨비곤":215,
+  "미나스":216,
+  "알투스":217,
+  "메라크":218,
+  "스파이시":219,
+  "고대신룡":220,
+  "엔젤":221,
+  "에메랄드":222,
+  "치킨헤드":223,
+  "골드":224,
+  "백룡":225,
+  "오로라":226,
+  "아실리":227,
+  "스타에이스":228,
+  "테디":229,
+  "베르나":230,
+  "라파엘":231,
+  "고대 주니어":232,
+  "파라오곤":233,
+  "바르라아":234,
+  "아르테미스":235,
+  "화이트썬더":236,
+  "탈릿사":237,
+  "아만타":238,
+  "샤흐":239,
+  "프랑켄":240,
+  "블랙티어":241,
+  "원더":242,
+  "블랙찡또":243,
+  "문라이트":244,
+  "말로단":245,
+  "마그나스":246,
+  "카스룩스":247,
+  "블레이드":248,
+  "서펀트":249,
+  "G네":250,
+  "유니":251,
+  "다크프로스티":252,
+  "쉐도우":253,
+  "닌자":254,
+  "블랙퀸":255,
+  "스플렌더":256,
+  "타임머신":257,
+  "아자크":258,
+  "베타라":259,
+  "크로마 베타라":260,
+  "오벡스":261,
+  "베네지":262,
+  "투탕카":263,
+  "블랙아머":264,
+  "쿠로이":265,
+  "카르나":266,
+  "쿠베라":267,
+  "포르타":268,
+  "흑룡":269,
+  "메탈":270,
+  "미이라곤":271,
+  "스켈레곤":272,
+  "다크닉스":273,
+  "히에나곤":274,
+  "크레센트":275,
+  "윗치":276,
+  "캣츠곤":277,
+  "타르타로스":278,
+  "다크폴":279,
+  "피데스":280,
+  "요르문간드":281,
+  "티아매트":282,
+  "바알":283,
+  "시그마":284,
+  "드라고노이드":285,
+  "유니버스":286,
+  "베히모스":287,
+  "다크나이트":288,
+  "고트":289,
+  "뱃도치":290,
+  "코브라곤":291,
+  "마르바스":292,
+  "스케어":293,
+  "드래곤 슬레이어":294,
+  "마카라":295,
+  "리치몬드":296,
+  "크로마 리치몬드":297,
+  "하트샤":298,
+  "데몽과가고일":299,
+  "베리스":300,
+  "아말테아":301,
+  "야누스":302,
+  "합라":303,
+  "셀마사":304,
+  "울르":305,
+  "엘리고스":306,
+  "라스":307,
+  "조화룡":308,
+  "할리벨":309,
+  "타아비레":310,
+  "보상이용":311,
+  "루크바트":312,
+  "프레이야":313,
+  "미미르":314,
+  "네비아":315,
+  "아프로디테":316,
+  "킨더":317,
+  "암두시아스":318,
+  "코르투스":319,
+  "이클립스":320,
+  "템피오스":321,
+  "흐레스벨그":322,
+  "카라선":323,
+  "렉스톤":324,
+  "틸키":325,
+  "하리카":326,
+  "데스락":327,
+  "세에레":328,
+  "차차웅":329,
+  "렉몰 리버스":330,
+  "네뷸라":331,
+  "인베르소":332,
+  "레긴레이프":333,
+  "크로마 레긴레이프":334,
+  "발라크":335,
+  "에피트":336,
+  "마누스":337,
+  "베팔":338,
+  "포메쿨":339,
+  "프라이드":340,
+  "단탈리온":341,
+  "네무스":342,
+  "블라드":343,
+  "디멘션":344,
+  "쉴로시":345,
+  "잠식된 요르문간드":346,
+  "레무레스":347,
+  "벨레드":348,
+  "미스핏":349,
+  "크로마 벨레드":350,
+  "움브라":351,
+  "루드오어":352,
+  "크레바스":353,
+  "발레포르":354,
+  "크로마 발레포르":355,
+  "애니마라":356,
+  "롱기누스":357,
+  "마스테마":358,
+  "자간":359,
+  "커스리퍼":360,
+  "진":361,
+};const DRAGON_IMG_BASE="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main";
+function getDragonImgUrl(name){
+  let n=DRAGON_IMG_NUM[name];
+  if(!n){const s=name.replace(/ 드래곤$/,'').replace(/드래곤$/,'').trim();n=DRAGON_IMG_NUM[s];}
+  if(!n)return null;
+  const folder=Math.ceil(n/95);
+  return DRAGON_IMG_BASE+"/"+folder+"/"+n+".png";
+}
+const DRAGON_ALLOWED={
+  "땅":["히드라곤","파워 드래곤","지하땅굴 드래곤","에그 드래곤","머스타드해머","스콜피온 드래곤","파이썬","콜로서스","레이어스","다로스","지진","즈믄","리베티","칸타카","애플칙","아스타테","레오벡터","알데바란","파키","케찰코아틀","에그마용","헤임달","논","아카이아","크로마 아카이아","바스카","포폰","포이즌리버"],
+  "물":["빙하고룡","수룡","페어리 드래곤","샤크곤","아이스 드레이크","위드미","세크레타","베놈 드래곤","루미네스","블리자드","브리트라","트로페우스","프로즌","마소티스","베른하르트","레굴루스","크로마 레굴루스","폴투누스","루드라","루살카","유르카","옥타","크로마 옥타","스카트","알레샤","크로마 알레샤","로키","볼바","피싱테일 드래곤","나트론","스왐프 드래곤"],
+  "불":["파이어 드래곤","번개고룡","피닉스","레드와이번","아이언 드래곤","자룡","가루다","푸투룸","와일드 드래곤","루가르 드래곤","포포모","마룡","므네이아","번네스","이그나","수라 드래곤","엔투라스","화귀 드래곤","염화룡","타나토스","토트","라센티","불나래","크로마 불나래","블레이즈 드래곤","파이거","크로마 파이거","스카투스","크로마 스카투스","적마룡"],
+  "바람":["윈드 드래곤","식스 레그 혼 드래곤","청룡","태엽 드래곤","카오스","스트라이커","아스티","스틸윙","그레이탄","아라카","엠파이어","거스트 드래곤","센투라","에트왈 드래곤","키갈","보레아스","티르","피타야","블루썬더","크로마 블루썬더","리티오","크로마 리티오","토르","루루","크로마 루루","제피로스","혼"],
+  "빛":["고대신룡","엔젤 드래곤","모리카 드래곤","샴 드래곤","나이트 드래곤","스파이시","라파엘","백룡","고대 주니어","아르고 드래곤","시타엘","바르라아","아실리","로루스","헤이즈","오르도","스타에이스","테디 드래곤","아르테미스 드래곤","화이트썬더 드래곤","카루라","미나스 드래곤","아톤","탈릿사","엔젤주니어","스워드","개틀링곤","아만타","샤흐","바르그","솔루카니스","알투스","프로텍트 드래곤","크로마 프로텍트 드래곤","야즈니르","메라크","솔라","베르나"],
+  "어둠":["베네지","바알","다크닉스","시그마 드래곤","블랙티어 드래곤","블랙아머 드래곤","쿠로이 드래곤","타임머신","원더 드래곤","블랙찡또","문라이트","마르바스","유니버스","베히모스","말로단","카르나","다크폴","다크나이트","쿠베라","아자크","마카라","리치몬드","크로마 리치몬드","고트","마그나스","포르타","베타라","크로마 베타라","카스룩스","피데스","요르문간드","티아매트","오벡스","하트샤","드래곤 슬레이어","흑룡"],
+  "여명":["할리벨","타아비레","합라","셀마사","베리스","엘리고스","미미르","암두시아스","네비아","라스","아말테아","조화룡","코르투스","루크바트","울르","아프로디테","야누스","프레이야","킨더 드래곤","보상이용"],
+  "황혼":["발라크","베팔","카라선","렉스톤","포메쿨","틸키","렉몰 리버스","하리카","데스락","이클립스","네뷸라","세에레","프라이드","차차웅","에피트","템피오스","인베르소","마누스","흐레스벨그","레긴레이프","크로마 레긴레이프"],
+  "악몽":["단탈리온","자간","애니마라","루드오어","벨레드","롱기누스","미스핏","마스테마","네무스","크레바스","크로마 벨레드","쉴로시","커스리퍼","진","잠식된 요르문간드","레무레스","발레포르","크로마 발레포르","블라드","디멘션 드래곤"],
+};
+function isAllowedDragon(cat,name){
+  return (DRAGON_ALLOWED[cat]||[]).some(function(n){return n===name;});
+}
+function filterDragonDrop(cat,ci,q){
+  const drop=document.getElementById("dragon-drop-"+cat+"-"+ci);
+  if(!drop)return;
+  const input=drop.previousElementSibling;
+  if(input){
+    const r=input.getBoundingClientRect();
+    drop.style.top=(r.bottom+2)+"px";
+    drop.style.left=r.left+"px";
+    drop.style.width=r.width+"px";
+  }
+  const kw=(q||"").trim();
+  const attrList=DRAGON_ALLOWED[cat]||[];
+  const filtered=kw?attrList.filter(function(n){return n.includes(kw);}):attrList;
+  if(!filtered.length){drop.innerHTML="";drop.classList.remove("open");return;}
+  drop.innerHTML=filtered.slice(0,30).map(function(n){
+    return "<div class=\"acc-drop-item\" onmousedown=\"selectDragonName('"+cat+"',"+ci+",'"+n.replace(/'/g,"\\'")+"\')\">"
+      +"<span>"+n+"</span></div>";
+  }).join("");
+  drop.classList.add("open");
+}
+function selectDragonName(cat,ci,name){
+  normalizeDragonCards();
+  const card=S.dragonCards[cat][ci];
+  card.name=name;
+  const match=findDragonMatch(name);
+  if(match){card.name=match.name;card.dtype=match.type;}
+  syncDragonDupeGroupByName(card.name);
+  warnUncheckedDragonDuplicate();
+  renderDragonInfo();
+  qSave();
+}
+let _gpCat=null,_gpCi=null;
+
+function switchDragonView(mode){
+  const formEl=document.getElementById('dragon-form-view');
+  const galleryEl=document.getElementById('dragon-gallery');
+  const btnForm=document.getElementById('btn-dragon-form');
+  const btnGallery=document.getElementById('btn-dragon-gallery');
+  if(mode==='gallery'){
+    formEl.classList.add('hidden');
+    galleryEl.classList.add('active');
+    btnForm.classList.remove('active');
+    btnGallery.classList.add('active');
+    renderDragonGallery();
+  } else {
+    formEl.classList.remove('hidden');
+    galleryEl.classList.remove('active');
+    btnForm.classList.add('active');
+    btnGallery.classList.remove('active');
+  }
+}
+
+function renderDragonGallery(){
+  normalizeDragonCards();
+  const el=document.getElementById('dragon-gallery');
+  if(!el)return;
+  const attrIcon={'땅':'https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/11.png','물':'https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/12.png','불':'https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/13.png','바람':'https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/14.png','빛':'https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/84.png','어둠':'https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/87.png','여명':'https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/486.png','황혼':'https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/487.png','악몽':'https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/488.png'};
+  let html2='';
+  DRAGON_CATS.forEach(function(cat){
+    const cards=S.dragonCards[cat]||[];
+    const named=cards.filter(function(c){return c.name;});
+    if(!named.length)return;
+    const iconHtml=named.map(function(c,i){
+      const ci=cards.indexOf(c);
+      const url=getDragonImgUrl(c.name);
+      const imgTag=url?('<img src="'+url+'" onerror="this.style.visibility=\'hidden\'" style="width:44px;height:44px;object-fit:contain;border-radius:6px;">'):('<div style="width:44px;height:44px;background:var(--sf);border-radius:6px;"></div>');
+      const safecat=cat.replace(/'/g,"\\'");
+      return '<div class="gallery-card" onclick="openGalleryPanel(\''+safecat+'\','+ci+')" title="'+c.name+'">'
+        +imgTag
+        +'<span class="gc-name">'+c.name+'</span>'
+        +'</div>';
+    }).join('');
+    html2+='<div class="gallery-section">'
+      +'<div class="gallery-section-title"><img src="'+attrIcon[cat]+'" style="width:18px;height:18px;object-fit:contain;">'+cat+' ('+named.length+'마리)</div>'
+      +'<div class="gallery-grid">'+iconHtml+'</div>'
+      +'</div>';
+  });
+  el.innerHTML=html2||'<div style="color:var(--dim);text-align:center;padding:40px;font-size:13px;">입력된 용이 없습니다</div>';
+}
+
+function openGalleryPanel(cat,ci){
+  normalizeDragonCards();
+  const card=S.dragonCards[cat][ci];
+  if(!card)return;
+  _gpCat=cat;_gpCi=ci;
+  const url=getDragonImgUrl(card.name);
+  const imgEl=document.getElementById('gp-img');
+  if(url){imgEl.src=url;imgEl.style.display='';}
+  else imgEl.style.display='none';
+  document.getElementById('gp-name').textContent=card.name||'(이름 없음)';
+  document.getElementById('gp-type').textContent=(card.dtype||'')+(card.dtype&&card.growth?' · ':'')+((card.growth||''));
+  const gradeLabel=card.growth==='강림'||card.growth==='진각'?'7.0':card.grade||'-';
+  document.getElementById('gp-rows').innerHTML=
+    '<div class="gp-row"><div class="gp-label">속성</div><div class="gp-val">'+cat+'</div></div>'
+    +'<div class="gp-row"><div class="gp-label">타입</div><div class="gp-val">'+(card.dtype||'-')+'</div></div>'
+    +'<div class="gp-row"><div class="gp-label">강림 단계</div><div class="gp-val">'+(card.growth||'-')+'</div></div>'
+    +'<div class="gp-row"><div class="gp-label">등급</div><div class="gp-val">'+gradeLabel+'</div></div>';
+  const opts=card.opts||[];
+  const bonusLabel={'hp':'체력 (+40)','atk':'공격 (+10)','def':'방어 (+10)'};
+  const bonusRow=card.bonus?'<div class="gp-opt-row"><span class="gp-opt-label">부가옵</span><span class="gp-opt-val">'+bonusLabel[card.bonus]+'</span></div>':'';
+  document.getElementById('gp-opts').innerHTML=opts.map(function(o,i){
+    if(!o.stat||o.stat==='없음')return '';
+    const v=fmtDragonSpVal(i+1,o.stat,o.type);
+    return '<div class="gp-opt-row"><span class="gp-opt-label">'+(i+1)+'옵 '+o.stat+'</span><span class="gp-opt-val">'+v+'</span></div>';
+  }).join('')+bonusRow;
+  document.getElementById('gp-overlay').classList.add('open');
+  document.getElementById('gallery-panel').classList.add('open');
+}
+
+function closeGalleryPanel(){
+  document.getElementById('gp-overlay').classList.remove('open');
+  document.getElementById('gallery-panel').classList.remove('open');
+  _gpCat=null;_gpCi=null;
+}
+
+function goEditDragon(){
+  if(!_gpCat||_gpCi===null)return;
+  closeGalleryPanel();
+  switchDragonView('form');
+  // 해당 속성 details 열기
+  const details=document.querySelector('[data-dragon-list="'+_gpCat+'"]');
+  if(details){
+    const det=details.closest('details');
+    if(det)det.open=true;
+  }
+  // 해당 카드로 스크롤
+  setTimeout(function(){
+    const cards=document.querySelectorAll('[data-dragon-list="'+_gpCat+'"] .dragon-card');
+    if(cards[_gpCi]){
+      cards[_gpCi].scrollIntoView({behavior:'smooth',block:'center'});
+      cards[_gpCi].style.outline='2px solid var(--gold)';
+      setTimeout(function(){cards[_gpCi].style.outline='';},1500);
+    }
+  },100);
+}
+
+
+
+const IMG_빛뿔18=accImg(18,'빛뿔');
+const IMG_빛뿔20=accImg(20,'빛뿔');
+const IMG_악보16=accImg(16,'악보');
+const IMG_황보16=accImg(16,'황보');
+const IMG_여보16=accImg(16,'여보');
+const IMG_물16=accImg(16,'물뿔');
+const IMG_불16=accImg(16,'불뿔');
+const IMG_땅16=accImg(16,'대뿔');
+const IMG_바람16=accImg(16,'바뿔');
+const IMG_악보17=accImg(17,'악보');
+const IMG_황보17=accImg(17,'황보');
+const IMG_여보17=accImg(17,'여보');
+const IMG_물17=accImg(17,'물뿔');
+const IMG_불17=accImg(17,'불뿔');
+const IMG_땅17=accImg(17,'대뿔');
+const IMG_바람17=accImg(17,'바뿔');
+const IMG_악보18=accImg(18,'악보');
+const IMG_황보18=accImg(18,'황보');
+const IMG_여보18=accImg(18,'여보');
+const IMG_물18=accImg(18,'물뿔');
+const IMG_불18=accImg(18,'불뿔');
+const IMG_땅18=accImg(18,'대뿔');
+const IMG_바람18=accImg(18,'바뿔');
+const IMG_악보19=accImg(19,'악보');
+const IMG_황보19=accImg(19,'황보');
+const IMG_여보19=accImg(19,'여보');
+const IMG_물19=accImg(19,'물뿔');
+const IMG_불19=accImg(19,'불뿔');
+const IMG_땅19=accImg(19,'대뿔');
+const IMG_바람19=accImg(19,'바뿔');
+const IMG_악보20=accImg(20,'악보');
+const IMG_황보20=accImg(20,'황보');
+const IMG_여보20=accImg(20,'여보');
+const IMG_물20=accImg(20,'물뿔');
+const IMG_불20=accImg(20,'불뿔');
+const IMG_땅20=accImg(20,'대뿔');
+const IMG_바뿔20=accImg(20,'바뿔');
+const IMG_PEND={
+  태양:`${TEM_BASE}/1337.png`,
+  달:`${TEM_BASE}/1336.png`,
+  별:`${TEM_BASE}/1335.png`
+};
+
+const ACC_DB=[
+
+  {n:'빛뿔 (크/체) 18',hp:0.08, atk:0,    def:0   , img:IMG_빛뿔18},
+  {n:'빛뿔 (크/공) 18',hp:0,    atk:0.08, def:0   , img:IMG_빛뿔18},
+  {n:'빛뿔 (크/방) 18',hp:0,    atk:0,    def:0.08, img:IMG_빛뿔18},
+
+  {n:'빛뿔 (크/체) 20',hp:0.1, atk:0,    def:0   , img:IMG_빛뿔20},
+  {n:'빛뿔 (크/공) 20',hp:0,    atk:0.1, def:0   , img:IMG_빛뿔20},
+  {n:'빛뿔 (크/방) 20',hp:0,    atk:0,    def:0.1, img:IMG_빛뿔20},
+
+  {n:'악몽 수호자의 보주 (악보) 16',hp:0.16, atk:0,    def:0   , img:IMG_악보16},
+  {n:'황혼 수호자의 보주 (황보) 16',hp:0,    atk:0.16, def:0   , img:IMG_황보16},
+  {n:'여명 수호자의 보주 (여보) 16',hp:0,    atk:0,    def:0.16, img:IMG_여보16},
+  {n:'물뿔 (체/공) 16',hp:0.1,  atk:0.06, def:0   , img:IMG_물16},
+  {n:'물뿔 (체/방) 16',hp:0.1,  atk:0,    def:0.06, img:IMG_물16},
+  {n:'불뿔 (공/체) 16',hp:0.06, atk:0.1,  def:0   , img:IMG_불16},
+  {n:'불뿔 (공/방) 16',hp:0,    atk:0.1,  def:0.06, img:IMG_불16},
+  {n:'대뿔 (방/체) 16',hp:0.06, atk:0,    def:0.1 , img:IMG_땅16},
+  {n:'대뿔 (방/공) 16',hp:0,    atk:0.06, def:0.1 , img:IMG_땅16},
+  {n:'바뿔 (체/방) 16',hp:0.08, atk:0,    def:0.08, img:IMG_바람16},
+  {n:'바뿔 (공/체) 16',hp:0.08, atk:0.08, def:0   , img:IMG_바람16},
+  {n:'바뿔 (공/방) 16',hp:0,    atk:0.08, def:0.08, img:IMG_바람16},
+
+  {n:'악몽 수호자의 보주 (악보) 17',hp:0.17, atk:0,    def:0   , img:IMG_악보17},
+  {n:'황혼 수호자의 보주 (황보) 17',hp:0,    atk:0.17, def:0   , img:IMG_황보17},
+  {n:'여명 수호자의 보주 (여보) 17',hp:0,    atk:0,    def:0.17, img:IMG_여보17},
+  {n:'물뿔 (체/공) 17',hp:0.11, atk:0.06, def:0   , img:IMG_물17},
+  {n:'물뿔 (체/방) 17',hp:0.11, atk:0,    def:0.06, img:IMG_물17},
+  {n:'불뿔 (공/체) 17',hp:0.06, atk:0.11, def:0   , img:IMG_불17},
+  {n:'불뿔 (공/방) 17',hp:0,    atk:0.11, def:0.06, img:IMG_불17},
+  {n:'대뿔 (방/체) 17',hp:0.06, atk:0,    def:0.11, img:IMG_땅17},
+  {n:'대뿔 (방/공) 17',hp:0,    atk:0.06, def:0.11, img:IMG_땅17},
+  {n:'바뿔 (체/방) 17',hp:0.09, atk:0,    def:0.08, img:IMG_바람17},
+  {n:'바뿔 (공/체) 17',hp:0.08, atk:0.09, def:0   , img:IMG_바람17},
+  {n:'바뿔 (공/방) 17',hp:0,    atk:0.09, def:0.08, img:IMG_바람17},
+
+  {n:'악몽 수호자의 보주 (악보) 18',hp:0.18, atk:0,    def:0   , img:IMG_악보18},
+  {n:'황혼 수호자의 보주 (황보) 18',hp:0,    atk:0.18, def:0   , img:IMG_황보18},
+  {n:'여명 수호자의 보주 (여보) 18',hp:0,    atk:0,    def:0.18, img:IMG_여보18},
+  {n:'물뿔 (체/공) 18',hp:0.12, atk:0.06, def:0   , img:IMG_물18},
+  {n:'물뿔 (체/방) 18',hp:0.12, atk:0,    def:0.06, img:IMG_물18},
+  {n:'불뿔 (공/체) 18',hp:0.06, atk:0.12, def:0   , img:IMG_불18},
+  {n:'불뿔 (공/방) 18',hp:0,    atk:0.12, def:0.06, img:IMG_불18},
+  {n:'대뿔 (방/체) 18',hp:0.06, atk:0,    def:0.12, img:IMG_땅18},
+  {n:'대뿔 (방/공) 18',hp:0,    atk:0.06, def:0.12, img:IMG_땅18},
+  {n:'바뿔 (체/방) 18',hp:0.09, atk:0,    def:0.09, img:IMG_바람18},
+  {n:'바뿔 (공/체) 18',hp:0.09, atk:0.09, def:0   , img:IMG_바람18},
+  {n:'바뿔 (공/방) 18',hp:0,    atk:0.09, def:0.09, img:IMG_바람18},
+
+  {n:'악몽 수호자의 보주 (악보) 19',hp:0.19, atk:0,    def:0   , img:IMG_악보19},
+  {n:'황혼 수호자의 보주 (황보) 19',hp:0,    atk:0.19, def:0   , img:IMG_황보19},
+  {n:'여명 수호자의 보주 (여보) 19',hp:0,    atk:0,    def:0.19, img:IMG_여보19},
+  {n:'물뿔 (체/공) 19',hp:0.13, atk:0.06, def:0   , img:IMG_물19},
+  {n:'물뿔 (체/방) 19',hp:0.13, atk:0,    def:0.06, img:IMG_물19},
+  {n:'불뿔 (공/체) 19',hp:0.06, atk:0.13, def:0   , img:IMG_불19},
+  {n:'불뿔 (공/방) 19',hp:0,    atk:0.13, def:0.06, img:IMG_불19},
+  {n:'대뿔 (방/체) 19',hp:0.06, atk:0,    def:0.13, img:IMG_땅19},
+  {n:'대뿔 (방/공) 19',hp:0,    atk:0.06, def:0.13, img:IMG_땅19},
+  {n:'바뿔 (체/방) 19',hp:0.1,  atk:0,    def:0.09, img:IMG_바람19},
+  {n:'바뿔 (공/체) 19',hp:0.09, atk:0.1,  def:0   , img:IMG_바람19},
+  {n:'바뿔 (공/방) 19',hp:0,    atk:0.1,  def:0.09, img:IMG_바람19},
+
+  {n:'악몽 수호자의 보주 (악보) 20',hp:0.2,  atk:0,    def:0   , img:IMG_악보20},
+  {n:'황혼 수호자의 보주 (황보) 20',hp:0,    atk:0.2,  def:0   , img:IMG_황보20},
+  {n:'여명 수호자의 보주 (여보) 20',hp:0,    atk:0,    def:0.2 , img:IMG_여보20},
+  {n:'물뿔 (체/공) 20',hp:0.14, atk:0.06, def:0   , img:IMG_물20},
+  {n:'물뿔 (체/방) 20',hp:0.14, atk:0,    def:0.06, img:IMG_물20},
+  {n:'불뿔 (공/체) 20',hp:0.06, atk:0.14, def:0   , img:IMG_불20},
+  {n:'불뿔 (공/방) 20',hp:0,    atk:0.14, def:0.06, img:IMG_불20},
+  {n:'대뿔 (방/체) 20',hp:0.06, atk:0,    def:0.14, img:IMG_땅20},
+  {n:'대뿔 (방/공) 20',hp:0,    atk:0.06, def:0.14, img:IMG_땅20},
+  {n:'바뿔 (체/방) 20',hp:0.1, atk:0,    def:0.1, img:IMG_바뿔20},
+  {n:'바뿔 (공/체) 20',hp:0.1, atk:0.1, def:0   , img:IMG_바뿔20},
+  {n:'바뿔 (공/방) 20',hp:0,    atk:0.1, def:0.1, img:IMG_바뿔20},
+];
+
+// 신규 장신구 입력 시 정렬 판단 기준
+const ACC_TYPE_ORDER=['악보','황보','여보','물뿔','불뿔','대뿔','바뿔','빛뿔'];
+const ENC_ORDER={hp:0,atk:1,def:2,none:3}
+
+// 기본스탯 DB (등급별 × 타입별)
+const BASE={
+  '진각':{체력형:{hp:1257,atk:168,def:168},공격형:{hp:865,atk:273,def:161},방어형:{hp:781,atk:180,def:275},공방형:{hp:713,atk:240,def:232},체공형:{hp:1073,atk:253,def:129},체방형:{hp:1073,atk:123,def:259}},
+  '7.0':{체력형:{hp:1252,atk:176,def:176},공격형:{hp:876,atk:285,def:161},방어형:{hp:788,atk:185,def:283},공방형:{hp:720,atk:242,def:243},체공형:{hp:1080,atk:262,def:133},체방형:{hp:1080,atk:133,def:262}},
+  '8.0':{체력형:{hp:1292,atk:176,def:176},공격형:{hp:876,atk:305,def:161},방어형:{hp:788,atk:185,def:303},공방형:{hp:720,atk:252,def:253},체공형:{hp:1120,atk:272,def:133},체방형:{hp:1120,atk:133,def:272}},
+  '9.0':{체력형:{hp:1332,atk:176,def:176},공격형:{hp:876,atk:325,def:161},방어형:{hp:788,atk:185,def:323},공방형:{hp:720,atk:262,def:263},체공형:{hp:1160,atk:282,def:133},체방형:{hp:1160,atk:133,def:282}},
+};
+
+// 젬 DB (단계별 체/공/방 수치)
+const GEM={36:{hp:144,atk:36,def:36},37:{hp:148,atk:37,def:37},38:{hp:152,atk:38,def:38},39:{hp:156,atk:39,def:39},40:{hp:160,atk:40,def:40}};
+const FALLBACK_GEM_LV=36;
+const FALLBACK_GEM_COUNT=999;
+
+// 정령 DB: +옵 수치 (스탯×옵번호), %옵 수치 (옵번호), 부가옵 수치
+const SP_PLUS={hp:{1:216,2:240,3:264,4:480},atk:{1:54,2:60,3:66,4:120},def:{1:54,2:60,3:66,4:120}};
+const SP_PCT={1:0.24,2:0.28,3:0.32,4:0.40};
+const SP_BONUS={hp:40,atk:10,def:10};
+const SP_PRESETS=[
+  {id:'custom',name:'직접입력',types:['','','','']},
+  {id:'last_plus',name:'막플',types:['%','%','%','+']},
+  {id:'all_pct',name:'올퍼',types:['%','%','%','%']},
+  {id:'one_four_plus',name:'14플',types:['+','%','%','+']},
+  {id:'first_plus',name:'24플',types:['%','+','%','+']}
+];
+
+const DTYPES=['체력형','공격형','방어형','체공형','체방형','공방형'];
+const DCOLORS={체력형:'#fbbf24',공격형:'#f87171',방어형:'#60a5fa',체공형:'#f59e4a',체방형:'#90d97f',공방형:'#c084fc'};
+const SK={hp:'체',atk:'공',def:'방'};
+const SKEYS=['hp','atk','def'];
+const DRAGON_CATS=['땅','물','불','바람','빛','어둠','여명','황혼','악몽'];
+const DRAGON_TYPE_DB=window.DRAGON_TYPE_DB||{};
+const DRAGON_ATTR_DB=window.DRAGON_ATTR_DB||{};
+const newDragonUid=()=>`dragon-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,8)}`;
+const mkDragonCard=()=>({uid:newDragonUid(),name:'',dtype:'',dupe:false,grade:'9.0',growth:'강림(축복)',opts:[{stat:'',type:''},{stat:'',type:''},{stat:'',type:''},{stat:'',type:''}],bonus:''});
+const mkDragonCards=()=>Object.fromEntries(DRAGON_CATS.map(c=>[c,[]]));
+const mkSettingBuffs=()=>({
+  buff:{attr:'어둠',type:'체공형',stat1:'hp',stat2:'hp'},
+  debuff:{attr:'바람',type:'방어형',stat1:'atk',stat2:'hp'}
+});
+
+// ================================================================
+// 상태 관리 (LocalStorage)
+// ================================================================
+const mkState=()=>({
+  accCards:[],
+  gems:{hp:{37:0,38:0,39:0,40:0},atk:{37:0,38:0,39:0,40:0},def:{37:0,38:0,39:0,40:0}},
+  pendants:[],
+  spirit:{level:1,maxLvl:false,opts:[{stat:'',type:''},{stat:'',type:''},{stat:'',type:''},{stat:'',type:''}],bonus:''},
+  coll:{hp:0,atk:0,def:0},
+  dragonCards:mkDragonCards(),
+  settingBuffs:mkSettingBuffs()
+});
+
+let S=mkState();
+let simGrade='9.0', simBuf=2;
+
+const SAVE_KEY='dv1sim_'+location.pathname.split('/').pop().replace(/\.[^.]+$/,'');
+
+function doLoad(){
+  try{
+    const r=localStorage.getItem(SAVE_KEY);
+    if(!r)return;
+    const p=JSON.parse(r);
+    S={...mkState(),...p,accCards:p.accCards||[],gems:{...mkState().gems,...(p.gems||{})},spirit:{...mkState().spirit,...(p.spirit||{})},coll:{...mkState().coll,...(p.coll||{})},dragonCards:{...mkDragonCards(),...(p.dragonCards||{})},settingBuffs:{...mkSettingBuffs(),...(p.settingBuffs||{})}};
+    while(S.spirit.opts.length<4)S.spirit.opts.push({stat:'',type:''});
+    normalizeDragonCards();
+  }catch(e){console.error(e);}
+}
+
+let saveT=null;
+function doSave(){
+  clearTimeout(saveT);
+  localStorage.setItem(SAVE_KEY,JSON.stringify(S));
+  const el=document.getElementById('save-msg');
+  if(el){el.textContent='✓ 저장됨';setTimeout(()=>el.textContent='',2000);}
+}
+function qSave(){clearTimeout(saveT);saveT=setTimeout(doSave,1200);}
+function resetAll(){
+  if(!confirm('모든 입력값 및 시뮬 결과가 초기화됩니다.(컬렉션 포함)'))return;
+  S=mkState();
+  const chk=document.getElementById('chk-stat-only');
+  if(chk)chk.checked=true;
+  renderAcc();
+  populateGems();
+  renderPends();
+  renderSpirit();
+  renderDragonInfo();
+  renderSettingBuffs();
+  populateColl();
+  resetSimResult();
+  qSave();
+}
+
+function resetSimResult(){
+  const rs=document.getElementById('res-sec');
+  if(rs)rs.style.display='none';
+  const rb=document.getElementById('res-body-top');
+  if(rb)rb.innerHTML='';
+  const rb2=document.getElementById('res-body-avg');
+  if(rb2)rb2.innerHTML='';
+}
+
+function getAccNum(name){
+  const m=name.match(/(\d+)\s*$/);
+  return m?parseInt(m[1]):0;
+}
+function getAccType(name){
+  for(let i=0;i<ACC_TYPE_ORDER.length;i++){
+    const type=ACC_TYPE_ORDER[i];
+    if(name.startsWith(type)||name.includes(`(${type})`))return i;
+  }
+  return 99;
+}
+function sortAccCards(){
+  S.accCards=S.accCards.map((c,i)=>({...c,_idx:i}));
+  S.accCards.sort((a,b)=>{
+    const numA=getAccNum(a.name||''),numB=getAccNum(b.name||'');
+    if(numB!==numA)return numB-numA;
+    const typeA=getAccType(a.name||''),typeB=getAccType(b.name||'');
+    if(typeA!==typeB)return typeA-typeB;
+    const encA=ENC_ORDER[a.enchant]??3,encB=ENC_ORDER[b.enchant]??3;
+    if(encA!==encB)return encA-encB;
+    return a._idx-b._idx;
+  });
+  S.accCards=S.accCards.map(({_idx,...c})=>c);
+}
+function getPendOrder(type){return type==='태양'?0:type==='달'?1:2;}
+function getPendSum(p){
+  const mo=p.type==='태양'?3:p.type==='달'?2:1;
+  return p.options.slice(0,mo).reduce((s,o)=>s+(o.val||0),0);
+}
+function sortPendants(){
+  S.pendants=S.pendants.map((p,i)=>({...p,_idx:i}));
+  S.pendants.sort((a,b)=>{
+    const oA=getPendOrder(a.type),oB=getPendOrder(b.type);
+    if(oA!==oB)return oA-oB;
+    const sA=getPendSum(a),sB=getPendSum(b);
+    if(sB!==sA)return sB-sA;
+    return a._idx-b._idx;
+  });
+  S.pendants=S.pendants.map(({_idx,...p})=>p);
+}
+
+// ================================================================
+// UI - 장신구 섹션
+// ================================================================
+function fmtAccSt(a){
+  if(!a)return'';
+  const p=[];
+  if(a.hp>0)p.push(`<span style="color:var(--hpc)">체${(a.hp*100).toFixed(0)}%</span>`);
+  if(a.atk>0)p.push(`<span style="color:var(--atc)">공${(a.atk*100).toFixed(0)}%</span>`);
+  if(a.def>0)p.push(`<span style="color:var(--dfc)">방${(a.def*100).toFixed(0)}%</span>`);
+  return p.length?p.join(' '):'<span style="color:var(--dimmer)">크리/회피</span>';
+}
+
+function applyEncColor(sel){
+  const v=sel.value;
+  sel.style.color=v==='hp'?'var(--gold)':v==='atk'?'var(--red)':v==='def'?'var(--blue)':'var(--text)';
+}
+
+function renderAcc(){
+  const list=document.getElementById('acc-list');
+  if(!list)return;
+  if(!S.accCards.length){
+    list.innerHTML='<div style="color:var(--dimmer);font-size:13px">보유 장신구 없음</div>';
+    return;
+  }
+  let html='';
+  S.accCards.forEach((card,ci)=>{
+    const a=ACC_DB.find(x=>x.n===card.name);
+    const stHtml=a?fmtAccSt(a):'<span style="color:var(--dimmer)">-</span>';
+    html+=`<div class="acc-card">
+      <div class="acc-card-row">
+        <div class="acc-search-wrap" id="acc-wrap-${ci}">
+          <input class="acc-search-input" id="acc-inp-${ci}" value="${card.name||''}" placeholder="장신구 검색..."
+            oninput="filterAccDrop(${ci},this.value)"
+            onfocus="openAccDrop(${ci})"
+            onblur="setTimeout(()=>closeAccDrop(${ci},this),150)"
+            onkeydown="accNavKey(event,${ci})">
+          <div class="acc-dropdown" id="acc-drop-${ci}"></div>
+        </div>
+        ${a && a.img ? `<img src="${a.img}" style="width:40px;height:40px;object-fit:contain;flex-shrink:0">` : '<span style="width:40px;flex-shrink:0"></span>'}
+        <span style="font-size:11px;min-width:80px">${stHtml}</span>
+        <span style="font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.3px;font-weight:700;flex-shrink:0">인챈트</span>
+        <select style="font-size:12px" onchange="onAccEnc(${ci},this.value);applyEncColor(this)">
+          <option value="none" ${card.enchant==='none'?'selected':''}>인챈트 없음</option>
+          <option value="hp"   ${card.enchant==='hp'?'selected':''}>체 +21%</option>
+          <option value="atk"  ${card.enchant==='atk'?'selected':''}>공 +21%</option>
+          <option value="def"  ${card.enchant==='def'?'selected':''}>방 +21%</option>
+        </select>
+        <button class="btn-red" onclick="delAcc(${ci})">삭제</button>
+      </div>
+    </div>`;
+  });
+  list.innerHTML=html;
+  document.querySelectorAll('#acc-list select').forEach(sel=>applyEncColor(sel));
+}
+
+function openAccDrop(ci){
+  filterAccDrop(ci, document.getElementById('acc-inp-'+ci).value);
+  const drop=document.getElementById('acc-drop-'+ci);
+  drop.classList.add('open');
+  const sec=drop.closest('.sec');
+  if(sec)sec.style.overflow='visible';
+}
+
+function closeAccDrop(ci,el){
+  const drop=document.getElementById('acc-drop-'+ci);
+  if(!drop)return;
+  drop.classList.remove('open');
+  const sec=drop.closest('.sec');
+  if(sec)sec.style.overflow='';
+  if(el){
+    const valid=ACC_DB.some(a=>a.n===el.value);
+    if(!valid){
+      S.accCards[ci].name='';
+      S.accCards[ci].enchant='none';
+      el.value='';
+      qSave();
+    }
+  }
+}
+
+function accNavKey(e,ci){
+  const drop=document.getElementById('acc-drop-'+ci);
+  if(!drop||!drop.classList.contains('open'))return;
+  const items=[...drop.querySelectorAll('.acc-drop-item')];
+  if(!items.length)return;
+  const cur=drop.querySelector('.acc-drop-item.focused');
+  let idx=items.indexOf(cur);
+  if(e.key==='ArrowDown'){
+    e.preventDefault();
+    idx=Math.min(idx+1,items.length-1);
+    items.forEach(el=>el.classList.remove('focused'));
+    items[idx].classList.add('focused');
+    items[idx].scrollIntoView({block:'nearest'});
+  }else if(e.key==='ArrowUp'){
+    e.preventDefault();
+    idx=Math.max(idx-1,0);
+    items.forEach(el=>el.classList.remove('focused'));
+    items[idx].classList.add('focused');
+    items[idx].scrollIntoView({block:'nearest'});
+  }else if(e.key==='Enter'){
+    e.preventDefault();
+    if(cur)cur.dispatchEvent(new MouseEvent('mousedown'));
+  }else if(e.key==='Escape'){
+    closeAccDrop(ci);
+  }
+}
+
+function filterAccDrop(ci,q){
+  const drop=document.getElementById('acc-drop-'+ci);
+  if(!drop)return;
+  const kw=q.toLowerCase().trim();
+  const statOnly=document.getElementById('chk-stat-only')?.checked;
+  let filtered=statOnly?ACC_DB.filter(a=>!a.n.startsWith('빛뿔')):ACC_DB;
+  if(kw)filtered=filtered.filter(a=>a.n.toLowerCase().includes(kw));
+  drop.innerHTML=filtered.slice(0,30).map(a=>
+    `<div class="acc-drop-item" onmousedown="selectAcc(${ci},'${a.n.replace(/'/g,"\'")}')">
+      <span class="acc-drop-name">${a.n}</span>
+    </div>`
+  ).join('');
+  drop.classList.add('open');
+}
+
+function selectAcc(ci,name){
+  S.accCards[ci].name=name;
+  const inp=document.getElementById('acc-inp-'+ci);
+  if(inp)inp.value=name;
+  closeAccDrop(ci);
+  renderAcc();qSave();
+}
+
+function addAcc(){
+  S.accCards.unshift({name:'',enchant:'none'});
+  renderAcc();qSave();
+}
+
+//장신구 단계별 일괄 추가
+function addAccBulk(lv){
+  const statOnly=document.getElementById('chk-stat-only')?.checked;
+  const targets=ACC_DB.filter(a=>getAccNum(a.n)===lv&&(!statOnly||!a.n.startsWith('빛뿔')));
+  if(!targets.length){
+    alert(`${lv} 장신구를 찾을 수 없습니다.`);
+    return;
+  }
+  targets.forEach(a=>S.accCards.unshift({name:a.n,enchant:'none'}));
+  sortAccCards();
+  renderAcc();
+  resetSimResult();
+  qSave();
+  alert(`${lv} 장신구 1세트가 추가되었습니다.`);
+}
+
+function delAcc(ci){
+  S.accCards.splice(ci,1);
+  renderAcc();qSave();
+}
+
+function resetAcc(){
+  if(!confirm('입력한 옵션값이 전부 초기화됩니다.'))return;
+  S.accCards=[];
+  renderAcc();
+  qSave();
+}
+
+function onAccEnc(ci,enc){
+  S.accCards[ci].enchant=enc;
+  qSave();
+}
+
+// ================================================================
+// UI - 젬 섹션
+// ================================================================
+function populateGems(){
+  for(const s of SKEYS)for(const lv of [37,38,39,40]){
+    const el=document.getElementById(`gem-${s}-${lv}`);
+    if(el)el.value=S.gems[s]?.[lv]||0;
+  }
+}
+
+function resetGems(){
+  if(!confirm('입력한 옵션값이 전부 초기화됩니다.'))return;
+  S.gems={hp:{37:0,38:0,39:0,40:0},atk:{37:0,38:0,39:0,40:0},def:{37:0,38:0,39:0,40:0}};
+  populateGems();
+  qSave();
+}
+
+function onGem(stat,lv,val,el){
+  const n=Math.max(0,parseInt(val)||0);
+  S.gems[stat][lv]=n;
+  if(el&&el.value==='')el.value=0;
+  qSave();
+}
+
+// ================================================================
+// UI - 펜던트 섹션
+// ================================================================
+function renderPends(){
+  const el=document.getElementById('pend-list');
+  if(!el)return;
+  if(!S.pendants.length){
+    el.innerHTML='<div style="color:var(--dimmer);font-size:13px">보유 펜던트 없음 (시뮬 시 펜던트 효과 미적용)</div>';
+    return;
+  }
+  let html='';
+  S.pendants.forEach((p,pi)=>{
+    const mo=p.type==='태양'?3:p.type==='달'?2:1;
+    let opts='';
+    for(let oi=0;oi<mo;oi++){
+      const o=p.options[oi]||{stat:'hp',val:1};
+      opts+=`<div class="popt-row">
+        <span class="popt-idx">${oi+1}옵</span>
+        <select onchange="onPOpt(${pi},${oi},'stat',this.value)">
+          <option value="hp"  ${o.stat==='hp'?'selected':''}>체력</option>
+          <option value="atk" ${o.stat==='atk'?'selected':''}>공격</option>
+          <option value="def" ${o.stat==='def'?'selected':''}>방어</option>
+        </select>
+        <input type="number" min="1" max="6" value="${o.val||1}" style="width:50px;text-align:center"
+          onchange="validatePOpt(this,${pi},${oi})" onkeydown="if(event.key==='Enter')this.blur()">
+        <span style="color:var(--dim)">%</span>
+      </div>`;
+    }
+    const summ=getPendSummary(p);
+    html+=`<div class="pcard">
+      <div class="pcard-hd">
+        <select onchange="onPType(${pi},this.value)" style="width:100px">
+          <option value="태양" ${p.type==='태양'?'selected':''}>태양 (3옵)</option>
+          <option value="달"   ${p.type==='달'?'selected':''}>달 (2옵)</option>
+          <option value="별"   ${p.type==='별'?'selected':''}>별 (1옵)</option>
+        </select>
+        <img src="${IMG_PEND[p.type]||''}" style="width:36px;height:36px;object-fit:contain;border-radius:4px">
+        <span id="pend-summ-${pi}" style="color:#fff;font-size:12px">(${summ})</span>
+        <button class="btn-red" onclick="delPend(${pi})" style="margin-left:auto">삭제</button>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:10px 16px;margin-top:2px">${opts}</div>
+    </div>`;
+  });
+  el.innerHTML=html;
+}
+
+function getPendSummary(p){
+  if(!p)return'';
+  const mo=p.type==='태양'?3:p.type==='달'?2:1;
+  return p.options.slice(0,mo).map(o=>`${SK[o.stat]||'?'}${o.val||0}%`).join('/');
+}
+
+function updatePendSummary(pi){
+  const el=document.getElementById(`pend-summ-${pi}`);
+  const p=S.pendants[pi];
+  if(el&&p)el.textContent=`(${getPendSummary(p)})`;
+}
+
+function addPendant(){
+  S.pendants.unshift({type:'달',options:[{stat:'hp',val:1},{stat:'hp',val:1}]});
+  renderPends();qSave();
+}
+
+function addMoonPendantSet(){
+  const combos=[
+    ['hp','hp'],
+    ['hp','atk'],
+    ['hp','def'],
+    ['atk','atk'],
+    ['atk','def'],
+    ['def','def']
+  ];
+  const set=combos.map(([a,b])=>({
+    type:'달',
+    options:[{stat:a,val:6},{stat:b,val:6}]
+  }));
+  S.pendants.unshift(...set);
+  renderPends();
+  qSave();
+  alert('달펜 세트 1개(6종)가 추가되었습니다.');
+}
+
+function delPend(i){S.pendants.splice(i,1);renderPends();qSave();}
+
+function resetPend(){
+  if(!confirm('입력한 옵션값이 전부 초기화됩니다.'))return;
+  S.pendants=[];
+  renderPends();
+  qSave();
+}
+
+function onPType(pi,type){
+  S.pendants[pi].type=type;
+  const max=type==='태양'?3:type==='달'?2:1;
+  while(S.pendants[pi].options.length<max)S.pendants[pi].options.push({stat:'hp',val:1});
+  S.pendants[pi].options=S.pendants[pi].options.slice(0,max);
+  renderPends();qSave();
+}
+
+function validatePOpt(el,pi,oi){
+  const n=parseInt(el.value);
+  if(el.value===''||isNaN(n)||n<1||n>6){
+    alert('1~6 사이의 정수를 입력해주세요.');
+    el.value='';
+    return;
+  }
+  onPOpt(pi,oi,'val',n);
+}
+
+function onPOpt(pi,oi,field,val){
+  if(!S.pendants[pi].options[oi])S.pendants[pi].options[oi]={stat:'hp',val:1};
+  S.pendants[pi].options[oi][field]=val;
+  updatePendSummary(pi);
+  resetSimResult();
+  qSave();
+}
+
+// ================================================================
+// UI - 정령 섹션
+// ================================================================
+function spPresetLabel(type){
+  return type==='%'?'%':type==='+'?'+':'-';
+}
+
+function isSpiritPresetActive(preset){
+  return preset.types.every((type,i)=>{
+    const cur=S.spirit.opts[i]||{};
+    return cur.type===type;
+  });
+}
+
+function applySpiritPreset(id){
+  const preset=SP_PRESETS.find(p=>p.id===id);
+  if(!preset)return;
+  S.spirit.opts=preset.types.map((type,i)=>({
+    stat:S.spirit.opts[i]?.stat||'',
+    type
+  }));
+  renderSpirit();
+  resetSimResult();
+  qSave();
+}
+
+function renderSpirit(){
+  const el=document.getElementById('sp-bd');
+  if(!el)return;
+  const sp=S.spirit;
+
+  const presets=SP_PRESETS.map(p=>{
+    const desc=p.types.map(spPresetLabel).join('');
+    return `<button class="sp-preset-btn ${isSpiritPresetActive(p)?'active':''}" onclick="applySpiritPreset('${p.id}')">
+      <span class="sp-preset-name">${p.name}</span>
+      <span class="sp-preset-desc">${desc}</span>
+    </button>`;
+  }).join('');
+
+  let opts='';
+  for(let i=1;i<=4;i++){
+    const o=sp.opts[i-1]||{stat:'',type:''};
+    const v=(o.stat&&o.type)?fmtSpVal(i,o.stat,o.type):'';
+    opts+=`<div class="sp-ocard">
+      <span class="sp-onum">${i}옵</span>
+      <select onchange="onSpOpt(${i-1},'stat',this.value)">
+        <option value=""    ${!o.stat?'selected':''}>-</option>
+        <option value="hp"  ${o.stat==='hp'?'selected':''}>체력</option>
+        <option value="atk" ${o.stat==='atk'?'selected':''}>공격</option>
+        <option value="def" ${o.stat==='def'?'selected':''}>방어</option>
+      </select>
+      <select onchange="onSpOpt(${i-1},'type',this.value)">
+        <option value=""  ${!o.type?'selected':''}>-</option>
+        <option value="+" ${o.type==='+'?'selected':''}>+스탯</option>
+        <option value="%" ${o.type==='%'?'selected':''}>%스탯</option>
+      </select>
+      <span class="sp-oval">${v}</span>
+    </div>`;
+  }
+
+  el.innerHTML=`
+    <div class="sp-preset-grid">${presets}</div>
+    <div class="sp-opts">${opts}</div>
+    <div class="fg"><label>부가옵</label>
+      <select onchange="onSpBonus(this.value)">
+        <option value=""    ${!sp.bonus?'selected':''}>없음</option>
+        <option value="hp"  ${sp.bonus==='hp'?'selected':''}>체력 (+40)</option>
+        <option value="atk" ${sp.bonus==='atk'?'selected':''}>공격 (+10)</option>
+        <option value="def" ${sp.bonus==='def'?'selected':''}>방어 (+10)</option>
+      </select>
+    </div>`;
+}
+
+function resetSpirit(){
+  if(!confirm('입력한 옵션값과 시뮬 결과가 초기화됩니다.'))return;
+  S.spirit={level:1,maxLvl:false,opts:[{stat:'',type:''},{stat:'',type:''},{stat:'',type:''},{stat:'',type:''}],bonus:''};
+  renderSpirit();
+  resetSimResult();
+  qSave();
+}
+
+function fmtSpVal(n,stat,type){
+  if(!stat||!type)return'';
+  return type==='+'?`<b>+${SP_PLUS[stat][n]}</b>`:`<b>+${(SP_PCT[n]*100).toFixed(0)}%</b>`;
+}
+
+function onSpOpt(idx,field,val){
+  S.spirit.opts[idx][field]=val;
+  renderSpirit();
+  resetSimResult();
+  qSave();
+}
+
+function onSpBonus(val){
+  S.spirit.bonus=val;
+  renderSpirit();
+  resetSimResult();
+  qSave();
+}
+
+// ================================================================
+// UI - 내 용 정보
+// ================================================================
+function escHtml(v){
+  return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+
+function normalizeDragonCards(){
+  if(!S.dragonCards)S.dragonCards=mkDragonCards();
+  DRAGON_CATS.forEach(cat=>{
+    if(!Array.isArray(S.dragonCards[cat]))S.dragonCards[cat]=[];
+    S.dragonCards[cat]=S.dragonCards[cat].map(card=>({
+      ...mkDragonCard(),
+      ...card,
+      opts:[...(card.opts||[])]
+    }));
+    S.dragonCards[cat].forEach(card=>{
+      while(card.opts.length<4)card.opts.push({stat:'',type:''});
+      card.opts=card.opts.slice(0,4).map(o=>({stat:o?.stat||'',type:o?.type||''}));
+      card.uid=card.uid||newDragonUid();
+      card.bonus=card.bonus||'';
+      card.name=card.name||'';
+      card.dtype=card.dtype||'';
+      card.dupe=!!card.dupe;
+      if(!card.grade&&BASE[card.growth])card.grade=card.growth;
+      card.grade=BASE[card.grade]?card.grade:'9.0';
+      card.growth=['강림(축복)','강림','진각'].includes(card.growth)?card.growth:'강림(축복)';
+      if(card.growth==='강림')card.grade='7.0';
+      if(card.growth==='진각')card.grade='진각';
+    });
+  });
+}
+
+function dragonStatOptions(v){
+  return `
+    <option value="" ${!v?'selected':''}>-</option>
+    <option value="hp" ${v==='hp'?'selected':''}>체력</option>
+    <option value="atk" ${v==='atk'?'selected':''}>공격</option>
+    <option value="def" ${v==='def'?'selected':''}>방어</option>`;
+}
+
+function dragonTypeOptions(v){
+  return `
+    <option value="" ${!v?'selected':''}>-</option>
+    <option value="+" ${v==='+'?'selected':''}>+스탯</option>
+    <option value="%" ${v==='%'?'selected':''}>%스탯</option>`;
+}
+
+function normDragonName(name){
+  return String(name||'').replace(/\s+/g,'').toLowerCase();
+}
+
+function dragonDbNames(entry){
+  if(typeof entry==='string')return[entry];
+  if(!entry||typeof entry!=='object')return[];
+  return [entry.name,...(entry.aliases||[])].filter(Boolean);
+}
+
+function dragonOfficialName(entry){
+  return typeof entry==='string'?entry:entry?.name||'';
+}
+
+function findDragonMatch(name){
+  const key=normDragonName(name);
+  if(!key)return null;
+  const prefixMatches=[];
+  for(const [typeOrName,namesOrType] of Object.entries(DRAGON_TYPE_DB)){
+    if(Array.isArray(namesOrType)&&DTYPES.includes(typeOrName)){
+      for(const entry of namesOrType){
+        const official=dragonOfficialName(entry);
+        if(!official)continue;
+        if(dragonDbNames(entry).some(dbName=>normDragonName(dbName)===key))return{name:official,type:typeOrName};
+        if(key.length>=2&&normDragonName(official).startsWith(key))prefixMatches.push({name:official,type:typeOrName});
+      }
+    }else if(typeof namesOrType==='string'&&DTYPES.includes(namesOrType)){
+      if(normDragonName(typeOrName)===key)return{name:typeOrName,type:namesOrType};
+    }
+  }
+  return prefixMatches.length===1?prefixMatches[0]:null;
+}
+
+function findDragonType(name){
+  return findDragonMatch(name)?.type||'';
+}
+
+function findDragonAttr(name){
+  const key=normDragonName(name);
+  if(!key)return'';
+  for(const [attr,names] of Object.entries(DRAGON_ATTR_DB)){
+    if((names||[]).some(n=>normDragonName(n)===key))return attr;
+  }
+  return'';
+}
+
+function dragonIdentityKey(card){
+  const nameKey=normDragonName(card?.name);
+  return card?.dupe&&card?.uid?card.uid:nameKey;
+}
+
+function findUncheckedDragonDuplicate(){
+  const byName=new Map();
+  DRAGON_CATS.forEach(cat=>{
+    (S.dragonCards?.[cat]||[]).forEach((card,idx)=>{
+      const key=normDragonName(card.name);
+      if(!key)return;
+      if(!byName.has(key))byName.set(key,[]);
+      byName.get(key).push({cat,idx,card});
+    });
+  });
+  for(const group of byName.values()){
+    if(group.length>1&&group.some(x=>!x.card.dupe))return group;
+  }
+  return null;
+}
+
+function hasOtherDragonWithSameName(cat,idx){
+  const card=S.dragonCards?.[cat]?.[idx];
+  const key=normDragonName(card?.name);
+  if(!key)return false;
+  return DRAGON_CATS.some(c=>(S.dragonCards?.[c]||[]).some((other,oi)=>!(c===cat&&oi===idx)&&normDragonName(other.name)===key));
+}
+
+function warnUncheckedDragonDuplicate(){
+  const group=findUncheckedDragonDuplicate();
+  if(!group)return;
+  const name=group[0].card.name;
+  alert(`동일한 용 이름 "${name}"이 입력되어 있습니다. 같은 개체가 아니라면 각 카드의 중복 여부를 체크해주세요.`);
+}
+
+function syncDragonDupeGroupByName(name){
+  const key=normDragonName(name);
+  if(!key)return false;
+  const group=[];
+  DRAGON_CATS.forEach(cat=>{
+    (S.dragonCards?.[cat]||[]).forEach(card=>{
+      if(normDragonName(card.name)===key)group.push(card);
+    });
+  });
+  if(group.length<2||!group.some(card=>card.dupe))return false;
+  group.forEach(card=>{card.dupe=true;});
+  return true;
+}
+
+function fmtDragonSpVal(n,stat,type){
+  if(!stat||!type)return'';
+  return type==='+'?`+${SP_PLUS[stat][n]}`:`+${(SP_PCT[n]*100).toFixed(0)}%`;
+}
+
+function isDragonSpiritPresetActive(card,preset){
+  return preset.types.every((type,i)=>(card.opts[i]?.type||'')===type);
+}
+
+function renderDragonCounts(){
+  DRAGON_CATS.forEach(cat=>{
+    const el=document.querySelector(`[data-dragon-count="${cat}"]`);
+    if(el)el.textContent=`(${(S.dragonCards?.[cat]||[]).length}마리)`;
+  });
+}
+
+function renderDragonInfo(){
+  normalizeDragonCards();
+  renderDragonCounts();
+  DRAGON_CATS.forEach(cat=>{
+    const el=document.querySelector(`[data-dragon-list="${cat}"]`);
+    if(!el)return;
+    const cards=S.dragonCards[cat];
+    el.innerHTML=cards.map((card,ci)=>{
+      const presets=SP_PRESETS.map(p=>{
+        const desc=p.types.map(spPresetLabel).join('');
+        return `<button class="sp-preset-btn ${isDragonSpiritPresetActive(card,p)?'active':''}" onclick="applyDragonSpiritPreset('${cat}',${ci},'${p.id}')">
+          <span class="sp-preset-name">${p.name}</span>
+          <span class="sp-preset-desc">${desc}</span>
+        </button>`;
+      }).join('');
+      const opts=card.opts.map((o,oi)=>{
+        const v=fmtDragonSpVal(oi+1,o.stat,o.type);
+        return `
+        <div class="sp-ocard dragon-opt-card">
+          <span class="sp-onum">${oi+1}옵</span>
+          <select onchange="onDragonOpt('${cat}',${ci},${oi},'stat',this.value)">${dragonStatOptions(o.stat)}</select>
+          <select onchange="onDragonOpt('${cat}',${ci},${oi},'type',this.value)">${dragonTypeOptions(o.type)}</select>
+          <span class="sp-oval">${v}</span>
+        </div>`;
+      }).join('');
+      return `
+        <div class="dragon-card">
+          <div class="dragon-card-hd">
+            <div class="dragon-name-cell">
+              <span class="dragon-card-no">${ci+1}</span>
+              ${(()=>{const _u=getDragonImgUrl(card.name);return _u?'<img class="dragon-img-icon" src="'+_u+'" onerror="this.style.display=\'none\'">':'<div class="dragon-img-placeholder"></div>';})()}
+              <div class="dragon-name-wrap">
+                <input class="dragon-name-input" type="text" value="${escHtml(card.name)}" placeholder="용 이름" oninput="onDragonNameInput('${cat}',${ci},this.value);filterDragonDrop('${cat}',${ci},this.value)" onchange="applyDragonNameType('${cat}',${ci})" onfocus="filterDragonDrop('${cat}',${ci},this.value)" onblur="setTimeout(()=>{const d=document.getElementById('dragon-drop-${cat}-${ci}');if(d)d.classList.remove('open');},200)">
+                <div class="dragon-drop" id="dragon-drop-${cat}-${ci}"></div>
+              </div>
+            </div>
+            <label class="dragon-dupe-check">중복 여부 <input type="checkbox" ${card.dupe?'checked':''} onchange="onDragonDupe('${cat}',${ci},this.checked)"></label>
+            <div class="readonly-field dragon-type-field">${escHtml(card.dtype||'타입')}</div>
+            <select onchange="onDragonField('${cat}',${ci},'growth',this.value)">
+              <option value="강림(축복)" ${card.growth==='강림(축복)'?'selected':''}>강림(축복)</option>
+              <option value="강림" ${card.growth==='강림'?'selected':''}>강림</option>
+              <option value="진각" ${card.growth==='진각'?'selected':''}>진각</option>
+            </select>
+            <select onchange="onDragonField('${cat}',${ci},'grade',this.value)" ${(card.growth==='강림'||card.growth==='진각')?'disabled':''}>
+              <option value="9.0" ${card.grade==='9.0'?'selected':''}>9.0</option>
+              <option value="8.0" ${card.grade==='8.0'?'selected':''}>8.0</option>
+              <option value="7.0" ${card.grade==='7.0'?'selected':''}>7.0</option>
+              <option value="진각" ${card.grade==='진각'?'selected':''}>진각</option>
+            </select>
+            <button class="btn-red dragon-delete-btn" onclick="delDragonCard('${cat}',${ci})">용 정보 삭제</button>
+          </div>
+          <div class="dragon-preset-row">
+            ${presets}
+            <button class="btn-reset dragon-reset-btn" onclick="resetDragonCard('${cat}',${ci})">↺</button>
+          </div>
+          <div class="dragon-spirit-grid">${opts}</div>
+          <div class="dragon-bonus-row">
+            <div class="dragon-bonus-fields">
+              <label>부가옵</label>
+              <select onchange="onDragonBonus('${cat}',${ci},this.value)">
+                <option value="" ${!card.bonus?'selected':''}>없음</option>
+                <option value="hp" ${card.bonus==='hp'?'selected':''}>체력 (+40)</option>
+                <option value="atk" ${card.bonus==='atk'?'selected':''}>공격 (+10)</option>
+                <option value="def" ${card.bonus==='def'?'selected':''}>방어 (+10)</option>
+              </select>
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+  });
+}
+
+function addDragonCard(cat,ev){
+  if(ev){ev.preventDefault();ev.stopPropagation();}
+  normalizeDragonCards();
+  S.dragonCards[cat].push(mkDragonCard());
+  renderDragonInfo();
+  qSave();
+}
+
+function delDragonCard(cat,idx){
+  normalizeDragonCards();
+  S.dragonCards[cat].splice(idx,1);
+  renderDragonInfo();
+  qSave();
+}
+
+function clearDragonCat(cat,ev){
+  if(ev){ev.preventDefault();ev.stopPropagation();}
+  normalizeDragonCards();
+  if(!S.dragonCards[cat].length)return;
+  if(!confirm(`${cat} 속성의 용 정보를 모두 삭제할까요?`))return;
+  S.dragonCards[cat]=[];
+  renderDragonInfo();
+  qSave();
+}
+
+function resetAllDragonInfo(){
+  normalizeDragonCards();
+  const total=DRAGON_CATS.reduce((sum,cat)=>sum+(S.dragonCards[cat]?.length||0),0);
+  if(!total)return;
+  if(!confirm('내 용 정보의 모든 카드를 삭제할까요?'))return;
+  S.dragonCards=mkDragonCards();
+  renderDragonInfo();
+  qSave();
+}
+
+function resetDragonCard(cat,idx){
+  normalizeDragonCards();
+  S.dragonCards[cat][idx]=mkDragonCard();
+  renderDragonInfo();
+  qSave();
+}
+
+function onDragonNameInput(cat,idx,val){
+  normalizeDragonCards();
+  S.dragonCards[cat][idx].name=val;
+  qSave();
+}
+
+function applyDragonNameType(cat,idx){
+  normalizeDragonCards();
+  const card=S.dragonCards[cat][idx];
+  const match=findDragonMatch(card.name);
+  if(match){
+    const attr=findDragonAttr(match.name);
+    if(attr&&attr!==cat){
+      card.name='';card.dtype='';
+      renderDragonInfo();qSave();return;
+    }
+    if(!isAllowedDragon(cat,match.name)){
+      card.name='';card.dtype='';
+      renderDragonInfo();qSave();return;
+    }
+    card.name=match.name;
+    card.dtype=match.type;
+  } else if(card.name){
+    card.name='';card.dtype='';
+    renderDragonInfo();qSave();return;
+  }
+  const synced=syncDragonDupeGroupByName(card.name);
+  if(match||synced)renderDragonInfo();
+  warnUncheckedDragonDuplicate();
+  qSave();
+}
+
+function onDragonField(cat,idx,field,val){
+  normalizeDragonCards();
+  const card=S.dragonCards[cat][idx];
+  card[field]=val;
+  if(field==='growth'&&val==='강림')card.grade='7.0';
+  if(field==='growth'&&val==='진각')card.grade='진각';
+  if(field==='grade'&&(card.growth==='강림'||card.growth==='진각'))card.grade='7.0';
+  if(field==='growth'||field==='grade')renderDragonInfo();
+  qSave();
+}
+
+function onDragonDupe(cat,idx,checked){
+  normalizeDragonCards();
+  const card=S.dragonCards[cat][idx];
+  const key=normDragonName(card?.name);
+  if(checked&&key){
+    card.dupe=true;
+    syncDragonDupeGroupByName(card.name);
+    renderDragonInfo();
+    qSave();
+    return;
+  }
+  if(!checked&&hasOtherDragonWithSameName(cat,idx)){
+    alert(`동일한 용 이름 "${card.name}"이 입력되어 있습니다. 중복 개체가 아니라면 용 이름을 다르게 입력해주세요.`);
+  }
+  card.dupe=checked;
+  qSave();
+}
+
+function onDragonOpt(cat,idx,optIdx,field,val){
+  normalizeDragonCards();
+  S.dragonCards[cat][idx].opts[optIdx][field]=val;
+  renderDragonInfo();
+  qSave();
+}
+
+function applyDragonSpiritPreset(cat,idx,presetId){
+  normalizeDragonCards();
+  const preset=SP_PRESETS.find(p=>p.id===presetId);
+  const card=S.dragonCards[cat][idx];
+  if(!preset||!card)return;
+  card.opts=preset.types.map((type,i)=>({
+    stat:card.opts[i]?.stat||'',
+    type
+  }));
+  renderDragonInfo();
+  qSave();
+}
+
+function onDragonBonus(cat,idx,val){
+  normalizeDragonCards();
+  S.dragonCards[cat][idx].bonus=val;
+  qSave();
+}
+
+// ================================================================
+// UI - 3vs3 세팅 버프/디버프
+// ================================================================
+function settingAttrOptions(v){
+  return DRAGON_CATS.map(cat=>`<option value="${cat}" ${v===cat?'selected':''}>${cat}</option>`).join('');
+}
+
+function settingStatOptions(v){
+  const labels={hp:'HP',atk:'ATK',def:'DEF'};
+  return SKEYS.map(s=>`<option value="${s}" ${v===s?'selected':''}>${labels[s]}</option>`).join('');
+}
+
+function settingTypeOptions(v){
+  return DTYPES.map(t=>`<option value="${t}" ${v===t?'selected':''}>${t.replace('형','')}</option>`).join('');
+}
+
+function settingBuffPanel(key,title){
+  const cfg=S.settingBuffs[key];
+  const _attrNums={'땅':11,'물':12,'불':13,'바람':14,'빛':84,'어둠':87,'황혼':487,'여명':486,'악몽':488};
+  const attrImg=`https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/${_attrNums[cfg.attr]||11}.png`;
+  return `
+    <div class="buff-setting-panel">
+      <div class="buff-setting-title">${title}</div>
+      <div class="buff-setting-body">
+        <div class="buff-setting-cell">
+          <div class="buff-setting-lbl">속성</div>
+          <select onchange="onSettingBuff('${key}','attr',this.value)">${settingAttrOptions(cfg.attr)}</select>
+          <img class="buff-attr-icon" src="${attrImg}" alt="">
+        </div>
+        <div class="buff-setting-cell">
+          <div class="buff-setting-lbl">타입</div>
+          <select onchange="onSettingBuff('${key}','type',this.value)">${settingTypeOptions(cfg.type)}</select>
+        </div>
+        <div class="buff-setting-cell">
+          <select onchange="onSettingBuff('${key}','stat1',this.value)">${settingStatOptions(cfg.stat1)}</select>
+        </div>
+        <div class="buff-setting-cell">
+          <select onchange="onSettingBuff('${key}','stat2',this.value)">${settingStatOptions(cfg.stat2)}</select>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderSettingBuffs(){
+  if(!S.settingBuffs)S.settingBuffs=mkSettingBuffs();
+  S.settingBuffs={...mkSettingBuffs(),...S.settingBuffs};
+  const el=document.getElementById('setting-buffs');
+  if(!el)return;
+  el.innerHTML=`<div class="buff-setting-grid">${settingBuffPanel('buff','버프')}${settingBuffPanel('debuff','디버프')}</div>`;
+}
+
+function onSettingBuff(key,field,val){
+  if(!S.settingBuffs)S.settingBuffs=mkSettingBuffs();
+  S.settingBuffs[key][field]=val;
+  renderSettingBuffs();
+  qSave();
+}
+
+// ================================================================
+// UI - 컬렉션
+// ================================================================
+function populateColl(){
+  document.getElementById('coll-hp').value=S.coll.hp||0;
+  document.getElementById('coll-atk').value=S.coll.atk||0;
+  document.getElementById('coll-def').value=S.coll.def||0;
+}
+
+function onColl(stat,val,el){const n=Math.max(0,parseInt(val)||0);S.coll[stat]=n;if(el&&el.value==='')el.value=0;qSave();}
+
+function setFullCollection(){
+  S.coll={hp:240,atk:60,def:60};
+  populateColl();
+  resetSimResult();
+  qSave();
+}
+
+// ================================================================
+// 탭 / 시뮬 설정 컨트롤
+// ================================================================
+function switchTab(t){
+  ['spec','dragon','sim'].forEach(x=>{
+    document.getElementById(`tab-${x}`).classList.toggle('active',x===t);
+    document.getElementById(`tab-btn-${x}`).classList.toggle('active',x===t);
+  });
+}
+
+function setGrade(g){
+  simGrade=g;
+  document.querySelectorAll('#grd-grp button').forEach(b=>b.classList.toggle('active',b.textContent===g));
+}
+
+function setBuf(b){
+  simBuf=b;
+  document.querySelectorAll('#buf-grp button').forEach(btn=>btn.classList.toggle('active',btn.textContent===b+'버프'));
+}
+
+// ================================================================
+// 시뮬레이션 엔진
+// ================================================================
+
+// 보유 젬을 풀(pool)로 변환. 각 원소: {s:스탯, lv:단계, cnt:보유수, h:체기여, a:공기여, d:방기여}
+function buildPool(){
+  const pool=[];
+  for(const s of SKEYS)for(const lv of [37,38,39,40]){
+    const cnt=S.gems[s]?.[lv]||0;
+    if(cnt>0)pool.push({s,lv,cnt,h:s==='hp'?GEM[lv].hp:0,a:s==='atk'?GEM[lv].atk:0,d:s==='def'?GEM[lv].def:0});
+  }
+  for(const s of SKEYS){
+    const lv=FALLBACK_GEM_LV;
+    pool.push({s,lv,cnt:FALLBACK_GEM_COUNT,h:s==='hp'?GEM[lv].hp:0,a:s==='atk'?GEM[lv].atk:0,d:s==='def'?GEM[lv].def:0});
+  }
+  return pool;
+}
+
+// 5슬롯 젬 배분 경우의 수 열거 (백트래킹). 반환: [[각 풀 원소 사용 개수], ...]
+function genAllocs(pool,slots,includePartial=false){
+  const total=pool.reduce((s,g)=>s+g.cnt,0);
+  const maxS=Math.min(slots,total);
+  const res=[];
+  const cur=new Array(pool.length).fill(0);
+  function bt(i,rem){
+    if(i===pool.length){if(rem===0)res.push([...cur]);return;}
+    for(let k=0;k<=Math.min(pool[i].cnt,rem);k++){cur[i]=k;bt(i+1,rem-k);}
+  }
+  if(includePartial){
+    res.push(new Array(pool.length).fill(0));
+    for(let use=1;use<=maxS;use++)bt(0,use);
+  }else if(maxS>0)bt(0,maxS);
+  if(!res.length)res.push(new Array(pool.length).fill(0));
+  return res;
+}
+
+function gemAllocKey(alloc){
+  return alloc.join(',');
+}
+
+function gemAllocShape(pool,alloc){
+  return SKEYS.map(stat=>alloc.reduce((sum,n,i)=>sum+(pool[i].s===stat?n:0),0)).join('/');
+}
+
+function gemAllocScore(pool,alloc){
+  return alloc.reduce((sum,n,i)=>sum+n*(pool[i].h+pool[i].a+pool[i].d),0);
+}
+
+function maxGemLevel(pool,alloc){
+  let max=0;
+  alloc.forEach((n,i)=>{if(n>0)max=Math.max(max,pool[i].lv);});
+  return max;
+}
+
+function getBaselineGemLv(stat,totalNeed=15){
+  let sum=0;
+  for(const lv of [40,39,38,37]){
+    sum+=S.gems[stat]?.[lv]||0;
+    if(sum>=totalNeed)return lv;
+  }
+  return FALLBACK_GEM_LV;
+}
+
+function buildBaselineGemPool(totalNeed=15){
+  return SKEYS.map(s=>{
+    const lv=getBaselineGemLv(s,totalNeed);
+    return {s,lv,cnt:totalNeed,h:s==='hp'?GEM[lv].hp:0,a:s==='atk'?GEM[lv].atk:0,d:s==='def'?GEM[lv].def:0};
+  });
+}
+
+function allocRawToItems(pool,alloc){
+  const items=[];
+  alloc.forEach((k,i)=>{
+    for(let n=0;n<k;n++){
+      const g=pool[i];
+      items.push({s:g.s,lv:g.lv,h:g.h,a:g.a,d:g.d});
+    }
+  });
+  return items;
+}
+
+function compressGemItems(items){
+  const groups=new Map();
+  items.forEach(g=>{
+    const key=`${g.s}|${g.lv}`;
+    groups.set(key,{k:(groups.get(key)?.k||0)+1,g});
+  });
+  return [...groups.values()].sort((a,b)=>{
+    const so=SKEYS.indexOf(a.g.s)-SKEYS.indexOf(b.g.s);
+    return so||b.g.lv-a.g.lv;
+  });
+}
+
+function applyGemItems(opt,items){
+  let gH=0,gA=0,gD=0;
+  items.forEach(g=>{gH+=g.h;gA+=g.a;gD+=g.d;});
+  const c=opt._calc;
+  opt.fH=calcStat(c.bh,gH,24,c.aH,c.sPct.hp,c.pH,c.sP.hp,c.sB.hp,c.coll.hp,c.bufH);
+  opt.fA=calcStat(c.ba,gA,6,c.aA,c.sPct.atk,c.pA,c.sP.atk,c.sB.atk,c.coll.atk,c.bufA);
+  opt.fD=calcStat(c.bd,gD,6,c.aD,c.sPct.def,c.pD,c.sP.def,c.sB.def,c.coll.def,c.bufD);
+  opt.bv=opt.fH*opt.fA*opt.fD;
+  opt.alloc=compressGemItems(items);
+}
+
+function getUpgradeGemTokens(){
+  const tokens=[];
+  for(const s of SKEYS){
+    const base=getBaselineGemLv(s);
+    for(const lv of [40,39,38,37]){
+      if(lv<=base)continue;
+      const cnt=S.gems[s]?.[lv]||0;
+      for(let i=0;i<cnt;i++)tokens.push({s,lv,h:s==='hp'?GEM[lv].hp:0,a:s==='atk'?GEM[lv].atk:0,d:s==='def'?GEM[lv].def:0});
+    }
+  }
+  return tokens.sort((a,b)=>b.lv-a.lv);
+}
+
+function applyBestGemUpgrades(deck){
+  deck.forEach(opt=>{opt._gemItems=allocRawToItems(opt._pool,opt.allocRaw);});
+  for(const token of getUpgradeGemTokens()){
+    let best=null;
+    deck.forEach((opt,oi)=>{
+      opt._gemItems.forEach((cur,gi)=>{
+        if(cur.s!==token.s||cur.lv>=token.lv)return;
+        const before=opt.bv;
+        const test=[...opt._gemItems];
+        test[gi]=token;
+        let gH=0,gA=0,gD=0;
+        test.forEach(g=>{gH+=g.h;gA+=g.a;gD+=g.d;});
+        const c=opt._calc;
+        const fH=calcStat(c.bh,gH,24,c.aH,c.sPct.hp,c.pH,c.sP.hp,c.sB.hp,c.coll.hp,c.bufH);
+        const fA=calcStat(c.ba,gA,6,c.aA,c.sPct.atk,c.pA,c.sP.atk,c.sB.atk,c.coll.atk,c.bufA);
+        const fD=calcStat(c.bd,gD,6,c.aD,c.sPct.def,c.pD,c.sP.def,c.sB.def,c.coll.def,c.bufD);
+        const bv=fH*fA*fD;
+        const gain=bv-before;
+        if(gain>0&&(!best||gain>best.gain))best={gain,oi,gi,token};
+      });
+    });
+    if(best){
+      deck[best.oi]._gemItems[best.gi]=best.token;
+      applyGemItems(deck[best.oi],deck[best.oi]._gemItems);
+    }
+  }
+  deck.forEach(opt=>delete opt._gemItems);
+  return deck.sort((a,b)=>b.bv-a.bv);
+}
+
+function genDiverseGemAllocs(pool,slots,perShapeLimit=24){
+  const all=genAllocs(pool,slots,true);
+  const groups=new Map();
+  all.forEach(alloc=>{
+    const shape=gemAllocShape(pool,alloc);
+    if(!groups.has(shape))groups.set(shape,[]);
+    groups.get(shape).push(alloc);
+  });
+  const seen=new Set();
+  const result=[];
+  groups.forEach(list=>{
+    list.sort((a,b)=>gemAllocScore(pool,b)-gemAllocScore(pool,a));
+    const picks=[...list.slice(0,perShapeLimit)];
+    [40,39,38,37].forEach(lv=>{
+      const capped=list.find(alloc=>maxGemLevel(pool,alloc)<=lv);
+      if(capped)picks.push(capped);
+    });
+    picks.forEach(alloc=>{
+      const key=gemAllocKey(alloc);
+      if(seen.has(key))return;
+      seen.add(key);
+      result.push(alloc);
+    });
+  });
+  return result;
+}
+
+function optKey(opt){
+  return `${opt.accId}|${opt.pendId??'none'}|${opt.enc}|${opt.allocRaw.join(',')}`;
+}
+
+function mergeOptionGroups(groups,limit){
+  const seen=new Set();
+  const merged=[];
+  groups.forEach(group=>{
+    group
+      .filter(Boolean)
+      .sort((a,b)=>b.bv-a.bv)
+      .forEach(opt=>{
+        const key=optKey(opt);
+        if(seen.has(key))return;
+        seen.add(key);
+        merged.push(opt);
+      });
+  });
+  return merged.sort((a,b)=>b.bv-a.bv);
+}
+
+/*
+ * 최종스탯 계산 공식 (게임 수식 그대로 INT = Math.floor):
+ *   A = base + gem + potion
+ *   B = INT(A * (1 + acc% + enc%))
+ *   C = INT(B * (1 + spirit%))
+ *   D = INT(C * (1 + pendant%))
+ *   E = INT(INT(spiritPlus * (1 + spirit%)) * (1 + pendant%))
+ *   F = INT(spiritBonus * (1 + pendant%))
+ *   buf = INT(bufLevel * base * 0.20)
+ *   finalStat = D + E + F + collection + buf
+ */
+function calcStat(B,G,P,AP,SP,PP,SL,SB,C,BU){
+  const a=Math.floor((B+G+P)*(1+AP));
+  const b=Math.floor(a*(1+SP));
+  const c=Math.floor(b*(1+PP));
+  const d=Math.floor(Math.floor(SL*(1+SP))*(1+PP));
+  const e=Math.floor(SB*(1+PP));
+  return c+d+e+C+BU;
+}
+
+// 정령 상태를 스탯별 + / % / 부가옵 기여로 변환
+function procSpirit(){
+  const sp=S.spirit;
+  const lv=5;
+  const plus={hp:0,atk:0,def:0},pct={hp:0,atk:0,def:0},bonus={hp:0,atk:0,def:0};
+  for(let i=0;i<4;i++){
+    if(i+1>lv)continue;
+    const o=sp.opts[i];
+    if(!o||!o.stat||!o.type)continue;
+    if(o.type==='+')plus[o.stat]+=SP_PLUS[o.stat][i+1];
+    else if(o.type==='%')pct[o.stat]+=SP_PCT[i+1];
+  }
+  if(sp.bonus&&SP_BONUS[sp.bonus])bonus[sp.bonus]=SP_BONUS[sp.bonus];
+  return{plus,pct,bonus};
+}
+
+function getBufCombos(bufLv){
+  if(bufLv===0)return[{h:0,a:0,d:0,w:1,label:'버프 없음'}];
+  if(bufLv===1)return[
+    {h:1,a:0,d:0,w:1/3,label:'체'},
+    {h:0,a:1,d:0,w:1/3,label:'공'},
+    {h:0,a:0,d:1,w:1/3,label:'방'},
+  ];
+  return[
+    {h:2,a:0,d:0,w:1/9,label:'체+체'},
+    {h:1,a:1,d:0,w:2/9,label:'체+공'},
+    {h:1,a:0,d:1,w:2/9,label:'체+방'},
+    {h:0,a:2,d:0,w:1/9,label:'공+공'},
+    {h:0,a:1,d:1,w:2/9,label:'공+방'},
+    {h:0,a:0,d:2,w:1/9,label:'방+방'},
+  ];
+}
+
+function switchResTab(t){
+  ['top','avg'].forEach(x=>{
+    const res=document.getElementById('res-'+x);
+    const btn=document.getElementById('res-tab-btn-'+x);
+    if(res)res.style.display=x===t?'':'none';
+    if(btn)btn.classList.toggle('active',x===t);
+  });
+}
+
+function runSim(){
+  const encMode=document.querySelector('input[name="enc-mode"]:checked')?.value||'fixed';
+  const ownedAcc=S.accCards
+    .map((c,i)=>({...ACC_DB.find(a=>a.n===c.name),_accId:i,_enc:encMode==='infinite'?'none':c.enchant}))
+    .filter(a=>a.n);
+  if(!ownedAcc.length){alert('내 스펙 탭에서 장신구를 1개 이상 추가하세요.');return;}
+  const btn=document.getElementById('sim-btn');
+  btn.disabled=true;btn.textContent='⏳ 계산 중...';
+  setTimeout(()=>{
+    try{
+      const excSun=document.getElementById('exc-sun-pend')?.checked||false;
+      const includeDebuff=document.getElementById('include-debuff')?.checked||false;
+      const candidates=getSimDragonCandidates();
+      if(!candidates.length)throw new Error('내 용 정보에 계산 가능한 용이 없습니다.');
+      const filtered=includeDebuff?candidates:candidates.filter(d=>!isDebuffedDragon(d));
+      if(!filtered.length)throw new Error('디버프를 받지 않는 용이 없습니다.');
+      if(filtered.length<3)throw new Error('디버프 제외 후 계산 가능한 용이 3마리 미만입니다.');
+      const deck=doSimDeck(ownedAcc,filtered,excSun);
+      if(deck.length<3)throw new Error('장신구/펜던트/젬 중복 제한을 만족하는 3마리 조합을 찾지 못했습니다.');
+      renderResDeck(deck,includeDebuff?0:candidates.length-filtered.length);
+      const rs=document.getElementById('res-sec');
+      rs.style.display='';
+      rs.scrollIntoView({behavior:'smooth',block:'start'});
+    }catch(e){console.error(e);alert('오류: '+e.message);}
+    btn.disabled=false;btn.textContent='🐉 시뮬레이션 실행';
+  },20);
+}
+
+function getPends(excSun){
+  const raw=[null,...S.pendants.map((p,i)=>({...p,_pendId:i}))];
+  const filtered=excSun?raw.filter(p=>!p||p.type!=='태양'):raw;
+  return filtered.length?filtered:[null];
+}
+
+function calcPendPct(pend){
+  let pH=0,pA=0,pD=0;
+  if(pend){
+    const mo=pend.type==='태양'?3:pend.type==='달'?2:1;
+    pend.options.slice(0,mo).forEach(o=>{
+      if(!o||!o.stat)return;
+      const v=(o.val||0)/100;
+      if(o.stat==='hp')pH+=v;else if(o.stat==='atk')pA+=v;else pD+=v;
+    });
+  }
+  return{pH,pA,pD};
+}
+
+function procSpiritFrom(sp){
+  const plus={hp:0,atk:0,def:0},pct={hp:0,atk:0,def:0},bonus={hp:0,atk:0,def:0};
+  const opts=sp?.opts||[];
+  for(let i=0;i<4;i++){
+    const o=opts[i];
+    if(!o||!o.stat||!o.type)continue;
+    if(o.type==='+')plus[o.stat]+=SP_PLUS[o.stat][i+1];
+    else if(o.type==='%')pct[o.stat]+=SP_PCT[i+1];
+  }
+  if(sp?.bonus&&SP_BONUS[sp.bonus])bonus[sp.bonus]=SP_BONUS[sp.bonus];
+  return{plus,pct,bonus};
+}
+
+function getSimDragonCandidates(){
+  normalizeDragonCards();
+  const dragons=[];
+  DRAGON_CATS.forEach(attr=>{
+    (S.dragonCards?.[attr]||[]).forEach((card,idx)=>{
+      if(!card.name||!card.dtype||!BASE[card.grade]?.[card.dtype])return;
+      dragons.push({...card,attr,idx});
+    });
+  });
+  return dragons;
+}
+
+function receivesWeeklyEffect(dragon,cfg){
+  if(!dragon||!cfg)return false;
+  return dragon.attr===cfg.attr||dragon.dtype===cfg.type;
+}
+
+function isDebuffedDragon(dragon){
+  return receivesWeeklyEffect(dragon,S.settingBuffs?.debuff);
+}
+
+function getDragonBuffCounts(dragon){
+  const counts={hp:0,atk:0,def:0};
+  const cfg=S.settingBuffs?.buff;
+  if(!dragon||!cfg)return counts;
+  if(dragon.attr===cfg.attr&&counts[cfg.stat1]!=null)counts[cfg.stat1]++;
+  if(dragon.dtype===cfg.type&&counts[cfg.stat2]!=null)counts[cfg.stat2]++;
+  return counts;
+}
+
+function doSimDeck(ownedAcc,dragons,excSun){
+  const pool=buildBaselineGemPool(15);
+  const allocs=genAllocs(pool,5,true);
+  const pends=getPends(excSun);
+  const coll=S.coll;
+  const encMode=document.querySelector('input[name="enc-mode"]:checked')?.value||'fixed';
+  const optionLimit=80;
+  const dragonOptionSets=[];
+
+  for(const dragon of dragons){
+    const {plus:sP,pct:sPct,bonus:sB}=procSpiritFrom(dragon);
+    const bs=BASE[dragon.grade][dragon.dtype];
+    const bh=bs.hp,ba=bs.atk,bd=bs.def;
+    const buff=getDragonBuffCounts(dragon);
+    const bufH=Math.floor(buff.hp*bh*.2);
+    const bufA=Math.floor(buff.atk*ba*.2);
+    const bufD=Math.floor(buff.def*bd*.2);
+    let options=[];
+    const bestByAcc=new Map();
+    const bestByPend=new Map();
+    const bestByAccPend=new Map();
+    const bestByResourceShape=new Map();
+    let minBV=-Infinity;
+
+    for(const acc of ownedAcc){
+      const encs=encMode==='infinite'?['hp','atk','def']:[acc._enc||'none'];
+      for(const enc of encs){
+        const aH=acc.hp+(enc==='hp'?.21:0);
+        const aA=acc.atk+(enc==='atk'?.21:0);
+        const aD=acc.def+(enc==='def'?.21:0);
+        for(const pend of pends){
+          const{pH,pA,pD}=calcPendPct(pend);
+          for(const alloc of allocs){
+            let gH=0,gA=0,gD=0;
+            for(let i=0;i<alloc.length;i++){gH+=alloc[i]*pool[i].h;gA+=alloc[i]*pool[i].a;gD+=alloc[i]*pool[i].d;}
+            const fH=calcStat(bh,gH,24,aH,sPct.hp,pH,sP.hp,sB.hp,coll.hp,bufH);
+            const fA=calcStat(ba,gA,6,aA,sPct.atk,pA,sP.atk,sB.atk,coll.atk,bufA);
+            const fD=calcStat(bd,gD,6,aD,sPct.def,pD,sP.def,sB.def,coll.def,bufD);
+            const bv=fH*fA*fD;
+            const opt={
+              bv,dragon,accN:acc.n,accId:acc._accId,enc,pend,pendId:pend?pend._pendId:null,
+              allocRaw:[...alloc],alloc:alloc.map((k,i)=>({k,g:pool[i]})).filter(x=>x.k>0),
+              fH,fA,fD,buff,_pool:pool,_calc:{bh,ba,bd,aH,aA,aD,pH,pA,pD,sPct,sP,sB,coll,bufH,bufA,bufD}
+            };
+            if(!bestByAcc.has(acc._accId)||opt.bv>bestByAcc.get(acc._accId).bv)bestByAcc.set(acc._accId,opt);
+            const pendKey=pend?pend._pendId:'none';
+            const pairKey=`${acc._accId}|${pendKey}`;
+            if(!bestByPend.has(pendKey)||opt.bv>bestByPend.get(pendKey).bv)bestByPend.set(pendKey,opt);
+            if(!bestByAccPend.has(pairKey)||opt.bv>bestByAccPend.get(pairKey).bv)bestByAccPend.set(pairKey,opt);
+            const gemCount=opt.allocRaw.reduce((s,n)=>s+n,0);
+            const gemByStat=SKEYS.map(stat=>opt.allocRaw.reduce((sum,n,i)=>sum+(pool[i].s===stat?n:0),0)).join('/');
+            const gemLvSig=opt.allocRaw.map((n,i)=>n?`${pool[i].s}${pool[i].lv}:${n}`:'').filter(Boolean).join(',');
+            const shapeKey=`${acc._accId}|${pend?pend._pendId:'none'}|${enc}|${gemCount}|${gemByStat}|${gemLvSig}`;
+            if(!bestByResourceShape.has(shapeKey)||opt.bv>bestByResourceShape.get(shapeKey).bv)bestByResourceShape.set(shapeKey,opt);
+            if(opt.bv>minBV||options.length<optionLimit){
+              let lo=0,hi=options.length;
+              while(lo<hi){const m=(lo+hi)>>1;if(options[m].bv>=opt.bv)lo=m+1;else hi=m;}
+              options.splice(lo,0,opt);
+              if(options.length>optionLimit)options.pop();
+              minBV=options.length===optionLimit?options[optionLimit-1].bv:-Infinity;
+            }
+          }
+        }
+      }
+    }
+    if(options.length){
+      const topOptions=[...options].sort((a,b)=>b.bv-a.bv).slice(0,optionLimit);
+      options=mergeOptionGroups([
+        topOptions,
+        [...bestByAcc.values()],
+        [...bestByPend.values()],
+        [...bestByAccPend.values()],
+        [...bestByResourceShape.values()].sort((a,b)=>b.bv-a.bv).slice(0,optionLimit)
+      ],optionLimit*3);
+      dragonOptionSets.push({dragon,options,bestBV:options[0].bv});
+    }
+  }
+
+  dragonOptionSets.sort((a,b)=>b.bestBV-a.bestBV);
+  const deck=findBestDeck(dragonOptionSets,pool);
+  return deck.length?applyBestGemUpgrades(deck):deck;
+}
+
+function deckOptionsCompatible(a,b,pool){
+  if(a.accId===b.accId)return false;
+  if(a.pendId!=null&&a.pendId===b.pendId)return false;
+  for(let i=0;i<pool.length;i++){
+    if((a.allocRaw[i]||0)+(b.allocRaw[i]||0)>pool[i].cnt)return false;
+  }
+  return true;
+}
+
+function deckCanAdd(deck,opt,pool){
+  const gemUse=new Array(pool.length).fill(0);
+  for(const cur of deck){
+    if(cur.accId===opt.accId)return false;
+    if(cur.pendId!=null&&opt.pendId!=null&&cur.pendId===opt.pendId)return false;
+    for(let i=0;i<pool.length;i++)gemUse[i]+=cur.allocRaw[i]||0;
+  }
+  for(let i=0;i<pool.length;i++){
+    if(gemUse[i]+(opt.allocRaw[i]||0)>pool[i].cnt)return false;
+  }
+  return true;
+}
+
+function findBestDeck(dragonOptionSets,pool){
+  let bestDeck=null,bestScore=-Infinity;
+  for(let i=0;i<dragonOptionSets.length-2;i++){
+    for(let j=i+1;j<dragonOptionSets.length-1;j++){
+      for(let k=j+1;k<dragonOptionSets.length;k++){
+        const aSet=dragonOptionSets[i],bSet=dragonOptionSets[j],cSet=dragonOptionSets[k];
+        if(aSet.bestBV+bSet.bestBV+cSet.bestBV<=bestScore)continue;
+        for(const a of aSet.options){
+          if(a.bv+bSet.bestBV+cSet.bestBV<=bestScore)break;
+          for(const b of bSet.options){
+            if(a.bv+b.bv+cSet.bestBV<=bestScore)break;
+            if(!deckOptionsCompatible(a,b,pool))continue;
+            for(const c of cSet.options){
+              if(a.bv+b.bv+c.bv<=bestScore)break;
+              if(!deckCanAdd([a,b],c,pool))continue;
+              const score=a.bv+b.bv+c.bv;
+              if(score>bestScore){
+                bestScore=score;
+                bestDeck=[a,b,c].sort((x,y)=>y.bv-x.bv);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  return bestDeck||[];
+}
+
+function doSimTop(ownedAcc,bufCombos,excSun){
+  const {plus:sP,pct:sPct,bonus:sB}=procSpirit();
+  const pool=buildPool();
+  const allocs=genAllocs(pool,5);
+  const pends=getPends(excSun);
+  const coll=S.coll;
+  const encMode=document.querySelector('input[name="enc-mode"]:checked')?.value||'fixed';
+  const top10=[];
+  let minBV=-Infinity;
+
+  for(const dt of DTYPES){
+    const bs=BASE[simGrade][dt];
+    const bh=bs.hp,ba=bs.atk,bd=bs.def;
+    for(const acc of ownedAcc){
+      const encs=encMode==='infinite'?['hp','atk','def']:[acc._enc||'none'];
+      for(const enc of encs){
+        const aH=acc.hp+(enc==='hp'?.21:0);
+        const aA=acc.atk+(enc==='atk'?.21:0);
+        const aD=acc.def+(enc==='def'?.21:0);
+        for(const pend of pends){
+          const{pH,pA,pD}=calcPendPct(pend);
+          for(const alloc of allocs){
+            let gH=0,gA=0,gD=0;
+            for(let i=0;i<alloc.length;i++){gH+=alloc[i]*pool[i].h;gA+=alloc[i]*pool[i].a;gD+=alloc[i]*pool[i].d;}
+            for(const buf of bufCombos){
+              const bufH=Math.floor(buf.h*bh*.2);
+              const bufA=Math.floor(buf.a*ba*.2);
+              const bufD=Math.floor(buf.d*bd*.2);
+              const fH=calcStat(bh,gH,24,aH,sPct.hp,pH,sP.hp,sB.hp,coll.hp,bufH);
+              const fA=calcStat(ba,gA,6,aA,sPct.atk,pA,sP.atk,sB.atk,coll.atk,bufA);
+              const fD=calcStat(bd,gD,6,aD,sPct.def,pD,sP.def,sB.def,coll.def,bufD);
+              const bv=fH*fA*fD;
+              if(bv>minBV||top10.length<10){
+                let lo=0,hi=top10.length;
+                while(lo<hi){const m=(lo+hi)>>1;if(top10[m].bv>=bv)lo=m+1;else hi=m;}
+                top10.splice(lo,0,{bv,dt,accN:acc.n,enc,pend,buf,alloc:alloc.map((k,i)=>({k,g:pool[i]})).filter(x=>x.k>0),fH,fA,fD});
+                if(top10.length>10)top10.pop();
+                minBV=top10.length===10?top10[9].bv:-Infinity;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  return top10;
+}
+
+//시뮬레이션 실행 관련
+function doSimAvg(ownedAcc,bufCombos,excSun){
+  const {plus:sP,pct:sPct,bonus:sB}=procSpirit();
+  const pool=buildPool();
+  const allocs=genAllocs(pool,5);
+  const pends=getPends(excSun);
+  const coll=S.coll;
+  const encMode=document.querySelector('input[name="enc-mode"]:checked')?.value||'fixed';
+  const results=[];
+
+  for(const dt of DTYPES){
+    const bs=BASE[simGrade][dt];
+    const bh=bs.hp,ba=bs.atk,bd=bs.def;
+    const bufResults=[];
+
+    for(const buf of bufCombos){
+      const bufH=Math.floor(buf.h*bh*.2);
+      const bufA=Math.floor(buf.a*ba*.2);
+      const bufD=Math.floor(buf.d*bd*.2);
+      const top5=[];
+      let minBV=-Infinity;
+
+      for(const acc of ownedAcc){
+        const encs=encMode==='infinite'?['hp','atk','def']:[acc._enc||'none'];
+        for(const enc of encs){
+          const aH=acc.hp+(enc==='hp'?.21:0);
+          const aA=acc.atk+(enc==='atk'?.21:0);
+          const aD=acc.def+(enc==='def'?.21:0);
+          for(const pend of pends){
+            const{pH,pA,pD}=calcPendPct(pend);
+            for(const alloc of allocs){
+              let gH=0,gA=0,gD=0;
+              for(let i=0;i<alloc.length;i++){gH+=alloc[i]*pool[i].h;gA+=alloc[i]*pool[i].a;gD+=alloc[i]*pool[i].d;}
+              const fH=calcStat(bh,gH,24,aH,sPct.hp,pH,sP.hp,sB.hp,coll.hp,bufH);
+              const fA=calcStat(ba,gA,6,aA,sPct.atk,pA,sP.atk,sB.atk,coll.atk,bufA);
+              const fD=calcStat(bd,gD,6,aD,sPct.def,pD,sP.def,sB.def,coll.def,bufD);
+              const bv=fH*fA*fD;
+              if(bv>minBV||top5.length<5){
+                let lo=0,hi=top5.length;
+                while(lo<hi){const m=(lo+hi)>>1;if(top5[m].bv>=bv)lo=m+1;else hi=m;}
+                top5.splice(lo,0,{bv,accN:acc.n,enc,pend,alloc:alloc.map((k,i)=>({k,g:pool[i]})).filter(x=>x.k>0),fH,fA,fD});
+                if(top5.length>5)top5.pop();
+                minBV=top5.length===5?top5[4].bv:-Infinity;
+              }
+            }
+          }
+        }
+      }
+      bufResults.push({label:buf.label,w:buf.w,top5,bestBV:top5.length?top5[0].bv:0});
+    }
+
+    bufResults.sort((a,b)=>b.bestBV-a.bestBV);
+    const avgBV=bufResults.reduce((s,b)=>s+b.w*b.bestBV,0);
+    const peakBV=bufResults[0].bestBV;
+    const bottomBV=bufResults[bufResults.length-1].bestBV;
+    results.push({dt,avgBV,peakBV,bottomBV,bufResults});
+  }
+
+  results.sort((a,b)=>b.avgBV-a.avgBV);
+  return results;
+}
+
+const STAT_COL={체:'#fbbf24',공:'#f87171',방:'#60a5fa'};
+function fmtBufLabel(label){
+  if(label==='버프 없음')return`<span style="color:var(--dim)">버프 없음</span>`;
+  return label.split('+').map((s,i)=>{
+    const trimmed=s.trim();
+    const col=STAT_COL[trimmed]||'#fff';
+    return(i>0?`<span style="color:#fff">+</span>`:'')
+      +`<span style="color:${col};font-weight:700">${trimmed}</span>`;
+  }).join('');
+}
+
+function fmtAccName(name){
+  return name.replace(/[체공방]/g,s=>{
+    const col=s==='체'?'#fbbf24':s==='공'?'#f87171':'#60a5fa';
+    return`<span style="color:${col}">${s}</span>`;
+  });
+}
+
+function fmtAccEnc(enc){
+  if(enc==='none')return'<span class="enc-b enc-none">없음</span>';
+  const col=enc==='hp'?'#fbbf24':enc==='atk'?'#f87171':'#60a5fa';
+  const lbl=enc==='hp'?'체':enc==='atk'?'공':'방';
+  return`<span class="enc-b" style="border-color:${col};color:${col}">${lbl} +21%</span>`;
+}
+
+//최고 비밸 결과 출력
+function renderResTop(top10){
+  const el=document.getElementById('res-body-top');
+  if(!top10.length){el.innerHTML='<div style="padding:30px;text-align:center;color:var(--dim)">결과 없음</div>';return;}
+  const medals=['🥇','🥈','🥉'];
+  let html=`<table class="rtbl"><thead><tr>
+    <th>순위</th><th>타입</th><th>장신구 / 인챈트</th>
+    <th>젬 배분</th><th>펜던트</th><th>버프</th><th>체 / 공 / 방</th><th>비밸</th>
+  </tr></thead><tbody>`;
+  top10.forEach((r,i)=>{
+    const rank=i<3?medals[i]:`<span class="rank-n">${i+1}</span>`;
+    const dc=DCOLORS[r.dt];
+    html+=`<tr>
+      <td>${rank}</td>
+      <td><span class="dtype-b" style="color:${dc};border-color:${dc}">${r.dt}</span></td>
+      <td>
+        <div style="display:flex;align-items:center;gap:8px">
+          ${(()=>{const a=ACC_DB.find(x=>x.n===r.accN);return a&&a.img?`<img src="${a.img}" style="width:36px;height:36px;object-fit:contain;border-radius:4px">`:'';})()}
+          <div><div style="font-weight:800;margin-bottom:3px">${fmtAccName(r.accN)}</div>${fmtAccEnc(r.enc)}</div>
+        </div>
+      </td>
+      <td><div class="gem-tags">${fmtGem(r.alloc)}</div></td>
+      <td style="font-size:12px;color:var(--dim)">${fmtPend(r.pend)}</td>
+      <td style="font-size:12px">${fmtBufLabel(r.buf.label)}</td>
+      <td class="st-cell">
+        <span style="color:var(--hpc)">${r.fH.toLocaleString('ko-KR')}</span> /
+        <span style="color:var(--atc)">${r.fA.toLocaleString('ko-KR')}</span> /
+        <span style="color:var(--dfc)">${r.fD.toLocaleString('ko-KR')}</span>
+      </td>
+      <td class="bv-cell">${(r.bv/1e6).toFixed(1)}</td>
+    </tr>`;
+  });
+  el.innerHTML=html+'</tbody></table>';
+}
+
+function fmtWeeklyBuff(buff){
+  const count=SKEYS.reduce((sum,s)=>sum+(buff?.[s]||0),0);
+  return count?`<span style="color:var(--gold);font-weight:800">${count}버프</span>`:'<span style="color:var(--dim)">버프 없음</span>';
+}
+
+function renderResDeck(results,excludedCount){
+  const el=document.getElementById('res-body-avg');
+  if(!results.length){el.innerHTML='<div style="padding:30px;text-align:center;color:var(--dim)">결과 없음</div>';return;}
+  let html='';
+  if(excludedCount>0){
+    html+=`<div style="padding:10px 16px;color:var(--dim);font-size:12px;border-bottom:1px solid var(--bd)">디버프 대상 ${excludedCount}마리는 계산에서 제외했습니다.</div>`;
+  }
+  html+=`<table class="rtbl"><thead><tr>
+    <th>순위</th><th>용</th><th>속성 / 타입</th><th>장신구 / 인챈트</th>
+    <th>젬 배분</th><th>펜던트</th><th>버프</th><th>체 / 공 / 방</th><th>비밸</th>
+  </tr></thead><tbody>`;
+  const medals=['🥇','🥈','🥉'];
+  results.forEach((r,i)=>{
+    const dc=DCOLORS[r.dragon.dtype];
+    const rank=i<3?medals[i]:`<span class="rank-n">${i+1}</span>`;
+    const _an={'땅':11,'물':12,'불':13,'바람':14,'빛':84,'어둠':87,'황혼':487,'여명':486,'악몽':488};
+    const attrImg=`https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/${_an[r.dragon.attr]||11}.png`;
+    html+=`<tr>
+      <td>${rank}</td>
+      <td>
+        <div style="font-weight:800">${escHtml(r.dragon.name)}</div>
+        <div style="font-size:11px;color:var(--dim)">${r.dragon.growth} ${r.dragon.grade}${r.dragon.bonus?(' · '+({'hp':'체력+40','atk':'공격+10','def':'방어+10'}[r.dragon.bonus]||'')):''}</div>
+      </td>
+      <td>
+        <div class="res-attr-type">
+          <img class="res-attr-icon" src="${attrImg}" alt="${escHtml(r.dragon.attr)}" title="${escHtml(r.dragon.attr)}">
+          <span class="dtype-b" style="color:${dc};border-color:${dc}">${r.dragon.dtype}</span>
+        </div>
+      </td>
+      <td>
+        <div style="display:flex;align-items:center;gap:8px">
+          ${(()=>{const a=ACC_DB.find(x=>x.n===r.accN);return a&&a.img?`<img src="${a.img}" style="width:36px;height:36px;object-fit:contain;border-radius:4px">`:'';})()}
+          <div><div style="font-weight:800;margin-bottom:3px">${fmtAccName(r.accN)}</div>${fmtAccEnc(r.enc)}</div>
+        </div>
+      </td>
+      <td><div class="gem-tags">${fmtGem(r.alloc)}</div></td>
+      <td style="font-size:12px;color:var(--dim)">${fmtPend(r.pend)}</td>
+      <td style="font-size:12px">${fmtWeeklyBuff(r.buff)}</td>
+      <td class="st-cell">
+        <span style="color:var(--hpc)">${r.fH.toLocaleString('ko-KR')}</span> /
+        <span style="color:var(--atc)">${r.fA.toLocaleString('ko-KR')}</span> /
+        <span style="color:var(--dfc)">${r.fD.toLocaleString('ko-KR')}</span>
+      </td>
+      <td class="bv-cell">${(r.bv/1e6).toFixed(1)}</td>
+    </tr>`;
+  });
+  el.innerHTML=html+'</tbody></table>';
+}
+
+//평균 비밸 결과 출력
+function renderResAvg(results){
+  const el=document.getElementById('res-body-avg');
+  if(!results.length){el.innerHTML='<div style="padding:30px;text-align:center;color:var(--dim)">결과 없음</div>';return;}
+  let html=`<table class="rtbl"><thead><tr>
+    <th>타입</th><th>고점</th><th>저점</th><th>평균 비밸</th>
+  </tr></thead><tbody>`;
+  results.forEach((r,i)=>{
+    const dc=DCOLORS[r.dt];
+    const peak=r.bufResults[0];
+    const bottom=r.bufResults[r.bufResults.length-1];
+    html+=`<tr style="cursor:pointer" onclick="toggleAvgDetail(${i})">
+      <td>
+        <span class="dtype-b" style="color:${dc};border-color:${dc}">${r.dt}</span>
+        <span class="avg-arrow" id="avg-arrow-${i}" style="color:#fff;font-size:10px;margin-left:6px">▼</span>
+      </td>
+      <td><span class="bv-cell">${(peak.bestBV/1e6).toFixed(1)}</span> (${fmtBufLabel(peak.label)})</td>
+      <td><span class="bv-cell">${(bottom.bestBV/1e6).toFixed(1)}</span> (${fmtBufLabel(bottom.label)})</td>
+      <td class="bv-cell">${(r.avgBV/1e6).toFixed(1)}</td>
+    </tr>
+    <tr id="avg-detail-${i}" style="display:none">
+      <td colspan="4" style="padding:0">${renderAvgDetail(r)}</td>
+    </tr>`;
+  });
+  el.innerHTML=html+'</tbody></table>';
+}
+
+function toggleAvgDetail(i){
+  const el=document.getElementById(`avg-detail-${i}`);
+  const arrow=document.getElementById('avg-arrow-'+i);
+  if(!el)return;
+  const open=el.style.display==='none';
+  el.style.display=open?'':'none';
+  if(arrow)arrow.textContent=open?'▲':'▼';
+}
+
+function renderAvgDetail(r){
+  let html='<div style="padding:10px 16px;background:var(--sf2)">';
+  r.bufResults.forEach(buf=>{
+    html+=`<div style="margin-bottom:14px">
+      <div style="font-size:12px;font-weight:800;margin-bottom:6px"><span class="bv-cell">${(buf.bestBV/1e6).toFixed(1)}</span> (${fmtBufLabel(buf.label)})</div>
+      <table class="rtbl" style="min-width:0"><thead><tr>
+        <th>순위</th><th>장신구 / 인챈트</th><th>젬 배분</th><th>펜던트</th><th>체 / 공 / 방</th><th>비밸</th>
+      </tr></thead><tbody>`;
+    const medals=['🥇','🥈','🥉'];
+    buf.top5.forEach((item,j)=>{
+      const rank=j<3?medals[j]:`<span class="rank-n">${j+1}</span>`;
+      const a=ACC_DB.find(x=>x.n===item.accN);
+      const accImg=a&&a.img?`<img src="${a.img}" style="width:28px;height:28px;object-fit:contain;border-radius:3px;vertical-align:middle;margin-right:6px">`:'';
+      html+=`<tr>
+        <td>${rank}</td>
+        <td><div style="display:flex;align-items:center">${accImg}<div><div style="font-weight:800;font-size:12px">${fmtAccName(item.accN)}</div>${fmtAccEnc(item.enc)}</div></div></td>
+        <td><div class="gem-tags">${fmtGem(item.alloc)}</div></td>
+        <td style="font-size:12px">${fmtPend(item.pend)}</td>
+        <td class="st-cell">
+          <span style="color:var(--hpc)">${item.fH.toLocaleString('ko-KR')}</span> /
+          <span style="color:var(--atc)">${item.fA.toLocaleString('ko-KR')}</span> /
+          <span style="color:var(--dfc)">${item.fD.toLocaleString('ko-KR')}</span>
+        </td>
+        <td class="bv-cell">${(item.bv/1e6).toFixed(1)}</td>
+      </tr>`;
+    });
+    html+='</tbody></table></div>';
+  });
+  html+='</div>';
+  return html;
+}
+
+// 젬 배분을 "체2(40,40) 공1(39) 방2(40,38)" 형식으로 포맷
+function fmtGem(alloc){
+  if(!alloc||!alloc.length)return'<span style="color:var(--dimmer)">없음</span>';
+  const bySt={hp:[],atk:[],def:[]};
+  alloc.forEach(({k,g})=>{for(let i=0;i<k;i++)bySt[g.s].push(g.lv);});
+  const cols={hp:'var(--hpc)',atk:'var(--atc)',def:'var(--dfc)'};
+  const parts=[];
+  for(const s of SKEYS){
+    const lvs=bySt[s].sort((a,b)=>b-a);
+    if(lvs.length)parts.push(`<span class="gem-tag" style="color:${cols[s]}">${SK[s]}${lvs.length}(${lvs.join(',')})</span>`);
+  }
+  return parts.length?parts.join(''):'<span style="color:var(--dimmer)">없음</span>';
+}
+
+// 펜던트 포맷 "태양의 펜던트 (체6%/공4%/방3%)"
+function fmtPend(p){
+  if(!p)return'<span style="color:var(--dimmer)">없음</span>';
+  const mo=p.type==='태양'?3:p.type==='달'?2:1;
+  const opts=p.options.slice(0,mo).filter(o=>o&&o.stat).map(o=>{
+    const col=o.stat==='hp'?'#fbbf24':o.stat==='atk'?'#f87171':'#60a5fa';
+    return`<span style="color:${col}">${SK[o.stat]}</span><span style="color:#fff">${o.val||0}%</span>`;
+  }).join('<span style="color:#aab4cc">/</span>');
+  const img=IMG_PEND[p.type]?`<img src="${IMG_PEND[p.type]}" style="width:36px;height:36px;object-fit:contain;border-radius:4px">`:'';
+  return`<div style="display:flex;align-items:center;gap:8px">${img}<div style="color:var(--text)">${p.type}의 펜던트<br><small>(${opts})</small></div></div>`;
+}
+
+// ================================================================
+// 초기화
+// ================================================================
+function init(){
+  doLoad();
+  renderAcc();
+  populateGems();
+  renderPends();
+  renderSpirit();
+  renderDragonInfo();
+  renderSettingBuffs();
+  populateColl();
+}
+document.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>

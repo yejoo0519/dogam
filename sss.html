@@ -794,7 +794,14 @@ function render(){
   let list=sssData;
   list=list.filter(d=>d.lv===sssLvFilter);
   if(sssElemFilters.size>0) list=list.filter(d=>sssElemFilters.has(d.elem));
-  list=list.slice().sort((a,b)=>a.rank-b.rank||b.eval-a.eval);
+  list=list.slice().sort((a,b)=>b.eval-a.eval);
+
+  // eval 기준 자동 순위 계산 (동점 = 같은 순위)
+  let autoRank=1;
+  list.forEach((d,i)=>{
+    if(i>0 && d.eval<list[i-1].eval) autoRank=i+1;
+    d._rank=autoRank;
+  });
 
   document.getElementById('sss-count').textContent=`${list.length}마리`;
   const tbody=document.getElementById('sss-tbody');
@@ -826,7 +833,7 @@ function render(){
         <div class="row2-cell"><span class="r2-label">기본</span><span class="r2-val" style="color:#aaa">${d.base}</span></div>
         <div class="row2-cell"><span class="r2-label">성장</span><span class="r2-val" style="color:#aaa">${d.grow}</span></div>
       </td>
-      <td class="td-pc center" style="font-weight:700;color:#5dcff5">${d.rank}</td>
+      <td class="td-pc center" style="font-weight:700;color:#5dcff5">${d._rank}</td>
       <td class="td-pc center">${sssImgCell}</td>
       <td class="td-pc left" style="font-size:12px;font-weight:500;white-space:nowrap">${d.kor}${d.skill ? `<img src="${skillIcons[d.skill]}" title="${d.skill==='boom' ? '폭스' : '방확'}" style="width:18px;height:18px;margin-left:5px;vertical-align:middle;opacity:0.9">` : ""}</td>
       <td class="td-pc">${sssIconCell}</td>

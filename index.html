@@ -60,7 +60,7 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
 .card-badge{position:absolute;top:16px;right:16px;font-size:10px;padding:3px 8px;border-radius:10px;background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-border)}
 .card-badge-guide{background:rgba(245,200,66,0.15);color:#f5c842;border:1px solid rgba(245,200,66,0.3)}
 .card-badge-community{background:rgba(102,187,106,0.15);color:#66bb6a;border:1px solid rgba(102,187,106,0.3)}
-.card-badge-calculator{background:rgba(100,181,246,0.15);color:#64b5f6;border:1px solid rgba(100,181,246,0.3)}
+.card-badge-calculator{background:rgba(100,181,246,0.15);color:#64b5f6;border:1px solid rgba(100,181,246,0.3)}.card-badge-original{background:rgba(255,152,0,0.15);color:#ffa726;border:1px solid rgba(255,152,0,0.3)}.card-badge-newbie{background:rgba(102,187,106,0.15);color:#66bb6a;border:1px solid rgba(102,187,106,0.3)}
 .stats-bar{display:flex;gap:16px;justify-content:center;margin-bottom:20px;flex-wrap:wrap}
 .stat-item{font-size:11px;color:var(--text4);display:flex;align-items:center;gap:4px}
 .stat-item span{color:var(--accent);font-weight:700}
@@ -105,6 +105,7 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
       <span class="patch-note-icon">📋</span> 패치노트
     </button>
     <button onclick="openThemeModal()" style="padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;cursor:pointer;font-family:inherit">🎨 테마</button>
+      <a href="./en/index.html" style="padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:4px">🌐 EN</a>
   </div>
   <div class="contact-bar">
     <a href="https://open.kakao.com/o/sgNwijri" target="_blank" class="contact-btn contact-kakao">
@@ -144,6 +145,8 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
   <!-- ✅ 계산기 탭 카드 (올바른 위치) -->
   <div class="mobile-category" id="mobile-calculator">
     <a href="./calculator.html?from=calculator" class="card"><span class="card-badge card-badge-calculator">계산기</span><div class="card-title">자동 계산기</div><div class="card-desc">본인 셋팅 저장 · 정령 자동 비밸셋팅</div></a>
+    <a href="./pvp.html?from=calculator" class="card"><span class="card-badge card-badge-original">오리지널 버전</span><div class="card-title">길드전 자동 계산기</div><div class="card-desc">드래곤별 정령 귀속상태 저장<br>매주 버프별 최적셋팅</div><div class="card-desc">9.0 고정 · 너프 제외 결과 출력</div></a>
+    <a href="./noob.html?from=calculator" class="card"><span class="card-badge card-badge-newbie">뉴비 버전</span><div class="card-title">길드전 자동 계산기</div><div class="card-desc">드래곤별 정령 귀속상태 저장<br>매주 버프별 최적셋팅</div><div class="card-desc">7.0~9.0 선택가능 · 너프 적용 출력 가능</div></a>
   </div>
 </div>
 
@@ -162,6 +165,7 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
         <span class="patch-note-icon">📋</span> 패치노트
       </button>
       <button onclick="openThemeModal()" style="padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;cursor:pointer;font-family:inherit">🎨 테마</button>
+      <a href="./en/index.html" style="padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:4px">🌐 EN</a>
     </div>
     <div class="contact-bar">
       <a href="https://open.kakao.com/o/sgNwijri" target="_blank" class="contact-btn contact-kakao">
@@ -205,6 +209,8 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
       <!-- ✅ PC 계산기 카드 (올바른 위치) -->
       <div class="pc-category" id="pc-calculator">
         <a href="./calculator.html?from=calculator" class="card"><span class="card-badge card-badge-calculator">계산기</span><div class="card-title">자동 계산기</div><div class="card-desc">본인 셋팅 저장 · 정령 자동 비밸셋팅</div></a>
+        <a href="./pvp.html?from=calculator" class="card"><span class="card-badge card-badge-original">오리지널</span><div class="card-title">길드전 자동 계산기</div><div class="card-desc">드래곤별 정령 귀속상태 저장<br>매주 버프별 최적셋팅</div><div class="card-desc">9.0 고정 · 너프 제외 결과 출력</div></a>
+        <a href="./noob.html?from=calculator" class="card"><span class="card-badge card-badge-newbie">뉴비 버전</span><div class="card-title">길드전 자동 계산기</div><div class="card-desc">드래곤별 정령 귀속상태 저장<br>매주 버프별 최적셋팅</div><div class="card-desc">7.0~9.0 선택가능 · 너프 적용 출력 가능</div></a>
       </div>
     </div>
   </div>

@@ -818,7 +818,9 @@ const DRAGON_ALLOWED={
   "악몽":["단탈리온","자간","애니마라","루드오어","벨레드","롱기누스","미스핏","마스테마","네무스","크레바스","크로마 벨레드","쉴로시","커스리퍼","진","잠식된 요르문간드","레무레스","발레포르","크로마 발레포르","블라드","디멘션 드래곤"],
 };
 function isAllowedDragon(cat,name){
-  return (DRAGON_ALLOWED[cat]||[]).some(function(n){return n===name;});
+  const strip=n=>String(n||'').replace(/\s*드래곤$/,'').trim();
+  const nameS=strip(name);
+  return (DRAGON_ALLOWED[cat]||[]).some(function(n){return n===name||strip(n)===nameS;});
 }
 function filterDragonDrop(cat,ci,q){
   const drop=document.getElementById("dragon-drop-"+cat+"-"+ci);
@@ -845,7 +847,7 @@ function selectDragonName(cat,ci,name){
   const card=S.dragonCards[cat][ci];
   card.name=name;
   const match=findDragonMatch(name);
-  if(match){card.name=match.name;card.dtype=match.type;}
+  if(match){card.dtype=match.type;}
   syncDragonDupeGroupByName(card.name);
   warnUncheckedDragonDuplicate();
   renderDragonInfo();
@@ -1919,11 +1921,11 @@ function applyDragonNameType(cat,idx){
       card.name='';card.dtype='';
       renderDragonInfo();qSave();return;
     }
-    if(!isAllowedDragon(cat,match.name)){
+    if(!isAllowedDragon(cat,match.name)&&!isAllowedDragon(cat,card.name)){
       card.name='';card.dtype='';
       renderDragonInfo();qSave();return;
     }
-    card.name=match.name;
+    if(!isAllowedDragon(cat,card.name))card.name=match.name;
     card.dtype=match.type;
   } else if(card.name){
     card.name='';card.dtype='';

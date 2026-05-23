@@ -1,295 +1,339 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Raid Info</title>
-<style>
-#tab-bar{display:flex;gap:0;margin-bottom:16px;border-bottom:2px solid var(--border);align-items:flex-end}
-#site-title{display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;margin-right:16px;margin-bottom:6px;border:1.5px solid var(--border3);border-radius:20px;padding:10px 18px;transition:border-color 0.15s;flex-shrink:0}
-#site-title:hover{border-color:var(--accent)}
-#site-title .title-main{font-size:16px;font-weight:700;color:var(--text2);line-height:1.4}
-#site-title .title-sub{font-size:12px;color:var(--text4);line-height:1.4}
-.tab-btn{padding:10px 20px;font-size:13px;font-weight:500;background:none;border:none;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;text-decoration:none;display:inline-block}
-.tab-btn:hover{color:var(--text2)}
-.tab-btn.active{color:var(--accent);border-bottom:2px solid var(--accent)}
-@media(max-width:600px){.tab-btn{display:none}}
-#lang-btn{padding:6px 14px;border-radius:20px;border:1px solid var(--border3);background:var(--bg2);color:var(--text2);font-size:12px;font-family:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:4px;transition:all 0.15s;flex-shrink:0;align-self:center;margin-bottom:6px}
-#lang-btn:hover{border-color:var(--accent);color:var(--text)}
-
-
-
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--text);padding:12px}
-#tab-bar{display:flex;gap:0;margin-bottom:16px;border-bottom:2px solid var(--border);align-items:flex-end}
-#site-title{display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;margin-right:16px;margin-bottom:6px;border:1.5px solid var(--border3);border-radius:20px;padding:10px 18px;transition:border-color 0.15s;flex-shrink:0}
-#site-title:hover{border-color:var(--accent)}
-#site-title .title-main{font-size:16px;font-weight:700;color:var(--text2);line-height:1.4}
-#site-title .title-sub{font-size:12px;color:var(--text4);line-height:1.4}
-
-.tab-btn{padding:10px 20px;font-size:13px;font-weight:500;background:none;border:none;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;text-decoration:none;display:inline-block}
-.tab-btn:hover{color:var(--text2)}
-.tab-btn.active{color:var(--accent);border-bottom:2px solid var(--accent)}
-#tab-bar a{text-decoration:none}
-@media(max-width:600px){.tab-btn{display:none}}
-h1{font-size:20px;color:var(--text2);margin-bottom:16px}
-.section{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px}
-.section-title{font-size:13px;font-weight:700;color:var(--accent);margin-bottom:12px;letter-spacing:0.05em}
-.sub-tab{padding:8px 16px;font-size:12px;font-weight:600;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);cursor:pointer;font-family:inherit;margin-bottom:-1px}
-.sub-tab:hover{color:var(--text2)}
-.sub-tab.active{color:var(--accent);border-bottom:2px solid var(--accent)}
-.boss-icon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:12px;padding:4px 0}
-.boss-icon-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 8px;text-align:center;cursor:pointer;transition:border-color 0.15s}
-.boss-icon-card:hover{border-color:var(--accent)}
-.boss-icon-card.active{border-color:var(--accent);background:var(--accent-bg)}
-.boss-icon-card img{width:80px;height:80px;object-fit:contain;border-radius:6px}
-.boss-icon-name{font-size:11px;color:var(--text2);margin-top:6px}
-.boss-detail{margin-top:16px}
-#boss-detail .section{position:relative;overflow:hidden}
-#boss-detail-bg{position:absolute;inset:0;background-size:cover;background-position:center;background-repeat:no-repeat;opacity:0.12;pointer-events:none;transition:background-image 0.3s}
-#boss-detail-content{position:relative;z-index:1}
-.tip-item{padding:7px 10px;border-left:2px solid var(--accent);background:rgba(93,207,245,0.05);border-radius:0 6px 6px 0;margin-bottom:6px;font-size:12px;color:#ddd;line-height:1.5}
-.tip-item:last-child{margin-bottom:0}
-#boss-detail-content .boss-name{font-size:15px;font-weight:700;color:var(--text);margin-bottom:10px}
-
-
-
-</style>
 <link id="theme-css" rel="stylesheet" href="../theme-dark.css">
 <script src="./theme.js"></script>
+<style>
+[data-theme="dark"]{--bg:#0e1116;--bg2:#161a22;--bg3:#1c212c;--border:#23293a;--border2:#1b1f2a;--border3:#2d3447;--text:#eaecf2;--text2:#b3b9c7;--text3:#7d8597;--text4:#565d6e;--accent:#7aa2f7;--accent-bg:rgba(122,162,247,0.12);--accent-border:rgba(122,162,247,0.30)}
+[data-theme="light"]{--bg:#f7f7f8;--bg2:#ffffff;--bg3:#f1f2f4;--border:#e6e7ea;--border2:#eeeff2;--border3:#d4d6db;--text:#15171c;--text2:#4a4d57;--text3:#71757f;--text4:#9aa0aa;--accent:#2f6fed;--accent-bg:rgba(47,111,237,0.10);--accent-border:rgba(47,111,237,0.32)}
+[data-theme="beige"]{--bg:#f3ecdd;--bg2:#faf3e2;--bg3:#ebe0c7;--border:#d8caa8;--border2:#e1d4b3;--border3:#c0ad84;--text:#2a2316;--text2:#5a4e34;--text3:#837553;--text4:#a99971;--accent:#b06a1e;--accent-bg:rgba(176,106,30,0.10);--accent-border:rgba(176,106,30,0.32)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--text);padding:16px}
+.back-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;text-decoration:none;margin-bottom:20px;transition:all .15s}
+.back-btn:hover{border-color:var(--accent);color:var(--text)}
+.page-title{font-size:22px;font-weight:700;color:var(--text);margin-bottom:20px}
+.raid-grid{display:grid;grid-template-columns:1fr;gap:20px}
+@media(min-width:700px){.raid-grid{grid-template-columns:1fr 1fr}}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.section-name{font-size:16px;font-weight:700;color:var(--text)}
+.section-en{font-size:10px;font-weight:600;color:var(--text4);letter-spacing:.1em;text-transform:uppercase;margin-left:6px}
+.section-count{font-size:11px;color:var(--text3)}
+.boss-cards{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.boss-card{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);cursor:pointer;transition:border-color .15s,background .15s}
+.boss-card:hover{border-color:var(--accent);background:var(--bg3)}
+.boss-card.active{border-color:var(--accent);background:var(--accent-bg)}
+.boss-card-img{width:40px;height:40px;object-fit:contain;border-radius:6px;flex-shrink:0;background:var(--bg3)}
+.boss-card-name{font-size:12px;font-weight:600;color:var(--text)}
+.boss-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:500;align-items:flex-start;justify-content:center;padding:20px 16px;overflow-y:auto}
+.boss-modal.open{display:flex}
+.boss-modal-box{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:22px;width:100%;max-width:580px;position:relative;margin:auto}
+.bm-close{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer}
+.bm-close:hover{color:var(--text)}
+.bm-header{display:flex;align-items:center;gap:14px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.bm-img{width:58px;height:58px;object-fit:contain;border-radius:10px;background:var(--bg3);border:1px solid var(--border2);flex-shrink:0}
+.bm-name{font-size:18px;font-weight:700;color:var(--text);margin-bottom:3px}
+.bm-section{font-size:12px;color:var(--text3)}
+.bm-badges{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.bm-badge-box{background:var(--bg3);border-radius:8px;padding:9px 12px;border:1px solid var(--border2)}
+.bm-badge-label{font-size:10px;color:var(--text4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.bm-badge-row{display:flex;flex-wrap:wrap;gap:4px}
+.bm-attr{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;padding:3px 8px;border-radius:6px;background:var(--bg2);border:1px solid var(--border)}
+.bm-attr img{width:16px;height:16px;object-fit:contain;border-radius:3px}
+.bm-type{display:inline-block;font-size:12px;font-weight:600;padding:3px 8px;border-radius:6px;background:var(--bg2);color:var(--text2);border:1px solid var(--border3)}
+.bm-none{display:inline-block;font-size:12px;color:var(--text4);padding:3px 8px}
+.bm-cards{display:flex;flex-direction:column;gap:8px}
+.bm-card{background:var(--bg3);border-radius:8px;padding:12px 14px;border:1px solid var(--border2);border-left:2px solid}
+.bm-card-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px}
+.bm-card-txt{font-size:13px;color:var(--text);line-height:1.8}
+.bm-card-txt .t{display:inline-block;font-size:11px;font-weight:600;padding:1px 7px;border-radius:5px;background:var(--bg2);color:var(--text2);border:1px solid var(--border3);vertical-align:middle}
+.bm-card-txt .bns{display:inline-block;font-size:11px;font-weight:600;padding:1px 7px;border-radius:5px;background:#c6c6eb;color:#3a3a7a;border:1px solid #a0a0d0;vertical-align:middle}
+.bm-card-txt .ta{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:600;padding:1px 7px;border-radius:5px;background:var(--bg2);border:1px solid var(--border);vertical-align:middle}
+.bm-card-txt .ta img{width:14px;height:14px;object-fit:contain;border-radius:2px}
+</style>
 </head>
 <body>
-<div id="tab-bar">
-  <a href="../index.html" id="site-title">
-  <span class="title-main">Main</span>
-  <span class="title-sub">made by nix</span>
-</a>
-  <a href="./tier.html" class="tab-btn ">Tier List</a>
-  <a href="./dex.html" class="tab-btn ">Dragon Dex</a>
-  <a href="./sss.html" class="tab-btn ">SSS Ranking</a>
-  <a href="./raid.html" class="tab-btn ">Arha Gate</a>
-  <a href="./raid_info.html" class="tab-btn active">Raid Info</a>
-  <a href="../index.html" id="lang-btn" style="margin-left:auto">🌐 KR</a>
-</div>
+<a href="./index.html" class="back-btn" id="back-btn">← Back to Main</a>
+<h1 class="page-title">Raid Info</h1>
 
-<h1>Raid Info</h1>
+<div class="raid-grid">
 
-<div style="display:flex;gap:0;border-bottom:1px solid #333;margin-bottom:16px">
-  <button class="sub-tab active" id="sub-tab-arha" onclick="switchSubTab('arha')">Arha Field</button>
-  <button class="sub-tab" id="sub-tab-normal" onclick="switchSubTab('normal')">Normal Raid</button>
-  <button class="sub-tab" id="sub-tab-lemuria" onclick="switchSubTab('lemuria')">Guild Raid</button>
-</div>
-
-<div id="sub-arha">
-  <div class="boss-icon-grid">
-    <div class="boss-icon-card" onclick="showBossInfo(8, this)">
-      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/8.png" alt="Blizzard">
-      <div class="boss-icon-name">Blizzard</div>
-    </div>
-    <div class="boss-icon-card" onclick="showBossInfo(9, this)">
-      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/9.png" alt="Igna">
-      <div class="boss-icon-name">Igna</div>
-    </div>
-    <div class="boss-icon-card" onclick="showBossInfo(10, this)">
-      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/10.png" alt="Dark Knight">
-      <div class="boss-icon-name">Dark Knight</div>
-    </div>
-    <div class="boss-icon-card" onclick="showBossInfo(11, this)">
-      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/11.png" alt="Stra">
-      <div class="boss-icon-name">Maldek</div>
-    </div>
-    <div class="boss-icon-card" onclick="showBossInfo(12, this)">
-      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/12.png" alt="Maldek">
-      <div class="boss-icon-name">Stra</div>
-    </div>
-    <div class="boss-icon-card" onclick="showBossInfo(13, this)">
-      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/13.png" alt="Henes">
-      <div class="boss-icon-name">Henes</div>
+  <div class="raid-section">
+    <div class="section-head"><div><span class="section-name">Arha Field</span><span class="section-en">ARHA</span></div><span class="section-count">6 bosses</span></div>
+    <div class="boss-cards">
+      <div class="boss-card" onclick="showBoss(8,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/8.png"><span class="boss-card-name">Blizzard</span></div>
+      <div class="boss-card" onclick="showBoss(9,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/9.png"><span class="boss-card-name">Igna</span></div>
+      <div class="boss-card" onclick="showBoss(10,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/10.png"><span class="boss-card-name">Dark Knight</span></div>
+      <div class="boss-card" onclick="showBoss(11,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/11.png"><span class="boss-card-name">Maldek</span></div>
+      <div class="boss-card" onclick="showBoss(12,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/12.png"><span class="boss-card-name">Stra</span></div>
+      <div class="boss-card" onclick="showBoss(13,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/13.png"><span class="boss-card-name">Henes</span></div>
     </div>
   </div>
-</div>
 
-<div id="sub-normal" style="display:none">
-  <div class="boss-icon-grid">
-    <div class="boss-icon-card" onclick="showBossInfo(14, this)">
-      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/14.png" alt="Popomo">
-      <div class="boss-icon-name">Popomo</div>
-    </div>
-    <div class="boss-icon-card" onclick="showBossInfo(15, this)">
-      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/15.png" alt="Teddy Dragon">
-      <div class="boss-icon-name">Teddy Dragon</div>
-    </div>
-    <div class="boss-icon-card" onclick="showBossInfo(16, this)">
-      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/16.png" alt="Umbra">
-      <div class="boss-icon-name">Umbra</div>
-    </div>
-    <div class="boss-icon-card" onclick="showBossInfo(17, this)">
-      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/17.png" alt="Eligos">
-      <div class="boss-icon-name">Eligos</div>
-    </div>
-    <div class="boss-icon-card" onclick="showBossInfo(18, this)">
-      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/18.png" alt="Loki">
-      <div class="boss-icon-name">Loki</div>
-    </div>
-    <div class="boss-icon-card" onclick="showBossInfo(19, this)">
-      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/19.png" alt="Lichmond">
-      <div class="boss-icon-name">Lichmond</div>
-    </div>
-    <div class="boss-icon-card" onclick="showBossInfo(20, this)">
-      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/20.png" alt="Regulus">
-      <div class="boss-icon-name">Regulus</div>
-    </div>
-    <div class="boss-icon-card" onclick="showBossInfo(21, this)">
-      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/21.png" alt="Beleth">
-      <div class="boss-icon-name">Beleth</div>
-    </div>
-    <div class="boss-icon-card" onclick="showBossInfo(22, this)">
-      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/22.png" alt="Blue Thunder">
-      <div class="boss-icon-name">Blue Thunder</div>
-    </div>
-    <div class="boss-icon-card" onclick="showBossInfo(23, this)">
-      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/23.png" alt="Vetera">
-      <div class="boss-icon-name">Vetera</div>
-    </div>
-    <div class="boss-icon-card" onclick="showBossInfo(24, this)">
-      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/24.png" alt="Firetail">
-      <div class="boss-icon-name">Firetail</div>
-    </div>
-    <div class="boss-icon-card" onclick="showBossInfo(25, this)">
-      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/25.png" alt="Octa">
-      <div class="boss-icon-name">Octa</div>
-    </div>
-    <div class="boss-icon-card" onclick="showBossInfo(26, this)">
-      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/26.png" alt="Protect Dragon">
-      <div class="boss-icon-name">Protect Dragon</div>
-    </div>
-    <div class="boss-icon-card" onclick="showBossInfo(27, this)">
-      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/27.png" alt="Litio">
-      <div class="boss-icon-name">Litio</div>
-    </div>
-    <div class="boss-icon-card" onclick="showBossInfo(28, this)">
-      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/28.png" alt="Scartooth">
-      <div class="boss-icon-name">Scartooth</div>
-    </div>
-    <div class="boss-icon-card" onclick="showBossInfo(29, this)">
-      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/29.png" alt="Acaia">
-      <div class="boss-icon-name">Acaia</div>
-    </div>
-    <div class="boss-icon-card" onclick="showBossInfo(30, this)">
-      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/30.png" alt="Lulu">
-      <div class="boss-icon-name">Lulu</div>
-    </div>
-    <div class="boss-icon-card" onclick="showBossInfo(31, this)">
-      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/31.png" alt="Fenrir">
-      <div class="boss-icon-name">Fenrir</div>
-    </div>
-    <div class="boss-icon-card" onclick="showBossInfo(32, this)">
-      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/32.png" alt="Zivatar">
-      <div class="boss-icon-name">Zivatar</div>
-    </div>
-    <div class="boss-icon-card" onclick="showBossInfo(33, this)">
-      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/33.png" alt="Camouflage">
-      <div class="boss-icon-name">Camouflage</div>
-    </div>
-    <div class="boss-icon-card" onclick="showBossInfo(34, this)">
-      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/34.png" alt="Fafnir">
-      <div class="boss-icon-name">Fafnir</div>
+  <div class="raid-section">
+    <div class="section-head"><div><span class="section-name">Guild Raid</span><span class="section-en">GUILD</span></div><span class="section-count">4 bosses</span></div>
+    <div class="boss-cards">
+      <div class="boss-card" onclick="showBoss(40,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/40.png"><span class="boss-card-name">Angel Jr.</span></div>
+      <div class="boss-card" onclick="showBoss(41,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/41.png"><span class="boss-card-name">Tempest</span></div>
+      <div class="boss-card" onclick="showBoss(42,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/42.png"><span class="boss-card-name">Sunset</span></div>
+      <div class="boss-card" onclick="showBoss(43,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/43.png"><span class="boss-card-name">Alresch</span></div>
     </div>
   </div>
-</div>
 
-<div id="sub-lemuria" style="display:none">
-  <div class="boss-icon-grid">
-    <div class="boss-icon-card" onclick="showBossInfo(40, this)">
-      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/40.png" alt="Angel Jr.">
-      <div class="boss-icon-name">Angel Jr.</div>
-    </div>
-    <div class="boss-icon-card" onclick="showBossInfo(41, this)">
-      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/41.png" alt="Tempest">
-      <div class="boss-icon-name">Tempest</div>
-    </div>
-    <div class="boss-icon-card" onclick="showBossInfo(42, this)">
-      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/42.png" alt="Sunset">
-      <div class="boss-icon-name">Sunset</div>
-    </div>
-    <div class="boss-icon-card" onclick="showBossInfo(43, this)">
-      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/43.png" alt="Alresch">
-      <div class="boss-icon-name">Alresch</div>
+  <div class="raid-section">
+    <div class="section-head"><div><span class="section-name">Normal Raid</span><span class="section-en">Has Pattern</span></div><span class="section-count">13 bosses</span></div>
+    <div class="boss-cards">
+      <div class="boss-card" onclick="showBoss(20,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/20.png"><span class="boss-card-name">Regulus</span></div>
+      <div class="boss-card" onclick="showBoss(21,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/21.png"><span class="boss-card-name">Beleth</span></div>
+      <div class="boss-card" onclick="showBoss(22,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/22.png"><span class="boss-card-name">Blue Thunder</span></div>
+      <div class="boss-card" onclick="showBoss(23,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/23.png"><span class="boss-card-name">Vetera</span></div>
+      <div class="boss-card" onclick="showBoss(24,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/24.png"><span class="boss-card-name">Firetail</span></div>
+      <div class="boss-card" onclick="showBoss(25,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/25.png"><span class="boss-card-name">Octa</span></div>
+      <div class="boss-card" onclick="showBoss(26,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/26.png"><span class="boss-card-name">Protect Dragon</span></div>
+      <div class="boss-card" onclick="showBoss(27,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/27.png"><span class="boss-card-name">Litio</span></div>
+      <div class="boss-card" onclick="showBoss(29,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/29.png"><span class="boss-card-name">Acaia</span></div>
+      <div class="boss-card" onclick="showBoss(30,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/30.png"><span class="boss-card-name">Lulu</span></div>
+      <div class="boss-card" onclick="showBoss(31,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/31.png"><span class="boss-card-name">Fenrir</span></div>
+      <div class="boss-card" onclick="showBoss(32,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/32.png"><span class="boss-card-name">Zivatar</span></div>
+      <div class="boss-card" onclick="showBoss(33,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/33.png"><span class="boss-card-name">Camouflage</span></div>
     </div>
   </div>
+
+  <div class="raid-section">
+    <div class="section-head"><div><span class="section-name">Normal Raid</span><span class="section-en">No Pattern</span></div><span class="section-count">8 bosses</span></div>
+    <div class="boss-cards">
+      <div class="boss-card" onclick="showBoss(14,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/14.png"><span class="boss-card-name">Popomo</span></div>
+      <div class="boss-card" onclick="showBoss(15,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/15.png"><span class="boss-card-name">Teddy Dragon</span></div>
+      <div class="boss-card" onclick="showBoss(16,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/16.png"><span class="boss-card-name">Umbra</span></div>
+      <div class="boss-card" onclick="showBoss(17,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/17.png"><span class="boss-card-name">Eligos</span></div>
+      <div class="boss-card" onclick="showBoss(18,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/18.png"><span class="boss-card-name">Loki</span></div>
+      <div class="boss-card" onclick="showBoss(19,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/19.png"><span class="boss-card-name">Lichmond</span></div>
+      <div class="boss-card" onclick="showBoss(28,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/28.png"><span class="boss-card-name">Scartooth</span></div>
+      <div class="boss-card" onclick="showBoss(34,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/34.png"><span class="boss-card-name">Fafnir</span></div>
+    </div>
+  </div>
+
 </div>
 
-<div id="boss-detail" class="boss-detail" style="display:none">
-  <div class="section" style="position:relative">
-    <div id="boss-detail-bg"></div>
-    <button onclick="closeBossInfo()" style="position:absolute;top:12px;right:14px;background:none;border:none;color:#aaa;font-size:18px;cursor:pointer;z-index:2">✕</button>
-    <div id="boss-detail-content"></div>
+<div class="boss-modal" id="boss-modal" onclick="closeBoss(event)">
+  <div class="boss-modal-box">
+    <button class="bm-close" onclick="closeBoss()">✕</button>
+    <div id="bm-content"></div>
   </div>
 </div>
 
 <script>
-
-const bossNames = {
-  8: "Blizzard",
-  9: "Igna",
-  10: "Dark Knight",
-  11: "Maldek",
-  12: "Stra",
-  13: "Henes",
-  14: "Popomo",
-  15: "Teddy Dragon",
-  16: "Umbra",
-  17: "Eligos",
-  18: "Loki",
-  19: "Lichmond",
-  20: "Regulus",
-  21: "Beleth",
-  22: "Blue Thunder",
-  23: "Vetera",
-  24: "Firetail",
-  25: "Octa",
-  26: "Protect Dragon",
-  27: "Litio",
-  28: "Scartooth",
-  29: "Acaia",
-  30: "Lulu",
-  31: "Fenrir",
-  32: "Zivatar",
-  33: "Camouflage",
-  34: "Fafnir",
-  40: "Angel Jr.",
-  41: "Tempest",
-  42: "Sunset",
-  43: "Alresch"
+const ICON='https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/';
+const ATTR={
+  'Earth':{icon:ICON+'11.png'},'Water':{icon:ICON+'12.png'},'Fire':{icon:ICON+'13.png'},
+  'Wind':{icon:ICON+'14.png'},'Light':{icon:ICON+'84.png'},'Dark':{icon:ICON+'87.png'},
+  'Twilight':{icon:ICON+'487.png'},'Dawn':{icon:ICON+'486.png'},'Nightmare':{icon:ICON+'488.png'},
 };
-const bossData = {};
+const CARD_COLOR={pat:'#e6a23a',ctr:'#4cb88a',rec:'#5fa8ee',tip:'#7d8597',buff:'#9d7bff'};
 
-function switchSubTab(tab) {
-  ['arha','normal','lemuria'].forEach(t => {
-    document.getElementById('sub-'+t).style.display = t===tab ? '' : 'none';
-    document.getElementById('sub-tab-'+t).classList.toggle('active', t===tab);
+const BD={
+  8:{name:'Blizzard',section:'Arha Field',weakAttr:['Earth'],buff:'DEF ×2 (damage taken ÷2)',cards:[
+    {c:'tip',l:'Tip',t:'Fill your tank line with <span class="ta" data-a="Earth"></span> dragons to halve incoming damage.'},
+    {c:'tip',l:'Recommended',t:'Ancient God of Earth is recommended. Easy to farm early and has decent stats at any grade. (HP ~400s, DEF ~230)'},
+    {c:'tip',l:'How to obtain',t:'Breed Dark Ancient God + any <span class="ta" data-a="Earth"></span> dragon with Dark/Light breeding partner.'},
+  ]},
+  9:{name:'Igna',section:'Arha Field',weakAttr:['Water'],buff:'ATK ×2 (deals double damage)',cards:[
+    {c:'tip',l:'Tip',t:'Use <span class="ta" data-a="Water"></span> dragons for your DPS line — they deal double damage against Igna.'},
+    {c:'tip',l:'Recommended',t:'Lady of Water is recommended. At Lv.45 regardless of grade, ATK reaches ~255.'},
+    {c:'tip',l:'How to obtain',t:'Breed Light/Dark Lady + any <span class="ta" data-a="Water"></span> breeding partner.'},
+  ]},
+  10:{name:'Dark Knight',section:'Arha Field',weakAttr:['Light'],buff:'DEF ×2 (damage taken ÷2)',cards:[
+    {c:'tip',l:'Tip',t:'Use <span class="ta" data-a="Light"></span> tanks. Damage taken is halved.'},
+    {c:'tip',l:'Recommended',t:'Light breeding dragons are recommended. DEF approaches 280 when leveled up.'},
+  ]},
+  11:{name:'Maldek',section:'Arha Field',weakAttr:['Wind'],buff:'DEF ×2.5 (damage taken ×2/5)',cards:[
+    {c:'tip',l:'Note',t:'Strategy data is insufficient for this boss. Please contact via KakaoTalk or Discord if you can contribute.'},
+  ]},
+  12:{name:'Stra',section:'Arha Field',weakAttr:['Fire'],buff:'DEF ×2 (damage taken ÷2)',cards:[
+    {c:'tip',l:'Note',t:'Strategy data is insufficient for this boss. Please contact via KakaoTalk or Discord if you can contribute.'},
+  ]},
+  13:{name:'Henes',section:'Arha Field',weakAttr:['Earth','Water','Fire','Wind'],buff:'DEF ×1.5 (damage taken ×2/3)',cards:[
+    {c:'tip',l:'Recommended Tanks',t:'Stats shown as HP/ATK/DEF order:<br>Water Krima Dragon — 1013/153/152<br>Water Rainbow — 781/151/212<br>Fire Smart Dragon — 713/151/229<br>Mutant Water Dragon — 821/199/154<br>Mutant Alien — 797/156/203<br>Mutant Pat — 529/155/271<br>Fire Slime — 537/151/273'},
+  ]},
+  14:{name:'Popomo',section:'Normal Raid',weakAttr:['Water'],weakType:['ATK'],cards:[
+    {c:'rec',l:'Recommended',t:'1 Tank, 2 DPS<br>Use 2 <span class="ta" data-a="Water"></span><span class="t">ATK</span> DPS.'},
+  ]},
+  15:{name:'Teddy Dragon',section:'Normal Raid',weakAttr:['Earth','Water','Fire','Wind'],weakType:['HP'],cards:[
+    {c:'rec',l:'Recommended',t:'1 Tank, 2 DPS<br><span class="t">ATK</span> or <span class="t">HP</span> type DPS. ATK has higher ceiling.'},
+  ]},
+  16:{name:'Umbra',section:'Normal Raid',weakAttr:['Light'],weakType:['HP/DEF'],cards:[
+    {c:'rec',l:'Recommended',t:'1 Tank, 2 DPS<br><span class="ta" data-a="Light"></span><span class="t">ATK</span> or <span class="ta" data-a="Light"></span><span class="t">ATK/DEF</span> DPS.'},
+  ]},
+  17:{name:'Eligos',section:'Normal Raid',weakAttr:null,weakType:['HP/ATK'],cards:[
+    {c:'rec',l:'Recommended',t:'1 Tank, 2 DPS<br><span class="t">HP/ATK</span> type is required for DPS.'},
+  ]},
+  18:{name:'Loki',section:'Normal Raid',weakAttr:['Earth'],weakType:['HP/ATK'],cards:[
+    {c:'rec',l:'Recommended',t:'Mix <span class="bns">Bonus</span> dragons for the best results.'},
+  ]},
+  19:{name:'Lichmond',section:'Normal Raid',weakAttr:['Light'],weakType:['DEF'],cards:[
+    {c:'rec',l:'Recommended',t:'3 DPS<br><span class="ta" data-a="Light"></span><span class="t">DEF</span> is strongly recommended.'},
+  ]},
+  20:{name:'Regulus',section:'Normal Raid',weakAttr:['Earth'],weakType:['HP'],cards:[
+    {c:'pat',l:'Pattern',t:'If the team composition is not met, Regulus\'s DEF increases every few turns.<br>Using all 3 <span class="t">HP</span> type dragons makes Regulus extremely powerful.<br>※ Chroma Regulus is excluded from this pattern.'},
+    {c:'ctr',l:'Counter',t:'1 <span class="t">HP</span> + 2 <span class="t">DEF</span> prevents Regulus from using the DEF boost pattern.'},
+    {c:'rec',l:'Recommended',t:'1 Tank, 2 DPS<br><span class="t">HP</span> + 2 <span class="t">DEF</span> to counter the pattern<br>Or use <span class="bns">Bonus</span> dragons if a good bonus appears.'},
+  ]},
+  21:{name:'Beleth',section:'Normal Raid',weakAttr:['Dawn'],weakType:['DEF'],cards:[
+    {c:'pat',l:'Pattern',t:'Every few turns: strong AoE attack, then ATK greatly boosted for 3 turns.<br>※ 1 turn = counted by boss attacks.'},
+    {c:'ctr',l:'Counter',t:'1 <span class="t">HP/DEF</span> + 1 <span class="t">DEF</span> reduces the AoE damage.'},
+    {c:'rec',l:'Recommended',t:'1 Tank, 2 DPS<br>Tank: <span class="t">HP/DEF</span>, DPS: 2 <span class="t">DEF</span><br>Note: 0 bonus composition > 3 bonus — always use proper composition.'},
+  ]},
+  22:{name:'Blue Thunder',section:'Normal Raid',weakAttr:['Fire'],weakType:['HP/DEF'],cards:[
+    {c:'pat',l:'Pattern',t:'Has a DEF-piercing attack. When dodge triggers, 1 dragon takes damage while the other 2 dodge.'},
+    {c:'ctr',l:'Counter',t:'No counter composition exists. Use Dodge potions instead of Critical potions.'},
+    {c:'rec',l:'Recommended',t:'3 DPS<br>Without bonus dragons, use <span class="ta" data-a="Fire"></span><span class="t">HP/ATK</span> DPS.'},
+  ]},
+  23:{name:'Vetera',section:'Normal Raid',weakAttr:['Light'],weakType:['ATK/DEF'],cards:[
+    {c:'pat',l:'Pattern',t:'Has a DEF-piercing attack. When dodge triggers, 1 dragon takes damage while the other 2 dodge.'},
+    {c:'ctr',l:'Counter',t:'No counter composition exists. Use Dodge potions instead of Critical potions.'},
+    {c:'rec',l:'Recommended',t:'3 DPS<br>Without bonus dragons, use <span class="ta" data-a="Light"></span><span class="t">ATK/DEF</span> DPS.'},
+  ]},
+  24:{name:'Firetail',section:'Normal Raid',weakAttr:['Water'],weakType:['DEF'],cards:[
+    {c:'pat',l:'Pattern',t:'Periodically reduces damage received (cannot be countered).'},
+    {c:'ctr',l:'Counter',t:'No counter exists for this pattern.'},
+    {c:'rec',l:'Recommended',t:'1 Tank, 2 DPS<br><span class="ta" data-a="Water"></span><span class="t">ATK</span> or <span class="ta" data-a="Water"></span><span class="t">DEF</span> DPS recommended.'},
+  ]},
+  25:{name:'Octa',section:'Normal Raid',weakAttr:['Earth'],weakType:['DEF'],cards:[
+    {c:'pat',l:'Pattern',t:'Every few turns: strong AoE, then ATK greatly boosted for 3 turns.'},
+    {c:'ctr',l:'Counter',t:'2 <span class="t">HP</span> + 1 <span class="t">DEF</span> reduces AoE to 1/4.'},
+    {c:'rec',l:'Recommended',t:'1 Tank, 2 DPS<br>Tank: <span class="t">DEF</span>, DPS: 2 <span class="ta" data-a="Earth"></span><span class="t">HP</span><br>HP-type DPS maximizes the ATK buff.'},
+  ]},
+  26:{name:'Protect Dragon',section:'Normal Raid',weakAttr:['Earth','Water','Fire','Wind'],weakType:['HP/ATK'],cards:[
+    {c:'pat',l:'Pattern',t:'AoE attack, then ATK greatly boosted for 3 turns.'},
+    {c:'ctr',l:'Counter',t:'1 <span class="t">HP</span> + 2 <span class="t">HP/ATK</span> reduces AoE to 1/4.'},
+    {c:'rec',l:'Recommended',t:'1 Tank, 2 DPS<br>Tank: <span class="t">HP</span>, DPS: 2 <span class="t">HP/ATK</span>.'},
+  ]},
+  27:{name:'Litio',section:'Normal Raid',weakAttr:['Fire'],weakType:['HP/ATK'],cards:[
+    {c:'pat',l:'Pattern',t:'Normal attack hits all dragons (AoE). Heals 60 HP per turn after AoE.'},
+    {c:'ctr',l:'Counter',t:'Using 1+ <span class="t">ATK</span> removes the damage reduction mechanic (3 ATK types decreases DPS).<br>Using all 3 <span class="ta" data-a="Fire"></span> dragons removes the 60 HP/turn heal.'},
+    {c:'rec',l:'Recommended',t:'With bonus: <span class="ta" data-a="Fire"></span><span class="t">ATK</span> + 2 <span class="bns">Bonus</span><br>Without bonus: <span class="ta" data-a="Fire"></span><span class="t">ATK</span> + 2 <span class="ta" data-a="Fire"></span><span class="t">HP/ATK</span>'},
+  ]},
+  28:{name:'Scartooth',section:'Normal Raid',weakAttr:['Water'],weakType:['HP/ATK'],cards:[
+    {c:'rec',l:'Recommended',t:'1 Tank, 2 DPS<br>Mix in <span class="bns">Bonus</span> dragons for best results.'},
+  ]},
+  29:{name:'Acaia',section:'Normal Raid',weakAttr:['Wind'],weakType:['DEF'],cards:[
+    {c:'pat',l:'Pattern',t:'5 single attacks → 5 AoE attacks → 10 single attacks → 5 AoE (repeating).<br>ATK greatly boosted for 5 turns after each AoE.'},
+    {c:'ctr',l:'Counter',t:'2+ <span class="t">DEF</span> reduces Acaia\'s damage by 1/3.<br><span class="ta" data-a="Wind"></span> dragons increase all ally damage.'},
+    {c:'rec',l:'Recommended',t:'Use at least 2 <span class="t">DEF</span> and 1 <span class="ta" data-a="Wind"></span> dragon.'},
+  ]},
+  30:{name:'Lulu',section:'Normal Raid',weakAttr:['Fire'],weakType:['HP'],cards:[
+    {c:'pat',l:'Pattern',t:'Normal attack hits all dragons (AoE). Heals 50 HP per turn after AoE.'},
+    {c:'ctr',l:'Counter',t:'Using 1+ <span class="t">ATK</span> removes the damage reduction (Lulu has no penalty for 3 ATK types).<br>Using all 3 <span class="ta" data-a="Fire"></span> dragons removes the 50 HP/turn heal.'},
+    {c:'rec',l:'Recommended',t:'With bonus: <span class="ta" data-a="Fire"></span><span class="t">ATK</span> + 2 <span class="bns">Bonus</span><br>1 ATK type required; bonus preferred over all-Fire lineup.'},
+  ]},
+  31:{name:'Fenrir',section:'Normal Raid',weakAttr:['Wind'],weakType:['HP/DEF'],cards:[
+    {c:'pat',l:'Pattern',t:'Ally dragon ATK increases as turns progress (not time-based).'},
+    {c:'rec',l:'Recommended',t:'1 Tank, 2 DPS<br><span class="ta" data-a="Wind"></span><span class="t">ATK</span> or <span class="ta" data-a="Wind"></span><span class="t">ATK/DEF</span> DPS recommended.<br>ATK/DEF reduces frequent AoE damage.'},
+  ]},
+  32:{name:'Zivatar',section:'Normal Raid',weakAttr:['Fire'],weakType:['HP/DEF'],cards:[
+    {c:'pat',l:'Pattern',t:'Ally dragon ATK increases as turns progress (not time-based).'},
+    {c:'rec',l:'Recommended',t:'1 Tank, 2 DPS<br><span class="ta" data-a="Fire"></span><span class="t">ATK</span> or <span class="ta" data-a="Fire"></span><span class="t">ATK/DEF</span> DPS recommended.<br>ATK/DEF reduces frequent AoE damage.'},
+  ]},
+  33:{name:'Camouflage',section:'Normal Raid',weakAttr:null,weakType:['ATK/DEF'],cards:[
+    {c:'pat',l:'Pattern',t:'Ally dragon ATK increases as turns progress (not time-based).'},
+    {c:'rec',l:'Recommended',t:'1 Tank, 2 DPS<br>No element weakness — use <span class="t">ATK/DEF</span> DPS.<br>ATK/DEF reduces frequent AoE damage.'},
+  ]},
+  34:{name:'Fafnir',section:'Normal Raid',weakAttr:['Water'],weakType:['ATK/DEF'],cards:[
+    {c:'tip',l:'Note',t:'Strategy data coming soon. Please contact via KakaoTalk or Discord if you can contribute.'},
+  ]},
+  40:{name:'Angel Jr.',section:'Guild Raid',weakAttr:['Earth','Water','Fire','Wind'],weakType:['ATK'],cards:[
+    {c:'rec',l:'Recommended',t:'1 Tank, 2 DPS<br>Use 2 <span class="t">ATK</span> DPS of the matching elements.'},
+  ]},
+  41:{name:'Tempest',section:'Guild Raid',weakAttr:['Earth'],weakType:['HP'],cards:[
+    {c:'pat',l:'Pattern',t:'Every few turns: strong AoE, then ATK greatly boosted for 3 turns.'},
+    {c:'ctr',l:'Counter',t:'2 <span class="t">HP</span> + 1 <span class="t">DEF</span> reduces AoE to 1/4.'},
+    {c:'rec',l:'Recommended',t:'1 Tank, 2 DPS<br>Tank: <span class="t">DEF</span>, DPS: 2 <span class="ta" data-a="Earth"></span><span class="t">HP</span>'},
+  ]},
+  42:{name:'Sunset',section:'Guild Raid',weakAttr:['Water'],weakType:['HP/DEF'],cards:[
+    {c:'pat',l:'Pattern',t:'Normal attack is AoE every turn. Every few turns: strong single attack, then ATK boosted for 3 turns.'},
+    {c:'ctr',l:'Counter',t:'2 <span class="t">HP/DEF</span> + 1 <span class="t">ATK/DEF</span> greatly reduces the strong single attack.'},
+    {c:'rec',l:'Recommended',t:'Since normal attack is AoE, no dedicated tank needed — use 3 DPS with the counter composition.'},
+  ]},
+  43:{name:'Alresch',section:'Guild Raid',weakAttr:['Earth'],weakType:['ATK'],cards:[
+    {c:'pat',l:'Pattern',t:'After the first 4 attacks, deals extremely high damage (~2000–2500).<br>After that, ally attacks are boosted x4 for 4 hits.'},
+    {c:'ctr',l:'Counter',t:'No counter exists for this pattern.'},
+    {c:'rec',l:'Recommended',t:'2 DPS + 1 DPS-Tank or 3 DPS (with Dodge potion)<br>DPS-Tank should have HP 3,000+.<br>AoE damage is high — DPS often can\'t survive even with tank. DPS-Tank is recommended.'},
+  ]},
+};
+
+function renderAttr(a){
+  if(!a)return'<span class="bm-none">None</span>';
+  const info=ATTR[a];
+  if(!info)return`<span class="bm-attr">${a}</span>`;
+  return`<span class="bm-attr"><img src="${info.icon}" onerror="this.style.display='none'">${a}</span>`;
+}
+function processText(t){
+  return t.replace(/<span class="ta" data-a="([^"]+)"><\/span>/g,(_,a)=>{
+    const info=ATTR[a];
+    if(!info)return`<span class="ta"><span>${a}</span></span>`;
+    return`<span class="ta"><img src="${info.icon}" onerror="this.style.display='none'"><span>${a}</span></span>`;
   });
-  closeBossInfo();
+}
+function renderCard(card){
+  const col=CARD_COLOR[card.c]||'#7d8597';
+  return`<div class="bm-card" style="border-left-color:${col}">
+    <div class="bm-card-lbl" style="color:${col}">${card.l}</div>
+    <div class="bm-card-txt">${processText(card.t)}</div>
+  </div>`;
 }
 
-function showBossInfo(num, el) {
-  document.querySelectorAll('.boss-icon-card').forEach(c=>c.classList.remove('active'));
+function showBoss(num,el){
+  document.querySelectorAll('.boss-card').forEach(c=>c.classList.remove('active'));
   el.classList.add('active');
-  const data = bossData[num];
-  const content = data
-    ? `<div class="boss-name">${data.name}</div>${data.desc}`
-    : `<div class="boss-name">${bossNames[num] || 'Boss #'+num}</div><div style="color:#666;font-size:13px">Data coming soon.</div>`;
-  document.getElementById('boss-detail-content').innerHTML = content;
-  document.getElementById('boss-detail-bg').style.backgroundImage = `url('https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/${num}-1.png')`;
-  document.getElementById('boss-detail').style.display = '';
-  document.getElementById('boss-detail').scrollIntoView({behavior:'smooth', block:'nearest'});
+  const d=BD[num];
+  if(!d){
+    document.getElementById('bm-content').innerHTML='<div style="color:var(--text4);padding:20px 0;text-align:center">Data coming soon.</div>';
+    document.getElementById('boss-modal').classList.add('open');
+    document.body.style.overflow='hidden';return;
+  }
+  let attrHtml='';
+  if(d.buff){
+    attrHtml=`<div class="bm-badges" style="grid-template-columns:1fr">
+      <div class="bm-badge-box">
+        <div class="bm-badge-label">Weak Element</div>
+        <div class="bm-badge-row">${(d.weakAttr||[]).map(renderAttr).join('')}</div>
+        <div class="bm-badge-label" style="margin-top:8px">Weakness Buff</div>
+        <div class="bm-badge-row"><span class="bm-type" style="color:var(--accent)">${d.buff}</span></div>
+      </div></div>`;
+  } else if(d.weakAttr!==undefined||d.weakType){
+    attrHtml='<div class="bm-badges">';
+    if(d.weakAttr!==undefined)attrHtml+=`<div class="bm-badge-box"><div class="bm-badge-label">Weak Element</div><div class="bm-badge-row">${d.weakAttr?d.weakAttr.map(renderAttr).join(''):'<span class="bm-none">None</span>'}</div></div>`;
+    if(d.weakType)attrHtml+=`<div class="bm-badge-box"><div class="bm-badge-label">Weak Type</div><div class="bm-badge-row">${d.weakType.map(t=>`<span class="bm-type">${t}</span>`).join('')}</div></div>`;
+    attrHtml+='</div>';
+  }
+  document.getElementById('bm-content').innerHTML=`
+    <div class="bm-header">
+      <img class="bm-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/${num}.png">
+      <div><div class="bm-name">${d.name}</div><div class="bm-section">${d.section}</div></div>
+    </div>
+    ${attrHtml}
+    <div class="bm-cards">${(d.cards||[]).map(renderCard).join('')}</div>`;
+  document.getElementById('boss-modal').classList.add('open');
+  document.body.style.overflow='hidden';
 }
 
-function closeBossInfo() {
-  document.getElementById('boss-detail').style.display='none';
-  document.querySelectorAll('.boss-icon-card').forEach(c=>c.classList.remove('active'));
+function closeBoss(e){
+  if(e&&e.target!==document.getElementById('boss-modal'))return;
+  document.getElementById('boss-modal').classList.remove('open');
+  document.body.style.overflow='';
+  document.querySelectorAll('.boss-card').forEach(c=>c.classList.remove('active'));
 }
 
+(function(){
+  var link=document.getElementById('theme-css');
+  if(!link)return;
+  var sync=function(){var c=document.getElementById('custom-theme-style');if(c&&c.textContent&&c.textContent.length>0){document.documentElement.removeAttribute('data-theme');return;}var m=String(link.href||'').match(/theme-(dark|light|beige)\.css/);document.documentElement.setAttribute('data-theme',m?m[1]:'dark');};
+  sync();
+  new MutationObserver(sync).observe(link,{attributes:true,attributeFilter:['href']});
+  new MutationObserver(sync).observe(document.head,{childList:true,subtree:true,characterData:true});
+})();
 </script>
 </body>
 </html>

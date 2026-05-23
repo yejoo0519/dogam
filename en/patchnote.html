@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,6 +32,10 @@ h1{font-size:20px;color:var(--text2);margin-bottom:20px}
 .patch-content{font-size:13px;color:var(--text2);line-height:2}
 .patch-content li{list-style:none;padding-left:12px;position:relative}
 .patch-content li::before{content:"·";position:absolute;left:0;color:var(--accent)}
+
+[data-theme="dark"]{--bg:#0e1116;--bg2:#161a22;--bg3:#1c212c;--border:#23293a;--border2:#1b1f2a;--border3:#2d3447;--text:#eaecf2;--text2:#b3b9c7;--text3:#7d8597;--text4:#565d6e;--accent:#7aa2f7;--accent-bg:rgba(122,162,247,0.12);--accent-border:rgba(122,162,247,0.30)}
+[data-theme="light"]{--bg:#f7f7f8;--bg2:#ffffff;--bg3:#f1f2f4;--border:#e6e7ea;--border2:#eeeff2;--border3:#d4d6db;--text:#15171c;--text2:#4a4d57;--text3:#71757f;--text4:#9aa0aa;--accent:#2f6fed;--accent-bg:rgba(47,111,237,0.10);--accent-border:rgba(47,111,237,0.32)}
+[data-theme="beige"]{--bg:#f3ecdd;--bg2:#faf3e2;--bg3:#ebe0c7;--border:#d8caa8;--border2:#e1d4b3;--border3:#c0ad84;--text:#2a2316;--text2:#5a4e34;--text3:#837553;--text4:#a99971;--accent:#b06a1e;--accent-bg:rgba(176,106,30,0.10);--accent-border:rgba(176,106,30,0.32)}
 </style>
 <link id="theme-css" rel="stylesheet" href="../theme-dark.css">
 <script src="./theme.js"></script>
@@ -52,7 +56,41 @@ h1{font-size:20px;color:var(--text2);margin-bottom:20px}
 
 <div class="patch-list" id="patch-list">
 
-  <!-- 패치노트 작성 예시 — 아래 형식으로 복사해서 추가하세요 -->
+  <div class="patch-card">
+    <div class="patch-header">
+      <span class="patch-version">v0.0.7</span>
+      <span class="patch-date">2026-05-23</span>
+      <span class="patch-badge badge-new">NEW</span>
+    </div>
+    <ul class="patch-content">
+      <li>Overall UI improvements</li>
+      <li>Added My Spec page for calculators</li>
+      <li>Added spec export/import feature</li>
+    </ul>
+  </div>
+
+  <div class="patch-card">
+    <div class="patch-header">
+      <span class="patch-version">v0.0.6</span>
+      <span class="patch-date">2026-05-06</span>
+      <span class="patch-badge badge-new">NEW</span>
+    </div>
+    <ul class="patch-content">
+      <li>Added Spirit Auto-Calculator</li>
+    </ul>
+  </div>
+
+  <div class="patch-card">
+    <div class="patch-header">
+      <span class="patch-version">v0.0.5</span>
+      <span class="patch-date">2026-04-22</span>
+      <span class="patch-badge badge-update">UPDATE</span>
+    </div>
+    <ul class="patch-content">
+      <li>Updated Weekly Info page</li>
+    </ul>
+  </div>
+
   <div class="patch-card">
     <div class="patch-header">
       <span class="patch-version">v0.0.1</span>
@@ -70,5 +108,8 @@ h1{font-size:20px;color:var(--text2);margin-bottom:20px}
   </div>
 
 </div>
+<script>
+(function(){var link=document.getElementById('theme-css');if(!link)return;var sync=function(){var c=document.getElementById('custom-theme-style');if(c&&c.textContent&&c.textContent.length>0){document.documentElement.removeAttribute('data-theme');return;}var m=String(link.href||'').match(/theme-(dark|light|beige)\.css/);document.documentElement.setAttribute('data-theme',m?m[1]:'dark');};sync();new MutationObserver(sync).observe(link,{attributes:true,attributeFilter:['href']});new MutationObserver(sync).observe(document.head,{childList:true,subtree:true,characterData:true});})();
+</script>
 </body>
 </html>

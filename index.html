@@ -9,227 +9,579 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/main.jpg">
 <meta property="og:url" content="https://yejoo0519.github.io/dogam">
 <meta property="og:type" content="website">
+
+<!-- 원본 테마 시스템 (그대로 사용) -->
 <link id="theme-css" rel="stylesheet" href="./theme-dark.css">
+
+<!-- 번들 시 theme.js 코드 내에서 문자열로 참조되는 CSS 파일들 — 번들러가 인라인하도록 표시 -->
+<meta name="ext-resource-dependency" content="./theme-dark.css"  data-resource-id="theme-dark">
+<meta name="ext-resource-dependency" content="./theme-light.css" data-resource-id="theme-light">
+<meta name="ext-resource-dependency" content="./theme-beige.css" data-resource-id="theme-beige">
+
 <script src="./theme.js"></script>
+
+<!-- 번들된 단일 파일에서만 동작: theme.js 의 THEMES 객체 경로를 blob URL 로 치환 -->
+<script>
+  if (typeof THEMES !== 'undefined' && window.__resources) {
+    if (window.__resources['theme-dark'])  THEMES.dark.file  = window.__resources['theme-dark'];
+    if (window.__resources['theme-light']) THEMES.light.file = window.__resources['theme-light'];
+    if (window.__resources['theme-beige']) THEMES.beige.file = window.__resources['theme-beige'];
+    // 현재 적용된 테마도 다시 한 번 적용 (loadSavedTheme 가 이미 실행됐을 수 있으므로)
+    if (typeof loadSavedTheme === 'function') loadSavedTheme();
+  }
+</script>
+
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:24px}
-.patch-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:500;align-items:center;justify-content:center}
-.patch-modal-overlay.open{display:flex}
-.patch-modal{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;width:90%;max-width:480px;max-height:70vh;overflow-y:auto;position:relative}
-.patch-modal-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:16px;display:flex;align-items:center;gap:8px}
-.patch-modal-close{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--text2);font-size:18px;cursor:pointer}
-.patch-modal-close:hover{color:var(--text)}
-.patch-item{margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border2)}
-.patch-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
-.patch-item-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.patch-item-ver{font-size:13px;font-weight:700;color:var(--accent)}
-.patch-item-date{font-size:11px;color:var(--text4)}
-.patch-item-badge{font-size:10px;padding:2px 8px;border-radius:10px;margin-left:auto}
-.badge-new{background:rgba(102,187,106,0.15);color:#66bb6a;border:1px solid rgba(102,187,106,0.3)}
-.badge-fix{background:rgba(239,83,80,0.15);color:#ef5350;border:1px solid rgba(239,83,80,0.3)}
-.badge-update{background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-border)}
-.patch-item-content{font-size:12px;color:var(--text2);line-height:2}
-.patch-item-content li{list-style:none;padding-left:12px;position:relative}
-.patch-item-content li::before{content:"·";position:absolute;left:0;color:var(--accent)}
-.patch-more-btn{display:block;width:100%;margin-top:16px;padding:10px;background:var(--bg3);border:1px solid var(--border3);border-radius:8px;color:var(--accent);font-size:13px;font-weight:600;cursor:pointer;text-align:center;text-decoration:none;font-family:inherit}
-.patch-more-btn:hover{border-color:var(--accent)}
-.patch-note-btn{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;cursor:pointer;font-family:inherit;transition:all 0.15s}
-.patch-note-btn:hover{border-color:var(--accent);color:var(--text)}
-.patch-note-icon{font-size:14px}
-.day-icon-btn{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--border3);background:var(--bg2);cursor:pointer;padding:0;overflow:hidden;transition:border-color 0.15s;flex-shrink:0}
-.day-icon-btn:hover{border-color:var(--accent)}
-.day-icon-btn img{width:100%;height:100%;object-fit:cover;border-radius:50%}
-.item-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:600;align-items:center;justify-content:center}
-.item-modal-overlay.open{display:flex}
-.item-modal{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;width:90%;max-width:400px;position:relative;text-align:center}
-.item-modal-close{position:absolute;top:12px;right:14px;background:none;border:none;color:var(--text2);font-size:18px;cursor:pointer}
-.item-modal-close:hover{color:var(--text)}
-.item-modal-title{font-size:14px;font-weight:700;color:var(--accent);margin-bottom:12px}
-.item-modal img{width:100%;border-radius:8px;display:block}
-.contact-bar{display:flex;gap:12px;justify-content:center;margin-bottom:16px}
-.contact-btn{display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:20px;border:1px solid var(--border);background:var(--bg2);text-decoration:none;color:var(--text2);font-size:12px;transition:all 0.15s}
-.contact-btn:hover{border-color:var(--accent);color:var(--text)}
-.contact-icon{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
-.contact-kakao .contact-icon{background:#FEE500;color:#3C1E1E}
-.contact-discord .contact-icon{background:#5865F2;color:#fff}
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;cursor:pointer;text-decoration:none;display:block;transition:border-color 0.15s,background 0.15s;position:relative}
-.card:hover{border-color:var(--accent);background:var(--bg3)}
-.card-title{font-size:18px;font-weight:700;color:var(--text);margin-bottom:8px}
-.card-desc{font-size:12px;color:var(--text3);line-height:1.6}
-.card-badge{position:absolute;top:16px;right:16px;font-size:10px;padding:3px 8px;border-radius:10px;background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-border)}
-.card-badge-guide{background:rgba(245,200,66,0.15);color:#f5c842;border:1px solid rgba(245,200,66,0.3)}
-.card-badge-community{background:rgba(102,187,106,0.15);color:#66bb6a;border:1px solid rgba(102,187,106,0.3)}
-.card-badge-calculator{background:rgba(100,181,246,0.15);color:#64b5f6;border:1px solid rgba(100,181,246,0.3)}.card-badge-original{background:rgba(255,152,0,0.15);color:#ffa726;border:1px solid rgba(255,152,0,0.3)}.card-badge-newbie{background:rgba(102,187,106,0.15);color:#66bb6a;border:1px solid rgba(102,187,106,0.3)}
-.stats-bar{display:flex;gap:16px;justify-content:center;margin-bottom:20px;flex-wrap:wrap}
-.stat-item{font-size:11px;color:var(--text4);display:flex;align-items:center;gap:4px}
-.stat-item span{color:var(--accent);font-weight:700}
-.mobile-layout{display:flex;flex-direction:column;align-items:center}
-.mobile-layout h1{font-size:28px;margin-bottom:8px;text-align:center}
-.mobile-layout .subtitle{font-size:13px;color:var(--text3);margin-bottom:20px;text-align:center}
-.pc-layout{display:none;max-width:1100px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:60px 24px}
-.pc-header{text-align:center;margin-bottom:40px}
-.pc-header h1{font-size:28px;margin-bottom:8px}
-.pc-header .subtitle{font-size:13px;color:var(--text3)}
-.pc-body{display:flex;gap:0}
-.pc-tabs{display:flex;flex-direction:column;gap:4px;width:160px;flex-shrink:0;padding-right:24px;border-right:1px solid var(--border)}
-.pc-tab{padding:12px 16px;border-radius:8px;font-size:13px;font-weight:600;color:var(--text3);cursor:pointer;transition:all 0.15s;border:none;background:none;text-align:left;font-family:inherit}
-.pc-tab:hover{color:var(--text2);background:var(--bg3)}
-.pc-tab.active{color:var(--accent);background:var(--accent-bg);border-left:2px solid var(--accent);padding-left:14px}
-.pc-cards{flex:1;padding-left:28px}
-.pc-category{display:none}
-.pc-category.active{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
-.mobile-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:16px;width:100%;max-width:900px;overflow-x:auto}
-.mobile-tab{flex:1;min-width:fit-content;padding:10px 14px;font-size:13px;font-weight:600;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);cursor:pointer;font-family:inherit;margin-bottom:-1px;white-space:nowrap}
-.mobile-tab:hover{color:var(--text2)}
-.mobile-tab.active{color:var(--accent);border-bottom:2px solid var(--accent)}
-.mobile-category{display:none;width:100%;max-width:900px}
-.mobile-category.active{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
-@media(max-width:700px){.mobile-layout{display:flex}.pc-layout{display:none!important}}
-@media(min-width:701px){.mobile-layout{display:none}.pc-layout{display:block}}
+  /* ─── 추가 디자인 토큰 (원본 theme-*.css 위에 얹는 값들) ───────────────── */
+  :root {
+    --bg-soft:       var(--bg);
+    --border-strong: var(--border3, var(--border));
+    --accent-soft:   var(--accent-bg);
+    --accent-line:   var(--accent-border);
+    --shadow:        0 1px 0 rgba(255,255,255,0.04) inset, 0 8px 24px rgba(0,0,0,0.35);
+    --shadow-sm:     0 1px 2px rgba(0,0,0,0.06);
+    --chip-bg:       rgba(127,127,127,0.08);
+    --tone-sky:      #5fa8ee;
+    --tone-violet:   #9d7bff;
+    --tone-amber:    #e6a23a;
+    --tone-rose:     #ec6a8d;
+    --tone-emerald:  #4cb88a;
+  }
+  /* 리디자인된 컬러 팔레트 — theme.js 가 data-theme 속성을 셋팅하면 적용 */
+  [data-theme="dark"] {
+    --bg: #0e1116; --bg2: #161a22; --bg3: #1c212c;
+    --border: #23293a; --border2: #1b1f2a; --border3: #2d3447;
+    --text: #eaecf2; --text2: #b3b9c7; --text3: #7d8597; --text4: #565d6e;
+    --accent: #7aa2f7; --accent-bg: rgba(122,162,247,0.12); --accent-border: rgba(122,162,247,0.30);
+  }
+  [data-theme="light"] {
+    --bg: #f7f7f8; --bg2: #ffffff; --bg3: #f1f2f4;
+    --border: #e6e7ea; --border2: #eeeff2; --border3: #d4d6db;
+    --text: #15171c; --text2: #4a4d57; --text3: #71757f; --text4: #9aa0aa;
+    --accent: #2f6fed; --accent-bg: rgba(47,111,237,0.10); --accent-border: rgba(47,111,237,0.32);
+  }
+  [data-theme="beige"] {
+    --bg: #f3ecdd; --bg2: #faf3e2; --bg3: #ebe0c7;
+    --border: #d8caa8; --border2: #e1d4b3; --border3: #c0ad84;
+    --text: #2a2316; --text2: #5a4e34; --text3: #837553; --text4: #a99971;
+    --accent: #b06a1e; --accent-bg: rgba(176,106,30,0.10); --accent-border: rgba(176,106,30,0.32);
+  }
+
+  /* ─── Base ───────────────────────────────────────────────────────── */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Malgun Gothic', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+         background: var(--bg); color: var(--text); min-height: 100vh; }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; background: none; border: none; color: inherit; }
+  [data-scroll-x] { scrollbar-width: none; }
+  [data-scroll-x]::-webkit-scrollbar { display: none; height: 0; }
+
+  /* ─── 페이지 셸 ──────────────────────────────────────────────────── */
+  .page { max-width: 1100px; margin: 0 auto; padding: 32px 56px 24px; }
+
+  /* PC 헤더 — 오른쪽에 EN / 테마 버튼 */
+  .header-actions { display: flex; justify-content: flex-end; gap: 6px; }
+  .pill-btn { display: inline-flex; align-items: center; gap: 4px;
+              border: 1px solid var(--border); background: var(--bg2);
+              color: var(--text2); font-size: 11px; padding: 5px 10px;
+              border-radius: 999px; white-space: nowrap; }
+  .pill-btn:hover { border-color: var(--accent); color: var(--text); }
+
+  /* 헤드라인 영역 */
+  .hero { display: flex; flex-direction: column; gap: 12px; padding: 24px 0 8px; }
+  .hero-marker { display: flex; align-items: center; gap: 8px; }
+  .hero-marker .line { display: inline-block; width: 24px; height: 2px; background: var(--accent); }
+  .h-section { font-size: 11px; font-weight: 600; letter-spacing: 0.12em;
+               text-transform: uppercase; color: var(--text3); white-space: nowrap; }
+  .h-display { font-size: 46px; font-weight: 800; letter-spacing: -0.025em;
+               line-height: 1.1; color: var(--text); }
+  .hero-desc { font-size: 15px; color: var(--text2); max-width: 520px; line-height: 1.55; }
+
+  .stats-strip { display: flex; gap: 18px; margin-top: 4px;
+                 font-size: 11px; color: var(--text3); }
+  .stats-strip strong { color: var(--text); font-weight: 600;
+                        font-variant-numeric: tabular-nums; }
+
+  /* 탭 바 */
+  .tab-bar { display: flex; gap: 24px;
+             border-bottom: 1px solid var(--border);
+             overflow-x: auto; overflow-y: hidden;
+             margin-top: 28px; }
+  .tab { padding: 12px 0; font-size: 13px; font-weight: 500;
+         color: var(--text3); border-bottom: 2px solid transparent;
+         margin-bottom: -1px; white-space: nowrap; }
+  .tab:hover { color: var(--text2); }
+  .tab.active { color: var(--text); font-weight: 700;
+                border-bottom-color: var(--accent); }
+
+  /* 본문 그리드 */
+  .body { display: flex; gap: 36px; align-items: flex-start; margin-top: 28px; }
+  .main-column { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 22px; }
+  .category { display: none; flex-direction: column; gap: 22px; }
+  .category.active { display: flex; }
+  .cat-head { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+  .cat-head-inner { display: flex; align-items: baseline; gap: 10px; }
+  .cat-head-row { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+  .my-spec-btn { display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; border-radius: 20px; border: 1px solid var(--accent-border); background: var(--accent-bg); color: var(--accent); font-size: 11px; font-weight: 600; text-decoration: none; cursor: pointer; transition: all .15s; white-space: nowrap; }
+  .my-spec-btn:hover { background: rgba(122,162,247,0.22); border-color: var(--accent); }
+  .cat-head h3 { font-size: 20px; font-weight: 700; }
+  .cat-head .meta { font-size: 12px; color: var(--text3); }
+
+  .cards { display: grid; gap: 14px;
+           grid-template-columns: repeat(2, 1fr); }
+  .cards.tri { grid-template-columns: repeat(3, 1fr); }
+
+  /* 카드 — 좌측 액센트 보더 스타일 */
+  .card { display: flex; gap: 12px; align-items: flex-start;
+          padding: 18px 18px 18px 14px;
+          border: 1px solid var(--border);
+          border-left: 3px solid var(--accent);
+          border-radius: 6px;
+          background: var(--bg2);
+          transition: background .15s, border-color .15s; }
+  .card:hover { background: var(--bg3); }
+  .card-body { flex: 1; min-width: 0; }
+  .card-title { font-size: 16px; font-weight: 650; margin-bottom: 4px; }
+  .card-desc { font-size: 12px; line-height: 1.55; color: var(--text2); }
+
+  /* 아이콘 타일 (모노그램) */
+  .icon-tile { width: 32px; height: 32px; border-radius: 6px;
+               display: inline-flex; align-items: center; justify-content: center;
+               font-weight: 700; font-size: 14px; flex-shrink: 0; }
+  .icon-tile.sky     { background: color-mix(in oklab, var(--tone-sky)     18%, transparent); color: var(--tone-sky); }
+  .icon-tile.violet  { background: color-mix(in oklab, var(--tone-violet)  18%, transparent); color: var(--tone-violet); }
+  .icon-tile.amber   { background: color-mix(in oklab, var(--tone-amber)   18%, transparent); color: var(--tone-amber); }
+  .icon-tile.rose    { background: color-mix(in oklab, var(--tone-rose)    18%, transparent); color: var(--tone-rose); }
+  .icon-tile.emerald { background: color-mix(in oklab, var(--tone-emerald) 18%, transparent); color: var(--tone-emerald); }
+
+  /* 우측 사이드 레일 — 패치노트 + 방랑상인 */
+  .side-rail { width: 240px; flex-shrink: 0; position: sticky; top: 24px;
+               display: flex; flex-direction: column; gap: 16px; }
+  .patch-aside { padding: 16px; background: var(--bg2);
+                 border: 1px solid var(--border); border-radius: 12px;
+                 cursor: pointer; transition: border-color .15s; }
+  .patch-aside:hover { border-color: var(--accent); }
+  .patch-aside-head { display: flex; justify-content: space-between;
+                      align-items: baseline; margin-bottom: 12px; gap: 8px; }
+  .patch-aside-more { font-size: 10px; color: var(--accent); white-space: nowrap; }
+
+  .patch-item { padding-bottom: 12px;
+                border-bottom: 1px solid var(--border2); }
+  .patch-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .patch-item + .patch-item { padding-top: 10px; }
+  .patch-item-head { display: flex; align-items: center; gap: 6px;
+                     margin-bottom: 6px; }
+  .patch-ver { font-size: 11px; font-weight: 700; color: var(--accent); }
+  .patch-date { font-size: 10px; color: var(--text4); }
+  .patch-badge { font-size: 9px; font-weight: 700; letter-spacing: 0.06em;
+                 padding: 2px 6px; border-radius: 4px; }
+  .badge-new    { background: color-mix(in oklab, var(--tone-emerald) 16%, transparent); color: var(--tone-emerald); }
+  .badge-fix    { background: color-mix(in oklab, var(--tone-rose) 16%, transparent); color: var(--tone-rose); }
+  .badge-update { background: var(--accent-bg); color: var(--accent); }
+  .patch-item ul { list-style: none; }
+  .patch-item li { font-size: 11px; line-height: 1.5; color: var(--text2);
+                   padding-left: 8px; position: relative; }
+  .patch-item li::before { content: "·"; position: absolute; left: 0; color: var(--accent); }
+
+  .day-card { display: flex; align-items: center; gap: 10px;
+              padding: 14px; border-radius: 12px;
+              border: 1px dashed var(--border-strong);
+              background: transparent; text-align: left; width: 100%; }
+  .day-card:hover { border-color: var(--accent); border-style: solid; }
+  .day-icon { width: 32px; height: 32px; border-radius: 999px;
+              background: var(--bg3); flex-shrink: 0;
+              display: flex; align-items: center; justify-content: center;
+              overflow: hidden; }
+  .day-icon img { width: 80%; height: 80%; object-fit: contain; }
+  .day-text-title { font-size: 12px; font-weight: 600; color: var(--text); }
+  .day-text-sub   { font-size: 10px; color: var(--text3); }
+
+  /* 푸터 */
+  .page-footer { display: flex; flex-direction: column; gap: 12px;
+                 border-top: 1px solid var(--border);
+                 padding: 20px 0 4px; margin-top: 28px;
+                 color: var(--text3); font-size: 11px; }
+  .footer-links { display: flex; gap: 10px; flex-wrap: wrap; }
+  .contact-pill { display: inline-flex; align-items: center; gap: 8px;
+                  padding: 6px 12px 6px 6px; border-radius: 999px;
+                  border: 1px solid var(--border); background: var(--bg2);
+                  color: var(--text2); font-size: 12px; white-space: nowrap; }
+  .contact-pill:hover { border-color: var(--accent); color: var(--text); }
+  .contact-dot { width: 18px; height: 18px; border-radius: 999px;
+                 font-size: 10px; font-weight: 800;
+                 display: inline-flex; align-items: center; justify-content: center; }
+  .contact-dot.k { background: #FEE500; color: #3C1E1E; }
+  .contact-dot.d { background: #5865F2; color: #fff; }
+  .footer-meta { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+
+  /* ─── 모바일 ──────────────────────────────────────────────────── */
+  .mobile-only { display: none; }
+  .mobile-bar { display: none; }
+
+  @media (max-width: 700px) {
+    .page { padding: 0 18px 18px; }
+    .pc-only { display: none !important; }
+    .mobile-only { display: flex; }
+
+    /* 모바일 스티키 헤더 */
+    .mobile-sticky { position: sticky; top: 0;
+                     margin: 0 -18px 12px;
+                     padding: 12px 16px;
+                     background: var(--bg);
+                     border-bottom: 1px solid var(--border);
+                     display: flex; align-items: center; justify-content: space-between;
+                     z-index: 20; }
+    .mobile-logo { display: flex; align-items: center; gap: 8px; }
+    .mobile-logo-tile { width: 24px; height: 24px; border-radius: 6px;
+                        background: var(--accent); color: #fff;
+                        display: flex; align-items: center; justify-content: center;
+                        font-weight: 800; font-size: 11px; }
+    .mobile-logo-text { font-size: 13px; font-weight: 700; }
+    .mobile-actions { display: flex; gap: 4px; }
+    .icon-btn { width: 32px; height: 32px; border-radius: 999px;
+                border: 1px solid var(--border); background: var(--bg2);
+                color: var(--text2); font-size: 12px;
+                display: inline-flex; align-items: center; justify-content: center; }
+
+    .h-display { font-size: 32px; }
+    .hero-desc { font-size: 13px; }
+    .hero { padding: 8px 0; }
+    .tab-bar { justify-content: center; gap: 14px; }
+    .body { flex-direction: column; gap: 22px; }
+    .side-rail { width: 100%; position: static; }
+    .cards { grid-template-columns: 1fr; }
+    .cards.tri { grid-template-columns: 1fr; }
+
+    /* 하단 액션 바 */
+    .mobile-bar { display: flex; position: fixed; bottom: 0; left: 0; right: 0;
+                  padding: 8px 8px calc(env(safe-area-inset-bottom, 0px) + 6px);
+                  background: color-mix(in srgb, var(--bg) 94%, transparent);
+                  backdrop-filter: blur(12px);
+                  -webkit-backdrop-filter: blur(12px);
+                  border-top: 1px solid var(--border);
+                  z-index: 30; }
+    .page { padding-bottom: 80px; }
+    .mobile-bar button { flex: 1; height: 48px;
+                          display: flex; flex-direction: column;
+                          align-items: center; justify-content: center; gap: 2px;
+                          color: var(--text3); font-size: 10px; font-weight: 500;
+                          position: relative; }
+    .mobile-bar button .glyph { font-size: 17px; line-height: 1; }
+    .mobile-bar button.active { color: var(--accent); font-weight: 700; }
+    .mobile-bar button.active::after { content: ''; position: absolute;
+                                       top: -1px; left: 50%; transform: translateX(-50%);
+                                       width: 24px; height: 2px; background: var(--accent);
+                                       border-radius: 999px; }
+  }
+
+  /* ─── 모달 (원본 그대로) ─────────────────────────────────────── */
+  .patch-modal-overlay,
+  .item-modal-overlay { display: none; position: fixed; inset: 0;
+                        background: rgba(0,0,0,0.7); z-index: 500;
+                        align-items: center; justify-content: center; }
+  .patch-modal-overlay.open,
+  .item-modal-overlay.open { display: flex; }
+  .patch-modal { background: var(--bg2); border: 1px solid var(--border);
+                 border-radius: 12px; padding: 24px; width: 90%; max-width: 480px;
+                 max-height: 70vh; overflow-y: auto; position: relative; }
+  .patch-modal-title { font-size: 16px; font-weight: 700; color: var(--text);
+                       margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .patch-modal-close,
+  .item-modal-close { position: absolute; top: 14px; right: 16px;
+                       color: var(--text2); font-size: 18px; }
+  .patch-modal-close:hover,
+  .item-modal-close:hover { color: var(--text); }
+  .patch-item-modal { margin-bottom: 16px; padding-bottom: 16px;
+                      border-bottom: 1px solid var(--border2); }
+  .patch-item-modal:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .patch-item-content { font-size: 12px; color: var(--text2); line-height: 2; margin-top: 8px; }
+  .patch-item-content li { list-style: none; padding-left: 12px; position: relative; }
+  .patch-item-content li::before { content: "·"; position: absolute; left: 0; color: var(--accent); }
+  .patch-more-btn { display: block; width: 100%; margin-top: 16px; padding: 10px;
+                    background: var(--bg3); border: 1px solid var(--border3, var(--border));
+                    border-radius: 8px; color: var(--accent); font-size: 13px; font-weight: 600;
+                    text-align: center; text-decoration: none; }
+  .patch-more-btn:hover { border-color: var(--accent); }
+  .item-modal { background: var(--bg2); border: 1px solid var(--border);
+                border-radius: 12px; padding: 20px; width: 90%; max-width: 400px;
+                position: relative; text-align: center; }
+  .item-modal-title { font-size: 14px; font-weight: 700; color: var(--accent); margin-bottom: 12px; }
+  .item-modal img { width: 100%; border-radius: 8px; display: block; }
 </style>
 </head>
+
 <body>
 
-<!-- 모바일 -->
-<div class="mobile-layout">
-  <h1>종합 정보사이트<br>made by 닉스</h1>
-  <p class="subtitle">원하는 메뉴를 선택하세요</p>
-  <div class="stats-bar" id="mobile-stats">
-    <div class="stat-item">오늘 방문자 <span id="m-today">-</span>명</div>
-    <div class="stat-item">누적 방문자 <span id="m-total">-</span>명</div>
-    <div class="stat-item">회원 <span id="m-members">-</span>명</div>
+<template id="__bundler_thumbnail" data-bg-color="#0e1116">
+  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100" height="100" fill="#0e1116"/>
+    <rect x="30" y="30" width="40" height="40" rx="8" fill="#7aa2f7"/>
+    <text x="50" y="58" font-family="-apple-system, sans-serif" font-size="22" font-weight="800" text-anchor="middle" fill="#fff">N</text>
+  </svg>
+</template>
+
+<div class="page">
+
+  <!-- 모바일 스티키 헤더 -->
+  <div class="mobile-sticky mobile-only">
+    <div class="mobile-logo">
+      <div class="mobile-logo-tile">N</div>
+      <span class="mobile-logo-text">종합 정보사이트</span>
+    </div>
+    <div class="mobile-actions">
+      <a href="./en/index.html" class="icon-btn">🌐</a>
+      <button class="icon-btn" onclick="openThemeModal()">🎨</button>
+    </div>
   </div>
-  <div style="display:flex;justify-content:center;margin-bottom:12px;gap:8px">
-    <button class="patch-note-btn" onclick="openPatchModal()">
-      <span class="patch-note-icon">📋</span> 패치노트
+
+  <!-- PC 헤더 액션 -->
+  <div class="header-actions pc-only">
+    <a href="./en/index.html" class="pill-btn">🌐 EN</a>
+    <button class="pill-btn" onclick="openThemeModal()">🎨 테마</button>
+  </div>
+
+  <!-- 헤드라인 -->
+  <header class="hero">
+    <div class="hero-marker">
+      <span class="line"></span>
+      <span class="h-section">made by 닉스</span>
+    </div>
+    <h1 class="h-display">종합 정보사이트</h1>
+    <p class="hero-desc">드래곤빌리지 초월 등급표, 도감, 레이드, 공략, 커뮤니티, 자동 계산기까지 — 한 페이지에서.</p>
+    <div class="stats-strip" id="stats-strip">
+      <span>오늘 <strong id="s-today">-</strong></span>
+      <span>누적 <strong id="s-total">-</strong></span>
+      <span>회원 <strong id="s-members">-</strong></span>
+    </div>
+  </header>
+
+  <!-- 탭 바 -->
+  <nav class="tab-bar" data-scroll-x>
+    <button class="tab active" onclick="switchTab('info', this)">정보</button>
+    <button class="tab" onclick="switchTab('guide', this)">공략 &amp; 가이드</button>
+    <button class="tab" onclick="switchTab('weekly', this)">주간</button>
+    <button class="tab" onclick="switchTab('community', this)">커뮤니티</button>
+    <button class="tab" onclick="switchTab('calculator', this)">계산기</button>
+  </nav>
+
+  <!-- 본문 -->
+  <div class="body">
+    <main class="main-column">
+
+      <section class="category active" id="cat-info">
+        <div class="cat-head"><h3>정보</h3><span class="meta">· 4개 메뉴</span></div>
+        <div class="cards">
+          <a href="./tier.html" class="card">
+            <span class="icon-tile sky">초등</span>
+            <div class="card-body">
+              <div class="card-title">초월 등급표</div>
+              <div class="card-desc">속성별 초월 드래곤 등급 정보 · 속성 · 타입 필터</div>
+            </div>
+          </a>
+          <a href="./dex.html" class="card">
+            <span class="icon-tile violet">도감</span>
+            <div class="card-body">
+              <div class="card-title">드래곤 도감</div>
+              <div class="card-desc">전체 697마리 드래곤 정보 · 속성 · 타입 · 단계 필터</div>
+            </div>
+          </a>
+          <a href="./sss.html" class="card">
+            <span class="icon-tile amber">트스</span>
+            <div class="card-body">
+              <div class="card-title">SSS 랭킹</div>
+              <div class="card-desc">Lv.45 / Lv.21 SSS 드래곤 랭킹 · 속성 필터 지원</div>
+            </div>
+          </a>
+          <a href="./raid.html" class="card">
+            <span class="icon-tile rose">알하</span>
+            <div class="card-body">
+              <div class="card-title">아르하 입구</div>
+              <div class="card-desc">디데락 조합, 평르하 조합 · 자동 조합기능 제공</div>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <section class="category" id="cat-guide">
+        <div class="cat-head"><h3>공략 &amp; 가이드</h3><span class="meta">· 2개 메뉴</span></div>
+        <div class="cards">
+          <a href="./guide.html?from=guide" class="card">
+            <span class="icon-tile amber">팁게</span>
+            <div class="card-body">
+              <div class="card-title">공략 &amp; 가이드</div>
+              <div class="card-desc">드래곤 공략 및 레이드 가이드 · 글 목록</div>
+            </div>
+          </a>
+          <a href="./raid_info.html" class="card">
+            <span class="icon-tile emerald">조합</span>
+            <div class="card-body">
+              <div class="card-title">레이드 정보</div>
+              <div class="card-desc">아르하필드 · 일반 레이드 · 레무리아 보스 상세</div>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <section class="category" id="cat-weekly">
+        <div class="cat-head"><h3>주간</h3><span class="meta">· 1개 메뉴</span></div>
+        <div class="cards">
+          <a href="./weekly.html?from=weekly" class="card">
+            <span class="icon-tile sky">주간</span>
+            <div class="card-body">
+              <div class="card-title">주간 정보</div>
+              <div class="card-desc">레무리아 · 레이드 · 길드전 · 매주 업데이트</div>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <section class="category" id="cat-community">
+        <div class="cat-head"><h3>커뮤니티</h3><span class="meta">· 2개 메뉴</span></div>
+        <div class="cards">
+          <a href="./guild.html?from=community" class="card">
+            <span class="icon-tile emerald">길드</span>
+            <div class="card-body">
+              <div class="card-title">길드</div>
+              <div class="card-desc">길드 홍보 및 모집 정보</div>
+            </div>
+          </a>
+          <a href="./friend.html?from=community" class="card">
+            <span class="icon-tile violet">친추</span>
+            <div class="card-body">
+              <div class="card-title">친구요청</div>
+              <div class="card-desc">정기친구 · 레이드 프리미엄 · 친구 게시판</div>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <section class="category" id="cat-calculator">
+        <div class="cat-head cat-head-row">
+          <div class="cat-head-inner"><h3>계산기</h3><span class="meta">· 3개 메뉴</span></div>
+          <a href="./my.html" class="my-spec-btn">👤 내 스펙 →</a>
+        </div>
+        <div class="cards tri">
+          <a href="./calculator.html?from=calculator" class="card">
+            <span class="icon-tile sky">정령</span>
+            <div class="card-body">
+              <div class="card-title">자동 계산기</div>
+              <div class="card-desc">본인 셋팅 저장 · 정령 자동 비밸셋팅</div>
+            </div>
+          </a>
+          <a href="./pvp.html?from=calculator" class="card">
+            <span class="icon-tile amber">일반</span>
+            <div class="card-body">
+              <div class="card-title">길드전 계산기<br>(오리지널)</div>
+              <div class="card-desc">9.0 고정 · 너프 제외 · 매주 최적셋팅</div>
+            </div>
+          </a>
+          <a href="./noob.html?from=calculator" class="card">
+            <span class="icon-tile emerald">뉴비</span>
+            <div class="card-body">
+              <div class="card-title">길드전 계산기<br>(뉴비)</div>
+              <div class="card-desc">7.0~9.0 선택 · 너프 적용 출력</div>
+            </div>
+          </a>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- 우측 사이드 (PC) -->
+    <aside class="side-rail pc-only">
+      <div class="patch-aside" onclick="openPatchModal()">
+        <div class="patch-aside-head">
+          <span class="h-section">패치노트</span>
+          <span class="patch-aside-more">전체 →</span>
+        </div>
+        <div class="patch-item">
+          <div class="patch-item-head">
+            <span class="patch-ver">v0.0.7</span>
+            <span class="patch-date">2026-05-23</span>
+            <span class="patch-badge badge-new">NEW</span>
+          </div>
+          <ul><li>전체적인 Ui 개선</li></ul>
+          <ul><li>계산기에 적용될 내 스펙 창 추가</li></ul>
+          <ul><li>내 스펙 내보내기/불러오기 기능 추가</li></ul>
+        </div>
+        <div class="patch-item">
+          <div class="patch-item-head">
+            <span class="patch-ver">v0.0.6</span>
+            <span class="patch-date">2026-05-06</span>
+            <span class="patch-badge badge-new">NEW</span>
+          </div>
+          <ul><li>비밸 기준 자동 계산기 추가</li></ul>
+        </div>
+      </div>
+      <button class="day-card" onclick="openItemModal()">
+        <div class="day-icon">
+          <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/Day.png" alt="방랑상인"
+               onerror="this.style.display='none'">
+        </div>
+        <div>
+          <div class="day-text-title">방랑상인</div>
+          <div class="day-text-sub">오늘의 품목 보기</div>
+        </div>
+      </button>
+    </aside>
+  </div>
+
+  <!-- 푸터 -->
+  <footer class="page-footer">
+    <div class="footer-links">
+      <a href="https://open.kakao.com/o/sgNwijri" target="_blank" class="contact-pill">
+        <span class="contact-dot k">K</span> 카카오톡 문의
+      </a>
+      <a href="https://discord.com/users/629966669875511296" target="_blank" class="contact-pill">
+        <span class="contact-dot d">D</span> 디스코드
+
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSdsQPhcdYw7hC3l-eDyjgDu9y8Jj_07px_tucgakNFPfTtPyQ/viewform?usp=publish-editor" target="_blank" class="contact-pill">
+        <span class="contact-dot G">G</span> 구글 설문 폼
+      </a>
+    </div>
+    <div class="footer-meta">
+      <span>© 종합 정보사이트 · made by 닉스
+        <br>계산기 개발 · made by 리레프
+      </span>
+      <span>문의 후 답변까지 1~2일 소요될 수 있습니다.</span>
+    </div>
+  </footer>
+
+  <!-- 모바일 하단 액션 바 -->
+  <nav class="mobile-bar mobile-only">
+    <button class="active" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+      <span class="glyph">⌂</span><span>홈</span>
     </button>
-    <button onclick="openThemeModal()" style="padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;cursor:pointer;font-family:inherit">🎨 테마</button>
-      <a href="./en/index.html" style="padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:4px">🌐 EN</a>
-  </div>
-  <div class="contact-bar">
-    <a href="https://open.kakao.com/o/sgNwijri" target="_blank" class="contact-btn contact-kakao">
-      <span class="contact-icon">K</span>카카오톡
-    </a>
-    <a href="https://discord.com/users/629966669875511296" target="_blank" class="contact-btn contact-discord">
-      <span class="contact-icon">D</span>디스코드
-    </a>
-    <button class="day-icon-btn" onclick="openItemModal()">
-      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/Day.png" alt="방랑상인">
+    <button onclick="openItemModal()">
+      <span class="glyph">☀</span><span>방랑상인</span>
     </button>
-  </div>
-  <div class="mobile-tabs">
-    <button class="mobile-tab active" onclick="switchMobileTab('info', this)">정보</button>
-    <button class="mobile-tab" onclick="switchMobileTab('guide', this)">공략&amp;가이드</button>
-    <button class="mobile-tab" onclick="switchMobileTab('weekly', this)">주간</button>
-    <button class="mobile-tab" onclick="switchMobileTab('community', this)">커뮤니티</button>
-    <button class="mobile-tab" onclick="switchMobileTab('calculator', this)">계산기</button>
-  </div>
-  <div class="mobile-category active" id="mobile-info">
-    <a href="./tier.html" class="card"><span class="card-badge">정보</span><div class="card-title">초월 등급표</div><div class="card-desc">속성별 초월 드래곤 등급 정보<br>속성 · 타입 필터 지원</div></a>
-    <a href="./dex.html" class="card"><span class="card-badge">정보</span><div class="card-title">드래곤 도감</div><div class="card-desc">전체 697마리 드래곤 정보<br>속성 · 타입 · 단계 · 코드화 필터 지원</div></a>
-    <a href="./sss.html" class="card"><span class="card-badge">정보</span><div class="card-title">SSS 랭킹</div><div class="card-desc">Lv.45 / Lv.21 SSS 드래곤 랭킹<br>속성 필터 지원</div></a>
-    <a href="./raid.html" class="card"><span class="card-badge">정보</span><div class="card-title">아르하 입구</div><div class="card-desc">디데락 조합, 평르하 조합<br>디데락 자동 조합기능 제공</div></a>
-    <a href="./raid_info.html" class="card"><span class="card-badge">정보</span><div class="card-title">레이드 정보</div><div class="card-desc">아르하필드 · 일반 레이드 · 레무리아<br>보스별 상세 정보</div></a>
-  </div>
-  <div class="mobile-category" id="mobile-guide">
-    <a href="./guide.html?from=guide" class="card"><span class="card-badge card-badge-guide">공략</span><div class="card-title">공략 &amp; 가이드</div><div class="card-desc">드래곤 공략 및 레이드 가이드<br>글 목록 보기</div></a>
-  </div>
-  <div class="mobile-category" id="mobile-weekly">
-    <a href="./weekly.html?from=weekly" class="card"><span class="card-badge" style="background:rgba(245,200,66,0.15);color:#f5c842;border:1px solid rgba(245,200,66,0.3)">주간</span><div class="card-title">주간 정보</div><div class="card-desc">레무리아 · 레이드 · 길드전<br>매주 업데이트되는 주간 정보</div></a>
-  </div>
-  <div class="mobile-category" id="mobile-community">
-    <a href="./guild.html?from=community" class="card"><span class="card-badge card-badge-community">커뮤니티</span><div class="card-title">길드</div><div class="card-desc">길드 홍보 및 모집 정보</div></a>
-    <a href="./friend.html?from=community" class="card"><span class="card-badge card-badge-community">커뮤니티</span><div class="card-title">친구요청</div><div class="card-desc">정기친구 · 레이드 프리미엄<br>친구 구하는 게시판</div></a>
-  </div>
-  <!-- ✅ 계산기 탭 카드 (올바른 위치) -->
-  <div class="mobile-category" id="mobile-calculator">
-    <a href="./calculator.html?from=calculator" class="card"><span class="card-badge card-badge-calculator">계산기</span><div class="card-title">자동 계산기</div><div class="card-desc">본인 셋팅 저장 · 정령 자동 비밸셋팅</div></a>
-    <a href="./pvp.html?from=calculator" class="card"><span class="card-badge card-badge-original">오리지널 버전</span><div class="card-title">길드전 자동 계산기</div><div class="card-desc">드래곤별 정령 귀속상태 저장<br>매주 버프별 최적셋팅</div><div class="card-desc">9.0 고정 · 너프 제외 결과 출력</div></a>
-    <a href="./noob.html?from=calculator" class="card"><span class="card-badge card-badge-newbie">뉴비 버전</span><div class="card-title">길드전 자동 계산기</div><div class="card-desc">드래곤별 정령 귀속상태 저장<br>매주 버프별 최적셋팅</div><div class="card-desc">7.0~9.0 선택가능 · 너프 적용 출력 가능</div></a>
-  </div>
+    <button onclick="openPatchModal()">
+      <span class="glyph">📋</span><span>패치노트</span>
+    </button>
+    <button onclick="location.href='./my.html'">
+      <span class="glyph">👤</span><span>내 스펙</span>
+    </button>
+  </nav>
+
 </div>
 
-<!-- PC -->
-<div class="pc-layout">
-  <div class="pc-header">
-    <h1>종합 정보사이트 made by 닉스</h1>
-    <p class="subtitle"> </p>
-    <div class="stats-bar" id="pc-stats">
-      <div class="stat-item">오늘 방문자 <span id="p-today">-</span>명</div>
-      <div class="stat-item">누적 방문자 <span id="p-total">-</span>명</div>
-      <div class="stat-item">회원 <span id="p-members">-</span>명</div>
-    </div>
-    <div style="display:flex;justify-content:center;margin-bottom:12px;gap:8px">
-      <button class="patch-note-btn" onclick="openPatchModal()">
-        <span class="patch-note-icon">📋</span> 패치노트
-      </button>
-      <button onclick="openThemeModal()" style="padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;cursor:pointer;font-family:inherit">🎨 테마</button>
-      <a href="./en/index.html" style="padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:4px">🌐 EN</a>
-    </div>
-    <div class="contact-bar">
-      <a href="https://open.kakao.com/o/sgNwijri" target="_blank" class="contact-btn contact-kakao">
-        <span class="contact-icon">K</span>카카오톡
-      </a>
-      <a href="https://discord.com/users/629966669875511296" target="_blank" class="contact-btn contact-discord">
-        <span class="contact-icon">D</span>디스코드
-      </a>
-      <button class="day-icon-btn" onclick="openItemModal()">
-        <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/Day.png" alt="방랑상인">
-      </button>
-    </div>
-  </div>
-  <div class="pc-body">
-    <div class="pc-tabs">
-      <button class="pc-tab active" onclick="switchPCTab('info', this)">정보</button>
-      <button class="pc-tab" onclick="switchPCTab('guide', this)">공략 &amp; 가이드</button>
-      <button class="pc-tab" onclick="switchPCTab('weekly', this)">주간</button>
-      <button class="pc-tab" onclick="switchPCTab('community', this)">커뮤니티</button>
-      <!-- ✅ PC 계산기 탭 버튼 추가 -->
-      <button class="pc-tab" onclick="switchPCTab('calculator', this)">계산기</button>
-    </div>
-    <div class="pc-cards">
-      <div class="pc-category active" id="pc-info">
-        <a href="./tier.html" class="card"><span class="card-badge">정보</span><div class="card-title">초월 등급표</div><div class="card-desc">속성별 초월 드래곤 등급 정보<br>속성 · 타입 필터 지원</div></a>
-        <a href="./dex.html" class="card"><span class="card-badge">정보</span><div class="card-title">드래곤 도감</div><div class="card-desc">전체 697마리 드래곤 정보<br>속성 · 타입 · 단계 · 코드화 필터 지원</div></a>
-        <a href="./sss.html" class="card"><span class="card-badge">정보</span><div class="card-title">SSS 랭킹</div><div class="card-desc">Lv.45 / Lv.21 SSS 드래곤 랭킹<br>속성 필터 지원</div></a>
-        <a href="./raid.html" class="card"><span class="card-badge">정보</span><div class="card-title">아르하 입구</div><div class="card-desc">디데락 조합, 평르하 조합<br>디데락 자동 조합기능 제공</div></a>
-        <a href="./raid_info.html" class="card"><span class="card-badge">정보</span><div class="card-title">레이드 정보</div><div class="card-desc">아르하필드 · 일반 레이드 · 레무리아<br>보스별 상세 정보</div></a>
-      </div>
-      <div class="pc-category" id="pc-guide">
-        <a href="./guide.html?from=guide" class="card"><span class="card-badge card-badge-guide">공략</span><div class="card-title">공략 &amp; 가이드</div><div class="card-desc">드래곤 공략 및 레이드 가이드<br>글 목록 보기</div></a>
-      </div>
-      <div class="pc-category" id="pc-weekly">
-        <a href="./weekly.html?from=weekly" class="card"><span class="card-badge" style="background:rgba(245,200,66,0.15);color:#f5c842;border:1px solid rgba(245,200,66,0.3)">주간</span><div class="card-title">주간 정보</div><div class="card-desc">레무리아 · 레이드 · 길드전<br>매주 업데이트되는 주간 정보</div></a>
-      </div>
-      <div class="pc-category" id="pc-community">
-        <a href="./guild.html?from=community" class="card"><span class="card-badge card-badge-community">커뮤니티</span><div class="card-title">길드</div><div class="card-desc">길드 홍보 및 모집 정보</div></a>
-        <a href="./friend.html?from=community" class="card"><span class="card-badge card-badge-community">커뮤니티</span><div class="card-title">친구요청</div><div class="card-desc">정기친구 · 레이드 프리미엄<br>친구 구하는 게시판</div></a>
-      </div>
-      <!-- ✅ PC 계산기 카드 (올바른 위치) -->
-      <div class="pc-category" id="pc-calculator">
-        <a href="./calculator.html?from=calculator" class="card"><span class="card-badge card-badge-calculator">계산기</span><div class="card-title">자동 계산기</div><div class="card-desc">본인 셋팅 저장 · 정령 자동 비밸셋팅</div></a>
-        <a href="./pvp.html?from=calculator" class="card"><span class="card-badge card-badge-original">오리지널</span><div class="card-title">길드전 자동 계산기</div><div class="card-desc">드래곤별 정령 귀속상태 저장<br>매주 버프별 최적셋팅</div><div class="card-desc">9.0 고정 · 너프 제외 결과 출력</div></a>
-        <a href="./noob.html?from=calculator" class="card"><span class="card-badge card-badge-newbie">뉴비 버전</span><div class="card-title">길드전 자동 계산기</div><div class="card-desc">드래곤별 정령 귀속상태 저장<br>매주 버프별 최적셋팅</div><div class="card-desc">7.0~9.0 선택가능 · 너프 적용 출력 가능</div></a>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- 패치노트 모달 -->
+<!-- 패치노트 모달 (원본 그대로) -->
 <div class="patch-modal-overlay" id="patch-modal-overlay" onclick="closePatchModal(event)">
-  <div class="patch-modal">
+  <div class="patch-modal" onclick="event.stopPropagation()">
     <button class="patch-modal-close" onclick="closePatchModal()">✕</button>
     <div class="patch-modal-title">📋 패치노트</div>
     <div id="patch-modal-body">
-      <div class="patch-item">
-        <div class="patch-item-header">
-          <span class="patch-version">v0.0.6</span>
-          <span class="patch-date">2026-05-06</span>
-          <span class="patch-item-badge badge-new">NEW</span>
+      <div class="patch-item-modal">
+        <div class="patch-item-head">
+          <span class="patch-ver">v0.0.7</span>
+          <span class="patch-date">2026-05-23</span>
+          <span class="patch-badge badge-new">NEW</span>
         </div>
         <ul class="patch-item-content">
-          <li>비밸 기준 자동 계산기 추가</li>
+          <ul><li>전체적인 Ui 개선</li></ul>
+          <ul><li>계산기에 적용될 내 스펙 창 추가</li></ul>
+          <ul><li>내 스펙 내보내기/불러오기 기능 추가</li></ul>
+          <ul><li>문의용 구글 폼 추가</li></ul>
           <li style="color:#666">오류 발생시 문의 부탁드립니다.</li>
         </ul>
       </div>
@@ -238,79 +590,87 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
   </div>
 </div>
 
-<!-- 방랑상인 모달 -->
+<!-- 방랑상인 모달 (원본 그대로) -->
 <div class="item-modal-overlay" id="item-modal-overlay" onclick="closeItemModal(event)">
-  <div class="item-modal">
+  <div class="item-modal" onclick="event.stopPropagation()">
     <button class="item-modal-close" onclick="closeItemModal()">✕</button>
     <div class="item-modal-title">방랑상인 품목</div>
     <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/item.png" alt="방랑상인">
   </div>
 </div>
 
+<!-- Supabase 설정 (원본 그대로) -->
 <script src="./sb_config.js"></script>
+
 <script>
-function openPatchModal(){document.getElementById('patch-modal-overlay').classList.add('open')}
-function closePatchModal(e){if(!e||e.target===document.getElementById('patch-modal-overlay'))document.getElementById('patch-modal-overlay').classList.remove('open')}
-function openItemModal(){document.getElementById('item-modal-overlay').classList.add('open')}
-function closeItemModal(e){if(!e||e.target===document.getElementById('item-modal-overlay'))document.getElementById('item-modal-overlay').classList.remove('open')}
+  // ─── 모달 (원본 그대로) ─────────────────────────────────────
+  function openPatchModal()  { document.getElementById('patch-modal-overlay').classList.add('open'); }
+  function closePatchModal(e){ if (!e || e.target === document.getElementById('patch-modal-overlay')) document.getElementById('patch-modal-overlay').classList.remove('open'); }
+  function openItemModal()   { document.getElementById('item-modal-overlay').classList.add('open'); }
+  function closeItemModal(e) { if (!e || e.target === document.getElementById('item-modal-overlay')) document.getElementById('item-modal-overlay').classList.remove('open'); }
 
-function switchPCTab(tab, el){
-  document.querySelectorAll('.pc-tab').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.pc-category').forEach(c=>c.classList.remove('active'));
-  (el||event.currentTarget).classList.add('active');
-  document.getElementById('pc-'+tab).classList.add('active');
-}
-
-function switchMobileTab(tab,el){
-  document.querySelectorAll('.mobile-tab').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.mobile-category').forEach(c=>c.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('mobile-'+tab).classList.add('active');
-}
-
-async function trackVisitor() {
-  try {
-    const today = new Date().toISOString().slice(0,10);
-    const lastVisit = localStorage.getItem('last_visit');
-    if(lastVisit !== today) {
-      await supabase('POST', 'visitors', { visited_at: today });
-      localStorage.setItem('last_visit', today);
-    }
-    const todayCount = await getCount('visitors', `?visited_at=eq.${today}`);
-    const totalCount = await getCount('visitors');
-    const memberCount = await getCount('users');
-    document.getElementById('m-today').textContent = todayCount.toLocaleString();
-    document.getElementById('m-total').textContent = totalCount.toLocaleString();
-    document.getElementById('m-members').textContent = memberCount.toLocaleString();
-    document.getElementById('p-today').textContent = todayCount.toLocaleString();
-    document.getElementById('p-total').textContent = totalCount.toLocaleString();
-    document.getElementById('p-members').textContent = memberCount.toLocaleString();
-  } catch(e) { console.error(e); }
-}
-
-trackVisitor();
-
-// ?tab= 파라미터가 있으면 해당 탭 자동 활성화
-(function() {
-  const tab = new URLSearchParams(location.search).get('tab');
-  if(!tab) return;
-  const mobileBtn = document.querySelector(`.mobile-tab[onclick*="'${tab}'"]`);
-  if(mobileBtn) {
-    document.querySelectorAll('.mobile-tab').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.mobile-category').forEach(c => c.classList.remove('active'));
-    mobileBtn.classList.add('active');
-    const cat = document.getElementById('mobile-' + tab);
-    if(cat) cat.classList.add('active');
+  // ─── 탭 전환 (URL ?tab= 동기화) ──────────────────────────────
+  function switchTab(tab, el) {
+    document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.category').forEach(c => c.classList.remove('active'));
+    (el || event.currentTarget).classList.add('active');
+    const cat = document.getElementById('cat-' + tab);
+    if (cat) cat.classList.add('active');
+    try {
+      const url = new URL(location.href);
+      if (tab === 'info') url.searchParams.delete('tab');
+      else url.searchParams.set('tab', tab);
+      history.replaceState(null, '', url.toString());
+    } catch(e) { /* srcdoc/iframe 환경에서는 무시 */ }
   }
-  const pcBtn = document.querySelector(`.pc-tab[onclick*="'${tab}'"]`);
-  if(pcBtn) {
-    document.querySelectorAll('.pc-tab').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.pc-category').forEach(c => c.classList.remove('active'));
-    pcBtn.classList.add('active');
-    const cat = document.getElementById('pc-' + tab);
-    if(cat) cat.classList.add('active');
+
+  // ─── 방문자 통계 (원본 trackVisitor 그대로) ─────────────────
+  async function trackVisitor() {
+    try {
+      const today = new Date().toISOString().slice(0,10);
+      const lastVisit = localStorage.getItem('last_visit');
+      if (lastVisit !== today) {
+        await supabase('POST', 'visitors', { visited_at: today });
+        localStorage.setItem('last_visit', today);
+      }
+      const todayCount  = await getCount('visitors', `?visited_at=eq.${today}`);
+      const totalCount  = await getCount('visitors');
+      const memberCount = await getCount('users');
+      document.getElementById('s-today').textContent   = todayCount.toLocaleString();
+      document.getElementById('s-total').textContent   = totalCount.toLocaleString();
+      document.getElementById('s-members').textContent = memberCount.toLocaleString();
+    } catch (e) { console.error(e); }
   }
-})();
+  if (typeof supabase === 'function' && typeof getCount === 'function') trackVisitor();
+
+  // ─── ?tab= 파라미터 자동 활성화 ──────────────────────────────
+  (function() {
+    const tab = new URLSearchParams(location.search).get('tab');
+    if (!tab) return;
+    const btn = document.querySelector(`.tab[onclick*="'${tab}'"]`);
+    if (btn) switchTab(tab, btn);
+  })();
+
+  // ─── theme.js 가 로드한 CSS 파일을 감지해 <html data-theme=...> 셋팅 ────
+  //  → 리디자인된 [data-theme="dark"] 컬러 팔레트가 원본 위에 오버라이드됨
+  //  → 사용자가 커스텀 테마를 선택하면 data-theme 속성을 비워 사용자 색이 우선
+  (function(){
+    var link = document.getElementById('theme-css');
+    if (!link) return;
+    var sync = function() {
+      var c = document.getElementById('custom-theme-style');
+      if (c && c.textContent && c.textContent.length > 0) {
+        document.documentElement.removeAttribute('data-theme');
+        return;
+      }
+      var m = String(link.href || '').match(/theme-(dark|light|beige)\.css/);
+      document.documentElement.setAttribute('data-theme', m ? m[1] : 'dark');
+    };
+    sync();
+    new MutationObserver(sync).observe(link, { attributes: true, attributeFilter: ['href'] });
+    new MutationObserver(sync).observe(document.head, { childList: true, subtree: true, characterData: true });
+  })();
 </script>
+
 </body>
 </html>

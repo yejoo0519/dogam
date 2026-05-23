@@ -1,3 +1,11 @@
+// ── FOUC 방지: 렌더링 전 data-theme 즉시 설정 ──
+(function(){
+  var t = localStorage.getItem('theme') || 'dark';
+  if (t === 'dark' || t === 'light' || t === 'beige') {
+    document.documentElement.setAttribute('data-theme', t);
+  }
+})();
+
 // 테마 관리
 const THEMES = {
   dark:  { name: '🌙 다크',   file: './theme-dark.css' },

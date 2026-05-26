@@ -396,6 +396,8 @@ input[type=number]{appearance:textfield;-moz-appearance:textfield}
     <div class="sec-hd">
       <span>내 용 정보</span>
       <div style="display:flex;align-items:center;gap:8px;">
+        <button class="btn-gold" style="font-size:12px;padding:4px 12px" onclick="saveDragonToSpec()">💾 내 스펙으로 저장</button>
+        <a href="./my.html" class="btn-white" style="font-size:12px;padding:4px 12px;text-decoration:none">내 스펙 →</a>
         <div class="dragon-view-toggle">
           <button class="dragon-view-btn active" id="btn-dragon-form" onclick="switchDragonView('form')">내 용 정보</button>
           <button class="dragon-view-btn" id="btn-dragon-gallery" onclick="switchDragonView('gallery')">모아보기</button>
@@ -1235,6 +1237,23 @@ function doLoad(){
       }catch(_e){}
     })();
     }catch(e){console.error(e);}
+}
+
+function saveDragonToSpec(){
+  try{
+    // S.dragonCards 직접 사용 (localStorage보다 최신 상태 보장)
+    const dragonCards=S.dragonCards||{};
+    const specRaw=localStorage.getItem('dv1sim_spec');
+    const spec=specRaw?JSON.parse(specRaw):{};
+    spec.dragonCards=dragonCards;
+    localStorage.setItem('dv1sim_spec',JSON.stringify(spec));
+    localStorage.setItem('dv1sim_dragon_pending','1');
+    const t=document.createElement('div');
+    t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--gold);color:#0a0c18;padding:10px 24px;border-radius:8px;font-weight:800;font-size:14px;z-index:9999;transition:opacity .3s';
+    t.textContent='✓ 내 스펙에 드래곤 셋팅이 저장됐어요!';
+    document.body.appendChild(t);
+    setTimeout(()=>{t.style.opacity='0';setTimeout(()=>t.remove(),300);},2200);
+  }catch(e){console.error(e);}
 }
 
 let saveT=null;

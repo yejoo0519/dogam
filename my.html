@@ -98,6 +98,17 @@ select:disabled,input:disabled{opacity:.3;cursor:not-allowed}
 input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 input[type=number]{appearance:textfield;-moz-appearance:textfield}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--gold);color:#0a0c18;padding:10px 24px;border-radius:8px;font-weight:800;font-size:14px;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none}
+/* 토글 섹션 */
+.toggle-sec{border:1px solid var(--bd);border-radius:8px;margin-bottom:10px;overflow:hidden}
+.toggle-sec-hd{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--sf2);cursor:pointer;user-select:none;font-size:13px;font-weight:800;color:var(--text)}
+.toggle-sec-hd:hover{background:var(--sf)}
+.toggle-arrow{font-size:11px;color:var(--dim);transition:transform .2s}
+.toggle-sec-bd{display:none;padding:12px 16px;background:var(--sf)}
+.toggle-sec-bd.open{display:block}
+.dragon-summary-item{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--bd);font-size:12px}
+.dragon-summary-item:last-child{border-bottom:none}
+.acc-summary-item{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--bd);font-size:12px}
+.acc-summary-item:last-child{border-bottom:none}
 .toast.show{opacity:1}
 /* ── 테마 팔레트 ── */
 [data-theme="dark"]{
@@ -177,6 +188,30 @@ input[type=number]{appearance:textfield;-moz-appearance:textfield}
       <input class="code-input acc-search-input" id="import-code" placeholder="코드 12자리 입력" maxlength="12">
       <div style="font-size:11px;color:var(--dim);margin-bottom:8px">⚠ 현재 스펙이 덮어씌워집니다</div>
       <button class="btn-gold" onclick="doImport()">불러오기</button>
+    </div>
+  </div>
+
+  <!-- 드래곤/장신구 셋팅 토글 -->
+  <div class="toggle-sec">
+    <div class="toggle-sec-hd" onclick="toggleSection('dragon-section')">
+      <span>🐉 드래곤 셋팅</span>
+      <span class="toggle-arrow" id="arrow-dragon-section">▼</span>
+    </div>
+    <div class="toggle-sec-bd" id="dragon-section">
+      <div id="dragon-summary-wrap">
+        <div style="color:var(--dim);font-size:12px;text-align:center;padding:10px 0">저장된 드래곤 셋팅이 없어요.<br>pvp/noob 계산기의 내 용 정보에서 <b>내 스펙으로 저장</b>을 눌러주세요.</div>
+      </div>
+    </div>
+  </div>
+  <div class="toggle-sec">
+    <div class="toggle-sec-hd" onclick="toggleSection('acc-section')">
+      <span>✨ 장신구 셋팅</span>
+      <span class="toggle-arrow" id="arrow-acc-section">▼</span>
+    </div>
+    <div class="toggle-sec-bd" id="acc-section">
+      <div id="acc-summary-wrap">
+        <div style="color:var(--dim);font-size:12px;text-align:center;padding:10px 0">등록된 장신구가 없어요.</div>
+      </div>
     </div>
   </div>
 
@@ -380,11 +415,13 @@ const SK={hp:'체',atk:'공',def:'방'};
 // ================================================================
 const SPEC_KEY='dv1sim_spec';
 
+const DRAGON_CATS=['땅','물','불','바람','빛','어둠','황혼','여명','악몽'];
 const mkSpec=()=>({
   accCards:[],
   gems:{hp:{37:0,38:0,39:0,40:0},atk:{37:0,38:0,39:0,40:0},def:{37:0,38:0,39:0,40:0}},
   pendants:[],
   coll:{hp:0,atk:0,def:0},
+  dragonCards:Object.fromEntries(DRAGON_CATS.map(c=>[c,[]])),
 });
 
 let S=mkSpec();
@@ -394,7 +431,8 @@ function applySpec(p){
     accCards:p.accCards||[],
     gems:{...mkSpec().gems,...(p.gems||{})},
     pendants:p.pendants||[],
-    coll:{...mkSpec().coll,...(p.coll||{})}
+    coll:{...mkSpec().coll,...(p.coll||{})},
+    dragonCards:{...mkSpec().dragonCards,...(p.dragonCards||{})}
   };
 }
 function doLoad(){
@@ -405,23 +443,46 @@ function doLoad(){
       for(const k of legacy){const r=localStorage.getItem(k);if(r){raw=r;break;}}
     }
     if(!raw)return;
-    applySpec(JSON.parse(raw));
+    const p=JSON.parse(raw);
+    // dragonCards가 spec에 없으면 pvp에서 가져오기
+    if(!p.dragonCards){
+      try{
+        const pvpRaw=localStorage.getItem('dv1sim_pvp');
+        if(pvpRaw){const pvp=JSON.parse(pvpRaw);if(pvp.dragonCards)p.dragonCards=pvp.dragonCards;}
+      }catch(e){}
+    }
+    applySpec(p);
   }catch(e){console.error(e);}
 }
 async function doLoadCloud(){
+  clearTimeout(saveT);
   const u=getUser();
   if(!u)return;
   try{
     const rows=await supabase('GET','users',null,`?id=eq.${u.id}&select=spec_data`);
     if(rows&&rows[0]&&rows[0].spec_data){
       const p=typeof rows[0].spec_data==='string'?JSON.parse(rows[0].spec_data):rows[0].spec_data;
+
+      // local에 dragonCards 있으면 local 우선 (최신 데이터 보존)
+      // local이 비어있으면 cloud 사용 (reset 후 복원 등)
+      const hasCloudDragons=p.dragonCards&&Object.values(p.dragonCards).some(arr=>Array.isArray(arr)&&arr.some(d=>d&&d.name));
+      const hasLocalDragons=S.dragonCards&&Object.values(S.dragonCards).some(arr=>Array.isArray(arr)&&arr.some(d=>d&&d.name));
+      const dragonPending=localStorage.getItem('dv1sim_dragon_pending');
+      // pvp/noob에서 저장 버튼을 눌렀거나, cloud에 dragon 없으면 local 우선
+      if(dragonPending||(!hasCloudDragons&&hasLocalDragons)){
+        if(hasLocalDragons) p.dragonCards=S.dragonCards;
+        localStorage.removeItem('dv1sim_dragon_pending');
+      }
+
       applySpec(p);
-      localStorage.setItem(SPEC_KEY,JSON.stringify(S));
-      // 세 계산기에도 동기화
-      const _sf={accCards:S.accCards||[],gems:S.gems||{},pendants:S.pendants||[],coll:S.coll||{}};
-      ['dv1sim_pvp','dv1sim_noob','dv1sim_calculator'].forEach(k=>{
-        try{const raw=localStorage.getItem(k);const ex=raw?JSON.parse(raw):{};localStorage.setItem(k,JSON.stringify({...ex,..._sf}));}catch(e){}
-      });
+      localSave();
+
+      // cloud에 dragonCards 없었는데 local 것 사용했으면 Supabase에 올리기
+      if(!hasCloudDragons&&hasLocalDragons){
+        supabase('PATCH','users',{spec_data:JSON.stringify(S)},`?id=eq.${u.id}`)
+          .catch(e=>console.warn('클라우드 저장 실패:',e));
+      }
+
       renderAll();
       showToast('클라우드에서 스펙을 불러왔어요!');
     }
@@ -429,43 +490,176 @@ async function doLoadCloud(){
 }
 
 let saveT=null;
-function doSave(){
-  clearTimeout(saveT);
+
+// localSave: localStorage + pvp/noob 동기화 (자동저장용)
+function localSave(){
   localStorage.setItem(SPEC_KEY,JSON.stringify(S));
-  const el=document.getElementById('save-msg');
-  if(el){el.textContent='✓ 저장됨';setTimeout(()=>el.textContent='',2000);}
-  // 세 계산기에 spec 필드 동기화
-  const specFields = {
-    accCards: S.accCards || [],
-    gems: S.gems || {},
-    pendants: S.pendants || [],
-    coll: S.coll || {},
-  };
-  ['dv1sim_pvp','dv1sim_noob','dv1sim_calculator'].forEach(key => {
-    try {
-      const raw = localStorage.getItem(key);
-      const existing = raw ? JSON.parse(raw) : {};
-      localStorage.setItem(key, JSON.stringify({ ...existing, ...specFields }));
-    } catch(e) {}
+  const specFields={accCards:S.accCards||[],gems:S.gems||{},pendants:S.pendants||[],coll:S.coll||{}};
+  ['dv1sim_pvp','dv1sim_noob','dv1sim_calculator'].forEach(key=>{
+    try{const raw=localStorage.getItem(key);const existing=raw?JSON.parse(raw):{};localStorage.setItem(key,JSON.stringify({...existing,...specFields}));}catch(e){}
   });
-  // 로그인 시 클라우드 저장
+  if(S.dragonCards){
+    ['dv1sim_pvp','dv1sim_noob'].forEach(key=>{
+      try{const raw=localStorage.getItem(key);const existing=raw?JSON.parse(raw):{};localStorage.setItem(key,JSON.stringify({...existing,dragonCards:S.dragonCards}));}catch(e){}
+    });
+  }
+  renderToggleSections();
+}
+
+// doSave: localStorage + pvp/noob 저장. saveCloud=true면 Supabase도 저장
+function doSave(saveCloud=true){
+  clearTimeout(saveT);
+  localSave();
+  const el=document.getElementById('save-msg');
+  if(el&&saveCloud){el.textContent='✓ 저장됨';setTimeout(()=>el.textContent='',2000);}
+  if(saveCloud){
+    const u=getUser();
+    if(u){
+      supabase('PATCH','users',{spec_data:JSON.stringify(S)},`?id=eq.${u.id}`)
+        .catch(e=>console.warn('클라우드 저장 실패:',e));
+    }
+  }
+}
+
+// qSave: 자동저장. saveCloud=false면 localStorage만 (Supabase 건드리지 않음)
+function qSave(saveCloud=true){clearTimeout(saveT);saveT=setTimeout(()=>doSave(saveCloud),1200);}
+
+function resetAll(){
+  if(!confirm('장신구 / 젬 / 펜던트 / 컬렉션 / 드래곤 정보가 모두 초기화됩니다.\n계속하시겠습니까?'))return;
+  S=mkSpec();
+  renderAll();
+  // pvp / noob의 dragonCards도 초기화
+  ['dv1sim_pvp','dv1sim_noob'].forEach(key=>{
+    try{
+      const raw=localStorage.getItem(key);
+      if(raw){
+        const ex=JSON.parse(raw);
+        ex.dragonCards=Object.fromEntries(DRAGON_CATS.map(c=>[c,[]]));
+        localStorage.setItem(key,JSON.stringify(ex));
+      }
+    }catch(e){}
+  });
+  // localStorage + Supabase 모두 초기화
+  clearTimeout(saveT);
+  localSave();
   const u=getUser();
   if(u){
     supabase('PATCH','users',{spec_data:JSON.stringify(S)},`?id=eq.${u.id}`)
-      .catch(e=>console.warn('클라우드 저장 실패:',e));
+      .catch(e=>console.warn('클라우드 초기화 실패:',e));
   }
-}
-function qSave(){clearTimeout(saveT);saveT=setTimeout(doSave,1200);}
-
-function resetAll(){
-  if(!confirm('모든 스펙 입력값이 초기화됩니다.'))return;
-  S=mkSpec();
-  renderAll();
-  qSave();
 }
 
 function renderAll(){
   renderAcc();populateGems();renderPends();populateColl();
+  renderToggleSections();
+}
+
+// ================================================================
+// 드래곤 이미지
+// ================================================================
+const DRAGON_IMG_NUM={"패트":1,"타이거":2,"램곤":3,"헝그리":4,"머드":5,"오렌지리프":6,"지진":7,"포이즌리버":8,"포폰":9,"애플칙":10,"알데바란":11,"에그마용":12,"파워":13,"데빌곤":14,"베가본드":15,"레오벡터":16,"바스카":17,"바위":18,"지하땅굴":19,"에그":20,"리프":21,"스마트":22,"타투":23,"팀버":24,"플라워":25,"파키":26,"히드라곤":27,"콜로서스":28,"레이어스":29,"리베티":30,"케찰코아틀":31,"골든혼":32,"머스타드해머":33,"칸타카":34,"아스타테":35,"헤임달":36,"논":37,"파이썬":38,"헤라클레스":39,"스파인":40,"스콜피온":41,"다로스":42,"즈믄":43,"아카이아":44,"크로마 아카이아":45,"네시":46,"스왐프":47,"툰드라":48,"유르카":49,"알레샤":50,"크로마 알레샤":51,"볼바":52,"빙하고룡":53,"페어리":54,"샤크곤":55,"메갈로돈":56,"블리자드":57,"베른하르트":58,"루드라":59,"피싱테일":60,"루미네스":61,"프로그":62,"현무":63,"루피아":64,"스터드":65,"위드미":66,"폴투누스":67,"스카트":68,"로키":69,"블루라이트닝":70,"바이올렛":71,"해마곤":72,"베놈":73,"브리트라":74,"프로즌":75,"루살카":76,"테일":77,"수룡":78,"슬라임":79,"퍼플립스":80,"마리노":81,"나트론":82,"레굴루스":83,"크로마 레굴루스":84,"미니":85,"아쿠아":86,"아이스 드레이크":87,"세크레타":88,"트로페우스":89,"마소티스":90,"옥타":91,"크로마 옥타":92,"붐버":93,"포포모":94,"염화룡":95,"파이거":96,"크로마 파이거":97,"파이어":98,"피닉스":99,"레드와이번":100,"말소자":101,"수라":102,"엔투라스":103,"라센티":104,"배틀":105,"번네스":106,"데모니오":107,"스파이크":108,"너티빌런":109,"와일드":110,"루가르":111,"토트":112,"스카투스":113,"크로마 스카투스":114,"아이언":115,"번개고룡":116,"라바":117,"본헤드":118,"플레임":119,"레드불":120,"므네이아":121,"블레이즈":122,"적마룡":123,"자룡":124,"금오":125,"푸투룸":126,"이그나":127,"화귀":128,"타나토스":129,"헬":130,"인섹트":131,"샌드":132,"볼케이노":133,"이그니스":134,"가루다":135,"마룡":136,"불나래":137,"크로마 불나래":138,"윈드":139,"식스 레그 혼":140,"뮤직":141,"가디언":142,"토템":143,"클라우드":144,"핑크벨":145,"엠파이어":146,"혼":147,"청룡":148,"페이퍼":149,"스트라이커":150,"아스티":151,"아라카":152,"거스트":153,"블루썬더":154,"크로마 블루썬더":155,"프로스티":156,"해태":157,"스틸윙":158,"키갈":159,"리티오":160,"크로마 리티오":161,"제트":162,"스왈로우":163,"카오스":164,"제피로스":165,"보레아스":166,"레이디":167,"타이푼":168,"태엽":169,"센투라":170,"티르":171,"루루":172,"크로마 루루":173,"에일리언":174,"윙스":175,"메탈 마그넷":176,"i곤":177,"피스":178,"그레이탄":179,"레인보우배트곤":180,"에트왈":181,"피타야":182,"토르":183,"오로":184,"카멜레용":185,"레인보우":186,"샴":187,"삐에로":188,"시타엘":189,"엔젤주니어":190,"큐피트":191,"모리카":192,"오르도":193,"솔라":194,"카루라":195,"아톤":196,"스워드":197,"바르그":198,"야즈니르":199,"아르고":200,"나이트":201,"순둥곤":202,"사나래":203,"로루스":204,"헤이즈":205,"개틀링곤":206,"솔루카니스":207,"프로텍트":208,"크로마 프로텍트":209,"크리마용":210,"라이곤":211,"캥거레빗":212,"네온":213,"슈팅스타":214,"깨비곤":215,"미나스":216,"알투스":217,"메라크":218,"스파이시":219,"고대신룡":220,"엔젤":221,"에메랄드":222,"치킨헤드":223,"골드":224,"백룡":225,"오로라":226,"아실리":227,"스타에이스":228,"테디":229,"베르나":230,"라파엘":231,"고대 주니어":232,"파라오곤":233,"바르라아":234,"아르테미스":235,"화이트썬더":236,"탈릿사":237,"아만타":238,"샤흐":239,"프랑켄":240,"블랙티어":241,"원더":242,"블랙찡또":243,"문라이트":244,"말로단":245,"마그나스":246,"카스룩스":247,"블레이드":248,"서펀트":249,"G네":250,"유니":251,"다크프로스티":252,"쉐도우":253,"닌자":254,"블랙퀸":255,"스플렌더":256,"타임머신":257,"아자크":258,"베타라":259,"크로마 베타라":260,"오벡스":261,"베네지":262,"투탕카":263,"블랙아머":264,"쿠로이":265,"카르나":266,"쿠베라":267,"포르타":268,"흑룡":269,"메탈":270,"미이라곤":271,"스켈레곤":272,"다크닉스":273,"히에나곤":274,"크레센트":275,"윗치":276,"캣츠곤":277,"타르타로스":278,"다크폴":279,"피데스":280,"요르문간드":281,"티아매트":282,"바알":283,"시그마":284,"드라고노이드":285,"유니버스":286,"베히모스":287,"다크나이트":288,"고트":289,"뱃도치":290,"코브라곤":291,"마르바스":292,"스케어":293,"드래곤 슬레이어":294,"마카라":295,"리치몬드":296,"크로마 리치몬드":297,"하트샤":298,"데몽과가고일":299,"베리스":300,"아말테아":301,"야누스":302,"합라":303,"셀마사":304,"울르":305,"엘리고스":306,"라스":307,"조화룡":308,"할리벨":309,"타아비레":310,"보상이용":311,"루크바트":312,"프레이야":313,"미미르":314,"네비아":315,"아프로디테":316,"킨더":317,"암두시아스":318,"코르투스":319,"이클립스":320,"템피오스":321,"흐레스벨그":322,"카라선":323,"렉스톤":324,"틸키":325,"하리카":326,"데스락":327,"세에레":328,"차차웅":329,"렉몰 리버스":330,"네뷸라":331,"인베르소":332,"레긴레이프":333,"크로마 레긴레이프":334,"발라크":335,"에피트":336,"마누스":337,"베팔":338,"포메쿨":339,"프라이드":340,"단탈리온":341,"네무스":342,"블라드":343,"디멘션":344,"쉴로시":345,"잠식된 요르문간드":346,"레무레스":347,"벨레드":348,"미스핏":349,"크로마 벨레드":350,"움브라":351,"루드오어":352,"크레바스":353,"발레포르":354,"크로마 발레포르":355,"애니마라":356,"롱기누스":357,"마스테마":358,"자간":359,"커스리퍼":360,"진":361};
+const DRAGON_IMG_BASE="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main";
+function getDragonImgUrl(name){
+  let n=DRAGON_IMG_NUM[name];
+  if(!n){const s=name.replace(/ 드래곤$/,'').replace(/드래곤$/,'').trim();n=DRAGON_IMG_NUM[s];}
+  if(!n)return null;
+  const folder=Math.ceil(n/95);
+  return DRAGON_IMG_BASE+"/"+folder+"/"+n+".png";
+}
+
+// ================================================================
+// 토글 섹션
+// ================================================================
+function toggleSection(id){
+  const bd=document.getElementById(id);
+  const arrow=document.getElementById('arrow-'+id);
+  if(!bd)return;
+  const open=!bd.classList.contains('open');
+  bd.classList.toggle('open',open);
+  if(arrow)arrow.style.transform=open?'rotate(180deg)':'';
+}
+
+function renderToggleSections(){
+  renderDragonSummary();
+  renderAccSummary();
+}
+
+const ELEM_ICON={'땅':11,'물':12,'불':13,'바람':14,'빛':84,'어둠':87,'황혼':487,'여명':486,'악몽':488};
+const DTYPE_COLOR={'체공형':'#f87171','방어형':'#60a5fa','공격형':'#fb923c','균형형':'#a78bfa','체형':'#fbbf24','공형':'#f87171','방형':'#60a5fa'};
+
+function renderDragonSummary(){
+  const el=document.getElementById('dragon-summary-wrap');
+  if(!el)return;
+  const dc=S.dragonCards||{};
+  const allDragons=DRAGON_CATS.flatMap(cat=>(dc[cat]||[]).filter(d=>d.name).map(d=>({...d,cat})));
+  if(!allDragons.length){
+    el.innerHTML='<div style="color:var(--dim);font-size:12px;text-align:center;padding:10px 0">저장된 드래곤 셋팅이 없어요.<br>pvp/noob 계산기의 내 용 정보에서 <b>내 스펙으로 저장</b>을 눌러주세요.</div>';
+    return;
+  }
+  const SK_LABEL={hp:'체력',atk:'공격',def:'방어'};
+  const byAttr=DRAGON_CATS.filter(cat=>(dc[cat]||[]).some(d=>d.name));
+  let html='';
+  byAttr.forEach(cat=>{
+    const list=(dc[cat]||[]).filter(d=>d.name);
+    const elemIconUrl=`https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/${ELEM_ICON[cat]||11}.png`;
+    html+=`<div style="margin-bottom:14px">
+      <div style="display:flex;align-items:center;gap:6px;font-size:11px;font-weight:800;color:var(--dim);margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--bd)">
+        <img src="${elemIconUrl}" style="width:16px;height:16px;object-fit:contain">${cat} (${list.length}마리)
+      </div>`;
+    list.forEach(d=>{
+      const dc_col=DTYPE_COLOR[d.dtype]||'#aaa';
+      const imgUrl=getDragonImgUrl(d.name);
+      const imgHtml=imgUrl
+        ?`<img src="${imgUrl}" style="width:40px;height:40px;object-fit:contain;border-radius:6px;border:1px solid var(--bd);background:var(--sf2)" onerror="this.style.display='none'">`
+        :`<div style="width:40px;height:40px;border-radius:6px;border:1px solid var(--bd);background:var(--sf2);flex-shrink:0"></div>`;
+      const opts=(d.opts||[]).filter(o=>o.stat&&o.type).map((o,i)=>{
+        const col=o.stat==='hp'?'#fbbf24':o.stat==='atk'?'#f87171':'#60a5fa';
+        const typeLabel=o.type==='%'?'%':'+';
+        return `<span style="color:${col};font-size:11px">${SK_LABEL[o.stat]}${typeLabel}</span>`;
+      }).join('<span style="color:var(--dim);">/</span>');
+      const bonusLabel={hp:'체력+40',atk:'공격+10',def:'방어+10'};
+      const bonusHtml=d.bonus?`<span style="font-size:10px;color:var(--gold);margin-left:4px">${bonusLabel[d.bonus]||''}</span>`:'';
+      html+=`<div class="dragon-summary-item" style="gap:10px;padding:6px 0;align-items:center">
+        ${imgHtml}
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
+            <img src="${elemIconUrl}" style="width:14px;height:14px;object-fit:contain">
+            <span style="font-weight:800;font-size:13px">${d.name}</span>
+            <span style="font-size:11px;padding:1px 6px;border-radius:3px;border:1px solid ${dc_col};color:${dc_col}">${d.dtype||'-'}</span>
+          </div>
+          <div style="font-size:11px;color:var(--dim)">
+            ${d.growth||''} ${d.grade||''}${bonusHtml}
+            ${opts?`<span style="margin-left:6px">${opts}</span>`:''}
+          </div>
+        </div>
+      </div>`;
+    });
+    html+='</div>';
+  });
+  el.innerHTML=html;
+}
+
+function renderAccSummary(){
+  const el=document.getElementById('acc-summary-wrap');
+  if(!el)return;
+  if(!S.accCards||!S.accCards.length){
+    el.innerHTML='<div style="color:var(--dim);font-size:12px;text-align:center;padding:10px 0">등록된 장신구가 없어요.</div>';
+    return;
+  }
+  let html='';
+  S.accCards.forEach(card=>{
+    if(!card.name)return;
+    const a=ACC_DB.find(x=>x.n===card.name);
+    const img=a&&a.img?`<img src="${a.img}" style="width:28px;height:28px;object-fit:contain;border-radius:4px">`:'';
+    const encCol=card.enchant==='hp'?'#fbbf24':card.enchant==='atk'?'#f87171':card.enchant==='def'?'#60a5fa':'#555';
+    const encLbl=card.enchant==='hp'?'체+21%':card.enchant==='atk'?'공+21%':card.enchant==='def'?'방+21%':'없음';
+    html+=`<div class="acc-summary-item">
+      ${img}
+      <span style="flex:1;font-size:12px">${card.name}</span>
+      <span style="font-size:11px;padding:1px 6px;border-radius:3px;border:1px solid ${encCol};color:${encCol}">${encLbl}</span>
+    </div>`;
+  });
+  el.innerHTML=html||'<div style="color:var(--dim);font-size:12px;text-align:center;padding:10px 0">등록된 장신구가 없어요.</div>';
 }
 
 // ================================================================
@@ -482,10 +676,9 @@ async function doExport(){
   try{
     codeEl.textContent='생성 중...';
     const code=genCode();
-    const data={accCards:S.accCards,gems:S.gems,pendants:S.pendants,coll:S.coll};
+    const data={accCards:S.accCards,gems:S.gems,pendants:S.pendants,coll:S.coll,dragonCards:S.dragonCards||{}};
     await supabase('POST','spec_shares',{code,spec_data:data});
     codeEl.textContent=code;
-    // 클립보드 복사
     try{await navigator.clipboard.writeText(code);showToast('코드가 클립보드에 복사됐어요!');}
     catch{showToast('코드: '+code);}
   }catch(e){
@@ -505,6 +698,13 @@ async function doImport(){
     S.gems={...mkSpec().gems,...(data.gems||{})};
     S.pendants=data.pendants||[];
     S.coll={...mkSpec().coll,...(data.coll||{})};
+    S.dragonCards={...mkSpec().dragonCards,...(data.dragonCards||{})};
+    // pvp/noob에 dragonCards 동기화
+    if(S.dragonCards){
+      ['dv1sim_pvp','dv1sim_noob'].forEach(key=>{
+        try{const raw=localStorage.getItem(key);const ex=raw?JSON.parse(raw):{};localStorage.setItem(key,JSON.stringify({...ex,dragonCards:S.dragonCards}));}catch(e){}
+      });
+    }
     doSave();
     renderAll();
     document.getElementById('import-code').value='';

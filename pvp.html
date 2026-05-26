@@ -116,6 +116,26 @@ table.rtbl{width:100%;border-collapse:collapse;min-width:640px}
 .rtbl td{padding:10px 11px;border-bottom:1px solid var(--bd);font-size:13px;vertical-align:middle}
 .rtbl tr:last-child td{border-bottom:none}
 .rtbl tbody tr:hover td{background:rgba(255,255,255,.015)}
+.td-pc{display:table-cell}.td-mob{display:none}
+@media(max-width:600px){
+  table.rtbl{min-width:0}
+  .rtbl thead{display:none}
+  .rtbl tbody tr{display:block;border-bottom:1px solid var(--bd);padding:0}
+  .td-pc{display:none!important}
+  .td-mob{display:block!important;padding:10px 12px}
+  .mob-row1{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+  .mob-rank{font-size:18px;flex-shrink:0}
+  .mob-dname{font-weight:800;font-size:13px;flex:1;min-width:0}
+  .mob-bv{font-family:'Courier New',monospace;font-size:15px;font-weight:800;color:var(--gold);white-space:nowrap;margin-left:auto}
+  .mob-spirit{font-size:11px;color:var(--dim);margin-bottom:2px}
+  .mob-divider{height:1px;background:var(--bd);margin:7px 0}
+  .mob-row2{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+  .mob-row3{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .mob-acc{display:flex;align-items:center;gap:6px;flex:1;min-width:0}
+  .mob-pend{display:flex;align-items:center;gap:6px;flex:1;min-width:0}
+  .mob-stats{font-family:'Courier New',monospace;font-size:11px;white-space:nowrap;margin-left:auto}
+  .mob-buff{font-size:11px;white-space:nowrap}
+}
 .medal{font-size:20px}.rank-n{font-weight:800;color:var(--dim)}
 .dtype-b{display:inline-block;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:800;border:1px solid}
 .res-attr-type{display:flex;align-items:center;gap:7px;white-space:nowrap}
@@ -218,6 +238,8 @@ input[type=number]{appearance:textfield;-moz-appearance:textfield}
 @media(max-width:700px){.spec-grid{grid-template-columns:1fr}}
 ::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
 @media(max-width:580px){.sim-cfg{grid-template-columns:1fr}.buff-setting-grid{grid-template-columns:1fr}.sp-top{grid-template-columns:1fr}.sp-preset-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.sp-preset-btn{white-space:normal}}
+.acc-name-short{display:none}.pend-name-short{display:none}
+@media(max-width:600px){.acc-name-full{display:none}.acc-name-short{display:inline}.pend-name-full{display:none}.pend-name-short{display:inline}}
 .res-tab-btn{padding:9px 18px;background:none;border:none;border-bottom:3px solid transparent;color:var(--dim);font-family:'Nanum Gothic',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s}
 .res-tab-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
 
@@ -2751,10 +2773,17 @@ function fmtBufLabel(label){
 }
 
 function fmtAccName(name){
-  return name.replace(/[체공방]/g,s=>{
+  const colored=name.replace(/[체공방]/g,s=>{
     const col=s==='체'?'#fbbf24':s==='공'?'#f87171':'#60a5fa';
     return`<span style="color:${col}">${s}</span>`;
   });
+  const shortMatch=name.match(/\(([^)]+)\)\s*(\d+)$/);
+  const shortName=shortMatch?shortMatch[1]+' '+shortMatch[2]:name;
+  const shortColored=shortName.replace(/[체공방]/g,s=>{
+    const col=s==='체'?'#fbbf24':s==='공'?'#f87171':'#60a5fa';
+    return`<span style="color:${col}">${s}</span>`;
+  });
+  return`<span class="acc-name-full">${colored}</span><span class="acc-name-short">${shortColored}</span>`;
 }
 
 function fmtAccEnc(enc){
@@ -2821,38 +2850,93 @@ function renderResDeck(results,excludedCount){
     const rank=i<3?medals[i]:`<span class="rank-n">${i+1}</span>`;
     const _an2={'땅':11,'물':12,'불':13,'바람':14,'빛':84,'어둠':87,'황혼':487,'여명':486,'악몽':488};
     const attrImg=`https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/${_an2[r.dragon.attr]||11}.png`;
+    const _SK={hp:'체력',atk:'공격',def:'방어'};
+    const _BL={hp:'체력+40',atk:'공격+10',def:'방어+10'};
+    const _opts=r.dragon.opts||[];
+    const _fO=(idx)=>{const o=_opts[idx]||{};if(!o.stat||!o.type)return null;return `${_SK[o.stat]}${fmtSpVal(idx+1,o.stat,o.type)}`;};
+    const _l1=[_fO(0),_fO(1)].filter(Boolean).join(' / ');
+    const _l2p=[_fO(2),_fO(3)].filter(Boolean);
+    if(r.dragon.bonus)_l2p.push(`<span style="color:var(--gold)">${_BL[r.dragon.bonus]}</span>`);
+    const _l2=_l2p.join(' / ');
+    const spiritLines=(_l1?`<div style="font-size:11px;color:var(--dim)">${_l1}</div>`:'')+(_l2?`<div style="font-size:11px;color:var(--dim)">${_l2}</div>`:'');
+    const accImg=(()=>{const a=ACC_DB.find(x=>x.n===r.accN);return a&&a.img?`<img src="${a.img}" style="width:30px;height:30px;object-fit:contain;border-radius:4px">`:'';})();
+    const pendMob=(()=>{
+      if(!r.pend)return'<span style="color:var(--dimmer);font-size:11px">펜던트 없음</span>';
+      const mo=r.pend.type==='태양'?3:r.pend.type==='달'?2:1;
+      const opts=r.pend.options.slice(0,mo).filter(o=>o&&o.stat).map(o=>{
+        const col=o.stat==='hp'?'#fbbf24':o.stat==='atk'?'#f87171':'#60a5fa';
+        return`<span style="color:${col}">${SK[o.stat]}</span><span>${o.val||0}%</span>`;
+      }).join('<span style="color:#aab4cc">/</span>');
+      const shortTypeMap={'달':'달펜','태양':'태양펜','별':'별펜'};
+      const pimg=IMG_PEND[r.pend.type]?`<img src="${IMG_PEND[r.pend.type]}" style="width:26px;height:26px;object-fit:contain;border-radius:3px">`:'';
+      return`<div class="mob-pend">${pimg}<span style="font-size:11px;color:var(--dim)">${shortTypeMap[r.pend.type]||r.pend.type} <small>(${opts})</small></span></div>`;
+    })();
+    const buffCount=SKEYS.reduce((s,k)=>s+(r.buff?.[k]||0),0);
     html+=`<tr>
-      <td>${rank}</td>
-      <td>
+      <td class="td-pc">${rank}</td>
+      <td class="td-pc">
         <div style="font-weight:800">${escHtml(r.dragon.name)}</div>
-        <div style="font-size:11px;color:var(--dim)">${r.dragon.growth} ${r.dragon.grade}${r.dragon.bonus?(' · '+({'hp':'체력+40','atk':'공격+10','def':'방어+10'}[r.dragon.bonus]||'')):''}</div>
+        ${spiritLines}
       </td>
-      <td>
+      <td class="td-pc">
         <div class="res-attr-type">
-          <img class="res-attr-icon" src="${attrImg}" alt="${escHtml(r.dragon.attr)}" title="${escHtml(r.dragon.attr)}">
+          <img class="res-attr-icon" src="${attrImg}" alt="${escHtml(r.dragon.attr)}">
           <span class="dtype-b" style="color:${dc};border-color:${dc}">${r.dragon.dtype}</span>
         </div>
       </td>
-      <td>
+      <td class="td-pc">
         <div style="display:flex;align-items:center;gap:8px">
           ${(()=>{const a=ACC_DB.find(x=>x.n===r.accN);return a&&a.img?`<img src="${a.img}" style="width:36px;height:36px;object-fit:contain;border-radius:4px">`:'';})()}
           <div><div style="font-weight:800;margin-bottom:3px">${fmtAccName(r.accN)}</div>${fmtAccEnc(r.enc)}</div>
         </div>
       </td>
-      <td><div class="gem-tags">${fmtGem(r.alloc)}</div></td>
-      <td style="font-size:12px;color:var(--dim)">${fmtPend(r.pend)}</td>
-      <td style="font-size:12px">${fmtWeeklyBuff(r.buff)}</td>
-      <td class="st-cell">
+      <td class="td-pc"><div class="gem-tags">${fmtGem(r.alloc)}</div></td>
+      <td class="td-pc" style="font-size:12px;color:var(--dim)">${fmtPend(r.pend)}</td>
+      <td class="td-pc" style="font-size:12px">${fmtWeeklyBuff(r.buff)}</td>
+      <td class="td-pc st-cell">
         <span style="color:var(--hpc)">${r.fH.toLocaleString('ko-KR')}</span> /
         <span style="color:var(--atc)">${r.fA.toLocaleString('ko-KR')}</span> /
         <span style="color:var(--dfc)">${r.fD.toLocaleString('ko-KR')}</span>
       </td>
-      <td class="bv-cell">${(r.bv/1e6).toFixed(1)}</td>
+      <td class="td-pc bv-cell">${(r.bv/1e6).toFixed(1)}</td>
+      <td class="td-mob" colspan="9">
+        <div class="mob-row1">
+          <span class="mob-rank">${rank}</span>
+          <img src="${attrImg}" style="width:20px;height:20px;object-fit:contain">
+          <span class="mob-dname">${escHtml(r.dragon.name)}</span>
+          <span class="dtype-b" style="color:${dc};border-color:${dc};font-size:11px">${r.dragon.dtype}</span>
+          <span class="mob-bv">${(r.bv/1e6).toFixed(1)}</span>
+        </div>
+        ${_l1?`<div class="mob-spirit">${_l1}</div>`:''}
+        ${_l2?`<div class="mob-spirit">${_l2}</div>`:''}
+        <div class="mob-divider"></div>
+        <div class="mob-row2">
+          <div class="mob-acc">
+            ${accImg}
+            <div>
+              <div style="font-weight:800;font-size:12px">${fmtAccName(r.accN)}</div>
+              ${fmtAccEnc(r.enc)}
+            </div>
+          </div>
+          <div style="flex:1"><div class="gem-tags">${fmtGem(r.alloc)}</div></div>
+        </div>
+        <div class="mob-row3">
+          ${pendMob}
+          <div style="margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end">
+            ${buffCount?`<span style="color:var(--gold);font-weight:800;font-size:11px">${buffCount}버프</span>`:''}
+            <span class="mob-stats">
+              <span style="color:var(--hpc)">${r.fH.toLocaleString('ko-KR')}</span>/<span style="color:var(--atc)">${r.fA.toLocaleString('ko-KR')}</span>/<span style="color:var(--dfc)">${r.fD.toLocaleString('ko-KR')}</span>
+            </span>
+          </div>
+        </div>
+      </td>
     </tr>`;
   });
-  el.innerHTML=html+'</tbody></table>';
+  const top3=results.slice(0,3);
+  const avgBV=top3.reduce((s,r)=>s+r.bv,0)/top3.length;
+  el.innerHTML=html+'</tbody></table>'
+    +(top3.length>1?'<div style="padding:10px 16px;border-top:1px solid var(--bd);text-align:right;font-size:13px;color:var(--dim)">3마리 평균 비밸 <span class="bv-cell" style="font-size:15px">'+(avgBV/1e6).toFixed(1)+'</span></div>':'');
 }
-
 //평균 비밸 결과 출력
 function renderResAvg(results){
   const el=document.getElementById('res-body-avg');
@@ -2944,7 +3028,9 @@ function fmtPend(p){
     return`<span style="color:${col}">${SK[o.stat]}</span><span style="color:#fff">${o.val||0}%</span>`;
   }).join('<span style="color:#aab4cc">/</span>');
   const img=IMG_PEND[p.type]?`<img src="${IMG_PEND[p.type]}" style="width:36px;height:36px;object-fit:contain;border-radius:4px">`:'';
-  return`<div style="display:flex;align-items:center;gap:8px">${img}<div style="color:var(--text)">${p.type}의 펜던트<br><small>(${opts})</small></div></div>`;
+  const shortTypeMap={'달':'달펜','태양':'태양펜','별':'별펜'};
+  const shortType=shortTypeMap[p.type]||p.type;
+  return`<div style="display:flex;align-items:center;gap:8px">${img}<div style="color:var(--text)"><span class="pend-name-full">${p.type}의 펜던트</span><span class="pend-name-short">${shortType}</span><br><small>(${opts})</small></div></div>`;
 }
 
 // ================================================================

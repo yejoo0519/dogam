@@ -463,22 +463,26 @@ async function doLoadCloud(){
     if(rows&&rows[0]&&rows[0].spec_data){
       const p=typeof rows[0].spec_data==='string'?JSON.parse(rows[0].spec_data):rows[0].spec_data;
 
-      // local에 dragonCards 있으면 local 우선 (최신 데이터 보존)
-      // local이 비어있으면 cloud 사용 (reset 후 복원 등)
       const hasCloudDragons=p.dragonCards&&Object.values(p.dragonCards).some(arr=>Array.isArray(arr)&&arr.some(d=>d&&d.name));
       const hasLocalDragons=S.dragonCards&&Object.values(S.dragonCards).some(arr=>Array.isArray(arr)&&arr.some(d=>d&&d.name));
       const dragonPending=localStorage.getItem('dv1sim_dragon_pending');
-      // pvp/noob에서 저장 버튼을 눌렀거나, cloud에 dragon 없으면 local 우선
-      if(dragonPending||(!hasCloudDragons&&hasLocalDragons)){
-        if(hasLocalDragons) p.dragonCards=S.dragonCards;
+      if(dragonPending){
+        // 저장 버튼 눌렀음 → dv1sim_spec에서 최신 dragonCards 읽기 (my.html 메모리가 구버전일 수 있음)
+        try{
+          const specRaw=localStorage.getItem('dv1sim_spec');
+          const spec=specRaw?JSON.parse(specRaw):{};
+          p.dragonCards=spec.dragonCards||{};
+        }catch(e){p.dragonCards=S.dragonCards;}
         localStorage.removeItem('dv1sim_dragon_pending');
+      } else if(!hasCloudDragons&&hasLocalDragons){
+        p.dragonCards=S.dragonCards;
       }
 
       applySpec(p);
       localSave();
 
-      // cloud에 dragonCards 없었는데 local 것 사용했으면 Supabase에 올리기
-      if(!hasCloudDragons&&hasLocalDragons){
+      // flag 있을 때만 Supabase 업데이트 (일반 로드 시 재저장 안 함 - 구버전 덮어쓰기 방지)
+      if(dragonPending||(!hasCloudDragons&&hasLocalDragons)){
         supabase('PATCH','users',{spec_data:JSON.stringify(S)},`?id=eq.${u.id}`)
           .catch(e=>console.warn('클라우드 저장 실패:',e));
       }
@@ -509,6 +513,11 @@ function localSave(){
 // doSave: localStorage + pvp/noob 저장. saveCloud=true면 Supabase도 저장
 function doSave(saveCloud=true){
   clearTimeout(saveT);
+  // Supabase 저장 전 dv1sim_spec의 최신 dragonCards 반영 (pvp/noob 변경분 포함)
+  try{
+    const specRaw=localStorage.getItem('dv1sim_spec');
+    if(specRaw){const spec=JSON.parse(specRaw);if(spec.dragonCards)S.dragonCards=spec.dragonCards;}
+  }catch(e){}
   localSave();
   const el=document.getElementById('save-msg');
   if(el&&saveCloud){el.textContent='✓ 저장됨';setTimeout(()=>el.textContent='',2000);}
@@ -517,6 +526,7 @@ function doSave(saveCloud=true){
     if(u){
       supabase('PATCH','users',{spec_data:JSON.stringify(S)},`?id=eq.${u.id}`)
         .catch(e=>console.warn('클라우드 저장 실패:',e));
+      localStorage.removeItem('dv1sim_dragon_pending');
     }
   }
 }
@@ -671,12 +681,17 @@ function genCode(){
 }
 
 async function doExport(){
-  const btn=document.querySelector('.io-box .btn-gold');
   const codeEl=document.getElementById('export-code');
   try{
     codeEl.textContent='생성 중...';
     const code=genCode();
-    const data={accCards:S.accCards,gems:S.gems,pendants:S.pendants,coll:S.coll,dragonCards:S.dragonCards||{}};
+    // 최신 dragonCards는 dv1sim_spec에서 읽기
+    let dragonCards=S.dragonCards||{};
+    try{
+      const specRaw=localStorage.getItem('dv1sim_spec');
+      if(specRaw){const spec=JSON.parse(specRaw);if(spec.dragonCards)dragonCards=spec.dragonCards;}
+    }catch(e){}
+    const data={accCards:S.accCards,gems:S.gems,pendants:S.pendants,coll:S.coll,dragonCards};
     await supabase('POST','spec_shares',{code,spec_data:data});
     codeEl.textContent=code;
     try{await navigator.clipboard.writeText(code);showToast('코드가 클립보드에 복사됐어요!');}
@@ -699,12 +714,17 @@ async function doImport(){
     S.pendants=data.pendants||[];
     S.coll={...mkSpec().coll,...(data.coll||{})};
     S.dragonCards={...mkSpec().dragonCards,...(data.dragonCards||{})};
+    // dv1sim_spec에 dragonCards 먼저 반영 (doSave가 dv1sim_spec을 읽으므로)
+    try{
+      const specRaw=localStorage.getItem('dv1sim_spec');
+      const spec=specRaw?JSON.parse(specRaw):{};
+      spec.dragonCards=S.dragonCards;
+      localStorage.setItem('dv1sim_spec',JSON.stringify(spec));
+    }catch(e){}
     // pvp/noob에 dragonCards 동기화
-    if(S.dragonCards){
-      ['dv1sim_pvp','dv1sim_noob'].forEach(key=>{
-        try{const raw=localStorage.getItem(key);const ex=raw?JSON.parse(raw):{};localStorage.setItem(key,JSON.stringify({...ex,dragonCards:S.dragonCards}));}catch(e){}
-      });
-    }
+    ['dv1sim_pvp','dv1sim_noob'].forEach(key=>{
+      try{const raw=localStorage.getItem(key);const ex=raw?JSON.parse(raw):{};localStorage.setItem(key,JSON.stringify({...ex,dragonCards:S.dragonCards}));}catch(e){}
+    });
     doSave();
     renderAll();
     document.getElementById('import-code').value='';

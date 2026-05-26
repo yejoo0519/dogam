@@ -692,7 +692,7 @@ function renderAcc(){
         <span style="font-size:11px;min-width:80px">${stHtml}</span>
         <span style="font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.3px;font-weight:700;flex-shrink:0">인챈트</span>
         <select style="font-size:12px" onchange="onAccEnc(${ci},this.value);applyEncColor(this)">
-          <option value="none" ${card.enchant==='none'?'selected':''}>인챈트 없음</option>
+          <option value="none" ${card.enchant==='none'?'selected':''}>인챈트 상관X</option>
           <option value="hp"   ${card.enchant==='hp'?'selected':''}>체 +21%</option>
           <option value="atk"  ${card.enchant==='atk'?'selected':''}>공 +21%</option>
           <option value="def"  ${card.enchant==='def'?'selected':''}>방 +21%</option>

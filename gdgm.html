@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>길드 관리 - 드래곤빌리지1</title>
+<link id="theme-css" rel="stylesheet" href="./theme-dark.css">
+<script src="./theme.js"></script>
+<script src="./sb_config.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+[data-theme="dark"]{
+  --bg:#0e1116;--bg2:#161a22;--bg3:#1c212c;
+  --border:#23293a;--border2:#1b1f2a;--border3:#2d3447;
+  --text:#eaecf2;--text2:#b3b9c7;--text3:#7d8597;--text4:#565d6e;
+  --accent:#7aa2f7;--accent-bg:rgba(122,162,247,0.12);--accent-border:rgba(122,162,247,0.30);
+}
+[data-theme="light"]{
+  --bg:#f7f7f8;--bg2:#ffffff;--bg3:#f1f2f4;
+  --border:#e6e7ea;--border2:#eeeff2;--border3:#d4d6db;
+  --text:#15171c;--text2:#4a4d57;--text3:#71757f;--text4:#9aa0aa;
+  --accent:#2f6fed;--accent-bg:rgba(47,111,237,0.10);--accent-border:rgba(47,111,237,0.32);
+}
+[data-theme="beige"]{
+  --bg:#f3ecdd;--bg2:#faf3e2;--bg3:#ebe0c7;
+  --border:#d8caa8;--border2:#e1d4b3;--border3:#c0ad84;
+  --text:#2a2316;--text2:#5a4e34;--text3:#837553;--text4:#a99971;
+  --accent:#b06a1e;--accent-bg:rgba(176,106,30,0.10);--accent-border:rgba(176,106,30,0.32);
+}
+:root{
+  --sf:var(--bg2);--sf2:var(--bg3);--bd:var(--border);
+  --gold:var(--accent);--gold2:var(--accent);
+  --dim:var(--text3);--dimmer:var(--text4);
+  --red:#f87171;--green:#4ade80;--blue:#60a5fa;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;padding-bottom:60px}
+
+/* ── 헤더 ── */
+.hd{display:flex;align-items:center;gap:14px;padding:12px 20px;background:var(--sf);border-bottom:2px solid var(--gold);position:sticky;top:0;z-index:100}
+.hd-icon{font-size:26px}
+.hd-t{font-size:15px;font-weight:800;color:var(--gold)}
+.hd-s{font-size:11px;color:var(--dim);margin-top:2px}
+.hd-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+
+/* ── 본문 ── */
+.ti{max-width:700px;margin:0 auto;padding:14px 24px}
+/* ── PC 2열 레이아웃 ── */
+
+/* ── 모바일 하단 탭 바 ── */
+.mobile-bar{display:none}
+@media(max-width:899px){
+  body{padding-bottom:80px}
+  .admin-right{display:none}
+  .admin-right.mob-active{display:block}
+  .admin-left.mob-hidden{display:none}
+  .mobile-bar{
+    display:flex;position:fixed;bottom:0;left:0;right:0;
+    padding:8px 8px calc(env(safe-area-inset-bottom,0px) + 6px);
+    background:color-mix(in srgb,var(--bg) 94%,transparent);
+    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border-top:1px solid var(--border);z-index:30
+  }
+  .mobile-bar.hidden{display:none}
+  .mobile-bar button{
+    flex:1;height:48px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:2px;
+    color:var(--dim);font-size:10px;font-weight:500;
+    position:relative;background:none;border:none;cursor:pointer;
+    font-family:'Malgun Gothic',sans-serif
+  }
+  .mobile-bar .glyph{font-size:17px;line-height:1}
+  .mobile-bar button.active{color:var(--gold);font-weight:700}
+  .mobile-bar button.active::after{
+    content:'';position:absolute;top:-1px;left:50%;transform:translateX(-50%);
+    width:24px;height:2px;background:var(--gold);border-radius:999px
+  }
+}
+@media(min-width:900px){.mobile-bar{display:none!important}}
+
+@media(min-width:900px){
+  .ti{max-width:100%;padding:14px 28px}
+  .admin-grid{display:grid;grid-template-columns:380px 1fr;gap:16px;align-items:start}
+  .admin-right{position:sticky;top:68px;max-height:calc(100vh - 80px);overflow-y:auto}
+  .admin-right::-webkit-scrollbar{width:4px}
+  .admin-right::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px}
+}
+
+/* ── 섹션 ── */
+.sec{background:var(--sf);border:1px solid var(--bd);border-radius:8px;margin-bottom:14px;overflow:hidden}
+.sec-hd{display:flex;align-items:center;justify-content:space-between;padding:9px 16px;background:var(--sf2);border-bottom:1px solid var(--bd);font-size:11px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.5px}
+.sec-bd{padding:14px 16px}
+
+/* ── 인풋 ── */
+input[type=text],input[type=password],select{background:var(--sf2);border:1px solid var(--bd);color:var(--text);padding:5px 9px;border-radius:5px;font-family:'Malgun Gothic',sans-serif;font-size:13px}
+input:focus,select:focus{outline:none;border-color:var(--gold)}
+input::placeholder{color:var(--dimmer)}
+.inp-full{width:100%;padding:9px 12px;font-size:14px}
+
+/* ── 버튼 ── */
+.btn-gold{background:none;border:1px solid var(--gold);color:var(--gold);padding:7px 16px;border-radius:5px;cursor:pointer;font-family:'Malgun Gothic',sans-serif;font-size:13px;font-weight:700;transition:background .15s}
+.btn-gold:hover{background:var(--accent-bg)}
+.btn-gold:disabled{opacity:.4;cursor:not-allowed}
+.btn-gold-fill{background:linear-gradient(90deg,#4a90d9,#5dcff5);border:none;color:#fff;padding:11px;border-radius:8px;width:100%;cursor:pointer;font-family:'Malgun Gothic',sans-serif;font-size:14px;font-weight:700;transition:opacity .15s;margin-top:4px}
+.btn-gold-fill:hover{opacity:.9}
+.btn-gold-fill:disabled{opacity:.45;cursor:not-allowed}
+.btn-white{background:none;border:1px solid var(--text2);color:var(--text2);padding:7px 16px;border-radius:5px;cursor:pointer;font-family:'Malgun Gothic',sans-serif;font-size:13px;font-weight:700;transition:all .15s}
+.btn-white:hover{border-color:var(--text);color:var(--text)}
+.btn-reset{background:none;border:1px solid var(--red);color:var(--red);padding:7px 16px;border-radius:5px;cursor:pointer;font-family:'Malgun Gothic',sans-serif;font-size:13px;font-weight:700;transition:background .15s}
+.btn-reset:hover{background:rgba(248,113,113,.1)}
+.btn-sm{padding:4px 10px;font-size:12px;border-radius:4px}
+.btn-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+
+/* ── 로그인 박스 ── */
+.login-box{max-width:380px;margin:0 auto}
+.field{margin-bottom:14px}
+.field label{font-size:12px;color:var(--text2);margin-bottom:5px;display:block}
+.field input{width:100%;padding:9px 12px;background:var(--sf2);border:1px solid var(--border3);border-radius:8px;color:var(--text);font-size:13px;font-family:inherit}
+.field input:focus{outline:none;border-color:var(--gold)}
+.login-msg{font-size:12px;margin-top:10px;text-align:center}
+.login-msg.error{color:#ef5350}.login-msg.success{color:#66bb6a}
+.login-link{text-align:center;margin-top:14px;font-size:12px;color:var(--dimmer)}
+.login-link a{color:var(--gold);text-decoration:none}
+
+/* ── 정보 행 ── */
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--bd);font-size:13px}
+.info-row:last-child{border-bottom:none}
+.info-lbl{color:var(--dim)}
+.info-val{font-weight:700;text-align:right}
+
+/* ── 배지 ── */
+.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:800}
+.badge-ok{background:rgba(74,222,128,.12);color:var(--green);border:1px solid rgba(74,222,128,.25)}
+.badge-wait{background:var(--accent-bg);color:var(--gold);border:1px solid var(--accent-border)}
+.badge-admin{background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.25)}
+.badge-red{background:rgba(248,113,113,.12);color:var(--red);border:1px solid rgba(248,113,113,.25)}
+
+/* ── 에러 박스 ── */
+.err-box{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.25);color:var(--red);padding:8px 12px;border-radius:5px;font-size:12px;margin-bottom:10px;display:none}
+.err-box.on{display:block}
+
+/* ── 코드 표시 ── */
+.code-display{font-family:'Courier New',monospace;font-size:22px;font-weight:800;letter-spacing:4px;color:var(--gold);background:var(--sf);border:1px solid var(--bd);border-radius:6px;padding:10px 14px;text-align:center;margin-bottom:8px}
+
+/* ── 멤버 카드 ── */
+.member-card{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--bd);gap:10px}
+.member-card:last-child{border-bottom:none}
+.member-info{flex:1;min-width:0}
+.member-nick{font-size:13px;font-weight:700}
+.member-meta{font-size:11px;color:var(--dim);margin-top:2px}
+.member-actions{display:flex;gap:6px;flex-shrink:0}
+
+/* ── 요청 카드 ── */
+.req-card{background:var(--sf2);border:1px solid var(--bd);border-radius:6px;padding:10px 14px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.req-card:last-child{margin-bottom:0}
+.req-info{flex:1;min-width:0}
+.req-nick{font-size:13px;font-weight:700}
+.req-time{font-size:11px;color:var(--dim);margin-top:2px}
+.req-actions{display:flex;gap:6px;flex-shrink:0}
+
+/* ── 순위 표 ── */
+.rank-tbl{width:100%;border-collapse:collapse}
+.rank-tbl th{background:var(--sf2);padding:8px 10px;text-align:left;font-size:11px;color:var(--dim);border-bottom:1px solid var(--bd);font-weight:800;white-space:nowrap}
+.rank-tbl th.num{text-align:center;width:40px}
+.rank-tbl td{padding:9px 10px;border-bottom:1px solid var(--bd);font-size:13px;vertical-align:middle}
+.rank-tbl tr:last-child td{border-bottom:none}
+.rank-tbl tbody tr:hover td{background:rgba(255,255,255,.02)}
+.rank-num{text-align:center;font-weight:800;color:var(--dim)}
+.rank-1{color:#fbbf24}.rank-2{color:#9ca3af}.rank-3{color:#b45309}
+.rank-stat{font-weight:800;color:var(--gold)}
+.rank-unsent{color:var(--dimmer);font-style:italic}
+
+/* ── 길드전 표 ── */
+.war-edit-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--bd)}
+.war-edit-row:last-child{border-bottom:none}
+.war-lbl{color:var(--dim);font-size:12px;font-weight:700;width:56px;flex-shrink:0}
+.war-inp{flex:1}
+
+/* ── 회차 선택 ── */
+.season-select{background:var(--sf2);border:1px solid var(--bd);color:var(--text);padding:6px 10px;border-radius:5px;font-family:'Malgun Gothic',sans-serif;font-size:13px}
+
+/* ── 중앙 박스 ── */
+.center-box{text-align:center;padding:28px 16px}
+.center-icon{font-size:44px;margin-bottom:14px}
+.center-title{font-size:15px;font-weight:800;margin-bottom:6px}
+.center-sub{font-size:13px;color:var(--dim);line-height:1.8;margin-bottom:4px}
+
+/* ── 알림 뱃지 ── */
+.notif{display:inline-flex;align-items:center;justify-content:center;background:var(--red);color:#fff;border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:800;margin-left:6px;vertical-align:middle}
+
+/* ── 버프 토글 스위치 ── */
+.buff-sw{display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+.buff-sw input{position:absolute;opacity:0;width:0;height:0}
+.buff-track{width:38px;height:22px;background:var(--bd);border-radius:11px;transition:background .2s;flex-shrink:0;position:relative}
+.buff-sw input:checked + .buff-track{background:var(--gold)}
+.buff-knob{position:absolute;top:3px;left:3px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.buff-sw input:checked + .buff-track .buff-knob{transform:translateX(16px)}
+.buff-sw-lbl{font-size:12px;color:var(--dim);min-width:52px}
+
+/* ── 토스트 ── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--gold);color:#0a0c18;padding:10px 24px;border-radius:8px;font-weight:800;font-size:14px;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
+.toast.on{opacity:1}
+
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.blink{animation:blink 1.8s ease-in-out infinite}
+.sa-bar{background:linear-gradient(90deg,rgba(167,139,250,.15),rgba(122,162,247,.15));border:1px solid rgba(167,139,250,.35);border-radius:8px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.sa-bar-label{font-size:11px;font-weight:800;color:#a78bfa;text-transform:uppercase;letter-spacing:.5px;flex-shrink:0}
+.sa-select{background:var(--sf2);border:1px solid rgba(167,139,250,.4);color:var(--text);padding:6px 10px;border-radius:5px;font-family:'Malgun Gothic',sans-serif;font-size:13px;flex:1;min-width:160px}
+.sa-select:focus{outline:none;border-color:#a78bfa}
+/* ── 덱 상세 레이아웃 반응형 ── */
+.deck-grid-pc{display:flex;gap:10px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.deck-grid-mob{display:none}
+@media(max-width:899px){
+  .deck-grid-pc{display:none}
+  .deck-grid-mob{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+.empty-msg{color:var(--dimmer);font-style:italic;font-size:13px;text-align:center;padding:12px 0}
+
+@media(max-width:480px){
+  .ti{padding:12px 14px}
+  .hd{padding:10px 14px}
+  .req-card{flex-direction:column;align-items:flex-start}
+  .member-card{flex-wrap:wrap}
+}
+</style>
+</head>
+<body>
+
+<!-- ── 헤더 ── -->
+<div class="hd">
+  <a href="./index.html" style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;border:1px solid var(--bd);background:var(--sf2);color:var(--text2);text-decoration:none;font-size:16px;flex-shrink:0;transition:all .15s" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--bd)';this.style.color='var(--text2)'">←</a>
+  <div class="hd-icon">🛡️</div>
+  <div>
+    <div class="hd-t">길드 관리</div>
+    <div class="hd-s">관리진 전용 — 가입 수락 · 순위 확인 · 길드전 기록</div>
+  </div>
+  <div class="hd-right">
+    <span style="font-size:12px;color:var(--dim)" id="hd-user"></span>
+    <button class="btn-white" id="hd-auth-btn" style="font-size:12px;padding:5px 12px"></button>
+  </div>
+</div>
+
+<div class="ti">
+
+  <!-- 로딩 -->
+  <div id="v-loading">
+    <div class="sec"><div class="sec-bd center-box">
+      <div class="center-sub blink">불러오는 중...</div>
+    </div></div>
+  </div>
+
+  <!-- 로그인 폼 -->
+  <div id="v-noauth" style="display:none">
+    <div class="sec">
+      <div class="sec-hd">🔑 로그인</div>
+      <div class="sec-bd">
+        <div class="login-box">
+          <div class="field"><label>아이디</label><input type="text" id="l-user" placeholder="아이디 입력"></div>
+          <div class="field"><label>비밀번호</label><input type="password" id="l-pass" placeholder="비밀번호 입력"></div>
+          <button class="btn-gold-fill" id="btn-login" onclick="doLogin()">로그인</button>
+          <div class="login-msg" id="login-msg"></div>
+          <div class="login-link">계정이 없어요 → <a href="./register.html">회원가입</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 관리진 아님 -->
+  <div id="v-notadmin" style="display:none">
+    <div class="sec">
+      <div class="sec-hd">🔒 접근 불가</div>
+      <div class="sec-bd center-box">
+        <div class="center-icon">🔒</div>
+        <div class="center-title">관리진 전용 페이지예요</div>
+        <div class="center-sub">길드 관리진만 이 페이지를 이용할 수 있어요.</div>
+        <div class="center-sub" style="margin-bottom:20px">길드원이라면 길드 연동 탭을 이용해주세요.</div>
+        <a href="./gd.html" class="btn-gold" style="text-decoration:none;display:inline-block">→ 길드 연동 탭으로</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 길드 생성 -->
+  <div id="v-create" style="display:none">
+    <div class="sec">
+      <div class="sec-hd">🏰 길드 생성</div>
+      <div class="sec-bd">
+        <div class="err-box" id="create-err"></div>
+        <div style="font-size:12px;color:var(--dim);margin-bottom:12px">길드를 생성하면 연동 코드가 자동 발급돼요.<br>코드를 길드원들에게 공유해 가입 요청을 받을 수 있어요.</div>
+        <div style="font-size:11px;color:var(--dim);margin-bottom:4px;font-weight:700;text-transform:uppercase;letter-spacing:.3px">길드 이름</div>
+        <input type="text" class="inp-full" id="c-name" placeholder="길드 이름 입력" maxlength="20" style="margin-bottom:10px">
+        <div style="font-size:11px;color:var(--dim);margin-bottom:4px;font-weight:700;text-transform:uppercase;letter-spacing:.3px">내 닉네임 (관리진)</div>
+        <input type="text" class="inp-full" id="c-nick" placeholder="인게임 닉네임 입력" maxlength="20">
+        <div class="btn-row">
+          <button class="btn-gold" id="btn-create" onclick="createGuild()" style="flex:1;padding:10px">길드 생성하기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 관리진 메인 뷰 ── -->
+  <div id="v-admin" style="display:none">
+
+  <!-- 슈퍼어드민 전용 길드 선택 바 -->
+  <div class="sa-bar" id="sa-bar" style="display:none">
+    <span class="sa-bar-label">👑 전체 길드 보기</span>
+    <select class="sa-select" id="sa-guild-select" onchange="saLoadGuild(this.value)">
+      <option value="">— 길드 선택 —</option>
+    </select>
+    <button class="btn-white" style="font-size:12px;padding:5px 12px;flex-shrink:0" onclick="saRefresh()">🔄</button>
+  </div>
+
+  <div class="admin-grid">
+
+    <!-- ── 왼쪽 열 ── -->
+    <div class="admin-left">
+
+      <!-- 길드 정보 + 코드 -->
+      <div class="sec">
+        <div class="sec-hd">
+          <span>🏰 길드 정보</span>
+          <span class="badge badge-admin">관리진</span>
+        </div>
+        <div class="sec-bd">
+          <div style="font-size:18px;font-weight:800;color:var(--gold);margin-bottom:12px" id="a-guild">—</div>
+          <div style="font-size:11px;color:var(--dim);margin-bottom:6px;font-weight:700;text-transform:uppercase;letter-spacing:.3px">연동 코드</div>
+          <div class="code-display" id="a-code">—</div>
+          <div style="font-size:11px;color:var(--dim);margin-bottom:10px;text-align:center">이 코드를 길드원들에게 공유하세요</div>
+          <div class="btn-row">
+            <button class="btn-gold" onclick="copyCode()">📋 코드 복사</button>
+            <button class="btn-white" onclick="regenCode()">🔄 코드 재발급</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 가입 요청 -->
+      <div class="sec">
+        <div class="sec-hd">
+          <span>📩 가입 요청<span class="notif" id="req-count" style="display:none">0</span></span>
+          <button class="btn-white btn-sm" onclick="loadPending()">새로고침</button>
+        </div>
+        <div class="sec-bd" id="pending-bd">
+          <div class="empty-msg">대기 중인 요청이 없습니다.</div>
+        </div>
+      </div>
+
+      <!-- 길드원 목록 -->
+      <div class="sec">
+        <div class="sec-hd" onclick="toggleSec('member-bd','member-arrow')" style="cursor:pointer;user-select:none">
+          <span>👥 길드원 목록 <span id="member-count" style="font-size:11px;color:var(--dim);font-weight:400;letter-spacing:0"></span></span>
+          <span id="member-arrow" style="font-size:11px;color:var(--dim)">▲</span>
+        </div>
+        <div class="sec-bd" id="member-bd">
+          <div class="empty-msg">길드원이 없습니다.</div>
+        </div>
+      </div>
+
+      <!-- 이번 회차 관리 -->
+      <div class="sec">
+        <div class="sec-hd" onclick="toggleSec('season-mgmt-bd','season-arrow')" style="cursor:pointer;user-select:none">
+          <span>📅 회차 관리 <span id="season-label-badge" style="font-size:11px;color:var(--dim);font-weight:400;letter-spacing:0"></span></span>
+          <span id="season-arrow" style="font-size:11px;color:var(--dim)">▼</span>
+        </div>
+        <div class="sec-bd" id="season-mgmt-bd" style="display:none">
+          <div class="empty-msg blink">회차 정보 로딩 중...</div>
+        </div>
+      </div>
+
+      <!-- 지난 회차 -->
+      <div class="sec">
+        <div class="sec-hd">
+          <span>🗂 지난 회차</span>
+        </div>
+        <div class="sec-bd">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+            <select class="season-select" id="past-select" onchange="loadPastRanking(this.value)" style="flex:1">
+              <option value="">— 회차 선택 —</option>
+            </select>
+            <button class="btn-white btn-sm" onclick="exportPastExcel()">📥 엑셀</button>
+          </div>
+          <div id="past-rank-bd">
+            <div class="empty-msg">회차를 선택해주세요.</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /admin-left -->
+
+    <!-- ── 오른쪽 열: 순위 ── -->
+    <div class="admin-right">
+      <div class="sec">
+        <div class="sec-hd">
+          <span>📊 이번 주 순위</span>
+          <div style="display:flex;align-items:center;gap:10px">
+            <label class="buff-sw">
+              <input type="checkbox" id="buff-toggle" onchange="setBuff(this.checked)">
+              <span class="buff-track"><span class="buff-knob"></span></span>
+              <span class="buff-sw-lbl" id="buff-sw-lbl">버프 제외</span>
+            </label>
+            <button class="btn-white btn-sm" onclick="exportExcel()">📥 엑셀</button>
+          </div>
+        </div>
+        <div class="sec-bd" style="padding:0" id="rank-bd">
+          <div class="empty-msg" style="padding:16px">순위 정보가 없습니다.</div>
+        </div>
+      </div>
+    </div><!-- /admin-right -->
+
+  </div><!-- /admin-grid -->
+  </div><!-- /v-admin -->
+
+</div><!-- /ti -->
+
+
+<!-- ── 모바일 하단 탭 바 ── -->
+<div class="mobile-bar hidden" id="mobile-bar">
+  <button class="active" onclick="switchMobTab('left',this)">
+    <span class="glyph">🛡️</span>
+    <span>관리</span>
+  </button>
+  <button onclick="switchMobTab('right',this)">
+    <span class="glyph">📊</span>
+    <span>순위</span>
+  </button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+
+// ── 전역 상태 ─────────────────────────────────────────────────
+let gUser=null, gGuildId=null, gGuildName=null, gAdminMember=null;
+let gCurrentSeason=null, gMembers=[], gShowBuff=false;
+let gPastSeason=null, gPollTimer=null;
+let gRankDetails={};
+
+// ── 진입 ──────────────────────────────────────────────────────
+(async function(){
+  gUser = getUser();
+  renderHeader();
+  if (!gUser) { showV('noauth'); return; }
+  await loadStatus();
+})();
+
+// ── 헤더 ──────────────────────────────────────────────────────
+function renderHeader(){
+  const hdUser=document.getElementById('hd-user');
+  const hdBtn =document.getElementById('hd-auth-btn');
+  if(gUser){
+    hdUser.textContent='👤 '+(gUser.nickname||gUser.username);
+    hdBtn.textContent='로그아웃';
+    hdBtn.onclick=()=>{ if(confirm('로그아웃할까요?')){ logout(); location.reload(); } };
+  } else {
+    hdUser.textContent=''; hdBtn.textContent=''; hdBtn.onclick=null;
+  }
+}
+
+// ── 로그인 ────────────────────────────────────────────────────
+async function doLogin(){
+  const username=(document.getElementById('l-user').value||'').trim();
+  const password=document.getElementById('l-pass').value;
+  const msgEl=document.getElementById('login-msg');
+  const btn=document.getElementById('btn-login');
+  msgEl.className='login-msg';
+  if(!username||!password){ msgEl.className='login-msg error'; msgEl.textContent='아이디와 비밀번호를 입력해주세요.'; return; }
+  btn.disabled=true; btn.textContent='로그인 중...';
+  try{
+    const hashed=await hashPassword(password);
+    const rows=await supabase('GET','users',null,`?username=eq.${encodeURIComponent(username)}&password=eq.${hashed}`);
+    if(!rows||!rows.length){ msgEl.className='login-msg error'; msgEl.textContent='아이디 또는 비밀번호가 틀렸습니다.'; return; }
+    const u=rows[0];
+    if(u.is_banned){ msgEl.className='login-msg error'; msgEl.textContent='이용이 제한된 계정입니다.'; return; }
+    setUser({id:u.id,username:u.username,nickname:u.nickname||u.username,friend_code:u.friend_code||'',is_admin:u.is_admin});
+    gUser=getUser(); msgEl.className='login-msg success'; msgEl.textContent='로그인 성공!';
+    renderHeader(); setTimeout(()=>loadStatus(),600);
+  }catch(e){ msgEl.className='login-msg error'; msgEl.textContent='오류: '+(e.message||'다시 시도해주세요.'); }
+  finally{ btn.disabled=false; btn.textContent='로그인'; }
+}
+
+// ── 상태 분기 ─────────────────────────────────────────────────
+async function loadStatus(){
+  showV('loading');
+  try{
+    // 관리진 여부 확인
+    const admins=await supabase('GET','guild_members',null,
+      `?user_id=eq.${gUser.id}&role=eq.admin&status=eq.approved&select=*,guilds(id,name)&limit=1`);
+
+    if(admins&&admins.length){
+      gAdminMember=admins[0];
+      gGuildId   =admins[0].guild_id;
+      gGuildName =admins[0].guilds?.name||'—';
+      await loadAdminView();
+      return;
+    }
+    // 일반 멤버인지 확인
+    const members=await supabase('GET','guild_members',null,
+      `?user_id=eq.${gUser.id}&status=eq.approved&limit=1`);
+    if(members&&members.length){ showV('notadmin'); return; }
+
+    // 길드 없음 → 생성 폼
+    showV('create');
+  }catch(e){ console.error(e); showV('create'); }
+}
+
+// ── 길드 생성 ─────────────────────────────────────────────────
+async function createGuild(){
+  const name=(document.getElementById('c-name').value||'').trim();
+  const nick=(document.getElementById('c-nick').value||'').trim();
+  const errEl=document.getElementById('create-err');
+  const btn=document.getElementById('btn-create');
+  errEl.classList.remove('on');
+  if(!name){ errEl.textContent='길드 이름을 입력해주세요.'; errEl.classList.add('on'); return; }
+  if(!nick) { errEl.textContent='닉네임을 입력해주세요.'; errEl.classList.add('on'); return; }
+  if(nick.length<2){ errEl.textContent='닉네임은 2자 이상이어야 해요.'; errEl.classList.add('on'); return; }
+
+  btn.disabled=true; btn.textContent='생성 중...';
+  try{
+    // 1. 길드 생성
+    const guilds=await supabase('POST','guilds',{name:name,admin_user_id:gUser.id});
+    if(!guilds||!guilds.length){ errEl.textContent='길드 생성 중 오류가 발생했어요.'; errEl.classList.add('on'); return; }
+    const guild=guilds[0];
+
+    // 2. 관리진 멤버 등록
+    await supabase('POST','guild_members',{
+      guild_id:guild.id, user_id:gUser.id, nickname:nick,
+      role:'admin', status:'approved', approved_at:new Date().toISOString()
+    });
+
+    // 3. 코드 발급
+    const code=genCode();
+    await supabase('POST','guild_codes',{guild_id:guild.id,code:code});
+
+    gGuildId=guild.id; gGuildName=guild.name;
+    toast('길드가 생성됐어요! 🎉');
+    await loadAdminView();
+  }catch(e){
+    errEl.textContent='오류: '+(e.message||'다시 시도해주세요.'); errEl.classList.add('on');
+  }finally{ btn.disabled=false; btn.textContent='길드 생성하기'; }
+}
+
+// ── 관리진 뷰 로드 ────────────────────────────────────────────
+async function loadAdminView(){
+  document.getElementById('a-guild').textContent=gGuildName;
+
+  // 코드 로드
+  await loadCode();
+  // 가입 요청
+  await loadPending();
+  // 멤버 목록
+  await loadMembers();
+  // 회차 체크 및 렌더
+  await checkAndRotateSeason();
+  // 순위
+  await loadRankings();
+  // 지난 회차 목록
+  await loadPastSeasons();
+
+  showV('admin');
+  startReqPoll();
+  await initSuperAdmin();
+}
+
+// ── 코드 로드 ─────────────────────────────────────────────────
+async function loadCode(){
+  try{
+    const codes=await supabase('GET','guild_codes',null,`?guild_id=eq.${gGuildId}&order=created_at.desc&limit=1`);
+    document.getElementById('a-code').textContent=(codes&&codes.length)?codes[0].code:'—';
+  }catch(e){}
+}
+
+// ── 코드 복사 ─────────────────────────────────────────────────
+function copyCode(){
+  const code=document.getElementById('a-code').textContent;
+  if(code==='—') return;
+  navigator.clipboard.writeText(code).then(()=>toast('코드가 복사됐어요!')).catch(()=>{
+    prompt('코드를 복사해주세요:',code);
+  });
+}
+
+// ── 코드 재발급 ───────────────────────────────────────────────
+async function regenCode(){
+  if(!confirm('코드를 재발급하면 기존 코드는 사용할 수 없어요.\n계속할까요?')) return;
+  try{
+    // 기존 코드 삭제
+    await supabase('DELETE','guild_codes',null,`?guild_id=eq.${gGuildId}`);
+    // 새 코드 발급
+    const code=genCode();
+    await supabase('POST','guild_codes',{guild_id:gGuildId,code:code});
+    document.getElementById('a-code').textContent=code;
+    toast('코드가 재발급됐어요!');
+  }catch(e){ alert('오류: '+(e.message||'다시 시도해주세요.')); }
+}
+
+// ── 가입 요청 로드 ────────────────────────────────────────────
+async function loadPending(){
+  const bd=document.getElementById('pending-bd');
+  const cnt=document.getElementById('req-count');
+  try{
+    const rows=await supabase('GET','guild_members',null,
+      `?guild_id=eq.${gGuildId}&status=eq.pending&order=requested_at.asc`);
+    if(!rows||!rows.length){
+      bd.innerHTML='<div class="empty-msg">대기 중인 요청이 없습니다.</div>';
+      cnt.style.display='none'; return;
+    }
+    cnt.textContent=rows.length; cnt.style.display='';
+    bd.innerHTML=rows.map(r=>`
+      <div class="req-card" id="req-${r.id}">
+        <div class="req-info">
+          <div class="req-nick">${x(r.nickname)}</div>
+          <div class="req-time">${timeAgo(r.requested_at)}</div>
+        </div>
+        <div class="req-actions">
+          <button class="btn-gold btn-sm" onclick="acceptMember('${r.id}','${x(r.nickname)}')">✅ 수락</button>
+          <button class="btn-reset btn-sm" onclick="rejectMember('${r.id}','${x(r.nickname)}')">❌ 거절</button>
+        </div>
+      </div>`).join('');
+  }catch(e){ bd.innerHTML='<div class="empty-msg">로드 오류</div>'; }
+}
+
+// ── 수락 ──────────────────────────────────────────────────────
+async function acceptMember(id,nick){
+  try{
+    await supabase('PATCH','guild_members',{status:'approved',approved_at:new Date().toISOString()},`?id=eq.${id}`);
+    toast(`${nick}님을 수락했어요!`);
+    await loadPending(); await loadMembers(); await loadRankings();
+  }catch(e){ alert('오류: '+(e.message||'다시 시도해주세요.')); }
+}
+
+// ── 거절 ──────────────────────────────────────────────────────
+async function rejectMember(id,nick){
+  if(!confirm(`${nick}님의 요청을 거절할까요?`)) return;
+  try{
+    await supabase('DELETE','guild_members',null,`?id=eq.${id}`);
+    toast(`${nick}님의 요청을 거절했어요.`);
+    await loadPending();
+  }catch(e){ alert('오류: '+(e.message||'다시 시도해주세요.')); }
+}
+
+// ── 멤버 목록 ─────────────────────────────────────────────────
+async function loadMembers(){
+  const bd=document.getElementById('member-bd');
+  const cnt=document.getElementById('member-count');
+  try{
+    const rows=await supabase('GET','guild_members',null,
+      `?guild_id=eq.${gGuildId}&status=eq.approved&order=approved_at.asc`);
+    gMembers=rows||[];
+    cnt.textContent=`총 ${gMembers.length}명`;
+    if(!gMembers.length){ bd.innerHTML='<div class="empty-msg">길드원이 없습니다.</div>'; return; }
+    bd.innerHTML=gMembers.map(m=>{
+      const isMe=m.user_id===gUser.id;
+      const roleBtn=!isMe
+        ?(m.role==='admin'
+          ?`<button class="btn-white btn-sm" onclick="toggleRole('${m.user_id}','admin','${x(m.nickname)}')" style="font-size:11px;padding:3px 8px;color:var(--dim)">권한 해제</button>`
+          :`<button class="btn-white btn-sm" onclick="toggleRole('${m.user_id}','member','${x(m.nickname)}')" style="font-size:11px;padding:3px 8px;color:var(--gold);border-color:var(--gold)">관리진 지급</button>`)
+        :'';
+      return `<div class="member-card">
+        <div class="member-info">
+          <div class="member-nick">
+            ${x(m.nickname)}
+            <span class="badge ${m.role==='admin'?'badge-admin':'badge-wait'}" style="margin-left:6px">${m.role==='admin'?'관리진':'길드원'}</span>
+          </div>
+          <div class="member-meta">가입 ${m.approved_at?new Date(m.approved_at).toLocaleDateString('ko-KR'):'-'}</div>
+        </div>
+        <div class="member-actions" style="display:flex;gap:6px;align-items:center">
+          ${roleBtn}
+          ${!isMe?`<button class="btn-reset btn-sm" onclick="kickMember('${m.id}','${x(m.nickname)}')">강퇴</button>`:'<span style="font-size:11px;color:var(--dim)">나</span>'}
+        </div>
+      </div>`;
+    }).join('');
+  }catch(e){ bd.innerHTML='<div class="empty-msg">로드 오류</div>'; }
+}
+
+// ── 관리진 지급/해제 ──────────────────────────────────────────
+async function toggleRole(userId, currentRole, nickname){
+  const newRole = currentRole==='admin'?'member':'admin';
+  const label = newRole==='admin'?'관리진으로 지급':'일반 길드원으로 변경';
+  if(!confirm(`${nickname}님을 ${label}할까요?`)) return;
+  try{
+    await supabase('PATCH','guild_members',{role:newRole},
+      `?user_id=eq.${userId}&guild_id=eq.${gGuildId}`);
+    toast(`${nickname}님 권한이 변경됐어요.`);
+    await loadMembers();
+  }catch(e){alert('오류: '+(e.message||e));}
+}
+
+// ── 강퇴 ──────────────────────────────────────────────────────
+async function kickMember(id,nick){
+  if(!confirm(`${nick}님을 강퇴할까요?`)) return;
+  try{
+    await supabase('PATCH','guild_members',{status:'kicked',kicked_at:new Date().toISOString()},`?id=eq.${id}`);
+    toast(`${nick}님을 강퇴했어요.`);
+    await loadMembers(); await loadRankings();
+  }catch(e){ alert('오류: '+(e.message||'다시 시도해주세요.')); }
+}
+
+// ── 회차 자동 전환 ────────────────────────────────────────────
+async function checkAndRotateSeason(){
+  const now=new Date();
+  const weekKey=getWeekKey(now);
+  try{
+    // 이번 주 회차 있는지 확인
+    const exist=await supabase('GET','guild_seasons',null,
+      `?guild_id=eq.${gGuildId}&week_key=eq.${weekKey}&limit=1`);
+    if(exist&&exist.length){ gCurrentSeason=exist[0]; renderSeasonMgmt(); return; }
+
+    // 진행 중인 회차 마감
+    const open=await supabase('GET','guild_seasons',null,
+      `?guild_id=eq.${gGuildId}&closed_at=is.null&limit=1`);
+    if(open&&open.length){
+      await supabase('PATCH','guild_seasons',{closed_at:now.toISOString()},`?id=eq.${open[0].id}`);
+    }
+
+    // 새 회차 생성
+    const label=getSeasonLabel(now);
+    const ins=await supabase('POST','guild_seasons',{
+      guild_id:gGuildId, season_label:label,
+      week_key:weekKey, opened_at:now.toISOString()
+    });
+    gCurrentSeason=(ins&&ins.length)?ins[0]:null;
+    renderSeasonMgmt();
+  }catch(e){ console.error(e); renderSeasonMgmt(); }
+}
+
+// ── 회차 관리 렌더 ────────────────────────────────────────────
+function renderSeasonMgmt(){
+  const bd=document.getElementById('season-mgmt-bd');
+  const badge=document.getElementById('season-label-badge');
+  if(!gCurrentSeason){
+    bd.innerHTML='<div class="empty-msg">회차 정보를 불러올 수 없습니다.</div>'; return;
+  }
+  badge.textContent=gCurrentSeason.season_label;
+  const s=gCurrentSeason;
+  bd.innerHTML=`
+    <div class="info-row" style="padding-bottom:12px">
+      <span class="info-lbl">회차명 (수정 가능)</span>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:16px">
+      <input type="text" id="season-label-inp" value="${x(s.season_label)}" style="flex:1;padding:7px 10px">
+      <button class="btn-gold" onclick="saveSeasonLabel()">저장</button>
+    </div>
+    <div style="font-size:11px;color:var(--dim);margin-bottom:8px;font-weight:700;text-transform:uppercase;letter-spacing:.3px">길드전 기록 (선택)</div>
+    <div class="war-edit-row"><span class="war-lbl">수요일</span><input type="text" class="war-inp" id="w-wed" value="${x(s.match_wed||'')}" placeholder="상대 길드명"></div>
+    <div class="war-edit-row"><span class="war-lbl">목요일</span><input type="text" class="war-inp" id="w-thu" value="${x(s.match_thu||'')}" placeholder="상대 길드명"></div>
+    <div class="war-edit-row"><span class="war-lbl">금요일</span><input type="text" class="war-inp" id="w-fri" value="${x(s.match_fri||'')}" placeholder="상대 길드명"></div>
+    <div class="war-edit-row"><span class="war-lbl">토요일</span><input type="text" class="war-inp" id="w-sat" value="${x(s.match_sat||'')}" placeholder="상대 길드명"></div>
+    <div class="war-edit-row"><span class="war-lbl">일요일</span><input type="text" class="war-inp" id="w-sun" value="${x(s.match_sun||'')}" placeholder="상대 길드명"></div>
+    <div class="btn-row"><button class="btn-gold" onclick="saveWarSchedule()" style="flex:1;padding:9px">💾 길드전 기록 저장</button></div>`;
+}
+
+// ── 회차명 저장 ───────────────────────────────────────────────
+async function saveSeasonLabel(){
+  const val=(document.getElementById('season-label-inp').value||'').trim();
+  if(!val){ toast('회차명을 입력해주세요.'); return; }
+  try{
+    await supabase('PATCH','guild_seasons',{season_label:val},`?id=eq.${gCurrentSeason.id}`);
+    gCurrentSeason.season_label=val;
+    document.getElementById('season-label-badge').textContent=val;
+    toast('회차명이 저장됐어요!');
+    await loadPastSeasons();
+  }catch(e){ alert('오류: '+(e.message||'다시 시도해주세요.')); }
+}
+
+// ── 길드전 기록 저장 ──────────────────────────────────────────
+async function saveWarSchedule(){
+  const data={
+    match_wed:(document.getElementById('w-wed').value||'').trim()||null,
+    match_thu:(document.getElementById('w-thu').value||'').trim()||null,
+    match_fri:(document.getElementById('w-fri').value||'').trim()||null,
+    match_sat:(document.getElementById('w-sat').value||'').trim()||null,
+    match_sun:(document.getElementById('w-sun').value||'').trim()||null,
+  };
+  try{
+    await supabase('PATCH','guild_seasons',data,`?id=eq.${gCurrentSeason.id}`);
+    Object.assign(gCurrentSeason,data);
+    toast('길드전 기록이 저장됐어요!');
+  }catch(e){ alert('오류: '+(e.message||'다시 시도해주세요.')); }
+}
+
+// ── 순위 로드 ─────────────────────────────────────────────────
+async function loadRankings(){
+  const bd=document.getElementById('rank-bd');
+  if(!gCurrentSeason||!gMembers.length){
+    bd.innerHTML='<div class="empty-msg" style="padding:16px">진행 중인 회차가 없습니다.</div>'; return;
+  }
+  try{
+    const statCol=gShowBuff?'stat_with_buff':'stat_no_buff';
+    const settings=await supabase('GET','guild_weekly_settings',null,
+      `?season_id=eq.${gCurrentSeason.id}&guild_id=eq.${gGuildId}&order=${statCol}.desc`);
+    renderRankTable(bd, settings||[], statCol);
+  }catch(e){ bd.innerHTML='<div class="empty-msg" style="padding:16px">로드 오류</div>'; }
+}
+
+// ── 순위 테이블 렌더 ──────────────────────────────────────────
+function renderRankTable(bd, settings, statCol){
+  gRankDetails={};
+  const submittedIds=new Set((settings).map(s=>s.user_id));
+  const unsubmitted=gMembers.filter(m=>!submittedIds.has(m.user_id));
+  if(!settings.length&&!unsubmitted.length){
+    bd.innerHTML='<div class="empty-msg" style="padding:16px">제출된 셋팅이 없습니다.</div>'; return;
+  }
+  settings.forEach((s,i)=>{
+    if(s.settings_json) gRankDetails[i]=typeof s.settings_json==='string'?JSON.parse(s.settings_json):s.settings_json;
+  });
+  const label=gShowBuff?'비밸 (버프 포함)':'비밸 (버프 제외)';
+  let html=`<div style="overflow-x:auto"><table class="rank-tbl">
+    <thead><tr>
+      <th class="num">순위</th><th>닉네임</th>
+      <th>${label}</th><th>전송 시각</th>
+    </tr></thead><tbody>`;
+
+  settings.forEach((s,i)=>{
+    const rClass=i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'';
+    const stat=s[statCol]!=null?Number(s[statCol]).toLocaleString():'—';
+    const time=s.submitted_at?new Date(s.submitted_at).toLocaleString('ko-KR',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):'-';
+    const hasDet=!!gRankDetails[i];
+    html+=`<tr style="cursor:${hasDet?'pointer':'default'}" ${hasDet?`onclick="toggleDetail(${i})"`:''}">
+      <td class="rank-num ${rClass}">${i+1}</td>
+      <td>
+        ${x(s.nickname)}
+        ${hasDet?`<span id="rank-arrow-${i}" style="font-size:10px;color:var(--dim);margin-left:5px">▼</span>`:''}
+      </td>
+      <td class="rank-stat">${stat}</td>
+      <td style="font-size:12px;color:var(--dim)">${time}</td>
+    </tr>`;
+    if(hasDet) html+=`<tr id="detail-row-${i}" style="display:none"><td colspan="4" style="padding:0">${renderDeckDetail(gRankDetails[i])}</td></tr>`;
+  });
+
+  unsubmitted.forEach(m=>{
+    html+=`<tr>
+      <td class="rank-num">—</td>
+      <td>${x(m.nickname)}</td>
+      <td class="rank-unsent">미전송</td>
+      <td class="rank-unsent">—</td>
+    </tr>`;
+  });
+
+  html+='</tbody></table></div>';
+  bd.innerHTML=html;
+}
+
+// ── 아코디언 토글 ─────────────────────────────────────────────
+function toggleDetail(idx){
+  const row=document.getElementById('detail-row-'+idx);
+  const arrow=document.getElementById('rank-arrow-'+idx);
+  if(!row)return;
+  const open=row.style.display==='none';
+  row.style.display=open?'':'none';
+  if(arrow)arrow.textContent=open?'▲':'▼';
+}
+
+// ── 덱 상세 카드 렌더 ─────────────────────────────────────────
+function renderDeckDetail(data){
+  if(!data||!data.deck||!data.deck.length) return '<div style="padding:12px 16px;color:var(--dimmer);font-size:12px">셋팅 정보가 없습니다.</div>';
+  const ATTR_N={'땅':11,'물':12,'불':13,'바람':14,'빛':84,'어둠':87,'황혼':487,'여명':486,'악몽':488};
+  const DCOL={'체력형':'#4ade80','공격형':'#f87171','방어형':'#60a5fa','균형형':'#fbbf24','만능형':'#a78bfa'};
+  const SK={hp:'체',atk:'공',def:'방'};
+  const SKCOL={hp:'#fbbf24',atk:'#f87171',def:'#60a5fa'};
+  const SP_PLUS={hp:[0,24,48,72,96],atk:[0,6,12,18,24],def:[0,6,12,18,24]};
+  const SP_PCT=[0,3,6,9,12];
+  const SP_BONUS={hp:40,atk:10,def:10};
+  const ENC_COL={'공격':'#f87171','체력':'#fbbf24','방어':'#60a5fa','균형':'#a78bfa'};
+  const PSHORT={'달':'달펜','태양':'태양펜','별':'별펜'};
+  const IBASE='https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon';
+
+  // ── 공통 데이터 계산 ──────────────────────────────────────────
+  const parsed=data.deck.map(r=>{
+    const dc=DCOL[r.dragon?.dtype]||'#888';
+    const attrN=ATTR_N[r.dragon?.attr]||11;
+    const spParts=(r.dragon?.opts||[]).map((o,i)=>{
+      if(!o||!o.stat||!o.type)return null;
+      const val=o.type==='+'?SP_PLUS[o.stat]?.[i+1]:SP_PCT[i+1];
+      if(!val)return null;
+      return {col:SKCOL[o.stat],txt:`${SK[o.stat]}${o.type==='+'?'+':''}${val}${o.type==='%'?'%':''}`};
+    }).filter(Boolean);
+    if(r.dragon?.bonus) spParts.push({col:SKCOL[r.dragon.bonus],txt:`★${SK[r.dragon.bonus]}+${SP_BONUS[r.dragon.bonus]||0}`});
+    const gemParts=[];
+    if(r.gemAlloc?.length){
+      const bySt={hp:[],atk:[],def:[]};
+      r.gemAlloc.forEach(({k,g})=>{for(let i=0;i<k;i++)bySt[g.s].push(g.lv);});
+      for(const s of ['hp','atk','def']){const lvs=(bySt[s]||[]).sort((a,b)=>b-a);if(lvs.length)gemParts.push({col:SKCOL[s],txt:`${SK[s]}${lvs.length}(${lvs.join(',')})`});}
+    }
+    let pendStr='<span style="color:var(--dimmer)">없음</span>';
+    if(r.pend){
+      const mo=r.pend.type==='태양'?3:r.pend.type==='달'?2:1;
+      const po=(r.pend.options||[]).slice(0,mo).filter(o=>o?.stat).map(o=>`<span style="color:${SKCOL[o.stat]}">${SK[o.stat]}${o.val||0}%</span>`).join('<span style="color:var(--dim)">/</span>');
+      pendStr=`<span style="color:var(--text2)">${PSHORT[r.pend.type]||r.pend.type}</span> <small style="color:var(--dim)">(${po})</small>`;
+    }
+    const encStr=r.enc&&r.enc!=='없음'?`<span style="font-size:10px;padding:1px 5px;border-radius:3px;border:1px solid ${ENC_COL[r.enc]||'var(--bd)'};color:${ENC_COL[r.enc]||'var(--dim)'}">${r.enc}</span>`:'';
+    const nH=(r.fH||0)-(r.bufH||0),nA=(r.fA||0)-(r.bufA||0),nD=(r.fD||0)-(r.bufD||0);
+    const nBV=nH*nA*nD;
+    const hasBuf=(r.bufH||0)+(r.bufA||0)+(r.bufD||0)>0;
+    const spHtml=(sz)=>spParts.length?spParts.map(p=>`<span style="color:${p.col};font-size:${sz}">${p.txt}</span>`).join(' '):'<span style="color:var(--dimmer)">—</span>';
+    const gemHtml=(sz)=>gemParts.length?gemParts.map(p=>`<span style="color:${p.col};font-size:${sz}">${p.txt}</span>`).join(' '):'<span style="color:var(--dimmer)">—</span>';
+    return {r,dc,attrN,spHtml,gemHtml,pendStr,encStr,nBV,hasBuf};
+  });
+
+  // ── PC 카드 (기존 크기) ───────────────────────────────────────
+  const pcCards=parsed.map(({r,dc,attrN,spHtml,gemHtml,pendStr,encStr,nBV,hasBuf})=>`
+    <div style="background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:12px;min-width:210px;max-width:210px;flex-shrink:0">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--bd)">
+        ${r.dragonImg?`<img src="${r.dragonImg}" style="width:44px;height:44px;object-fit:contain;border-radius:6px;border:1px solid var(--bd);background:var(--sf2);flex-shrink:0" onerror="this.style.display='none'">`:
+          `<div style="width:44px;height:44px;border-radius:6px;background:var(--sf2);border:1px solid var(--bd);flex-shrink:0"></div>`}
+        <div style="min-width:0;flex:1">
+          <div style="font-weight:800;font-size:13px;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${x(r.dragon?.name||'—')}</div>
+          <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap">
+            <img src="${IBASE}/${attrN}.png" style="width:16px;height:16px;object-fit:contain">
+            <span style="font-size:11px;color:var(--dim)">${r.dragon?.attr||''}</span>
+            <span style="font-size:10px;padding:1px 5px;border-radius:3px;border:1px solid ${dc};color:${dc}">${r.dragon?.dtype||''}</span>
+          </div>
+        </div>
+      </div>
+      <div style="margin-bottom:8px">
+        <div style="font-size:10px;font-weight:800;color:var(--dim);margin-bottom:4px">✨ 정령</div>
+        <div style="font-size:11px;line-height:1.9">${spHtml('11px')}</div>
+      </div>
+      <div style="margin-bottom:8px;padding-top:8px;border-top:1px solid var(--bd)">
+        <div style="font-size:10px;font-weight:800;color:var(--dim);margin-bottom:6px">💍 장신구</div>
+        <div style="display:flex;align-items:center;gap:6px">
+          ${r.accImg?`<img src="${r.accImg}" style="width:30px;height:30px;object-fit:contain;border-radius:4px;flex-shrink:0">`:''}
+          <div><div style="font-size:12px;font-weight:700">${x(r.accName||'없음')}</div>${encStr?`<div style="margin-top:3px">${encStr}</div>`:''}</div>
+        </div>
+      </div>
+      <div style="margin-bottom:8px;padding-top:8px;border-top:1px solid var(--bd)">
+        <div style="font-size:10px;font-weight:800;color:var(--dim);margin-bottom:4px">💎 젬</div>
+        <div style="font-size:11px">${gemHtml('11px')}</div>
+      </div>
+      <div style="margin-bottom:10px;padding-top:8px;border-top:1px solid var(--bd)">
+        <div style="font-size:10px;font-weight:800;color:var(--dim);margin-bottom:4px">🌙 펜던트</div>
+        <div style="font-size:11px">${pendStr}</div>
+      </div>
+      <div style="padding-top:8px;border-top:1px solid var(--bd)">
+        <div style="font-size:10px;font-weight:800;color:var(--dim);margin-bottom:6px">📊 최종 스텟</div>
+        <div style="font-family:'Courier New',monospace;font-size:11px;line-height:2">
+          <span style="color:#fbbf24">체</span> ${(r.fH||0).toLocaleString('ko-KR')}${r.bufH?` <small style="color:var(--dim)">(+${r.bufH.toLocaleString('ko-KR')})</small>`:''}
+          <br><span style="color:#f87171">공</span> ${(r.fA||0).toLocaleString('ko-KR')}${r.bufA?` <small style="color:var(--dim)">(+${r.bufA.toLocaleString('ko-KR')})</small>`:''}
+          <br><span style="color:#60a5fa">방</span> ${(r.fD||0).toLocaleString('ko-KR')}${r.bufD?` <small style="color:var(--dim)">(+${r.bufD.toLocaleString('ko-KR')})</small>`:''}
+        </div>
+        <div style="margin-top:6px;display:flex;gap:12px;flex-wrap:wrap">
+          <div><div style="font-size:10px;color:var(--dim)">버프포함</div><span style="font-family:'Courier New',monospace;font-size:13px;font-weight:800;color:var(--gold)">${((r.bv||0)/1e6).toFixed(1)}</span><span style="font-size:10px;color:var(--dim)">억</span></div>
+          ${hasBuf?`<div><div style="font-size:10px;color:var(--dim)">버프제외</div><span style="font-family:'Courier New',monospace;font-size:13px;font-weight:800;color:var(--text2)">${(nBV/1e6).toFixed(1)}</span><span style="font-size:10px;color:var(--dim)">억</span></div>`:''}
+        </div>
+      </div>
+    </div>`).join('');
+
+  // ── 모바일 카드 (컴팩트 3열) ──────────────────────────────────
+  const mobCards=parsed.map(({r,dc,attrN,spHtml,gemHtml,pendStr,encStr,nBV,hasBuf})=>`
+    <div style="background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:8px;min-width:0;overflow:hidden">
+      <div style="display:flex;align-items:center;gap:5px;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--bd)">
+        ${r.dragonImg?`<img src="${r.dragonImg}" style="width:32px;height:32px;object-fit:contain;border-radius:4px;border:1px solid var(--bd);background:var(--sf2);flex-shrink:0" onerror="this.style.display='none'">`:
+          `<div style="width:32px;height:32px;border-radius:4px;background:var(--sf2);border:1px solid var(--bd);flex-shrink:0"></div>`}
+        <div style="min-width:0;flex:1">
+          <div style="font-weight:800;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3">${x(r.dragon?.name||'—')}</div>
+          <div style="display:flex;align-items:center;gap:2px;margin-top:2px">
+            <img src="${IBASE}/${attrN}.png" style="width:11px;height:11px;object-fit:contain;flex-shrink:0">
+            <span style="font-size:8px;padding:1px 3px;border-radius:2px;border:1px solid ${dc};color:${dc};white-space:nowrap">${r.dragon?.dtype||''}</span>
+          </div>
+        </div>
+      </div>
+      <div style="margin-bottom:5px">
+        <div style="font-size:8px;color:var(--dim);margin-bottom:2px;font-weight:700">✨ 정령</div>
+        <div style="font-size:8px;line-height:1.7;word-break:break-all">${spHtml('8px')}</div>
+      </div>
+      <div style="margin-bottom:5px;padding-top:5px;border-top:1px solid var(--bd)">
+        <div style="font-size:8px;color:var(--dim);margin-bottom:3px;font-weight:700">💍 장신구</div>
+        <div style="display:flex;align-items:center;gap:3px">
+          ${r.accImg?`<img src="${r.accImg}" style="width:18px;height:18px;object-fit:contain;border-radius:2px;flex-shrink:0">`:''}
+          <div style="min-width:0">
+            <div style="font-size:9px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${x(r.accName||'없음')}</div>
+            ${encStr?`<div style="margin-top:1px">${encStr}</div>`:''}
+          </div>
+        </div>
+      </div>
+      <div style="margin-bottom:4px;padding-top:4px;border-top:1px solid var(--bd)">
+        <div style="font-size:8px;color:var(--dim);margin-bottom:2px;font-weight:700">💎 젬</div>
+        <div style="font-size:8px;word-break:break-all">${gemHtml('8px')}</div>
+      </div>
+      <div style="margin-bottom:5px;padding-top:4px;border-top:1px solid var(--bd)">
+        <div style="font-size:8px;color:var(--dim);margin-bottom:2px;font-weight:700">🌙 펜던트</div>
+        <div style="font-size:8px">${pendStr}</div>
+      </div>
+      <div style="padding-top:5px;border-top:1px solid var(--bd)">
+        <div style="font-size:8px;font-family:'Courier New',monospace;line-height:1.7;color:var(--text2)">
+          <span style="color:#fbbf24">체</span> ${(r.fH||0).toLocaleString('ko-KR')}${r.bufH?` <span style="color:var(--dim);font-size:7px">(+${r.bufH.toLocaleString('ko-KR')})</span>`:''}
+          <br><span style="color:#f87171">공</span> ${(r.fA||0).toLocaleString('ko-KR')}${r.bufA?` <span style="color:var(--dim);font-size:7px">(+${r.bufA.toLocaleString('ko-KR')})</span>`:''}
+          <br><span style="color:#60a5fa">방</span> ${(r.fD||0).toLocaleString('ko-KR')}${r.bufD?` <span style="color:var(--dim);font-size:7px">(+${r.bufD.toLocaleString('ko-KR')})</span>`:''}
+        </div>
+        <div style="margin-top:4px;display:flex;gap:4px;flex-wrap:wrap;align-items:baseline">
+          <span style="font-family:'Courier New',monospace;font-size:11px;font-weight:800;color:var(--gold)">${((r.bv||0)/1e6).toFixed(1)}<span style="font-size:8px;color:var(--dim)">억</span></span>
+          ${hasBuf?`<span style="font-size:8px;color:var(--dim)">(제외 ${(nBV/1e6).toFixed(1)}억)</span>`:''}
+        </div>
+      </div>
+    </div>`).join('');
+
+  return `<div style="padding:14px 16px;background:var(--sf2);border-top:2px solid var(--gold)">
+    <div class="deck-grid-pc">${pcCards}</div>
+    <div class="deck-grid-mob">${mobCards}</div>
+  </div>`;
+}
+
+// ── 버프 토글 ─────────────────────────────────────────────────
+function setBuff(val){
+  gShowBuff=val;
+  const lbl=document.getElementById('buff-sw-lbl');
+  if(lbl) lbl.textContent=val?'버프 포함':'버프 제외';
+  loadRankings();
+}
+
+// ── 지난 회차 목록 ────────────────────────────────────────────
+async function loadPastSeasons(){
+  const sel=document.getElementById('past-select');
+  try{
+    const seasons=await supabase('GET','guild_seasons',null,
+      `?guild_id=eq.${gGuildId}&closed_at=not.is.null&order=opened_at.desc`);
+    sel.innerHTML='<option value="">— 회차 선택 —</option>';
+    (seasons||[]).forEach(s=>{
+      const opt=document.createElement('option');
+      opt.value=s.id; opt.textContent=s.season_label+' ('+new Date(s.opened_at).toLocaleDateString('ko-KR')+')';
+      sel.appendChild(opt);
+    });
+  }catch(e){}
+}
+
+// ── 지난 회차 순위 ────────────────────────────────────────────
+async function loadPastRanking(seasonId){
+  const bd=document.getElementById('past-rank-bd');
+  if(!seasonId){ bd.innerHTML='<div class="empty-msg">회차를 선택해주세요.</div>'; gPastSeason=null; return; }
+  bd.innerHTML='<div class="empty-msg blink">불러오는 중...</div>';
+  try{
+    // 해당 회차 정보
+    const seasons=await supabase('GET','guild_seasons',null,`?id=eq.${seasonId}&limit=1`);
+    gPastSeason=(seasons&&seasons.length)?seasons[0]:null;
+
+    const statCol=gShowBuff?'stat_with_buff':'stat_no_buff';
+    const settings=await supabase('GET','guild_weekly_settings',null,
+      `?season_id=eq.${seasonId}&guild_id=eq.${gGuildId}&order=${statCol}.desc`);
+
+    // 멤버 기록은 당시 기준으로 제출자만 보여줌
+    if(!settings||!settings.length){ bd.innerHTML='<div class="empty-msg">제출된 셋팅이 없습니다.</div>'; return; }
+
+    const label=gShowBuff?'비밸 (버프 포함)':'비밸 (버프 제외)';
+    let html=`<div style="overflow-x:auto"><table class="rank-tbl">
+      <thead><tr><th class="num">순위</th><th>닉네임</th><th>${label}</th><th>전송 시각</th></tr></thead><tbody>`;
+    settings.forEach((s,i)=>{
+      const rClass=i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'';
+      const stat=s[statCol]!=null?Number(s[statCol]).toLocaleString():'—';
+      const time=s.submitted_at?new Date(s.submitted_at).toLocaleString('ko-KR',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):'-';
+      html+=`<tr><td class="rank-num ${rClass}">${i+1}</td><td>${x(s.nickname)}</td><td class="rank-stat">${stat}</td><td style="font-size:12px;color:var(--dim)">${time}</td></tr>`;
+    });
+    html+='</tbody></table></div>';
+    bd.innerHTML=html;
+  }catch(e){ bd.innerHTML='<div class="empty-msg">로드 오류</div>'; }
+}
+
+// ── 엑셀 내보내기 (이번 회차) ────────────────────────────────
+async function exportExcel(){
+  if(!gCurrentSeason){ toast('진행 중인 회차가 없어요.'); return; }
+  try{
+    const statCol=gShowBuff?'stat_with_buff':'stat_no_buff';
+    const statLabel=gShowBuff?'비밸(버프 포함)':'비밸(버프 제외)';
+    const settings=await supabase('GET','guild_weekly_settings',null,
+      `?season_id=eq.${gCurrentSeason.id}&guild_id=eq.${gGuildId}&order=${statCol}.desc`)||[];
+    const submittedIds=new Set(settings.map(s=>s.user_id));
+    const unsubmitted=gMembers.filter(m=>!submittedIds.has(m.user_id));
+
+    const rankData=[['순위','닉네임',statLabel,'전송일시']];
+    settings.forEach((s,i)=>{
+      rankData.push([i+1, s.nickname, s[statCol]??'', s.submitted_at?new Date(s.submitted_at).toLocaleString('ko-KR'):'']);
+    });
+    unsubmitted.forEach(m=>rankData.push(['—',m.nickname,'미전송','미전송']));
+
+    const warData=[['요일','상대 길드'],
+      ['수요일',gCurrentSeason.match_wed||'미입력'],['목요일',gCurrentSeason.match_thu||'미입력'],
+      ['금요일',gCurrentSeason.match_fri||'미입력'],['토요일',gCurrentSeason.match_sat||'미입력'],
+      ['일요일',gCurrentSeason.match_sun||'미입력']];
+
+    const wb=XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(rankData), '순위');
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(warData), '길드전');
+    XLSX.writeFile(wb, `${gGuildName}_${gCurrentSeason.season_label}.xlsx`);
+  }catch(e){ alert('내보내기 오류: '+(e.message||e)); }
+}
+
+// ── 엑셀 내보내기 (지난 회차) ────────────────────────────────
+async function exportPastExcel(){
+  const seasonId=document.getElementById('past-select').value;
+  if(!seasonId||!gPastSeason){ toast('회차를 먼저 선택해주세요.'); return; }
+  try{
+    const statCol=gShowBuff?'stat_with_buff':'stat_no_buff';
+    const statLabel=gShowBuff?'비밸(버프 포함)':'비밸(버프 제외)';
+    const settings=await supabase('GET','guild_weekly_settings',null,
+      `?season_id=eq.${seasonId}&guild_id=eq.${gGuildId}&order=${statCol}.desc`)||[];
+
+    const rankData=[['순위','닉네임',statLabel,'전송일시']];
+    settings.forEach((s,i)=>{
+      rankData.push([i+1,s.nickname,s[statCol]??'',s.submitted_at?new Date(s.submitted_at).toLocaleString('ko-KR'):'']);
+    });
+
+    const wb=XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(rankData),'순위');
+    XLSX.writeFile(wb,`${gGuildName}_${gPastSeason.season_label}.xlsx`);
+  }catch(e){ alert('내보내기 오류: '+(e.message||e)); }
+}
+
+// ── 요청 polling (10초) ───────────────────────────────────────
+function startReqPoll(){
+  if(gPollTimer) clearInterval(gPollTimer);
+  gPollTimer=setInterval(loadPending, 10000);
+}
+
+// ── 유틸 ──────────────────────────────────────────────────────
+// ── 슈퍼어드민 기능 ───────────────────────────────────────────
+async function initSuperAdmin(){
+  if(!gUser||!gUser.is_admin)return;
+  const bar=document.getElementById('sa-bar');
+  if(bar)bar.style.display='flex';
+  await saLoadGuildList();
+}
+
+async function saLoadGuildList(){
+  const sel=document.getElementById('sa-guild-select');
+  if(!sel)return;
+  try{
+    const guilds=await supabase('GET','guilds',null,'?order=created_at.desc&select=id,name');
+    sel.innerHTML='<option value="">— 길드 선택 —</option>';
+    (guilds||[]).forEach(g=>{
+      const opt=document.createElement('option');
+      opt.value=g.id; opt.textContent=g.name;
+      if(g.id===gGuildId)opt.selected=true;
+      sel.appendChild(opt);
+    });
+  }catch(e){console.error('길드 목록 로드 오류:',e);}
+}
+
+async function saLoadGuild(guildId){
+  if(!guildId)return;
+  // 선택한 길드로 전환
+  try{
+    const guilds=await supabase('GET','guilds',null,`?id=eq.${guildId}&select=id,name&limit=1`);
+    if(!guilds||!guilds.length)return;
+    gGuildId=guilds[0].id;
+    gGuildName=guilds[0].name;
+    document.getElementById('a-guild').textContent=gGuildName;
+    // 데이터 새로고침
+    await Promise.all([loadCode(),loadPending(),loadMembers(),checkAndRotateSeason(),loadRankings(),loadPastSeasons()]);
+    toast(`${gGuildName} 길드로 전환했어요.`);
+  }catch(e){alert('길드 전환 오류: '+(e.message||e));}
+}
+
+async function saRefresh(){
+  await saLoadGuildList();
+  toast('길드 목록을 새로고침했어요.');
+}
+
+// ── 모바일 탭 전환 ────────────────────────────────────────────
+function switchMobTab(tab,btn){
+  if(window.innerWidth>=900)return;
+  document.querySelectorAll('.mobile-bar button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const left=document.querySelector('.admin-left');
+  const right=document.querySelector('.admin-right');
+  if(!left||!right)return;
+  if(tab==='left'){
+    left.classList.remove('mob-hidden');
+    right.classList.remove('mob-active');
+  }else{
+    left.classList.add('mob-hidden');
+    right.classList.add('mob-active');
+  }
+}
+
+function toggleSec(bdId,arrowId){
+  const bd=document.getElementById(bdId);
+  const arrow=document.getElementById(arrowId);
+  if(!bd)return;
+  const open=bd.style.display==='none';
+  bd.style.display=open?'':'none';
+  if(arrow)arrow.textContent=open?'▲':'▼';
+}
+function showV(name){
+  ['loading','noauth','notadmin','create','admin'].forEach(v=>{
+    const el=document.getElementById('v-'+v);
+    if(el) el.style.display=v===name?'':'none';
+  });
+  const mb=document.getElementById('mobile-bar');
+  if(mb) mb.classList.toggle('hidden', name!=='admin');
+}
+
+function genCode(){
+  const c='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let r='DV-';
+  for(let i=0;i<6;i++) r+=c[Math.floor(Math.random()*c.length)];
+  return r;
+}
+
+function getWeekKey(d=new Date()){
+  const dt=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));
+  const day=dt.getUTCDay()||7;
+  dt.setUTCDate(dt.getUTCDate()+4-day);
+  const y=dt.getUTCFullYear();
+  const ys=new Date(Date.UTC(y,0,1));
+  const w=Math.ceil(((dt-ys)/86400000+1)/7);
+  return `${y}-W${String(w).padStart(2,'0')}`;
+}
+
+function getSeasonLabel(d=new Date()){
+  const kst=new Date(d.getTime()+9*3600000);
+  const m=kst.getUTCMonth()+1;
+  const w=Math.ceil(kst.getUTCDate()/7);
+  return `${m}월 ${w}주차`;
+}
+
+function timeAgo(iso){
+  const diff=Math.floor((Date.now()-new Date(iso))/1000);
+  if(diff<60) return '방금 전';
+  if(diff<3600) return Math.floor(diff/60)+'분 전';
+  if(diff<86400) return Math.floor(diff/3600)+'시간 전';
+  return Math.floor(diff/86400)+'일 전';
+}
+
+function toast(msg,dur=2600){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('on');
+  setTimeout(()=>el.classList.remove('on'),dur);
+}
+
+function x(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&document.getElementById('v-noauth').style.display!=='none') doLogin();
+});
+</script>
+
+<script>
+(function(){
+  var link=document.getElementById('theme-css');
+  if(!link)return;
+  var sync=function(){
+    var c=document.getElementById('custom-theme-style');
+    if(c&&c.textContent&&c.textContent.length>0){document.documentElement.removeAttribute('data-theme');return;}
+    var m=String(link.href||'').match(/theme-(dark|light|beige)\.css/);
+    document.documentElement.setAttribute('data-theme',m?m[1]:'dark');
+  };
+  sync();
+  new MutationObserver(sync).observe(link,{attributes:true,attributeFilter:['href']});
+  new MutationObserver(sync).observe(document.head,{childList:true,subtree:true,characterData:true});
+})();
+</script>
+</body>
+</html>

@@ -307,6 +307,17 @@
                 position: relative; text-align: center; }
   .item-modal-title { font-size: 14px; font-weight: 700; color: var(--accent); margin-bottom: 12px; }
   .item-modal img { width: 100%; border-radius: 8px; display: block; }
+
+  /* ── 어드민 회원 카드 ── */
+  .admin-member-card{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;flex-wrap:wrap}
+  .admin-member-info{flex:1;min-width:0}
+  .admin-member-name{font-size:13px;font-weight:700}
+  .admin-member-meta{font-size:11px;color:var(--text4);margin-top:2px}
+  .admin-ban-btn{padding:4px 10px;border-radius:5px;border:none;cursor:pointer;font-size:12px;font-weight:700;font-family:inherit;white-space:nowrap}
+  .ban-on{background:rgba(239,83,80,.12);border:1px solid rgba(239,83,80,.3);color:#ef5350}
+  .ban-off{background:rgba(102,187,106,.12);border:1px solid rgba(102,187,106,.3);color:#66bb6a}
+  /* pill-btn 로그인 상태 */
+  .pill-btn.auth-user{color:var(--accent);background:var(--accent-bg);border-color:var(--accent-border);cursor:default}
 </style>
 </head>
 
@@ -331,6 +342,7 @@
     <div class="mobile-actions">
       <a href="./en/index.html" class="icon-btn">🌐</a>
       <button class="icon-btn" onclick="openThemeModal()">🎨</button>
+      <button class="icon-btn" id="mob-auth-icon" onclick="handleMobAuth()">👤</button>
     </div>
   </div>
 
@@ -338,6 +350,7 @@
   <div class="header-actions pc-only">
     <a href="./en/index.html" class="pill-btn">🌐 EN</a>
     <button class="pill-btn" onclick="openThemeModal()">🎨 테마</button>
+    <div id="pc-auth" style="display:flex;gap:6px;align-items:center;margin-left:4px"></div>
   </div>
 
   <!-- 헤드라인 -->
@@ -362,6 +375,7 @@
     <button class="tab" onclick="switchTab('weekly', this)">주간</button>
     <button class="tab" onclick="switchTab('community', this)">커뮤니티</button>
     <button class="tab" onclick="switchTab('calculator', this)">계산기</button>
+    <button class="tab" id="tab-admin" onclick="switchTab('admin', this)" style="display:none">⚙️ 어드민</button>
   </nav>
 
   <!-- 본문 -->
@@ -483,6 +497,33 @@
             </div>
           </a>
         </div>
+      </section>
+
+      <section class="category" id="cat-admin">
+        <div class="cat-head"><h3>⚙️ 어드민</h3><span class="meta">· 관리자 전용</span></div>
+        <div class="cards tri" style="margin-bottom:20px">
+          <a href="./gdgm.html" class="card">
+            <span class="icon-tile violet">길드</span>
+            <div class="card-body">
+              <div class="card-title">전체 길드 관리</div>
+              <div class="card-desc">모든 길드 데이터 열람 · 순위 확인</div>
+            </div>
+          </a>
+          <a href="./account.html" class="card">
+            <span class="icon-tile sky">계정</span>
+            <div class="card-body">
+              <div class="card-title">계정 관리</div>
+              <div class="card-desc">아이디·비밀번호 찾기 · 닉네임 변경</div>
+            </div>
+          </a>
+        </div>
+          <a href="./admin_users.html" class="card">
+            <span class="icon-tile rose">회원</span>
+            <div class="card-body">
+              <div class="card-title">회원 관리</div>
+              <div class="card-desc">전체 회원 목록 · 계정 정지 · 검색</div>
+            </div>
+          </a>
       </section>
 
     </main>
@@ -624,6 +665,116 @@
       history.replaceState(null, '', url.toString());
     } catch(e) { /* srcdoc/iframe 환경에서는 무시 */ }
   }
+
+
+  // ─── 인증 UI ────────────────────────────────────────────────
+  let _adminMembers=[], _adminPage=0, _adminQ='';
+  const PAGE_SIZE=15;
+
+  function initAuth(){
+    const user=getUser();
+    const pc=document.getElementById('pc-auth');
+    const mob=document.getElementById('mob-auth-icon');
+
+    if(user){
+      // PC: 닉네임 + 로그아웃
+      if(pc) pc.innerHTML=`
+        <span class="pill-btn auth-user" style="pointer-events:none">👤 ${user.nickname||user.username}</span>
+        <a href="./my.html" class="pill-btn">내 스펙</a>
+        <button class="pill-btn" onclick="doLogout()">로그아웃</button>`;
+      // 모바일 아이콘
+      if(mob) mob.title='내 스펙';
+      // 어드민 탭
+      if(user.is_admin){
+        const t=document.getElementById('tab-admin');
+        if(t) t.style.display='';
+        loadAdminMembers();
+      }
+    }else{
+      if(pc) pc.innerHTML=`
+        <a href="./login.html" class="pill-btn">로그인</a>
+        <a href="./register.html" class="pill-btn">회원가입</a>`;
+      if(mob) mob.title='로그인';
+    }
+  }
+
+  function handleMobAuth(){
+    const user=getUser();
+    location.href=user?'./my.html':'./login.html';
+  }
+
+  function doLogout(){
+    if(!confirm('로그아웃할까요?'))return;
+    logout();
+    location.reload();
+  }
+
+  // ─── 어드민: 회원 목록 ───────────────────────────────────────
+  async function loadAdminMembers(){
+    const list=document.getElementById('admin-member-list');
+    if(!list)return;
+    list.innerHTML='<div style="color:var(--text4);font-size:13px;text-align:center;padding:20px">로딩 중...</div>';
+    try{
+      const rows=await supabase('GET','users',null,'?order=id.desc&select=id,username,nickname,friend_code,is_banned,is_admin');
+      _adminMembers=rows||[];
+      _adminPage=0;
+      _adminQ='';
+      document.getElementById('admin-search').value='';
+      renderAdminMembers();
+    }catch(e){
+      list.innerHTML='<div style="color:#ef5350;font-size:13px;text-align:center;padding:20px">로드 오류</div>';
+    }
+  }
+
+  function adminSearch(){
+    _adminQ=(document.getElementById('admin-search').value||'').trim().toLowerCase();
+    _adminPage=0;
+    renderAdminMembers();
+  }
+
+  function renderAdminMembers(){
+    const list=document.getElementById('admin-member-list');
+    const pg=document.getElementById('admin-pagination');
+    if(!list)return;
+    const filtered=_adminQ
+      ?_adminMembers.filter(u=>(u.nickname||'').toLowerCase().includes(_adminQ)||(u.username||'').toLowerCase().includes(_adminQ))
+      :_adminMembers;
+    const total=filtered.length;
+    const pages=Math.max(1,Math.ceil(total/PAGE_SIZE));
+    _adminPage=Math.min(_adminPage,pages-1);
+    const slice=filtered.slice(_adminPage*PAGE_SIZE,(_adminPage+1)*PAGE_SIZE);
+    if(!slice.length){list.innerHTML='<div style="color:var(--text4);font-size:13px;text-align:center;padding:20px">회원이 없습니다.</div>';pg.innerHTML='';return;}
+    list.innerHTML=slice.map(u=>`
+      <div class="admin-member-card">
+        <div class="admin-member-info">
+          <div class="admin-member-name">
+            ${u.nickname||u.username}
+            ${u.is_admin?'<span style="font-size:10px;padding:1px 6px;border-radius:3px;background:rgba(167,139,250,.15);color:#a78bfa;border:1px solid rgba(167,139,250,.3);margin-left:4px">어드민</span>':''}
+            ${u.is_banned?'<span style="font-size:10px;padding:1px 6px;border-radius:3px;background:rgba(239,83,80,.12);color:#ef5350;border:1px solid rgba(239,83,80,.3);margin-left:4px">정지</span>':''}
+          </div>
+          <div class="admin-member-meta">@${u.username} · ${u.friend_code||'—'}</div>
+        </div>
+        ${!u.is_admin?`<button class="admin-ban-btn ${u.is_banned?'ban-off':'ban-on'}" onclick="toggleBan(${u.id},${!!u.is_banned},'${u.nickname||u.username}')">${u.is_banned?'정지 해제':'계정 정지'}</button>`:'<span style="font-size:11px;color:var(--text4)">나</span>'}
+      </div>`).join('');
+    // 페이지네이션
+    if(pages<=1){pg.innerHTML='';return;}
+    let btns='';
+    for(let i=0;i<pages;i++) btns+=`<button onclick="_adminPage=${i};renderAdminMembers()" style="padding:4px 10px;border-radius:5px;border:1px solid var(--border);background:${i===_adminPage?'var(--accent-bg)':'var(--bg3)'};color:${i===_adminPage?'var(--accent)':'var(--text3)'};cursor:pointer;font-family:inherit;font-size:12px">${i+1}</button>`;
+    pg.innerHTML=btns;
+  }
+
+  async function toggleBan(id,isBanned,name){
+    if(!confirm(`${name}님을 ${isBanned?'정지 해제':'계정 정지'}할까요?`))return;
+    try{
+      await supabase('PATCH','users',{is_banned:!isBanned},`?id=eq.${id}`);
+      const u=_adminMembers.find(m=>m.id===id);
+      if(u)u.is_banned=!isBanned;
+      renderAdminMembers();
+    }catch(e){alert('오류: '+(e.message||e));}
+  }
+
+  // 초기화 실행
+  initAuth();
 
   // ─── 방문자 통계 (원본 trackVisitor 그대로) ─────────────────
   async function trackVisitor() {

@@ -57,6 +57,7 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
   <button class="btn" onclick="login()">로그인</button>
   <div class="msg" id="msg"></div>
   <div class="link"><a href="./register.html">계정이 없어요 → 회원가입</a></div>
+  <div class="link" style="margin-top:8px"><a href="./account.html">아이디 · 비밀번호 찾기 / 닉네임 변경</a></div>
 </div>
 <script src="./sb_config.js"></script>
 <script>
@@ -80,7 +81,7 @@ async function login() {
     });
     msg.className='msg success'; msg.textContent='로그인 성공!';
     const params = new URLSearchParams(location.search);
-    const redirectTo = params.get('from') || './community.html';
+    const redirectTo = params.get('from') || './index.html';
     setTimeout(() => location.href=redirectTo, 800);
   } catch(e) {
     msg.className='msg error'; msg.textContent='오류: ' + e.message;

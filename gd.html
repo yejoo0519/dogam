@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>길드 연동 - 드래곤빌리지1</title>
+<link id="theme-css" rel="stylesheet" href="./theme-dark.css">
+<script src="./theme.js"></script>
+<script src="./sb_config.js"></script>
+<style>
+[data-theme="dark"]{
+  --bg:#0e1116;--bg2:#161a22;--bg3:#1c212c;
+  --border:#23293a;--border2:#1b1f2a;--border3:#2d3447;
+  --text:#eaecf2;--text2:#b3b9c7;--text3:#7d8597;--text4:#565d6e;
+  --accent:#7aa2f7;--accent-bg:rgba(122,162,247,0.12);--accent-border:rgba(122,162,247,0.30);
+}
+[data-theme="light"]{
+  --bg:#f7f7f8;--bg2:#ffffff;--bg3:#f1f2f4;
+  --border:#e6e7ea;--border2:#eeeff2;--border3:#d4d6db;
+  --text:#15171c;--text2:#4a4d57;--text3:#71757f;--text4:#9aa0aa;
+  --accent:#2f6fed;--accent-bg:rgba(47,111,237,0.10);--accent-border:rgba(47,111,237,0.32);
+}
+[data-theme="beige"]{
+  --bg:#f3ecdd;--bg2:#faf3e2;--bg3:#ebe0c7;
+  --border:#d8caa8;--border2:#e1d4b3;--border3:#c0ad84;
+  --text:#2a2316;--text2:#5a4e34;--text3:#837553;--text4:#a99971;
+  --accent:#b06a1e;--accent-bg:rgba(176,106,30,0.10);--accent-border:rgba(176,106,30,0.32);
+}
+:root{
+  --sf:var(--bg2);--sf2:var(--bg3);--bd:var(--border);
+  --gold:var(--accent);--gold2:var(--accent);
+  --dim:var(--text3);--dimmer:var(--text4);
+  --red:#f87171;--green:#4ade80;--blue:#60a5fa;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;padding-bottom:60px}
+
+/* ── 헤더 ── */
+.hd{display:flex;align-items:center;gap:14px;padding:12px 20px;background:var(--sf);border-bottom:2px solid var(--gold);position:sticky;top:0;z-index:100}
+.hd-icon{font-size:26px}
+.hd-t{font-size:15px;font-weight:800;color:var(--gold)}
+.hd-s{font-size:11px;color:var(--dim);margin-top:2px}
+.hd-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.hd-user{font-size:12px;color:var(--dim)}
+
+/* ── 본문 ── */
+.ti{max-width:600px;margin:0 auto;padding:14px 24px}
+
+/* ── 섹션 ── */
+.sec{background:var(--sf);border:1px solid var(--bd);border-radius:8px;margin-bottom:14px;overflow:hidden}
+.sec-hd{display:flex;align-items:center;justify-content:space-between;padding:9px 16px;background:var(--sf2);border-bottom:1px solid var(--bd);font-size:11px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.5px}
+.sec-bd{padding:14px 16px}
+
+/* ── 인풋 ── */
+select,input[type=text],input[type=password]{background:var(--sf2);border:1px solid var(--bd);color:var(--text);padding:5px 9px;border-radius:5px;font-family:'Malgun Gothic',sans-serif;font-size:13px}
+select:focus,input:focus{outline:none;border-color:var(--gold)}
+input::placeholder{color:var(--dimmer)}
+.inp-full{width:100%;padding:9px 12px;font-size:14px}
+
+/* ── 버튼 ── */
+.btn-gold{background:none;border:1px solid var(--gold);color:var(--gold);padding:8px 18px;border-radius:5px;cursor:pointer;font-family:'Malgun Gothic',sans-serif;font-size:13px;font-weight:700;transition:background .15s}
+.btn-gold:hover{background:var(--accent-bg)}
+.btn-gold:disabled{opacity:.4;cursor:not-allowed}
+.btn-gold-fill{background:linear-gradient(90deg,#4a90d9,#5dcff5);border:none;color:#fff;padding:11px;border-radius:8px;width:100%;cursor:pointer;font-family:'Malgun Gothic',sans-serif;font-size:14px;font-weight:700;transition:opacity .15s;margin-top:4px}
+.btn-gold-fill:hover{opacity:.9}
+.btn-gold-fill:disabled{opacity:.45;cursor:not-allowed}
+.btn-white{background:none;border:1px solid var(--text2);color:var(--text2);padding:8px 18px;border-radius:5px;cursor:pointer;font-family:'Malgun Gothic',sans-serif;font-size:13px;font-weight:700;transition:all .15s}
+.btn-white:hover{border-color:var(--text);color:var(--text)}
+.btn-reset{background:none;border:1px solid var(--red);color:var(--red);padding:8px 18px;border-radius:5px;cursor:pointer;font-family:'Malgun Gothic',sans-serif;font-size:13px;font-weight:700;transition:background .15s}
+.btn-reset:hover{background:rgba(248,113,113,.1)}
+
+/* ── 로그인 박스 (login.html 스타일) ── */
+.login-box{max-width:380px;margin:0 auto}
+.login-box h2{font-size:17px;color:var(--text);margin-bottom:20px;text-align:center;font-weight:800}
+.field{margin-bottom:14px}
+.field label{font-size:12px;color:var(--text2);margin-bottom:5px;display:block}
+.field input{width:100%;padding:9px 12px;background:var(--sf2);border:1px solid var(--border3);border-radius:8px;color:var(--text);font-size:13px;font-family:inherit}
+.field input:focus{outline:none;border-color:var(--gold)}
+.login-msg{font-size:12px;margin-top:10px;text-align:center}
+.login-msg.error{color:#ef5350}
+.login-msg.success{color:#66bb6a}
+.login-link{text-align:center;margin-top:14px;font-size:12px;color:var(--dimmer)}
+.login-link a{color:var(--gold);text-decoration:none}
+
+/* ── 정보 행 ── */
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--bd);font-size:13px}
+.info-row:last-child{border-bottom:none}
+.info-lbl{color:var(--dim)}
+.info-val{font-weight:700;text-align:right}
+
+/* ── 배지 ── */
+.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:800}
+.badge-ok{background:rgba(74,222,128,.12);color:var(--green);border:1px solid rgba(74,222,128,.25)}
+.badge-wait{background:var(--accent-bg);color:var(--gold);border:1px solid var(--accent-border)}
+.badge-admin{background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.25)}
+
+/* ── 에러 박스 ── */
+.err-box{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.25);color:var(--red);padding:8px 12px;border-radius:5px;font-size:12px;margin-bottom:10px;display:none}
+.err-box.on{display:block}
+
+/* ── 버튼 행 ── */
+.btn-row{display:flex;gap:8px;margin-top:12px}
+
+/* ── 길드전 표 ── */
+.war-tbl{width:100%;border-collapse:collapse}
+.war-tbl td{padding:8px 10px;border:1px solid var(--bd);font-size:13px}
+.war-tbl td:first-child{background:var(--sf2);color:var(--dim);width:68px;text-align:center;font-size:12px;font-weight:700}
+.war-tbl .empty{color:var(--dimmer);font-style:italic}
+
+/* ── 중앙 박스 ── */
+.center-box{text-align:center;padding:28px 16px}
+.center-icon{font-size:44px;margin-bottom:14px}
+.center-title{font-size:15px;font-weight:800;margin-bottom:6px}
+.center-sub{font-size:13px;color:var(--dim);line-height:1.8}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.blink{animation:blink 1.8s ease-in-out infinite}
+
+/* ── 토스트 ── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--gold);color:#0a0c18;padding:10px 24px;border-radius:8px;font-weight:800;font-size:14px;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
+.toast.on{opacity:1}
+
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+
+@media(max-width:480px){
+  .ti{padding:12px 14px}
+  .hd{padding:10px 14px}
+  .btn-row{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<!-- ── 헤더 ── -->
+<div class="hd">
+  <a href="./index.html" style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;border:1px solid var(--bd);background:var(--sf2);color:var(--text2);text-decoration:none;font-size:16px;flex-shrink:0;transition:all .15s" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--bd)';this.style.color='var(--text2)'">←</a>
+  <div class="hd-icon">⚔️</div>
+  <div>
+    <div class="hd-t">길드 연동</div>
+    <div class="hd-s">내 계정을 길드와 연결해 이번 주 셋팅을 공유해요</div>
+  </div>
+  <div class="hd-right">
+    <span class="hd-user" id="hd-user"></span>
+    <button class="btn-white" id="hd-auth-btn" style="font-size:12px;padding:5px 12px"></button>
+  </div>
+</div>
+
+<!-- ── 본문 ── -->
+<div class="ti">
+
+  <!-- 로딩 -->
+  <div id="v-loading">
+    <div class="sec"><div class="sec-bd center-box">
+      <div class="center-sub blink">불러오는 중...</div>
+    </div></div>
+  </div>
+
+  <!-- 로그인 폼 -->
+  <div id="v-noauth" style="display:none">
+    <div class="sec">
+      <div class="sec-hd">🔑 로그인</div>
+      <div class="sec-bd">
+        <div class="login-box">
+          <div class="field">
+            <label>아이디</label>
+            <input type="text" id="l-user" placeholder="아이디 입력" />
+          </div>
+          <div class="field">
+            <label>비밀번호</label>
+            <input type="password" id="l-pass" placeholder="비밀번호 입력" />
+          </div>
+          <button class="btn-gold-fill" id="btn-login" onclick="doLogin()">로그인</button>
+          <div class="login-msg" id="login-msg"></div>
+          <div class="login-link">
+            계정이 없어요 → <a href="./register.html">회원가입</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 가입 요청 폼 -->
+  <div id="v-join" style="display:none">
+    <div class="sec">
+      <div class="sec-hd">⚔️ 길드 가입 요청</div>
+      <div class="sec-bd">
+        <div class="err-box" id="join-err"></div>
+        <div style="font-size:12px;color:var(--dim);margin-bottom:12px">관리진에게 연동 코드를 받아 입력해주세요.<br>관리진이 수락하면 연동이 완료돼요.</div>
+        <div style="font-size:11px;color:var(--dim);margin-bottom:4px;font-weight:700;text-transform:uppercase;letter-spacing:.3px">연동 코드</div>
+        <input type="text" class="inp-full" id="inp-code" placeholder="예: DV-AB12CD" maxlength="20" style="margin-bottom:10px" />
+        <div style="font-size:11px;color:var(--dim);margin-bottom:4px;font-weight:700;text-transform:uppercase;letter-spacing:.3px">게임 닉네임</div>
+        <input type="text" class="inp-full" id="inp-nick" placeholder="인게임 닉네임 입력" maxlength="20" />
+        <div class="btn-row">
+          <button class="btn-gold" id="btn-join" onclick="submitJoin()" style="flex:1;padding:10px">가입 요청 보내기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 수락 대기 중 -->
+  <div id="v-pending" style="display:none">
+    <div class="sec">
+      <div class="sec-hd">
+        <span class="blink">⏳ 수락 대기 중</span>
+        <span class="badge badge-wait">대기 중</span>
+      </div>
+      <div class="sec-bd center-box">
+        <div class="center-icon">⏳</div>
+        <div class="center-title" id="pend-guild">—</div>
+        <div class="center-sub">에 가입 요청을 보냈어요.</div>
+        <div class="center-sub" style="margin-bottom:4px">닉네임: <strong id="pend-nick">—</strong></div>
+        <div class="center-sub blink" style="color:var(--gold);margin-bottom:24px">관리진의 수락을 기다리는 중...</div>
+        <button class="btn-reset" onclick="cancelJoin()">요청 취소</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 강퇴됨 -->
+  <div id="v-kicked" style="display:none">
+    <div class="sec">
+      <div class="sec-hd" style="color:var(--red)">🚫 연동 해제됨</div>
+      <div class="sec-bd center-box">
+        <div class="center-icon">🚫</div>
+        <div class="center-title" style="color:var(--red)">길드에서 강퇴되었습니다</div>
+        <div class="center-sub" style="margin-bottom:20px">새로운 연동 코드로 다른 길드에 가입할 수 있어요.</div>
+        <button class="btn-white" onclick="showV('join')">다시 가입하기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 연동 완료 -->
+  <div id="v-member" style="display:none">
+
+    <!-- 길드 정보 -->
+    <div class="sec">
+      <div class="sec-hd">
+        <span>🏰 연동된 길드</span>
+        <span class="badge badge-ok">연동 중</span>
+      </div>
+      <div class="sec-bd">
+        <div style="font-size:18px;font-weight:800;color:var(--gold);margin-bottom:10px" id="m-guild">—</div>
+        <div class="info-row">
+          <span class="info-lbl">내 닉네임</span>
+          <span class="info-val" id="m-nick">—</span>
+        </div>
+        <div class="info-row">
+          <span class="info-lbl">역할</span>
+          <span class="info-val" id="m-role">—</span>
+        </div>
+        <div class="info-row">
+          <span class="info-lbl">연동 시작일</span>
+          <span class="info-val" id="m-since">—</span>
+        </div>
+        <div id="mgmt-btn-wrap" style="display:none;margin-bottom:10px">
+          <a href="./gdgm.html" class="btn-gold" style="display:inline-block;text-align:center;text-decoration:none;padding:10px 20px;border-radius:8px;font-weight:700;font-size:14px">⚙️ 길드 관리 탭 열기</a>
+        </div>
+        <div class="btn-row">
+          <button class="btn-reset" onclick="leaveGuild()">연동 해제</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 이번 회차 -->
+    <div class="sec">
+      <div class="sec-hd">📅 이번 회차</div>
+      <div class="sec-bd" id="season-bd">
+        <div style="color:var(--dimmer);font-style:italic;font-size:13px;text-align:center;padding:8px 0">진행 중인 회차가 없습니다.</div>
+      </div>
+    </div>
+
+    <!-- 길드전 기록 -->
+    <div class="sec">
+      <div class="sec-hd">⚔️ 이번 주 길드전</div>
+      <div class="sec-bd" id="war-bd">
+        <div style="color:var(--dimmer);font-style:italic;font-size:13px;text-align:center;padding:8px 0">진행 중인 회차가 없습니다.</div>
+      </div>
+    </div>
+
+  </div><!-- /v-member -->
+
+</div><!-- /ti -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+
+let gUser=null, gMember=null, gGuild=null, gSeason=null, gPoll=null;
+
+// ── 진입 ──────────────────────────────────────────────────────
+(async function(){
+  gUser = getUser();
+  renderHeader();
+  if (!gUser) { showV('noauth'); return; }
+  await loadStatus();
+})();
+
+// ── 헤더 유저 표시 ───────────────────────────────────────────
+function renderHeader() {
+  const hdUser = document.getElementById('hd-user');
+  const hdBtn  = document.getElementById('hd-auth-btn');
+  if (gUser) {
+    hdUser.textContent = '👤 ' + (gUser.nickname || gUser.username);
+    hdBtn.textContent  = '로그아웃';
+    hdBtn.onclick = () => {
+      if (confirm('로그아웃할까요?')) { logout(); location.reload(); }
+    };
+  } else {
+    hdUser.textContent = '';
+    hdBtn.textContent  = '';
+    hdBtn.onclick      = null;
+  }
+}
+
+// ── 로그인 처리 ───────────────────────────────────────────────
+async function doLogin() {
+  const username = (document.getElementById('l-user').value||'').trim();
+  const password = document.getElementById('l-pass').value;
+  const msgEl    = document.getElementById('login-msg');
+  const btn      = document.getElementById('btn-login');
+
+  msgEl.className = 'login-msg';
+  if (!username || !password) {
+    msgEl.className = 'login-msg error';
+    msgEl.textContent = '아이디와 비밀번호를 입력해주세요.';
+    return;
+  }
+
+  btn.disabled = true; btn.textContent = '로그인 중...';
+  try {
+    const hashed = await hashPassword(password);
+    const rows = await supabase('GET','users',null,
+      `?username=eq.${encodeURIComponent(username)}&password=eq.${hashed}`);
+
+    if (!rows || !rows.length) {
+      msgEl.className = 'login-msg error';
+      msgEl.textContent = '아이디 또는 비밀번호가 틀렸습니다.';
+      return;
+    }
+    const u = rows[0];
+    if (u.is_banned) {
+      msgEl.className = 'login-msg error';
+      msgEl.textContent = '이용이 제한된 계정입니다.';
+      return;
+    }
+    setUser({ id:u.id, username:u.username, nickname:u.nickname||u.username, friend_code:u.friend_code||'', is_admin:u.is_admin });
+    gUser = getUser();
+    msgEl.className = 'login-msg success';
+    msgEl.textContent = '로그인 성공!';
+    renderHeader();
+    setTimeout(() => loadStatus(), 600);
+  } catch(e) {
+    msgEl.className = 'login-msg error';
+    msgEl.textContent = '오류: ' + (e.message || '다시 시도해주세요.');
+  } finally {
+    btn.disabled = false; btn.textContent = '로그인';
+  }
+}
+
+// ── 상태 로드 ─────────────────────────────────────────────────
+async function loadStatus() {
+  showV('loading');
+  try {
+    const rows = await supabase('GET','guild_members',null,
+      `?user_id=eq.${gUser.id}&select=*,guilds(id,name)&order=requested_at.desc`);
+
+    if (!rows||!rows.length) { showV('join'); return; }
+
+    const active = rows.find(r=>r.status==='pending'||r.status==='approved');
+    if (!active) { showV(rows.some(r=>r.status==='kicked')?'kicked':'join'); return; }
+
+    gMember = active;
+    gGuild  = active.guilds;
+
+    if (active.status==='pending') { renderPending(); startPoll(); }
+    else { stopPoll(); await renderMember(); }
+  } catch(e) { console.error(e); showV('join'); }
+}
+
+// ── pending 렌더 ──────────────────────────────────────────────
+function renderPending() {
+  document.getElementById('pend-guild').textContent = gGuild?.name||'—';
+  document.getElementById('pend-nick').textContent  = gMember.nickname;
+  showV('pending');
+}
+
+// ── member 렌더 ───────────────────────────────────────────────
+async function renderMember() {
+  document.getElementById('m-guild').textContent = gGuild?.name||'—';
+  document.getElementById('m-nick').textContent  = gMember.nickname;
+  document.getElementById('m-role').innerHTML    = gMember.role==='admin'
+    ? '<span class="badge badge-admin">관리진</span>'
+    : '<span class="badge badge-wait">길드원</span>';
+  document.getElementById('m-since').textContent =
+    gMember.approved_at ? new Date(gMember.approved_at).toLocaleDateString('ko-KR') : '—';
+
+  try {
+    const s = await supabase('GET','guild_seasons',null,
+      `?guild_id=eq.${gGuild.id}&closed_at=is.null&order=opened_at.desc&limit=1`);
+    gSeason = s&&s.length ? s[0] : null;
+  } catch(e){ gSeason=null; }
+
+  // 관리진이면 관리 탭 버튼 표시
+  const mgmtBtn=document.getElementById('mgmt-btn-wrap');
+  if(mgmtBtn) mgmtBtn.style.display=gMember.role==='admin'?'block':'none';
+  renderSeason(); renderWar(); showV('member');
+}
+
+// ── 시즌 ──────────────────────────────────────────────────────
+function renderSeason() {
+  const el = document.getElementById('season-bd');
+  if (!gSeason) { el.innerHTML='<div style="color:var(--dimmer);font-style:italic;font-size:13px;text-align:center;padding:8px 0">진행 중인 회차가 없습니다.</div>'; return; }
+  el.innerHTML = `
+    <div class="info-row">
+      <span class="info-lbl">회차명</span>
+      <span class="info-val" style="color:var(--gold)">${x(gSeason.season_label)}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-lbl">시작일</span>
+      <span class="info-val">${new Date(gSeason.opened_at).toLocaleDateString('ko-KR')}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-lbl">이번주 셋팅 전송</span>
+      <span class="info-val" id="submit-st" style="color:var(--dim)">확인 중...</span>
+    </div>`;
+  checkSubmit();
+}
+
+async function checkSubmit() {
+  const el = document.getElementById('submit-st');
+  if (!el||!gSeason) return;
+  try {
+    const r = await supabase('GET','guild_weekly_settings',null,
+      `?season_id=eq.${gSeason.id}&user_id=eq.${gUser.id}&select=submitted_at&limit=1`);
+    el.innerHTML = r&&r.length
+      ? `<span style="color:var(--green)">✅ 완료 (${new Date(r[0].submitted_at).toLocaleString('ko-KR',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'})})</span>`
+      : `<span style="color:#fbbf24">⏺ 미전송</span>`;
+  } catch(e){ if(el) el.innerHTML=`<span style="color:#fbbf24">⏺ 미전송</span>`; }
+}
+
+// ── 길드전 ────────────────────────────────────────────────────
+function renderWar() {
+  const el = document.getElementById('war-bd');
+  if (!gSeason) { el.innerHTML='<div style="color:var(--dimmer);font-style:italic;font-size:13px;text-align:center;padding:8px 0">진행 중인 회차가 없습니다.</div>'; return; }
+  const days=[['수요일','match_wed'],['목요일','match_thu'],['금요일','match_fri'],['토요일','match_sat'],['일요일','match_sun']];
+  el.innerHTML=`<table class="war-tbl">${days.map(([l,k])=>`<tr><td>${l}</td><td class="${gSeason[k]?'':'empty'}">${gSeason[k]?x(gSeason[k]):'미입력'}</td></tr>`).join('')}</table>`;
+}
+
+// ── 가입 요청 ─────────────────────────────────────────────────
+async function submitJoin() {
+  const code = (document.getElementById('inp-code').value||'').trim().toUpperCase();
+  const nick = (document.getElementById('inp-nick').value||'').trim();
+  const errEl= document.getElementById('join-err');
+  const btn  = document.getElementById('btn-join');
+  errEl.classList.remove('on');
+
+  if (!code){ errEl.textContent='연동 코드를 입력해주세요.'; errEl.classList.add('on'); return; }
+  if (!nick) { errEl.textContent='닉네임을 입력해주세요.'; errEl.classList.add('on'); return; }
+  if (nick.length<2){ errEl.textContent='닉네임은 2자 이상이어야 해요.'; errEl.classList.add('on'); return; }
+
+  btn.disabled=true; btn.textContent='처리 중...';
+  try {
+    const ex = await supabase('GET','guild_members',null,`?user_id=eq.${gUser.id}&status=in.(pending,approved)&limit=1`);
+    if (ex&&ex.length){ errEl.textContent='이미 다른 길드에 가입 요청 중이거나 소속되어 있어요.'; errEl.classList.add('on'); return; }
+
+    const cd = await supabase('GET','guild_codes',null,`?code=eq.${code}&select=guild_id&limit=1`);
+    if (!cd||!cd.length){ errEl.textContent='유효하지 않은 연동 코드예요.'; errEl.classList.add('on'); return; }
+
+    const ins = await supabase('POST','guild_members',{
+      guild_id:cd[0].guild_id, user_id:gUser.id,
+      nickname:nick, role:'member', status:'pending',
+      requested_at:new Date().toISOString()
+    });
+    if (!ins||!ins.length){ errEl.textContent='요청 중 오류가 발생했어요.'; errEl.classList.add('on'); return; }
+
+    toast('가입 요청을 보냈어요! 관리진의 수락을 기다려주세요.');
+    await loadStatus();
+  } catch(e){
+    errEl.textContent='오류: '+(e.message||'다시 시도해주세요.');
+    errEl.classList.add('on');
+  } finally { btn.disabled=false; btn.textContent='가입 요청 보내기'; }
+}
+
+// ── 요청 취소 ─────────────────────────────────────────────────
+async function cancelJoin() {
+  if (!gMember||!confirm('가입 요청을 취소할까요?')) return;
+  try {
+    await supabase('DELETE','guild_members',null,`?id=eq.${gMember.id}`);
+    stopPoll(); gMember=null; gGuild=null;
+    toast('요청이 취소되었어요.'); showV('join');
+  } catch(e){ alert('오류가 발생했어요. 다시 시도해주세요.'); }
+}
+
+// ── 연동 해제 ─────────────────────────────────────────────────
+async function leaveGuild() {
+  if (!gMember||!confirm('길드 연동을 해제할까요?\n셋팅 기록은 유지돼요.')) return;
+  try {
+    await supabase('DELETE','guild_members',null,`?id=eq.${gMember.id}`);
+    gMember=null; gGuild=null; gSeason=null;
+    toast('연동이 해제되었어요.'); showV('join');
+  } catch(e){ alert('오류가 발생했어요. 다시 시도해주세요.'); }
+}
+
+// ── polling ───────────────────────────────────────────────────
+function startPoll() {
+  stopPoll();
+  gPoll = setInterval(async()=>{
+    if(!gMember) return;
+    try {
+      const r = await supabase('GET','guild_members',null,`?id=eq.${gMember.id}&select=status&limit=1`);
+      if (!r||!r.length){ stopPoll(); gMember=null; showV('join'); }
+      else if(r[0].status==='approved'){ stopPoll(); gMember.status='approved'; toast('수락되었어요! 🎉'); await renderMember(); }
+      else if(r[0].status==='kicked'){ stopPoll(); gMember=null; showV('kicked'); }
+    } catch(e){}
+  }, 5000);
+}
+function stopPoll(){ if(gPoll){ clearInterval(gPoll); gPoll=null; } }
+
+// ── 뷰 전환 ───────────────────────────────────────────────────
+function showV(name){
+  ['loading','noauth','join','pending','kicked','member'].forEach(v=>{
+    const el=document.getElementById('v-'+v);
+    if(el) el.style.display=v===name?'':'none';
+  });
+}
+
+// ── 토스트 ────────────────────────────────────────────────────
+function toast(msg,dur=2800){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('on');
+  setTimeout(()=>el.classList.remove('on'),dur);
+}
+
+function x(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// Enter키 로그인
+document.addEventListener('keydown', e=>{
+  if(e.key==='Enter' && document.getElementById('v-noauth').style.display!=='none') doLogin();
+});
+</script>
+
+<script>
+/* ── data-theme 동기화 ── */
+(function(){
+  var link=document.getElementById('theme-css');
+  if(!link)return;
+  var sync=function(){
+    var c=document.getElementById('custom-theme-style');
+    if(c&&c.textContent&&c.textContent.length>0){document.documentElement.removeAttribute('data-theme');return;}
+    var m=String(link.href||'').match(/theme-(dark|light|beige)\.css/);
+    document.documentElement.setAttribute('data-theme',m?m[1]:'dark');
+  };
+  sync();
+  new MutationObserver(sync).observe(link,{attributes:true,attributeFilter:['href']});
+  new MutationObserver(sync).observe(document.head,{childList:true,subtree:true,characterData:true});
+})();
+</script>
+</body>
+</html>

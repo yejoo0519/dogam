@@ -433,7 +433,7 @@ input::placeholder{color:var(--dimmer)}
 let gUser=null, gGuildId=null, gGuildName=null, gAdminMember=null;
 let gCurrentSeason=null, gMembers=[], gShowBuff=false;
 let gPastSeason=null, gPollTimer=null;
-let gRankDetails={};
+let gRankDetails={}, gGuildId_creator=null;
 
 // ── 진입 ──────────────────────────────────────────────────────
 (async function(){
@@ -496,7 +496,18 @@ async function loadStatus(){
     // 일반 멤버인지 확인
     const members=await supabase('GET','guild_members',null,
       `?user_id=eq.${gUser.id}&status=eq.approved&limit=1`);
-    if(members&&members.length){ showV('notadmin'); return; }
+    if(members&&members.length){
+      // role이 admin이면 관리진으로 접근 허용
+      const memberAdmin=members.find(m=>m.role==='admin');
+      if(memberAdmin){
+        gAdminMember=memberAdmin;
+        gGuildId=memberAdmin.guild_id;
+        const gInfo=await supabase('GET','guilds',null,`?id=eq.${memberAdmin.guild_id}&select=id,name,admin_user_id&limit=1`);
+        if(gInfo&&gInfo.length){ gGuildName=gInfo[0].name; gGuildId_creator=gInfo[0].admin_user_id; }
+        await loadAdminView(); return;
+      }
+      showV('notadmin'); return;
+    }
 
     // 길드 없음 → 생성 폼
     showV('create');
@@ -856,8 +867,8 @@ function renderDeckDetail(data){
   const DCOL={'체력형':'#4ade80','공격형':'#f87171','방어형':'#60a5fa','균형형':'#fbbf24','만능형':'#a78bfa'};
   const SK={hp:'체',atk:'공',def:'방'};
   const SKCOL={hp:'#fbbf24',atk:'#f87171',def:'#60a5fa'};
-  const SP_PLUS={hp:[0,24,48,72,96],atk:[0,6,12,18,24],def:[0,6,12,18,24]};
-  const SP_PCT=[0,3,6,9,12];
+  const SP_PLUS={hp:{1:216,2:240,3:264,4:480},atk:{1:54,2:60,3:66,4:120},def:{1:54,2:60,3:66,4:120}};
+  const SP_PCT={1:0.24,2:0.28,3:0.32,4:0.40};
   const SP_BONUS={hp:40,atk:10,def:10};
   const ENC_COL={'공격':'#f87171','체력':'#fbbf24','방어':'#60a5fa','균형':'#a78bfa'};
   const PSHORT={'달':'달펜','태양':'태양펜','별':'별펜'};
@@ -867,13 +878,13 @@ function renderDeckDetail(data){
   const parsed=data.deck.map(r=>{
     const dc=DCOL[r.dragon?.dtype]||'#888';
     const attrN=ATTR_N[r.dragon?.attr]||11;
+    const SK_F={hp:'체력',atk:'공격',def:'방어'};
+    const fmtSp=(n,st,tp)=>tp==='+'?`${SK_F[st]}+${SP_PLUS[st][n]}`:`${SK_F[st]}+${(SP_PCT[n]*100).toFixed(0)}%`;
     const spParts=(r.dragon?.opts||[]).map((o,i)=>{
       if(!o||!o.stat||!o.type)return null;
-      const val=o.type==='+'?SP_PLUS[o.stat]?.[i+1]:SP_PCT[i+1];
-      if(!val)return null;
-      return {col:SKCOL[o.stat],txt:`${SK[o.stat]}${o.type==='+'?'+':''}${val}${o.type==='%'?'%':''}`};
+      return {col:SKCOL[o.stat],txt:fmtSp(i+1,o.stat,o.type)};
     }).filter(Boolean);
-    if(r.dragon?.bonus) spParts.push({col:SKCOL[r.dragon.bonus],txt:`★${SK[r.dragon.bonus]}+${SP_BONUS[r.dragon.bonus]||0}`});
+    if(r.dragon?.bonus) spParts.push({col:SKCOL[r.dragon.bonus],txt:`★${SK_F[r.dragon.bonus]}+${SP_BONUS[r.dragon.bonus]||0}`});
     const gemParts=[];
     if(r.gemAlloc?.length){
       const bySt={hp:[],atk:[],def:[]};

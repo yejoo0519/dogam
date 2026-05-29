@@ -903,21 +903,28 @@ function renderDeckDetail(data){
     const hasBuf=(r.bufH||0)+(r.bufA||0)+(r.bufD||0)>0;
     const spHtml=(sz)=>spParts.length?spParts.map(p=>`<span style="color:${p.col};font-size:${sz}">${p.txt}</span>`).join(' '):'<span style="color:var(--dimmer)">—</span>';
     const gemHtml=(sz)=>gemParts.length?gemParts.map(p=>`<span style="color:${p.col};font-size:${sz}">${p.txt}</span>`).join(' '):'<span style="color:var(--dimmer)">—</span>';
-    return {r,dc,attrN,spHtml,gemHtml,pendStr,encStr,nBV,hasBuf};
+    const SK_L={hp:'체',atk:'공',def:'방'};
+    const buffParts=r.buff?Object.entries(r.buff).filter(([k,v])=>v>0).map(([k,v])=>`<span style="color:var(--gold);font-size:10px;font-weight:800">+${SK_L[k]}${v>1?'×'+v:''}</span>`):[];
+    const debuffParts=r.debuff?Object.entries(r.debuff).filter(([k,v])=>v>0).map(([k,v])=>`<span style="color:#f87171;font-size:10px;font-weight:800">-${SK_L[k]}${v>1?'×'+v:''}</span>`)
+      :(r.hasBuf===false&&(r.bufH||r.bufA||r.bufD)?[]:[]); // 구버전 호환
+    const buffDebuffHtml=[...buffParts,...debuffParts].join(' ')||'';
+    const buffCount=r.buff?Object.values(r.buff).reduce((s,v)=>s+(v||0),0):0;
+    return {r,dc,attrN,spHtml,gemHtml,pendStr,encStr,nBV,hasBuf,buffCount,buffDebuffHtml};
   });
 
   // ── PC 카드 (기존 크기) ───────────────────────────────────────
-  const pcCards=parsed.map(({r,dc,attrN,spHtml,gemHtml,pendStr,encStr,nBV,hasBuf})=>`
+  const pcCards=parsed.map(({r,dc,attrN,spHtml,gemHtml,pendStr,encStr,nBV,hasBuf,buffCount,buffDebuffHtml})=>`
     <div style="background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:12px;min-width:210px;max-width:210px;flex-shrink:0">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--bd)">
         ${r.dragonImg?`<img src="${r.dragonImg}" style="width:44px;height:44px;object-fit:contain;border-radius:6px;border:1px solid var(--bd);background:var(--sf2);flex-shrink:0" onerror="this.style.display='none'">`:
           `<div style="width:44px;height:44px;border-radius:6px;background:var(--sf2);border:1px solid var(--bd);flex-shrink:0"></div>`}
         <div style="min-width:0;flex:1">
-          <div style="font-weight:800;font-size:13px;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${x(r.dragon?.name||'—')}</div>
+          <div style="font-weight:800;font-size:13px;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${x(r.dragon?.name||'—')}${r.dragon?.growth==='진각'?' <span style="font-size:9px;padding:1px 4px;border-radius:2px;background:rgba(167,139,250,.2);color:#a78bfa;border:1px solid rgba(167,139,250,.4)">진각</span>':''}</div>
           <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap">
             <img src="${IBASE}/${attrN}.png" style="width:16px;height:16px;object-fit:contain">
             <span style="font-size:11px;color:var(--dim)">${r.dragon?.attr||''}</span>
             <span style="font-size:10px;padding:1px 5px;border-radius:3px;border:1px solid ${dc};color:${dc}">${r.dragon?.dtype||''}</span>
+            ${buffDebuffHtml}
           </div>
         </div>
       </div>
@@ -943,9 +950,9 @@ function renderDeckDetail(data){
       <div style="padding-top:8px;border-top:1px solid var(--bd)">
         <div style="font-size:10px;font-weight:800;color:var(--dim);margin-bottom:6px">📊 최종 스텟</div>
         <div style="font-family:'Courier New',monospace;font-size:11px;line-height:2">
-          <span style="color:#fbbf24">체</span> ${(r.fH||0).toLocaleString('ko-KR')}${r.bufH?` <small style="color:var(--dim)">(+${r.bufH.toLocaleString('ko-KR')})</small>`:''}
-          <br><span style="color:#f87171">공</span> ${(r.fA||0).toLocaleString('ko-KR')}${r.bufA?` <small style="color:var(--dim)">(+${r.bufA.toLocaleString('ko-KR')})</small>`:''}
-          <br><span style="color:#60a5fa">방</span> ${(r.fD||0).toLocaleString('ko-KR')}${r.bufD?` <small style="color:var(--dim)">(+${r.bufD.toLocaleString('ko-KR')})</small>`:''}
+          <span style="color:#fbbf24">체</span> ${(r.fH||0).toLocaleString('ko-KR')}${r.bufH?` <small style="color:var(--gold)">(+${r.bufH.toLocaleString('ko-KR')})</small>`:''}${r.debufH?` <small style="color:#f87171">(-${r.debufH.toLocaleString('ko-KR')})</small>`:''}
+          <br><span style="color:#f87171">공</span> ${(r.fA||0).toLocaleString('ko-KR')}${r.bufA?` <small style="color:var(--gold)">(+${r.bufA.toLocaleString('ko-KR')})</small>`:''}${r.debufA?` <small style="color:#f87171">(-${r.debufA.toLocaleString('ko-KR')})</small>`:''}
+          <br><span style="color:#60a5fa">방</span> ${(r.fD||0).toLocaleString('ko-KR')}${r.bufD?` <small style="color:var(--gold)">(+${r.bufD.toLocaleString('ko-KR')})</small>`:''}${r.debufD?` <small style="color:#f87171">(-${r.debufD.toLocaleString('ko-KR')})</small>`:''}
         </div>
         <div style="margin-top:6px;display:flex;gap:12px;flex-wrap:wrap">
           <div><div style="font-size:10px;color:var(--dim)">버프포함</div><span style="font-family:'Courier New',monospace;font-size:13px;font-weight:800;color:var(--gold)">${((r.bv||0)/1e6).toFixed(1)}</span><span style="font-size:10px;color:var(--dim)">억</span></div>
@@ -955,16 +962,17 @@ function renderDeckDetail(data){
     </div>`).join('');
 
   // ── 모바일 카드 (컴팩트 3열) ──────────────────────────────────
-  const mobCards=parsed.map(({r,dc,attrN,spHtml,gemHtml,pendStr,encStr,nBV,hasBuf})=>`
+  const mobCards=parsed.map(({r,dc,attrN,spHtml,gemHtml,pendStr,encStr,nBV,hasBuf,buffCount,buffDebuffHtml})=>`
     <div style="background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:8px;min-width:0;overflow:hidden">
       <div style="display:flex;align-items:center;gap:5px;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--bd)">
         ${r.dragonImg?`<img src="${r.dragonImg}" style="width:32px;height:32px;object-fit:contain;border-radius:4px;border:1px solid var(--bd);background:var(--sf2);flex-shrink:0" onerror="this.style.display='none'">`:
           `<div style="width:32px;height:32px;border-radius:4px;background:var(--sf2);border:1px solid var(--bd);flex-shrink:0"></div>`}
         <div style="min-width:0;flex:1">
-          <div style="font-weight:800;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3">${x(r.dragon?.name||'—')}</div>
+          <div style="font-weight:800;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3">${x(r.dragon?.name||'—')}${r.dragon?.growth==='진각'?' <span style="font-size:8px;color:#a78bfa">진각</span>':''}</div>
           <div style="display:flex;align-items:center;gap:2px;margin-top:2px">
             <img src="${IBASE}/${attrN}.png" style="width:11px;height:11px;object-fit:contain;flex-shrink:0">
             <span style="font-size:8px;padding:1px 3px;border-radius:2px;border:1px solid ${dc};color:${dc};white-space:nowrap">${r.dragon?.dtype||''}</span>
+            ${buffDebuffHtml}
           </div>
         </div>
       </div>

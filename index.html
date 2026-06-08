@@ -154,7 +154,7 @@
   .icon-tile.rose    { background: color-mix(in oklab, var(--tone-rose)    18%, transparent); color: var(--tone-rose); }
   .icon-tile.emerald { background: color-mix(in oklab, var(--tone-emerald) 18%, transparent); color: var(--tone-emerald); }
 
-  /* 우측 사이드 레일 — 패치노트 + 방랑상인 */
+  /* 우측 사이드 레일 — 패치노트 */
   .side-rail { width: 240px; flex-shrink: 0; position: sticky; top: 24px;
                display: flex; flex-direction: column; gap: 16px; }
   .patch-aside { padding: 16px; background: var(--bg2);
@@ -182,19 +182,6 @@
   .patch-item li { font-size: 11px; line-height: 1.5; color: var(--text2);
                    padding-left: 8px; position: relative; }
   .patch-item li::before { content: "·"; position: absolute; left: 0; color: var(--accent); }
-
-  .day-card { display: flex; align-items: center; gap: 10px;
-              padding: 14px; border-radius: 12px;
-              border: 1px dashed var(--border-strong);
-              background: transparent; text-align: left; width: 100%; }
-  .day-card:hover { border-color: var(--accent); border-style: solid; }
-  .day-icon { width: 32px; height: 32px; border-radius: 999px;
-              background: var(--bg3); flex-shrink: 0;
-              display: flex; align-items: center; justify-content: center;
-              overflow: hidden; }
-  .day-icon img { width: 80%; height: 80%; object-fit: contain; }
-  .day-text-title { font-size: 12px; font-weight: 600; color: var(--text); }
-  .day-text-sub   { font-size: 10px; color: var(--text3); }
 
   /* 푸터 */
   .page-footer { display: flex; flex-direction: column; gap: 12px;
@@ -275,22 +262,18 @@
   }
 
   /* ─── 모달 (원본 그대로) ─────────────────────────────────────── */
-  .patch-modal-overlay,
-  .item-modal-overlay { display: none; position: fixed; inset: 0;
+  .patch-modal-overlay { display: none; position: fixed; inset: 0;
                         background: rgba(0,0,0,0.7); z-index: 500;
                         align-items: center; justify-content: center; }
-  .patch-modal-overlay.open,
-  .item-modal-overlay.open { display: flex; }
+  .patch-modal-overlay.open { display: flex; }
   .patch-modal { background: var(--bg2); border: 1px solid var(--border);
                  border-radius: 12px; padding: 24px; width: 90%; max-width: 480px;
                  max-height: 70vh; overflow-y: auto; position: relative; }
   .patch-modal-title { font-size: 16px; font-weight: 700; color: var(--text);
                        margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-  .patch-modal-close,
-  .item-modal-close { position: absolute; top: 14px; right: 16px;
+  .patch-modal-close { position: absolute; top: 14px; right: 16px;
                        color: var(--text2); font-size: 18px; }
-  .patch-modal-close:hover,
-  .item-modal-close:hover { color: var(--text); }
+  .patch-modal-close:hover { color: var(--text); }
   .patch-item-modal { margin-bottom: 16px; padding-bottom: 16px;
                       border-bottom: 1px solid var(--border2); }
   .patch-item-modal:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
@@ -302,11 +285,6 @@
                     border-radius: 8px; color: var(--accent); font-size: 13px; font-weight: 600;
                     text-align: center; text-decoration: none; }
   .patch-more-btn:hover { border-color: var(--accent); }
-  .item-modal { background: var(--bg2); border: 1px solid var(--border);
-                border-radius: 12px; padding: 20px; width: 90%; max-width: 400px;
-                position: relative; text-align: center; }
-  .item-modal-title { font-size: 14px; font-weight: 700; color: var(--accent); margin-bottom: 12px; }
-  .item-modal img { width: 100%; border-radius: 8px; display: block; }
 
   /* ── 어드민 회원 카드 ── */
   .admin-member-card{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;flex-wrap:wrap}
@@ -383,7 +361,7 @@
     <main class="main-column">
 
       <section class="category active" id="cat-info">
-        <div class="cat-head"><h3>정보</h3><span class="meta">· 4개 메뉴</span></div>
+        <div class="cat-head"><h3>정보</h3><span class="meta">· 5개 메뉴</span></div>
         <div class="cards">
           <a href="./tier.html" class="card">
             <span class="icon-tile sky">초등</span>
@@ -411,6 +389,13 @@
             <div class="card-body">
               <div class="card-title">아르하 입구</div>
               <div class="card-desc">디데락 조합, 평르하 조합 · 자동 조합기능 제공</div>
+            </div>
+          </a>
+          <a href="./pkg.html" class="card">
+            <span class="icon-tile emerald">패키</span>
+            <div class="card-body">
+              <div class="card-title">패키지 복각 주기</div>
+              <div class="card-desc">패키지별 복각 주기 · 마지막 복각일 · 예상 복각일</div>
             </div>
           </a>
         </div>
@@ -555,16 +540,6 @@
           <ul><li>계산기 스펙 수정 내 스펙 탭으로 전체 통합</li></li></ul>
         </div>
       </div>
-      <button class="day-card" onclick="openItemModal()">
-        <div class="day-icon">
-          <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/Day.png" alt="방랑상인"
-               onerror="this.style.display='none'">
-        </div>
-        <div>
-          <div class="day-text-title">방랑상인</div>
-          <div class="day-text-sub">오늘의 품목 보기</div>
-        </div>
-      </button>
     </aside>
   </div>
 
@@ -593,9 +568,6 @@
   <nav class="mobile-bar mobile-only">
     <button class="active" onclick="window.scrollTo({top:0, behavior:'smooth'})">
       <span class="glyph">⌂</span><span>홈</span>
-    </button>
-    <button onclick="openItemModal()">
-      <span class="glyph">☀</span><span>방랑상인</span>
     </button>
     <button onclick="openPatchModal()">
       <span class="glyph">📋</span><span>패치노트</span>
@@ -630,15 +602,6 @@
   </div>
 </div>
 
-<!-- 방랑상인 모달 (원본 그대로) -->
-<div class="item-modal-overlay" id="item-modal-overlay" onclick="closeItemModal(event)">
-  <div class="item-modal" onclick="event.stopPropagation()">
-    <button class="item-modal-close" onclick="closeItemModal()">✕</button>
-    <div class="item-modal-title">방랑상인 품목</div>
-    <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/item.png" alt="방랑상인">
-  </div>
-</div>
-
 <!-- Supabase 설정 (원본 그대로) -->
 <script src="./sb_config.js"></script>
 
@@ -646,8 +609,6 @@
   // ─── 모달 (원본 그대로) ─────────────────────────────────────
   function openPatchModal()  { document.getElementById('patch-modal-overlay').classList.add('open'); }
   function closePatchModal(e){ if (!e || e.target === document.getElementById('patch-modal-overlay')) document.getElementById('patch-modal-overlay').classList.remove('open'); }
-  function openItemModal()   { document.getElementById('item-modal-overlay').classList.add('open'); }
-  function closeItemModal(e) { if (!e || e.target === document.getElementById('item-modal-overlay')) document.getElementById('item-modal-overlay').classList.remove('open'); }
 
   // ─── 탭 전환 (URL ?tab= 동기화) ──────────────────────────────
   function switchTab(tab, el) {

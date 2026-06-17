@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arha Gate</title>
+<style>
+#tab-bar{display:flex;gap:0;margin-bottom:16px;border-bottom:2px solid var(--border);align-items:flex-end}
+#site-title{display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;margin-right:16px;margin-bottom:6px;border:1.5px solid var(--border3);border-radius:20px;padding:10px 18px;transition:border-color 0.15s;flex-shrink:0}
+#site-title:hover{border-color:var(--accent)}
+#site-title .title-main{font-size:16px;font-weight:700;color:var(--text2);line-height:1.4}
+#site-title .title-sub{font-size:12px;color:var(--text4);line-height:1.4}
+.tab-btn{padding:10px 20px;font-size:13px;font-weight:500;background:none;border:none;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;text-decoration:none;display:inline-block}
+.tab-btn:hover{color:var(--text2)}
+.tab-btn.active{color:var(--accent);border-bottom:2px solid var(--accent)}
+@media(max-width:600px){.tab-btn{display:none}}
+#lang-btn{padding:6px 14px;border-radius:20px;border:1px solid var(--border3);background:var(--bg2);color:var(--text2);font-size:12px;font-family:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:4px;transition:all 0.15s;flex-shrink:0;align-self:center;margin-bottom:6px}
+#lang-btn:hover{border-color:var(--accent);color:var(--text)}
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--text);padding:12px}
+
+/* 네비 */
+#tab-bar{display:flex;gap:0;margin-bottom:16px;border-bottom:2px solid var(--border);align-items:flex-end}
+#site-title{display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;margin-right:16px;margin-bottom:6px;border:1.5px solid var(--border3);border-radius:20px;padding:10px 18px;transition:border-color 0.15s;flex-shrink:0}
+#site-title:hover{border-color:var(--accent)}
+#site-title .title-main{font-size:16px;font-weight:700;color:var(--text2);line-height:1.4}
+#site-title .title-sub{font-size:12px;color:var(--text4);line-height:1.4}
+
+.tab-btn{padding:10px 20px;font-size:13px;font-weight:500;background:none;border:none;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;text-decoration:none;display:inline-block}
+.tab-btn:hover{color:var(--text2)}
+.tab-btn.active{color:var(--accent);border-bottom:2px solid var(--accent)}
+@media(max-width:600px){.tab-btn{display:none}}
+
+h1{font-size:20px;color:var(--text2);margin-bottom:16px}
+
+/* 패턴 선택 */
+.section{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px}
+.section-title{font-size:13px;font-weight:700;color:var(--accent);margin-bottom:12px;letter-spacing:0.05em}
+
+.pattern-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px}
+.pattern-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg3)}
+
+.pattern-item input[type=checkbox]{width:16px;height:16px;accent-color:var(--accent);flex-shrink:0;margin-top:2px}
+.pattern-desc{font-size:11px;color:var(--text3);margin-top:3px;line-height:1.5}
+.pattern-name{font-size:12px;font-weight:600;color:var(--text)}
+.pattern-cond{font-size:11px;color:#f5c842;margin-top:4px}
+
+
+
+/* 플레이어 섹션 */
+.players-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.player-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px}
+.player-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.player-num{width:22px;height:22px;border-radius:50%;background:#4a90d9;color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+/* 검색 입력 */
+.dragon-search{position:relative;margin-bottom:8px}
+.dragon-search input{width:100%;padding:7px 10px;background:var(--bg2);border:1px solid var(--border3);border-radius:6px;color:var(--text);font-size:12px;font-family:inherit}
+.dragon-search input::placeholder{color:var(--text4)}
+.autocomplete{position:absolute;top:100%;left:0;right:0;background:var(--bg2);border:1px solid var(--border3);border-radius:6px;max-height:160px;overflow-y:auto;z-index:100;display:none}
+.autocomplete.open{display:block}
+.ac-item{padding:7px 10px;font-size:12px;cursor:pointer;border-bottom:0.5px solid var(--border2)}
+.ac-item:hover{background:var(--bg3)}
+.ac-item span{font-size:10px;color:var(--text3);margin-left:6px}
+
+/* 드래곤 리스트 */
+.dragon-list{display:flex;flex-direction:column;gap:4px;min-height:40px}
+.dragon-tag{display:flex;align-items:center;justify-content:space-between;padding:5px 8px;background:var(--bg2);border-radius:6px;border:1px solid var(--border);font-size:11px}
+.dragon-tag-info{display:flex;align-items:center;gap:6px}
+.dragon-tag-name{color:#ddd}
+.dragon-tag-elem{font-size:10px;padding:1px 5px;border-radius:4px;font-weight:500}
+.dragon-tag-type{font-size:10px;color:var(--text3)}
+.dragon-tag-remove{background:none;border:none;color:#555;cursor:pointer;font-size:14px;line-height:1;padding:0 2px}
+.dragon-tag-remove:hover{color:#ef5350}
+.dragon-tag-stage{font-size:9px;padding:1px 4px;border-radius:3px;margin-left:2px}
+.stage-tr{background:var(--accent-bg);color:var(--accent)}
+.stage-ad{background:rgba(245,200,66,0.15);color:#f5c842}
+.stage-none{background:rgba(255,255,255,0.05);color:var(--text4)}
+
+/* 속성 색상 */
+.e-Earth{background:#fff3e0;color:#e65100}
+.e-Water{background:#e3f2fd;color:#1565c0}
+.e-Fire{background:#fce4ec;color:#b71c1c}
+.e-Wind{background:#e8f5e9;color:#1b5e20}
+.e-Light{background:#fffde7;color:#f57f17}
+.e-Dark{background:#ede7f6;color:#4a148c}
+.e-Dusk{background:#fdf2f8;color:#880e4f}
+.e-Dawn{background:#fff8e1;color:#6d4c41}
+.e-Nightmare{background:#f3e5f5;color:#6a1b9a}
+
+/* 조합 버튼 */
+#calc-btn{width:100%;padding:14px;background:linear-gradient(90deg,#4a90d9,var(--accent));border:none;border-radius:8px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;margin-top:4px;font-family:inherit}
+#calc-btn:hover{opacity:0.9}
+#calc-btn:disabled{background:var(--border);color:var(--text4);cursor:not-allowed}
+
+/* 결과 */
+#result{display:none}
+.result-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.result-title{font-size:15px;font-weight:700;color:var(--text)}
+.result-badge{font-size:11px;padding:3px 10px;border-radius:10px}
+.badge-ok{background:rgba(102,187,106,0.2);color:#66bb6a;border:1px solid rgba(102,187,106,0.3)}
+.badge-fail{background:rgba(239,83,80,0.2);color:#ef5350;border:1px solid rgba(239,83,80,0.3)}
+
+.result-players{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:16px}
+.result-player{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px}
+.reset-btn{margin-left:auto;padding:3px 8px;font-size:10px;border-radius:6px;border:1px solid var(--border3);background:none;color:var(--text3);cursor:pointer;font-family:inherit}
+.reset-btn:hover{border-color:#ef5350;color:#ef5350}
+.result-player-title{font-size:12px;font-weight:700;color:var(--text2);margin-bottom:10px}
+.result-dragon{display:flex;align-items:center;gap:8px;padding:6px 8px;background:var(--bg2);border-radius:6px;margin-bottom:4px;border-left:3px solid transparent}
+.result-dragon.highlight{border-left-color:var(--accent)}
+.result-dragon-name{font-size:12px;color:var(--text);font-weight:500}
+
+.result-check{margin-top:8px}
+.check-item{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:0.5px solid var(--border2);font-size:12px}
+.check-item:last-child{border-bottom:none}
+.check-ok{color:#66bb6a;font-size:14px}
+.check-fail{color:#ef5350;font-size:14px}
+.check-warn{color:#f5c842;font-size:14px}
+
+
+
+.main-tab{padding:8px 20px;font-size:13px;font-weight:600;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);cursor:pointer;font-family:inherit;margin-bottom:-1px}
+.main-tab:hover{color:var(--text2)}
+.main-tab.active{color:var(--accent);border-bottom:2px solid var(--accent)}
+
+.boss-btn{padding:8px 20px;border-radius:8px;border:1px solid var(--border3);background:var(--border2);color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.15s}
+.boss-btn:hover{border-color:#555;color:var(--text)}
+.boss-btn.active{background:#4a90d9;color:#fff;border-color:#4a90d9}
+.boss-tab{padding:8px 20px;font-size:13px;font-weight:600;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);cursor:pointer;font-family:inherit;margin-bottom:-1px}
+.boss-tab:hover{color:var(--text2)}
+.boss-tab.active{color:var(--accent);border-bottom:2px solid var(--accent)}
+#boss-select-section{max-width:480px;position:relative;overflow:hidden;transition:background-image 0.3s}
+#boss-select-bg{position:absolute;right:0;top:0;width:50%;height:100%;background-size:contain;background-repeat:no-repeat;background-position:right center;opacity:0.25;pointer-events:none;transition:background-image 0.3s}
+#boss-select-content{position:relative;z-index:1}
+
+
+#section-daily{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:16px}
+#section-daily h1{grid-column:1/-1}
+#section-daily .section:last-child{grid-column:1/-1}
+.boss-section{position:relative}
+.boss-header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.boss-portrait{width:56px;height:56px;border-radius:10px;object-fit:contain;object-position:center;border:1px solid var(--border3);flex-shrink:0;background:var(--bg)}
+.boss-header-text .section-title{margin-bottom:2px}
+@media(max-width:600px){
+  #section-daily{grid-template-columns:1fr!important}
+  #section-daily .section:last-child{grid-column:auto}
+  .boss-portrait{width:48px;height:48px}
+}
+
+
+
+.info-icon{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:#4a90d9;color:#fff;font-size:10px;font-weight:700;cursor:pointer;margin-left:6px;position:relative;flex-shrink:0;vertical-align:middle}
+.info-tooltip{display:none;position:absolute;left:50%;transform:translateX(-50%);bottom:calc(100% + 8px);background:var(--bg3);border:1px solid #4a90d9;border-radius:8px;padding:14px 16px;width:420px;font-size:12px;color:#ddd;line-height:2;z-index:200;white-space:normal;text-align:left;box-shadow:0 4px 20px rgba(0,0,0,0.5)}
+.info-tooltip::after{content:"";position:absolute;left:50%;transform:translateX(-50%);top:100%;border:6px solid transparent;border-top-color:#4a90d9}
+.info-icon:hover .info-tooltip,
+.info-icon.active .info-tooltip{display:block}
+.info-tooltip b{color:var(--accent)}
+
+.fail-msg{background:rgba(239,83,80,0.1);border:1px solid rgba(239,83,80,0.3);border-radius:8px;padding:12px;font-size:12px;color:#ef5350;margin-top:8px}
+
+[data-theme="dark"]{
+  --bg:#0e1116;--bg2:#161a22;--bg3:#1c212c;
+  --border:#23293a;--border2:#1b1f2a;--border3:#2d3447;
+  --text:#eaecf2;--text2:#b3b9c7;--text3:#7d8597;--text4:#565d6e;
+  --accent:#7aa2f7;--accent-bg:rgba(122,162,247,0.12);--accent-border:rgba(122,162,247,0.30);
+}
+[data-theme="light"]{
+  --bg:#f7f7f8;--bg2:#ffffff;--bg3:#f1f2f4;
+  --border:#e6e7ea;--border2:#eeeff2;--border3:#d4d6db;
+  --text:#15171c;--text2:#4a4d57;--text3:#71757f;--text4:#9aa0aa;
+  --accent:#2f6fed;--accent-bg:rgba(47,111,237,0.10);--accent-border:rgba(47,111,237,0.32);
+}
+[data-theme="beige"]{
+  --bg:#f3ecdd;--bg2:#faf3e2;--bg3:#ebe0c7;
+  --border:#d8caa8;--border2:#e1d4b3;--border3:#c0ad84;
+  --text:#2a2316;--text2:#5a4e34;--text3:#837553;--text4:#a99971;
+  --accent:#b06a1e;--accent-bg:rgba(176,106,30,0.10);--accent-border:rgba(176,106,30,0.32);
+}
+</style>
+<link id="theme-css" rel="stylesheet" href="../theme-dark.css">
+<script src="./theme.js"></script>
+</head>
+<body>
+<div id="tab-bar">
+  <a href="../index.html" id="site-title">
+  <span class="title-main">Main</span>
+  <span class="title-sub">made by nix</span>
+</a>
+  <a href="./tier.html" class="tab-btn ">Tier List</a>
+  <a href="./dex.html" class="tab-btn ">Dragon Dex</a>
+  <a href="./sss.html" class="tab-btn ">SSS Ranking</a>
+  <a href="./raid.html" class="tab-btn active">Arha Gate</a>
+  <a href="./raid_info.html" class="tab-btn ">Raid Info</a>
+  <a href="../index.html" id="lang-btn" style="margin-left:auto">🌐 KR</a>
+</div>
+
+<div style="display:flex;gap:0;border-bottom:1px solid #333;margin-bottom:16px">
+  <button class="main-tab active" id="main-tab-raid" onclick="switchMainTab('raid')">Mystery Boss combo</button>
+  <button class="main-tab" id="main-tab-daily" onclick="switchMainTab('daily')">Normal Boss</button>
+</div>
+
+<div id="section-raid">
+<h1>Entrance to Archa
+   <span class="info-icon" onclick="toggleTooltip(this)">!
+    <div class="info-tooltip" style="left:0;transform:none;width:280px;bottom:auto;top:calc(100% + 8px)">
+      Mothbell: break combo 2 (it's possible to break combo 1 instead but very hard to win)
+      <br>Incara: break combo 1
+      <br>Tau King: break combo 1 (you can break combo 2 but it takes a relatively long time to win)
+      <br>Golrock: break combo 1 (you can break combo 2 but it takes a really long time to win)
+      <br>Kaiserburn: break combo 1 (it's possible to break combo 2 instead but much more difficult to win)
+    </div>
+  </span>
+</h1>
+
+<!-- 보스 선택 -->
+<div class="section" id="boss-select-section">
+  <div id="boss-select-bg" style="background-image:url('https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/6.png')"></div>
+  <div id="boss-select-content">
+    <div class="section-title">Boss Select</div>
+    <div style="display:flex;gap:0;border-bottom:1px solid #333;margin-bottom:12px">
+      <button class="boss-tab active" id="boss-btn-dimension" onclick="selectBoss('dimension')">Dimension</button>
+      <button class="boss-tab" id="boss-btn-deathlock" onclick="selectBoss('deathlock')">Deathlock</button>
+    </div>
+    <div id="boss-desc-dimension" style="font-size:11px;color:#5dcff5;font-weight:400;line-height:1.7">
+      Defeat one of the Sunday bosses (Sullivan,...) or defeat one of the Weekday bosses (Mothbell,...) with at least one combo missing. After winning the battle, return to the main screen and click on rainbow-colored question to enter Dimension fight.
+    </div>
+    <div id="boss-desc-deathlock" style="display:none;font-size:11px;color:#5dcff5;font-weight:400;line-height:1.7">
+      Fight Dimension without using its combinations. After losing the battle, go to the main screen and click on blue-colored question to enter Deathlock fight.
+    </div>
+  </div>
+</div>
+
+<!-- 패턴 정보 -->
+<div class="section">
+  <div class="section-title">Boss Patterns (Objectives to Fully Counter Them)</div>
+  <div class="pattern-grid" id="pattern-grid">
+    <!-- 디멘션 패턴 -->
+    <div class="pattern-item boss-dimension">
+      <div>
+        <div class="pattern-name">(1) Increase Evasion rate</div>
+        <div class="pattern-desc">The boss increases evasion rate by 3% upon getting damaged every turn.</div>
+        <div class="pattern-cond">Fire x2 · ATK-DEF x2</div>
+      </div>
+    </div>
+    <div class="pattern-item boss-dimension">
+      <div>
+        <div class="pattern-name">(2) Random Heavy DMG</div>
+        <div class="pattern-desc">Basic attack deals heavy DMG to 2 random targets.</div>
+        <div class="pattern-cond">Nightmare x2 · HP x2</div>
+      </div>
+    </div>
+    <div class="pattern-item boss-dimension">
+      <div>
+        <div class="pattern-name">(3) DMG Reduction</div>
+        <div class="pattern-desc">The boss significantly reduces damage taken.</div>
+        <div class="pattern-cond">Dawn x2 · HP-ATK x2</div>
+      </div>
+    </div>
+    <div class="pattern-item boss-dimension">
+      <div>
+        <div class="pattern-name">(4) DMG Reflect</div>
+        <div class="pattern-desc">Boss reflects incoming damage strongly</div>
+        <div class="pattern-cond">Light x2 · HP-DEF x2</div>
+      </div>
+    </div>
+    <div class="pattern-item boss-dimension">
+      <div>
+        <div class="pattern-name">(5) HP Recovery</div>
+        <div class="pattern-desc">When HP is depleted, the boss fully restores HP and the fight restarts.</div>
+        <div class="pattern-cond">Dark x2 · ATK x2</div>
+      </div>
+    </div>
+     <div class="pattern-item boss-dimension">
+      <div>
+        <div class="pattern-name">(6) ATK Increase</div>
+        <div class="pattern-desc">?</div>
+        <div class="pattern-cond">Same evolution stage</div>
+      </div>
+    </div>
+    <!-- 데스락 패턴 -->
+    <div class="pattern-item boss-deathlock" style="display:none">
+      <div>
+        <div class="pattern-name">(1) HP Recovery</div>
+        <div class="pattern-desc">The boss recovers a set amount of HP each turn.</div>
+        <div class="pattern-cond">Wind x2 · HP x2</div>
+      </div>
+    </div>
+    <div class="pattern-item boss-deathlock" style="display:none">
+      <div>
+        <div class="pattern-name">(2) ATK Increase</div>
+        <div class="pattern-desc">The boss's ATK gradually increases.</div>
+        <div class="pattern-cond">Dark x2 · ATK-DEF x2</div>
+      </div>
+    </div>
+    <div class="pattern-item boss-deathlock" style="display:none">
+      <div>
+        <div class="pattern-name">(3) DEF Increase</div>
+        <div class="pattern-desc">The boss's DEF gradually increases.</div>
+        <div class="pattern-cond">Dawn x2</div>
+      </div>
+    </div>
+    <div class="pattern-item boss-deathlock" style="display:none">
+      <div>
+        <div class="pattern-name">(4) Chain Release</div>
+        <div class="pattern-desc">Deathlock's chains are released</div>
+        <div class="pattern-cond">Light x3 · ATK x3</div>
+      </div>
+    </div>
+    <div class="pattern-item boss-deathlock" style="display:none">
+      <div>
+        <div class="pattern-name">(5) Allies' DEF Increase</div>
+        <div class="pattern-desc">Allies’ DEF increases by 50%</div>
+        <div class="pattern-cond">Earth x2 · DEF x2</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 플레이어 드래곤 입력 -->
+<div class="section">
+  <div class="section-title" style="display:flex;align-items:center">
+    Enter dragons per player (3+ each recommended)
+    <span class="info-icon">i
+      <div class="info-tooltip">
+        <b>1.</b> Data is based on the Dragon Dex — abbreviations are not recognized.<br>
+        &nbsp;&nbsp;&nbsp;✗ Godsr, DSlay, KRux<br>
+        &nbsp;&nbsp;&nbsp;✓ Angel, Fairy, Dimen<br><br>
+        <b>2.</b> Separate names with commas to add multiple at once.<br>
+        &nbsp;&nbsp;&nbsp;e.g.) God Dragon, Dark Nix, Angel Jr.
+      </div>
+    </span>
+  </div>
+  <div class="players-grid" id="players-grid"></div>
+</div>
+
+<button id="calc-btn" onclick="calculate()">Calculate Combo</button>
+
+<!-- 결과 -->
+<div class="section" id="result" style="margin-top:16px">
+  <div class="result-header">
+    <div class="result-title">Combo Result</div>
+    <div class="result-badge" id="result-badge"></div>
+  </div>
+  <div class="result-players" id="result-players"></div>
+  <div class="section-title" style="margin-bottom:8px">Pattern Status</div>
+  <div id="result-check"></div>
+  <div id="result-fail-msg"></div>
+</div>
+
+</div><!-- /section-raid -->
+<div id="section-daily" style="display:none">
+<h1 style="margin-bottom:16px">Normal Boss Patterns
+  <span style="display:block; font-size:13px; color:#888; font-weight:normal; margin-top:4px">
+    Using fewer than 3 or more than 5 of the requested dragons will break corresponding combos.
+    When defeating the bosses with at least one combo missing, a Dimension gate will open.
+  </span>
+</h1>
+<!-- 월요일 -->
+<div class="section boss-section">
+  <div class="boss-header">
+    <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/1.png" class="boss-portrait" alt="Monday — Mosvell">
+    <div class="boss-header-text">
+      <div class="section-title">Monday — Mosvell</div>
+      <div style="font-size:11px;color:#888">(Hp 19.000, Atk 2.300, Def 60)</div>
+      <div style="font-size:11px;color:#888">Drop: Dark Essence &nbsp;|&nbsp; Min EVAL (solo): 10000~11000</div>
+    </div>
+  </div>
+  <div class="pattern-grid">
+    <div class="pattern-item">
+      <div>
+        <div class="pattern-name">(1) Swift Wings (Evasion)</div>
+        <div class="pattern-desc">Enemy: Evasion rate increases by 3% each time it takes damage</div>
+        <div class="pattern-cond">3 Fire, 3 Atk</div>
+      </div>
+    </div>
+    <div class="pattern-item">
+      <div>
+        <div class="pattern-name">(2) Poison Powder (AoE)</div>
+        <div class="pattern-desc">Deals area of effect damage once every 3 turns</div>
+        <div class="pattern-cond">3 Wind, 3 Hp-atk</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 화요일 -->
+<div class="section boss-section">
+  <div class="boss-header">
+    <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/2.png" class="boss-portrait" alt="Tuesday — Ingkara">
+    <div class="boss-header-text">
+      <div class="section-title">Tuesday — Ingkara</div>
+      <div style="font-size:11px;color:#888">(Hp 9.000, Atk 3.000, Def 100)</div>
+      <div style="font-size:11px;color:#888">Drop: Fire Essence &nbsp;|&nbsp; Min EVAL (solo): 10000~11000</div>
+    </div>
+  </div>
+  <div class="pattern-grid">
+    <div class="pattern-item">
+      <div>
+        <div class="pattern-name">(1) Firestorm (AoE)</div>
+        <div class="pattern-desc">Deals 2x damage to 3 random targets
+          <br>(not applicable to single-target attacks)</div>
+        <div class="pattern-cond">3 Earth, 3 Atk</div>
+      </div>
+    </div>
+    <div class="pattern-item">
+      <div>
+        <div class="pattern-name">(2) AoE 2x DMG</div>
+        <div class="pattern-desc">When Hp falls below 50%, deals 3x damage to 4 random targets
+          <br>(not applicable to single-target attacks)</div>
+        <div class="pattern-cond">3 Water, 3 Neu</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 수요일 -->
+<div class="section boss-section">
+  <div class="boss-header">
+    <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/3.png" class="boss-portrait" alt="Wednesday — Tauking">
+    <div class="boss-header-text">
+      <div class="section-title">Wednesday — Tauking</div>
+      <div style="font-size:11px;color:#888">(Hp 160.000, Atk ???, Def ???)</div>
+      <div style="font-size:11px;color:#888">Drop: Water Essence &nbsp;|&nbsp; Min EVAL (solo): 7000</div>
+    </div>
+  </div>
+  <div class="pattern-grid">
+    <div class="pattern-item">
+      <div>
+        <div class="pattern-name">(1) Beast Vitality (Healing + AoE)</div>
+        <div class="pattern-desc">Recovers Hp every attack and all attacks become AoE</div>
+        <div class="pattern-cond">3 Dark, 3 Hp-atk</div>
+      </div>
+    </div>
+    <div class="pattern-item">
+      <div>
+        <div class="pattern-name">(2) Beast Wrath (Revival)</div>
+        <div class="pattern-desc">After Hp reaches 0, revives and receives damage after ? turns.</div>
+        <div class="pattern-cond">3 Dusk, 3 Hp</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 목요일 -->
+<div class="section boss-section">
+  <div class="boss-header">
+    <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/4.png" class="boss-portrait" alt="Thursday — Golrock">
+    <div class="boss-header-text">
+      <div class="section-title">Thursday — Golrock</div>
+      <div style="font-size:11px;color:#888">(Hp 6.000, Atk 1.600, Def 300)</div>
+      <div style="font-size:11px;color:#888">Drop: Earth Essence, Golrock Egg C~A &nbsp;|&nbsp; Min EVAL (solo): 11000~12000</div>
+    </div>
+  </div>
+  <div class="pattern-grid">
+    <div class="pattern-item">
+      <div>
+        <div class="pattern-name">(1) Rock Armor (Durability Boost)</div>
+        <div class="pattern-desc">Takes only 30% of incoming damage.</div>
+        <div class="pattern-cond">3 Light, 3 Atk-def</div>
+      </div>
+    </div>
+    <div class="pattern-item">
+      <div>
+        <div class="pattern-name">(2) Rage Explosion (Berserker)</div>
+        <div class="pattern-desc">After Hp reaches 0, survives for 70 turns before dying.</div>
+        <div class="pattern-cond">3 Dawn, 3 Def</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 금요일 -->
+<div class="section boss-section">
+  <div class="boss-header">
+    <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/5.png" class="boss-portrait" alt="Friday — Kaiserburn">
+    <div class="boss-header-text">
+      <div class="section-title">Friday — Kaiserburn</div>
+      <div style="font-size:11px;color:#888">(Hp 20.000, Atk 2.500, Def 60)</div>
+      <div style="font-size:11px;color:#888">Drop: Sun Essence, Kaiserburn Egg C~A &nbsp;|&nbsp; Min EVAL (solo): 11000~12000</div>
+    </div>
+  </div>
+  <div class="pattern-grid">
+    <div class="pattern-item">
+      <div>
+        <div class="pattern-name">(1) Scream of Terror</div>
+        <div class="pattern-desc">Cannot evade, block, and crit</div>
+        <div class="pattern-cond"> 3 Light, 3 Hp-def</div>
+      </div>
+    </div>
+    <div class="pattern-item">
+      <div>
+        <div class="pattern-name">(2) Soul Link (Reflection)</div>
+        <div class="pattern-desc">When Hp drops to 50%, reflects 300% damage to 5 random targets each time it takes damage.</div>
+        <div class="pattern-cond">3 Nightmare, 3 Neu</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- 토요일 -->
+<div class="section">
+  <div class="section-title">Saturday — Random Boss</div>
+  <div style="font-size:11px;color:#888;margin-bottom:4px">Random boss from Mon–Fri · Same strategy applies</div>
+</div>
+
+
+</div><!-- /section-daily -->
+
+
+<script>
+const allDragons=[
+{n:"God Dragon",e:"Light",t:"HP-DEF",ad:true,tr:true},
+{n:"Wind Dragon",e:"Wind",t:"HP",ad:true,tr:true},
+{n:"Six Legged Dragon",e:"Wind",t:"HP",ad:true,tr:true},
+{n:"Blue Dragon",e:"Wind",t:"ATK",ad:true,tr:true},
+{n:"Fire Dragon",e:"Fire",t:"ATK",ad:true,tr:true},
+{n:"Lightning Dragon",e:"Fire",t:"ATK",ad:true,tr:true},
+{n:"Phoenix",e:"Fire",t:"ATK",ad:true,tr:true},
+{n:"Frost Dragon",e:"Water",t:"ATK",ad:true,tr:true},
+{n:"Ness",e:"Water",t:"HP",ad:false,tr:true},
+{n:"Water Dragon",e:"Water",t:"HP-DEF",ad:true,tr:true},
+{n:"Hydra Dragon",e:"Earth",t:"HP-ATK",ad:true,tr:true},
+{n:"Power Dragon",e:"Earth",t:"ATK",ad:true,tr:true},
+{n:"Underground Dragon",e:"Earth",t:"DEF",ad:true,tr:true},
+{n:"Fairy Dragon",e:"Water",t:"ATK",ad:true,tr:true},
+{n:"Egg Dragon",e:"Earth",t:"DEF",ad:true,tr:true},
+{n:"Angel Dragon",e:"Light",t:"HP-DEF",ad:true,tr:true},
+{n:"Swamp Dragon",e:"Water",t:"HP",ad:true,tr:true},
+{n:"Fat Dragon",e:"Earth",t:"HP",ad:false,tr:true},
+{n:"Spike Dragon",e:"Fire",t:"DEF",ad:false,tr:true},
+{n:"Insect Dragon",e:"Fire",t:"ATK-DEF",ad:false,tr:true},
+{n:"Wing Dragon",e:"Wind",t:"ATK-DEF",ad:false,tr:true},
+{n:"Sand Dragon",e:"Fire",t:"ATK-DEF",ad:false,tr:true},
+{n:"Smart Dragon",e:"Earth",t:"DEF",ad:false,tr:true},
+{n:"Black Dragon",e:"Dark",t:"HP-ATK",ad:true,tr:true},
+{n:"Emerald Dragon",e:"Light",t:"HP-DEF",ad:false,tr:true},
+{n:"Ligon",e:"Light",t:"HP-ATK",ad:false,tr:true},
+{n:"Cupid Dragon",e:"Light",t:"ATK",ad:false,tr:true},
+{n:"Slime Dragon",e:"Water",t:"HP-DEF",ad:false,tr:true},
+{n:"Blade Dragon",e:"Dark",t:"ATK",ad:false,tr:true},
+{n:"Metal Dragon",e:"Dark",t:"HP-ATK",ad:false,tr:true},
+{n:"Mummy Dragon",e:"Dark",t:"HP-ATK",ad:false,tr:true},
+{n:"Hedgebat Dragon",e:"Dark",t:"ATK-DEF",ad:false,tr:true},
+{n:"Skelegon",e:"Dark",t:"HP-ATK",ad:false,tr:true},
+{n:"Contipede Dragon",e:"Dark",t:"ATK",ad:false,tr:true},
+{n:"Tiger Dragon",e:"Earth",t:"HP",ad:false,tr:true},
+{n:"Metal Magnet Dragon",e:"Wind",t:"ATK-DEF",ad:false,tr:true},
+{n:"Dark Nix",e:"Dark",t:"HP-ATK",ad:true,tr:true},
+{n:"White Dragon",e:"Light",t:"HP-DEF",ad:true,tr:true},
+{n:"Hyena Dragon",e:"Dark",t:"HP-ATK",ad:false,tr:true},
+{n:"Ghost Dragon",e:"Dark",t:"ATK",ad:false,tr:true},
+{n:"Golden Horn Dragon",e:"Earth",t:"HP-DEF",ad:false,tr:true},
+{n:"Shark Dragon",e:"Water",t:"ATK",ad:true,tr:true},
+{n:"Guardian",e:"Wind",t:"HP",ad:false,tr:true},
+{n:"Crescent",e:"Dark",t:"HP-ATK",ad:false,tr:true},
+{n:"Rainbow",e:"Light",t:"HP",ad:false,tr:true},
+{n:"Spine",e:"Earth",t:"ATK-DEF",ad:false,tr:true},
+{n:"God Jr.",e:"Light",t:"ATK-DEF",ad:true,tr:true},
+{n:"Frosty",e:"Wind",t:"DEF",ad:false,tr:true},
+{n:"Dark Frosty",e:"Dark",t:"ATK",ad:false,tr:true},
+{n:"Snake Dragon",e:"Water",t:"DEF",ad:false,tr:true},
+{n:"Demong&Gargoyle",e:"Dark",t:"ATK-DEF",ad:false,tr:true},
+{n:"Siamese Dragon",e:"Light",t:"HP",ad:true,tr:true},
+{n:"Venezie",e:"Dark",t:"DEF",ad:true,tr:true},
+{n:"Mustard Hammer",e:"Earth",t:"HP-DEF",ad:true,tr:true},
+{n:"Red Wybern",e:"Fire",t:"ATK",ad:true,tr:true},
+{n:"Scorpion Dragon",e:"Earth",t:"ATK-DEF",ad:true,tr:true},
+{n:"Knight Dragon",e:"Light",t:"DEF",ad:true,tr:true},
+{n:"Spicy",e:"Light",t:"HP-ATK",ad:false,tr:true},
+{n:"Rafael",e:"Light",t:"HP-DEF",ad:true,tr:true},
+{n:"Baal",e:"Dark",t:"HP-ATK",ad:true,tr:true},
+{n:"Pierrot Dragon",e:"Light",t:"HP",ad:false,tr:true},
+{n:"Franken Dragon",e:"Dark",t:"HP",ad:false,tr:true},
+{n:"Dragonoid",e:"Dark",t:"HP-DEF",ad:false,tr:true},
+{n:"Witch Dragon",e:"Dark",t:"HP-ATK",ad:false,tr:true},
+{n:"Purple Lips",e:"Water",t:"HP-DEF",ad:false,tr:true},
+{n:"Python",e:"Earth",t:"HP-DEF",ad:true,tr:true},
+{n:"Iron",e:"Fire",t:"DEF",ad:true,tr:true},
+{n:"Jaryong",e:"Fire",t:"HP-ATK",ad:true,tr:true},
+{n:"Devilgon",e:"Earth",t:"ATK",ad:false,tr:true},
+{n:"Violet Dragon",e:"Water",t:"HP-ATK",ad:false,tr:true},
+{n:"Sigma Dragon",e:"Dark",t:"HP-ATK",ad:true,tr:true},
+{n:"Argo Dragon",e:"Light",t:"ATK",ad:true,tr:true},
+{n:"Tyfoon",e:"Wind",t:"HP-DEF",ad:false,tr:true},
+{n:"Stud",e:"Water",t:"DEF",ad:false,tr:true},
+{n:"Flower",e:"Earth",t:"DEF",ad:false,tr:true},
+{n:"Redbull Dragon",e:"Fire",t:"HP-ATK",ad:false,tr:true},
+{n:"Dark Fal",e:"Dark",t:"HP-ATK",ad:false,tr:true},
+{n:"Luminesce",e:"Water",t:"ATK",ad:true,tr:true},
+{n:"Burnesce",e:"Fire",t:"ATK",ad:true,tr:true},
+{n:"Mneia",e:"Fire",t:"HP-ATK",ad:true,tr:true},
+{n:"iGon",e:"Wind",t:"ATK-DEF",ad:false,tr:true},
+{n:"Morika Dragon",e:"Light",t:"ATK",ad:true,tr:true},
+{n:"Spring Dragon",e:"Wind",t:"HP-DEF",ad:true,tr:true},
+{n:"Black Tear Dragon",e:"Dark",t:"HP",ad:true,tr:true},
+{n:"Black Armor Dragon",e:"Dark",t:"DEF",ad:true,tr:true},
+{n:"Kuroy Dragon",e:"Dark",t:"DEF",ad:true,tr:true},
+{n:"Chaos",e:"Wind",t:"HP-ATK",ad:true,tr:true},
+{n:"Time Machine",e:"Dark",t:"ATK",ad:true,tr:true},
+{n:"Citael",e:"Light",t:"HP",ad:true,tr:true},
+{n:"Collosus",e:"Earth",t:"HP-ATK",ad:true,tr:true},
+{n:"Wonder Dragon",e:"Dark",t:"HP",ad:true,tr:true},
+{n:"IceDrake",e:"Water",t:"ATK-DEF",ad:true,tr:true},
+{n:"Bar'rah",e:"Light",t:"ATK-DEF",ad:true,tr:true},
+{n:"Asili",e:"Light",t:"HP-DEF",ad:true,tr:true},
+{n:"Black Jindo",e:"Dark",t:"HP",ad:false,tr:true},
+{n:"Roloce",e:"Light",t:"DEF",ad:true,tr:true},
+{n:"Moon Light",e:"Dark",t:"HP",ad:true,tr:true},
+{n:"Withme",e:"Water",t:"DEF",ad:true,tr:true},
+{n:"Haze",e:"Light",t:"DEF",ad:true,tr:true},
+{n:"Striker",e:"Wind",t:"ATK",ad:true,tr:true},
+{n:"Garuda",e:"Fire",t:"ATK-DEF",ad:true,tr:true},
+{n:"Ordo",e:"Light",t:"ATK",ad:true,tr:true},
+{n:"Secreta",e:"Water",t:"ATK-DEF",ad:true,tr:true},
+{n:"Futurum",e:"Fire",t:"HP-DEF",ad:true,tr:true},
+{n:"Harleybell",e:"Dawn",t:"HP-ATK",ad:true,tr:true},
+{n:"Taabire",e:"Dawn",t:"HP-ATK",ad:true,tr:true},
+{n:"Ballack",e:"Dusk",t:"HP-DEF",ad:true,tr:true},
+{n:"Vefal",e:"Dusk",t:"ATK-DEF",ad:true,tr:true},
+{n:"Dantalion",e:"Nightmare",t:"HP",ad:true,tr:true},
+{n:"Jagan",e:"Nightmare",t:"ATK-DEF",ad:true,tr:true},
+{n:"Marbas",e:"Dark",t:"ATK-DEF",ad:true,tr:true},
+{n:"Wild Dragon",e:"Fire",t:"DEF",ad:true,tr:true},
+{n:"Layers",e:"Earth",t:"HP-ATK",ad:true,tr:true},
+{n:"Venom Dragon",e:"Water",t:"HP-ATK",ad:true,tr:true},
+{n:"Rugar Dragon",e:"Fire",t:"DEF",ad:true,tr:true},
+{n:"Universe",e:"Dark",t:"HP-DEF",ad:true,tr:true},
+{n:"Asti Dragon",e:"Wind",t:"ATK",ad:true,tr:true},
+{n:"Behemoth",e:"Dark",t:"HP-DEF",ad:true,tr:true},
+{n:"Steelwing",e:"Wind",t:"DEF",ad:true,tr:true},
+{n:"Graytan",e:"Wind",t:"ATK-DEF",ad:true,tr:true},
+{n:"Daros",e:"Earth",t:"ATK-DEF",ad:true,tr:true},
+{n:"Star Ace",e:"Light",t:"HP-DEF",ad:true,tr:true},
+{n:"Maloden",e:"Dark",t:"HP",ad:true,tr:true},
+{n:"Popomo",e:"Fire",t:"HP",ad:true,tr:true},
+{n:"Teddy Dragon",e:"Light",t:"HP-DEF",ad:true,tr:true},
+{n:"Hapla",e:"Dawn",t:"ATK",ad:true,tr:true},
+{n:"Araca",e:"Wind",t:"ATK",ad:true,tr:true},
+{n:"Selmasa",e:"Dawn",t:"ATK",ad:true,tr:true},
+{n:"Characen",e:"Dusk",t:"ATK",ad:true,tr:true},
+{n:"Rexton",e:"Dusk",t:"ATK",ad:true,tr:true},
+{n:"Pomekle",e:"Dusk",t:"ATK-DEF",ad:true,tr:true},
+{n:"Karna",e:"Dark",t:"DEF",ad:true,tr:true},
+{n:"Evil Dragon",e:"Fire",t:"ATK-DEF",ad:true,tr:true},
+{n:"Artemis Dragon",e:"Light",t:"ATK-DEF",ad:true,tr:true},
+{n:"Empire",e:"Wind",t:"HP",ad:true,tr:true},
+{n:"Earthquake",e:"Earth",t:"HP",ad:true,tr:true},
+{n:"Reward Dragon",e:"Dawn",t:"HP-ATK",ad:true,tr:true},
+{n:"Poison River",e:"Earth",t:"HP",ad:true,tr:true},
+{n:"Berna",e:"Light",t:"HP-DEF",ad:true,tr:true},
+{n:"Spirit",e:"Wind",t:"HP",ad:true,tr:true},
+{n:"Natron",e:"Water",t:"HP-DEF",ad:true,tr:true},
+{n:"Sola",e:"Light",t:"ATK",ad:true,tr:true},
+{n:"Popon",e:"Earth",t:"HP",ad:true,tr:true},
+{n:"Zephyros",e:"Wind",t:"HP-ATK",ad:true,tr:true},
+{n:"Dragon Slayer",e:"Dark",t:"ATK-DEF",ad:true,tr:true},
+{n:"Dimension Dragon",e:"Nightmare",t:"ATK",ad:true,tr:true},
+{n:"Kinder Dragon",e:"Dawn",t:"ATK-DEF",ad:true,tr:true},
+{n:"Tilki",e:"Dusk",t:"ATK",ad:true,tr:true},
+{n:"Igna",e:"Fire",t:"HP-DEF",ad:true,tr:true},
+{n:"Blizzard",e:"Water",t:"ATK",ad:true,tr:true},
+{n:"Dark Knight",e:"Dark",t:"HP-DEF",ad:true,tr:true},
+{n:"Gust",e:"Wind",t:"ATK",ad:true,tr:true},
+{n:"Whitethunder",e:"Light",t:"ATK-DEF",ad:true,tr:true},
+{n:"Karura",e:"Light",t:"ATK",ad:true,tr:true},
+{n:"Minas Dragon",e:"Light",t:"HP-ATK",ad:true,tr:true},
+{n:"Kubera",e:"Dark",t:"DEF",ad:true,tr:true},
+{n:"Rekmall Reverse",e:"Dusk",t:"HP-ATK",ad:true,tr:true},
+{n:"Centura",e:"Wind",t:"HP-DEF",ad:true,tr:true},
+{n:"Etoile Dragon",e:"Wind",t:"ATK-DEF",ad:true,tr:true},
+{n:"Zimon",e:"Earth",t:"ATK-DEF",ad:true,tr:true},
+{n:"Liberte",e:"Earth",t:"HP-ATK",ad:true,tr:true},
+{n:"Vritra",e:"Water",t:"HP-ATK",ad:true,tr:true},
+{n:"Kigal",e:"Wind",t:"DEF",ad:true,tr:true},
+{n:"Kanthaka",e:"Earth",t:"HP-DEF",ad:true,tr:true},
+{n:"Aton",e:"Light",t:"ATK",ad:true,tr:true},
+{n:"Talissah",e:"Light",t:"ATK-DEF",ad:true,tr:true},
+{n:"Harika",e:"Dusk",t:"ATK",ad:true,tr:true},
+{n:"Appleche Dragon",e:"Earth",t:"HP",ad:true,tr:true},
+{n:"Tropheus",e:"Water",t:"ATK-DEF",ad:true,tr:true},
+{n:"Astarte",e:"Earth",t:"HP-DEF",ad:true,tr:true},
+{n:"Sura Dragon",e:"Fire",t:"ATK",ad:true,tr:true},
+{n:"Angel Jr.",e:"Light",t:"HP",ad:true,tr:true},
+{n:"Enturath",e:"Fire",t:"ATK",ad:true,tr:true},
+{n:"Deathlock",e:"Dusk",t:"DEF",ad:true,tr:true},
+{n:"Animala",e:"Nightmare",t:"HP-DEF",ad:true,tr:true},
+{n:"Azak",e:"Dark",t:"ATK",ad:true,tr:true},
+{n:"Frozen",e:"Water",t:"HP-ATK",ad:true,tr:true},
+{n:"Rude Ore",e:"Nightmare",t:"HP-ATK",ad:true,tr:true},
+{n:"Sword",e:"Light",t:"ATK",ad:true,tr:true},
+{n:"Berith",e:"Dawn",t:"HP",ad:true,tr:true},
+{n:"Makara",e:"Dark",t:"ATK-DEF",ad:true,tr:true},
+{n:"Eclipse",e:"Dusk",t:"HP",ad:true,tr:true},
+{n:"Beleth",e:"Nightmare",t:"DEF",ad:true,tr:true},
+{n:"Eligos",e:"Dawn",t:"DEF",ad:true,tr:true},
+{n:"Mimir",e:"Dawn",t:"HP-DEF",ad:true,tr:true},
+{n:"Amdusias",e:"Dawn",t:"ATK-DEF",ad:true,tr:true},
+{n:"Leo Vector",e:"Earth",t:"ATK",ad:true,tr:true},
+{n:"Nebia",e:"Dawn",t:"HP-DEF",ad:true,tr:true},
+{n:"Boreas",e:"Wind",t:"HP-ATK",ad:true,tr:true},
+{n:"Hwa gui Dragon",e:"Fire",t:"HP-DEF",ad:true,tr:true},
+{n:"Myosotis",e:"Water",t:"ATK-DEF",ad:true,tr:true},
+{n:"Lichmond",e:"Dark",t:"ATK-DEF",ad:true,tr:true},
+{n:"Chroma Lichmond",e:"Dark",t:"ATK-DEF",ad:true,tr:true},
+{n:"Gautling-gon",e:"Light",t:"DEF",ad:true,tr:true},
+{n:"Bernhard",e:"Water",t:"ATK",ad:true,tr:true},
+{n:"Tyr",e:"Wind",t:"HP-DEF",ad:true,tr:true},
+{n:"Amanta",e:"Light",t:"ATK-DEF",ad:true,tr:true},
+{n:"Shah",e:"Light",t:"ATK-DEF",ad:true,tr:true},
+{n:"Nebula",e:"Dusk",t:"HP-ATK",ad:true,tr:true},
+{n:"Regulus",e:"Water",t:"HP-DEF",ad:true,tr:true},
+{n:"Chroma Regulus",e:"Water",t:"HP-DEF",ad:true,tr:true},
+{n:"Aldebaran",e:"Earth",t:"HP",ad:true,tr:true},
+{n:"Longinus",e:"Nightmare",t:"HP-DEF",ad:true,tr:true},
+{n:"Mysfit",e:"Nightmare",t:"DEF",ad:true,tr:true},
+{n:"Yeomhwa Dragon",e:"Fire",t:"HP",ad:true,tr:true},
+{n:"Portunus",e:"Water",t:"DEF",ad:true,tr:true},
+{n:"Seere",e:"Dusk",t:"DEF",ad:true,tr:true},
+{n:"Vargr",e:"Light",t:"ATK",ad:true,tr:true},
+{n:"Mastema",e:"Nightmare",t:"HP-DEF",ad:true,tr:true},
+{n:"Tanatos",e:"Fire",t:"HP-DEF",ad:true,tr:true},
+{n:"Pride",e:"Dusk",t:"ATK-DEF",ad:true,tr:true},
+{n:"Wrath",e:"Dawn",t:"DEF",ad:true,tr:true},
+{n:"Thoth",e:"Fire",t:"DEF",ad:true,tr:true},
+{n:"Nemus",e:"Nightmare",t:"HP",ad:true,tr:true},
+{n:"Crevasse",e:"Nightmare",t:"HP-ATK",ad:true,tr:true},
+{n:"Lancenti",e:"Fire",t:"ATK",ad:true,tr:true},
+{n:"Goat",e:"Dark",t:"HP-DEF",ad:true,tr:true},
+{n:"Pachy",e:"Earth",t:"DEF",ad:true,tr:true},
+{n:"Pitaya",e:"Wind",t:"ATK-DEF",ad:true,tr:true},
+{n:"Amaltheia",e:"Dawn",t:"HP",ad:true,tr:true},
+{n:"Quetzalcoatl",e:"Earth",t:"HP-ATK",ad:true,tr:true},
+{n:"Harmonious Dragon",e:"Dawn",t:"DEF",ad:true,tr:true},
+{n:"Magnas",e:"Dark",t:"HP",ad:true,tr:true},
+{n:"Chroma Beleth",e:"Nightmare",t:"DEF",ad:true,tr:true},
+{n:"Porta",e:"Dark",t:"DEF",ad:true,tr:true},
+{n:"Rudra",e:"Water",t:"ATK",ad:true,tr:true},
+{n:"Chachawung",e:"Dusk",t:"DEF",ad:true,tr:true},
+{n:"Cortus",e:"Dawn",t:"ATK-DEF",ad:true,tr:true},
+{n:"Epit",e:"Dusk",t:"HP-DEF",ad:true,tr:true},
+{n:"Eggmayong",e:"Earth",t:"HP",ad:true,tr:true},
+{n:"Blue Thunder",e:"Wind",t:"ATK",ad:true,tr:true},
+{n:"Chroma Blue Thunder",e:"Wind",t:"ATK",ad:true,tr:true},
+{n:"Solucanis",e:"Light",t:"DEF",ad:true,tr:true},
+{n:"Rusalka",e:"Water",t:"HP-ATK",ad:true,tr:true},
+{n:"Vetala",e:"Dark",t:"ATK",ad:true,tr:true},
+{n:"Chroma Vetala",e:"Dark",t:"ATK",ad:true,tr:true},
+{n:"Rukbat",e:"Dawn",t:"HP-ATK",ad:true,tr:true},
+{n:"Caslux",e:"Dark",t:"HP",ad:true,tr:true},
+{n:"Atlus",e:"Light",t:"HP-ATK",ad:true,tr:true},
+{n:"Fides",e:"Dark",t:"HP-ATK",ad:true,tr:true},
+{n:"Firetail",e:"Fire",t:"ATK-DEF",ad:true,tr:true},
+{n:"Chroma Firetail",e:"Fire",t:"ATK-DEF",ad:true,tr:true},
+{n:"Yurqa",e:"Water",t:"HP",ad:true,tr:true},
+{n:"Slosi",e:"Nightmare",t:"ATK",ad:true,tr:true},
+{n:"Octa",e:"Water",t:"ATK-DEF",ad:true,tr:true},
+{n:"Chroma Octa",e:"Water",t:"ATK-DEF",ad:true,tr:true},
+{n:"Curse Reaper",e:"Nightmare",t:"ATK-DEF",ad:true,tr:true},
+{n:"Ullr",e:"Dawn",t:"ATK",ad:true,tr:true},
+{n:"Aphrodite",e:"Dawn",t:"HP-DEF",ad:true,tr:true},
+{n:"Blaze Dragon",e:"Fire",t:"HP-ATK",ad:true,tr:true},
+{n:"Protect Dragon",e:"Light",t:"DEF",ad:true,tr:true},
+{n:"Chroma Protect Dragon",e:"Light",t:"DEF",ad:true,tr:true},
+{n:"Tempios",e:"Dusk",t:"HP",ad:true,tr:true},
+{n:"Jin",e:"Nightmare",t:"ATK-DEF",ad:true,tr:true},
+{n:"Inverso",e:"Dusk",t:"HP-ATK",ad:true,tr:true},
+{n:"Litio",e:"Wind",t:"DEF",ad:true,tr:true},
+{n:"Chroma Litio",e:"Wind",t:"DEF",ad:true,tr:true},
+{n:"Skat",e:"Water",t:"DEF",ad:true,tr:true},
+{n:"Alresch",e:"Water",t:"HP",ad:true,tr:true},
+{n:"Chroma Alresch",e:"Water",t:"HP",ad:true,tr:true},
+{n:"Janus",e:"Dawn",t:"HP",ad:true,tr:true},
+{n:"Figar",e:"Fire",t:"HP",ad:true,tr:true},
+{n:"Chroma Figar",e:"Fire",t:"HP",ad:true,tr:true},
+{n:"Scartooth",e:"Fire",t:"DEF",ad:true,tr:true},
+{n:"Chroma Scartooth",e:"Fire",t:"DEF",ad:true,tr:true},
+{n:"Loki",e:"Water",t:"DEF",ad:true,tr:true},
+{n:"Heimdallr",e:"Earth",t:"HP-DEF",ad:true,tr:true},
+{n:"Volva",e:"Water",t:"HP",ad:true,tr:true},
+{n:"Thor",e:"Wind",t:"ATK-DEF",ad:true,tr:true},
+{n:"Jormungandr",e:"Dark",t:"HP-ATK",ad:true,tr:true},
+{n:"Manus",e:"Dusk",t:"HP-DEF",ad:true,tr:true},
+{n:"Corrupted Jormungandr",e:"Nightmare",t:"ATK",ad:true,tr:true},
+{n:"Yajnir",e:"Light",t:"ATK",ad:true,tr:true},
+{n:"Non",e:"Earth",t:"HP-DEF",ad:true,tr:true},
+{n:"Lemures",e:"Nightmare",t:"ATK",ad:true,tr:true},
+{n:"Acaia",e:"Earth",t:"ATK-DEF",ad:true,tr:true},
+{n:"Chroma Acaia",e:"Earth",t:"ATK-DEF",ad:true,tr:true},
+{n:"Tiamat",e:"Dark",t:"HP-ATK",ad:true,tr:true},
+{n:"Obex",e:"Dark",t:"ATK",ad:true,tr:true},
+{n:"Hresvelgr",e:"Dusk",t:"HP",ad:true,tr:true},
+{n:"Hatshya",e:"Dark",t:"ATK-DEF",ad:true,tr:true},
+{n:"Valefor",e:"Nightmare",t:"HP-ATK",ad:true,tr:true},
+{n:"Chroma Valefor",e:"Nightmare",t:"HP-ATK",ad:true,tr:true},
+{n:"Merak",e:"Light",t:"HP-ATK",ad:true,tr:true},
+{n:"Reginleif",e:"Dusk",t:"HP-ATK",ad:true,tr:true},
+{n:"Chroma Reginleif",e:"Dusk",t:"HP-ATK",ad:true,tr:true},
+{n:"Red Horse Dragon",e:"Fire",t:"HP-ATK",ad:true,tr:true},
+{n:"Fishing Tail Dragon",e:"Water",t:"ATK",ad:true,tr:true},
+{n:"Lulu",e:"Wind",t:"HP-DEF",ad:true,tr:true},
+{n:"Chroma Lulu",e:"Wind",t:"HP-DEF",ad:true,tr:true},
+{n:"Vaska",e:"Earth",t:"ATK",ad:true,tr:true},
+{n:"Vlad",e:"Nightmare",t:"HP",ad:true,tr:true}
+];
+
+
+
+function switchMainTab(tab) {
+  document.getElementById('section-raid').style.display = tab==='raid' ? '' : 'none';
+  document.getElementById('section-daily').style.display = tab==='daily' ? '' : 'none';
+  document.querySelectorAll('.main-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('main-tab-'+tab).classList.add('active');
+  if(tab!=='raid') document.getElementById('result').style.display='none';
+}
+
+const BOSS_PATTERNS = {
+  dimension: [
+    {name:'(1) Evasion on Hit', elem:'Fire', type:'ATK-DEF', elemCnt:2, typeCnt:2},
+    {name:'(2) Random Heavy DMG', elem:'Nightmare', type:'HP', elemCnt:2, typeCnt:2},
+    {name:'(3) DMG Reduction', elem:'Dawn', type:'HP-ATK', elemCnt:2, typeCnt:2},
+    {name:'(4) DMG Reflect', elem:'Light', type:'HP-DEF', elemCnt:2, typeCnt:2},
+    {name:'(5) HP Recovery', elem:'Dark', type:'ATK', elemCnt:2, typeCnt:2},
+  ],
+  deathlock: [
+    {name:'(1) HP Recovery', elem:'Wind', type:'HP', elemCnt:2, typeCnt:2},
+    {name:'(2) ATK Increase', elem:'Dark', type:'ATK-DEF', elemCnt:2, typeCnt:2},
+    {name:'(3) DEF Increase', elem:'Dawn', type:null, elemCnt:2, typeCnt:0},
+    {name:'(4) Chain Release', elem:'Light', type:'ATK', elemCnt:3, typeCnt:3},
+    {name:'(5) 방어력 버프', elem:'Earth', type:'DEF', elemCnt:2, typeCnt:2},
+  ],
+};
+let currentBoss = 'dimension';
+
+function selectBoss(boss) {
+  currentBoss = boss;
+  document.querySelectorAll('.boss-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('boss-btn-' + boss).classList.add('active');
+  document.querySelectorAll('.boss-dimension').forEach(el => el.style.display = boss==='dimension' ? '' : 'none');
+  document.querySelectorAll('.boss-deathlock').forEach(el => el.style.display = boss==='deathlock' ? '' : 'none');
+  document.getElementById('boss-desc-dimension').style.display = boss==='dimension' ? '' : 'none';
+  document.getElementById('boss-desc-deathlock').style.display = boss==='deathlock' ? '' : 'none';
+  const imgMap = {dimension:'https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/6.png', deathlock:'https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/7.png'};
+  document.getElementById('boss-select-bg').style.backgroundImage = `url('${imgMap[boss]}')`;
+  saveToStorage();
+}
+
+// 패턴 정의 (레거시)
+const PATTERNS = {
+  1: {name:'(1) Evasion on Hit', elem:'Fire', type:'ATK-DEF', elemCnt:2, typeCnt:2},
+  2: {name:'(2) Random Heavy DMG', elem:'Nightmare', type:'HP', elemCnt:2, typeCnt:2},
+  3: {name:'(3) DMG Reduction', elem:'Dawn', type:'HP-ATK', elemCnt:2, typeCnt:2},
+  4: {name:'(4) DMG Reflect', elem:'Light', type:'HP-DEF', elemCnt:2, typeCnt:2},
+  5: {name:'(5) HP Recovery', elem:'Dark', type:'ATK', elemCnt:2, typeCnt:2},
+};
+
+const selectedPatterns = new Set([1,2,3,4,5]);
+const playerDragons = [[],[],[],[]]; // 각 플레이어 드래곤 목록
+
+// 초기화
+function init() {
+  const grid = document.getElementById('players-grid');
+  grid.innerHTML = '';
+  for(let i=0; i<4; i++) {
+    grid.innerHTML += `
+    <div class="player-card">
+      <div class="player-title">
+        <div class="player-num">${i+1}</div>
+        <span>${i+1} Player</span>
+        <button class="reset-btn" onclick="resetPlayer(${i})">Reset</button>
+      </div>
+      <div class="dragon-search">
+        <input type="text" placeholder="Search name or enter multiple with commas" 
+          oninput="showAC(${i}, this.value)"
+          onfocus="showAC(${i}, this.value)"
+          onblur="setTimeout(()=>hideAC(${i}),150)"
+          onkeydown="handleBulkInput(event, ${i})"
+          id="search-${i}">
+        <div class="autocomplete" id="ac-${i}"></div>
+      </div>
+      <div class="dragon-list" id="list-${i}"></div>
+    </div>`;
+  }
+}
+
+
+
+
+
+// 자동완성
+
+function saveToStorage() {
+  try {
+    localStorage.setItem('raid_boss', currentBoss);
+    localStorage.setItem('raid_dragons', JSON.stringify(playerDragons));
+  } catch(e) {}
+}
+
+function loadFromStorage() {
+  try {
+    const boss = localStorage.getItem('raid_boss');
+    if(boss) selectBoss(boss);
+    const dragons = localStorage.getItem('raid_dragons');
+    if(dragons) {
+      const saved = JSON.parse(dragons);
+      saved.forEach((list, i) => {
+        list.forEach(d => {
+          const found = allDragons.find(x => x.n === d.n);
+          if(found && !playerDragons[i].find(x => x.n === d.n)) {
+            playerDragons[i].push(found);
+          }
+        });
+        renderList(i);
+      });
+    }
+  } catch(e) {}
+}
+
+const transcendDragons = allDragons.filter(d => d.tr);
+
+
+function handleBulkInput(e, playerIdx) {
+  if(e.key !== 'Enter') return;
+  const val = document.getElementById('search-'+playerIdx).value.trim();
+  if(!val) return;
+  if(val.includes(',')) {
+    const names = val.split(',').map(n=>n.trim()).filter(n=>n);
+    names.forEach(query => {
+      const d = transcendDragons.find(x => x.n === query) || transcendDragons.find(x => x.n.includes(query));
+      if(d) addDragon(playerIdx, d.n);
+    });
+  } else {
+    const d = transcendDragons.find(x => x.n === val) || transcendDragons.find(x => x.n.includes(val));
+    if(d) addDragon(playerIdx, d.n);
+  }
+  document.getElementById('search-'+playerIdx).value = '';
+  hideAC(playerIdx);
+}
+
+
+function resetPlayer(playerIdx) {
+  playerDragons[playerIdx] = [];
+  renderList(playerIdx);
+  saveToStorage();
+}
+
+function showAC(playerIdx, query) {
+  const ac = document.getElementById('ac-'+playerIdx);
+  const results = query
+    ? transcendDragons.filter(d => d.n.includes(query)).slice(0, 20)
+    : transcendDragons.slice(0, 20);
+  if(!results.length) { ac.classList.remove('open'); return; }
+  ac.innerHTML = results.map(d =>
+    `<div class="ac-item" onmousedown="addDragon(${playerIdx}, '${d.n.replace(/'/g,"\'")}')">
+      ${d.n}
+    </div>`
+  ).join('');
+  ac.classList.add('open');
+}
+function hideAC(i) { document.getElementById('ac-'+i).classList.remove('open'); }
+
+function addDragon(playerIdx, name) {
+  const d = allDragons.find(x => x.n === name);
+  if(!d) return;
+  // 중복 체크
+  if(playerDragons[playerIdx].find(x => x.n === name)) {
+    document.getElementById('search-'+playerIdx).value = '';
+    return;
+  }
+  playerDragons[playerIdx].push(d);
+  document.getElementById('search-'+playerIdx).value = '';
+  renderList(playerIdx);
+  saveToStorage();
+}
+
+function removeDragon(playerIdx, name) {
+  playerDragons[playerIdx] = playerDragons[playerIdx].filter(d => d.n !== name);
+  renderList(playerIdx);
+}
+
+function renderList(playerIdx) {
+  const el = document.getElementById('list-'+playerIdx);
+  const list = playerDragons[playerIdx];
+  if(!list.length) { el.innerHTML = '<div style="font-size:11px;color:#555;padding:4px">select dragon</div>'; return; }
+  el.innerHTML = list.map((d,idx) => {
+    return `<div class="dragon-tag">
+      <div class="dragon-tag-info">
+        <span class="dragon-tag-elem e-${d.e}">${d.e}</span>
+        <span class="dragon-tag-name">${d.n}</span>
+        <span class="dragon-tag-type">${d.t}</span>
+      </div>
+      <button class="dragon-tag-remove" onclick="playerDragons[${playerIdx}].splice(${idx},1);renderList(${playerIdx});saveToStorage()">×</button>
+    </div>`;
+  }).join('');
+}
+
+// ===== 핵심 조합 로직 =====
+function calculate() {
+  console.log("calculate 실행됨");
+  console.log("playerDragons:", playerDragons.map(p=>p.length));
+  // 유효성 검사
+  for(let i=0; i<4; i++) {
+    if(playerDragons[i].length < 3) {
+      alert(`${i+1} Player has fewer than 3 dragons. Currently ${playerDragons[i].length} dragons`);
+      return;
+    }
+  }
+
+  // 현재 보스 패턴 조건 수집
+  const conditions = {};
+  for(const p of BOSS_PATTERNS[currentBoss]) {
+    conditions[p.elem] = (conditions[p.elem]||0) + p.elemCnt;
+    if(p.type && p.typeCnt > 0) conditions[p.type+'_type'] = (conditions[p.type+'_type']||0) + p.typeCnt;
+  }
+
+  // 조건: 각 속성/타입 정확히 N마리
+  // 전략: 각 조건 속성+타입 쌍을 서로 다른 플레이어에게 1마리씩 배정
+  // 같은 플레이어에게 같은 조건속성 2마리 배정 금지
+
+  // 필요한 드래곤 슬롯 목록 생성
+  const reqSlots = [];
+  for(const p of BOSS_PATTERNS[currentBoss]) {
+    const paired = Math.min(p.elemCnt, p.typeCnt || 0);
+    for(let i=0; i<paired; i++) reqSlots.push({elem:p.elem, type:p.type, done:false});
+    for(let i=paired; i<p.elemCnt; i++) reqSlots.push({elem:p.elem, type:null, done:false});
+    for(let i=paired; i<(p.typeCnt||0); i++) reqSlots.push({elem:null, type:p.type, done:false});
+  }
+
+  const globalUsed = new Set();
+  const result = [[],[],[],[]];
+  const condElems = new Set(BOSS_PATTERNS[currentBoss].map(p=>p.elem));
+  const condTypes = new Set(BOSS_PATTERNS[currentBoss].filter(p=>p.type).map(p=>p.type));
+
+  // 플레이어별 사용된 조건속성/타입 추적
+  const playerCondElem = [{},{},{},{}]; // pi -> {속성: count}
+  const playerCondType = [{},{},{},{}]; // pi -> {타입: count}
+
+  // 조건 슬롯 채우기 - 한 플레이어에게 같은 조건속성 1마리만 허용
+  for(const slot of reqSlots) {
+    if(slot.done) continue;
+    for(let pi=0; pi<4; pi++) {
+      if(result[pi].length >= 3) continue;
+      // 이 플레이어에 이미 이 조건속성 드래곤이 있으면 skip
+      if(slot.elem && (playerCondElem[pi][slot.elem]||0) >= 1) continue;
+      if(slot.type && (playerCondType[pi][slot.type]||0) >= 1) continue;
+
+      const d = playerDragons[pi].find(x =>
+        !globalUsed.has(x.n) &&
+        (slot.elem ? x.e === slot.elem : true) &&
+        (slot.type ? x.t === slot.type : true)
+      );
+      if(d) {
+        result[pi].push(d);
+        globalUsed.add(d.n);
+        if(slot.elem) playerCondElem[pi][slot.elem] = (playerCondElem[pi][slot.elem]||0)+1;
+        if(slot.type) playerCondType[pi][slot.type] = (playerCondType[pi][slot.type]||0)+1;
+        slot.done = true;
+        break;
+      }
+    }
+  }
+
+  // 나머지 자리 채우기 - 전체 조건 카운트 초과 방지
+  for(let pi=0; pi<4; pi++) {
+    while(result[pi].length < 3) {
+      const allSoFar = result.flat();
+      const usedElem = {};
+      const usedType = {};
+      for(const x of allSoFar) {
+        usedElem[x.e] = (usedElem[x.e]||0)+1;
+        usedType[x.t] = (usedType[x.t]||0)+1;
+      }
+
+      // 조건 수에 이미 도달한 속성/타입은 절대 사용 금지
+      const blockedElems = new Set(Object.keys(conditions).filter(k=>!k.endsWith('_type') && (usedElem[k]||0) >= conditions[k]));
+      const blockedTypes = new Set(Object.keys(conditions).filter(k=>k.endsWith('_type') && (usedType[k.replace('_type','')]||0) >= conditions[k]).map(k=>k.replace('_type','')));
+
+      // 조건 속성 아닌 것 우선, blocked 제외
+      let d = playerDragons[pi].find(x =>
+        !globalUsed.has(x.n) && !blockedElems.has(x.e) && !blockedTypes.has(x.t) && !condElems.has(x.e) && !condTypes.has(x.t)
+      );
+      if(!d) d = playerDragons[pi].find(x =>
+        !globalUsed.has(x.n) && !blockedElems.has(x.e) && !blockedTypes.has(x.t) && !condElems.has(x.e)
+      );
+      if(!d) d = playerDragons[pi].find(x =>
+        !globalUsed.has(x.n) && !blockedElems.has(x.e) && !blockedTypes.has(x.t)
+      );
+      // blocked는 절대 넣지 않음 - 못 채워도 그냥 넘어감
+      if(!d) break;
+      result[pi].push(d);
+      globalUsed.add(d.n);
+    }
+  }
+
+  showResult(result, conditions);
+}
+
+function evalCombo(all12, conditions) {
+  const elemCount = {};
+  const typeCount = {};
+  for(const d of all12) {
+    elemCount[d.e] = (elemCount[d.e]||0) + 1;
+    typeCount[d.t] = (typeCount[d.t]||0) + 1;
+  }
+
+  // 초과 체크 - 하나라도 초과하면 즉시 탈락
+  for(const [key, cnt] of Object.entries(conditions)) {
+    let actual;
+    if(key.endsWith('_type')) actual = typeCount[key.replace('_type','')] || 0;
+    else actual = elemCount[key] || 0;
+    if(actual > cnt) return -Infinity; // 초과 = 절대 안됨
+  }
+
+  // 미달 체크 - 조건 충족 개수로 점수
+  let score = 0;
+  let perfect = true;
+  for(const [key, cnt] of Object.entries(conditions)) {
+    let actual;
+    if(key.endsWith('_type')) actual = typeCount[key.replace('_type','')] || 0;
+    else actual = elemCount[key] || 0;
+    if(actual === cnt) score += 200;
+    else { perfect = false; score -= (cnt - actual) * 100; }
+  }
+  return perfect && Object.keys(conditions).length > 0 ? 1000 : score;
+}
+
+function showResult(result, conditions) {
+  const all12 = result.flat();
+  const elemCount = {};
+  const typeCount = {};
+  for(const d of all12) {
+    elemCount[d.e] = (elemCount[d.e]||0) + 1;
+    typeCount[d.t] = (typeCount[d.t]||0) + 1;
+  }
+
+  // 패턴 충족 여부
+  let allOk = true;
+  const checkHtml = [];
+  for(const p of BOSS_PATTERNS[currentBoss]) {
+    const ec = elemCount[p.elem]||0;
+    const eOk = ec === p.elemCnt;
+    if(!eOk) allOk = false;
+    checkHtml.push(`
+      <div class="check-item">
+        <span class="${eOk?'check-ok':'check-fail'}">${eOk?'✓':'✗'}</span>
+        <span>${p.name} — ${p.elem} ${ec}/${p.elemCnt}</span>
+      </div>`);
+    if(p.type && p.typeCnt > 0) {
+      const tc = typeCount[p.type]||0;
+      const tOk = tc === p.typeCnt;
+      if(!tOk) allOk = false;
+      checkHtml.push(`
+        <div class="check-item">
+          <span class="${tOk?'check-ok':'check-fail'}">${tOk?'✓':'✗'}</span>
+          <span>${p.name} — ${p.type} ${tc}/${p.typeCnt}</span>
+        </div>`);
+    }
+  }
+
+  // 결과 렌더링
+  document.getElementById('result').style.display = 'block';
+  document.getElementById('result-badge').className = 'result-badge ' + (allOk?'badge-ok':'badge-fail');
+  document.getElementById('result-badge').textContent = allOk ? '✓ All patterns breakable' : '✗ Some patterns not met';
+
+  const rpEl = document.getElementById('result-players');
+  rpEl.innerHTML = result.map((combo, i) => `
+    <div class="result-player">
+      <div class="result-player-title">${i+1} Player</div>
+      ${combo.map(d => `
+        <div class="result-dragon">
+          <span class="dragon-tag-elem e-${d.e}" style="font-size:10px;padding:1px 5px;border-radius:3px;font-weight:500">${d.e}</span>
+          <span class="result-dragon-name">${d.n}</span>
+          <span style="font-size:10px;color:#666">${d.t}</span>
+        </div>`).join('')}
+    </div>`).join('');
+
+  document.getElementById('result-check').innerHTML = checkHtml.join('');
+  document.getElementById('result-fail-msg').innerHTML = allOk ? '' :
+    '<div class="fail-msg">⚠ The current dragon combo cannot break all patterns. Please add more dragons.</div>';
+
+  document.getElementById('result').scrollIntoView({behavior:'smooth'});
+}
+
+init();
+loadFromStorage();
+
+function toggleTooltip(el) {
+  el.classList.toggle('active');
+  // 다른 열린 툴팁 닫기
+  document.querySelectorAll('.info-icon.active').forEach(other => {
+    if(other !== el) other.classList.remove('active');
+  });
+}
+
+// 툴팁 밖 클릭 시 닫기
+document.addEventListener('click', function(e) {
+  if(!e.target.closest('.info-icon')) {
+    document.querySelectorAll('.info-icon.active').forEach(el => el.classList.remove('active'));
+  }
+});
+
+</script>
+<script>
+(function(){
+  var link=document.getElementById('theme-css');
+  if(!link)return;
+  var sync=function(){
+    var c=document.getElementById('custom-theme-style');
+    if(c&&c.textContent&&c.textContent.length>0){document.documentElement.removeAttribute('data-theme');return;}
+    var m=String(link.href||'').match(/theme-(dark|light|beige)\.css/);
+    document.documentElement.setAttribute('data-theme',m?m[1]:'dark');
+  };
+  sync();
+  new MutationObserver(sync).observe(link,{attributes:true,attributeFilter:['href']});
+  new MutationObserver(sync).observe(document.head,{childList:true,subtree:true,characterData:true});
+})();
+</script>
+</body>
+</html>

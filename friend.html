@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>친구요청</title>
+<link id="theme-css" rel="stylesheet" href="./theme-dark.css">
+<script src="./theme.js"></script>
+<style>
+/* ── 테마 팔레트 (index.html과 동일) ── */
+[data-theme="dark"]{
+  --bg:#0e1116;--bg2:#161a22;--bg3:#1c212c;
+  --border:#23293a;--border2:#1b1f2a;--border3:#2d3447;
+  --text:#eaecf2;--text2:#b3b9c7;--text3:#7d8597;--text4:#565d6e;
+  --accent:#7aa2f7;--accent-bg:rgba(122,162,247,0.12);--accent-border:rgba(122,162,247,0.30);
+}
+[data-theme="light"]{
+  --bg:#f7f7f8;--bg2:#ffffff;--bg3:#f1f2f4;
+  --border:#e6e7ea;--border2:#eeeff2;--border3:#d4d6db;
+  --text:#15171c;--text2:#4a4d57;--text3:#71757f;--text4:#9aa0aa;
+  --accent:#2f6fed;--accent-bg:rgba(47,111,237,0.10);--accent-border:rgba(47,111,237,0.32);
+}
+[data-theme="beige"]{
+  --bg:#f3ecdd;--bg2:#faf3e2;--bg3:#ebe0c7;
+  --border:#d8caa8;--border2:#e1d4b3;--border3:#c0ad84;
+  --text:#2a2316;--text2:#5a4e34;--text3:#837553;--text4:#a99971;
+  --accent:#b06a1e;--accent-bg:rgba(176,106,30,0.10);--accent-border:rgba(176,106,30,0.32);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--text);padding:12px}
+.back-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;text-decoration:none;margin-bottom:16px;transition:all 0.15s}
+.back-btn:hover{border-color:var(--accent);color:var(--text)}
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.header h1{font-size:20px;color:var(--text2)}
+.header-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.user-info{font-size:12px;color:var(--accent);font-weight:600}
+.btn{padding:7px 14px;border-radius:20px;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.15s}
+.btn-primary{background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-border)}
+.btn-primary:hover{background:rgba(93,207,245,0.25)}
+.btn-danger{background:rgba(239,83,80,0.1);color:#ef5350;border:1px solid rgba(239,83,80,0.2)}
+.btn-gray{background:var(--bg3);color:var(--text2);border:1px solid var(--border)}
+.btn-gray:hover{border-color:var(--accent);color:var(--text)}
+.filter-wrap{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.filter-btn{padding:4px 12px;border-radius:20px;border:1px solid var(--border);background:none;color:var(--text3);font-size:11px;cursor:pointer;font-family:inherit;transition:all 0.15s}
+.filter-btn:hover{border-color:var(--accent);color:var(--text2)}
+.filter-btn.active{border-color:var(--accent);background:var(--accent-bg);color:var(--accent)}
+.tag-badge{display:inline-block;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600;margin-right:4px}
+.tag-정기친구{background:rgba(102,187,106,0.15);color:#66bb6a;border:1px solid rgba(102,187,106,0.3)}
+.tag-레이드프리미엄{background:rgba(245,200,66,0.15);color:#f5c842;border:1px solid rgba(245,200,66,0.3)}
+.tag-기타{background:rgba(255,255,255,0.08);color:var(--text2);border:1px solid var(--border)}
+
+/* ---- 공통 테이블 ---- */
+.post-table{width:100%;border-collapse:collapse;background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.post-table th{background:var(--bg3);padding:10px 14px;font-size:12px;font-weight:700;color:var(--accent);text-align:left;border-bottom:1px solid var(--border)}
+.post-table th.num{width:50px;text-align:center}
+.post-table th.author{width:90px;text-align:center}
+.post-table th.likes{width:60px;text-align:center}
+.post-table th.date{width:100px;text-align:center}
+.post-table td{padding:11px 14px;font-size:13px;border-bottom:1px solid var(--border2);color:var(--text)}
+.post-table td.num{text-align:center;color:var(--text4);font-size:12px}
+.post-table td.author{text-align:center;color:var(--text2);font-size:12px}
+.post-table td.likes{text-align:center;color:#f5c842;font-size:12px}
+.post-table td.date{text-align:center;color:var(--text4);font-size:12px}
+.post-table tr:last-child td{border-bottom:none}
+.post-table tr:hover td{background:var(--bg3);cursor:pointer}
+.post-table tr.pinned td{background:rgba(255,167,38,0.05)}
+.post-table tr.pinned:hover td{background:rgba(255,167,38,0.1)}
+.post-link{color:var(--text);text-decoration:none}
+.post-link:hover{color:var(--accent)}
+.empty{text-align:center;color:var(--text4);font-size:13px;padding:32px 0}
+.block-btn{font-size:10px;padding:2px 6px;border-radius:4px;border:1px solid var(--border3);background:none;color:var(--text4);cursor:pointer;font-family:inherit;margin-left:4px}
+.block-btn:hover{border-color:#ef5350;color:#ef5350}
+.blocked-count{font-size:11px;color:var(--text4);text-align:right;margin-bottom:6px}
+.blocked-count a{color:var(--accent);cursor:pointer;text-decoration:none}
+
+/* ---- PC 전용: 추천/날짜 보임 ---- */
+.pc-only{display:table-cell}
+
+/* ---- 모바일 전용 스타일 ---- */
+@media(max-width:700px){
+  /* PC 전용 컬럼 숨김 */
+  .pc-only{display:none}
+
+  /* 모바일 테이블 고정 레이아웃 */
+  .post-table{table-layout:fixed}
+  .post-table th.num{width:40px}
+  .post-table th.meta-m{width:80px;text-align:center}
+  .post-table td.num{width:40px}
+  .post-table td.meta-m{width:80px;text-align:center;vertical-align:middle}
+
+  /* 제목 한줄 + 태그 아래줄 */
+  .title-wrap{display:flex;flex-direction:column;gap:4px}
+  .title-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+  .tag-row{display:flex;flex-wrap:wrap;gap:3px}
+
+  /* 작성자+차단 묶음 */
+  .meta-wrap-m{display:flex;flex-direction:column;align-items:center;gap:3px}
+  .meta-author-m{color:var(--text2);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:76px}
+  .block-btn-m{font-size:10px;padding:1px 5px;border-radius:4px;border:1px solid var(--border3);background:none;color:var(--text4);cursor:pointer;font-family:inherit;margin-top:2px}
+  .block-btn-m:hover{border-color:#ef5350;color:#ef5350}
+}
+</style>
+</head>
+<body>
+
+<a id="back-btn" href="./index.html" class="back-btn">← 메인으로</a>
+
+<div class="header">
+  <h1>친구요청</h1>
+  <div class="header-right" id="header-right">
+    <span class="user-info" id="user-info"></span>
+    <button class="btn btn-gray" id="auth-btn"></button>
+    <button class="btn btn-primary" id="write-btn" style="display:none" onclick="location.href='./write.html?board=friend'">글쓰기</button>
+  </div>
+</div>
+
+<div id="blocked-info"></div>
+
+<div class="filter-wrap">
+  <span style="font-size:11px;color:var(--text4)">필터</span>
+  <button class="filter-btn active" onclick="setFilter('', this)">전체</button>
+  <button class="filter-btn" onclick="setFilter('정기친구', this)">정기친구</button>
+  <button class="filter-btn" onclick="setFilter('레이드프리미엄', this)">레이드 프리미엄</button>
+  <button class="filter-btn" onclick="setFilter('기타', this)">기타</button>
+</div>
+
+<table class="post-table">
+  <thead>
+    <tr>
+      <th class="num">번호</th>
+      <th>제목</th>
+      <th class="author pc-only">작성자</th>
+      <th class="likes pc-only">추천</th>
+      <th class="date pc-only">날짜</th>
+      <th class="meta-m" style="display:none">작성자</th><!-- 모바일 헤더 (JS로 처리) -->
+    </tr>
+  </thead>
+  <tbody id="post-list"></tbody>
+</table>
+
+<script src="./sb_config.js"></script>
+<script>
+// 모바일 여부에 따라 헤더 조정
+(function(){
+  const isMobile = window.innerWidth <= 700;
+  const mHead = document.querySelector('.post-table thead tr th.meta-m');
+  if(mHead) mHead.style.display = isMobile ? 'table-cell' : 'none';
+})();
+
+// ?from= 파라미터를 읽어서 뒤로가기 URL 결정
+(function() {
+  const from = new URLSearchParams(location.search).get('from');
+  const allowed = ['community','weekly','guide','info'];
+  const backBtn = document.getElementById('back-btn');
+  if(from && allowed.includes(from)) {
+    backBtn.href = `./index.html?tab=${from}`;
+  }
+})();
+
+const user = getUser();
+let activeFilter = '';
+let allPosts = [];
+
+function getBlockList() { try { return JSON.parse(localStorage.getItem('block_list') || '[]'); } catch { return []; } }
+function saveBlockList(list) { localStorage.setItem('block_list', JSON.stringify(list)); }
+function blockUser(userId, nickname) {
+  if(!confirm(`"${nickname}"님을 차단할까요?`)) return;
+  const list = getBlockList();
+  if(!list.includes(userId)) { list.push(userId); saveBlockList(list); }
+  renderList();
+}
+function showBlockList() {
+  const list = getBlockList();
+  if(list.length === 0) { alert('차단한 유저가 없어요.'); return; }
+  if(confirm(`차단된 유저 ${list.length}명\n\n전체 차단 해제할까요?`)) { saveBlockList([]); renderList(); }
+}
+
+if(user) {
+  document.getElementById('user-info').textContent = user.nickname || user.username;
+  document.getElementById('auth-btn').textContent = '로그아웃';
+  document.getElementById('auth-btn').onclick = logout;
+  document.getElementById('write-btn').style.display = '';
+  if(user.is_admin) {
+    const adminBtn = document.createElement('button');
+    adminBtn.className = 'btn btn-danger';
+    adminBtn.textContent = '관리자';
+    adminBtn.onclick = () => location.href = './admin.html';
+    document.getElementById('header-right').appendChild(adminBtn);
+  }
+} else {
+  document.getElementById('auth-btn').textContent = '로그인';
+  document.getElementById('auth-btn').onclick = () => location.href = './login.html?from=' + encodeURIComponent(location.href.split('/').pop());
+}
+
+function setFilter(tag, el) {
+  activeFilter = tag;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderList();
+}
+
+function renderList() {
+  const tbody = document.getElementById('post-list');
+  const blockList = getBlockList();
+  const isMobile = window.innerWidth <= 700;
+
+  const blockedInfo = document.getElementById('blocked-info');
+  blockedInfo.innerHTML = blockList.length > 0 ? `<div class="blocked-count">차단된 유저 ${blockList.length}명 · <a onclick="showBlockList()">차단 관리</a></div>` : '';
+
+  const filtered = allPosts.filter(p => {
+    if(blockList.includes(p.user_id)) return false;
+    if(!activeFilter) return true;
+    try {
+      const tags = JSON.parse(p.tags || '[]');
+      return tags.includes(activeFilter);
+    } catch { return false; }
+  });
+
+  if(filtered.length === 0) {
+    const cols = isMobile ? 3 : 5;
+    tbody.innerHTML = `<tr><td colspan="${cols}" class="empty">글이 없어요.</td></tr>`;
+    return;
+  }
+
+  let num = filtered.filter(p => !p.is_pinned).length;
+  tbody.innerHTML = filtered.map(p => {
+    let tags = [];
+    try { tags = JSON.parse(p.tags || '[]'); } catch {}
+    const tagHtml = tags.map(t => `<span class="tag-badge tag-${t.replace(/\s/g,'')}">${t}</span>`).join('');
+    const isMe = user && user.id === p.user_id;
+    const blockBtn = user && !isMe ? `<button class="block-btn" onclick="event.stopPropagation();blockUser('${p.user_id}','${p.nickname||p.username}')">차단</button>` : '';
+    const blockBtnM = user && !isMe ? `<button class="block-btn-m" onclick="event.stopPropagation();blockUser('${p.user_id}','${p.nickname||p.username}')">차단</button>` : '';
+    const dateStr = p.created_at.slice(0,10).replace(/-/g,'.');
+
+    if(isMobile) {
+      // 모바일: 추천/날짜 없음, 제목 한줄 + 태그 아래줄, 작성자 묶음
+      const tagRow = tags.length ? `<div class="tag-row">${tagHtml}</div>` : '';
+      return `
+        <tr class="${p.is_pinned ? 'pinned' : ''}" onclick="location.href='./community_view.html?id=${p.id}&back=friend'">
+          <td class="num">${p.is_pinned ? '📌' : num--}</td>
+          <td>
+            <div class="title-wrap">
+              <a class="title-text post-link" href="./community_view.html?id=${p.id}&back=friend">${p.title}</a>
+              ${tagRow}
+            </div>
+          </td>
+          <td class="meta-m">
+            <div class="meta-wrap-m">
+              <span class="meta-author-m">${p.nickname || p.username}</span>
+              ${blockBtnM}
+            </div>
+          </td>
+        </tr>
+      `;
+    } else {
+      // PC: 원래 레이아웃 그대로
+      return `
+        <tr class="${p.is_pinned ? 'pinned' : ''}" onclick="location.href='./community_view.html?id=${p.id}&back=friend'">
+          <td class="num">${p.is_pinned ? '📌' : num--}</td>
+          <td><a class="post-link" href="./community_view.html?id=${p.id}&back=friend">${p.title}</a> ${tagHtml}</td>
+          <td class="author pc-only">${p.nickname || p.username}${blockBtn}</td>
+          <td class="likes pc-only">❤ ${p.likes || 0}</td>
+          <td class="date pc-only">${dateStr}</td>
+        </tr>
+      `;
+    }
+  }).join('');
+}
+
+async function loadPosts() {
+  const tbody = document.getElementById('post-list');
+  tbody.innerHTML = '<tr><td colspan="5" class="empty">로딩 중...</td></tr>';
+  try {
+    const posts = await supabase('GET', 'posts', null, '?board=eq.friend&order=is_pinned.desc,created_at.desc');
+    allPosts = posts || [];
+    renderList();
+  } catch(e) { tbody.innerHTML = `<tr><td colspan="5" class="empty">불러오기 실패: ${e.message}</td></tr>`; }
+}
+
+loadPosts();
+</script>
+<script>
+/* ── data-theme 동기화 (theme.js 연동) ── */
+(function(){
+  var link=document.getElementById('theme-css');
+  if(!link)return;
+  var sync=function(){
+    var c=document.getElementById('custom-theme-style');
+    if(c&&c.textContent&&c.textContent.length>0){document.documentElement.removeAttribute('data-theme');return;}
+    var m=String(link.href||'').match(/theme-(dark|light|beige)\.css/);
+    document.documentElement.setAttribute('data-theme',m?m[1]:'dark');
+  };
+  sync();
+  new MutationObserver(sync).observe(link,{attributes:true,attributeFilter:['href']});
+  new MutationObserver(sync).observe(document.head,{childList:true,subtree:true,characterData:true});
+})();
+</script>
+</body>
+</html>

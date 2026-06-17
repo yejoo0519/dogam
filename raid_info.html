@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>레이드 정보</title>
+<link id="theme-css" rel="stylesheet" href="./theme-dark.css">
+<script src="./theme.js"></script>
+<style>
+[data-theme="dark"]{--bg:#0e1116;--bg2:#161a22;--bg3:#1c212c;--border:#23293a;--border2:#1b1f2a;--border3:#2d3447;--text:#eaecf2;--text2:#b3b9c7;--text3:#7d8597;--text4:#565d6e;--accent:#7aa2f7;--accent-bg:rgba(122,162,247,0.12);--accent-border:rgba(122,162,247,0.30)}
+[data-theme="light"]{--bg:#f7f7f8;--bg2:#ffffff;--bg3:#f1f2f4;--border:#e6e7ea;--border2:#eeeff2;--border3:#d4d6db;--text:#15171c;--text2:#4a4d57;--text3:#71757f;--text4:#9aa0aa;--accent:#2f6fed;--accent-bg:rgba(47,111,237,0.10);--accent-border:rgba(47,111,237,0.32)}
+[data-theme="beige"]{--bg:#f3ecdd;--bg2:#faf3e2;--bg3:#ebe0c7;--border:#d8caa8;--border2:#e1d4b3;--border3:#c0ad84;--text:#2a2316;--text2:#5a4e34;--text3:#837553;--text4:#a99971;--accent:#b06a1e;--accent-bg:rgba(176,106,30,0.10);--accent-border:rgba(176,106,30,0.32)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--text);padding:16px}
+.back-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;text-decoration:none;margin-bottom:20px;transition:all .15s}
+.back-btn:hover{border-color:var(--accent);color:var(--text)}
+.page-title{font-size:22px;font-weight:700;color:var(--text);margin-bottom:20px}
+.raid-grid{display:grid;grid-template-columns:1fr;gap:20px}
+@media(min-width:700px){.raid-grid{grid-template-columns:1fr 1fr}}
+.raid-section{}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.section-name{font-size:16px;font-weight:700;color:var(--text)}
+.section-en{font-size:10px;font-weight:600;color:var(--text4);letter-spacing:.1em;text-transform:uppercase;margin-left:6px}
+.section-count{font-size:11px;color:var(--text3)}
+.boss-cards{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.boss-card{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);cursor:pointer;transition:border-color .15s,background .15s}
+.boss-card:hover{border-color:var(--accent);background:var(--bg3)}
+.boss-card.active{border-color:var(--accent);background:var(--accent-bg)}
+.boss-card-img{width:40px;height:40px;object-fit:contain;border-radius:6px;flex-shrink:0;background:var(--bg3)}
+.boss-card-name{font-size:12px;font-weight:600;color:var(--text)}
+/* 모달 */
+.boss-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:500;align-items:flex-start;justify-content:center;padding:20px 16px;overflow-y:auto}
+.boss-modal.open{display:flex}
+.boss-modal-box{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:22px;width:100%;max-width:580px;position:relative;margin:auto}
+.bm-close{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer}
+.bm-close:hover{color:var(--text)}
+/* 모달 내부 */
+.bm-header{display:flex;align-items:center;gap:14px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.bm-img{width:58px;height:58px;object-fit:contain;border-radius:10px;background:var(--bg3);border:1px solid var(--border2);flex-shrink:0}
+.bm-name{font-size:18px;font-weight:700;color:var(--text);margin-bottom:3px}
+.bm-section{font-size:12px;color:var(--text3)}
+.bm-badges{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.bm-badge-box{background:var(--bg3);border-radius:8px;padding:9px 12px;border:1px solid var(--border2)}
+.bm-badge-label{font-size:10px;color:var(--text4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.bm-badge-row{display:flex;flex-wrap:wrap;gap:4px}
+.bm-attr{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;padding:3px 8px;border-radius:6px;background:var(--bg2);border:1px solid var(--border)}
+.bm-attr img{width:16px;height:16px;object-fit:contain;border-radius:3px}
+.bm-type{display:inline-block;font-size:12px;font-weight:600;padding:3px 8px;border-radius:6px;background:var(--bg2);color:var(--text2);border:1px solid var(--border3)}
+.bm-none{display:inline-block;font-size:12px;color:var(--text4);padding:3px 8px}
+.bm-cards{display:flex;flex-direction:column;gap:8px}
+.bm-card{background:var(--bg3);border-radius:8px;padding:12px 14px;border:1px solid var(--border2);border-left:2px solid}
+.bm-card-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px}
+.bm-card-txt{font-size:13px;color:var(--text);line-height:1.8}
+/* 인라인 배지 */
+.bm-card-txt .ta{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:600;padding:1px 7px;border-radius:5px;background:var(--bg2);border:1px solid var(--border);vertical-align:middle}
+.bm-card-txt .ta img{width:14px;height:14px;object-fit:contain;border-radius:2px}
+.bm-card-txt .t{display:inline-block;font-size:11px;font-weight:600;padding:1px 7px;border-radius:5px;background:var(--bg2);color:var(--text2);border:1px solid var(--border3);vertical-align:middle}
+.bm-card-txt .bns{display:inline-block;font-size:11px;font-weight:600;padding:1px 7px;border-radius:5px;background:#c6c6eb;color:#3a3a7a;border:1px solid #a0a0d0;vertical-align:middle}
+</style>
+</head>
+<body>
+<a id="back-btn" href="./index.html" class="back-btn">← 메인으로</a>
+<h1 class="page-title">레이드 정보</h1>
+
+<div class="raid-grid">
+
+  <!-- 아르하필드 -->
+  <div class="raid-section">
+    <div class="section-head">
+      <div><span class="section-name">아르하필드</span><span class="section-en">ARHA</span></div>
+      <span class="section-count">6보스</span>
+    </div>
+    <div class="boss-cards">
+      <div class="boss-card" onclick="showBoss(8,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/8.png"><span class="boss-card-name">블리자드</span></div>
+      <div class="boss-card" onclick="showBoss(9,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/9.png"><span class="boss-card-name">이그나</span></div>
+      <div class="boss-card" onclick="showBoss(10,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/10.png"><span class="boss-card-name">다크나이트</span></div>
+      <div class="boss-card" onclick="showBoss(11,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/11.png"><span class="boss-card-name">말덱</span></div>
+      <div class="boss-card" onclick="showBoss(12,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/12.png"><span class="boss-card-name">스트라</span></div>
+      <div class="boss-card" onclick="showBoss(13,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/13.png"><span class="boss-card-name">헤네스</span></div>
+    </div>
+  </div>
+
+  <!-- 길드 레이드 -->
+  <div class="raid-section">
+    <div class="section-head">
+      <div><span class="section-name">길드 레이드</span><span class="section-en">GUILD</span></div>
+      <span class="section-count">4보스</span>
+    </div>
+    <div class="boss-cards">
+      <div class="boss-card" onclick="showBoss(40,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/40.png"><span class="boss-card-name">엔젤주니어</span></div>
+      <div class="boss-card" onclick="showBoss(41,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/41.png"><span class="boss-card-name">템페스트</span></div>
+      <div class="boss-card" onclick="showBoss(42,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/42.png"><span class="boss-card-name">선셋</span></div>
+      <div class="boss-card" onclick="showBoss(43,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/43.png"><span class="boss-card-name">알레샤</span></div>
+    </div>
+  </div>
+
+  <!-- 일반 레이드 패턴 있음 -->
+  <div class="raid-section">
+    <div class="section-head">
+      <div><span class="section-name">일반 레이드</span><span class="section-en">패턴 있음</span></div>
+      <span class="section-count">13보스</span>
+    </div>
+    <div class="boss-cards">
+      <div class="boss-card" onclick="showBoss(20,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/20.png"><span class="boss-card-name">레굴루스</span></div>
+      <div class="boss-card" onclick="showBoss(21,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/21.png"><span class="boss-card-name">벨레드</span></div>
+      <div class="boss-card" onclick="showBoss(22,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/22.png"><span class="boss-card-name">블루썬더</span></div>
+      <div class="boss-card" onclick="showBoss(23,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/23.png"><span class="boss-card-name">베타라</span></div>
+      <div class="boss-card" onclick="showBoss(24,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/24.png"><span class="boss-card-name">불나래</span></div>
+      <div class="boss-card" onclick="showBoss(25,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/25.png"><span class="boss-card-name">옥타</span></div>
+      <div class="boss-card" onclick="showBoss(26,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/26.png"><span class="boss-card-name">프로텍트</span></div>
+      <div class="boss-card" onclick="showBoss(27,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/27.png"><span class="boss-card-name">리티오</span></div>
+      <div class="boss-card" onclick="showBoss(29,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/29.png"><span class="boss-card-name">아카이아</span></div>
+      <div class="boss-card" onclick="showBoss(30,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/30.png"><span class="boss-card-name">루루</span></div>
+      <div class="boss-card" onclick="showBoss(31,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/31.png"><span class="boss-card-name">펜리르</span></div>
+      <div class="boss-card" onclick="showBoss(32,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/32.png"><span class="boss-card-name">지바타르</span></div>
+      <div class="boss-card" onclick="showBoss(33,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/33.png"><span class="boss-card-name">카모플라쥬</span></div>
+    </div>
+  </div>
+
+  <!-- 일반 레이드 패턴 없음 -->
+  <div class="raid-section">
+    <div class="section-head">
+      <div><span class="section-name">일반 레이드</span><span class="section-en">패턴 없음</span></div>
+      <span class="section-count">8보스</span>
+    </div>
+    <div class="boss-cards">
+      <div class="boss-card" onclick="showBoss(14,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/14.png"><span class="boss-card-name">포포모</span></div>
+      <div class="boss-card" onclick="showBoss(15,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/15.png"><span class="boss-card-name">테디</span></div>
+      <div class="boss-card" onclick="showBoss(16,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/16.png"><span class="boss-card-name">움브라</span></div>
+      <div class="boss-card" onclick="showBoss(17,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/17.png"><span class="boss-card-name">엘리고스</span></div>
+      <div class="boss-card" onclick="showBoss(18,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/18.png"><span class="boss-card-name">로키</span></div>
+      <div class="boss-card" onclick="showBoss(19,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/19.png"><span class="boss-card-name">리치몬드</span></div>
+      <div class="boss-card" onclick="showBoss(28,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/28.png"><span class="boss-card-name">스카투스</span></div>
+      <div class="boss-card" onclick="showBoss(34,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/34.png"><span class="boss-card-name">파프니르</span></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- 모달 -->
+<div class="boss-modal" id="boss-modal" onclick="closeBoss(event)">
+  <div class="boss-modal-box">
+    <button class="bm-close" onclick="closeBoss()">✕</button>
+    <div id="bm-content"></div>
+  </div>
+</div>
+
+<script>
+const ICON='https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/';
+const ATTR={
+  '땅' :{icon:ICON+'11.png'},
+  '물' :{icon:ICON+'12.png'},
+  '불' :{icon:ICON+'13.png'},
+  '바람':{icon:ICON+'14.png'},
+  '빛' :{icon:ICON+'84.png'},
+  '어둠':{icon:ICON+'87.png'},
+  '황혼':{icon:ICON+'487.png'},
+  '여명':{icon:ICON+'486.png'},
+  '악몽':{icon:ICON+'488.png'},
+};
+
+const BD={
+  // ── 아르하필드 ──
+  8:{name:'블리자드',section:'아르하필드',weakAttr:['땅'],
+    buff:'방어력 2배 (피격 데미지 1/2)',
+    cards:[
+      {c:'tip',l:'팁',t:'탱커 라인을 <span class="ta" data-a="땅"></span>속성으로 채워주시면 맞는 데미지를 절반으로 줄여 공략하실 수 있습니다.'},
+      {c:'tip',l:'추천 드래곤',t:'땅의 고대신룡을 추천드립니다. 초반에도 파밍하기 쉬우며, 등급을 신경쓰지 않고 올려도 쓸만한 스탯이 나옵니다. (체력 400 중후반, 방어 230 정도)'},
+      {c:'tip',l:'획득 방법',t:'어둠고신 + 빛/어둠 교배용 있는 <span class="ta" data-a="땅"></span>속성 용 교배 시 확률로 획득할 수 있습니다.'},
+    ]},
+  9:{name:'이그나',section:'아르하필드',weakAttr:['물'],
+    buff:'공격력 2배 (공격 데미지 ×2)',
+    cards:[
+      {c:'tip',l:'팁',t:'딜러 라인은 <span class="ta" data-a="물"></span>속성 드래곤을 사용해주세요. <span class="ta" data-a="물"></span>속성 드래곤은 두 배의 데미지를 넣습니다.'},
+      {c:'tip',l:'추천 드래곤',t:'물의 레이디 드래곤을 추천합니다. 등급 상관없이 레벨만 45를 찍으면 쓸만한 딜러 스탯이 나옵니다. (공격력 250~260 사이)'},
+      {c:'tip',l:'획득 방법',t:'빛/어둠 레이디 + 교배 가능한 <span class="ta" data-a="물"></span>속성 용 교배 시 확률로 획득할 수 있습니다.'},
+    ]},
+  10:{name:'다크나이트',section:'아르하필드',weakAttr:['빛'],
+    buff:'방어력 2배 (피격 데미지 1/2)',
+    cards:[
+      {c:'tip',l:'팁',t:'탱커 라인은 <span class="ta" data-a="빛"></span>속성 드래곤을 사용해주세요. 받는 데미지가 절반으로 줄어듭니다.'},
+      {c:'tip',l:'추천 드래곤',t:'빛속성 교배용을 추천합니다. 등급 상관없이 육성하면 방어력이 280에 근접하게 나옵니다.'},
+    ]},
+  11:{name:'말덱',section:'아르하필드',weakAttr:['바람'],
+    buff:'방어력 2.5배 (피격 데미지 2/5)',
+    cards:[
+      {c:'tip',l:'안내',t:'해당 보스 공략 내용이 부족합니다. 공략글 작성 가능하신 분은 카카오톡 또는 디스코드로 연락 부탁드립니다.'},
+    ]},
+  12:{name:'스트라',section:'아르하필드',weakAttr:['불'],
+    buff:'방어력 2배 (피격 데미지 1/2)',
+    cards:[
+      {c:'tip',l:'안내',t:'해당 보스 공략 내용이 부족합니다. 공략글 작성 가능하신 분은 카카오톡 또는 디스코드로 연락 부탁드립니다.'},
+    ]},
+  13:{name:'헤네스',section:'아르하필드',weakAttr:['땅','물','불','바람'],
+    buff:'방어력 1.5배 (피격 데미지 2/3)',
+    cards:[
+      {c:'tip',l:'추천 탱커',t:'이름 우측에 포함된 스탯은 체력, 공격, 방어 순서입니다.<br>물의 크리마용 — 1013/153/152<br>물의 레인보우 — 781/151/212<br>불의 스마트드래곤 — 713/151/229<br>돌연변이수룡 — 821/199/154<br>돌연변이에일리언 — 797/156/203<br>돌연변이패트 — 529/155/271<br>불의슬라임 — 537/151/273<br>이 중 원하는 드래곤으로 탱커 라인을 채우시면 됩니다.'},
+    ]},
+
+  // ── 일반 레이드 (패턴 없음) ──
+  14:{name:'포포모',section:'일반 레이드',weakAttr:['물'],weakType:['공격형'],
+    cards:[
+      {c:'rec',l:'추천 조합',t:'탱커 1, 딜러 2<br>딜러는 <span class="ta" data-a="물"></span><span class="t">공격형</span> 두 마리 사용을 권장드립니다.'},
+    ]},
+  15:{name:'테디',section:'일반 레이드',weakAttr:['땅','물','불','바람'],weakType:['체력형'],
+    cards:[
+      {c:'rec',l:'추천 조합',t:'탱커 1, 딜러 2<br>딜러는 4속성 <span class="t">공격형</span> / <span class="t">체력형</span> 추천. 딜 차이가 거의 없지만 공격형의 고점이 더 높습니다.'},
+    ]},
+  16:{name:'움브라',section:'일반 레이드',weakAttr:['빛'],weakType:['체방형'],
+    cards:[
+      {c:'rec',l:'추천 조합',t:'탱커 1, 딜러 2<br>딜러는 <span class="ta" data-a="빛"></span><span class="t">공격형</span> / <span class="ta" data-a="빛"></span><span class="t">공방형</span> 추천'},
+    ]},
+  17:{name:'엘리고스',section:'일반 레이드',weakAttr:null,weakType:['체공형'],
+    cards:[
+      {c:'rec',l:'추천 조합',t:'탱커 1, 딜러 2<br>딜러는 <span class="t">체공형</span>을 필수로 사용합니다.'},
+    ]},
+  18:{name:'로키',section:'일반 레이드',weakAttr:['땅'],weakType:['체공형'],
+    cards:[
+      {c:'rec',l:'추천 조합',t:'적당히 <span class="bns">보너스</span>를 섞어 조합을 맞추는 것이 가장 좋습니다.'},
+    ]},
+  19:{name:'리치몬드',section:'일반 레이드',weakAttr:['빛'],weakType:['방어형'],
+    cards:[
+      {c:'rec',l:'추천 조합',t:'딜러 3마리<br><span class="ta" data-a="빛"></span><span class="t">방어형</span> 사용을 필수로 권장드립니다.'},
+    ]},
+  28:{name:'스카투스',section:'일반 레이드',weakAttr:['물'],weakType:['체공형'],
+    cards:[
+      {c:'rec',l:'추천 조합',t:'탱커 1, 딜러 2<br>적당히 <span class="bns">보너스</span>를 섞어 조합을 맞추는 것이 좋습니다.'},
+    ]},
+  34:{name:'파프니르',section:'일반 레이드',weakAttr:['물'],weakType:['공방형'],
+    cards:[
+      {c:'tip',l:'안내',t:'공략 내용 준비 중입니다. 공략글 작성 가능하신 분은 카카오톡 또는 디스코드로 연락 부탁드립니다.'},
+    ]},
+
+  // ── 일반 레이드 (패턴 있음) ──
+  20:{name:'레굴루스',section:'일반 레이드',weakAttr:['땅'],weakType:['체력형'],
+    cards:[
+      {c:'pat',l:'패턴',t:'조합을 맞추지 않을 경우 일정 턴마다 레굴루스의 방어력이 증가합니다.<br><span class="t">체력형</span> 세 마리를 사용할 경우 매우 강력해집니다.<br>※ 크로마 레굴루스는 해당되지 않습니다.'},
+      {c:'ctr',l:'패턴 파훼',t:'<span class="t">체력형</span> 1마리 + <span class="t">방어형</span> 2마리 사용 시 방어력 증가 패턴을 사용하지 않습니다.'},
+      {c:'rec',l:'추천 조합',t:'탱커 1, 딜러 2<br><span class="t">체력형</span> + <span class="t">방어형</span> 2마리로 패턴 파훼 조합<br>또는 <span class="bns">보너스</span> 드래곤 이용 — 보너스가 잘 뜬 경우 권장'},
+    ]},
+  21:{name:'벨레드',section:'일반 레이드',weakAttr:['여명'],weakType:['방어형'],
+    cards:[
+      {c:'pat',l:'패턴',t:'일정 횟수마다 강력한 광역 공격 후 3턴간 아군 드래곤 딜 대폭 증가<br>※ 1턴 = 보스의 공격으로 카운팅'},
+      {c:'ctr',l:'패턴 파훼',t:'<span class="t">체방형</span> + <span class="t">방어형</span> 두 마리 사용 시 광역 공격 데미지가 감소합니다.'},
+      {c:'rec',l:'추천 조합',t:'탱커 1, 딜러 2<br>탱커 <span class="t">체방형</span>, 딜러 <span class="t">방어형</span> 2마리<br>벨레드는 3보너스 조합 &lt; 0보너스 조합이므로 조합을 필수로 사용합니다.'},
+    ]},
+  22:{name:'블루썬더',section:'일반 레이드',weakAttr:['불'],weakType:['체방형'],
+    cards:[
+      {c:'pat',l:'패턴',t:'드래곤의 방어력을 무시하는 패턴이 존재합니다.<br>회피가 발동한 경우, 아군 드래곤 중 한 마리만 딜을 받고 2마리는 확정 회피됩니다.'},
+      {c:'ctr',l:'패턴 파훼',t:'패턴 파훼 조합이 존재하지 않습니다.<br>회피 기믹으로 인해 크리티컬 물약이 아닌 회피 물약을 사용합니다.'},
+      {c:'rec',l:'추천 조합',t:'딜러 3마리<br>보너스 드래곤이 없을 경우 <span class="ta" data-a="불"></span><span class="t">체공형</span> 딜러를 사용합니다.'},
+    ]},
+  23:{name:'베타라',section:'일반 레이드',weakAttr:['빛'],weakType:['공방형'],
+    cards:[
+      {c:'pat',l:'패턴',t:'드래곤의 방어력을 무시하는 패턴이 존재합니다.<br>회피가 발동한 경우, 아군 드래곤 중 한 마리만 딜을 받고 2마리는 확정 회피됩니다.'},
+      {c:'ctr',l:'패턴 파훼',t:'패턴 파훼 조합이 존재하지 않습니다.<br>회피 기믹으로 인해 크리티컬 물약이 아닌 회피 물약을 사용합니다.'},
+      {c:'rec',l:'추천 조합',t:'딜러 3마리<br>보너스 드래곤이 없을 경우 <span class="ta" data-a="빛"></span><span class="t">공방형</span> 딜러를 사용합니다.'},
+    ]},
+  24:{name:'불나래',section:'일반 레이드',weakAttr:['물'],weakType:['방어형'],
+    cards:[
+      {c:'pat',l:'패턴',t:'일정 횟수마다 받는 데미지 감소 패턴 (파훼 불가능)'},
+      {c:'ctr',l:'패턴 파훼',t:'파훼법이 존재하지 않습니다.'},
+      {c:'rec',l:'추천 조합',t:'탱커 1, 딜러 2<br>딜러는 <span class="ta" data-a="물"></span><span class="t">공격형</span> 또는 <span class="ta" data-a="물"></span><span class="t">방어형</span> 사용을 추천드립니다.'},
+    ]},
+  25:{name:'옥타',section:'일반 레이드',weakAttr:['땅'],weakType:['방어형'],
+    cards:[
+      {c:'pat',l:'패턴',t:'일정 횟수마다 강력한 광역 공격 후 3턴간 아군 드래곤 딜 대폭 증가'},
+      {c:'ctr',l:'패턴 파훼',t:'<span class="t">체력형</span> 2마리 + <span class="t">방어형</span> 1마리 사용 시 보스의 광역 공격이 1/4로 감소합니다.'},
+      {c:'rec',l:'추천 조합',t:'탱커 1, 딜러 2<br>탱커 <span class="t">방어형</span>, 딜러 <span class="ta" data-a="땅"></span><span class="t">체력형</span> 2마리<br>체력형 딜러 사용 시 딜버프를 최대로 운용 가능'},
+    ]},
+  26:{name:'프로텍트',section:'일반 레이드',weakAttr:['땅','물','불','바람'],weakType:['체공형'],
+    cards:[
+      {c:'pat',l:'패턴',t:'광역 공격 후 3턴간 아군의 공격력이 대폭 증가합니다.'},
+      {c:'ctr',l:'패턴 파훼',t:'<span class="t">체력형</span> + <span class="t">체공형</span> 2마리 사용 시 광역 공격이 1/4로 감소합니다.'},
+      {c:'rec',l:'추천 조합',t:'탱커 1, 딜러 2<br>탱커 <span class="t">체력형</span>, 딜러 <span class="t">체공형</span> 2마리'},
+    ]},
+  27:{name:'리티오',section:'일반 레이드',weakAttr:['불'],weakType:['체공형'],
+    cards:[
+      {c:'pat',l:'패턴',t:'평타가 단체 공격인 패턴을 보유한 레이드<br>단체 공격 후 매턴 60씩 회복합니다.'},
+      {c:'ctr',l:'패턴 파훼',t:'<span class="t">공격형</span> 1마리 이상 사용 시 딜 감소 기믹이 사라집니다. (단, 공격형 3마리 사용 시 역으로 딜이 감소)<br><span class="ta" data-a="불"></span>속성 3마리 통일 시 매턴 60 회복이 없어집니다.'},
+      {c:'rec',l:'추천 조합',t:'보너스 사용 시: <span class="ta" data-a="불"></span>공격형 + <span class="bns">보너스</span> 2마리<br>보너스 없을 경우: <span class="ta" data-a="불"></span>공격형 + <span class="ta" data-a="불"></span>체공형 2마리 권장'},
+    ]},
+  29:{name:'아카이아',section:'일반 레이드',weakAttr:['바람'],weakType:['방어형'],
+    cards:[
+      {c:'pat',l:'패턴',t:'조우 시 5번의 단일 공격 후 단체공격 5회<br>이후 10번의 단일 공격 후 단체공격 5회 반복되는 패턴<br>단체 공격 후 5턴간 아군의 공격력이 증가합니다.'},
+      {c:'ctr',l:'패턴 파훼',t:'<span class="t">방어형</span> 2마리 이상 사용 시 아카이아의 피해량이 1/3로 감소<br><span class="ta" data-a="바람"></span>속성 드래곤 사용 시 아군 드래곤 전체 데미지 증가'},
+      {c:'rec',l:'추천 조합',t:'방어형 2마리를 필수로 사용을 권장드립니다.<br><span class="ta" data-a="바람"></span>속성 1마리 사용을 권장드립니다.'},
+    ]},
+  30:{name:'루루',section:'일반 레이드',weakAttr:['불'],weakType:['체력형'],
+    cards:[
+      {c:'pat',l:'패턴',t:'평타가 단체 공격인 패턴을 보유한 레이드<br>단체 공격 후 매턴 50씩 회복합니다.'},
+      {c:'ctr',l:'패턴 파훼',t:'<span class="t">공격형</span> 1마리 이상 사용 시 딜 감소 기믹이 사라집니다. (루루는 공격형 3마리 사용 시에도 딜이 감소되는 기믹이 없습니다)<br><span class="ta" data-a="불"></span>속성 3마리 통일 시 매턴 50 회복이 없어집니다.'},
+      {c:'rec',l:'추천 조합',t:'보너스 사용 시: <span class="ta" data-a="불"></span>공격형 + <span class="bns">보너스</span> 2마리<br>공격형 1마리를 필수로 권장. 불속성 3마리보다 보너스 사용을 권장드립니다.'},
+    ]},
+  31:{name:'펜리르',section:'일반 레이드',weakAttr:['바람'],weakType:['체방형'],
+    cards:[
+      {c:'pat',l:'패턴',t:'시간이 아닌, 턴이 증가할수록 아군 드래곤의 딜이 증가합니다.'},
+      {c:'rec',l:'추천 조합',t:'탱커 1, 딜러 2<br>딜러는 <span class="ta" data-a="바람"></span><span class="t">공격형</span> 또는 <span class="ta" data-a="바람"></span><span class="t">공방형</span> 추천<br>공방형 추천 이유: 빈도 높은 광역 공격 데미지를 절감하기 위함'},
+    ]},
+  32:{name:'지바타르',section:'일반 레이드',weakAttr:['불'],weakType:['체방형'],
+    cards:[
+      {c:'pat',l:'패턴',t:'시간이 아닌, 턴이 증가할수록 아군 드래곤의 딜이 증가합니다.'},
+      {c:'rec',l:'추천 조합',t:'탱커 1, 딜러 2<br>딜러는 <span class="ta" data-a="불"></span><span class="t">공격형</span> 또는 <span class="ta" data-a="불"></span><span class="t">공방형</span> 추천<br>공방형 추천 이유: 빈도 높은 광역 공격 데미지를 절감하기 위함'},
+    ]},
+  33:{name:'카모플라쥬',section:'일반 레이드',weakAttr:null,weakType:['공방형'],
+    cards:[
+      {c:'pat',l:'패턴',t:'시간이 아닌, 턴이 증가할수록 아군 드래곤의 딜이 증가합니다.'},
+      {c:'rec',l:'추천 조합',t:'탱커 1, 딜러 2<br>속성 약점이 없으므로 <span class="t">공방형</span> 딜러를 사용합니다.<br>공방형 추천 이유: 빈도 높은 광역 공격 데미지를 절감하기 위함'},
+    ]},
+
+  // ── 길드 레이드 ──
+  40:{name:'엔젤주니어',section:'길드 레이드',weakAttr:['땅','물','불','바람'],weakType:['공격형'],
+    cards:[
+      {c:'rec',l:'추천 조합',t:'탱커 1, 딜러 2<br>딜러는 해당 4속성 <span class="t">공격형</span> 2마리 사용을 권장드립니다.'},
+    ]},
+  41:{name:'템페스트',section:'길드 레이드',weakAttr:['땅'],weakType:['체력형'],
+    cards:[
+      {c:'pat',l:'패턴',t:'일정 횟수마다 강력한 광역 공격 후 3턴간 아군 드래곤 딜 대폭 증가'},
+      {c:'ctr',l:'패턴 파훼',t:'<span class="t">체력형</span> 2마리 + <span class="t">방어형</span> 1마리 사용 시 보스의 광역 공격이 1/4로 감소'},
+      {c:'rec',l:'추천 조합',t:'탱커 1, 딜러 2<br>탱커 <span class="t">방어형</span>, 딜러 <span class="ta" data-a="땅"></span><span class="t">체력형</span> 2마리<br>체력형 딜러 사용 시 딜버프를 최대로 운용 가능'},
+    ]},
+  42:{name:'선셋',section:'길드 레이드',weakAttr:['물'],weakType:['체방형'],
+    cards:[
+      {c:'pat',l:'패턴',t:'매턴 광역공격이 평타로 들어오는 레이드<br>일정 횟수마다 강력한 단일공격 후 3턴간 아군 딜 대폭 증가'},
+      {c:'ctr',l:'패턴 파훼',t:'<span class="t">체방형</span> 2마리 + <span class="t">공방형</span> 1마리 사용 시 강력한 단일공격의 딜이 대폭 감소'},
+      {c:'rec',l:'추천 조합',t:'평타가 광역공격이므로 탱커가 필요하지 않습니다.<br>딜러 3마리 사용 / 패턴 파훼 세 마리 모두 딜러로 사용'},
+    ]},
+  43:{name:'알레샤',section:'길드 레이드',weakAttr:['땅'],weakType:['공격형'],
+    cards:[
+      {c:'pat',l:'패턴',t:'첫 4턴 공격 이후 매우 강력한 피해를 입힙니다. (약 2000~2500)<br>강력한 피해 이후 아군의 공격이 4회 강화됩니다. (약 4배)'},
+      {c:'ctr',l:'패턴 파훼',t:'패턴 파훼법이 존재하지 않습니다.'},
+      {c:'rec',l:'추천 조합',t:'2딜 1딜탱 or 3딜 (회피 물약 사용)<br>딜탱의 경우 체력 3,000 이상에 나머지 데미지 집중<br>알레샤는 광역딜 데미지가 높아 탱커가 죽창딜 2번 이상을 버텨도 딜러가 살아남기 어렵습니다. 딜탱 채용을 권장합니다.'},
+    ]},
+};
+
+const CARD_COLOR={pat:'#e6a23a',ctr:'#4cb88a',rec:'#5fa8ee',tip:'#7d8597',buff:'#9d7bff'};
+
+function renderAttr(a){
+  if(!a)return'<span class="bm-none">없음</span>';
+  const info=ATTR[a];
+  if(!info)return`<span class="bm-attr">${a}</span>`;
+  return`<span class="bm-attr"><img src="${info.icon}" onerror="this.style.display='none'">${a}</span>`;
+}
+
+function processText(t){
+  return t.replace(/<span class="ta" data-a="([^"]+)"><\/span>/g,(_,a)=>{
+    const info=ATTR[a];
+    if(!info)return`<span class="ta"><span>${a}</span></span>`;
+    return`<span class="ta"><img src="${info.icon}" onerror="this.style.display='none'"><span>${a}</span></span>`;
+  });
+}
+
+function renderCard(card){
+  const col=CARD_COLOR[card.c]||'#7d8597';
+  return`<div class="bm-card" style="border-left-color:${col}">
+    <div class="bm-card-lbl" style="color:${col}">${card.l}</div>
+    <div class="bm-card-txt">${processText(card.t)}</div>
+  </div>`;
+}
+
+function showBoss(num,el){
+  document.querySelectorAll('.boss-card').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  const d=BD[num];
+  if(!d){document.getElementById('bm-content').innerHTML='<div style="color:var(--text4);padding:20px 0;text-align:center">데이터 준비 중입니다.</div>';document.getElementById('boss-modal').classList.add('open');document.body.style.overflow='hidden';return;}
+
+  let attrHtml='';
+  if(d.weakAttr||d.weakType||d.buff){
+    if(d.buff){
+      attrHtml+=`<div class="bm-badges" style="grid-template-columns:1fr">
+        <div class="bm-badge-box">
+          <div class="bm-badge-label">약점 속성</div>
+          <div class="bm-badge-row">${(d.weakAttr||[]).map(renderAttr).join('')}</div>
+          <div class="bm-badge-label" style="margin-top:8px">약점 버프</div>
+          <div class="bm-badge-row"><span class="bm-type" style="color:var(--accent)">${d.buff}</span></div>
+        </div>
+      </div>`;
+    } else {
+      attrHtml+='<div class="bm-badges">';
+      if(d.weakAttr!==undefined){
+        attrHtml+=`<div class="bm-badge-box"><div class="bm-badge-label">약점 속성</div><div class="bm-badge-row">${d.weakAttr?d.weakAttr.map(renderAttr).join(''):'<span class="bm-none">없음</span>'}</div></div>`;
+      }
+      if(d.weakType){
+        attrHtml+=`<div class="bm-badge-box"><div class="bm-badge-label">약점 타입</div><div class="bm-badge-row">${d.weakType.map(t=>`<span class="bm-type">${t}</span>`).join('')}</div></div>`;
+      }
+      attrHtml+='</div>';
+    }
+  }
+
+  document.getElementById('bm-content').innerHTML=`
+    <div class="bm-header">
+      <img class="bm-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/${num}.png">
+      <div><div class="bm-name">${d.name}</div><div class="bm-section">${d.section}</div></div>
+    </div>
+    ${attrHtml}
+    <div class="bm-cards">${(d.cards||[]).map(renderCard).join('')}</div>
+  `;
+
+  document.getElementById('boss-modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeBoss(e){
+  if(e&&e.target!==document.getElementById('boss-modal'))return;
+  document.getElementById('boss-modal').classList.remove('open');
+  document.body.style.overflow='';
+  document.querySelectorAll('.boss-card').forEach(c=>c.classList.remove('active'));
+}
+
+(function(){
+  const from=new URLSearchParams(location.search).get('from');
+  const btn=document.getElementById('back-btn');
+  if(from&&['info','community','weekly','guide'].includes(from))btn.href=`./index.html?tab=${from}`;
+})();
+</script>
+
+<script>
+(function(){
+  var link=document.getElementById('theme-css');
+  if(!link)return;
+  var sync=function(){
+    var c=document.getElementById('custom-theme-style');
+    if(c&&c.textContent&&c.textContent.length>0){document.documentElement.removeAttribute('data-theme');return;}
+    var m=String(link.href||'').match(/theme-(dark|light|beige)\.css/);
+    document.documentElement.setAttribute('data-theme',m?m[1]:'dark');
+  };
+  sync();
+  new MutationObserver(sync).observe(link,{attributes:true,attributeFilter:['href']});
+  new MutationObserver(sync).observe(document.head,{childList:true,subtree:true,characterData:true});
+})();
+</script>
+</body>
+</html>

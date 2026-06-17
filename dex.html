@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>드래곤 도감</title>
+<link id="theme-css" rel="stylesheet" href="./theme-dark.css">
+<script src="./theme.js"></script>
+<script src="./desc.js"></script>
+<script src="./stat.js"></script>
+<style>
+[data-theme="dark"]{--bg:#0e1116;--bg2:#161a22;--bg3:#1c212c;--border:#23293a;--border2:#1b1f2a;--border3:#2d3447;--text:#eaecf2;--text2:#b3b9c7;--text3:#7d8597;--text4:#565d6e;--accent:#7aa2f7;--accent-bg:rgba(122,162,247,0.12);--accent-border:rgba(122,162,247,0.30)}
+[data-theme="light"]{--bg:#f7f7f8;--bg2:#ffffff;--bg3:#f1f2f4;--border:#e6e7ea;--border2:#eeeff2;--border3:#d4d6db;--text:#15171c;--text2:#4a4d57;--text3:#71757f;--text4:#9aa0aa;--accent:#2f6fed;--accent-bg:rgba(47,111,237,0.10);--accent-border:rgba(47,111,237,0.32)}
+[data-theme="beige"]{--bg:#f3ecdd;--bg2:#faf3e2;--bg3:#ebe0c7;--border:#d8caa8;--border2:#e1d4b3;--border3:#c0ad84;--text:#2a2316;--text2:#5a4e34;--text3:#837553;--text4:#a99971;--accent:#b06a1e;--accent-bg:rgba(176,106,30,0.10);--accent-border:rgba(176,106,30,0.32)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* 상단 바 */
+#top-bar{display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid var(--border);background:var(--bg2)}
+#back-btn{display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:7px;border:1px solid var(--border3);background:var(--bg3);color:var(--text2);font-size:12px;cursor:pointer;text-decoration:none;transition:all 0.12s;flex-shrink:0}
+#back-btn:hover{border-color:var(--accent-border);color:var(--text)}
+#top-title{font-size:14px;font-weight:600;color:var(--text2)}
+
+/* 필터 */
+#filter-section{padding:12px 0 10px;border-bottom:1px solid var(--border);margin-bottom:14px}
+#search-row{margin-bottom:8px}
+#search-input{width:100%;padding:9px 14px;border:1px solid var(--border3);border-radius:8px;font-size:14px;background:var(--bg3);color:var(--text);outline:none}
+#search-input:focus{border-color:var(--accent-border)}
+#search-input::placeholder{color:var(--text4)}
+#filter-row{display:flex;flex-direction:column;gap:6px}
+.filter-line{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.filter-label{font-size:11px;color:var(--text3);margin-right:2px;flex-shrink:0}
+.ftag{padding:4px 10px;border-radius:16px;font-size:11px;border:1px solid var(--border3);cursor:pointer;background:var(--bg3);color:var(--text2);transition:all 0.12s;display:flex;align-items:center;gap:4px}
+.ftag img{width:16px;height:16px;border-radius:3px;display:block}
+.ftag:hover{border-color:var(--accent-border);color:var(--text)}
+.ftag.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.filter-sep{width:1px;height:16px;background:var(--border3);margin:0 4px;flex-shrink:0;align-self:center}
+#filter-count{font-size:12px;color:var(--text3);margin-top:7px}
+
+/* 메인 */
+#page{max-width:900px;margin:0 auto;padding:16px 16px 64px}
+
+/* 드래곤 엔트리 */
+#entries{animation:fadeIn 0.15s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.dragon-entry{border:1px solid var(--border);border-radius:12px;background:var(--bg2);margin-bottom:16px;overflow:hidden}
+.entry-body{display:flex;gap:20px;padding:20px;align-items:flex-start}
+
+/* 이미지 박스 */
+.img-box{width:190px;flex-shrink:0;border:1px solid var(--border3);border-radius:10px;background:var(--bg3);display:flex;align-items:center;justify-content:center;min-height:190px;overflow:hidden}
+.main-img{width:170px;height:170px;object-fit:contain;display:block;cursor:zoom-in}
+.main-img-ph{width:170px;height:170px;display:none;align-items:center;justify-content:center;color:var(--text4);font-size:12px}
+
+/* 라이트박스 (이미지 확대 보기) */
+#lightbox{position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;padding:24px;cursor:zoom-out;animation:fadeIn 0.15s}
+#lightbox.open{display:flex}
+#lightbox-img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:10px;cursor:default;box-shadow:0 8px 40px rgba(0,0,0,0.5)}
+#lightbox-close{position:absolute;top:18px;right:22px;width:42px;height:42px;border-radius:50%;border:none;background:rgba(255,255,255,0.14);color:#fff;font-size:24px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
+#lightbox-close:hover{background:rgba(255,255,255,0.28)}
+
+/* 다운로드 버튼 / 메뉴 */
+.strip-actions{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.dl-btn{width:34px;height:34px;padding:0;border-radius:8px;border:1px solid var(--border3);background:var(--bg3);color:var(--text2);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.1s}
+.dl-btn:hover{background:var(--border);color:var(--text)}
+.dl-btn:disabled{opacity:0.5;cursor:default}
+#dl-menu{position:absolute;z-index:9998;display:none;flex-direction:column;background:var(--bg2);border:1px solid var(--border3);border-radius:8px;box-shadow:0 6px 24px rgba(0,0,0,0.3);overflow:hidden;min-width:150px}
+#dl-menu.open{display:flex}
+#dl-menu button{padding:10px 14px;border:none;background:none;color:var(--text2);font-size:13px;text-align:left;cursor:pointer;white-space:nowrap}
+#dl-menu button:hover{background:var(--bg3);color:var(--text)}
+#dl-menu button:not(:last-child){border-bottom:1px solid var(--border2)}
+
+/* 정보 패널 */
+.info-panel{flex:1;display:flex;flex-direction:column;gap:10px;min-width:0}
+.name-meta{display:flex;flex-direction:column;gap:6px}
+.dragon-name{font-size:22px;font-weight:700;color:var(--text)}
+.meta-row{display:flex;align-items:center;font-size:13px;color:var(--text2);flex-shrink:0;flex-wrap:wrap;gap:2px}
+.meta-sep{color:var(--border3);margin:0 7px}
+.meta-label{color:var(--text3)}
+.meta-val{font-weight:600;color:var(--text)}
+.desc-box{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:11px 13px;font-size:13px;color:var(--text2);line-height:1.8;min-height:52px}
+.strip-row{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.profile-strip{display:flex;gap:5px;flex-wrap:wrap}
+.pthumb{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;transition:opacity 0.12s}
+.pthumb:hover{opacity:0.8}
+.pthumb.unavail{opacity:0.2;cursor:default;pointer-events:none}
+.pthumb-img{width:50px;height:50px;object-fit:contain;border-radius:7px;border:2px solid var(--border3);background:var(--bg2);display:block;transition:border-color 0.12s}
+.pthumb-img.sel{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.pthumb-ph{width:50px;height:50px;border-radius:7px;border:1.5px dashed var(--border3);background:var(--bg2);display:flex;align-items:center;justify-content:center;color:var(--text4);font-size:9px}
+.pthumb-label{font-size:9px;color:var(--text3)}
+.state-btn{padding:6px 14px;border-radius:8px;border:1px solid var(--border3);background:var(--bg3);color:var(--text2);font-size:13px;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background 0.1s}
+.state-btn:hover{background:var(--border);color:var(--text)}
+
+/* 스텟 테이블 */
+.stat-section{display:none;border-top:1px solid var(--border)}
+.stat-table{width:100%;border-collapse:collapse;font-size:13px;background:var(--bg2)}
+.stat-table th{background:var(--bg3);padding:8px 12px;text-align:center;font-weight:500;color:var(--text2);border-bottom:1px solid var(--border)}
+.stat-table td{padding:8px 12px;text-align:center;color:var(--text);border-bottom:0.5px solid var(--border2)}
+.stat-table tbody tr:last-child td{border-bottom:none}
+.stat-table tbody tr:hover td{background:var(--bg3)}
+.stat-table .row-label{text-align:left;font-weight:500;color:var(--text2);width:80px}
+.stat-nil{color:var(--text4)}
+
+/* 속성 배지 */
+.eb-땅{background:#fff3e0;color:#e65100}.eb-물{background:#e3f2fd;color:#1565c0}
+.eb-불{background:#fce4ec;color:#b71c1c}.eb-바람{background:#e8f5e9;color:#1b5e20}
+.eb-빛{background:#fffde7;color:#f57f17}.eb-어둠{background:#ede7f6;color:#4a148c}
+.eb-황혼{background:#fdf2f8;color:#880e4f}.eb-여명{background:#fff8e1;color:#6d4c41}
+.eb-악몽{background:#f3e5f5;color:#6a1b9a}
+
+/* 페이지네이션 */
+#pagination{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:center;align-items:center;gap:4px;padding:10px 16px;flex-wrap:nowrap;background:var(--bg2);border-top:1px solid var(--border);z-index:100}
+.pg-btn{min-width:34px;height:34px;padding:0 6px;border-radius:6px;border:1px solid var(--border3);background:var(--bg2);color:var(--text2);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;text-decoration:none;transition:all 0.12s}
+.pg-btn:hover{border-color:var(--accent-border);color:var(--text)}
+.pg-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600}
+.pg-btn.disabled{opacity:0.25;cursor:default;pointer-events:none}
+@media(max-width:640px){
+  .pg-btn{min-width:26px;height:30px;font-size:12px;padding:0 4px}
+  #pagination{gap:3px;padding:8px 10px}
+}
+
+@media(max-width:620px){
+  .entry-body{flex-direction:column;align-items:center;padding:14px}
+  .img-box{width:160px;min-height:160px}
+  .main-img,.main-img-ph{width:140px;height:140px}
+  .name-meta{flex-direction:column;gap:5px}
+  .pthumb-img,.pthumb-ph{width:42px;height:42px}
+}
+</style>
+</head>
+<body>
+
+<div id="top-bar">
+  <a id="back-btn" href="./index.html">← 메인화면 이동</a>
+  <span id="top-title">드래곤 도감</span>
+</div>
+
+<div id="page">
+  <div id="filter-section">
+    <div id="search-row">
+      <input id="search-input" type="text" placeholder="드래곤 이름 검색..." oninput="onFilter()">
+    </div>
+    <div id="filter-row"></div>
+  </div>
+  <div id="entries"></div>
+  <div id="pagination"></div>
+</div>
+
+<div id="lightbox" onclick="closeLightbox()">
+  <button id="lightbox-close" onclick="closeLightbox()">&times;</button>
+  <img id="lightbox-img" src="" alt="" onclick="event.stopPropagation()">
+</div>
+
+<div id="dl-menu">
+  <button onclick="dlCurrent()">현재 단계</button>
+  <button onclick="dlAll()">전체 단계 (ZIP)</button>
+</div>
+
+<script>
+const dexData=[
+{n:"고대신룡",e:"빛",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:1,tg:"-2.575",cd:"Yes",id:1,desc:""},
+{n:"윈드 드래곤",e:"바람",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:1,tg:"-2.175",cd:"Yes",id:2,desc:""},
+{n:"식스 레그 혼 드래곤",e:"바람",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:1,tg:"-2.175",cd:"Yes",id:3,desc:""},
+{n:"청룡",e:"바람",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"-2.175",cd:"Yes",id:4,desc:""},
+{n:"파이어 드래곤",e:"불",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"-2.175",cd:"Yes",id:5,desc:""},
+{n:"번개고룡",e:"불",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:1,tg:"-1.275",cd:"Yes",id:6,desc:""},
+{n:"라바 드래곤",e:"불",t:"체공",t_kr:"체공",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:7,desc:""},
+{n:"피닉스",e:"불",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"-2.175",cd:"Yes",id:8,desc:""},
+{n:"빙하고룡",e:"물",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"-1.275",cd:"Yes",id:9,desc:""},
+{n:"네시",e:"물",t:"체력",t_kr:"체력",aw:1,ad:0,tr:1,lv:1,tg:"-2.175",cd:"Yes",id:10,desc:""},
+{n:"테일 드래곤",e:"물",t:"체방",t_kr:"체방",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:11,desc:""},
+{n:"수룡",e:"물",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:1,tg:"-3.275",cd:"Yes",id:12,desc:""},
+{n:"히드라곤",e:"땅",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:1,tg:"-2.175",cd:"Yes",id:13,desc:""},
+{n:"파워 드래곤",e:"땅",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"-1.275",cd:"Yes",id:14,desc:""},
+{n:"바위 드래곤",e:"땅",t:"방어",t_kr:"방어",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:15,desc:""},
+{n:"지하땅굴 드래곤",e:"땅",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:1,tg:"-2.175",cd:"Yes",id:16,desc:""},
+{n:"페어리 드래곤",e:"물",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"-2.175",cd:"Yes",id:17,desc:""},
+{n:"레이디 드래곤",e:"바람",t:"체방",t_kr:"체방",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:18,desc:""},
+{n:"에그 드래곤",e:"땅",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:1,tg:"-0.675",cd:"Yes",id:19,desc:""},
+{n:"헬 드래곤",e:"불",t:"공방",t_kr:"공방",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:20,desc:""},
+{n:"엔젤 드래곤",e:"빛",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:1,tg:"-2.575",cd:"Yes",id:21,desc:""},
+{n:"에일리언 드래곤",e:"바람",t:"공방",t_kr:"공방",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:22,desc:""},
+{n:"미니 드래곤",e:"물",t:"공방",t_kr:"공방",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:23,desc:""},
+{n:"스왐프 드래곤",e:"물",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:1,tg:"-0.675",cd:"Yes",id:24,desc:""},
+{n:"패트 드래곤",e:"땅",t:"체력",t_kr:"체력",aw:1,ad:0,tr:1,lv:1,tg:"-0.675",cd:"Yes",id:25,desc:""},
+{n:"스파이크 드래곤",e:"불",t:"방어",t_kr:"방어",aw:1,ad:0,tr:1,lv:1,tg:"-0.675",cd:"Yes",id:26,desc:""},
+{n:"인섹트 드래곤",e:"불",t:"공방",t_kr:"공방",aw:1,ad:0,tr:1,lv:1,tg:"-0.275",cd:"Yes",id:27,desc:""},
+{n:"리프 드래곤",e:"땅",t:"방어",t_kr:"방어",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:28,desc:""},
+{n:"프로그 드래곤",e:"물",t:"방어",t_kr:"방어",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:29,desc:""},
+{n:"윙스 드래곤",e:"바람",t:"공방",t_kr:"공방",aw:1,ad:0,tr:1,lv:1,tg:"-0.275",cd:"Yes",id:30,desc:""},
+{n:"샌드 드래곤",e:"불",t:"공방",t_kr:"공방",aw:1,ad:0,tr:1,lv:1,tg:"-0.275",cd:"Yes",id:31,desc:""},
+{n:"스마트 드래곤",e:"땅",t:"방어",t_kr:"방어",aw:1,ad:0,tr:1,lv:1,tg:"-0.675",cd:"Yes",id:32,desc:""},
+{n:"뮤직 드래곤",e:"바람",t:"체력",t_kr:"체력",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:33,desc:""},
+{n:"흑룡",e:"어둠",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:1,tg:"-0.025",cd:"Yes",id:34,desc:""},
+{n:"에메랄드 드래곤",e:"빛",t:"체방",t_kr:"체방",aw:1,ad:0,tr:1,lv:1,tg:"-2.1",cd:"Yes",id:35,desc:""},
+{n:"라이곤",e:"빛",t:"체공",t_kr:"체공",aw:1,ad:0,tr:1,lv:1,tg:"0.2",cd:"Yes",id:36,desc:""},
+{n:"카멜레용",e:"빛",t:"체력",t_kr:"체력",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:37,desc:""},
+{n:"치킨헤드 드래곤",e:"빛",t:"체방",t_kr:"체방",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:38,desc:""},
+{n:"캥거레빗 드래곤",e:"빛",t:"체공",t_kr:"체공",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:39,desc:""},
+{n:"큐피트용",e:"빛",t:"공격",t_kr:"공격",aw:1,ad:0,tr:1,lv:1,tg:"0.2",cd:"Yes",id:40,desc:""},
+{n:"골드 드래곤",e:"빛",t:"체방",t_kr:"체방",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:41,desc:""},
+{n:"슬라임 드래곤",e:"물",t:"체방",t_kr:"체방",aw:1,ad:0,tr:1,lv:1,tg:"-2.1",cd:"Yes",id:42,desc:""},
+{n:"블레이드 드래곤",e:"어둠",t:"공격",t_kr:"공격",aw:1,ad:0,tr:1,lv:1,tg:"0.2",cd:"Yes",id:43,desc:""},
+{n:"메탈 드래곤",e:"어둠",t:"체공",t_kr:"체공",aw:1,ad:0,tr:1,lv:1,tg:"0.2",cd:"Yes",id:44,desc:""},
+{n:"미이라곤",e:"어둠",t:"체공",t_kr:"체공",aw:1,ad:0,tr:1,lv:1,tg:"0.2",cd:"Yes",id:45,desc:""},
+{n:"뱃도치 드래곤",e:"어둠",t:"공방",t_kr:"공방",aw:1,ad:0,tr:1,lv:1,tg:"0.2",cd:"Yes",id:46,desc:""},
+{n:"스켈레곤",e:"어둠",t:"체공",t_kr:"체공",aw:1,ad:0,tr:1,lv:1,tg:"0.2",cd:"Yes",id:47,desc:""},
+{n:"서펀트 드래곤",e:"어둠",t:"공격",t_kr:"공격",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:48,desc:""},
+{n:"G네 드래곤",e:"어둠",t:"공격",t_kr:"공격",aw:1,ad:0,tr:1,lv:1,tg:"0.2",cd:"Yes",id:49,desc:""},
+{n:"타이거 드래곤",e:"땅",t:"체력",t_kr:"체력",aw:1,ad:0,tr:1,lv:1,tg:"-0.675",cd:"Yes",id:50,desc:""},
+{n:"금오 드래곤",e:"불",t:"체방",t_kr:"체방",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:51,desc:""},
+{n:"메탈 마그넷 드래곤",e:"바람",t:"공방",t_kr:"공방",aw:1,ad:0,tr:1,lv:1,tg:"-0.275",cd:"Yes",id:52,desc:""},
+{n:"다크닉스",e:"어둠",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:0,tg:"1.6",cd:"Yes",id:53,desc:""},
+{n:"백룡",e:"빛",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:1,tg:"-1.85",cd:"Yes",id:54,desc:""},
+{n:"히에나곤",e:"어둠",t:"체공",t_kr:"체공",aw:1,ad:0,tr:1,lv:1,tg:"1.05",cd:"Yes",id:55,desc:""},
+{n:"유니 드래곤",e:"어둠",t:"공격",t_kr:"공격",aw:1,ad:0,tr:1,lv:1,tg:"1.45",cd:"Yes",id:56,desc:""},
+{n:"골든혼",e:"땅",t:"체방",t_kr:"체방",aw:1,ad:0,tr:1,lv:1,tg:"-0.85",cd:"Yes",id:57,desc:""},
+{n:"샤크곤",e:"물",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"1.45",cd:"Yes",id:58,desc:""},
+{n:"가디언",e:"바람",t:"체력",t_kr:"체력",aw:1,ad:0,tr:1,lv:1,tg:"1.05",cd:"Yes",id:59,desc:""},
+{n:"크레센트",e:"어둠",t:"체공",t_kr:"체공",aw:1,ad:0,tr:1,lv:1,tg:"1.05",cd:"Yes",id:60,desc:""},
+{n:"레인보우",e:"빛",t:"체력",t_kr:"체력",aw:1,ad:0,tr:1,lv:1,tg:"1.05",cd:"Yes",id:61,desc:""},
+{n:"타투",e:"땅",t:"방어",t_kr:"방어",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:62,desc:""},
+{n:"스파인",e:"땅",t:"공방",t_kr:"공방",aw:1,ad:0,tr:1,lv:1,tg:"1.45",cd:"Yes",id:63,desc:""},
+{n:"고대 주니어",e:"빛",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:1,tg:"1.45",cd:"Yes",id:64,desc:""},
+{n:"프로스티",e:"바람",t:"방어",t_kr:"방어",aw:1,ad:0,tr:1,lv:1,tg:"1.55",cd:"Yes",id:65,desc:""},
+{n:"다크프로스티",e:"어둠",t:"공격",t_kr:"공격",aw:1,ad:0,tr:1,lv:1,tg:"1.95",cd:"Yes",id:66,desc:""},
+{n:"현무 드래곤",e:"물",t:"방어",t_kr:"방어",aw:1,ad:0,tr:1,lv:1,tg:"1.55",cd:"Yes",id:67,desc:""},
+{n:"크리마용",e:"빛",t:"방어",t_kr:"방어",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:68,desc:""},
+{n:"데몽과가고일",e:"어둠",t:"공방",t_kr:"공방",aw:1,ad:0,tr:1,lv:1,tg:"1.95",cd:"Yes",id:69,desc:""},
+{n:"샴 드래곤",e:"빛",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:1,tg:"1.55",cd:"Yes",id:70,desc:""},
+{n:"본헤드",e:"불",t:"체공",t_kr:"체공",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:71,desc:""},
+{n:"베네지",e:"어둠",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:1,tg:"1.55",cd:"Yes",id:72,desc:""},
+{n:"머스타 드해머",e:"땅",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:1,tg:"-0.35",cd:"Yes",id:73,desc:""},
+{n:"레드와이번",e:"불",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"1.95",cd:"Yes",id:74,desc:""},
+{n:"해태드래곤",e:"바람",t:"방어",t_kr:"방어",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:75,desc:""},
+{n:"스콜피온 드래곤",e:"땅",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:1,tg:"1.95",cd:"Yes",id:76,desc:""},
+{n:"나이트 드래곤",e:"빛",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:1,tg:"1.55",cd:"No",id:77,desc:""},
+{n:"스파이시",e:"빛",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:1,tg:"1.55",cd:"No",id:78,desc:""},
+{n:"라파엘",e:"빛",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:1,tg:"-0.35",cd:"No",id:79,desc:""},
+{n:"바알",e:"어둠",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:0,tg:"1.6",cd:"No",id:80,desc:""},
+{n:"삐에로 드래곤",e:"빛",t:"체력",t_kr:"체력",aw:1,ad:0,tr:1,lv:0,tg:"2.0",cd:"Yes",id:81,desc:""},
+{n:"파라오곤",e:"빛",t:"공방",t_kr:"공방",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:82,desc:""},
+{n:"쉐도우 드래곤",e:"어둠",t:"공격",t_kr:"공격",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:83,desc:""},
+{n:"순둥곤",e:"빛",t:"방어",t_kr:"방어",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:84,desc:""},
+{n:"프랑켄슈타곤",e:"어둠",t:"체력",t_kr:"체력",aw:1,ad:0,tr:1,lv:0,tg:"2.0",cd:"Yes",id:85,desc:""},
+{n:"닌자 드래곤",e:"어둠",t:"공격",t_kr:"공격",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:86,desc:""},
+{n:"드라고노이드",e:"어둠",t:"체방",t_kr:"체방",aw:1,ad:0,tr:1,lv:0,tg:"1.225",cd:"Yes",id:87,desc:""},
+{n:"볼케이노",e:"불",t:"공방",t_kr:"공방",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:88,desc:""},
+{n:"블루라이트닝",e:"물",t:"체공",t_kr:"체공",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:89,desc:""},
+{n:"윗치 드래곤",e:"어둠",t:"체공",t_kr:"체공",aw:1,ad:0,tr:1,lv:0,tg:"-0.675",cd:"Yes",id:90,desc:""},
+{n:"퍼플립스 드래곤",e:"물",t:"체방",t_kr:"체방",aw:1,ad:0,tr:1,lv:0,tg:"1.225",cd:"Yes",id:91,desc:""},
+{n:"파이썬",e:"땅",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:0,tg:"-0.2",cd:"No",id:92,desc:""},
+{n:"아이언 드래곤",e:"불",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:0,tg:"2.0",cd:"No",id:93,desc:""},
+{n:"오로",e:"바람",t:"공방",t_kr:"공방",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:94,desc:""},
+{n:"자룡",e:"불",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:0,tg:"0.7",cd:"Yes",id:95,desc:""},
+{n:"배틀 드래곤",e:"불",t:"공격",t_kr:"공격",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:96,desc:""},
+{n:"데빌곤",e:"땅",t:"공격",t_kr:"공격",aw:1,ad:0,tr:1,lv:0,tg:"2.1",cd:"Yes",id:97,desc:""},
+{n:"바이올렛 드래곤",e:"물",t:"체공",t_kr:"체공",aw:1,ad:0,tr:1,lv:0,tg:"2.275",cd:"Yes",id:98,desc:""},
+{n:"네온 드래곤",e:"빛",t:"체공",t_kr:"체공",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:99,desc:""},
+{n:"플레임 드래곤",e:"불",t:"체공",t_kr:"체공",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:100,desc:""},
+{n:"블랙퀸",e:"어둠",t:"공격",t_kr:"공격",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:101,desc:""},
+{n:"시그마 드래곤",e:"어둠",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:0,tg:"1.8",cd:"No",id:102,desc:""},
+{n:"램곤",e:"땅",t:"체력",t_kr:"체력",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:103,desc:""},
+{n:"아르고 드래곤",e:"빛",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:0,tg:"2.0",cd:"No",id:104,desc:""},
+{n:"헤라클레스곤",e:"땅",t:"체방",t_kr:"체방",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:105,desc:""},
+{n:"토템 드래곤",e:"바람",t:"체력",t_kr:"체력",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:106,desc:""},
+{n:"말소자 드래곤",e:"불",t:"공격",t_kr:"공격",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:107,desc:""},
+{n:"팀버 드래곤",e:"땅",t:"방어",t_kr:"방어",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:108,desc:""},
+{n:"코브라곤",e:"어둠",t:"공방",t_kr:"공방",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:109,desc:""},
+{n:"루피아 드래곤",e:"물",t:"방어",t_kr:"방어",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:110,desc:""},
+{n:"타이푼 드래곤",e:"바람",t:"체방",t_kr:"체방",aw:1,ad:0,tr:1,lv:0,tg:"1.225",cd:"Yes",id:111,desc:""},
+{n:"스터드 드래곤",e:"물",t:"방어",t_kr:"방어",aw:1,ad:0,tr:1,lv:0,tg:"2.0",cd:"Yes",id:112,desc:""},
+{n:"플라워 드래곤",e:"땅",t:"방어",t_kr:"방어",aw:1,ad:0,tr:1,lv:0,tg:"2.0",cd:"Yes",id:113,desc:""},
+{n:"해마곤",e:"물",t:"체공",t_kr:"체공",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:114,desc:""},
+{n:"클라우드 드래곤",e:"바람",t:"체력",t_kr:"체력",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:115,desc:""},
+{n:"돌풍의 라이오스",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:116,desc:""},
+{n:"찬란한 바리안",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:117,desc:""},
+{n:"물결의 파프리온",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:118,desc:""},
+{n:"열화의 발칸",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:119,desc:""},
+{n:"장벽의 에닉스",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:120,desc:""},
+{n:"암흑의 발로드",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:121,desc:""},
+{n:"레드불 드래곤",e:"불",t:"체공",t_kr:"체공",aw:1,ad:0,tr:1,lv:0,tg:"-0.175",cd:"Yes",id:122,desc:""},
+{n:"툰드라 드래곤",e:"물",t:"체력",t_kr:"체력",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:123,desc:""},
+{n:"메갈로돈",e:"물",t:"공격",t_kr:"공격",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:124,desc:""},
+{n:"오로라 드래곤",e:"빛",t:"체방",t_kr:"체방",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:125,desc:""},
+{n:"캣츠곤",e:"어둠",t:"체공",t_kr:"체공",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:126,desc:""},
+{n:"이그니스",e:"불",t:"공방",t_kr:"공방",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:127,desc:""},
+{n:"타르타로스",e:"어둠",t:"체공",t_kr:"체공",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:128,desc:""},
+{n:"슈팅스타",e:"빛",t:"체공",t_kr:"체공",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:129,desc:""},
+{n:"다크폴",e:"어둠",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:0,tg:"-0.175",cd:"Yes",id:130,desc:""},
+{n:"헝그리 드래곤",e:"땅",t:"체력",t_kr:"체력",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:131,desc:""},
+{n:"아쿠아 드래곤",e:"물",t:"공방",t_kr:"공방",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:132,desc:""},
+{n:"오르페우스",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:133,desc:""},
+{n:"루미네스",e:"물",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:0,tg:"3.2",cd:"No",id:134,desc:""},
+{n:"번네스",e:"불",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:0,tg:"2.6",cd:"No",id:135,desc:""},
+{n:"깨비곤",e:"빛",t:"체공",t_kr:"체공",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:136,desc:""},
+{n:"제트 드래곤",e:"바람",t:"체공",t_kr:"체공",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:137,desc:""},
+{n:"마리노 드래곤",e:"물",t:"체방",t_kr:"체방",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:138,desc:""},
+{n:"투탕카",e:"어둠",t:"방어",t_kr:"방어",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:139,desc:""},
+{n:"머드 드래곤",e:"땅",t:"체력",t_kr:"체력",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:140,desc:""},
+{n:"붐버 드래곤",e:"불",t:"체력",t_kr:"체력",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:141,desc:""},
+{n:"사나래",e:"빛",t:"방어",t_kr:"방어",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:142,desc:""},
+{n:"타일런트",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:143,desc:""},
+{n:"청마룡",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:144,desc:""},
+{n:"너티빌런",e:"불",t:"방어",t_kr:"방어",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:145,desc:""},
+{n:"글래시어",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:146,desc:""},
+{n:"므네이아",e:"불",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:0,tg:"0.025",cd:"Yes",id:147,desc:""},
+{n:"녹스O",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:148,desc:""},
+{n:"일리오스O",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:149,desc:""},
+{n:"코너투스",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:150,desc:""},
+{n:"스왈로우",e:"바람",t:"체공",t_kr:"체공",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:151,desc:""},
+{n:"i곤",e:"바람",t:"공방",t_kr:"공방",aw:1,ad:0,tr:1,lv:0,tg:"2.025",cd:"Yes",id:152,desc:""},
+{n:"블러디네이트",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:153,desc:""},
+{n:"피스 드래곤",e:"바람",t:"공방",t_kr:"공방",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:154,desc:""},
+{n:"갤럭시",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:155,desc:""},
+{n:"페이퍼 드래곤",e:"바람",t:"공격",t_kr:"공격",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:156,desc:""},
+{n:"하이페리곤",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:157,desc:""},
+{n:"모리카 드래곤",e:"빛",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"2.7",cd:"Yes",id:158,desc:""},
+{n:"베가본드 드래곤",e:"땅",t:"공격",t_kr:"공격",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:159,desc:""},
+{n:"태엽 드래곤",e:"바람",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:0,tg:"2.6",cd:"Yes",id:160,desc:""},
+{n:"스플렌더 드래곤",e:"어둠",t:"공격",t_kr:"공격",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:161,desc:""},
+{n:"블랙티어 드래곤",e:"어둠",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:0,tg:"3.55",cd:"Yes",id:162,desc:""},
+{n:"블랙아머 드래곤",e:"어둠",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:0,tg:"2.825",cd:"No",id:163,desc:""},
+{n:"오렌지리프 드래곤",e:"땅",t:"체력",t_kr:"체력",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:164,desc:""},
+{n:"핑크벨 드래곤",e:"바람",t:"체력",t_kr:"체력",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:165,desc:""},
+{n:"쿠로이 드래곤",e:"어둠",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:1,tg:"1.375",cd:"No",id:166,desc:""},
+{n:"포레스트 드래곤",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:167,desc:""},
+{n:"기간티스",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:168,desc:""},
+{n:"데모니오",e:"불",t:"공격",t_kr:"공격",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:169,desc:""},
+{n:"게스 드래곤",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:170,desc:""},
+{n:"베라 드래곤",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:171,desc:""},
+{n:"디요나",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:172,desc:""},
+{n:"콘라드",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:173,desc:""},
+{n:"파브레가스",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:174,desc:""},
+{n:"파이어퓨리",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:175,desc:""},
+{n:"스테고 드래곤",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:176,desc:""},
+{n:"레텐토르",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:177,desc:""},
+{n:"미스트 드래곤",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:178,desc:""},
+{n:"리쿠루 드래곤",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:179,desc:""},
+{n:"페트라 드래곤",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:180,desc:""},
+{n:"크룩커스",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:181,desc:""},
+{n:"밴시",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:182,desc:""},
+{n:"할로우",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:183,desc:""},
+{n:"루포",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:184,desc:""},
+{n:"데칼",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:185,desc:""},
+{n:"카오스",e:"바람",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:0,tg:"2.6",cd:"No",id:186,desc:""},
+{n:"일레마",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:187,desc:""},
+{n:"블랙코어",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:188,desc:""},
+{n:"오딘",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:189,desc:""},
+{n:"프리러너",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:190,desc:""},
+{n:"타임머신",e:"어둠",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:0,tg:"3.2",cd:"Yes",id:191,desc:""},
+{n:"시타엘",e:"빛",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:0,tg:"3.8",cd:"No",id:192,desc:""},
+{n:"그라치아",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-SS",id:193,desc:""},
+{n:"마가",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-SS",id:194,desc:""},
+{n:"스쿠룸",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-SS",id:195,desc:""},
+{n:"콜로서스",e:"땅",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:0,tg:"1.875",cd:"No",id:196,desc:""},
+{n:"원더 드래곤",e:"어둠",t:"체력",t_kr:"체력",aw:0,ad:1,tr:1,lv:1,tg:"3.4",cd:"Yes",id:197,desc:""},
+{n:"아이스 드레이크",e:"물",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:0,tg:"1.9",cd:"Yes",id:198,desc:""},
+{n:"오미야콘",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:199,desc:""},
+{n:"니플하임",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:200,desc:""},
+{n:"루돌프 드래곤",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:201,desc:""},
+{n:"바르라아",e:"빛",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:0,tg:"2.8",cd:"No",id:202,desc:""},
+{n:"루틸루스",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:203,desc:""},
+{n:"청양 드래곤",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:204,desc:""},
+{n:"옵타툽",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:205,desc:""},
+{n:"아실리",e:"빛",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:0,tg:"4.65",cd:"No",id:206,desc:""},
+{n:"블랙찡또",e:"어둠",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:0,tg:"4.3",cd:"Yes",id:207,desc:""},
+{n:"아폴로누스",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:208,desc:""},
+{n:"로루스",e:"빛",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:0,tg:"2.1",cd:"Yes",id:209,desc:""},
+{n:"러스트",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:210,desc:""},
+{n:"슬레이어",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:211,desc:""},
+{n:"파이어리 블랜드",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:212,desc:""},
+{n:"문라이트",e:"어둠",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:0,tg:"4.175",cd:"Yes",id:213,desc:""},
+{n:"코랄",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:214,desc:""},
+{n:"아브밸리",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:215,desc:""},
+{n:"가이안",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:216,desc:""},
+{n:"오쿠러스",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:217,desc:""},
+{n:"위드미",e:"물",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:1,tg:"3.05",cd:"No",id:218,desc:""},
+{n:"헤이즈",e:"빛",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:1,tg:"3.525",cd:"No",id:219,desc:""},
+{n:"라우아",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:220,desc:""},
+{n:"듀펜",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:221,desc:""},
+{n:"메이플 드래곤",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:222,desc:""},
+{n:"딜랑",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:223,desc:""},
+{n:"스트라이커",e:"바람",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"3.9",cd:"Yes",id:224,desc:""},
+{n:"가루다",e:"불",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:0,tg:"5.8",cd:"No",id:225,desc:""},
+{n:"리베라",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:226,desc:""},
+{n:"티라노 드래곤",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:227,desc:""},
+{n:"파티 드래곤",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:228,desc:""},
+{n:"오르도",e:"빛",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:0,tg:"3.5",cd:"Yes",id:229,desc:""},
+{n:"세크레타",e:"물",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:0,tg:"4.9",cd:"Yes",id:230,desc:""},
+{n:"푸투룸",e:"불",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:0,tg:"4.0",cd:"Yes",id:231,desc:""},
+{n:"할리벨",e:"여명",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:0,tg:"1.8",cd:"Yes",id:232,desc:""},
+{n:"타아비레",e:"여명",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:0,tg:"4.2",cd:"Yes",id:233,desc:""},
+{n:"발라크",e:"황혼",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:0,tg:"1.9",cd:"Yes",id:234,desc:""},
+{n:"베팔",e:"황혼",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:0,tg:"3.8",cd:"Yes",id:235,desc:""},
+{n:"단탈리온",e:"악몽",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:0,tg:"4.4",cd:"Yes",id:236,desc:""},
+{n:"자간",e:"악몽",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:0,tg:"4.7",cd:"Yes",id:237,desc:""},
+{n:"어비스 엣지",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:238,desc:""},
+{n:"적오드래곤",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:239,desc:""},
+{n:"헬가스트",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:240,desc:""},
+{n:"마르바스",e:"어둠",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:0,tg:"5.0",cd:"No",id:241,desc:""},
+{n:"칸",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:242,desc:""},
+{n:"위그드라실",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:243,desc:""},
+{n:"와일드 드래곤",e:"불",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:0,tg:"4.9",cd:"No",id:244,desc:""},
+{n:"좀비 드래곤",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:245,desc:""},
+{n:"레이어스",e:"땅",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:1,tg:"4.3",cd:"No",id:246,desc:""},
+{n:"웨일 드래곤",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:247,desc:""},
+{n:"베놈 드래곤",e:"물",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:1,tg:"4.0",cd:"No",id:248,desc:""},
+{n:"발라 드래곤",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:249,desc:""},
+{n:"루가르 드래곤",e:"불",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:0,tg:"4.5",cd:"No",id:250,desc:""},
+{n:"아틀란티스",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:251,desc:""},
+{n:"유니버스",e:"어둠",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:1,tg:"2.9",cd:"No",id:252,desc:""},
+{n:"빙설룡",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:253,desc:""},
+{n:"점프 드래곤",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:254,desc:""},
+{n:"아스티",e:"바람",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:0,tg:"5.0",cd:"No",id:255,desc:""},
+{n:"지마",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:256,desc:""},
+{n:"갤러스",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:257,desc:""},
+{n:"퓨미스",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:258,desc:""},
+{n:"베히모스",e:"어둠",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:0,tg:"5.1",cd:"No",id:259,desc:""},
+{n:"스틸윙",e:"바람",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:0,tg:"4.2",cd:"No",id:260,desc:""},
+{n:"소울",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:261,desc:""},
+{n:"이슬룡",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:262,desc:""},
+{n:"데르",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:263,desc:""},
+{n:"렉몰",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:264,desc:""},
+{n:"화랑",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:265,desc:""},
+{n:"그레이탄",e:"바람",t:"공방",t_kr:"공방",aw:0,ad:1,tr:1,lv:1,tg:"4.4",cd:"No",id:266,desc:""},
+{n:"미스틱티니",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:267,desc:""},
+{n:"다로스",e:"땅",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:0,tg:"7.0",cd:"No",id:268,desc:""},
+{n:"자루카",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:269,desc:""},
+{n:"다크혼",e:"황혼",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:270,desc:""},
+{n:"스타에이스",e:"빛",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:0,tg:"4.1",cd:"No",id:271,desc:""},
+{n:"말로단",e:"어둠",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:0,tg:"5.4",cd:"No",id:272,desc:""},
+{n:"아이가스",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:273,desc:""},
+{n:"포포모",e:"불",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:0,tg:"5.3",cd:"Yes",id:274,desc:""},
+{n:"테디 드래곤",e:"빛",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:0,tg:"5.5",cd:"Yes",id:275,desc:""},
+{n:"나기",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:276,desc:""},
+{n:"그리핀",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:277,desc:""},
+{n:"블랙쇼커",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:278,desc:""},
+{n:"트리페어윙",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:279,desc:""},
+{n:"리바이어던",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:280,desc:""},
+{n:"스케어",e:"어둠",t:"공방",t_kr:"공방",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:281,desc:""},
+{n:"블루벨",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:282,desc:""},
+{n:"화이트스톰",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:283,desc:""},
+{n:"네펜데스",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:284,desc:""},
+{n:"아그나드",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:285,desc:""},
+{n:"버블 드래곤",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"C-S",id:286,desc:""},
+{n:"합라",e:"여명",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"5.4",cd:"Yes",id:287,desc:""},
+{n:"레블롭틴",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"C-S",id:288,desc:""},
+{n:"레인보우배트곤",e:"바람",t:"공방",t_kr:"공방",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:289,desc:""},
+{n:"아라카",e:"바람",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:0,tg:"5.675",cd:"No",id:290,desc:""},
+{n:"라지카스",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:291,desc:""},
+{n:"미스틸테인",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:292,desc:""},
+{n:"시소르",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:293,desc:""},
+{n:"루",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:294,desc:""},
+{n:"플래그너",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:295,desc:""},
+{n:"셀마사",e:"여명",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:0,tg:"5.7",cd:"No",id:296,desc:""},
+{n:"청화풍",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:297,desc:""},
+{n:"카라선",e:"황혼",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"5.275",cd:"Yes",id:298,desc:""},
+{n:"아쿠아리움",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:299,desc:""},
+{n:"일로스",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:300,desc:""},
+{n:"렉스톤",e:"황혼",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"4.775",cd:"Yes",id:301,desc:""},
+{n:"포메쿨",e:"황혼",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:1,tg:"5.6",cd:"Yes",id:302,desc:""},
+{n:"카르나",e:"어둠",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:0,tg:"5.0",cd:"No",id:303,desc:""},
+{n:"아르주나",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:304,desc:""},
+{n:"마룡",e:"불",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:0,tg:"5.5",cd:"Yes",id:305,desc:""},
+{n:"블랙혼",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:306,desc:""},
+{n:"얼티밋 드래곤",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:307,desc:""},
+{n:"매직스타 드래곤",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:308,desc:""},
+{n:"아르테미스 드래곤",e:"빛",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:1,tg:"6.9",cd:"Yes",id:309,desc:""},
+{n:"할루시",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:310,desc:""},
+{n:"페르마타",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:311,desc:""},
+{n:"앙그라",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:312,desc:""},
+{n:"옴므니아",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:313,desc:""},
+{n:"코므니아",e:"황혼",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:314,desc:""},
+{n:"다므니아",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:315,desc:""},
+{n:"드므니아",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:316,desc:""},
+{n:"맘므니아",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:317,desc:""},
+{n:"흐므니아",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:318,desc:""},
+{n:"엠파이어",e:"바람",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:0,tg:"5.1",cd:"Yes",id:319,desc:""},
+{n:"루시페르",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:320,desc:""},
+{n:"네크로멘서",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:321,desc:""},
+{n:"지진",e:"땅",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:1,tg:"4.85",cd:"No",id:322,desc:""},
+{n:"니케",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:323,desc:""},
+{n:"아스트라이나",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:324,desc:""},
+{n:"하레스",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:325,desc:""},
+{n:"나이트메어",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:326,desc:""},
+{n:"스윗클라우드",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:327,desc:""},
+{n:"데네브",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:328,desc:""},
+{n:"박쥐곤",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:329,desc:""},
+{n:"우파룸",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:330,desc:""},
+{n:"부두룡",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:331,desc:""},
+{n:"화주사",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:332,desc:""},
+{n:"미트라",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:333,desc:""},
+{n:"보상이용",e:"여명",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:334,desc:""},
+{n:"다크베인",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:335,desc:""},
+{n:"블러디터스크",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:336,desc:""},
+{n:"포이즌리버",e:"땅",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:1,tg:"5.9",cd:"Yes",id:337,desc:""},
+{n:"유리온",e:"황혼",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:338,desc:""},
+{n:"터들톰톰",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:339,desc:""},
+{n:"타이게타",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:340,desc:""},
+{n:"선인장 드래곤",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:341,desc:""},
+{n:"베르나",e:"빛",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:0,tg:"1.9",cd:"No",id:342,desc:""},
+{n:"룩소린",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:343,desc:""},
+{n:"혼",e:"바람",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:1,tg:"4.7",cd:"Yes",id:344,desc:""},
+{n:"나트론",e:"물",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:1,tg:"1.9",cd:"Yes",id:345,desc:""},
+{n:"살라",e:"황혼",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:346,desc:""},
+{n:"움브라",e:"악몽",t:"체공",t_kr:"체공",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:347,desc:""},
+{n:"솔라",e:"빛",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"5.9",cd:"Yes",id:348,desc:""},
+{n:"포폰",e:"땅",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:1,tg:"4.5",cd:"Yes",id:349,desc:""},
+{n:"제피로스",e:"바람",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:1,tg:"3.4",cd:"Yes",id:350,desc:""},
+{n:"드래곤 슬레이어",e:"어둠",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:1,tg:"6.075",cd:"Yes",id:351,desc:""},
+{n:"헬카이저",e:"황혼",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:352,desc:""},
+{n:"레버넌트",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:353,desc:""},
+{n:"이블 던",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:354,desc:""},
+{n:"디멘션 드래곤",e:"악몽",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"5.5",cd:"Yes",id:355,desc:""},
+{n:"픽셀 드래곤",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:356,desc:""},
+{n:"그랑 세이버",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:357,desc:""},
+{n:"킨더 드래곤",e:"여명",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:358,desc:""},
+{n:"푸딩곤",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"C-SS",id:359,desc:""},
+{n:"엔틱 드래곤",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:360,desc:""},
+{n:"트와일라잇",e:"황혼",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:361,desc:""},
+{n:"플로리안",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:362,desc:""},
+{n:"라루스",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:363,desc:""},
+{n:"프로딘",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:364,desc:""},
+{n:"틸키",e:"황혼",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"6.8",cd:"Yes",id:365,desc:""},
+{n:"이그나",e:"불",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:1,tg:"4.7",cd:"Yes",id:366,desc:""},
+{n:"블리자드",e:"물",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"6.25",cd:"Yes",id:367,desc:""},
+{n:"다크나이트",e:"어둠",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:1,tg:"4.3",cd:"Yes",id:368,desc:""},
+{n:"엔더 드래곤",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:369,desc:""},
+{n:"거스트 드래곤",e:"바람",t:"공격",t_kr:"공격",aw:0,ad:1,tr:1,lv:1,tg:"5.1",cd:"Yes",id:370,desc:""},
+{n:"샤프테일 드래곤",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:371,desc:""},
+{n:"화이트썬더 드래곤",e:"빛",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:1,tg:"5.6",cd:"Yes",id:372,desc:""},
+{n:"카루라",e:"빛",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:0,tg:"5.0",cd:"No",id:373,desc:""},
+{n:"간다르바",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:374,desc:""},
+{n:"호크아이",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:375,desc:""},
+{n:"루아셰아 드래곤",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:376,desc:""},
+{n:"루네라 드래곤",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:377,desc:""},
+{n:"미나스 드래곤",e:"빛",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:1,tg:"5.35",cd:"Yes",id:378,desc:""},
+{n:"헬스페로우",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:379,desc:""},
+{n:"쿠베라",e:"어둠",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:0,tg:"6.8",cd:"No",id:380,desc:""},
+{n:"칼라빈카",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:381,desc:""},
+{n:"직소 드래곤",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:382,desc:""},
+{n:"카이저번",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:383,desc:""},
+{n:"골락",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:384,desc:""},
+{n:"렉몰 리버스",e:"황혼",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:1,tg:"5.25",cd:"Yes",id:385,desc:""},
+{n:"앳지버",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:386,desc:""},
+{n:"센투라",e:"바람",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:0,tg:"6.075",cd:"No",id:387,desc:""},
+{n:"아프리트",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:388,desc:""},
+{n:"에트왈 드래곤",e:"바람",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes",id:389,desc:""},
+{n:"넬로 드래곤",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:390,desc:""},
+{n:"썬더레인 드래곤",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:391,desc:""},
+{n:"즈믄",e:"땅",t:"공방",t_kr:"공방",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:392,desc:""},
+{n:"리베티",e:"땅",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes",id:393,desc:""},
+{n:"브리트라",e:"물",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:0,tg:"2.925",cd:"No",id:394,desc:""},
+{n:"타크샤카",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:395,desc:""},
+{n:"슈넬 드래곤",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:396,desc:""},
+{n:"키갈",e:"바람",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes",id:397,desc:""},
+{n:"아델라",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:398,desc:""},
+{n:"슬리즈 드래곤",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:399,desc:""},
+{n:"칸타카",e:"땅",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:0,tg:"5.225",cd:"No",id:400,desc:""},
+{n:"지타쿨라",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:401,desc:""},
+{n:"파고스 드래곤",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:402,desc:""},
+{n:"본샤스 드래곤",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:403,desc:""},
+{n:"갤럭시아 드래곤",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:404,desc:""},
+{n:"알리스 드래곤",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:405,desc:""},
+{n:"마브리카 드래곤",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:406,desc:""},
+{n:"소서러 드래곤",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:407,desc:""},
+{n:"아톤",e:"빛",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:408,desc:""},
+{n:"탈릿사",e:"빛",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:0,tg:"5.925",cd:"No",id:409,desc:""},
+{n:"쿠즈마라",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:410,desc:""},
+{n:"하리카",e:"황혼",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"4.25",cd:"Yes",id:411,desc:""},
+{n:"톤톤",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:412,desc:""},
+{n:"아쿠아펄",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:413,desc:""},
+{n:"키리온",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:414,desc:""},
+{n:"애플칙",e:"땅",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:1,tg:"4.0",cd:"Yes",id:415,desc:""},
+{n:"트로페우스",e:"물",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:1,tg:"4.1",cd:"Yes",id:416,desc:""},
+{n:"니케이",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:417,desc:""},
+{n:"니케다",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:418,desc:""},
+{n:"니케라이",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:419,desc:""},
+{n:"니케플로",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:420,desc:""},
+{n:"니케벤토",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:421,desc:""},
+{n:"니케테라",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:422,desc:""},
+{n:"판므니아",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:423,desc:""},
+{n:"라므니아",e:"황혼",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:424,desc:""},
+{n:"닌므니아",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:425,desc:""},
+{n:"아스타테",e:"땅",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:0,tg:"5.4",cd:"No",id:426,desc:""},
+{n:"시리스",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:427,desc:""},
+{n:"엘더 드래곤",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:428,desc:""},
+{n:"수라 드래곤",e:"불",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes",id:429,desc:""},
+{n:"타로스",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:430,desc:""},
+{n:"익시아",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:431,desc:""},
+{n:"엔젤주니어",e:"빛",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:1,tg:"6.2",cd:"Yes",id:432,desc:""},
+{n:"허리케인",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:433,desc:""},
+{n:"하데스",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:434,desc:""},
+{n:"프레데터",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:435,desc:""},
+{n:"엔퓨",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:436,desc:""},
+{n:"가스트",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:437,desc:""},
+{n:"엔투라스",e:"불",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"6.0",cd:"Yes",id:438,desc:""},
+{n:"액스칼리버",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:439,desc:""},
+{n:"일란",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:440,desc:""},
+{n:"코스모",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:441,desc:""},
+{n:"파베르",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:442,desc:""},
+{n:"앵커",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:443,desc:""},
+{n:"말덱",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:444,desc:""},
+{n:"스트라",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:445,desc:""},
+{n:"헤네스",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:446,desc:""},
+{n:"데스락",e:"황혼",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:447,desc:""},
+{n:"애니마라",e:"악몽",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:1,tg:"5.8",cd:"Yes",id:448,desc:""},
+{n:"설리반",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:449,desc:""},
+{n:"파프닐",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:450,desc:""},
+{n:"아비온",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:451,desc:""},
+{n:"아자크",e:"어둠",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:452,desc:""},
+{n:"프로즌",e:"물",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:1,tg:"6.2",cd:"Yes",id:453,desc:""},
+{n:"아비스",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:454,desc:""},
+{n:"차콜플레임",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:455,desc:""},
+{n:"궁니르",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:456,desc:""},
+{n:"루드오어",e:"악몽",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:1,tg:"6.9",cd:"Yes",id:457,desc:""},
+{n:"스워드",e:"빛",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes",id:458,desc:""},
+{n:"케이나인",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"C-SS",id:459,desc:""},
+{n:"에이라",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:460,desc:""},
+{n:"스칼렛",e:"황혼",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:461,desc:""},
+{n:"쉔",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:462,desc:""},
+{n:"베리스",e:"여명",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:1,tg:"6.0",cd:"Yes",id:463,desc:""},
+{n:"템페스트",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:464,desc:""},
+{n:"선셋 드래곤",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:465,desc:""},
+{n:"포말하우트",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:466,desc:""},
+{n:"마카라",e:"어둠",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:1,tg:"6.9",cd:"No",id:467,desc:""},
+{n:"아누라다",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"C-SS",id:468,desc:""},
+{n:"이클립스",e:"황혼",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes",id:469,desc:""},
+{n:"벨레드",e:"악몽",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes",id:470,desc:""},
+{n:"미티어",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:471,desc:""},
+{n:"카모플라쥬",e:"황혼",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:472,desc:""},
+{n:"엘리고스",e:"여명",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:1,tg:"5.8",cd:"Yes",id:473,desc:""},
+{n:"범",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:474,desc:""},
+{n:"이모션",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:475,desc:""},
+{n:"미미르",e:"여명",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes",id:476,desc:""},
+{n:"샬롯",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:477,desc:""},
+{n:"이지스",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:478,desc:""},
+{n:"레이징",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:479,desc:""},
+{n:"페이몬",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:480,desc:""},
+{n:"암두시아스",e:"여명",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:481,desc:""},
+{n:"백택곤",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:482,desc:""},
+{n:"레오벡터",e:"땅",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"6.0",cd:"Yes",id:483,desc:""},
+{n:"네비아",e:"여명",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:1,tg:"6.2",cd:"Yes",id:484,desc:""},
+{n:"썬더버드",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:485,desc:""},
+{n:"보레아스",e:"바람",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:1,tg:"6.0",cd:"Yes",id:486,desc:""},
+{n:"쿠알레",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:487,desc:""},
+{n:"코즈메키온",e:"황혼",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:488,desc:""},
+{n:"화귀 드래곤",e:"불",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:1,tg:"6.475",cd:"Yes",id:489,desc:""},
+{n:"헤카테",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:490,desc:""},
+{n:"밀라",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:491,desc:""},
+{n:"라울",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:492,desc:""},
+{n:"스탑튠",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:493,desc:""},
+{n:"다크스퀘어",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:494,desc:""},
+{n:"고귀한 헬카이저",e:"황혼",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:495,desc:""},
+{n:"마소티스",e:"물",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes",id:496,desc:""},
+{n:"리치몬드",e:"어둠",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:1,tg:"6.9",cd:"Yes",id:497,desc:""},
+{n:"크로마 리치몬드",e:"어둠",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:1,tg:"6.9",cd:"Yes",id:498,desc:""},
+{n:"톡시닉",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:499,desc:""},
+{n:"이터널",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:500,desc:""},
+{n:"개틀링곤",e:"빛",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:1,tg:"6.9",cd:"Yes",id:501,desc:""},
+{n:"베른하르트",e:"물",t:"공격",t_kr:"공격",aw:1,ad:1,tr:1,lv:1,tg:"5.2",cd:"Yes",id:502,desc:""},
+{n:"로티스",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:503,desc:""},
+{n:"스노우볼",e:"황혼",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:504,desc:""},
+{n:"고귀한 블러디터스크",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:505,desc:""},
+{n:"젤리피쉬",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:506,desc:""},
+{n:"펜리르",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:507,desc:""},
+{n:"티르",e:"바람",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:1,tg:"6.675",cd:"Yes",id:508,desc:""},
+{n:"아만타",e:"빛",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:1,tg:"3.8",cd:"Yes",id:509,desc:""},
+{n:"코멧",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:510,desc:""},
+{n:"화이트 디스트로이어",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:511,desc:""},
+{n:"피미루",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:512,desc:""},
+{n:"샤흐",e:"빛",t:"공방",t_kr:"공방",aw:1,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:513,desc:""},
+{n:"고귀한 다크베인",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:514,desc:""},
+{n:"에오스",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:515,desc:""},
+{n:"네뷸라",e:"황혼",t:"체공",t_kr:"체공",aw:1,ad:1,tr:1,lv:1,tg:"6.1",cd:"Yes",id:516,desc:""},
+{n:"레굴루스",e:"물",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:1,tg:"5.3",cd:"Yes",id:517,desc:""},
+{n:"크로마 레굴루스",e:"물",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:1,tg:"5.3",cd:"Yes",id:518,desc:""},
+{n:"알데바란",e:"땅",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:1,tg:"6.0",cd:"Yes",id:519,desc:""},
+{n:"강림 강화곤",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:520,desc:""},
+{n:"다르누스",e:"황혼",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:521,desc:""},
+{n:"페트로아",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:522,desc:""},
+{n:"롱기누스",e:"악몽",t:"체방",t_kr:"체방",aw:1,ad:1,tr:1,lv:1,tg:"6.075",cd:"Yes",id:523,desc:""},
+{n:"고귀한 엔더 드래곤",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:524,desc:""},
+{n:"지바타르",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:525,desc:""},
+{n:"미스핏",e:"악몽",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:526,desc:""},
+{n:"염화룡",e:"불",t:"체력",t_kr:"체력",aw:1,ad:1,tr:1,lv:1,tg:"6.15",cd:"Yes",id:527,desc:""},
+{n:"마니메칼라",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:528,desc:""},
+{n:"폴투누스",e:"물",t:"방어",t_kr:"방어",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:529,desc:""},
+{n:"세에레",e:"황혼",t:"방어",t_kr:"방어",aw:0,ad:1,tr:1,lv:1,tg:"5.7",cd:"Yes",id:530,desc:""},
+{n:"바르그",e:"빛",t:"공격",t_kr:"공격",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:531,desc:""},
+{n:"마스테마",e:"악몽",t:"체방",t_kr:"체방",aw:0,ad:1,tr:1,lv:1,tg:"4.3",cd:"Yes",id:532,desc:""},
+{n:"카스티타스",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:533,desc:""},
+{n:"고귀한 이지스",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:534,desc:""},
+{n:"타나토스",e:"불",t:"체방",t_kr:"체방",aw:0,ad:1,tr:1,lv:1,tg:"4.4",cd:"Yes",id:535,desc:""},
+{n:"칼리시",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:536,desc:""},
+{n:"크로마 칼리시",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:537,desc:""},
+{n:"프라이드",e:"황혼",t:"공방",t_kr:"공방",aw:0,ad:1,tr:1,lv:1,tg:"6.575",cd:"Yes",id:538,desc:""},
+{n:"고귀한 아델라",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:539,desc:""},
+{n:"라스",e:"여명",t:"방어",t_kr:"방어",aw:0,ad:1,tr:1,lv:1,tg:"5.7",cd:"Yes",id:540,desc:""},
+{n:"밀라타스",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:541,desc:""},
+{n:"크로마 밀라타스",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:542,desc:""},
+{n:"고귀한 넬로 드래곤",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:543,desc:""},
+{n:"토트",e:"불",t:"방어",t_kr:"방어",aw:0,ad:1,tr:1,lv:1,tg:"6.8",cd:"Yes",id:544,desc:""},
+{n:"인스트리아",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:545,desc:""},
+{n:"크로마 인스트리아",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:546,desc:""},
+{n:"네무스",e:"악몽",t:"체력",t_kr:"체력",aw:0,ad:1,tr:1,lv:1,tg:"6.1",cd:"Yes",id:547,desc:""},
+{n:"베네보렌티아",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:548,desc:""},
+{n:"크로마 베네보렌티아",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:549,desc:""},
+{n:"고귀한 갤러헤드",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:550,desc:""},
+{n:"고귀한 이블던",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:551,desc:""},
+{n:"뇌신",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:552,desc:""},
+{n:"크로마 뇌신",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:553,desc:""},
+{n:"크레바스",e:"악몽",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:554,desc:""},
+{n:"라센티",e:"불",t:"공격",t_kr:"공격",aw:0,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes",id:555,desc:""},
+{n:"마문드",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:556,desc:""},
+{n:"고트",e:"어둠",t:"체방",t_kr:"체방",aw:0,ad:1,tr:1,lv:1,tg:"4.2",cd:"Yes",id:557,desc:""},
+{n:"고귀한 레버넌트",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:558,desc:""},
+{n:"파키",e:"땅",t:"방어",t_kr:"방어",aw:0,ad:1,tr:1,lv:1,tg:"6.8",cd:"Yes",id:559,desc:""},
+{n:"호저리",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:560,desc:""},
+{n:"타라",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:561,desc:""},
+{n:"고귀한 카이저번",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:562,desc:""},
+{n:"피타야",e:"바람",t:"공방",t_kr:"공방",aw:0,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes",id:563,desc:""},
+{n:"구미호",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:564,desc:""},
+{n:"루송",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:565,desc:""},
+{n:"아말테아",e:"여명",t:"체력",t_kr:"체력",aw:0,ad:1,tr:1,lv:1,tg:"6.2",cd:"Yes",id:566,desc:""},
+{n:"니티",e:"황혼",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:567,desc:""},
+{n:"케찰코아틀",e:"땅",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:1,tg:"6.3",cd:"Yes",id:568,desc:""},
+{n:"조화룡",e:"여명",t:"방어",t_kr:"방어",aw:0,ad:1,tr:1,lv:1,tg:"4.2",cd:"Yes",id:569,desc:""},
+{n:"아바돈",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:570,desc:""},
+{n:"큐아네드",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:571,desc:""},
+{n:"고귀한 스트라",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:572,desc:""},
+{n:"마그나스",e:"어둠",t:"체력",t_kr:"체력",aw:0,ad:1,tr:1,lv:1,tg:"6.3",cd:"Yes",id:573,desc:""},
+{n:"크로마 벨레드",e:"악몽",t:"방어",t_kr:"방어",aw:1,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes",id:574,desc:""},
+{n:"포르타",e:"어둠",t:"방어",t_kr:"방어",aw:0,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes",id:575,desc:""},
+{n:"페로스",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:576,desc:""},
+{n:"디아누",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:577,desc:""},
+{n:"초림",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:578,desc:""},
+{n:"루드라",e:"물",t:"공격",t_kr:"공격",aw:0,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes",id:579,desc:""},
+{n:"고귀한 말덱",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:580,desc:""},
+{n:"강강",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:581,desc:""},
+{n:"술래",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:582,desc:""},
+{n:"차차웅",e:"황혼",t:"방어",t_kr:"방어",aw:0,ad:1,tr:1,lv:1,tg:"6.0",cd:"Yes",id:583,desc:""},
+{n:"데바",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:584,desc:""},
+{n:"그라노스",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:585,desc:""},
+{n:"스텔스",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:586,desc:""},
+{n:"코르투스",e:"여명",t:"공방",t_kr:"공방",aw:0,ad:1,tr:1,lv:1,tg:"6.875",cd:"Yes",id:587,desc:""},
+{n:"레오파드",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:588,desc:""},
+{n:"고귀한 헤네스",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:589,desc:""},
+{n:"에피트",e:"황혼",t:"체방",t_kr:"체방",aw:0,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes",id:590,desc:""},
+{n:"스킨크 드래곤",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:591,desc:""},
+{n:"크레스티드 드래곤",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:592,desc:""},
+{n:"에그마용",e:"땅",t:"체력",t_kr:"체력",aw:0,ad:1,tr:1,lv:1,tg:"6.3",cd:"Yes",id:593,desc:""},
+{n:"블루썬더",e:"바람",t:"공격",t_kr:"공격",aw:0,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:594,desc:""},
+{n:"크로마 블루썬더",e:"바람",t:"공격",t_kr:"공격",aw:0,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:595,desc:""},
+{n:"고귀한 페로스",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:596,desc:""},
+{n:"솔루카니스",e:"빛",t:"방어",t_kr:"방어",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:597,desc:""},
+{n:"주작",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:598,desc:""},
+{n:"백호",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:599,desc:""},
+{n:"루살카",e:"물",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:600,desc:""},
+{n:"베타라",e:"어둠",t:"공격",t_kr:"공격",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:601,desc:""},
+{n:"크로마 베타라",e:"어둠",t:"공격",t_kr:"공격",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:602,desc:""},
+{n:"루크바트",e:"여명",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:1,tg:"6.3",cd:"Yes",id:603,desc:""},
+{n:"카스룩스",e:"어둠",t:"체력",t_kr:"체력",aw:0,ad:1,tr:1,lv:1,tg:"6.2",cd:"Yes",id:604,desc:""},
+{n:"고귀한 디아누",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:605,desc:""},
+{n:"알투스",e:"빛",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:1,tg:"6.15",cd:"Yes",id:606,desc:""},
+{n:"에슈",e:"황혼",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:607,desc:""},
+{n:"기린",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:608,desc:""},
+{n:"락샤사",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:609,desc:""},
+{n:"루민디스",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:610,desc:""},
+{n:"피데스",e:"어둠",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes",id:611,desc:""},
+{n:"비어디 드래곤",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:612,desc:""},
+{n:"불나래",e:"불",t:"공방",t_kr:"공방",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:613,desc:""},
+{n:"크로마 불나래",e:"불",t:"공방",t_kr:"공방",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:614,desc:""},
+{n:"유르카",e:"물",t:"체력",t_kr:"체력",aw:0,ad:1,tr:1,lv:1,tg:"6.45",cd:"Yes",id:615,desc:""},
+{n:"고귀한 아누라다",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:616,desc:""},
+{n:"쉴로시",e:"악몽",t:"공격",t_kr:"공격",aw:0,ad:1,tr:1,lv:1,tg:"6.2",cd:"Yes",id:617,desc:""},
+{n:"골디",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:618,desc:""},
+{n:"라키온",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:619,desc:""},
+{n:"옥타",e:"물",t:"공방",t_kr:"공방",aw:0,ad:1,tr:1,lv:1,tg:"6.9",cd:"Yes",id:620,desc:""},
+{n:"크로마 옥타",e:"물",t:"공방",t_kr:"공방",aw:0,ad:1,tr:1,lv:1,tg:"6.9",cd:"Yes",id:621,desc:""},
+{n:"커스리퍼",e:"악몽",t:"공방",t_kr:"공방",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:622,desc:""},
+{n:"울르",e:"여명",t:"공격",t_kr:"공격",aw:0,ad:1,tr:1,lv:1,tg:"5.6",cd:"Yes",id:623,desc:""},
+{n:"엔젤캣",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:624,desc:""},
+{n:"아프로디테",e:"여명",t:"체방",t_kr:"체방",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:625,desc:""},
+{n:"그리파르",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:626,desc:""},
+{n:"글라오네",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:627,desc:""},
+{n:"고귀한 루네라 드래곤",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:628,desc:""},
+{n:"블레이즈 드래곤",e:"불",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:629,desc:""},
+{n:"애버네일",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:630,desc:""},
+{n:"토네스",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:631,desc:""},
+{n:"고귀한 익시아",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:632,desc:""},
+{n:"프로텍트 드래곤",e:"빛",t:"방어",t_kr:"방어",aw:0,ad:1,tr:1,lv:1,tg:"6.575",cd:"Yes",id:633,desc:""},
+{n:"크로마 프로텍트 드래곤",e:"빛",t:"방어",t_kr:"방어",aw:0,ad:1,tr:1,lv:1,tg:"6.575",cd:"Yes",id:634,desc:""},
+{n:"템피오스",e:"황혼",t:"체력",t_kr:"체력",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:635,desc:""},
+{n:"거들테일 드래곤",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:636,desc:""},
+{n:"진",e:"악몽",t:"공방",t_kr:"공방",aw:0,ad:1,tr:1,lv:1,tg:"6.775",cd:"Yes",id:637,desc:""},
+{n:"마카롱",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:638,desc:""},
+{n:"아르켈론",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:639,desc:""},
+{n:"고귀한 다크혼",e:"황혼",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:640,desc:""},
+{n:"인베르소",e:"황혼",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:1,tg:"6.875",cd:"Yes",id:641,desc:""},
+{n:"티키톡",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:642,desc:""},
+{n:"레베리",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:643,desc:""},
+{n:"리티오",e:"바람",t:"방어",t_kr:"방어",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:644,desc:""},
+{n:"크로마 리티오",e:"바람",t:"방어",t_kr:"방어",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:645,desc:""},
+{n:"페이렉스",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:646,desc:""},
+{n:"스카트",e:"물",t:"방어",t_kr:"방어",aw:0,ad:1,tr:1,lv:1,tg:"6.45",cd:"Yes",id:647,desc:""},
+{n:"알레샤",e:"물",t:"체력",t_kr:"체력",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:648,desc:""},
+{n:"크로마 알레샤",e:"물",t:"체력",t_kr:"체력",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:649,desc:""},
+{n:"야누스",e:"여명",t:"체력",t_kr:"체력",aw:0,ad:1,tr:1,lv:1,tg:"6.8",cd:"Yes",id:650,desc:""},
+{n:"파이거",e:"불",t:"체력",t_kr:"체력",aw:0,ad:1,tr:1,lv:1,tg:"6.825",cd:"Yes",id:651,desc:""},
+{n:"크로마 파이거",e:"불",t:"체력",t_kr:"체력",aw:0,ad:1,tr:1,lv:1,tg:"6.825",cd:"Yes",id:652,desc:""},
+{n:"스카투스",e:"불",t:"방어",t_kr:"방어",aw:0,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:653,desc:""},
+{n:"크로마 스카투스",e:"불",t:"방어",t_kr:"방어",aw:0,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:654,desc:""},
+{n:"로키",e:"물",t:"방어",t_kr:"방어",aw:0,ad:1,tr:1,lv:1,tg:"6.575",cd:"Yes",id:655,desc:""},
+{n:"파프니르",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:656,desc:""},
+{n:"후긴",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:657,desc:""},
+{n:"무닌",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:658,desc:""},
+{n:"헤임달",e:"땅",t:"체방",t_kr:"체방",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:659,desc:""},
+{n:"볼바",e:"물",t:"체력",t_kr:"체력",aw:0,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes",id:660,desc:""},
+{n:"토르",e:"바람",t:"공방",t_kr:"공방",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:661,desc:""},
+{n:"요르문간드",e:"어둠",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes",id:662,desc:""},
+{n:"마누스",e:"황혼",t:"체방",t_kr:"체방",aw:0,ad:1,tr:1,lv:1,tg:"6.8",cd:"Yes",id:663,desc:""},
+{n:"잠식된 요르문간드",e:"악몽",t:"공격",t_kr:"공격",aw:0,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes",id:664,desc:""},
+{n:"야즈니르",e:"빛",t:"공격",t_kr:"공격",aw:0,ad:1,tr:1,lv:1,tg:"6.325",cd:"Yes",id:665,desc:""},
+{n:"고귀한 설리반",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:666,desc:""},
+{n:"논",e:"땅",t:"체방",t_kr:"체방",aw:0,ad:1,tr:1,lv:1,tg:"6.675",cd:"Yes",id:667,desc:""},
+{n:"플로레",e:"여명",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:668,desc:""},
+{n:"루시오",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:669,desc:""},
+{n:"장고",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:670,desc:""},
+{n:"레무레스",e:"악몽",t:"공격",t_kr:"공격",aw:0,ad:1,tr:1,lv:1,tg:"6.9",cd:"Yes",id:671,desc:""},
+{n:"아카이아",e:"땅",t:"공방",t_kr:"공방",aw:0,ad:1,tr:1,lv:1,tg:"6.35",cd:"Yes",id:672,desc:""},
+{n:"크로마 아카이아",e:"땅",t:"공방",t_kr:"공방",aw:0,ad:1,tr:1,lv:1,tg:"6.35",cd:"Yes",id:673,desc:""},
+{n:"티아매트",e:"어둠",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:1,tg:"6.425",cd:"Yes",id:674,desc:""},
+{n:"리브로",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:675,desc:""},
+{n:"오벡스",e:"어둠",t:"공격",t_kr:"공격",aw:0,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes",id:676,desc:""},
+{n:"흐레스벨그",e:"황혼",t:"체력",t_kr:"체력",aw:0,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes",id:677,desc:""},
+{n:"호드",e:"물",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:678,desc:""},
+{n:"슬레이프니르",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:679,desc:""},
+{n:"고귀한 펜리르",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:680,desc:""},
+{n:"하트샤",e:"어둠",t:"공방",t_kr:"공방",aw:0,ad:1,tr:1,lv:1,tg:"6.525",cd:"Yes",id:681,desc:""},
+{n:"꽁꽁이",e:"빛",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:682,desc:""},
+{n:"파루파루",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:683,desc:""},
+{n:"발레포르",e:"악몽",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:684,desc:""},
+{n:"크로마 발레포르",e:"악몽",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:685,desc:""},
+{n:"메라크",e:"빛",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:686,desc:""},
+{n:"레긴레이프",e:"황혼",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:1,tg:"6.75",cd:"Yes",id:687,desc:""},
+{n:"크로마 레긴레이프",e:"황혼",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:1,tg:"6.75",cd:"Yes",id:688,desc:""},
+{n:"적마룡",e:"불",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:689,desc:""},
+{n:"고귀한 허리케인",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:690,desc:""},
+{n:"피싱테일 드래곤",e:"물",t:"공격",t_kr:"공격",aw:0,ad:1,tr:1,lv:1,tg:"6.3",cd:"Yes",id:691,desc:""},
+{n:"까마귀 드래곤",e:"악몽",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:692,desc:""},
+{n:"까치 드래곤",e:"어둠",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:693,desc:""},
+{n:"루루",e:"바람",t:"체방",t_kr:"체방",aw:0,ad:1,tr:1,lv:1,tg:"6.075",cd:"Yes",id:694,desc:""},
+{n:"크로마 루루",e:"바람",t:"체방",t_kr:"체방",aw:0,ad:1,tr:1,lv:1,tg:"6.075",cd:"Yes",id:695,desc:""},
+{n:"바스카",e:"땅",t:"공격",t_kr:"공격",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:696,desc:""},
+{n:"블라드",e:"악몽",t:"체력",t_kr:"체력",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:697,desc:""},
+{n:"프레이야",e:"여명",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes",id:698,desc:""},
+{n:"팡팡",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:699,desc:""},
+{n:"미스틱아츠",e:"땅",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:700,desc:""},
+{n:"고귀한 앙그라",e:"바람",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:701,desc:""},
+{n:"스쿨드",e:"불",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:702,desc:""},
+{n:"크툴루",e:"어둠",t:"공격",t_kr:"공격",aw:0,ad:1,tr:1,lv:1,tg:"6.8",cd:"Yes",id:703,desc:""},
+{n:"크로마 크툴루",e:"어둠",t:"공격",t_kr:"공격",aw:0,ad:1,tr:1,lv:1,tg:"6.8",cd:"Yes",id:704,desc:""},
+{n:"망태곤",e:"악몽",t:"체력",t_kr:"체력",aw:0,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:705,desc:""},
+{n:"운디네",e:"물",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:1,tg:"6.8",cd:"Yes",id:706,desc:""},
+{n:"크로마 운디네",e:"물",t:"체공",t_kr:"체공",aw:0,ad:1,tr:1,lv:1,tg:"6.8",cd:"Yes",id:707,desc:""},
+{n:"세라핌",e:"빛",t:"체력",t_kr:"체력",aw:0,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:708,desc:""},
+{n:"누베스텔라",e:"황혼",t:"중립",t_kr:"중립",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:709,desc:""},
+];
+
+const dexElemIcons={
+  "땅":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/11.png",
+  "물":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/12.png",
+  "불":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/13.png",
+  "바람":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/14.png",
+  "빛":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/84.png",
+  "어둠":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/87.png",
+  "황혼":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/487.png",
+  "여명":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/486.png",
+  "악몽":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/488.png",
+};
+
+const STAGES=[
+  {i:1,l:"알"},{i:2,l:"해치"},{i:3,l:"해츨링"},{i:4,l:"성체"},
+  {i:5,l:"캡슐"},{i:6,l:"각성"},{i:7,l:"초월"},{i:8,l:"강림"}
+];
+
+// 단계 → 풀 이미지 파일명 매핑
+// 경로: dragon/{N}/{filename}.png
+const STAGE_FILES = {
+  1: "profile/1",    // 알 - profile/1.png 공용
+  2: "child1",       // 해치
+  3: "child2",       // 해츨링
+  4: "adult",        // 성체
+  5: "capsule",      // 캡슐
+  6: "capsule2",     // 각성
+  7: "transcended",  // 초월
+  8: "advent",       // 강림
+};
+
+// 스텟 데이터 (나중에 채울 것)
+// 형식: "드래곤이름": { 단계인덱스: { atk:[lo,hi,max_lo,max_hi], def:[...], hp:[...] } }
+// dexStatMap → stat.js 에서 로드
+// dexDescMap → desc.js 에서 로드
+
+
+
+const PER_PAGE = 10;
+const params = new URLSearchParams(window.location.search);
+let curPageNum = Math.max(1, parseInt(params.get("p") || sessionStorage.getItem("dv1_page") || "1"));
+
+// 필터 상태
+let filterName = "";
+let filterElems = new Set();
+let filterTypes = new Set();
+const ELEMS = ["땅","물","불","바람","빛","어둠","황혼","여명","악몽"];
+const TYPES = ["체력","공격","방어","체공","체방","공방","중립"];
+
+function getFiltered(){
+  return dexData.filter(d => {
+    if(filterName && !d.n.includes(filterName)) return false;
+    if(filterElems.size > 0 && !filterElems.has(d.e)) return false;
+    if(filterTypes.size > 0 && !filterTypes.has(d.t)) return false;
+    return true;
+  });
+}
+
+function buildFilterUI(){
+  const fr = document.getElementById("filter-row");
+  fr.innerHTML = "";
+
+  const line1 = document.createElement("div"); line1.className = "filter-line";
+  const line2 = document.createElement("div"); line2.className = "filter-line";
+
+  const lbl = (t, target) => {
+    const s=document.createElement("span"); s.className="filter-label"; s.textContent=t; target.appendChild(s);
+  };
+
+  lbl("속성", line1);
+  ELEMS.forEach(v => {
+    const b=document.createElement("button");
+    b.className="ftag"+(filterElems.has(v)?" active":"");
+    const icon=dexElemIcons[v];
+    if(icon){ const img=document.createElement("img"); img.src=icon; img.alt=v; b.appendChild(img); }
+    b.appendChild(document.createTextNode(v));
+    b.onclick=()=>{ filterElems.has(v)?filterElems.delete(v):filterElems.add(v); onFilter(); };
+    line1.appendChild(b);
+  });
+
+  lbl("타입", line2);
+  TYPES.forEach(v => {
+    const b=document.createElement("button");
+    b.className="ftag"+(filterTypes.has(v)?" active":"");
+    b.textContent=v;
+    b.onclick=()=>{ filterTypes.has(v)?filterTypes.delete(v):filterTypes.add(v); onFilter(); };
+    line2.appendChild(b);
+  });
+
+  fr.appendChild(line1);
+  fr.appendChild(line2);
+}
+
+function onFilter(){
+  filterName = document.getElementById("search-input").value.trim();
+  curPageNum = 1;
+  sessionStorage.setItem("dv1_page", 1);
+  renderAll();
+}
+
+// 엔트리별 현재 선택 단계 저장
+const stageState = {};
+
+function getN(name){
+  const d = dexData.find(x => x.n === name);
+  return d && d.id ? String(d.id) : null;
+}
+const BASE = "https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main";
+
+// 썸네일: dragon/{N}/profile/{stage}.png
+function profileUrl(name, stage){
+  const n = getN(name);
+  return n ? `${BASE}/dragon/${n}/profile/${stage}.png` : "";
+}
+// 풀 이미지: dragon/{N}/{filename}.png
+function fullUrl(name, stage){
+  const n = getN(name);
+  const f = STAGE_FILES[stage];
+  return (n && f) ? `${BASE}/dragon/${n}/${f}.png` : "";
+}
+function stageAvail(d, i){
+  if(i===6 && !d.aw) return false;
+  if(i===7 && !d.tr) return false;
+  if(i===8 && !d.ad) return false;
+  return true;
+}
+function highStage(d){ return d.ad?"강림":d.tr?"초월":d.aw?"각성":"성체"; }
+
+// ── 전체 렌더 ──
+function renderAll(){
+  buildFilterUI();
+  const filtered = getFiltered();
+  const totalPages = Math.ceil(filtered.length / PER_PAGE);
+  curPageNum = Math.min(curPageNum, totalPages || 1);
+  const pageData = filtered.slice((curPageNum-1)*PER_PAGE, curPageNum*PER_PAGE);
+
+  document.getElementById("top-title").textContent =
+    `드래곤 도감 (${filtered.length}마리)`;
+
+  const container = document.getElementById("entries");
+  container.innerHTML = "";
+  container.style.animation = "none";
+  container.offsetHeight; // reflow
+  container.style.animation = "";
+  pageData.forEach(d => {
+    const globalIdx = dexData.indexOf(d);
+    if(stageState[globalIdx] === undefined) stageState[globalIdx] = 4;
+    container.appendChild(buildEntry(d, globalIdx));
+  });
+  buildPagination(filtered.length, totalPages);
+}
+
+function buildEntry(d, idx){
+  const wrap = document.createElement("div");
+  wrap.className = "dragon-entry";
+  wrap.dataset.idx = idx;
+
+  const initFull = fullUrl(d.n, 4);
+
+  wrap.innerHTML = `
+    <div class="entry-body">
+      <div class="img-box">
+        <img class="main-img" id="mimg-${idx}"
+          src="${initFull}"
+          alt="${d.n}"
+          onclick="openLightbox(this)"
+          onerror="this.style.display='none';document.getElementById('mph-${idx}').style.display='flex'"
+          style="${initFull?'':'display:none'}">
+        <div class="main-img-ph" id="mph-${idx}" style="${initFull?'display:none':'display:flex'}">이미지 없음</div>
+      </div>
+      <div class="info-panel">
+        <div class="name-meta">
+          <div class="dragon-name">${d.n}</div>
+          <div class="meta-row">
+            <span class="meta-label">속성</span>&nbsp;<span class="meta-val eb-${d.e}" style="padding:1px 6px;border-radius:4px;font-size:11px;display:inline-flex;align-items:center;gap:3px">${dexElemIcons[d.e]?`<img src="${dexElemIcons[d.e]}" style="width:14px;height:14px;border-radius:2px">`:''}${d.e}</span>
+            <span class="meta-sep">|</span>
+            <span class="meta-label">타입</span>&nbsp;<span class="meta-val">${d.t_kr}</span>
+            <span class="meta-sep">|</span>
+            <span class="meta-label">세대</span>&nbsp;<span class="meta-val">${d.gen||"1"}</span>
+            <span class="meta-sep">|</span>
+            <span class="meta-label">단계</span>&nbsp;<span class="meta-val" id="mstage-${idx}">성체</span>
+            <span class="meta-sep">|</span>
+            <span class="meta-label">레벨업</span>&nbsp;<span class="meta-val">${d.lv?'가능':'불가'}</span>
+            <span class="meta-sep">|</span>
+            <span class="meta-label">코드화</span>&nbsp;<span class="meta-val">${d.cd}</span>
+          </div>
+        </div>
+        <div class="desc-box" style="${(typeof dexDescMap!=='undefined'&&dexDescMap[d.n])||d.desc?'':'font-style:italic'}">${(typeof dexDescMap!=='undefined'&&dexDescMap[d.n])||d.desc||'(설명 데이터가 아직 없습니다)'}</div>
+        <div class="strip-row">
+          <div class="profile-strip" id="strip-${idx}"></div>
+          <div class="strip-actions">
+            <button class="dl-btn" id="dlbtn-${idx}" onclick="openDlMenu(event, ${idx})" title="이미지 다운로드">⬇</button>
+            <button class="state-btn" id="sbtn-${idx}" onclick="toggleStat(${idx})">State펼치기 ▼</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="stat-section" id="stat-${idx}">
+      <table class="stat-table">
+        <thead>
+          <tr>
+            <th class="row-label"></th>
+            <th>1레벨</th>
+            <th>45레벨</th>
+            <th>성장폭</th>
+          </tr>
+        </thead>
+        <tbody id="stbody-${idx}"></tbody>
+      </table>
+    </div>`;
+
+  // 프로필 스트립 구성
+  const strip = wrap.querySelector(`#strip-${idx}`);
+  STAGES.forEach(s => {
+    const avail = stageAvail(d, s.i);
+    const pUrl = profileUrl(d.n, s.i);
+    const fallbackUrl = profileUrl(d.n, 4); // 성체 프로필 폴백
+    const thumbWrap = document.createElement("div");
+    thumbWrap.className = "pthumb" + (avail ? "" : " unavail");
+    thumbWrap.dataset.si = s.i;
+
+    if(pUrl){
+      const img = document.createElement("img");
+      img.className = "pthumb-img" + (s.i === 4 ? " sel" : "");
+      // 성체(4)는 dexImgMap 이미지로 폴백, 나머지는 플레이스홀더
+      img.src = pUrl;
+      img.alt = s.l;
+      img.onerror = function(){
+        this.style.display = "none";
+        const ph = document.createElement("div");
+        ph.className = "pthumb-ph"; ph.textContent = s.l[0];
+        this.parentNode.insertBefore(ph, this);
+        if(s.i === 5) this.closest(".pthumb").classList.add("unavail");
+      };
+      thumbWrap.appendChild(img);
+    } else {
+      const ph = document.createElement("div");
+      ph.className = "pthumb-ph"; ph.textContent = s.l[0];
+      thumbWrap.appendChild(ph);
+    }
+    const lbl = document.createElement("span");
+    lbl.className = "pthumb-label"; lbl.textContent = s.l;
+    thumbWrap.appendChild(lbl);
+
+    if(avail) thumbWrap.onclick = () => selectStage(d, idx, s.i);
+    strip.appendChild(thumbWrap);
+  });
+
+  return wrap;
+}
+
+function selectStage(d, idx, si){
+  stageState[idx] = si;
+  document.getElementById("mstage-" + idx).textContent = STAGES.find(s=>s.i===si).l;
+
+  // 큰 이미지 교체
+  const mi = document.getElementById("mimg-" + idx);
+  const mp = document.getElementById("mph-" + idx);
+  const fUrl = fullUrl(d.n, si);
+  if(fUrl){
+    mi.src = fUrl; mi.style.display = "block"; mp.style.display = "none";
+    mi.onerror = () => { mi.style.display = "none"; mp.style.display = "flex"; };
+  } else {
+    mi.style.display = "none"; mp.style.display = "flex";
+  }
+
+  // 썸네일 sel 업데이트
+  document.querySelectorAll(`#strip-${idx} .pthumb-img`).forEach(img => {
+    img.classList.toggle("sel", parseInt(img.closest(".pthumb").dataset.si) === si);
+  });
+  const statSec = document.getElementById("stat-" + idx);
+  if(statSec && statSec.style.display !== "none") renderStat(d, idx, si);
+}
+
+function toggleStat(idx){
+  const d = dexData[idx];
+  const sec = document.getElementById("stat-" + idx);
+  const btn = document.getElementById("sbtn-" + idx);
+  const isOpen = sec.style.display !== "none";
+  sec.style.display = isOpen ? "none" : "block";
+  btn.textContent = isOpen ? "State펼치기 ▼" : "State닫기 ▲";
+  if(!isOpen) renderStat(d, idx, stageState[idx] || 4);
+}
+
+function renderStat(d, idx, si){
+  const tbody = document.getElementById("stbody-" + idx);
+  const ss = dexStatMap[d.n] || null;
+  tbody.innerHTML = [
+    {label:"공격력", key:"atk"},
+    {label:"방어력", key:"def"},
+    {label:"체력",   key:"hp"},
+  ].map(r => {
+    const s = ss ? ss[r.key] : null;
+    if(!s) return `<tr>
+      <td class="row-label">${r.label}</td>
+      <td class="stat-nil">-</td><td class="stat-nil">-</td><td class="stat-nil">-</td></tr>`;
+    const lv45 = s[0] + Math.round(s[1] * 44);
+    return `<tr>
+      <td class="row-label">${r.label}</td>
+      <td>${s[0]}</td><td>${lv45}</td><td>${s[1]}</td></tr>`;
+  }).join("");
+}
+
+function buildPagination(total, totalPages){
+  const pg = document.getElementById("pagination");
+  pg.innerHTML = "";
+  if(totalPages <= 1) return;
+  const isMobile = window.innerWidth < 640;
+  const GROUP = isMobile ? 5 : 10;
+  const groupStart = Math.floor((curPageNum - 1) / GROUP) * GROUP + 1;
+  const groupEnd = Math.min(groupStart + GROUP - 1, totalPages);
+
+  const btn = (label, targetPage, isActive, isDisabled) => {
+    const a = document.createElement("a");
+    a.className = "pg-btn" + (isActive ? " active" : "") + (isDisabled ? " disabled" : "");
+    a.textContent = label;
+    if(!isDisabled && !isActive){
+      a.href = "javascript:void(0)";
+      a.onclick = () => { curPageNum = targetPage; sessionStorage.setItem("dv1_page", targetPage); renderAll(); };
+    }
+    pg.appendChild(a);
+  };
+
+  if(!isMobile) btn("«", 1, false, curPageNum === 1);
+  btn("‹", Math.max(1, groupStart - GROUP), false, groupStart === 1);
+  for(let p = groupStart; p <= groupEnd; p++) btn(p, p, p === curPageNum, false);
+  btn("›", Math.min(totalPages, groupStart + GROUP), false, groupEnd === totalPages);
+  if(!isMobile) btn("»", totalPages, false, curPageNum === totalPages);
+}
+
+// 테마 동기화
+(function(){
+  var link=document.getElementById("theme-css");
+  if(!link)return;
+  var sync=function(){
+    var c=document.getElementById("custom-theme-style");
+    if(c&&c.textContent&&c.textContent.length>0){document.documentElement.removeAttribute("data-theme");return;}
+    var m=String(link.href||"").match(/theme-(dark|light|beige)\.css/);
+    document.documentElement.setAttribute("data-theme",m?m[1]:"dark");
+  };
+  sync();
+  new MutationObserver(sync).observe(link,{attributes:true,attributeFilter:["href"]});
+  new MutationObserver(sync).observe(document.head,{childList:true,subtree:true,characterData:true});
+})();
+
+// ── 라이트박스 ──
+function openLightbox(img){
+  if(!img || img.style.display === "none" || !img.getAttribute("src")) return;
+  const lb = document.getElementById("lightbox");
+  const lbImg = document.getElementById("lightbox-img");
+  lbImg.src = img.src;
+  lbImg.alt = img.alt || "";
+  lb.classList.add("open");
+}
+function closeLightbox(){
+  document.getElementById("lightbox").classList.remove("open");
+}
+document.addEventListener("keydown", function(e){
+  if(e.key === "Escape"){ closeLightbox(); closeDlMenu(); }
+});
+
+// ── 이미지 다운로드 ──
+let dlMenuIdx = null;
+function openDlMenu(e, idx){
+  e.stopPropagation();
+  dlMenuIdx = idx;
+  const menu = document.getElementById("dl-menu");
+  menu.classList.add("open");
+  const r = e.currentTarget.getBoundingClientRect();
+  const mw = menu.offsetWidth;
+  let left = r.left + window.scrollX;
+  const vw = document.documentElement.clientWidth;
+  if(r.left + mw > vw - 8) left = r.right + window.scrollX - mw;
+  if(left < window.scrollX + 8) left = window.scrollX + 8;
+  menu.style.left = left + "px";
+  menu.style.top = (r.bottom + window.scrollY + 4) + "px";
+}
+function closeDlMenu(){
+  document.getElementById("dl-menu").classList.remove("open");
+  dlMenuIdx = null;
+}
+document.addEventListener("click", function(e){
+  const menu = document.getElementById("dl-menu");
+  if(menu.classList.contains("open") && !menu.contains(e.target)) closeDlMenu();
+});
+
+async function saveBlob(url, filename){
+  const resp = await fetch(url);
+  if(!resp.ok) throw new Error("HTTP " + resp.status);
+  const blob = await resp.blob();
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1500);
+}
+
+async function dlCurrent(){
+  const idx = dlMenuIdx;
+  closeDlMenu();
+  if(idx === null) return;
+  const d = dexData[idx];
+  const si = stageState[idx] || 4;
+  const label = STAGES.find(s => s.i === si).l;
+  const url = fullUrl(d.n, si);
+  if(!url){ alert("받을 수 있는 이미지가 없습니다."); return; }
+  try{
+    await saveBlob(url, `${d.n}_${label}.png`);
+  }catch(err){
+    alert("이미지를 받지 못했습니다. (해당 단계 이미지가 없을 수 있습니다)");
+  }
+}
+
+let _jszipLoad = null;
+function loadJSZip(){
+  if(window.JSZip) return Promise.resolve();
+  if(_jszipLoad) return _jszipLoad;
+  _jszipLoad = new Promise((res, rej) => {
+    const sc = document.createElement("script");
+    sc.src = "https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js";
+    sc.onload = res;
+    sc.onerror = () => rej(new Error("JSZip 로드 실패"));
+    document.head.appendChild(sc);
+  });
+  return _jszipLoad;
+}
+
+async function dlAll(){
+  const idx = dlMenuIdx;
+  closeDlMenu();
+  if(idx === null) return;
+  const d = dexData[idx];
+  const btn = document.getElementById("dlbtn-" + idx);
+  const stages = STAGES.filter(s => stageAvail(d, s.i));
+  try{
+    if(btn){ btn.disabled = true; btn.textContent = "…"; }
+    await loadJSZip();
+    const zip = new JSZip();
+    let added = 0;
+    for(const s of stages){
+      const url = fullUrl(d.n, s.i);
+      if(!url) continue;
+      try{
+        const resp = await fetch(url);
+        if(!resp.ok) continue;
+        zip.file(`${s.i}_${s.l}.png`, await resp.blob());
+        added++;
+      }catch(_){}
+    }
+    if(added === 0){ alert("받을 수 있는 이미지가 없습니다."); return; }
+    const content = await zip.generateAsync({type:"blob"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(content);
+    a.download = `${d.n}.zip`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1500);
+  }catch(err){
+    alert("ZIP 생성에 실패했습니다: " + err.message);
+  }finally{
+    if(btn){ btn.disabled = false; btn.textContent = "⬇"; }
+  }
+}
+
+renderAll();
+</script>
+</body>
+</html>

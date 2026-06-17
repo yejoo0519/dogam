@@ -1,0 +1,17 @@
+/* 베이지 테마 */
+:root {
+  --bg: #2c2416;
+  --bg2: #332b1a;
+  --bg3: #3d3320;
+  --border: #5a4a30;
+  --border2: #4a3a22;
+  --border3: #6a5a40;
+  --text: #f5ead8;
+  --text2: #d4b896;
+  --text3: #b09070;
+  --text4: #8a7050;
+  --accent: #e8a44a;
+  --accent-bg: rgba(232,164,74,0.1);
+  --accent-border: rgba(232,164,74,0.3);
+}
+body { background: var(--bg); color: var(--text); }

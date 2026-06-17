@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSS Ranking</title>
+<link id="theme-css" rel="stylesheet" href="../theme-dark.css">
+<script src="./theme.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--text);padding:12px}
+#site-header{display:flex;align-items:center;gap:0;margin-bottom:0}
+#tab-bar{display:flex;gap:0;margin-bottom:16px;border-bottom:2px solid var(--border);align-items:flex-end}
+#site-title{display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;margin-right:16px;margin-bottom:6px;border:1.5px solid var(--border3);border-radius:20px;padding:10px 18px;transition:border-color 0.15s;flex-shrink:0}
+#site-title:hover{border-color:var(--accent)}
+#site-title .title-main{font-size:16px;font-weight:700;color:var(--text2);line-height:1.4}
+#site-title .title-sub{font-size:12px;color:var(--text4);line-height:1.4}
+.tab-btn{padding:10px 20px;font-size:13px;font-weight:500;background:none;border:none;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px}
+.tab-btn:hover{color:var(--text2)}
+.tab-btn.active{color:var(--accent);border-bottom:2px solid var(--accent)}
+@media(max-width:600px){.tab-btn{display:none}}
+.tab-content{display:none}
+.tab-content.active{display:block}
+#top{margin-bottom:12px}
+#search-bar{display:flex;gap:8px;margin-bottom:8px}
+#search-bar input{flex:1;padding:16px 20px;border:1px solid var(--border3);border-radius:8px;font-size:16px;background:var(--bg3);color:var(--text)}
+#search-bar input::placeholder{color:var(--text4)}
+#filter-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}
+.ftag{padding:4px 10px;border-radius:20px;font-size:11px;border:1px solid var(--border3);cursor:pointer;background:var(--bg3);color:var(--text2)}
+.ftag.active{background:#4a90d9;color:#fff;border-color:#4a90d9}
+#count{font-size:12px;color:var(--text3);margin-bottom:8px}
+#panels{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.panel{border-radius:10px;overflow:hidden;border:1px solid var(--border)}
+.panel-header{display:flex;align-items:center;gap:10px;padding:10px 14px;font-size:15px;font-weight:700}
+.panel-header .elem-icon{width:36px;height:36px;border-radius:6px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:20px;background:rgba(0,0,0,0.2)}
+.panel-header .elem-icon img{width:100%;height:100%;object-fit:cover}
+.panel-Earth .panel-header{background:linear-gradient(90deg,#b5651d,#d4863a)}
+.panel-Water .panel-header{background:linear-gradient(90deg,#1565c0,#1e88e5)}
+.panel-Fire .panel-header{background:linear-gradient(90deg,#b71c1c,#e53935)}
+.panel-Wind .panel-header{background:linear-gradient(90deg,#1b5e20,#388e3c)}
+.panel-Light .panel-header{background:linear-gradient(90deg,#e65100,#fb8c00)}
+.panel-Dark .panel-header{background:linear-gradient(90deg,#311b92,#5e35b1)}
+.panel-Dusk .panel-header{background:linear-gradient(90deg,#880e4f,#c2185b)}
+.panel-Dawn .panel-header{background:linear-gradient(90deg,#4e342e,#795548)}
+.panel-Nightmare .panel-header{background:linear-gradient(90deg,#4a148c,#7b1fa2)}
+.panel table{width:100%;border-collapse:collapse;font-size:12px;background:var(--bg2);min-width:0}
+.panel thead tr{background:var(--bg3)}
+.panel th{padding:6px 8px;text-align:center;font-weight:500;color:var(--text2);border-bottom:1px solid var(--border);white-space:nowrap;font-size:11px}
+.panel th.left{text-align:left}
+.panel td{padding:5px 8px;border-bottom:0.5px solid var(--border2);vertical-align:middle;color:var(--text)}
+.panel td.center{text-align:center}
+.panel tr:hover td{background:var(--bg3)}
+.rank{font-size:11px;color:var(--text3);text-align:center;width:24px}
+.dragon-img{width:36px;height:36px;border-radius:6px;object-fit:cover;display:block}
+.img-placeholder{width:36px;height:36px;border-radius:6px;background:var(--bg3);border:1px dashed var(--border3);display:flex;align-items:center;justify-content:center;color:var(--text4);font-size:10px}
+.badge-type{font-size:10px;padding:2px 5px;border-radius:6px;background:var(--bg3);color:var(--text2);white-space:nowrap}
+.lv-o{color:#66bb6a;font-weight:700}
+.lv-x{color:#ef5350;font-weight:700}
+.t-blue{color:#5dcff5 !important;font-weight:700;font-size:13px;text-shadow:0 0 6px rgba(93,207,245,0.6)}
+.t-gold{color:#f5c842 !important;font-weight:700;font-size:13px;text-shadow:0 0 6px rgba(245,200,66,0.5)}
+.t-silver{color:#a8b4c0 !important;font-weight:700;font-size:13px;text-shadow:0 0 4px rgba(168,180,192,0.4)}
+.t-pink{color:#c4879e !important;font-weight:700;font-size:13px;text-shadow:0 0 4px rgba(196,135,158,0.4)}
+.t-neg{color:#ef5350 !important;font-weight:700;font-size:13px}
+.no-data td{text-align:center;padding:1rem;color:var(--text4)}
+.panel-Earth tr.ex-true{background:linear-gradient(90deg,rgba(181,101,29,0.25) 0%,transparent 30%)}
+.panel-Water tr.ex-true{background:linear-gradient(90deg,rgba(21,101,192,0.25) 0%,transparent 30%)}
+.panel-Fire tr.ex-true{background:linear-gradient(90deg,rgba(183,28,28,0.25) 0%,transparent 30%)}
+.panel-Wind tr.ex-true{background:linear-gradient(90deg,rgba(27,94,32,0.25) 0%,transparent 30%)}
+.panel-Light tr.ex-true{background:linear-gradient(90deg,rgba(230,81,0,0.25) 0%,transparent 30%)}
+.panel-Dark tr.ex-true{background:linear-gradient(90deg,rgba(49,27,146,0.25) 0%,transparent 30%)}
+.panel-Dusk tr.ex-true{background:linear-gradient(90deg,rgba(136,14,79,0.25) 0%,transparent 30%)}
+.panel-Dawn tr.ex-true{background:linear-gradient(90deg,rgba(78,52,46,0.3) 0%,transparent 30%)}
+.panel-Nightmare tr.ex-true{background:linear-gradient(90deg,rgba(74,20,140,0.25) 0%,transparent 30%)}
+h1{font-size:24px;margin-bottom:12px;color:var(--text2)}
+#filter-area{margin-bottom:10px}
+#dex-search-bar{display:flex;gap:8px;margin-bottom:8px}
+#dex-search-bar input{flex:1;padding:10px 14px;border:1px solid var(--border3);border-radius:8px;font-size:14px;background:var(--bg3);color:var(--text)}
+#dex-search-bar input::placeholder{color:var(--text4)}
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.td-pc{display:table-cell}
+.td-mobile{display:none}
+@media(max-width:600px){
+  .tbl-wrap table{min-width:0!important}
+  .tbl-wrap thead{display:none}
+  .tbl-wrap tbody tr{display:block;padding:8px;border-bottom:1px solid var(--border2)}
+  .td-pc{display:none!important}
+  .td-mobile{display:flex!important}
+  .row1{align-items:center;gap:8px;margin-bottom:6px}
+  .row2{gap:0;justify-content:space-around;background:var(--bg3);border-radius:6px;padding:5px 0}
+  .row2-cell{text-align:center;flex:1}
+  .row2-cell .r2-label{font-size:10px;color:var(--text3);display:block}
+  .row2-cell .r2-val{font-size:11px;display:block}
+}
+.tbl-wrap table{width:100%;border-collapse:collapse;font-size:12px;background:transparent;min-width:520px}
+.tbl-wrap thead tr{background:var(--bg3)}
+.tbl-wrap th{padding:7px 8px;text-align:center;font-weight:500;color:var(--text2);border-bottom:1px solid var(--border);white-space:nowrap;font-size:11px}
+.tbl-wrap th.left{text-align:left}
+.tbl-wrap td{padding:10px 8px;border-bottom:0.5px solid var(--border2);vertical-align:middle;color:var(--text);text-align:center;background:transparent}
+.tbl-wrap td.left{text-align:left;white-space:nowrap}
+.tbl-wrap tr:hover td{background:var(--bg3)!important}
+.tbl-wrap tbody{background:var(--bg2)}
+.badge-elem{font-size:10px;padding:2px 6px;border-radius:6px;font-weight:500;white-space:nowrap}
+.chk-y{color:#66bb6a !important;font-weight:700;font-size:13px}
+.chk-n{color:#ef5350 !important;font-weight:700;font-size:13px}
+.cd-yes{color:#66bb6a;font-size:11px;font-weight:500}
+.cd-no{color:#ef5350;font-size:11px;font-weight:500}
+.cd-cs{color:#f5c842;font-size:11px;font-weight:500}
+.dex-elem-icon{width:24px;height:24px;border-radius:4px;object-fit:cover;display:block;margin:0 auto}
+.dex-elem-icon-placeholder{width:24px;height:24px;border-radius:4px;background:var(--bg3);border:1px dashed var(--border);margin:0 auto}
+.detail-btn{font-size:10px;padding:2px 8px;border-radius:4px;border:1px solid var(--border3);background:var(--bg3);color:var(--text2);cursor:pointer}
+.detail-btn:hover{background:var(--border);color:var(--text)}
+#modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1000;align-items:center;justify-content:center}
+#modal-overlay.open{display:flex}
+#modal{background:var(--bg2);border:1px solid var(--border3);border-radius:12px;padding:24px;min-width:280px;max-width:90vw;position:relative}
+#modal-close{position:absolute;top:12px;right:14px;background:none;border:none;color:var(--text2);font-size:18px;cursor:pointer}
+#modal-close:hover{color:var(--text)}
+#modal-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:16px}
+#modal-body{font-size:13px;color:var(--text2);line-height:1.8}
+.e-Earth{background:#fff3e0;color:#e65100}
+.e-Water{background:#e3f2fd;color:#1565c0}
+.e-Fire{background:#fce4ec;color:#b71c1c}
+.e-Wind{background:#e8f5e9;color:#1b5e20}
+.e-Light{background:#fffde7;color:#f57f17}
+.e-Dark{background:#ede7f6;color:#4a148c}
+.e-Dusk{background:#fdf2f8;color:#880e4f}
+.e-Dawn{background:#fff8e1;color:#6d4c41}
+.e-Nightmare{background:#f3e5f5;color:#6a1b9a}
+tr.e-row-Earth{background:linear-gradient(90deg,rgba(181,101,29,0.12) 0%,transparent 20%)}
+tr.e-row-Water{background:linear-gradient(90deg,rgba(21,101,192,0.12) 0%,transparent 20%)}
+tr.e-row-Fire{background:linear-gradient(90deg,rgba(183,28,28,0.12) 0%,transparent 20%)}
+tr.e-row-Wind{background:linear-gradient(90deg,rgba(27,94,32,0.12) 0%,transparent 20%)}
+tr.e-row-Light{background:linear-gradient(90deg,rgba(230,81,0,0.12) 0%,transparent 20%)}
+tr.e-row-Dark{background:linear-gradient(90deg,rgba(49,27,146,0.12) 0%,transparent 20%)}
+tr.e-row-Dusk{background:linear-gradient(90deg,rgba(136,14,79,0.12) 0%,transparent 20%)}
+tr.e-row-Dawn{background:linear-gradient(90deg,rgba(78,52,46,0.15) 0%,transparent 20%)}
+tr.e-row-Nightmare{background:linear-gradient(90deg,rgba(74,20,140,0.12) 0%,transparent 20%)}
+tr:hover td{background:var(--bg3)!important}
+#tab-bar a{text-decoration:none}
+
+
+#lang-btn{padding:6px 14px;border-radius:20px;border:1px solid var(--border3);background:var(--bg2);color:var(--text2);font-size:12px;font-family:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:4px;transition:all 0.15s;flex-shrink:0;align-self:center;margin-bottom:6px}
+#lang-btn:hover{border-color:var(--accent);color:var(--text)}
+
+[data-theme="dark"]{
+  --bg:#0e1116;--bg2:#161a22;--bg3:#1c212c;
+  --border:#23293a;--border2:#1b1f2a;--border3:#2d3447;
+  --text:#eaecf2;--text2:#b3b9c7;--text3:#7d8597;--text4:#565d6e;
+  --accent:#7aa2f7;--accent-bg:rgba(122,162,247,0.12);--accent-border:rgba(122,162,247,0.30);
+}
+[data-theme="light"]{
+  --bg:#f7f7f8;--bg2:#ffffff;--bg3:#f1f2f4;
+  --border:#e6e7ea;--border2:#eeeff2;--border3:#d4d6db;
+  --text:#15171c;--text2:#4a4d57;--text3:#71757f;--text4:#9aa0aa;
+  --accent:#2f6fed;--accent-bg:rgba(47,111,237,0.10);--accent-border:rgba(47,111,237,0.32);
+}
+[data-theme="beige"]{
+  --bg:#f3ecdd;--bg2:#faf3e2;--bg3:#ebe0c7;
+  --border:#d8caa8;--border2:#e1d4b3;--border3:#c0ad84;
+  --text:#2a2316;--text2:#5a4e34;--text3:#837553;--text4:#a99971;
+  --accent:#b06a1e;--accent-bg:rgba(176,106,30,0.10);--accent-border:rgba(176,106,30,0.32);
+}
+</style>
+</head>
+<body>
+<div id="tab-bar">
+  <a href="./index.html" id="site-title">
+  <span class="title-main">Main</span>
+  <span class="title-sub">made by nix</span>
+</a>
+  <a href="./tier.html" class="tab-btn ">Tier List</a>
+  <a href="./dex.html" class="tab-btn ">Dragon Dex</a>
+  <a href="./sss.html" class="tab-btn active">SSS Ranking</a>
+  <a href="./raid.html" class="tab-btn ">Arha Gate</a>
+  <a href="./raid_info.html" class="tab-btn ">Raid Info</a>
+  <a href="../index.html" id="lang-btn" style="margin-left:auto">🌐 KR</a>
+</div>
+<h1 style="font-size:20px;color:#aaa;margin-bottom:12px">SSS Ranking</h1>
+<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;align-items:center">
+  <span style="font-size:11px;color:#888;margin-right:2px">Level</span>
+  <button class="ftag active" id="sss-lv-45" onclick="setSSSLv(45)">Lv.45</button>
+  <button class="ftag" id="sss-lv-21" onclick="setSSSLv(21)">Lv.21</button>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;align-items:center">
+  <span style="font-size:11px;color:#888;margin-right:2px">Element</span>
+  <button class="ftag active" id="sss-e-All" onclick="setSSSElem('All')">All</button>
+  <button class="ftag" id="sss-e-Earth" onclick="setSSSElem('Earth')">Earth</button>
+  <button class="ftag" id="sss-e-Water" onclick="setSSSElem('Water')">Water</button>
+  <button class="ftag" id="sss-e-Fire" onclick="setSSSElem('Fire')">Fire</button>
+  <button class="ftag" id="sss-e-Wind" onclick="setSSSElem('Wind')">Wind</button>
+  <button class="ftag" id="sss-e-Light" onclick="setSSSElem('Light')">Light</button>
+  <button class="ftag" id="sss-e-Dark" onclick="setSSSElem('Dark')">Dark</button>
+  <button class="ftag" id="sss-e-Dusk" onclick="setSSSElem('Dusk')">Dusk</button>
+  <button class="ftag" id="sss-e-Dawn" onclick="setSSSElem('Dawn')">Dawn</button>
+  <button class="ftag" id="sss-e-Nightmare" onclick="setSSSElem('Nightmare')">Nightmare</button>
+</div>
+<div id="sss-count" style="font-size:12px;color:#888;margin-bottom:8px"></div>
+<div class="tbl-wrap">
+<table>
+  <thead>
+    <tr>
+      <th style="width:40px">Rank</th>
+      <th style="width:42px"></th>
+      <th class="left">Dragon</th>
+      <th style="width:32px"></th>
+      <th>Level</th>
+      <th>HP</th>
+      <th>ATK</th>
+      <th>DEF</th>
+      <th>Eval</th>
+      <th>Base Stats</th>
+      <th>Growth Stats</th>
+    </tr>
+  </thead>
+  <tbody id="sss-tbody"></tbody>
+</table>
+</div>
+<script>
+const sssData=[
+{rank:1,kor:"Cosmos",hp:764,atk:198,def:260,eval:2596,base:"192/22/40",grow:"13/4/5",elem:"Dawn",lv:45},
+{rank:1,kor:"Adela",hp:406,atk:128,def:129,eval:1434,base:"206/48/49",grow:"10/4/4",elem:"Earth",lv:21,skill:"boom"},
+{rank:2,kor:"Huginn",hp:784,atk:255,def:197,eval:2592,base:"212/35/21",grow:"13/5/4",elem:"Light",lv:45,skill:"boom"},
+{rank:1,kor:"Noble Adela",hp:406,atk:128,def:129,eval:1434,base:"206/48/49",grow:"10/4/4",elem:"Earth",lv:21,skill:"boom"},
+{rank:2,kor:"Muninn",hp:784,atk:197,def:255,eval:2592,base:"212/21/35",grow:"13/4/5",elem:"Dark",lv:45,skill:"def"},
+{rank:2,kor:"Girdletail Dragon",hp:451,atk:120,def:124,eval:1427,base:"211/20/44",grow:"12/5/4",elem:"Earth",lv:21,skill:"boom"},
+{rank:3,kor:"Girdletail Dragon",hp:739,atk:240,def:220,eval:2579,base:"211/20/44",grow:"12/5/4",elem:"Earth",lv:45,skill:"boom"},
+{rank:3,kor:"Nello Dragon",hp:524,atk:85,def:140,eval:1424,base:"284/25/40",grow:"12/3/5",elem:"Water",lv:21},
+{rank:4,kor:"Zivatar",hp:1020,atk:198,def:190,eval:2572,base:"272/22/14",grow:"17/4/4",elem:"Wind",lv:45,skill:"boom"},
+{rank:3,kor:"Noble Nello Dragon",hp:524,atk:85,def:140,eval:1424,base:"284/25/40",grow:"12/3/5",elem:"Water",lv:21},
+{rank:5,kor:"Sleipnir",hp:915,atk:157,def:257,eval:2571,base:"211/25/37",grow:"16/3/5",elem:"Earth",lv:45,skill:"def"},
+{rank:4,kor:"Hurricane",hp:560,atk:95,def:120,eval:1420,base:"260/35/40",grow:"15/3/4",elem:"Wind",lv:21,skill:"def"},
+{rank:6,kor:"Fenrir",hp:1161,atk:200,def:152,eval:2569,base:"281/24/20",grow:"20/4/3",elem:"Earth",lv:45,skill:"boom"},
+{rank:4,kor:"Noble Hurricane",hp:560,atk:95,def:120,eval:1420,base:"260/35/40",grow:"15/3/4",elem:"Wind",lv:21,skill:"def"},
+{rank:6,kor:"Noble Fenrir",hp:1161,atk:200,def:152,eval:2569,base:"281/24/20",grow:"20/4/3",elem:"Earth",lv:45,skill:"boom"},
+{rank:4,kor:"Sullivan",hp:548,atk:95,def:123,eval:1420,base:"248/35/43",grow:"15/3/4",elem:"Light",lv:21},
+{rank:7,kor:"Tara",hp:773,atk:251,def:197,eval:2565,base:"201/31/21",grow:"13/5/4",elem:"Fire",lv:45},
+{rank:4,kor:"Noble Sullivan",hp:548,atk:95,def:123,eval:1420,base:"248/35/43",grow:"15/3/4",elem:"Light",lv:21},
+{rank:8,kor:"Jango",hp:845,atk:258,def:167,eval:2545,base:"185/38/35",grow:"15/5/3",elem:"Earth",lv:45},
+{rank:4,kor:"Cosmos",hp:452,atk:102,def:140,eval:1420,base:"192/22/40",grow:"13/4/5",elem:"Dawn",lv:21},
+{rank:9,kor:"Fafnir",hp:888,atk:207,def:207,eval:2544,base:"228/31/31",grow:"15/4/4",elem:"Fire",lv:45},
+{rank:5,kor:"Sleipnir",hp:531,atk:85,def:137,eval:1419,base:"211/25/37",grow:"16/3/5",elem:"Earth",lv:21,skill:"def"},
+{rank:10,kor:"Patroa",hp:838,atk:212,def:209,eval:2522,base:"222/36/33",grow:"14/4/4",elem:"Fire",lv:45},
+{rank:5,kor:"Hell Kaiser",hp:699,atk:90,def:90,eval:1419,base:"279/30/30",grow:"21/3/3",elem:"Dusk",lv:21,skill:"boom"},
+{rank:11,kor:"Charlotte",hp:821,atk:261,def:164,eval:2521,base:"205/41/32",grow:"14/5/3",elem:"Earth",lv:45},
+{rank:5,kor:"Noble Hell Kaiser",hp:699,atk:90,def:90,eval:1419,base:"279/30/30",grow:"21/3/3",elem:"Dusk",lv:21,skill:"boom"},
+{rank:12,kor:"Lakion",hp:851,atk:208,def:209,eval:2519,base:"235/32/33",grow:"14/4/4",elem:"Earth",lv:45},
+{rank:6,kor:"Patroa",hp:502,atk:116,def:113,eval:1418,base:"222/36/33",grow:"14/4/4",elem:"Fire",lv:21},
+{rank:12,kor:"Eshu",hp:839,atk:211,def:209,eval:2519,base:"223/35/33",grow:"14/4/4",elem:"Dusk",lv:45},
+{rank:7,kor:"Fenrir",hp:681,atk:104,def:80,eval:1417,base:"281/24/20",grow:"20/4/3",elem:"Earth",lv:21,skill:"boom"},
+{rank:13,kor:"Aegis",hp:853,atk:206,def:210,eval:2517,base:"237/30/34",grow:"14/4/4",elem:"Light",lv:45},
+{rank:7,kor:"Fenrir",hp:681,atk:104,def:80,eval:1417,base:"281/24/20",grow:"20/4/3",elem:"Earth",lv:21,skill:"boom"},
+{rank:13,kor:"Noble Aegis",hp:853,atk:206,def:210,eval:2517,base:"237/30/34",grow:"14/4/4",elem:"Light",lv:45},
+{rank:7,kor:"Charlotte",hp:485,atk:141,def:92,eval:1417,base:"205/41/32",grow:"14/5/3",elem:"Earth",lv:21},
+{rank:14,kor:"Hod",hp:819,atk:212,def:212,eval:2515,base:"203/36/36",grow:"14/4/4",elem:"Water",lv:45},
+{rank:7,kor:"Jango",hp:485,atk:138,def:95,eval:1417,base:"185/38/35",grow:"15/5/3",elem:"Earth",lv:21},
+{rank:15,kor:"Thunderrain Dragon",hp:628,atk:315,def:154,eval:2504,base:"188/51/22",grow:"10/6/3",elem:"Light",lv:45},
+{rank:8,kor:"Ender Dragon",hp:568,atk:84,def:128,eval:1416,base:"228/24/48",grow:"17/3/4",elem:"Earth",lv:21,skill:"def"},
+{rank:16,kor:"Hades",hp:876,atk:204,def:202,eval:2500,base:"260/28/26",grow:"14/4/4",elem:"Dark",lv:45,skill:"boom"},
+{rank:8,kor:"Noble Ender Dragon",hp:568,atk:84,def:128,eval:1416,base:"228/24/48",grow:"17/3/4",elem:"Earth",lv:21,skill:"def"},
+{rank:17,kor:"Hell Kaiser",hp:1203,atk:162,def:162,eval:2499,base:"279/30/30",grow:"21/3/3",elem:"Dusk",lv:45,skill:"boom"},
+{rank:8,kor:"Dianu",hp:576,atk:126,def:84,eval:1416,base:"256/46/24",grow:"16/4/3",elem:"Earth",lv:21,skill:"def"},
+{rank:17,kor:"Noble Hell Kaiser",hp:1203,atk:162,def:162,eval:2499,base:"279/30/30",grow:"21/3/3",elem:"Dusk",lv:45,skill:"boom"},
+{rank:8,kor:"Noble Dianu",hp:576,atk:126,def:84,eval:1416,base:"256/46/24",grow:"16/4/3",elem:"Earth",lv:21,skill:"def"},
+{rank:18,kor:"Ender Dragon",hp:976,atk:156,def:224,eval:2496,base:"228/24/48",grow:"17/3/4",elem:"Earth",lv:45,skill:"def"},
+{rank:8,kor:"Deva",hp:472,atk:128,def:108,eval:1416,base:"232/28/48",grow:"12/5/3",elem:"Earth",lv:21,skill:"boom"},
+{rank:18,kor:"Noble Ender Dragon",hp:976,atk:156,def:224,eval:2496,base:"228/24/48",grow:"17/3/4",elem:"Earth",lv:45,skill:"def"},
+{rank:8,kor:"Skink Dragon",hp:576,atk:127,def:83,eval:1416,base:"256/47/23",grow:"16/4/3",elem:"Earth",lv:21},
+{rank:18,kor:"Tititok",hp:808,atk:211,def:211,eval:2496,base:"236/35/35",grow:"13/4/4",elem:"Dawn",lv:45},
+{rank:8,kor:"Baekho",hp:472,atk:117,def:119,eval:1416,base:"232/37/39",grow:"12/4/4",elem:"Earth",lv:21},
+{rank:18,kor:"Reverie",hp:956,atk:223,def:162,eval:2496,base:"208/47/30",grow:"17/4/3",elem:"Nightmare",lv:45},
+{rank:8,kor:"Tempest",hp:504,atk:120,def:108,eval:1416,base:"264/40/28",grow:"12/4/4",elem:"Water",lv:21},
+{rank:19,kor:"Milla",hp:787,atk:162,def:265,eval:2495,base:"215/30/45",grow:"13/3/5",elem:"Wind",lv:45},
+{rank:8,kor:"Rotis",hp:576,atk:125,def:85,eval:1416,base:"256/45/25",grow:"16/4/3",elem:"Water",lv:21},
+{rank:19,kor:"Kirin",hp:1003,atk:163,def:210,eval:2495,base:"255/31/34",grow:"17/3/4",elem:"Wind",lv:45},
+{rank:8,kor:"Chroma Instria",hp:516,atk:140,def:85,eval:1416,base:"296/40/25",grow:"11/5/3",elem:"Water",lv:21},
+{rank:20,kor:"Charcoal Flame",hp:784,atk:219,def:208,eval:2492,base:"212/43/32",grow:"13/4/4",elem:"Fire",lv:45},
+{rank:8,kor:"Jujag",hp:472,atk:106,def:130,eval:1416,base:"232/46/30",grow:"12/3/5",elem:"Fire",lv:21},
+{rank:20,kor:"Sunset",hp:1016,atk:212,def:157,eval:2492,base:"268/36/25",grow:"17/4/3",elem:"Fire",lv:45},
+{rank:8,kor:"Fafnir",hp:528,atk:111,def:111,eval:1416,base:"228/31/31",grow:"15/4/4",elem:"Fire",lv:21},
+{rank:20,kor:"Camouflage",hp:1008,atk:157,def:214,eval:2492,base:"260/25/38",grow:"17/3/4",elem:"Dusk",lv:45},
+{rank:8,kor:"Excir",hp:620,atk:92,def:107,eval:1416,base:"300/32/27",grow:"16/3/4",elem:"Wind",lv:21},
+{rank:21,kor:"Darnus",hp:1006,atk:161,def:210,eval:2490,base:"258/29/34",grow:"17/3/4",elem:"Dusk",lv:45},
+{rank:8,kor:"Noble Excir",hp:620,atk:92,def:107,eval:1416,base:"300/32/27",grow:"16/3/4",elem:"Wind",lv:21},
+{rank:22,kor:"Sleez Dragon",hp:901,atk:199,def:198,eval:2489,base:"329/23/22",grow:"13/4/4",elem:"Dark",lv:45,skill:"def"},
+{rank:8,kor:"Illan",hp:444,atk:121,def:122,eval:1416,base:"204/41/42",grow:"12/4/4",elem:"Wind",lv:21},
+{rank:23,kor:"Taros",hp:752,atk:218,def:216,eval:2488,base:"180/42/40",grow:"13/4/4",elem:"Fire",lv:45},
+{rank:8,kor:"Feros",hp:576,atk:126,def:84,eval:1416,base:"256/46/24",grow:"16/4/3",elem:"Wind",lv:21,skill:"def"},
+{rank:23,kor:"Stra",hp:764,atk:162,def:269,eval:2488,base:"192/30/49",grow:"13/3/5",elem:"Wind",lv:45,skill:"boom"},
+{rank:8,kor:"Noble Feros",hp:576,atk:126,def:84,eval:1416,base:"256/46/24",grow:"16/4/3",elem:"Wind",lv:21,skill:"def"},
+{rank:23,kor:"Noble Stra",hp:764,atk:162,def:269,eval:2488,base:"192/30/49",grow:"13/3/5",elem:"Wind",lv:45,skill:"boom"},
+{rank:8,kor:"Crested Dragon",hp:576,atk:83,def:127,eval:1416,base:"256/23/47",grow:"16/3/4",elem:"Wind",lv:21},
+{rank:23,kor:"Henes",hp:1040,atk:204,def:158,eval:2488,base:"292/28/26",grow:"17/4/3",elem:"Light",lv:45,skill:"boom"},
+{rank:8,kor:"White Destroyer",hp:620,atk:92,def:107,eval:1416,base:"300/32/27",grow:"16/3/4",elem:"Light",lv:21},
+{rank:23,kor:"Noble Henes",hp:1040,atk:204,def:158,eval:2488,base:"292/28/26",grow:"17/4/3",elem:"Light",lv:45,skill:"boom"},
+{rank:8,kor:"Milatas",hp:576,atk:126,def:84,eval:1416,base:"256/46/24",grow:"16/4/3",elem:"Light",lv:21},
+{rank:24,kor:"Nello Dragon",hp:812,atk:157,def:260,eval:2480,base:"284/25/40",grow:"12/3/5",elem:"Water",lv:45},
+{rank:8,kor:"Granos",hp:472,atk:108,def:128,eval:1416,base:"232/48/28",grow:"12/3/5",elem:"Light",lv:21,skill:"boom"},
+{rank:24,kor:"Noble Nello Dragon",hp:812,atk:157,def:260,eval:2480,base:"284/25/40",grow:"12/3/5",elem:"Water",lv:45},
+{rank:8,kor:"Instria",hp:516,atk:140,def:85,eval:1416,base:"296/40/25",grow:"11/5/3",elem:"Light",lv:21},
+{rank:24,kor:"Magic Star",hp:1004,atk:202,def:167,eval:2480,base:"256/26/35",grow:"17/4/3",elem:"Nightmare",lv:45},
+{rank:8,kor:"Huginn",hp:472,atk:135,def:101,eval:1416,base:"212/35/21",grow:"13/5/4",elem:"Light",lv:21,skill:"boom"},
+{rank:25,kor:"Calici",hp:851,atk:203,def:203,eval:2475,base:"279/27/27",grow:"13/4/4",elem:"Water",lv:45},
+{rank:8,kor:"Lunera Dragon",hp:412,atk:121,def:130,eval:1416,base:"172/41/50",grow:"12/4/4",elem:"Dark",lv:21},
+{rank:25,kor:"Chroma Calici",hp:851,atk:203,def:203,eval:2475,base:"279/27/27",grow:"13/4/4",elem:"Dark",lv:45},
+{rank:8,kor:"Noble Lunera Dragon",hp:412,atk:121,def:130,eval:1416,base:"172/41/50",grow:"12/4/4",elem:"Dark",lv:21},
+{rank:26,kor:"Angra",hp:1222,atk:145,def:168,eval:2474,base:"210/13/36",grow:"23/3/3",elem:"Wind",lv:45},
+{rank:8,kor:"Anurhada",hp:488,atk:145,def:87,eval:1416,base:"248/45/27",grow:"12/5/3",elem:"Dark",lv:21,skill:"boom"},
+{rank:26,kor:"Galaxia Dragon",hp:890,atk:194,def:202,eval:2474,base:"274/18/26",grow:"14/4/4",elem:"Dark",lv:45},
+{rank:8,kor:"Noble Anurhada",hp:488,atk:145,def:87,eval:1416,base:"248/45/27",grow:"12/5/3",elem:"Dark",lv:21,skill:"boom"},
+{rank:27,kor:"Dianu",hp:960,atk:222,def:156,eval:2472,base:"256/46/24",grow:"16/4/3",elem:"Earth",lv:45,skill:"def"},
+{rank:8,kor:"Hekate",hp:488,atk:112,def:120,eval:1416,base:"248/32/40",grow:"12/4/4",elem:"Dark",lv:21},
+{rank:27,kor:"Noble Dianu",hp:960,atk:222,def:156,eval:2472,base:"256/46/24",grow:"16/4/3",elem:"Earth",lv:45,skill:"def"},
+{rank:8,kor:"Muninn",hp:472,atk:101,def:135,eval:1416,base:"212/21/35",grow:"13/4/5",elem:"Dark",lv:21,skill:"def"},
+{rank:27,kor:"Deva",hp:760,atk:248,def:180,eval:2472,base:"232/28/48",grow:"12/5/3",elem:"Earth",lv:45,skill:"boom"},
+{rank:8,kor:"Meteor",hp:576,atk:127,def:83,eval:1416,base:"256/47/23",grow:"16/4/3",elem:"Dawn",lv:21},
+{rank:27,kor:"Skink Dragon",hp:960,atk:223,def:155,eval:2472,base:"256/47/23",grow:"16/4/3",elem:"Earth",lv:45},
+{rank:8,kor:"Eternal",hp:444,atk:122,def:121,eval:1416,base:"204/42/41",grow:"12/4/4",elem:"Dawn",lv:21},
+{rank:27,kor:"Baekho",hp:760,atk:213,def:215,eval:2472,base:"232/37/39",grow:"12/4/4",elem:"Earth",lv:45},
+{rank:8,kor:"Chroma Milatas",hp:576,atk:126,def:84,eval:1416,base:"256/46/24",grow:"16/4/3",elem:"Dawn",lv:21},
+{rank:27,kor:"Tempest",hp:792,atk:216,def:204,eval:2472,base:"264/40/28",grow:"12/4/4",elem:"Water",lv:45},
+{rank:8,kor:"Stealth",hp:472,atk:118,def:118,eval:1416,base:"232/38/38",grow:"12/4/4",elem:"Dawn",lv:21,skill:"boom"},
+{rank:27,kor:"Rotis",hp:960,atk:221,def:157,eval:2472,base:"256/45/25",grow:"16/4/3",elem:"Water",lv:45},
+{rank:8,kor:"Goldie",hp:476,atk:96,def:139,eval:1416,base:"256/36/39",grow:"11/3/5",elem:"Dawn",lv:21},
+{rank:27,kor:"Jujag",hp:760,atk:178,def:250,eval:2472,base:"232/46/30",grow:"12/3/5",elem:"Fire",lv:45},
+{rank:8,kor:"Tititok",hp:496,atk:115,def:115,eval:1416,base:"236/35/35",grow:"13/4/4",elem:"Dawn",lv:21},
+{rank:27,kor:"Excir",hp:1004,atk:164,def:203,eval:2472,base:"300/32/27",grow:"16/3/4",elem:"Wind",lv:45},
+{rank:8,kor:"Bloody Tusk",hp:684,atk:110,def:73,eval:1416,base:"364/50/13",grow:"16/3/3",elem:"Nightmare",lv:21},
+{rank:27,kor:"Noble Excir",hp:1004,atk:164,def:203,eval:2472,base:"300/32/27",grow:"16/3/4",elem:"Wind",lv:45},
+{rank:8,kor:"Noble Bloody Tusk",hp:684,atk:110,def:73,eval:1416,base:"364/50/13",grow:"16/3/3",elem:"Nightmare",lv:21},
+{rank:27,kor:"Illan",hp:732,atk:217,def:218,eval:2472,base:"204/41/42",grow:"12/4/4",elem:"Wind",lv:45},
+{rank:8,kor:"Reverie",hp:548,atk:127,def:90,eval:1416,base:"208/47/30",grow:"17/4/3",elem:"Nightmare",lv:21},
+{rank:27,kor:"Feros",hp:960,atk:222,def:156,eval:2472,base:"256/46/24",grow:"16/4/3",elem:"Wind",lv:45,skill:"def"},
+{rank:9,kor:"Lakion",hp:515,atk:112,def:113,eval:1415,base:"235/32/33",grow:"14/4/4",elem:"Earth",lv:21},
+{rank:27,kor:"Noble Feros",hp:960,atk:222,def:156,eval:2472,base:"256/46/24",grow:"16/4/3",elem:"Wind",lv:45,skill:"def"},
+{rank:9,kor:"Rakshasa",hp:471,atk:117,def:119,eval:1415,base:"231/37/39",grow:"12/4/4",elem:"Water",lv:21},
+{rank:27,kor:"Crested Dragon",hp:960,atk:155,def:223,eval:2472,base:"256/23/47",grow:"16/3/4",elem:"Wind",lv:45},
+{rank:9,kor:"Griffar",hp:519,atk:117,def:107,eval:1415,base:"279/37/27",grow:"12/4/4",elem:"Fire",lv:21},
+{rank:27,kor:"White Destroyer",hp:1004,atk:164,def:203,eval:2472,base:"300/32/27",grow:"16/3/4",elem:"Light",lv:45},
+{rank:9,kor:"Milla",hp:475,atk:90,def:145,eval:1415,base:"215/30/45",grow:"13/3/5",elem:"Wind",lv:21},
+{rank:27,kor:"Milatas",hp:960,atk:222,def:156,eval:2472,base:"256/46/24",grow:"16/4/3",elem:"Light",lv:45},
+{rank:9,kor:"Kirin",hp:595,atk:91,def:114,eval:1415,base:"255/31/34",grow:"17/3/4",elem:"Wind",lv:21},
+{rank:27,kor:"Granos",hp:760,atk:180,def:248,eval:2472,base:"232/48/28",grow:"12/3/5",elem:"Light",lv:45,skill:"boom"},
+{rank:9,kor:"Lumindis",hp:519,atk:112,def:112,eval:1415,base:"299/32/32",grow:"11/4/4",elem:"Light",lv:21},
+{rank:27,kor:"Lunera Dragon",hp:700,atk:217,def:226,eval:2472,base:"172/41/50",grow:"12/4/4",elem:"Dark",lv:45},
+{rank:9,kor:"Eshu",hp:503,atk:115,def:113,eval:1415,base:"223/35/33",grow:"14/4/4",elem:"Dusk",lv:21},
+{rank:27,kor:"Noble Lunera Dragon",hp:700,atk:217,def:226,eval:2472,base:"172/41/50",grow:"12/4/4",elem:"Dark",lv:45},
+{rank:9,kor:"Evil Dawn",hp:607,atk:91,def:111,eval:1415,base:"287/31/51",grow:"16/3/3",elem:"Dawn",lv:21},
+{rank:27,kor:"Anurhada",hp:776,atk:265,def:159,eval:2472,base:"248/45/27",grow:"12/5/3",elem:"Dark",lv:45,skill:"boom"},
+{rank:9,kor:"Noble Evil Dawn",hp:607,atk:91,def:111,eval:1415,base:"287/31/51",grow:"16/3/3",elem:"Dawn",lv:21},
+{rank:27,kor:"Noble Anurhada",hp:776,atk:265,def:159,eval:2472,base:"248/45/27",grow:"12/5/3",elem:"Dark",lv:45,skill:"boom"},
+{rank:9,kor:"Ninetales",hp:499,atk:120,def:109,eval:1415,base:"259/40/29",grow:"12/4/4",elem:"Nightmare",lv:21},
+{rank:27,kor:"Hekate",hp:776,atk:208,def:216,eval:2472,base:"248/32/40",grow:"12/4/4",elem:"Dark",lv:45},
+{rank:10,kor:"Qualle",hp:482,atk:113,def:120,eval:1414,base:"242/33/40",grow:"12/4/4",elem:"Water",lv:21},
+{rank:27,kor:"Meteor",hp:960,atk:223,def:155,eval:2472,base:"256/47/23",grow:"16/4/3",elem:"Dawn",lv:45},
+{rank:10,kor:"Phagos Dragon",hp:486,atk:116,def:116,eval:1414,base:"286/36/36",grow:"10/4/4",elem:"Water",lv:21},
+{rank:27,kor:"Eternal",hp:732,atk:218,def:217,eval:2472,base:"204/42/41",grow:"12/4/4",elem:"Dawn",lv:45},
+{rank:10,kor:"Lusong",hp:482,atk:112,def:121,eval:1414,base:"242/32/41",grow:"12/4/4",elem:"Fire",lv:21},
+{rank:27,kor:"Chroma Milatas",hp:960,atk:222,def:156,eval:2472,base:"256/46/24",grow:"16/4/3",elem:"Dawn",lv:45},
+{rank:10,kor:"Abies",hp:594,atk:90,def:115,eval:1414,base:"274/30/35",grow:"16/3/4",elem:"Wind",lv:21},
+{rank:27,kor:"Stealth",hp:760,atk:214,def:214,eval:2472,base:"232/38/38",grow:"12/4/4",elem:"Dawn",lv:45,skill:"boom"},
+{rank:10,kor:"Lucio",hp:518,atk:135,def:89,eval:1414,base:"278/35/29",grow:"12/5/3",elem:"Dark",lv:21},
+{rank:28,kor:"Rakshasa",hp:759,atk:213,def:215,eval:2471,base:"231/37/39",grow:"12/4/4",elem:"Water",lv:45},
+{rank:10,kor:"Canine",hp:486,atk:142,def:90,eval:1414,base:"246/42/30",grow:"12/5/3",elem:"Nightmare",lv:21},
+{rank:28,kor:"Griffar",hp:807,atk:213,def:203,eval:2471,base:"279/37/27",grow:"12/4/4",elem:"Fire",lv:45},
+{rank:11,kor:"Aegis",hp:517,atk:110,def:114,eval:1413,base:"237/30/34",grow:"14/4/4",elem:"Light",lv:21},
+{rank:28,kor:"Ninetales",hp:787,atk:216,def:205,eval:2471,base:"259/40/29",grow:"12/4/4",elem:"Nightmare",lv:45},
+{rank:11,kor:"Noble Aegis",hp:517,atk:110,def:114,eval:1413,base:"237/30/34",grow:"14/4/4",elem:"Light",lv:21},
+{rank:28,kor:"Raven Dragon",hp:855,atk:204,def:200,eval:2471,base:"283/28/24",grow:"13/4/4",elem:"Nightmare",lv:45},
+{rank:11,kor:"Paruparu",hp:445,atk:121,def:121,eval:1413,base:"205/41/41",grow:"12/4/4",elem:"Fire",lv:21},
+{rank:29,kor:"Qualle",hp:770,atk:209,def:216,eval:2470,base:"242/33/40",grow:"12/4/4",elem:"Water",lv:45},
+{rank:11,kor:"Florea",hp:485,atk:87,def:145,eval:1413,base:"245/27/45",grow:"12/3/5",elem:"Dawn",lv:21},
+{rank:29,kor:"Lusong",hp:770,atk:208,def:217,eval:2470,base:"242/32/41",grow:"12/4/4",elem:"Fire",lv:45},
+{rank:12,kor:"Maldek",hp:476,atk:150,def:84,eval:1412,base:"236/50/24",grow:"12/5/3",elem:"Earth",lv:21,skill:"def"},
+{rank:29,kor:"Abies",hp:978,atk:162,def:211,eval:2470,base:"274/30/35",grow:"16/3/4",elem:"Wind",lv:45},
+{rank:12,kor:"Noble Maldek",hp:476,atk:150,def:84,eval:1412,base:"236/50/24",grow:"12/5/3",elem:"Earth",lv:21,skill:"def"},
+{rank:29,kor:"Lucio",hp:806,atk:255,def:161,eval:2470,base:"278/35/29",grow:"12/5/3",elem:"Dark",lv:45},
+{rank:12,kor:"Charcoal Flame",hp:472,atk:123,def:112,eval:1412,base:"212/43/32",grow:"13/4/4",elem:"Fire",lv:21},
+{rank:29,kor:"Canine",hp:774,atk:262,def:162,eval:2470,base:"246/42/30",grow:"12/5/3",elem:"Nightmare",lv:45},
+{rank:12,kor:"Sunset",hp:608,atk:116,def:85,eval:1412,base:"268/36/25",grow:"17/4/3",elem:"Fire",lv:21},
+{rank:30,kor:"Paruparu",hp:733,atk:217,def:217,eval:2469,base:"205/41/41",grow:"12/4/4",elem:"Fire",lv:45},
+{rank:12,kor:"Mavrika Dragon",hp:408,atk:120,def:131,eval:1412,base:"228/40/51",grow:"9/4/4",elem:"Light",lv:21},
+{rank:30,kor:"Florea",hp:773,atk:159,def:265,eval:2469,base:"245/27/45",grow:"12/3/5",elem:"Dawn",lv:45},
+{rank:12,kor:"Avernale",hp:608,atk:87,def:114,eval:1412,base:"388/27/34",grow:"11/3/4",elem:"Light",lv:21},
+{rank:31,kor:"Maldek",hp:764,atk:270,def:156,eval:2468,base:"236/50/24",grow:"12/5/3",elem:"Earth",lv:45,skill:"def"},
+{rank:12,kor:"Camouflage",hp:600,atk:85,def:118,eval:1412,base:"260/25/38",grow:"17/3/4",elem:"Dusk",lv:21},
+{rank:31,kor:"Noble Maldek",hp:764,atk:270,def:156,eval:2468,base:"236/50/24",grow:"12/5/3",elem:"Earth",lv:45,skill:"def"},
+{rank:13,kor:"Hod",hp:483,atk:116,def:116,eval:1411,base:"203/36/36",grow:"14/4/4",elem:"Water",lv:21},
+{rank:32,kor:"Dark Vein",hp:1051,atk:165,def:189,eval:2467,base:"347/33/13",grow:"16/3/4",elem:"Fire",lv:45,skill:"boom"},
+{rank:13,kor:"Dark Vein",hp:667,atk:93,def:93,eval:1411,base:"347/33/13",grow:"16/3/4",elem:"Fire",lv:21,skill:"boom"},
+{rank:32,kor:"Noble Dark Vein",hp:1051,atk:165,def:189,eval:2467,base:"347/33/13",grow:"16/3/4",elem:"Fire",lv:45,skill:"boom"},
+{rank:13,kor:"Noble Dark Vein",hp:667,atk:93,def:93,eval:1411,base:"347/33/13",grow:"16/3/4",elem:"Fire",lv:21,skill:"boom"},
+{rank:32,kor:"Brry",hp:875,atk:199,def:199,eval:2467,base:"259/23/23",grow:"14/4/4",elem:"Light",lv:45},
+{rank:13,kor:"Grand Savior",hp:579,atk:104,def:104,eval:1411,base:"199/44/44",grow:"19/3/3",elem:"Wind",lv:21,skill:"def"},
+{rank:32,kor:"Dark Horn",hp:1099,atk:159,def:183,eval:2467,base:"395/27/7",grow:"16/3/4",elem:"Dusk",lv:45},
+{rank:13,kor:"Dark Horn",hp:715,atk:87,def:87,eval:1411,base:"395/27/7",grow:"16/3/4",elem:"Dusk",lv:21},
+{rank:32,kor:"Noble Dark Horn",hp:1099,atk:159,def:183,eval:2467,base:"395/27/7",grow:"16/3/4",elem:"Dusk",lv:45},
+{rank:13,kor:"Noble Dark Horn",hp:715,atk:87,def:87,eval:1411,base:"395/27/7",grow:"16/3/4",elem:"Dusk",lv:21},
+{rank:32,kor:"Rekmall",hp:835,atk:204,def:204,eval:2467,base:"131/28/28",grow:"16/4/4",elem:"Dawn",lv:45},
+{rank:13,kor:"Toarnesce",hp:459,atk:119,def:119,eval:1411,base:"239/39/39",grow:"11/4/4",elem:"Nightmare",lv:21},
+{rank:33,kor:"Glaone",hp:784,atk:210,def:210,eval:2464,base:"256/34/34",grow:"12/4/4",elem:"Earth",lv:45,skill:"boom"},
+{rank:14,kor:"Darnus",hp:598,atk:89,def:114,eval:1410,base:"258/29/34",grow:"17/3/4",elem:"Dusk",lv:21},
+{rank:34,kor:"Predator",hp:772,atk:212,def:208,eval:2452,base:"244/36/32",grow:"12/4/4",elem:"Earth",lv:45},
+{rank:15,kor:"Lalux",hp:629,atk:84,def:111,eval:1409,base:"249/24/51",grow:"19/3/3",elem:"Light",lv:21},
+{rank:34,kor:"Hurricane",hp:920,atk:167,def:216,eval:2452,base:"260/35/40",grow:"15/3/4",elem:"Wind",lv:45,skill:"def"},
+{rank:15,kor:"Sleez Dragon",hp:589,atk:103,def:102,eval:1409,base:"329/23/22",grow:"13/4/4",elem:"Dark",lv:21,skill:"def"},
+{rank:34,kor:"Noble Hurricane",hp:920,atk:167,def:216,eval:2452,base:"260/35/40",grow:"15/3/4",elem:"Wind",lv:45,skill:"def"},
+{rank:16,kor:"Glaone",hp:496,atk:114,def:114,eval:1408,base:"256/34/34",grow:"12/4/4",elem:"Earth",lv:21,skill:"boom"},
+{rank:34,kor:"Sullivan",hp:908,atk:167,def:219,eval:2452,base:"248/35/43",grow:"15/3/4",elem:"Light",lv:45},
+{rank:16,kor:"Taros",hp:440,atk:122,def:120,eval:1408,base:"180/42/40",grow:"13/4/4",elem:"Fire",lv:21},
+{rank:34,kor:"Noble Sullivan",hp:908,atk:167,def:219,eval:2452,base:"248/35/43",grow:"15/3/4",elem:"Light",lv:45},
+{rank:16,kor:"Stra",hp:452,atk:90,def:149,eval:1408,base:"192/30/49",grow:"13/3/5",elem:"Wind",lv:21,skill:"boom"},
+{rank:35,kor:"Lucifer",hp:1030,atk:209,def:146,eval:2450,base:"326/33/14",grow:"16/4/3",elem:"Fire",lv:45,skill:"boom"},
+{rank:16,kor:"Noble Stra",hp:452,atk:90,def:149,eval:1408,base:"192/30/49",grow:"13/3/5",elem:"Wind",lv:21,skill:"boom"},
+{rank:36,kor:"Chroma Instria",hp:780,atk:260,def:157,eval:2448,base:"296/40/25",grow:"11/5/3",elem:"Water",lv:45},
+{rank:16,kor:"Henes",hp:632,atk:108,def:86,eval:1408,base:"292/28/26",grow:"17/4/3",elem:"Light",lv:21,skill:"boom"},
+{rank:36,kor:"Instria",hp:780,atk:260,def:157,eval:2448,base:"296/40/25",grow:"11/5/3",elem:"Light",lv:45},
+{rank:16,kor:"Noble Henes",hp:632,atk:108,def:86,eval:1408,base:"292/28/26",grow:"17/4/3",elem:"Light",lv:21,skill:"boom"},
+{rank:36,kor:"Goldie",hp:740,atk:168,def:259,eval:2448,base:"256/36/39",grow:"11/3/5",elem:"Dawn",lv:45},
+{rank:17,kor:"Magpie Dragon",hp:447,atk:146,def:94,eval:1407,base:"227/46/34",grow:"11/5/3",elem:"Dark",lv:21},
+{rank:37,kor:"Lumindis",hp:783,atk:208,def:208,eval:2447,base:"299/32/32",grow:"11/4/4",elem:"Light",lv:45},
+{rank:18,kor:"Archelon",hp:446,atk:120,def:120,eval:1406,base:"226/40/40",grow:"11/4/4",elem:"Water",lv:21},
+{rank:38,kor:"Voncias Dragon",hp:792,atk:205,def:208,eval:2444,base:"264/29/32",grow:"12/4/4",elem:"Wind",lv:45},
+{rank:19,kor:"Cuanade",hp:592,atk:91,def:112,eval:1404,base:"292/31/32",grow:"15/3/4",elem:"Water",lv:21},
+{rank:38,kor:"Hosiery",hp:984,atk:163,def:202,eval:2444,base:"280/31/26",grow:"16/3/4",elem:"Dawn",lv:45},
+{rank:19,kor:"Aquarium",hp:696,atk:75,def:102,eval:1404,base:"376/15/42",grow:"16/3/3",elem:"Water",lv:21},
+{rank:39,kor:"Grand Savior",hp:1035,atk:176,def:176,eval:2443,base:"199/44/44",grow:"19/3/3",elem:"Wind",lv:45,skill:"def"},
+{rank:19,kor:"Abaddon",hp:592,atk:95,def:108,eval:1404,base:"292/35/28",grow:"15/3/4",elem:"Fire",lv:21},
+{rank:39,kor:"Toddletomtom",hp:971,atk:219,def:149,eval:2443,base:"179/43/17",grow:"18/4/3",elem:"Dawn",lv:45},
+{rank:19,kor:"Sullae",hp:592,atk:115,def:88,eval:1404,base:"292/35/28",grow:"15/4/3",elem:"Dark",lv:21},
+{rank:39,kor:"Toarnesce",hp:723,atk:215,def:215,eval:2443,base:"239/39/39",grow:"11/4/4",elem:"Nightmare",lv:45},
+{rank:20,kor:"Alis Dragon",hp:474,atk:85,def:147,eval:1402,base:"274/25/47",grow:"10/3/5",elem:"Fire",lv:21},
+{rank:40,kor:"Adela",hp:646,atk:224,def:225,eval:2442,base:"206/48/49",grow:"10/4/4",elem:"Earth",lv:45,skill:"boom"},
+{rank:21,kor:"Golrock",hp:461,atk:89,def:146,eval:1401,base:"241/29/46",grow:"11/3/5",elem:"Earth",lv:21},
+{rank:40,kor:"Noble Adela",hp:646,atk:224,def:225,eval:2442,base:"206/48/49",grow:"10/4/4",elem:"Earth",lv:45,skill:"boom"},
+{rank:21,kor:"Kaiserburn",hp:441,atk:157,def:83,eval:1401,base:"221/57/23",grow:"11/5/3",elem:"Dark",lv:21},
+{rank:41,kor:"Paprion",hp:1013,atk:213,def:144,eval:2441,base:"133/37/12",grow:"20/4/3",elem:"Water",lv:45},
+{rank:21,kor:"Noble Kaiserburn",hp:441,atk:157,def:83,eval:1401,base:"221/57/23",grow:"11/5/3",elem:"Dark",lv:21},
+{rank:41,kor:"Lalux",hp:1085,atk:156,def:183,eval:2441,base:"249/24/51",grow:"19/3/3",elem:"Light",lv:45},
+{rank:22,kor:"Agnad",hp:720,atk:91,def:79,eval:1400,base:"400/31/19",grow:"16/3/3",elem:"Fire",lv:21,skill:"boom"},
+{rank:42,kor:"Revenant",hp:1004,atk:202,def:157,eval:2440,base:"300/26/25",grow:"16/4/3",elem:"Nightmare",lv:45,skill:"def"},
+{rank:22,kor:"Thunderrain Dragon",hp:388,atk:171,def:82,eval:1400,base:"188/51/22",grow:"10/6/3",elem:"Light",lv:21},
+{rank:42,kor:"Noble Revenant",hp:1004,atk:202,def:157,eval:2440,base:"300/26/25",grow:"16/4/3",elem:"Nightmare",lv:45,skill:"def"},
+{rank:22,kor:"Magic Star",hp:596,atk:106,def:95,eval:1400,base:"256/26/35",grow:"17/4/3",elem:"Nightmare",lv:21},
+{rank:43,kor:"Magpie Dragon",hp:711,atk:266,def:166,eval:2439,base:"227/46/34",grow:"11/5/3",elem:"Dark",lv:45},
+{rank:23,kor:"Kangkang",hp:453,atk:94,def:142,eval:1397,base:"233/34/42",grow:"11/3/5",elem:"Light",lv:21},
+{rank:44,kor:"Mistilteinn",hp:1198,atk:146,def:164,eval:2438,base:"230/14/32",grow:"22/3/3",elem:"Earth",lv:45},
+{rank:24,kor:"Predator",hp:484,atk:116,def:112,eval:1396,base:"244/36/32",grow:"12/4/4",elem:"Earth",lv:21},
+{rank:44,kor:"Archelon",hp:710,atk:216,def:216,eval:2438,base:"226/40/40",grow:"11/4/4",elem:"Water",lv:45},
+{rank:24,kor:"Zivatar",hp:612,atk:102,def:94,eval:1396,base:"272/22/14",grow:"17/4/4",elem:"Wind",lv:21,skill:"boom"},
+{rank:45,kor:"Cuanade",hp:952,atk:163,def:208,eval:2436,base:"292/31/32",grow:"15/3/4",elem:"Water",lv:45},
+{rank:24,kor:"Hades",hp:540,atk:108,def:106,eval:1396,base:"260/28/26",grow:"14/4/4",elem:"Dark",lv:21,skill:"boom"},
+{rank:45,kor:"Abaddon",hp:952,atk:167,def:204,eval:2436,base:"292/35/28",grow:"15/3/4",elem:"Fire",lv:45},
+{rank:25,kor:"Calici",hp:539,atk:107,def:107,eval:1395,base:"279/27/27",grow:"13/4/4",elem:"Water",lv:21},
+{rank:45,kor:"Sullae",hp:952,atk:211,def:160,eval:2436,base:"292/35/28",grow:"15/4/3",elem:"Dark",lv:45},
+{rank:25,kor:"Chroma Calici",hp:539,atk:107,def:107,eval:1395,base:"279/27/27",grow:"13/4/4",elem:"Dark",lv:21},
+{rank:46,kor:"Diyona",hp:826,atk:202,def:200,eval:2434,base:"122/26/24",grow:"16/4/4",elem:"Light",lv:45},
+{rank:26,kor:"Lucifer",hp:646,atk:113,def:74,eval:1394,base:"326/33/14",grow:"16/4/3",elem:"Fire",lv:21,skill:"boom"},
+{rank:47,kor:"Golrock",hp:725,atk:161,def:266,eval:2433,base:"241/29/46",grow:"11/3/5",elem:"Earth",lv:45},
+{rank:27,kor:"Comet",hp:453,atk:106,def:129,eval:1393,base:"233/46/29",grow:"11/3/5",elem:"Dawn",lv:21},
+{rank:47,kor:"Crookers",hp:841,atk:198,def:200,eval:2433,base:"181/22/24",grow:"15/4/4",elem:"Dark",lv:45},
+{rank:27,kor:"Macaron Dragon",hp:513,atk:127,def:93,eval:1393,base:"293/27/33",grow:"11/5/3",elem:"Dawn",lv:21},
+{rank:47,kor:"Kaiserburn",hp:705,atk:277,def:155,eval:2433,base:"221/57/23",grow:"11/5/3",elem:"Dark",lv:45},
+{rank:28,kor:"Mithra",hp:640,atk:105,def:83,eval:1392,base:"380/25/23",grow:"13/4/3",elem:"Light",lv:21},
+{rank:47,kor:"Noble Kaiserburn",hp:705,atk:277,def:155,eval:2433,base:"221/57/23",grow:"11/5/3",elem:"Dark",lv:45},
+{rank:29,kor:"Raven Dragon",hp:543,atk:108,def:104,eval:1391,base:"283/28/24",grow:"13/4/4",elem:"Nightmare",lv:21},
+{rank:48,kor:"Vera Dragon",hp:1251,atk:151,def:144,eval:2431,base:"195/19/12",grow:"24/3/3",elem:"Dark",lv:45},
+{rank:30,kor:"Noble Galahad",hp:717,atk:86,def:82,eval:1389,base:"377/26/22",grow:"17/3/3",elem:"Earth",lv:21},
+{rank:49,kor:"Atlantis",hp:1117,atk:168,def:160,eval:2429,base:"193/36/28",grow:"21/3/3",elem:"Water",lv:45,skill:"def"},
+{rank:30,kor:"Tara",hp:461,atk:131,def:101,eval:1389,base:"201/31/21",grow:"13/5/4",elem:"Fire",lv:21},
+{rank:49,kor:"Kangkang",hp:717,atk:166,def:262,eval:2429,base:"233/34/42",grow:"11/3/5",elem:"Light",lv:45},
+{rank:30,kor:"Snowball",hp:665,atk:75,def:106,eval:1389,base:"305/15/46",grow:"18/3/3",elem:"Dusk",lv:21},
+{rank:50,kor:"Comet",hp:717,atk:178,def:249,eval:2425,base:"233/46/29",grow:"11/3/5",elem:"Dawn",lv:45},
+{rank:31,kor:"Voncias Dragon",hp:504,atk:109,def:112,eval:1388,base:"264/29/32",grow:"12/4/4",elem:"Wind",lv:21},
+{rank:50,kor:"Macaron Dragon",hp:777,atk:247,def:165,eval:2425,base:"293/27/33",grow:"11/5/3",elem:"Dawn",lv:45},
+{rank:31,kor:"Hosiery",hp:600,atk:91,def:106,eval:1388,base:"280/31/26",grow:"16/3/4",elem:"Dawn",lv:21},
+{rank:51,kor:"Phagos Dragon",hp:726,atk:212,def:212,eval:2422,base:"286/36/36",grow:"10/4/4",elem:"Water",lv:45},
+{rank:32,kor:"Thundergod",hp:447,atk:112,def:123,eval:1387,base:"227/32/43",grow:"11/4/4",elem:"Earth",lv:21},
+{rank:52,kor:"Thundergod",hp:711,atk:208,def:219,eval:2419,base:"227/32/43",grow:"11/4/4",elem:"Earth",lv:45},
+{rank:32,kor:"Chroma Thundergod",hp:447,atk:112,def:123,eval:1387,base:"227/32/43",grow:"11/4/4",elem:"Fire",lv:21},
+{rank:52,kor:"Chroma Thundergod",hp:711,atk:208,def:219,eval:2419,base:"227/32/43",grow:"11/4/4",elem:"Fire",lv:45},
+{rank:32,kor:"Cactus Dragon",hp:715,atk:91,def:77,eval:1387,base:"375/31/17",grow:"17/3/3",elem:"Nightmare",lv:21},
+{rank:52,kor:"Fabregas",hp:1135,atk:175,def:146,eval:2419,base:"211/43/14",grow:"21/3/3",elem:"Wind",lv:45},
+{rank:33,kor:"Revenant",hp:620,atk:106,def:85,eval:1384,base:"300/26/25",grow:"16/4/3",elem:"Nightmare",lv:21,skill:"def"},
+{rank:53,kor:"Dupen",hp:888,atk:241,def:141,eval:2416,base:"96/65/9",grow:"18/4/3",elem:"Earth",lv:45,skill:"boom"},
+{rank:33,kor:"Noble Revenant",hp:620,atk:106,def:85,eval:1384,base:"300/26/25",grow:"16/4/3",elem:"Nightmare",lv:21,skill:"def"},
+{rank:54,kor:"Yggdrasil",hp:1090,atk:126,def:205,eval:2414,base:"210/38/29",grow:"20/2/4",elem:"Earth",lv:45,skill:"def"},
+{rank:34,kor:"Chroma Benevolentia",hp:592,atk:91,def:106,eval:1380,base:"292/31/26",grow:"15/3/4",elem:"Water",lv:21},
+{rank:55,kor:"Chroma Benevolentia",hp:952,atk:163,def:202,eval:2412,base:"292/31/26",grow:"15/3/4",elem:"Water",lv:45},
+{rank:34,kor:"Benevolentia",hp:592,atk:91,def:106,eval:1380,base:"292/31/26",grow:"15/3/4",elem:"Fire",lv:21},
+{rank:55,kor:"Benevolentia",hp:952,atk:163,def:202,eval:2412,base:"292/31/26",grow:"15/3/4",elem:"Fire",lv:45},
+{rank:34,kor:"Flagner",hp:668,atk:102,def:76,eval:1380,base:"328/42/16",grow:"17/3/3",elem:"Dark",lv:21,skill:"def"},
+{rank:56,kor:"Alis Dragon",hp:714,atk:157,def:267,eval:2410,base:"274/25/47",grow:"10/3/5",elem:"Fire",lv:45},
+{rank:35,kor:"Retrieegon",hp:659,atk:74,def:105,eval:1375,base:"299/14/45",grow:"18/3/3",elem:"Dusk",lv:21,skill:"def"},
+{rank:57,kor:"Valcan",hp:959,atk:200,def:162,eval:2407,base:"211/24/30",grow:"17/4/3",elem:"Fire",lv:45,skill:"boom"},
+{rank:36,kor:"Galaxia Dragon",hp:554,atk:98,def:106,eval:1370,base:"274/18/26",grow:"14/4/4",elem:"Dark",lv:21},
+{rank:58,kor:"Banshee",hp:905,atk:206,def:169,eval:2405,base:"113/30/37",grow:"18/4/3",elem:"Dark",lv:45,skill:"boom"},
+{rank:37,kor:"Conrad",hp:644,atk:77,def:104,eval:1368,base:"364/17/24",grow:"14/3/4",elem:"Earth",lv:21},
+{rank:58,kor:"Ultimate",hp:933,atk:206,def:162,eval:2405,base:"229/30/30",grow:"16/4/3",elem:"Dark",lv:45},
+{rank:37,kor:"Ges Dragon",hp:612,atk:115,def:74,eval:1368,base:"252/55/14",grow:"18/3/3",elem:"Water",lv:21},
+{rank:59,kor:"Maple Dragon",hp:792,atk:201,def:201,eval:2400,base:"44/69/25",grow:"17/3/4",elem:"Earth",lv:45},
+{rank:37,kor:"Hollow",hp:616,atk:108,def:80,eval:1368,base:"336/28/20",grow:"14/4/3",elem:"Fire",lv:21},
+{rank:59,kor:"Red Raven",hp:1008,atk:203,def:145,eval:2400,base:"216/27/13",grow:"18/4/3",elem:"Fire",lv:45},
+{rank:37,kor:"Balod",hp:632,atk:92,def:92,eval:1368,base:"272/32/32",grow:"18/3/3",elem:"Dark",lv:21},
+{rank:60,kor:"Snowball",hp:1097,atk:147,def:178,eval:2397,base:"305/15/46",grow:"18/3/3",elem:"Dusk",lv:45},
+{rank:38,kor:"Derr",hp:631,atk:85,def:99,eval:1367,base:"271/25/39",grow:"18/3/3",elem:"Dark",lv:21},
+{rank:61,kor:"Mavrika Dragon",hp:624,atk:216,def:227,eval:2396,base:"228/40/51",grow:"9/4/4",elem:"Light",lv:45},
+{rank:39,kor:"Firefury",hp:746,atk:76,def:79,eval:1366,base:"386/16/19",grow:"18/3/3",elem:"Fire",lv:21},
+{rank:62,kor:"Rekuru Dragon",hp:1184,atk:144,def:158,eval:2392,base:"348/12/26",grow:"19/3/3",elem:"Water",lv:45,skill:"def"},
+{rank:40,kor:"Revelloptin",hp:665,atk:100,def:75,eval:1365,base:"325/40/15",grow:"17/3/3",elem:"Light",lv:21},
+{rank:62,kor:"Stego Dragon",hp:1012,atk:150,def:195,eval:2392,base:"352/18/19",grow:"15/3/4",elem:"Dark",lv:45,skill:"def"},
+{rank:41,kor:"Brry",hp:539,atk:103,def:103,eval:1363,base:"259/23/23",grow:"14/4/4",elem:"Light",lv:21},
+{rank:63,kor:"Enix",hp:1074,atk:143,def:186,eval:2390,base:"414/11/10",grow:"15/3/4",elem:"Earth",lv:45,skill:"def"},
+{rank:42,kor:"Bubble Dragon",hp:778,atk:72,def:74,eval:1362,base:"418/12/14",grow:"18/3/3",elem:"Water",lv:21},
+{rank:64,kor:"Retrieegon",hp:1091,atk:146,def:177,eval:2383,base:"299/14/45",grow:"18/3/3",elem:"Dusk",lv:45,skill:"def"},
+{rank:43,kor:"Puddinggon",hp:597,atk:89,def:102,eval:1361,base:"237/29/42",grow:"18/3/3",elem:"Earth",lv:21},
+{rank:65,kor:"Conrad",hp:980,atk:149,def:200,eval:2376,base:"364/17/24",grow:"14/3/4",elem:"Earth",lv:45},
+{rank:43,kor:"Waterdrop Dragon",hp:669,atk:102,def:71,eval:1361,base:"309/42/11",grow:"18/3/3",elem:"Water",lv:21},
+{rank:65,kor:"Ges Dragon",hp:1044,atk:187,def:146,eval:2376,base:"252/55/14",grow:"18/3/3",elem:"Water",lv:45},
+{rank:43,kor:"Soul",hp:705,atk:82,def:82,eval:1361,base:"345/22/22",grow:"18/3/3",elem:"Light",lv:21},
+{rank:65,kor:"Hollow",hp:952,atk:204,def:152,eval:2376,base:"336/28/20",grow:"14/4/3",elem:"Fire",lv:45},
+{rank:43,kor:"Odin",hp:529,atk:104,def:104,eval:1361,base:"189/44/44",grow:"17/3/3",elem:"Light",lv:21},
+{rank:65,kor:"Mithra",hp:952,atk:201,def:155,eval:2376,base:"380/25/23",grow:"13/4/3",elem:"Light",lv:45},
+{rank:43,kor:"Blackcore",hp:521,atk:113,def:97,eval:1361,base:"181/53/37",grow:"17/3/3",elem:"Dark",lv:21},
+{rank:65,kor:"Balod",hp:1064,atk:164,def:164,eval:2376,base:"272/32/32",grow:"18/3/3",elem:"Dark",lv:45},
+{rank:43,kor:"Lunar Blue Dragon",hp:545,atk:93,def:111,eval:1361,base:"205/33/51",grow:"17/3/3",elem:"Dark",lv:21},
+{rank:65,kor:"Bloody Tusk",hp:1068,atk:182,def:145,eval:2376,base:"364/50/13",grow:"16/3/3",elem:"Nightmare",lv:45},
+{rank:44,kor:"Retentor",hp:640,atk:107,def:73,eval:1360,base:"360/27/13",grow:"14/4/3",elem:"Earth",lv:21,skill:"boom"},
+{rank:65,kor:"Noble Bloody Tusk",hp:1068,atk:182,def:145,eval:2376,base:"364/50/13",grow:"16/3/3",elem:"Nightmare",lv:45},
+{rank:44,kor:"Rekuru Dragon",hp:728,atk:72,def:86,eval:1360,base:"348/12/26",grow:"19/3/3",elem:"Water",lv:21,skill:"def"},
+{rank:66,kor:"Derr",hp:1063,atk:157,def:171,eval:2375,base:"271/25/39",grow:"18/3/3",elem:"Dark",lv:45},
+{rank:44,kor:"Stego Dragon",hp:652,atk:78,def:99,eval:1360,base:"352/18/19",grow:"15/3/4",elem:"Dark",lv:21,skill:"def"},
+{rank:66,kor:"Evil Dawn",hp:991,atk:163,def:183,eval:2375,base:"287/31/51",grow:"16/3/3",elem:"Dawn",lv:45},
+{rank:45,kor:"Gracia",hp:687,atk:84,def:84,eval:1359,base:"327/24/24",grow:"18/3/3",elem:"Water",lv:21},
+{rank:66,kor:"Noble Evil Dawn",hp:991,atk:163,def:183,eval:2375,base:"287/31/51",grow:"16/3/3",elem:"Dawn",lv:45},
+{rank:46,kor:"Yggdrasil",hp:610,atk:78,def:109,eval:1358,base:"210/38/29",grow:"20/2/4",elem:"Earth",lv:21,skill:"def"},
+{rank:67,kor:"Firefury",hp:1178,atk:148,def:151,eval:2374,base:"386/16/19",grow:"18/3/3",elem:"Fire",lv:45},
+{rank:46,kor:"Enix",hp:714,atk:71,def:90,eval:1358,base:"414/11/10",grow:"15/3/4",elem:"Earth",lv:21,skill:"def"},
+{rank:68,kor:"Noble Galahad",hp:1125,atk:158,def:154,eval:2373,base:"377/26/22",grow:"17/3/3",elem:"Earth",lv:45},
+{rank:46,kor:"Perumata",hp:698,atk:91,def:74,eval:1358,base:"338/31/14",grow:"18/3/3",elem:"Nightmare",lv:21,skill:"def"},
+{rank:69,kor:"Cactus Dragon",hp:1123,atk:163,def:149,eval:2371,base:"375/31/17",grow:"17/3/3",elem:"Nightmare",lv:45},
+{rank:47,kor:"Skoorum",hp:609,atk:112,def:75,eval:1357,base:"249/52/15",grow:"18/3/3",elem:"Fire",lv:21,skill:"boom"},
+{rank:70,kor:"Bubble Dragon",hp:1210,atk:144,def:146,eval:2370,base:"418/12/14",grow:"18/3/3",elem:"Water",lv:45},
+{rank:47,kor:"Lios",hp:729,atk:80,def:77,eval:1357,base:"369/20/17",grow:"18/3/3",elem:"Wind",lv:21},
+{rank:71,kor:"Puddinggon",hp:1029,atk:161,def:174,eval:2369,base:"237/29/42",grow:"18/3/3",elem:"Earth",lv:45},
+{rank:47,kor:"Maga",hp:597,atk:86,def:104,eval:1357,base:"317/26/24",grow:"14/3/4",elem:"Wind",lv:21},
+{rank:71,kor:"Waterdrop Dragon",hp:1101,atk:174,def:143,eval:2369,base:"309/42/11",grow:"18/3/3",elem:"Water",lv:45},
+{rank:47,kor:"Barian",hp:669,atk:73,def:99,eval:1357,base:"389/13/19",grow:"14/3/4",elem:"Light",lv:21},
+{rank:71,kor:"Soul",hp:1137,atk:154,def:154,eval:2369,base:"345/22/22",grow:"18/3/3",elem:"Light",lv:45},
+{rank:47,kor:"Dilrang",hp:757,atk:75,def:75,eval:1357,base:"397/15/15",grow:"18/3/3",elem:"Light",lv:21},
+{rank:72,kor:"Retentor",hp:976,atk:203,def:145,eval:2368,base:"360/27/13",grow:"14/4/3",elem:"Earth",lv:45,skill:"boom"},
+{rank:47,kor:"Mist Dragon",hp:733,atk:78,def:78,eval:1357,base:"373/18/18",grow:"18/3/3",elem:"Dark",lv:21},
+{rank:73,kor:"Gracia",hp:1119,atk:156,def:156,eval:2367,base:"327/24/24",grow:"18/3/3",elem:"Water",lv:45},
+{rank:48,kor:"Atlantis",hp:613,atk:96,def:88,eval:1349,base:"193/36/28",grow:"21/3/3",elem:"Water",lv:21,skill:"def"},
+{rank:74,kor:"Perumata",hp:1130,atk:163,def:146,eval:2366,base:"338/31/14",grow:"18/3/3",elem:"Nightmare",lv:45,skill:"def"},
+{rank:48,kor:"Ultimate",hp:549,atk:110,def:90,eval:1349,base:"229/30/30",grow:"16/4/3",elem:"Dark",lv:21},
+{rank:75,kor:"Skoorum",hp:1041,atk:184,def:147,eval:2365,base:"249/52/15",grow:"18/3/3",elem:"Fire",lv:45,skill:"boom"},
+{rank:49,kor:"Angra",hp:670,atk:73,def:96,eval:1346,base:"210/13/36",grow:"23/3/3",elem:"Wind",lv:21},
+{rank:75,kor:"Lios",hp:1161,atk:152,def:149,eval:2365,base:"369/20/17",grow:"18/3/3",elem:"Wind",lv:45},
+{rank:50,kor:"Fabregas",hp:631,atk:103,def:74,eval:1339,base:"211/43/14",grow:"21/3/3",elem:"Wind",lv:21},
+{rank:75,kor:"Maga",hp:933,atk:158,def:200,eval:2365,base:"317/26/24",grow:"14/3/4",elem:"Wind",lv:45},
+{rank:50,kor:"Toddletomtom",hp:539,atk:123,def:77,eval:1339,base:"179/43/17",grow:"18/4/3",elem:"Dawn",lv:21},
+{rank:75,kor:"Barian",hp:1005,atk:145,def:195,eval:2365,base:"389/13/19",grow:"14/3/4",elem:"Light",lv:45},
+{rank:51,kor:"Mistilteinn",hp:670,atk:74,def:92,eval:1334,base:"230/14/32",grow:"22/3/3",elem:"Earth",lv:21},
+{rank:75,kor:"Dilrang",hp:1189,atk:147,def:147,eval:2365,base:"397/15/15",grow:"18/3/3",elem:"Light",lv:45},
+{rank:52,kor:"Valcan",hp:551,atk:104,def:90,eval:1327,base:"211/24/30",grow:"17/4/3",elem:"Fire",lv:21,skill:"boom"},
+{rank:75,kor:"Mist Dragon",hp:1165,atk:150,def:150,eval:2365,base:"373/18/18",grow:"18/3/3",elem:"Dark",lv:45},
+{rank:53,kor:"Maple Dragon",hp:384,atk:129,def:105,eval:1320,base:"44/69/25",grow:"17/3/4",elem:"Earth",lv:21},
+{rank:76,kor:"Aquarium",hp:1080,atk:147,def:174,eval:2364,base:"376/15/42",grow:"16/3/3",elem:"Water",lv:45},
+{rank:54,kor:"Rekmall",hp:451,atk:108,def:108,eval:1315,base:"131/28/28",grow:"16/4/4",elem:"Dawn",lv:21},
+{rank:76,kor:"Flagner",hp:1076,atk:174,def:148,eval:2364,base:"328/42/16",grow:"17/3/3",elem:"Dark",lv:45,skill:"def"},
+{rank:55,kor:"Dupen",hp:456,atk:145,def:69,eval:1312,base:"96/65/9",grow:"18/4/3",elem:"Earth",lv:21,skill:"boom"},
+{rank:77,kor:"Agnad",hp:1104,atk:163,def:151,eval:2360,base:"400/31/19",grow:"16/3/3",elem:"Fire",lv:45,skill:"boom"},
+{rank:56,kor:"Crookers",hp:481,atk:102,def:104,eval:1305,base:"181/22/24",grow:"15/4/4",elem:"Dark",lv:21},
+{rank:78,kor:"Revelloptin",hp:1073,atk:172,def:147,eval:2349,base:"325/40/15",grow:"17/3/3",elem:"Light",lv:45},
+{rank:57,kor:"Banshee",hp:473,atk:110,def:97,eval:1301,base:"113/30/37",grow:"18/4/3",elem:"Dark",lv:21,skill:"boom"},
+{rank:79,kor:"Avernale",hp:872,atk:159,def:210,eval:2348,base:"388/27/34",grow:"11/3/4",elem:"Light",lv:45},
+{rank:58,kor:"Red Raven",hp:576,atk:107,def:73,eval:1296,base:"216/27/13",grow:"18/4/3",elem:"Fire",lv:21},
+{rank:80,kor:"Odin",hp:937,atk:176,def:176,eval:2345,base:"189/44/44",grow:"17/3/3",elem:"Light",lv:45},
+{rank:59,kor:"Paprion",hp:533,atk:117,def:72,eval:1289,base:"133/37/12",grow:"20/4/3",elem:"Water",lv:21},
+{rank:80,kor:"Blackcore",hp:929,atk:185,def:169,eval:2345,base:"181/53/37",grow:"17/3/3",elem:"Dark",lv:45},
+{rank:60,kor:"Diyona",hp:442,atk:106,def:104,eval:1282,base:"122/26/24",grow:"16/4/4",elem:"Light",lv:21},
+{rank:80,kor:"Lunar Blue Dragon",hp:953,atk:165,def:183,eval:2345,base:"205/33/51",grow:"17/3/3",elem:"Dark",lv:45},
+{rank:61,kor:"Vera Dragon",hp:675,atk:79,def:72,eval:1279,base:"195/19/12",grow:"24/3/3",elem:"Dark",lv:21},
+{rank:4,kor:"Pangpang",hp:541,atk:254,def:254,eval:2573,base:"145/34/34",grow:"9/5/5",elem:"Wind",lv:45},
+{rank:5,kor:"Mystic Arts",hp:1066,atk:156,def:220,eval:2570,base:"186/24/44",grow:"20/3/4",elem:"Earth",lv:45},
+{rank:27,kor:"Pangpang",hp:325,atk:134,def:134,eval:1397,base:"145/34/34",grow:"9/5/5",elem:"Wind",lv:21},
+{rank:8,kor:"Mystic Arts",hp:586,atk:84,def:124,eval:1418,base:"186/24/44",grow:"20/3/4",elem:"Earth",lv:21},
+{rank:2,kor:"Skuld",hp:584,atk:251,def:251,eval:2592,base:"188/31/31",grow:"9/5/5",elem:"Fire",lv:45,skill:"boom"},
+{rank:8,kor:"Skuld",hp:368,atk:131,def:131,eval:1416,base:"188/31/31",grow:"9/5/5",elem:"Fire",lv:21,skill:"boom"},
+];
+
+let sssLvFilter=45; let sssElemFilters=new Set();
+
+function setSSSLv(lv){
+  sssLvFilter=lv;
+  document.querySelectorAll('[id^="sss-lv-"]').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sss-lv-'+lv).classList.add('active');
+  render();
+}
+function setSSSElem(e){
+  if(sssElemFilters.has(e)) sssElemFilters.delete(e);
+  else sssElemFilters.add(e);
+  document.querySelectorAll('[id^="sss-e-"]').forEach(b=>{
+    const id=b.id.replace('sss-e-','').replace('all','All');
+    b.classList.toggle('active', sssElemFilters.has(id) || (id==='All' && sssElemFilters.size===0));
+  });
+  render();
+}
+
+const elemColors={
+  'Earth':['#fff3e0','#e65100'],'Water':['#e3f2fd','#1565c0'],'Fire':['#fce4ec','#b71c1c'],
+  'Wind':['#e8f5e9','#1b5e20'],'Light':['#fffde7','#f57f17'],'Dark':['#ede7f6','#4a148c'],
+  'Dusk':['#fdf2f8','#880e4f'],'Dawn':['#fff8e1','#6d4c41'],'Nightmare':['#f3e5f5','#6a1b9a']
+};
+
+const sssImgMap={
+  "Cosmos":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/441/profile/4.png",
+  "Adela":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/398/profile/4.png",
+  "Huginn":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/657/profile/4.png",
+  "Noble Adela":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/539/profile/4.png",
+  "Muninn":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/658/profile/4.png",
+  "Girdletail Dragon":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/636/profile/4.png",
+  "Nello Dragon":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/390/profile/4.png",
+  "Zivatar":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/525/profile/4.png",
+  "Noble Nello Dragon":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/543/profile/4.png",
+  "Sleipnir":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/679/profile/4.png",
+  "Hurricane":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/433/profile/4.png",
+  "Noble Hurricane":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/690/profile/4.png",
+  "Fenrir":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/507/profile/4.png",
+  "Noble Fenrir":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/680/profile/4.png",
+  "Sullivan":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/449/profile/4.png",
+  "Tara":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/561/profile/4.png",
+  "Noble Sullivan":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/666/profile/4.png",
+  "Jango":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/670/profile/4.png",
+  "Fafnir":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/656/profile/4.png",
+  "Patroa":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/522/profile/4.png",
+  "Hell Kaiser":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/352/profile/4.png",
+  "Charlotte":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/477/profile/4.png",
+  "Noble Hell Kaiser":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/495/profile/4.png",
+  "Lakion":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/619/profile/4.png",
+  "Eshu":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/607/profile/4.png",
+  "Aegis":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/478/profile/4.png",
+  "Noble Aegis":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/534/profile/4.png",
+  "Hod":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/678/profile/4.png",
+  "Thunderrain Dragon":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/391/profile/4.png",
+  "Ender Dragon":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/369/profile/4.png",
+  "Hades":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/434/profile/4.png",
+  "Noble Ender Dragon":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/524/profile/4.png",
+  "Dianu":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/577/profile/4.png",
+  "Noble Dianu":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/605/profile/4.png",
+  "Deva":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/584/profile/4.png",
+  "Skink Dragon":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/591/profile/4.png",
+  "Tititok":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/642/profile/4.png",
+  "Baekho":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/599/profile/4.png",
+  "Reverie":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/643/profile/4.png",
+  "Tempest":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/464/profile/4.png",
+  "Milla":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/491/profile/4.png",
+  "Rotis":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/503/profile/4.png",
+  "Kirin":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/608/profile/4.png",
+  "Chroma Instria":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/546/profile/4.png",
+  "Charcoal Flame":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/455/profile/4.png",
+  "Jujag":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/598/profile/4.png",
+  "Sunset":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/465/profile/4.png",
+  "Camouflage":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/472/profile/4.png",
+  "Excir":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/431/profile/4.png",
+  "Darnus":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/521/profile/4.png",
+  "Noble Excir":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/632/profile/4.png",
+  "Sleez Dragon":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/399/profile/4.png",
+  "Illan":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/440/profile/4.png",
+  "Taros":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/430/profile/4.png",
+  "Feros":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/576/profile/4.png",
+  "Stra":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/445/profile/4.png",
+  "Noble Feros":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/596/profile/4.png",
+  "Noble Stra":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/572/profile/4.png",
+  "Crested Dragon":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/592/profile/4.png",
+  "Henes":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/446/profile/4.png",
+  "White Destroyer":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/511/profile/4.png",
+  "Noble Henes":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/589/profile/4.png",
+  "Milatas":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/541/profile/4.png",
+  "Granos":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/585/profile/4.png",
+  "Instria":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/545/profile/4.png",
+  "Magic Star":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/308/profile/4.png",
+  "Calici":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/536/profile/4.png",
+  "Lunera Dragon":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/377/profile/4.png",
+  "Chroma Calici":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/537/profile/4.png",
+  "Noble Lunera Dragon":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/628/profile/4.png",
+  "Angra":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/312/profile/4.png",
+  "Anurhada":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/468/profile/4.png",
+  "Galaxia Dragon":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/404/profile/4.png",
+  "Noble Anurhada":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/616/profile/4.png",
+  "Hekate":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/490/profile/4.png",
+  "Meteor":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/471/profile/4.png",
+  "Eternal":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/500/profile/4.png",
+  "Chroma Milatas":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/542/profile/4.png",
+  "Stealth":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/586/profile/4.png",
+  "Goldie":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/618/profile/4.png",
+  "Bloody Tusk":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/336/profile/4.png",
+  "Noble Bloody Tusk":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/505/profile/4.png",
+  "Rakshasa":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/609/profile/4.png",
+  "Griffar":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/626/profile/4.png",
+  "Lumindis":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/610/profile/4.png",
+  "Evil Dawn":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/354/profile/4.png",
+  "Noble Evil Dawn":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/551/profile/4.png",
+  "Ninetales":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/564/profile/4.png",
+  "Qualle":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/487/profile/4.png",
+  "Phagos Dragon":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/402/profile/4.png",
+  "Lusong":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/565/profile/4.png",
+  "Abies":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/454/profile/4.png",
+  "Lucio":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/669/profile/4.png",
+  "Canine":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/459/profile/4.png",
+  "Raven Dragon":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/692/profile/4.png",
+  "Paruparu":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/683/profile/4.png",
+  "Florea":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/668/profile/4.png",
+  "Maldek":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/444/profile/4.png",
+  "Noble Maldek":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/580/profile/4.png",
+  "Mavrika Dragon":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/406/profile/4.png",
+  "Avernale":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/630/profile/4.png",
+  "Dark Vein":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/335/profile/4.png",
+  "Noble Dark Vein":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/514/profile/4.png",
+  "Brry":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/682/profile/4.png",
+  "Grand Savior":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/357/profile/4.png",
+  "Dark Horn":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/270/profile/4.png",
+  "Noble Dark Horn":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/640/profile/4.png",
+  "Rekmall":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/264/profile/4.png",
+  "Toarnesce":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/631/profile/4.png",
+  "Glaone":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/627/profile/4.png",
+  "Predator":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/435/profile/4.png",
+  "Lalux":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/363/profile/4.png",
+  "Lucifer":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/320/profile/4.png",
+  "Magpie Dragon":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/693/profile/4.png",
+  "Archelon":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/639/profile/4.png",
+  "Voncias Dragon":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/403/profile/4.png",
+  "Cuanade":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/571/profile/4.png",
+  "Hosiery":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/560/profile/4.png",
+  "Aquarium":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/299/profile/4.png",
+  "Abaddon":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/570/profile/4.png",
+  "Toddletomtom":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/339/profile/4.png",
+  "Sullae":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/582/profile/4.png",
+  "Alis Dragon":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/405/profile/4.png",
+  "Golrock":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/384/profile/4.png",
+  "Kaiserburn":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/383/profile/4.png",
+  "Paprion":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/118/profile/4.png",
+  "Noble Kaiserburn":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/562/profile/4.png",
+  "Agnad":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/285/profile/4.png",
+  "Revenant":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/353/profile/4.png",
+  "Noble Revenant":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/558/profile/4.png",
+  "Kangkang":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/581/profile/4.png",
+  "Mistilteinn":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/292/profile/4.png",
+  "Diyona":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/172/profile/4.png",
+  "Comet":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/510/profile/4.png",
+  "Crookers":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/181/profile/4.png",
+  "Macaron Dragon":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/638/profile/4.png",
+  "Mithra":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/333/profile/4.png",
+  "Vera Dragon":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/171/profile/4.png",
+  "Noble Galahad":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/550/profile/4.png",
+  "Atlantis":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/251/profile/4.png",
+  "Snowball":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/504/profile/4.png",
+  "Thundergod":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/552/profile/4.png",
+  "Chroma Thundergod":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/553/profile/4.png",
+  "Cactus Dragon":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/341/profile/4.png",
+  "Fabregas":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/174/profile/4.png",
+  "Dupen":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/221/profile/4.png",
+  "Yggdrasil":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/243/profile/4.png",
+  "Chroma Benevolentia":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/549/profile/4.png",
+  "Benevolentia":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/548/profile/4.png",
+  "Flagner":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/295/profile/4.png",
+  "Retrieegon":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/338/profile/4.png",
+  "Valcan":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/119/profile/4.png",
+  "Banshee":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/182/profile/4.png",
+  "Conrad":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/173/profile/4.png",
+  "Ultimate":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/307/profile/4.png",
+  "Ges Dragon":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/170/profile/4.png",
+  "Maple Dragon":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/222/profile/4.png",
+  "Hollow":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/183/profile/4.png",
+  "Red Raven":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/239/profile/4.png",
+  "Balod":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/121/profile/4.png",
+  "Derr":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/263/profile/4.png",
+  "Firefury":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/175/profile/4.png",
+  "Rekuru Dragon":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/179/profile/4.png",
+  "Revelloptin":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/288/profile/4.png",
+  "Stego Dragon":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/176/profile/4.png",
+  "Enix":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/120/profile/4.png",
+  "Bubble Dragon":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/286/profile/4.png",
+  "Puddinggon":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/359/profile/4.png",
+  "Waterdrop Dragon":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/262/profile/4.png",
+  "Soul":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/261/profile/4.png",
+  "Odin":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/189/profile/4.png",
+  "Blackcore":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/188/profile/4.png",
+  "Lunar Blue Dragon":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/204/profile/4.png",
+  "Retentor":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/177/profile/4.png",
+  "Gracia":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/193/profile/4.png",
+  "Perumata":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/311/profile/4.png",
+  "Skoorum":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/195/profile/4.png",
+  "Lios":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/116/profile/4.png",
+  "Maga":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/194/profile/4.png",
+  "Barian":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/117/profile/4.png",
+  "Dilrang":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/223/profile/4.png",
+  "Mist Dragon":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/178/profile/4.png",
+  "Pangpang":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/699/profile/4.png",
+  "Mystic Arts":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/700/profile/4.png",
+  "Skuld":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/702/profile/4.png",
+};
+
+const skillIcons = {
+  boom: 'https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/boom.png',
+  def: 'https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/DEF.png'
+};
+const sssElemIcons={
+  "Earth":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/11.png",
+  "Water":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/12.png",
+  "Fire":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/13.png",
+  "Wind":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/14.png",
+  "Light":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/84.png",
+  "Dark":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/87.png",
+  "Dusk":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/487.png",
+  "Dawn":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/486.png",
+  "Nightmare":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/488.png",
+};
+function render(){
+  let list=sssData;
+  list=list.filter(d=>d.lv===sssLvFilter);
+  if(sssElemFilters.size>0) list=list.filter(d=>sssElemFilters.has(d.elem));
+  list=list.slice().sort((a,b)=>b.eval-a.eval);
+  let autoRank=1;
+  list.forEach((d,i)=>{
+    if(i>0 && d.eval<list[i-1].eval) autoRank=i+1;
+    d._rank=autoRank;
+  });
+
+  document.getElementById('sss-count').textContent=`${list.length} dragons`;
+  const tbody=document.getElementById('sss-tbody');
+  tbody.innerHTML='';
+  if(!list.length){
+    tbody.innerHTML='<tr><td colspan="10" style="text-align:center;padding:2rem;color:#555">Results not found</td></tr>';
+    return;
+  }
+  list.forEach(d=>{
+    const [bg,tx]=(elemColors[d.elem]||['#2a2a3e','#aaa']);
+    const tr=document.createElement('tr');
+    tr.className=`e-row-${d.elem}`;
+    const sssIconUrl=sssElemIcons[d.elem]||'';
+    const sssIconCell=sssIconUrl?`<img src="${sssIconUrl}" class="dex-elem-icon" alt="${d.elem}">`:`<div class="dex-elem-icon-placeholder"></div>`;
+    const sssImgCell=sssImgMap[d.kor]?`<img src="${sssImgMap[d.kor]}" class="dragon-img" alt="${d.kor}">`:`<div class="img-placeholder"></div>`;
+    tr.innerHTML=`
+      <td class="td-mobile row1">
+        <span style="font-weight:700;color:#5dcff5;min-width:24px;text-align:center">${d._rank}</span>
+        ${sssImgCell}
+        <span style="font-size:12px;font-weight:500;flex:1">${d.kor}</span>${d.skill ? `<img src="${skillIcons[d.skill]}" title="${d.skill==='boom' ? 'Fox' : 'DEF%'}" style="width:18px;height:18px;margin-left:5px;vertical-align:middle;opacity:0.9">` : ""}
+        ${sssIconCell}
+        <span style="font-size:11px;color:#aaa">Lv.${d.lv}</span>
+      </td>
+      <td class="td-mobile row2">
+        <div class="row2-cell"><span class="r2-label">HP</span><span class="r2-val" style="color:#66bb6a">${d.hp}</span></div>
+        <div class="row2-cell"><span class="r2-label">ATK</span><span class="r2-val" style="color:#ef5350">${d.atk}</span></div>
+        <div class="row2-cell"><span class="r2-label">DEF</span><span class="r2-val" style="color:#5dcff5">${d.def}</span></div>
+        <div class="row2-cell"><span class="r2-label">Eval</span><span class="r2-val" style="color:#f5c842;font-weight:700">${d.eval}</span></div>
+        <div class="row2-cell"><span class="r2-label">Base</span><span class="r2-val" style="color:#aaa">${d.base}</span></div>
+        <div class="row2-cell"><span class="r2-label">Growth</span><span class="r2-val" style="color:#aaa">${d.grow}</span></div>
+      </td>
+      <td class="td-pc center" style="font-weight:700;color:#5dcff5">${d._rank}</td>
+      <td class="td-pc center">${sssImgCell}</td>
+      <td class="td-pc left" style="font-size:12px;font-weight:500;white-space:nowrap">${d.kor}${d.skill ? `<img src="${skillIcons[d.skill]}" title="${d.skill==='boom' ? 'Fox' : 'DEF%'}" style="width:18px;height:18px;margin-left:5px;vertical-align:middle;opacity:0.9">` : ""}</td>
+      <td class="td-pc">${sssIconCell}</td>
+      <td class="td-pc" style="font-size:11px;color:#aaa">Lv.${d.lv}</td>
+      <td class="td-pc" style="color:#66bb6a;font-size:11px">${d.hp}</td>
+      <td class="td-pc" style="color:#ef5350;font-size:11px">${d.atk}</td>
+      <td class="td-pc" style="color:#5dcff5;font-size:11px">${d.def}</td>
+      <td class="td-pc" style="color:#f5c842;font-weight:700">${d.eval}</td>
+      <td class="td-pc" style="font-size:11px;color:#aaa">${d.base}</td>
+      <td class="td-pc" style="font-size:11px;color:#aaa">${d.grow}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+render();
+</script>
+<script>
+(function(){
+  var link=document.getElementById('theme-css');
+  if(!link)return;
+  var sync=function(){
+    var c=document.getElementById('custom-theme-style');
+    if(c&&c.textContent&&c.textContent.length>0){document.documentElement.removeAttribute('data-theme');return;}
+    var m=String(link.href||'').match(/theme-(dark|light|beige)\.css/);
+    document.documentElement.setAttribute('data-theme',m?m[1]:'dark');
+  };
+  sync();
+  new MutationObserver(sync).observe(link,{attributes:true,attributeFilter:['href']});
+  new MutationObserver(sync).observe(document.head,{childList:true,subtree:true,characterData:true});
+})();
+</script>
+</body>
+</html>

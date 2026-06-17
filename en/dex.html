@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dragon Encyclopedia</title>
+<link id="theme-css" rel="stylesheet" href="../theme-dark.css">
+<script src="./theme.js"></script>
+<script src="./stat.js"></script>
+<style>
+[data-theme="dark"]{--bg:#0e1116;--bg2:#161a22;--bg3:#1c212c;--border:#23293a;--border2:#1b1f2a;--border3:#2d3447;--text:#eaecf2;--text2:#b3b9c7;--text3:#7d8597;--text4:#565d6e;--accent:#7aa2f7;--accent-bg:rgba(122,162,247,0.12);--accent-border:rgba(122,162,247,0.30)}
+[data-theme="light"]{--bg:#f7f7f8;--bg2:#ffffff;--bg3:#f1f2f4;--border:#e6e7ea;--border2:#eeeff2;--border3:#d4d6db;--text:#15171c;--text2:#4a4d57;--text3:#71757f;--text4:#9aa0aa;--accent:#2f6fed;--accent-bg:rgba(47,111,237,0.10);--accent-border:rgba(47,111,237,0.32)}
+[data-theme="beige"]{--bg:#f3ecdd;--bg2:#faf3e2;--bg3:#ebe0c7;--border:#d8caa8;--border2:#e1d4b3;--border3:#c0ad84;--text:#2a2316;--text2:#5a4e34;--text3:#837553;--text4:#a99971;--accent:#b06a1e;--accent-bg:rgba(176,106,30,0.10);--accent-border:rgba(176,106,30,0.32)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* 상단 바 */
+#top-bar{display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid var(--border);background:var(--bg2)}
+#back-btn{display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:7px;border:1px solid var(--border3);background:var(--bg3);color:var(--text2);font-size:12px;cursor:pointer;text-decoration:none;transition:all 0.12s;flex-shrink:0}
+#back-btn:hover{border-color:var(--accent-border);color:var(--text)}
+#top-title{font-size:14px;font-weight:600;color:var(--text2)}
+
+/* 필터 */
+#filter-section{padding:12px 0 10px;border-bottom:1px solid var(--border);margin-bottom:14px}
+#search-row{margin-bottom:8px}
+#search-input{width:100%;padding:9px 14px;border:1px solid var(--border3);border-radius:8px;font-size:14px;background:var(--bg3);color:var(--text);outline:none}
+#search-input:focus{border-color:var(--accent-border)}
+#search-input::placeholder{color:var(--text4)}
+#filter-row{display:flex;flex-direction:column;gap:6px}
+.filter-line{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.filter-label{font-size:11px;color:var(--text3);margin-right:2px;flex-shrink:0}
+.ftag{padding:4px 10px;border-radius:16px;font-size:11px;border:1px solid var(--border3);cursor:pointer;background:var(--bg3);color:var(--text2);transition:all 0.12s;display:flex;align-items:center;gap:4px}
+.ftag img{width:16px;height:16px;border-radius:3px;display:block}
+.ftag:hover{border-color:var(--accent-border);color:var(--text)}
+.ftag.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.filter-sep{width:1px;height:16px;background:var(--border3);margin:0 4px;flex-shrink:0;align-self:center}
+#filter-count{font-size:12px;color:var(--text3);margin-top:7px}
+
+/* 메인 */
+#page{max-width:900px;margin:0 auto;padding:16px 16px 64px}
+
+/* 드래곤 엔트리 */
+#entries{animation:fadeIn 0.15s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.dragon-entry{border:1px solid var(--border);border-radius:12px;background:var(--bg2);margin-bottom:16px;overflow:hidden}
+.entry-body{display:flex;gap:20px;padding:20px;align-items:flex-start}
+
+/* 이미지 박스 */
+.img-box{width:190px;flex-shrink:0;border:1px solid var(--border3);border-radius:10px;background:var(--bg3);display:flex;align-items:center;justify-content:center;min-height:190px;overflow:hidden}
+.main-img{width:170px;height:170px;object-fit:contain;display:block}
+.main-img-ph{width:170px;height:170px;display:none;align-items:center;justify-content:center;color:var(--text4);font-size:12px}
+
+/* 정보 패널 */
+.info-panel{flex:1;display:flex;flex-direction:column;gap:10px;min-width:0}
+.name-meta{display:flex;flex-direction:column;gap:6px}
+.dragon-name{font-size:22px;font-weight:700;color:var(--text)}
+.meta-row{display:flex;align-items:center;font-size:13px;color:var(--text2);flex-shrink:0;flex-wrap:wrap;gap:2px}
+.meta-sep{color:var(--border3);margin:0 7px}
+.meta-label{color:var(--text3)}
+.meta-val{font-weight:600;color:var(--text)}
+.desc-box{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:11px 13px;font-size:13px;color:var(--text2);line-height:1.8;min-height:52px}
+.strip-row{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.profile-strip{display:flex;gap:5px;flex-wrap:wrap}
+.pthumb{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;transition:opacity 0.12s}
+.pthumb:hover{opacity:0.8}
+.pthumb.unavail{opacity:0.2;cursor:default;pointer-events:none}
+.pthumb-img{width:50px;height:50px;object-fit:contain;border-radius:7px;border:2px solid var(--border3);background:var(--bg2);display:block;transition:border-color 0.12s}
+.pthumb-img.sel{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.pthumb-ph{width:50px;height:50px;border-radius:7px;border:1.5px dashed var(--border3);background:var(--bg2);display:flex;align-items:center;justify-content:center;color:var(--text4);font-size:9px}
+.pthumb-label{font-size:9px;color:var(--text3)}
+.state-btn{padding:6px 14px;border-radius:8px;border:1px solid var(--border3);background:var(--bg3);color:var(--text2);font-size:13px;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background 0.1s}
+.state-btn:hover{background:var(--border);color:var(--text)}
+
+/* 스텟 테이블 */
+.stat-section{display:none;border-top:1px solid var(--border)}
+.stat-table{width:100%;border-collapse:collapse;font-size:13px;background:var(--bg2)}
+.stat-table th{background:var(--bg3);padding:8px 12px;text-align:center;font-weight:500;color:var(--text2);border-bottom:1px solid var(--border)}
+.stat-table td{padding:8px 12px;text-align:center;color:var(--text);border-bottom:0.5px solid var(--border2)}
+.stat-table tbody tr:last-child td{border-bottom:none}
+.stat-table tbody tr:hover td{background:var(--bg3)}
+.stat-table .row-label{text-align:left;font-weight:500;color:var(--text2);width:80px}
+.stat-nil{color:var(--text4)}
+
+/* 속성 배지 */
+.eb-Earth{background:#fff3e0;color:#e65100}.eb-Water{background:#e3f2fd;color:#1565c0}
+.eb-Fire{background:#fce4ec;color:#b71c1c}.eb-Wind{background:#e8f5e9;color:#1b5e20}
+.eb-Light{background:#fffde7;color:#f57f17}.eb-Dark{background:#ede7f6;color:#4a148c}
+.eb-Dusk{background:#fdf2f8;color:#880e4f}.eb-Dawn{background:#fff8e1;color:#6d4c41}
+.eb-Nightmare{background:#f3e5f5;color:#6a1b9a}
+
+/* 페이지네이션 */
+#pagination{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:center;align-items:center;gap:4px;padding:10px 16px;flex-wrap:nowrap;background:var(--bg2);border-top:1px solid var(--border);z-index:100}
+.pg-btn{min-width:34px;height:34px;padding:0 6px;border-radius:6px;border:1px solid var(--border3);background:var(--bg2);color:var(--text2);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;text-decoration:none;transition:all 0.12s}
+.pg-btn:hover{border-color:var(--accent-border);color:var(--text)}
+.pg-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600}
+.pg-btn.disabled{opacity:0.25;cursor:default;pointer-events:none}
+@media(max-width:640px){
+  .pg-btn{min-width:26px;height:30px;font-size:12px;padding:0 4px}
+  #pagination{gap:3px;padding:8px 10px}
+}
+
+@media(max-width:620px){
+  .entry-body{flex-direction:column;align-items:center;padding:14px}
+  .img-box{width:160px;min-height:160px}
+  .main-img,.main-img-ph{width:140px;height:140px}
+  .name-meta{flex-direction:column;gap:5px}
+  .pthumb-img,.pthumb-ph{width:42px;height:42px}
+}
+</style>
+</head>
+<body>
+
+<div id="top-bar">
+  <a id="back-btn" href="./index.html">← Back to Main</a>
+  <span id="top-title">Dragon Encyclopedia</span>
+</div>
+
+<div id="page">
+  <div id="filter-section">
+    <div id="search-row">
+      <input id="search-input" type="text" placeholder="Search dragons..." oninput="onFilter()">
+    </div>
+    <div id="filter-row"></div>
+  </div>
+  <div id="entries"></div>
+  <div id="pagination"></div>
+</div>
+
+<script>
+const dexData=[
+{n:"God Dragon",e:"Light",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:1,tg:"-2.575",cd:"Yes",id:1},
+{n:"Wind Dragon",e:"Wind",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:1,tg:"-2.175",cd:"Yes",id:2},
+{n:"Six Legged Dragon",e:"Wind",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:1,tg:"-2.175",cd:"Yes",id:3},
+{n:"Blue Dragon",e:"Wind",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"-2.175",cd:"Yes",id:4},
+{n:"Fire Dragon",e:"Fire",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"-2.175",cd:"Yes",id:5},
+{n:"Lightning Dragon",e:"Fire",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:1,tg:"-1.275",cd:"Yes",id:6},
+{n:"Lava Dragon",e:"Fire",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:7},
+{n:"Phoenix",e:"Fire",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"-2.175",cd:"Yes",id:8},
+{n:"Frost Dragon",e:"Water",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"-1.275",cd:"Yes",id:9},
+{n:"Ness",e:"Water",t:"HP",t_kr:"HP",aw:1,ad:0,tr:1,lv:1,tg:"-2.175",cd:"Yes",id:10},
+{n:"Tail Dragon",e:"Water",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:11},
+{n:"Water Dragon",e:"Water",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:1,tg:"-3.275",cd:"Yes",id:12},
+{n:"Hydra Dragon",e:"Earth",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:1,tg:"-2.175",cd:"Yes",id:13},
+{n:"Power Dragon",e:"Earth",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"-1.275",cd:"Yes",id:14},
+{n:"Rock Dragon",e:"Earth",t:"DEF",t_kr:"DEF",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:15},
+{n:"Underground Dragon",e:"Earth",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:1,tg:"-2.175",cd:"Yes",id:16},
+{n:"Fairy Dragon",e:"Water",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"-2.175",cd:"Yes",id:17},
+{n:"Lady Dragon",e:"Wind",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:18},
+{n:"Egg Dragon",e:"Earth",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:1,tg:"-0.675",cd:"Yes",id:19},
+{n:"Hell Dragon",e:"Fire",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:20},
+{n:"Angel Dragon",e:"Light",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:1,tg:"-2.575",cd:"Yes",id:21},
+{n:"Alien Dragon",e:"Wind",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:22},
+{n:"Mini Dragon",e:"Water",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:23},
+{n:"Swamp Dragon",e:"Water",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:1,tg:"-0.675",cd:"Yes",id:24},
+{n:"Fat Dragon",e:"Earth",t:"HP",t_kr:"HP",aw:1,ad:0,tr:1,lv:1,tg:"-0.675",cd:"Yes",id:25},
+{n:"Spike Dragon",e:"Fire",t:"DEF",t_kr:"DEF",aw:1,ad:0,tr:1,lv:1,tg:"-0.675",cd:"Yes",id:26},
+{n:"Insect Dragon",e:"Fire",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:0,tr:1,lv:1,tg:"-0.275",cd:"Yes",id:27},
+{n:"Leaf Dragon",e:"Earth",t:"DEF",t_kr:"DEF",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:28},
+{n:"Frog Dragon",e:"Water",t:"DEF",t_kr:"DEF",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:29},
+{n:"Wing Dragon",e:"Wind",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:0,tr:1,lv:1,tg:"-0.275",cd:"Yes",id:30},
+{n:"Sand Dragon",e:"Fire",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:0,tr:1,lv:1,tg:"-0.275",cd:"Yes",id:31},
+{n:"Smart Dragon",e:"Earth",t:"DEF",t_kr:"DEF",aw:1,ad:0,tr:1,lv:1,tg:"-0.675",cd:"Yes",id:32},
+{n:"Music Dragon",e:"Wind",t:"HP",t_kr:"HP",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:33},
+{n:"Black Dragon",e:"Dark",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:1,tg:"-0.025",cd:"Yes",id:34},
+{n:"Emerald Dragon",e:"Light",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:0,tr:1,lv:1,tg:"-2.1",cd:"Yes",id:35},
+{n:"Ligon",e:"Light",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:1,lv:1,tg:"0.2",cd:"Yes",id:36},
+{n:"Cameleon Dragon",e:"Light",t:"HP",t_kr:"HP",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:37},
+{n:"Chickenhead Dragon",e:"Light",t:"HP-DEF",t_kr:"HP-DEF",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:38},
+{n:"Kanggarabbit Dragon",e:"Light",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:39},
+{n:"Cupid Dragon",e:"Light",t:"ATK",t_kr:"ATK",aw:1,ad:0,tr:1,lv:1,tg:"0.2",cd:"Yes",id:40},
+{n:"Gold Dragon",e:"Light",t:"HP-DEF",t_kr:"HP-DEF",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:41},
+{n:"Slime Dragon",e:"Water",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:0,tr:1,lv:1,tg:"-2.1",cd:"Yes",id:42},
+{n:"Blade Dragon",e:"Dark",t:"ATK",t_kr:"ATK",aw:1,ad:0,tr:1,lv:1,tg:"0.2",cd:"Yes",id:43},
+{n:"Metal Dragon",e:"Dark",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:1,lv:1,tg:"0.2",cd:"Yes",id:44},
+{n:"Mummy Dragon",e:"Dark",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:1,lv:1,tg:"0.2",cd:"Yes",id:45},
+{n:"Hedgebat Dragon",e:"Dark",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:0,tr:1,lv:1,tg:"0.2",cd:"Yes",id:46},
+{n:"Skelegon",e:"Dark",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:1,lv:1,tg:"0.2",cd:"Yes",id:47},
+{n:"Serpent Dragon",e:"Dark",t:"ATK",t_kr:"ATK",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:48},
+{n:"Contipede Dragon",e:"Dark",t:"ATK",t_kr:"ATK",aw:1,ad:0,tr:1,lv:1,tg:"0.2",cd:"Yes",id:49},
+{n:"Tiger Dragon",e:"Earth",t:"HP",t_kr:"HP",aw:1,ad:0,tr:1,lv:1,tg:"-0.675",cd:"Yes",id:50},
+{n:"Goldenfly Dragon",e:"Fire",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:51},
+{n:"Metal Magnet Dragon",e:"Wind",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:0,tr:1,lv:1,tg:"-0.275",cd:"Yes",id:52},
+{n:"Dark Nix",e:"Dark",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:0,tg:"1.6",cd:"Yes",id:53},
+{n:"White Dragon",e:"Light",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:1,tg:"-1.85",cd:"Yes",id:54},
+{n:"Hyena Dragon",e:"Dark",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:1,lv:1,tg:"1.05",cd:"Yes",id:55},
+{n:"Ghost Dragon",e:"Dark",t:"ATK",t_kr:"ATK",aw:1,ad:0,tr:1,lv:1,tg:"1.45",cd:"Yes",id:56},
+{n:"Golden Horn Dragon",e:"Earth",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:0,tr:1,lv:1,tg:"-0.85",cd:"Yes",id:57},
+{n:"Shark Dragon",e:"Water",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"1.45",cd:"Yes",id:58},
+{n:"Guardian",e:"Wind",t:"HP",t_kr:"HP",aw:1,ad:0,tr:1,lv:1,tg:"1.05",cd:"Yes",id:59},
+{n:"Crescent",e:"Dark",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:1,lv:1,tg:"1.05",cd:"Yes",id:60},
+{n:"Rainbow",e:"Light",t:"HP",t_kr:"HP",aw:1,ad:0,tr:1,lv:1,tg:"1.05",cd:"Yes",id:61},
+{n:"Tattoo",e:"Earth",t:"DEF",t_kr:"DEF",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:62},
+{n:"Spine",e:"Earth",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:0,tr:1,lv:1,tg:"1.45",cd:"Yes",id:63},
+{n:"God Jr.",e:"Light",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:1,tg:"1.45",cd:"Yes",id:64},
+{n:"Frosty",e:"Wind",t:"DEF",t_kr:"DEF",aw:1,ad:0,tr:1,lv:1,tg:"1.55",cd:"Yes",id:65},
+{n:"Dark Frosty",e:"Dark",t:"ATK",t_kr:"ATK",aw:1,ad:0,tr:1,lv:1,tg:"1.95",cd:"Yes",id:66},
+{n:"Snake Dragon",e:"Water",t:"DEF",t_kr:"DEF",aw:1,ad:0,tr:1,lv:1,tg:"1.55",cd:"Yes",id:67},
+{n:"Xmas Dragon",e:"Light",t:"DEF",t_kr:"DEF",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:68},
+{n:"Demong&Gargoyle",e:"Dark",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:0,tr:1,lv:1,tg:"1.95",cd:"Yes",id:69},
+{n:"Siamese Dragon",e:"Light",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:1,tg:"1.55",cd:"Yes",id:70},
+{n:"Bone Head",e:"Fire",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:71},
+{n:"Venezie",e:"Dark",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:1,tg:"1.55",cd:"Yes",id:72},
+{n:"Mustard Hammer",e:"Earth",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:1,tg:"-0.35",cd:"Yes",id:73},
+{n:"Red Wybern",e:"Fire",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"1.95",cd:"Yes",id:74},
+{n:"Haetai",e:"Wind",t:"DEF",t_kr:"DEF",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:75},
+{n:"Scorpion Dragon",e:"Earth",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:1,tg:"1.95",cd:"Yes",id:76},
+{n:"Knight Dragon",e:"Light",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:1,tg:"1.55",cd:"No",id:77},
+{n:"Spicy",e:"Light",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:1,tg:"1.55",cd:"No",id:78},
+{n:"Rafael",e:"Light",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:1,tg:"-0.35",cd:"No",id:79},
+{n:"Baal",e:"Dark",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:0,tg:"1.6",cd:"No",id:80},
+{n:"Pierrot Dragon",e:"Light",t:"HP",t_kr:"HP",aw:1,ad:0,tr:1,lv:0,tg:"2.0",cd:"Yes",id:81},
+{n:"Pharaogon",e:"Light",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:82},
+{n:"Shadow",e:"Dark",t:"ATK",t_kr:"ATK",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:83},
+{n:"Marshmallow Dragon",e:"Light",t:"DEF",t_kr:"DEF",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:84},
+{n:"Franken Dragon",e:"Dark",t:"HP",t_kr:"HP",aw:1,ad:0,tr:1,lv:0,tg:"2.0",cd:"Yes",id:85},
+{n:"Ninja Dragon",e:"Dark",t:"ATK",t_kr:"ATK",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:86},
+{n:"Dragonoid",e:"Dark",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:0,tr:1,lv:0,tg:"1.225",cd:"Yes",id:87},
+{n:"Volcano Dragon",e:"Fire",t:"ATK-DEF",t_kr:"ATK-DEF",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:88},
+{n:"Blue Lightning",e:"Water",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:89},
+{n:"Witch Dragon",e:"Dark",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:1,lv:0,tg:"-0.675",cd:"Yes",id:90},
+{n:"Purple Lips",e:"Water",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:0,tr:1,lv:0,tg:"1.225",cd:"Yes",id:91},
+{n:"Python",e:"Earth",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:0,tg:"-0.2",cd:"No",id:92},
+{n:"Iron",e:"Fire",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:0,tg:"2.0",cd:"No",id:93},
+{n:"Oro",e:"Wind",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:94},
+{n:"Jaryong",e:"Fire",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:0,tg:"0.7",cd:"Yes",id:95},
+{n:"Battle Dragon",e:"Fire",t:"ATK",t_kr:"ATK",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:96},
+{n:"Devilgon",e:"Earth",t:"ATK",t_kr:"ATK",aw:1,ad:0,tr:1,lv:0,tg:"2.1",cd:"Yes",id:97},
+{n:"Violet Dragon",e:"Water",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:1,lv:0,tg:"2.275",cd:"Yes",id:98},
+{n:"Neon Dragon",e:"Light",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:99},
+{n:"Flame Dragon",e:"Fire",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:100},
+{n:"Black Queen",e:"Dark",t:"ATK",t_kr:"ATK",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:101},
+{n:"Sigma Dragon",e:"Dark",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:0,tg:"1.8",cd:"No",id:102},
+{n:"Lambgon",e:"Earth",t:"HP",t_kr:"HP",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:103},
+{n:"Argo Dragon",e:"Light",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:0,tg:"2.0",cd:"No",id:104},
+{n:"Hercules Dragon",e:"Earth",t:"HP-DEF",t_kr:"HP-DEF",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:105},
+{n:"Totem",e:"Wind",t:"HP",t_kr:"HP",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:106},
+{n:"Malsoja",e:"Fire",t:"ATK",t_kr:"ATK",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:107},
+{n:"Timber",e:"Earth",t:"DEF",t_kr:"DEF",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:108},
+{n:"Cobra",e:"Dark",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:109},
+{n:"Rupia",e:"Water",t:"DEF",t_kr:"DEF",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:110},
+{n:"Tyfoon",e:"Wind",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:0,tr:1,lv:0,tg:"1.225",cd:"Yes",id:111},
+{n:"Stud",e:"Water",t:"DEF",t_kr:"DEF",aw:1,ad:0,tr:1,lv:0,tg:"2.0",cd:"Yes",id:112},
+{n:"Flower",e:"Earth",t:"DEF",t_kr:"DEF",aw:1,ad:0,tr:1,lv:0,tg:"2.0",cd:"Yes",id:113},
+{n:"Haema",e:"Water",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:114},
+{n:"Cloud",e:"Wind",t:"HP",t_kr:"HP",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:115},
+{n:"Lios",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:116},
+{n:"Barian",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:117},
+{n:"Paprion",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:118},
+{n:"Valcan",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:119},
+{n:"Enix",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:120},
+{n:"Balod",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:121},
+{n:"Redbull Dragon",e:"Fire",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:1,lv:0,tg:"-0.175",cd:"Yes",id:122},
+{n:"Tundra Dragon",e:"Water",t:"HP",t_kr:"HP",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:123},
+{n:"Megalodon",e:"Water",t:"ATK",t_kr:"ATK",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:124},
+{n:"Aurora Dragon",e:"Light",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:125},
+{n:"Catsgon",e:"Dark",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:126},
+{n:"Ignis",e:"Fire",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:127},
+{n:"Tartaros",e:"Dark",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:128},
+{n:"Shooting Star",e:"Light",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:129},
+{n:"Dark Fal",e:"Dark",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:0,tg:"-0.175",cd:"Yes",id:130},
+{n:"Hungry Dragon",e:"Earth",t:"HP",t_kr:"HP",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:131},
+{n:"Aqua Dragon",e:"Water",t:"ATK-DEF",t_kr:"ATK-DEF",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:132},
+{n:"Orpheus",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:133},
+{n:"Luminesce",e:"Water",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:0,tg:"3.2",cd:"No",id:134},
+{n:"Burnesce",e:"Fire",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:0,tg:"2.6",cd:"No",id:135},
+{n:"Goblin Dragon",e:"Light",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:136},
+{n:"Jet Dragon",e:"Wind",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:137},
+{n:"Marino Dragon",e:"Water",t:"HP-DEF",t_kr:"HP-DEF",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:138},
+{n:"Tutankha",e:"Dark",t:"DEF",t_kr:"DEF",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:139},
+{n:"Mud Dragon",e:"Earth",t:"HP",t_kr:"HP",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:140},
+{n:"Bomber Dragon",e:"Fire",t:"HP",t_kr:"HP",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:141},
+{n:"Sanare Dragon",e:"Light",t:"DEF",t_kr:"DEF",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:142},
+{n:"Tyrant",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:143},
+{n:"Blue Horse Dragon",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:144},
+{n:"Naughty Villan",e:"Fire",t:"DEF",t_kr:"DEF",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:145},
+{n:"Glacier",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:146},
+{n:"Mneia",e:"Fire",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:0,tg:"0.025",cd:"Yes",id:147},
+{n:"Knox",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:148},
+{n:"Illias",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:149},
+{n:"Cornatus",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:150},
+{n:"Swallow",e:"Wind",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:151},
+{n:"iGon",e:"Wind",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:0,tr:1,lv:0,tg:"2.025",cd:"Yes",id:152},
+{n:"Bloody Nate",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:153},
+{n:"Peace Dragon",e:"Wind",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:154},
+{n:"Galaxy",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:155},
+{n:"Paper Dragon",e:"Wind",t:"ATK",t_kr:"ATK",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:156},
+{n:"High Fairygon",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:157},
+{n:"Morika Dragon",e:"Light",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"2.7",cd:"Yes",id:158},
+{n:"Vegabond Dragon",e:"Earth",t:"ATK",t_kr:"ATK",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:159},
+{n:"Spring Dragon",e:"Wind",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:0,tg:"2.6",cd:"Yes",id:160},
+{n:"Splender Dragon",e:"Dark",t:"ATK",t_kr:"ATK",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:161},
+{n:"Black Tear Dragon",e:"Dark",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:0,tg:"3.55",cd:"Yes",id:162},
+{n:"Black Armor Dragon",e:"Dark",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:0,tg:"2.825",cd:"No",id:163},
+{n:"Orange Leaf Dragon",e:"Earth",t:"HP",t_kr:"HP",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:164},
+{n:"Pink Bell Dragon",e:"Wind",t:"HP",t_kr:"HP",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:165},
+{n:"Kuroy Dragon",e:"Dark",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:1,tg:"1.375",cd:"No",id:166},
+{n:"Forest Dragon",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:167},
+{n:"Gigantis",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:168},
+{n:"Demonio",e:"Fire",t:"ATK",t_kr:"ATK",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:169},
+{n:"Ges Dragon",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:170},
+{n:"Vera Dragon",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:171},
+{n:"Diyona",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:172},
+{n:"Conrad",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:173},
+{n:"Fabregas",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:174},
+{n:"Firefury",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:175},
+{n:"Stego Dragon",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:176},
+{n:"Retentor",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:177},
+{n:"Mist Dragon",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:178},
+{n:"Rekuru Dragon",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:179},
+{n:"Petra Dragon",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:180},
+{n:"Crookers",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:181},
+{n:"Banshee",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:182},
+{n:"Hollow",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:183},
+{n:"Rupo",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:184},
+{n:"Decal",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:185},
+{n:"Chaos",e:"Wind",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:0,tg:"2.6",cd:"No",id:186},
+{n:"Ilema",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:187},
+{n:"Blackcore",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:188},
+{n:"Odin",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:189},
+{n:"Freerunner",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:190},
+{n:"Time Machine",e:"Dark",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:0,tg:"3.2",cd:"Yes",id:191},
+{n:"Citael",e:"Light",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:0,tg:"3.8",cd:"No",id:192},
+{n:"Gracia",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-SS",id:193},
+{n:"Maga",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-SS",id:194},
+{n:"Skoorum",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-SS",id:195},
+{n:"Collosus",e:"Earth",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:0,tg:"1.875",cd:"No",id:196},
+{n:"Wonder Dragon",e:"Dark",t:"HP",t_kr:"HP",aw:0,ad:1,tr:1,lv:1,tg:"3.4",cd:"Yes",id:197},
+{n:"IceDrake",e:"Water",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:0,tg:"1.9",cd:"Yes",id:198},
+{n:"Omiyakon",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:199},
+{n:"Niplehayim",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:200},
+{n:"Rudolf Dragon",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:201},
+{n:"Bar'rah",e:"Light",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:0,tg:"2.8",cd:"No",id:202},
+{n:"Rutilus",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:203},
+{n:"Lunar Blue Dragon",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:204},
+{n:"Optatum",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:205},
+{n:"Asili",e:"Light",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:0,tg:"4.65",cd:"No",id:206},
+{n:"Black Jindo",e:"Dark",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:0,tg:"4.3",cd:"Yes",id:207},
+{n:"Apollonus",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:208},
+{n:"Roloce",e:"Light",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:0,tg:"2.1",cd:"Yes",id:209},
+{n:"Rust",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:210},
+{n:"Slayer",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:211},
+{n:"Fiery Blend",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:212},
+{n:"Moon Light",e:"Dark",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:0,tg:"4.175",cd:"Yes",id:213},
+{n:"Coral Dragon",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:214},
+{n:"Abvalle",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:215},
+{n:"Gaian",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:216},
+{n:"Oculus",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:217},
+{n:"Withme",e:"Water",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:1,tg:"3.05",cd:"No",id:218},
+{n:"Haze",e:"Light",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:1,tg:"3.525",cd:"No",id:219},
+{n:"Lauha",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:220},
+{n:"Dupen",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:221},
+{n:"Maple Dragon",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:222},
+{n:"Dilrang",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:223},
+{n:"Striker",e:"Wind",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"3.9",cd:"Yes",id:224},
+{n:"Garuda",e:"Fire",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:0,tg:"5.8",cd:"No",id:225},
+{n:"Libera",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:226},
+{n:"T.Rex",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:227},
+{n:"Party Dragon",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:228},
+{n:"Ordo",e:"Light",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:0,tg:"3.5",cd:"Yes",id:229},
+{n:"Secreta",e:"Water",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:0,tg:"4.9",cd:"Yes",id:230},
+{n:"Futurum",e:"Fire",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:0,tg:"4.0",cd:"Yes",id:231},
+{n:"Harleybell",e:"Dawn",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:0,tg:"1.8",cd:"Yes",id:232},
+{n:"Taabire",e:"Dawn",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:0,tg:"4.2",cd:"Yes",id:233},
+{n:"Ballack",e:"Dusk",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:0,tg:"1.9",cd:"Yes",id:234},
+{n:"Vefal",e:"Dusk",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:0,tg:"3.8",cd:"Yes",id:235},
+{n:"Dantalion",e:"Nightmare",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:0,tg:"4.4",cd:"Yes",id:236},
+{n:"Jagan",e:"Nightmare",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:0,tg:"4.7",cd:"Yes",id:237},
+{n:"Abyss edge",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:238},
+{n:"Red Raven",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:239},
+{n:"Hell Ghast",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:240},
+{n:"Marbas",e:"Dark",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:0,tg:"5.0",cd:"No",id:241},
+{n:"Khan",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:242},
+{n:"Yggdrasil",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:243},
+{n:"Wild Dragon",e:"Fire",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:0,tg:"4.9",cd:"No",id:244},
+{n:"Zombie Dragon",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:245},
+{n:"Layers",e:"Earth",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"4.3",cd:"No",id:246},
+{n:"Whale Dragon",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:247},
+{n:"Venom Dragon",e:"Water",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:1,tg:"4.0",cd:"No",id:248},
+{n:"Valla Dragon",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:249},
+{n:"Rugar Dragon",e:"Fire",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:0,tg:"4.5",cd:"No",id:250},
+{n:"Atlantis",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:251},
+{n:"Universe",e:"Dark",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:1,tg:"2.9",cd:"No",id:252},
+{n:"Arctica",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:253},
+{n:"Jump Dragon",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:254},
+{n:"Asti Dragon",e:"Wind",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:0,tg:"5.0",cd:"No",id:255},
+{n:"Jima Dragon",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:256},
+{n:"Gallus",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:257},
+{n:"Pumice",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:258},
+{n:"Behemoth",e:"Dark",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:0,tg:"5.1",cd:"No",id:259},
+{n:"Steelwing",e:"Wind",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:0,tg:"4.2",cd:"No",id:260},
+{n:"Soul",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:261},
+{n:"Waterdrop Dragon",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:262},
+{n:"Derr",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:263},
+{n:"Rekmall",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:264},
+{n:"Hwarang",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:265},
+{n:"Graytan",e:"Wind",t:"ATK-DEF",t_kr:"ATK-DEF",aw:0,ad:1,tr:1,lv:1,tg:"4.4",cd:"No",id:266},
+{n:"Mystictiny",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:267},
+{n:"Daros",e:"Earth",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:0,tg:"7.0",cd:"No",id:268},
+{n:"Jarukah",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:269},
+{n:"Dark Horn",e:"Dusk",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:270},
+{n:"Star Ace",e:"Light",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:0,tg:"4.1",cd:"No",id:271},
+{n:"Maloden",e:"Dark",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:0,tg:"5.4",cd:"No",id:272},
+{n:"Igas",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:273},
+{n:"Popomo",e:"Fire",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:0,tg:"5.3",cd:"Yes",id:274},
+{n:"Teddy Dragon",e:"Light",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:0,tg:"5.5",cd:"Yes",id:275},
+{n:"Nagi",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:276},
+{n:"Griffin",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:277},
+{n:"Blackshocker",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:278},
+{n:"Treefairwing",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:279},
+{n:"Leviathan",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:280},
+{n:"Scare",e:"Dark",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:281},
+{n:"Bluebell",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:282},
+{n:"Whitestorm",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:283},
+{n:"Nepenthes",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:284},
+{n:"Agnad",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:285},
+{n:"Bubble Dragon",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"C-S",id:286},
+{n:"Hapla",e:"Dawn",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"5.4",cd:"Yes",id:287},
+{n:"Revelloptin",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"C-S",id:288},
+{n:"Rainbowbatgon",e:"Wind",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:289},
+{n:"Araca",e:"Wind",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:0,tg:"5.675",cd:"No",id:290},
+{n:"Razikas",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:291},
+{n:"Mistilteinn",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:292},
+{n:"Scissor",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:293},
+{n:"Luu",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:294},
+{n:"Flagner",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:295},
+{n:"Selmasa",e:"Dawn",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:0,tg:"5.7",cd:"No",id:296},
+{n:"Bluefirewind",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:297},
+{n:"Characen",e:"Dusk",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"5.275",cd:"Yes",id:298},
+{n:"Aquarium",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:299},
+{n:"Eelos",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:300},
+{n:"Rexton",e:"Dusk",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"4.775",cd:"Yes",id:301},
+{n:"Pomekle",e:"Dusk",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:1,tg:"5.6",cd:"Yes",id:302},
+{n:"Karna",e:"Dark",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:0,tg:"5.0",cd:"No",id:303},
+{n:"Arjuna",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:304},
+{n:"Evil Dragon",e:"Fire",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:0,tg:"5.5",cd:"Yes",id:305},
+{n:"Blackhorn",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:306},
+{n:"Ultimate",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:307},
+{n:"Magic Star",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:308},
+{n:"Artemis Dragon",e:"Light",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:1,tg:"6.9",cd:"Yes",id:309},
+{n:"Hallucy",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:310},
+{n:"Perumata",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:311},
+{n:"Angra",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:312},
+{n:"Ohmunia",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:313},
+{n:"Kohmunia",e:"Dusk",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:314},
+{n:"Dahmunia",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:315},
+{n:"Doohmunia",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:316},
+{n:"Mamunia",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:317},
+{n:"Humunia",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:318},
+{n:"Empire",e:"Wind",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:0,tg:"5.1",cd:"Yes",id:319},
+{n:"Lucifer",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:320},
+{n:"Necromancer",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:321},
+{n:"Earthquake",e:"Earth",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:1,tg:"4.85",cd:"No",id:322},
+{n:"Nike",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:323},
+{n:"Astraina",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:324},
+{n:"Hailes",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:325},
+{n:"Nightmare",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:326},
+{n:"Sweetcloud",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:327},
+{n:"Deneb",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:328},
+{n:"Batdragon",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:329},
+{n:"Wooperum",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:330},
+{n:"Voodoogon",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:331},
+{n:"Hwajusa",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:332},
+{n:"Mithra",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:333},
+{n:"Reward Dragon",e:"Dawn",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:334},
+{n:"Dark Vein",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:335},
+{n:"Bloody Tusk",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:336},
+{n:"Poison River",e:"Earth",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:1,tg:"5.9",cd:"Yes",id:337},
+{n:"Retrieegon",e:"Dusk",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:338},
+{n:"Toddletomtom",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:339},
+{n:"Taygeta",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:340},
+{n:"Cactus Dragon",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:341},
+{n:"Berna",e:"Light",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:0,tg:"1.9",cd:"No",id:342},
+{n:"Luxorin",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:343},
+{n:"Spirit",e:"Wind",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:1,tg:"4.7",cd:"Yes",id:344},
+{n:"Natron",e:"Water",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:1,tg:"1.9",cd:"Yes",id:345},
+{n:"Sala",e:"Dusk",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:346},
+{n:"Umbra",e:"Nightmare",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:347},
+{n:"Sola",e:"Light",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"5.9",cd:"Yes",id:348},
+{n:"Popon",e:"Earth",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:1,tg:"4.5",cd:"Yes",id:349},
+{n:"Zephyros",e:"Wind",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:1,tg:"3.4",cd:"Yes",id:350},
+{n:"Dragon Slayer",e:"Dark",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:1,tg:"6.075",cd:"Yes",id:351},
+{n:"Hell Kaiser",e:"Dusk",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:352},
+{n:"Revenant",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:353},
+{n:"Evil Dawn",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:354},
+{n:"Dimension Dragon",e:"Nightmare",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"5.5",cd:"Yes",id:355},
+{n:"Pixel Dragon",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:356},
+{n:"Grand Savior",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:357},
+{n:"Kinder Dragon",e:"Dawn",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:358},
+{n:"Puddinggon",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"C-SS",id:359},
+{n:"Antique Dragon",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:360},
+{n:"Twilight",e:"Dusk",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:361},
+{n:"Florian",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:362},
+{n:"Lalux",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:363},
+{n:"Frodin",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:364},
+{n:"Tilki",e:"Dusk",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"6.8",cd:"Yes",id:365},
+{n:"Igna",e:"Fire",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:1,tg:"4.7",cd:"Yes",id:366},
+{n:"Blizzard",e:"Water",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"6.25",cd:"Yes",id:367},
+{n:"Dark Knight",e:"Dark",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:1,tg:"4.3",cd:"Yes",id:368},
+{n:"Ender Dragon",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:369},
+{n:"Gust",e:"Wind",t:"ATK",t_kr:"ATK",aw:0,ad:1,tr:1,lv:1,tg:"5.1",cd:"Yes",id:370},
+{n:"Sharptale",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:371},
+{n:"Whitethunder",e:"Light",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:1,tg:"5.6",cd:"Yes",id:372},
+{n:"Karura",e:"Light",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:0,tg:"5.0",cd:"No",id:373},
+{n:"Gandharba",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:374},
+{n:"Hawk Eye",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:375},
+{n:"Lua Cheia Dragon",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:376},
+{n:"Lunera Dragon",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:377},
+{n:"Minas Dragon",e:"Light",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:1,tg:"5.35",cd:"Yes",id:378},
+{n:"Hell Sparrow",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:379},
+{n:"Kubera",e:"Dark",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:0,tg:"6.8",cd:"No",id:380},
+{n:"Kalavinka",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:381},
+{n:"Jigsaw Dragon",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:382},
+{n:"Kaiserburn",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:383},
+{n:"Golrock",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:384},
+{n:"Rekmall Reverse",e:"Dusk",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:1,tg:"5.25",cd:"Yes",id:385},
+{n:"Edgever",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:386},
+{n:"Centura",e:"Wind",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:0,tg:"6.075",cd:"No",id:387},
+{n:"Afrit",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:388},
+{n:"Etoile Dragon",e:"Wind",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes",id:389},
+{n:"Nello Dragon",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:390},
+{n:"Thunderrain Dragon",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:391},
+{n:"Zimon",e:"Earth",t:"ATK-DEF",t_kr:"ATK-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:392},
+{n:"Liberte",e:"Earth",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes",id:393},
+{n:"Vritra",e:"Water",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:0,tg:"2.925",cd:"No",id:394},
+{n:"Takchaka",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:395},
+{n:"Schnell Dragon",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:396},
+{n:"Kigal",e:"Wind",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes",id:397},
+{n:"Adela",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:398},
+{n:"Sleez Dragon",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:399},
+{n:"Kanthaka",e:"Earth",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:0,tg:"5.225",cd:"No",id:400},
+{n:"Zithakula",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:401},
+{n:"Phagos Dragon",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:402},
+{n:"Voncias Dragon",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:403},
+{n:"Galaxia Dragon",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:404},
+{n:"Alis Dragon",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:405},
+{n:"Mavrika Dragon",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:406},
+{n:"Sorcerer Dragon",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:407},
+{n:"Aton",e:"Light",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:408},
+{n:"Talissah",e:"Light",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:0,tg:"5.925",cd:"No",id:409},
+{n:"Kuzmara",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:410},
+{n:"Harika",e:"Dusk",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"4.25",cd:"Yes",id:411},
+{n:"Tonton",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:412},
+{n:"Aqua Pearl",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:413},
+{n:"Kirion",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:414},
+{n:"Appleche Dragon",e:"Earth",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:1,tg:"4.0",cd:"Yes",id:415},
+{n:"Tropheus",e:"Water",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:1,tg:"4.1",cd:"Yes",id:416},
+{n:"Nikei",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:417},
+{n:"Nikeda",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:418},
+{n:"Nikelie",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:419},
+{n:"Nikeflow",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:420},
+{n:"Nikevento",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:421},
+{n:"Niketerra",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:422},
+{n:"Panmunia",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:423},
+{n:"Ranmunia",e:"Dusk",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:424},
+{n:"Ninmunia",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:425},
+{n:"Astarte",e:"Earth",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:0,tg:"5.4",cd:"No",id:426},
+{n:"Siris",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:427},
+{n:"Elderly Dragon",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:428},
+{n:"Sura Dragon",e:"Fire",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes",id:429},
+{n:"Taros",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:430},
+{n:"Excir",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:431},
+{n:"Angel Jr.",e:"Light",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:1,tg:"6.2",cd:"Yes",id:432},
+{n:"Hurricane",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:433},
+{n:"Hades",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:434},
+{n:"Predator",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:435},
+{n:"Enfew",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:436},
+{n:"Ghast",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:437},
+{n:"Enturath",e:"Fire",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"6.0",cd:"Yes",id:438},
+{n:"Axcalibur",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:439},
+{n:"Illan",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:440},
+{n:"Cosmos",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:441},
+{n:"Pabereu",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:442},
+{n:"Anchor",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:443},
+{n:"Maldek",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:444},
+{n:"Stra",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:445},
+{n:"Henes",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:446},
+{n:"Deathlock",e:"Dusk",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:447},
+{n:"Animala",e:"Nightmare",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:1,tg:"5.8",cd:"Yes",id:448},
+{n:"Sullivan",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:449},
+{n:"Fafnir",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:450},
+{n:"Abion",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:451},
+{n:"Azak",e:"Dark",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:452},
+{n:"Frozen",e:"Water",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:1,tg:"6.2",cd:"Yes",id:453},
+{n:"Abies",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:454},
+{n:"Charcoal Flame",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:455},
+{n:"Gungnir",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:456},
+{n:"Rude Ore",e:"Nightmare",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:1,tg:"6.9",cd:"Yes",id:457},
+{n:"Sword",e:"Light",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes",id:458},
+{n:"Canine",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"C-SS",id:459},
+{n:"Aila",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:460},
+{n:"Scarlet",e:"Dusk",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:461},
+{n:"Shen",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:462},
+{n:"Berith",e:"Dawn",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:1,tg:"6.0",cd:"Yes",id:463},
+{n:"Tempest",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:464},
+{n:"Sunset",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:465},
+{n:"Fomalhaut",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:466},
+{n:"Makara",e:"Dark",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:1,tg:"6.9",cd:"No",id:467},
+{n:"Anurhada",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"C-SS",id:468},
+{n:"Eclipse",e:"Dusk",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes",id:469},
+{n:"Beleth",e:"Nightmare",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes",id:470},
+{n:"Meteor",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:471},
+{n:"Camouflage",e:"Dusk",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:472},
+{n:"Eligos",e:"Dawn",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:1,tg:"5.8",cd:"Yes",id:473},
+{n:"Beom",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:474},
+{n:"Emotion",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:475},
+{n:"Mimir",e:"Dawn",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes",id:476},
+{n:"Charlotte",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:477},
+{n:"Aegis",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:478},
+{n:"Razing",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:479},
+{n:"Paimon",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:480},
+{n:"Amdusias",e:"Dawn",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:481},
+{n:"Baektaekgon",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:482},
+{n:"Leo Vector",e:"Earth",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"6.0",cd:"Yes",id:483},
+{n:"Nebia",e:"Dawn",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:1,tg:"6.2",cd:"Yes",id:484},
+{n:"Thunderbird",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:485},
+{n:"Boreas",e:"Wind",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:1,tg:"6.0",cd:"Yes",id:486},
+{n:"Qualle",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:487},
+{n:"Kojeumkion",e:"Dusk",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:488},
+{n:"Hwa gui Dragon",e:"Fire",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:1,tg:"6.475",cd:"Yes",id:489},
+{n:"Hekate",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:490},
+{n:"Milla",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:491},
+{n:"Laul",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:492},
+{n:"Stoptune",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:493},
+{n:"Dark Square",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:494},
+{n:"Noble Hell Kaiser",e:"Dusk",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:495},
+{n:"Myosotis",e:"Water",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes",id:496},
+{n:"Lichmond",e:"Dark",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:1,tg:"6.9",cd:"Yes",id:497},
+{n:"Chroma Lichmond",e:"Dark",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:1,tg:"6.9",cd:"Yes",id:498},
+{n:"Toxinic",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:499},
+{n:"Eternal",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:500},
+{n:"Gautling-gon",e:"Light",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:1,tg:"6.9",cd:"Yes",id:501},
+{n:"Bernhard",e:"Water",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"5.2",cd:"Yes",id:502},
+{n:"Rotis",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:503},
+{n:"Snowball",e:"Dusk",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:504},
+{n:"Noble Bloody Tusk",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:505},
+{n:"Jellyfish",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:506},
+{n:"Fenrir",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:507},
+{n:"Tyr",e:"Wind",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:1,tg:"6.675",cd:"Yes",id:508},
+{n:"Amanta",e:"Light",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:1,tg:"3.8",cd:"Yes",id:509},
+{n:"Comet",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:510},
+{n:"White Destroyer",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:511},
+{n:"Pimiru",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:512},
+{n:"Shah",e:"Light",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:513},
+{n:"Noble Dark Vein",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:514},
+{n:"Eos",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:515},
+{n:"Nebula",e:"Dusk",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:1,tg:"6.1",cd:"Yes",id:516},
+{n:"Regulus",e:"Water",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:1,tg:"5.3",cd:"Yes",id:517},
+{n:"Chroma Regulus",e:"Water",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:1,tg:"5.3",cd:"Yes",id:518},
+{n:"Aldebaran",e:"Earth",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:1,tg:"6.0",cd:"Yes",id:519},
+{n:"Advent Evolgon",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:520},
+{n:"Darnus",e:"Dusk",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:521},
+{n:"Patroa",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:522},
+{n:"Longinus",e:"Nightmare",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:1,tg:"6.075",cd:"Yes",id:523},
+{n:"Noble Ender Dragon",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:524},
+{n:"Zivatar",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:525},
+{n:"Mysfit",e:"Nightmare",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:526},
+{n:"Yeomhwa Dragon",e:"Fire",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:1,tg:"6.15",cd:"Yes",id:527},
+{n:"Manimekalai",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:528},
+{n:"Portunus",e:"Water",t:"DEF",t_kr:"DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:529},
+{n:"Seere",e:"Dusk",t:"DEF",t_kr:"DEF",aw:0,ad:1,tr:1,lv:1,tg:"5.7",cd:"Yes",id:530},
+{n:"Vargr",e:"Light",t:"ATK",t_kr:"ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:531},
+{n:"Mastema",e:"Nightmare",t:"HP-DEF",t_kr:"HP-DEF",aw:0,ad:1,tr:1,lv:1,tg:"4.3",cd:"Yes",id:532},
+{n:"Castitas",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:533},
+{n:"Noble Aegis",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:534},
+{n:"Tanatos",e:"Fire",t:"HP-DEF",t_kr:"HP-DEF",aw:0,ad:1,tr:1,lv:1,tg:"4.4",cd:"Yes",id:535},
+{n:"Calici",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:536},
+{n:"Chroma Calici",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:537},
+{n:"Pride",e:"Dusk",t:"ATK-DEF",t_kr:"ATK-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.575",cd:"Yes",id:538},
+{n:"Noble Adela",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:539},
+{n:"Wrath",e:"Dawn",t:"DEF",t_kr:"DEF",aw:0,ad:1,tr:1,lv:1,tg:"5.7",cd:"Yes",id:540},
+{n:"Milatas",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:541},
+{n:"Chroma Milatas",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:542},
+{n:"Noble Nello Dragon",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:543},
+{n:"Thoth",e:"Fire",t:"DEF",t_kr:"DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.8",cd:"Yes",id:544},
+{n:"Instria",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:545},
+{n:"Chroma Instria",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:546},
+{n:"Nemus",e:"Nightmare",t:"HP",t_kr:"HP",aw:0,ad:1,tr:1,lv:1,tg:"6.1",cd:"Yes",id:547},
+{n:"Benevolentia",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:548},
+{n:"Chroma Benevolentia",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:549},
+{n:"Noble Galahad",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:550},
+{n:"Noble Evil Dawn",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:551},
+{n:"Thundergod",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:552},
+{n:"Chroma Thundergod",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:553},
+{n:"Crevasse",e:"Nightmare",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:554},
+{n:"Lancenti",e:"Fire",t:"ATK",t_kr:"ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes",id:555},
+{n:"Mamoond",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:556},
+{n:"Goat",e:"Dark",t:"HP-DEF",t_kr:"HP-DEF",aw:0,ad:1,tr:1,lv:1,tg:"4.2",cd:"Yes",id:557},
+{n:"Noble Revenant",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:558},
+{n:"Pachy",e:"Earth",t:"DEF",t_kr:"DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.8",cd:"Yes",id:559},
+{n:"Hosiery",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:560},
+{n:"Tara",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:561},
+{n:"Noble Kaiserburn",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:562},
+{n:"Pitaya",e:"Wind",t:"ATK-DEF",t_kr:"ATK-DEF",aw:0,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes",id:563},
+{n:"Ninetales",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:564},
+{n:"Lusong",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:565},
+{n:"Amaltheia",e:"Dawn",t:"HP",t_kr:"HP",aw:0,ad:1,tr:1,lv:1,tg:"6.2",cd:"Yes",id:566},
+{n:"Knitty",e:"Dusk",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:567},
+{n:"Quetzalcoatl",e:"Earth",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.3",cd:"Yes",id:568},
+{n:"Harmonious Dragon",e:"Dawn",t:"DEF",t_kr:"DEF",aw:0,ad:1,tr:1,lv:1,tg:"4.2",cd:"Yes",id:569},
+{n:"Abaddon",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:570},
+{n:"Cuanade",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:571},
+{n:"Noble Stra",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:572},
+{n:"Magnas",e:"Dark",t:"HP",t_kr:"HP",aw:0,ad:1,tr:1,lv:1,tg:"6.3",cd:"Yes",id:573},
+{n:"Chroma Beleth",e:"Nightmare",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes",id:574},
+{n:"Porta",e:"Dark",t:"DEF",t_kr:"DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes",id:575},
+{n:"Feros",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:576},
+{n:"Dianu",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:577},
+{n:"Chorim",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:578},
+{n:"Rudra",e:"Water",t:"ATK",t_kr:"ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes",id:579},
+{n:"Noble Maldek",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:580},
+{n:"Kangkang",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:581},
+{n:"Sullae",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:582},
+{n:"Chachawung",e:"Dusk",t:"DEF",t_kr:"DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.0",cd:"Yes",id:583},
+{n:"Deva",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:584},
+{n:"Granos",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:585},
+{n:"Stealth",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:586},
+{n:"Cortus",e:"Dawn",t:"ATK-DEF",t_kr:"ATK-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.875",cd:"Yes",id:587},
+{n:"Leopard",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:588},
+{n:"Noble Henes",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:589},
+{n:"Epit",e:"Dusk",t:"HP-DEF",t_kr:"HP-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes",id:590},
+{n:"Skink Dragon",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:591},
+{n:"Crested Dragon",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:592},
+{n:"Eggmayong",e:"Earth",t:"HP",t_kr:"HP",aw:0,ad:1,tr:1,lv:1,tg:"6.3",cd:"Yes",id:593},
+{n:"Blue Thunder",e:"Wind",t:"ATK",t_kr:"ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:594},
+{n:"Chroma Blue Thunder",e:"Wind",t:"ATK",t_kr:"ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:595},
+{n:"Noble Feros",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:596},
+{n:"Solucanis",e:"Light",t:"DEF",t_kr:"DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:597},
+{n:"Jujag",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:598},
+{n:"Baekho",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:599},
+{n:"Rusalka",e:"Water",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:600},
+{n:"Vetala",e:"Dark",t:"ATK",t_kr:"ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:601},
+{n:"Chroma Vetala",e:"Dark",t:"ATK",t_kr:"ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:602},
+{n:"Rukbat",e:"Dawn",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.3",cd:"Yes",id:603},
+{n:"Caslux",e:"Dark",t:"HP",t_kr:"HP",aw:0,ad:1,tr:1,lv:1,tg:"6.2",cd:"Yes",id:604},
+{n:"Noble Dianu",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:605},
+{n:"Atlus",e:"Light",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.15",cd:"Yes",id:606},
+{n:"Eshu",e:"Dusk",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:607},
+{n:"Kirin",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:608},
+{n:"Rakshasa",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:609},
+{n:"Lumindis",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:610},
+{n:"Fides",e:"Dark",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes",id:611},
+{n:"Bearded",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:612},
+{n:"Firetail",e:"Fire",t:"ATK-DEF",t_kr:"ATK-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:613},
+{n:"Chroma Firetail",e:"Fire",t:"ATK-DEF",t_kr:"ATK-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:614},
+{n:"Yurqa",e:"Water",t:"HP",t_kr:"HP",aw:0,ad:1,tr:1,lv:1,tg:"6.45",cd:"Yes",id:615},
+{n:"Noble Anurhada",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:616},
+{n:"Slosi",e:"Nightmare",t:"ATK",t_kr:"ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.2",cd:"Yes",id:617},
+{n:"Goldie",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:618},
+{n:"Lakion",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:619},
+{n:"Octa",e:"Water",t:"ATK-DEF",t_kr:"ATK-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.9",cd:"Yes",id:620},
+{n:"Chroma Octa",e:"Water",t:"ATK-DEF",t_kr:"ATK-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.9",cd:"Yes",id:621},
+{n:"Curse Reaper",e:"Nightmare",t:"ATK-DEF",t_kr:"ATK-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:622},
+{n:"Ullr",e:"Dawn",t:"ATK",t_kr:"ATK",aw:0,ad:1,tr:1,lv:1,tg:"5.6",cd:"Yes",id:623},
+{n:"Angel Cat",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:624},
+{n:"Aphrodite",e:"Dawn",t:"HP-DEF",t_kr:"HP-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:625},
+{n:"Griffar",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:626},
+{n:"Glaone",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:627},
+{n:"Noble Lunera Dragon",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:628},
+{n:"Blaze Dragon",e:"Fire",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:629},
+{n:"Avernale",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:630},
+{n:"Toarnesce",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:631},
+{n:"Noble Excir",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:632},
+{n:"Protect Dragon",e:"Light",t:"DEF",t_kr:"DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.575",cd:"Yes",id:633},
+{n:"Chroma Protect Dragon",e:"Light",t:"DEF",t_kr:"DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.575",cd:"Yes",id:634},
+{n:"Tempios",e:"Dusk",t:"HP",t_kr:"HP",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:635},
+{n:"Girdletail Dragon",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:636},
+{n:"Jin",e:"Nightmare",t:"ATK-DEF",t_kr:"ATK-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.775",cd:"Yes",id:637},
+{n:"Macaron Dragon",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:638},
+{n:"Archelon",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:639},
+{n:"Noble Dark Horn",e:"Dusk",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:640},
+{n:"Inverso",e:"Dusk",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.875",cd:"Yes",id:641},
+{n:"Tititok",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:642},
+{n:"Reverie",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:643},
+{n:"Litio",e:"Wind",t:"DEF",t_kr:"DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:644},
+{n:"Chroma Litio",e:"Wind",t:"DEF",t_kr:"DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:645},
+{n:"Feyrex",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:646},
+{n:"Skat",e:"Water",t:"DEF",t_kr:"DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.45",cd:"Yes",id:647},
+{n:"Alresch",e:"Water",t:"HP",t_kr:"HP",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:648},
+{n:"Chroma Alresch",e:"Water",t:"HP",t_kr:"HP",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:649},
+{n:"Janus",e:"Dawn",t:"HP",t_kr:"HP",aw:0,ad:1,tr:1,lv:1,tg:"6.8",cd:"Yes",id:650},
+{n:"Figar",e:"Fire",t:"HP",t_kr:"HP",aw:0,ad:1,tr:1,lv:1,tg:"6.825",cd:"Yes",id:651},
+{n:"Chroma Figar",e:"Fire",t:"HP",t_kr:"HP",aw:0,ad:1,tr:1,lv:1,tg:"6.825",cd:"Yes",id:652},
+{n:"Scartooth",e:"Fire",t:"DEF",t_kr:"DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:653},
+{n:"Chroma Scartooth",e:"Fire",t:"DEF",t_kr:"DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:654},
+{n:"Loki",e:"Water",t:"DEF",t_kr:"DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.575",cd:"Yes",id:655},
+{n:"Fafnir",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:656},
+{n:"Huginn",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:657},
+{n:"Muninn",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:658},
+{n:"Heimdallr",e:"Earth",t:"HP-DEF",t_kr:"HP-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:659},
+{n:"Volva",e:"Water",t:"HP",t_kr:"HP",aw:0,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes",id:660},
+{n:"Thor",e:"Wind",t:"ATK-DEF",t_kr:"ATK-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:661},
+{n:"Jormungandr",e:"Dark",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes",id:662},
+{n:"Manus",e:"Dusk",t:"HP-DEF",t_kr:"HP-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.8",cd:"Yes",id:663},
+{n:"Corrupted Jormungandr",e:"Nightmare",t:"ATK",t_kr:"ATK",aw:0,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes",id:664},
+{n:"Yajnir",e:"Light",t:"ATK",t_kr:"ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.325",cd:"Yes",id:665},
+{n:"Noble Sullivan",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:666},
+{n:"Non",e:"Earth",t:"HP-DEF",t_kr:"HP-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.675",cd:"Yes",id:667},
+{n:"Florea",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:668},
+{n:"Lucio",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:669},
+{n:"Jango",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:670},
+{n:"Lemures",e:"Nightmare",t:"ATK",t_kr:"ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.9",cd:"Yes",id:671},
+{n:"Acaia",e:"Earth",t:"ATK-DEF",t_kr:"ATK-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.35",cd:"Yes",id:672},
+{n:"Chroma Acaia",e:"Earth",t:"ATK-DEF",t_kr:"ATK-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.35",cd:"Yes",id:673},
+{n:"Tiamat",e:"Dark",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.425",cd:"Yes",id:674},
+{n:"Libro",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:675},
+{n:"Obex",e:"Dark",t:"ATK",t_kr:"ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes",id:676},
+{n:"Hresvelgr",e:"Dusk",t:"HP",t_kr:"HP",aw:0,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes",id:677},
+{n:"Hod",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:678},
+{n:"Sleipnir",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:679},
+{n:"Noble Fenrir",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:680},
+{n:"Hatshya",e:"Dark",t:"ATK-DEF",t_kr:"ATK-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.525",cd:"Yes",id:681},
+{n:"Brry",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:682},
+{n:"Paruparu",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:683},
+{n:"Valefor",e:"Nightmare",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:684},
+{n:"Chroma Valefor",e:"Nightmare",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:685},
+{n:"Merak",e:"Light",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:686},
+{n:"Reginleif",e:"Dusk",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.75",cd:"Yes",id:687},
+{n:"Chroma Reginleif",e:"Dusk",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.75",cd:"Yes",id:688},
+{n:"Red Horse Dragon",e:"Fire",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:689},
+{n:"Noble Hurricane",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:690},
+{n:"Fishing Tail Dragon",e:"Water",t:"ATK",t_kr:"ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.3",cd:"Yes",id:691},
+{n:"Raven Dragon",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:692},
+{n:"Magpie Dragon",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:693},
+{n:"Lulu",e:"Wind",t:"HP-DEF",t_kr:"HP-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.075",cd:"Yes",id:694},
+{n:"Chroma Lulu",e:"Wind",t:"HP-DEF",t_kr:"HP-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.075",cd:"Yes",id:695},
+{n:"Vaska",e:"Earth",t:"ATK",t_kr:"ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:696},
+{n:"Vlad",e:"Nightmare",t:"HP",t_kr:"HP",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:697},
+{n:"Freyja",e:"Dawn",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes",id:698},
+{n:"Pangpang",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:699},
+{n:"Mystic Arts",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:700},
+{n:"Noble Angra",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:701},
+{n:"Skuld",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:702},
+{n:"Cthulhu",e:"Dark",t:"ATK",t_kr:"ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.8",cd:"Yes",id:703},
+{n:"Chroma Cthulhu",e:"Dark",t:"ATK",t_kr:"ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.8",cd:"Yes",id:704},
+{n:"Mangtaegon",e:"Nightmare",t:"HP",t_kr:"HP",aw:0,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:705},
+{n:"Undine",e:"Water",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.8",cd:"Yes",id:706},
+{n:"Chroma Undine",e:"Water",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.8",cd:"Yes",id:707},
+{n:"Seraphim",e:"Light",t:"HP",t_kr:"HP",aw:0,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:708},
+{n:"Nubestella",e:"Dusk",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:709},
+];
+
+const dexElemIcons={
+  "Earth":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/11.png",
+  "Water":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/12.png",
+  "Fire":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/13.png",
+  "Wind":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/14.png",
+  "Light":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/84.png",
+  "Dark":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/87.png",
+  "Dusk":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/487.png",
+  "Dawn":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/486.png",
+  "Nightmare":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/488.png",
+};
+
+const STAGES=[
+  {i:1,l:"Egg"},{i:2,l:"Hatch"},{i:3,l:"Hatchling"},{i:4,l:"Adult"},
+  {i:5,l:"Capsule"},{i:6,l:"Awakened"},{i:7,l:"Transcended"},{i:8,l:"Advent"}
+];
+
+// 단계 → 풀 이미지 파일명 매핑
+// 경로: dragon/{N}/{filename}.png
+const STAGE_FILES = {
+  1: "profile/1",    // 알 - profile/1.png 공용
+  2: "child1",       // 해치
+  3: "child2",       // 해츨링
+  4: "adult",        // 성체
+  5: "capsule",      // 캡슐
+  6: "capsule2",     // 각성
+  7: "transcended",  // 초월
+  8: "advent",       // 강림
+};
+
+// 스텟 데이터 (나중에 채울 것)
+// 형식: "드래곤이름": { 단계인덱스: { atk:[lo,hi,max_lo,max_hi], def:[...], hp:[...] } }
+// dexStatMap → stat.js 에서 로드
+// dexDescMap → desc.js 에서 로드
+
+
+
+const PER_PAGE = 10;
+const params = new URLSearchParams(window.location.search);
+let curPageNum = Math.max(1, parseInt(params.get("p") || sessionStorage.getItem("dv1_page") || "1"));
+
+// 필터 상태
+let filterName = "";
+let filterElems = new Set();
+let filterTypes = new Set();
+const ELEMS = ["Earth","Water","Fire","Wind","Light","Dark","Dusk","Dawn","Nightmare"];
+const TYPES = ["HP","ATK","DEF","HP-ATK","HP-DEF","ATK-DEF","NEU"];
+
+function getFiltered(){
+  return dexData.filter(d => {
+    if(filterName && !d.n.includes(filterName)) return false;
+    if(filterElems.size > 0 && !filterElems.has(d.e)) return false;
+    if(filterTypes.size > 0 && !filterTypes.has(d.t)) return false;
+    return true;
+  });
+}
+
+function buildFilterUI(){
+  const fr = document.getElementById("filter-row");
+  fr.innerHTML = "";
+
+  const line1 = document.createElement("div"); line1.className = "filter-line";
+  const line2 = document.createElement("div"); line2.className = "filter-line";
+
+  const lbl = (t, target) => {
+    const s=document.createElement("span"); s.className="filter-label"; s.textContent=t; target.appendChild(s);
+  };
+
+  lbl("Element", line1);
+  ELEMS.forEach(v => {
+    const b=document.createElement("button");
+    b.className="ftag"+(filterElems.has(v)?" active":"");
+    const icon=dexElemIcons[v];
+    if(icon){ const img=document.createElement("img"); img.src=icon; img.alt=v; b.appendChild(img); }
+    b.appendChild(document.createTextNode(v));
+    b.onclick=()=>{ filterElems.has(v)?filterElems.delete(v):filterElems.add(v); onFilter(); };
+    line1.appendChild(b);
+  });
+
+  lbl("Type", line2);
+  TYPES.forEach(v => {
+    const b=document.createElement("button");
+    b.className="ftag"+(filterTypes.has(v)?" active":"");
+    b.textContent=v;
+    b.onclick=()=>{ filterTypes.has(v)?filterTypes.delete(v):filterTypes.add(v); onFilter(); };
+    line2.appendChild(b);
+  });
+
+  fr.appendChild(line1);
+  fr.appendChild(line2);
+}
+
+function onFilter(){
+  filterName = document.getElementById("search-input").value.trim();
+  curPageNum = 1;
+  sessionStorage.setItem("dv1_page", 1);
+  renderAll();
+}
+
+// 엔트리별 현재 선택 단계 저장
+const stageState = {};
+
+function getN(name){
+  const d = dexData.find(x => x.n === name);
+  return d && d.id ? String(d.id) : null;
+}
+const BASE = "https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main";
+
+// 썸네일: dragon/{N}/profile/{stage}.png
+function profileUrl(name, stage){
+  const n = getN(name);
+  return n ? `${BASE}/dragon/${n}/profile/${stage}.png` : "";
+}
+// 풀 이미지: dragon/{N}/{filename}.png
+function fullUrl(name, stage){
+  const n = getN(name);
+  const f = STAGE_FILES[stage];
+  return (n && f) ? `${BASE}/dragon/${n}/${f}.png` : "";
+}
+function stageAvail(d, i){
+  if(i===6 && !d.aw) return false;
+  if(i===7 && !d.tr) return false;
+  if(i===8 && !d.ad) return false;
+  return true;
+}
+function highStage(d){ return d.ad?"Advent":d.tr?"Transcended":d.aw?"Awakened":"Adult"; }
+
+// ── 전체 렌더 ──
+function renderAll(){
+  buildFilterUI();
+  const filtered = getFiltered();
+  const totalPages = Math.ceil(filtered.length / PER_PAGE);
+  curPageNum = Math.min(curPageNum, totalPages || 1);
+  const pageData = filtered.slice((curPageNum-1)*PER_PAGE, curPageNum*PER_PAGE);
+
+  document.getElementById("top-title").textContent =
+    `Dragon Encyclopedia (${filtered.length})`;
+
+  const container = document.getElementById("entries");
+  container.innerHTML = "";
+  container.style.animation = "none";
+  container.offsetHeight; // reflow
+  container.style.animation = "";
+  pageData.forEach(d => {
+    const globalIdx = dexData.indexOf(d);
+    if(stageState[globalIdx] === undefined) stageState[globalIdx] = 4;
+    container.appendChild(buildEntry(d, globalIdx));
+  });
+  buildPagination(filtered.length, totalPages);
+}
+
+function buildEntry(d, idx){
+  const wrap = document.createElement("div");
+  wrap.className = "dragon-entry";
+  wrap.dataset.idx = idx;
+
+  const initFull = fullUrl(d.n, 4);
+
+  wrap.innerHTML = `
+    <div class="entry-body">
+      <div class="img-box">
+        <img class="main-img" id="mimg-${idx}"
+          src="${initFull}"
+          alt="${d.n}"
+          onerror="this.style.display='none';document.getElementById('mph-${idx}').style.display='flex'"
+          style="${initFull?'':'display:none'}">
+        <div class="main-img-ph" id="mph-${idx}" style="${initFull?'display:none':'display:flex'}">No Image</div>
+      </div>
+      <div class="info-panel">
+        <div class="name-meta">
+          <div class="dragon-name">${d.n}</div>
+          <div class="meta-row">
+            <span class="meta-label">Element</span>&nbsp;<span class="meta-val eb-${d.e}" style="padding:1px 6px;border-radius:4px;font-size:11px;display:inline-flex;align-items:center;gap:3px">${dexElemIcons[d.e]?`<img src="${dexElemIcons[d.e]}" style="width:14px;height:14px;border-radius:2px">`:''}${d.e}</span>
+            <span class="meta-sep">|</span>
+            <span class="meta-label">Type</span>&nbsp;<span class="meta-val">${d.t_kr}</span>
+            <span class="meta-sep">|</span>
+            <span class="meta-label">Gen</span>&nbsp;<span class="meta-val">${d.gen||"1"}</span>
+            <span class="meta-sep">|</span>
+            <span class="meta-label">Stage</span>&nbsp;<span class="meta-val" id="mstage-${idx}">Adult</span>
+            <span class="meta-sep">|</span>
+            <span class="meta-label">Level Up</span>&nbsp;<span class="meta-val">${d.lv?'Yes':'No'}</span>
+            <span class="meta-sep">|</span>
+            <span class="meta-label">Codable</span>&nbsp;<span class="meta-val">${d.cd}</span>
+          </div>
+        </div>
+        <div class="strip-row">
+          <div class="profile-strip" id="strip-${idx}"></div>
+          <button class="state-btn" id="sbtn-${idx}" onclick="toggleStat(${idx})">Show Stats ▼</button>
+        </div>
+      </div>
+    </div>
+    <div class="stat-section" id="stat-${idx}">
+      <table class="stat-table">
+        <thead>
+          <tr>
+            <th class="row-label"></th>
+            <th>Lv.1</th>
+            <th>Lv.45</th>
+            <th>Growth</th>
+          </tr>
+        </thead>
+        <tbody id="stbody-${idx}"></tbody>
+      </table>
+    </div>`;
+
+  // 프로필 스트립 구성
+  const strip = wrap.querySelector(`#strip-${idx}`);
+  STAGES.forEach(s => {
+    const avail = stageAvail(d, s.i);
+    const pUrl = profileUrl(d.n, s.i);
+    const fallbackUrl = profileUrl(d.n, 4); // 성체 프로필 폴백
+    const thumbWrap = document.createElement("div");
+    thumbWrap.className = "pthumb" + (avail ? "" : " unavail");
+    thumbWrap.dataset.si = s.i;
+
+    if(pUrl){
+      const img = document.createElement("img");
+      img.className = "pthumb-img" + (s.i === 4 ? " sel" : "");
+      // 성체(4)는 dexImgMap 이미지로 폴백, 나머지는 플레이스홀더
+      img.src = pUrl;
+      img.alt = s.l;
+      img.onerror = function(){
+        if(s.i === 5){
+          this.closest(".pthumb").style.display = "none";
+        } else {
+          this.style.display = "none";
+          const ph = document.createElement("div");
+          ph.className = "pthumb-ph"; ph.textContent = s.l[0];
+          this.parentNode.insertBefore(ph, this);
+        }
+      };
+      thumbWrap.appendChild(img);
+    } else {
+      const ph = document.createElement("div");
+      ph.className = "pthumb-ph"; ph.textContent = s.l[0];
+      thumbWrap.appendChild(ph);
+    }
+    const lbl = document.createElement("span");
+    lbl.className = "pthumb-label"; lbl.textContent = s.l;
+    thumbWrap.appendChild(lbl);
+
+    if(avail) thumbWrap.onclick = () => selectStage(d, idx, s.i);
+    strip.appendChild(thumbWrap);
+  });
+
+  return wrap;
+}
+
+function selectStage(d, idx, si){
+  stageState[idx] = si;
+  document.getElementById("mstage-" + idx).textContent = STAGES.find(s=>s.i===si).l;
+
+  // 큰 이미지 교체
+  const mi = document.getElementById("mimg-" + idx);
+  const mp = document.getElementById("mph-" + idx);
+  const fUrl = fullUrl(d.n, si);
+  if(fUrl){
+    mi.src = fUrl; mi.style.display = "block"; mp.style.display = "none";
+    mi.onerror = () => { mi.style.display = "none"; mp.style.display = "flex"; };
+  } else {
+    mi.style.display = "none"; mp.style.display = "flex";
+  }
+
+  // 썸네일 sel 업데이트
+  document.querySelectorAll(`#strip-${idx} .pthumb-img`).forEach(img => {
+    img.classList.toggle("sel", parseInt(img.closest(".pthumb").dataset.si) === si);
+  });
+  const statSec = document.getElementById("stat-" + idx);
+  if(statSec && statSec.style.display !== "none") renderStat(d, idx, si);
+}
+
+function toggleStat(idx){
+  const d = dexData[idx];
+  const sec = document.getElementById("stat-" + idx);
+  const btn = document.getElementById("sbtn-" + idx);
+  const isOpen = sec.style.display !== "none";
+  sec.style.display = isOpen ? "none" : "block";
+  btn.textContent = isOpen ? "Show Stats ▼" : "Hide Stats ▲";
+  if(!isOpen) renderStat(d, idx, stageState[idx] || 4);
+}
+
+function renderStat(d, idx, si){
+  const tbody = document.getElementById("stbody-" + idx);
+  const ss = dexStatMap[d.n] || null;
+  tbody.innerHTML = [
+    {label:"ATK", key:"atk"},
+    {label:"DEF", key:"def"},
+    {label:"HP",  key:"hp"},
+  ].map(r => {
+    const s = ss ? ss[r.key] : null;
+    if(!s) return `<tr>
+      <td class="row-label">${r.label}</td>
+      <td class="stat-nil">-</td><td class="stat-nil">-</td><td class="stat-nil">-</td></tr>`;
+    const lv45 = s[0] + Math.round(s[1] * 44);
+    return `<tr>
+      <td class="row-label">${r.label}</td>
+      <td>${s[0]}</td><td>${lv45}</td><td>${s[1]}</td></tr>`;
+  }).join("");
+}
+
+function buildPagination(total, totalPages){
+  const pg = document.getElementById("pagination");
+  pg.innerHTML = "";
+  if(totalPages <= 1) return;
+  const isMobile = window.innerWidth < 640;
+  const GROUP = isMobile ? 5 : 10;
+  const groupStart = Math.floor((curPageNum - 1) / GROUP) * GROUP + 1;
+  const groupEnd = Math.min(groupStart + GROUP - 1, totalPages);
+
+  const btn = (label, targetPage, isActive, isDisabled) => {
+    const a = document.createElement("a");
+    a.className = "pg-btn" + (isActive ? " active" : "") + (isDisabled ? " disabled" : "");
+    a.textContent = label;
+    if(!isDisabled && !isActive){
+      a.href = "javascript:void(0)";
+      a.onclick = () => { curPageNum = targetPage; sessionStorage.setItem("dv1_page", targetPage); renderAll(); };
+    }
+    pg.appendChild(a);
+  };
+
+  if(!isMobile) btn("«", 1, false, curPageNum === 1);
+  btn("‹", Math.max(1, groupStart - GROUP), false, groupStart === 1);
+  for(let p = groupStart; p <= groupEnd; p++) btn(p, p, p === curPageNum, false);
+  btn("›", Math.min(totalPages, groupStart + GROUP), false, groupEnd === totalPages);
+  if(!isMobile) btn("»", totalPages, false, curPageNum === totalPages);
+}
+
+// 테마 동기화
+(function(){
+  var link=document.getElementById("theme-css");
+  if(!link)return;
+  var sync=function(){
+    var c=document.getElementById("custom-theme-style");
+    if(c&&c.textContent&&c.textContent.length>0){document.documentElement.removeAttribute("data-theme");return;}
+    var m=String(link.href||"").match(/theme-(dark|light|beige)\.css/);
+    document.documentElement.setAttribute("data-theme",m?m[1]:"dark");
+  };
+  sync();
+  new MutationObserver(sync).observe(link,{attributes:true,attributeFilter:["href"]});
+  new MutationObserver(sync).observe(document.head,{childList:true,subtree:true,characterData:true});
+})();
+
+renderAll();
+</script>
+</body>
+</html>

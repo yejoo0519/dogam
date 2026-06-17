@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>길드</title>
+<link id="theme-css" rel="stylesheet" href="./theme-dark.css">
+<script src="./theme.js"></script>
+<style>
+/* ── 테마 팔레트 (index.html과 동일) ── */
+[data-theme="dark"]{
+  --bg:#0e1116;--bg2:#161a22;--bg3:#1c212c;
+  --border:#23293a;--border2:#1b1f2a;--border3:#2d3447;
+  --text:#eaecf2;--text2:#b3b9c7;--text3:#7d8597;--text4:#565d6e;
+  --accent:#7aa2f7;--accent-bg:rgba(122,162,247,0.12);--accent-border:rgba(122,162,247,0.30);
+}
+[data-theme="light"]{
+  --bg:#f7f7f8;--bg2:#ffffff;--bg3:#f1f2f4;
+  --border:#e6e7ea;--border2:#eeeff2;--border3:#d4d6db;
+  --text:#15171c;--text2:#4a4d57;--text3:#71757f;--text4:#9aa0aa;
+  --accent:#2f6fed;--accent-bg:rgba(47,111,237,0.10);--accent-border:rgba(47,111,237,0.32);
+}
+[data-theme="beige"]{
+  --bg:#f3ecdd;--bg2:#faf3e2;--bg3:#ebe0c7;
+  --border:#d8caa8;--border2:#e1d4b3;--border3:#c0ad84;
+  --text:#2a2316;--text2:#5a4e34;--text3:#837553;--text4:#a99971;
+  --accent:#b06a1e;--accent-bg:rgba(176,106,30,0.10);--accent-border:rgba(176,106,30,0.32);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--text);padding:12px}
+.back-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;text-decoration:none;margin-bottom:16px;transition:all 0.15s}
+.back-btn:hover{border-color:var(--accent);color:var(--text)}
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.header h1{font-size:20px;color:var(--text2)}
+.header-right{display:flex;align-items:center;gap:8px}
+.user-info{font-size:12px;color:var(--accent);font-weight:600}
+.btn{padding:7px 14px;border-radius:20px;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.15s}
+.btn-primary{background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-border)}
+.btn-primary:hover{background:rgba(93,207,245,0.25)}
+.btn-gray{background:var(--bg3);color:var(--text2);border:1px solid var(--border)}
+.btn-gray:hover{border-color:var(--accent);color:var(--text)}
+.btn-danger{background:rgba(239,83,80,0.1);color:#ef5350;border:1px solid rgba(239,83,80,0.2)}
+.filter-wrap{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.filter-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.filter-label{font-size:11px;color:var(--text4);width:40px;flex-shrink:0}
+.filter-btn{padding:4px 12px;border-radius:20px;border:1px solid var(--border);background:none;color:var(--text3);font-size:11px;cursor:pointer;font-family:inherit;transition:all 0.15s}
+.filter-btn:hover{border-color:var(--accent);color:var(--text2)}
+.filter-btn.active{border-color:var(--accent);background:var(--accent-bg);color:var(--accent)}
+
+/* 테이블 */
+.guild-table{width:100%;border-collapse:collapse;background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;table-layout:fixed}
+.guild-table th{background:var(--bg3);padding:10px 8px;font-size:12px;font-weight:700;color:var(--accent);text-align:left;border-bottom:1px solid var(--border)}
+.guild-table th.num{width:40px;text-align:center}
+.guild-table th.title{text-align:left}
+.guild-table th.meta{width:80px;text-align:center}
+.guild-table td{padding:10px 8px;font-size:13px;border-bottom:1px solid var(--border2);color:var(--text);vertical-align:middle}
+.guild-table td.num{text-align:center;color:var(--text4);font-size:12px;width:40px}
+.guild-table td.title{word-break:break-all}
+.guild-table td.meta{text-align:center;width:80px}
+.guild-table tr:last-child td{border-bottom:none}
+.guild-table tr:hover td{background:var(--bg3);cursor:pointer}
+
+/* 작성자+추천 묶음 */
+.meta-wrap{display:flex;flex-direction:column;align-items:center;gap:3px}
+.meta-author{color:var(--text2);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:76px}
+.meta-likes{color:#f5c842;font-size:11px}
+.block-btn{font-size:10px;padding:1px 5px;border-radius:4px;border:1px solid var(--border3);background:none;color:var(--text4);cursor:pointer;font-family:inherit;margin-top:2px}
+.block-btn:hover{border-color:#ef5350;color:#ef5350}
+
+.guild-title-link{color:var(--text);text-decoration:none;font-size:13px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.guild-title-link:hover{color:var(--accent)}
+.guild-logo-small{width:26px;height:26px;border-radius:6px;object-fit:cover;border:1px solid var(--border);background:var(--bg3);flex-shrink:0}
+.empty{text-align:center;color:var(--text4);font-size:13px;padding:32px 0}
+.verify-badge{font-size:12px;flex-shrink:0}
+.blocked-count{font-size:11px;color:var(--text4);text-align:right;margin-bottom:6px}
+.blocked-count a{color:var(--accent);cursor:pointer;text-decoration:none}
+</style>
+</head>
+<body>
+
+<a id="back-btn" href="./index.html" class="back-btn">← 메인으로</a>
+
+<div class="header">
+  <h1>길드</h1>
+  <div class="header-right" id="header-right">
+    <span class="user-info" id="user-info"></span>
+    <button class="btn btn-gray" id="auth-btn"></button>
+    <button class="btn btn-primary" id="write-btn" style="display:none" onclick="location.href='./write.html?board=guild'">홍보 글쓰기</button>
+  </div>
+</div>
+
+<div id="blocked-info"></div>
+
+<div class="filter-wrap">
+  <div class="filter-row">
+    <span class="filter-label">컨텐츠</span>
+    <button class="filter-btn active" onclick="setFilter('content','',this)">전체</button>
+    <button class="filter-btn" onclick="setFilter('content','길드전',this)">길드전</button>
+    <button class="filter-btn" onclick="setFilter('content','광산',this)">광산</button>
+    <button class="filter-btn" onclick="setFilter('content','길드레이드',this)">길드레이드</button>
+    <button class="filter-btn" onclick="setFilter('content','길드포인트',this)">길드포인트</button>
+  </div>
+  <div class="filter-row">
+    <span class="filter-label">나이</span>
+    <button class="filter-btn active" onclick="setFilter('age','',this)">전체</button>
+    <button class="filter-btn" onclick="setFilter('age','성인',this)">성인</button>
+    <button class="filter-btn" onclick="setFilter('age','상관X',this)">상관X</button>
+  </div>
+</div>
+
+<table class="guild-table">
+  <thead>
+    <tr>
+      <th class="num">번호</th>
+      <th class="title">길드명</th>
+      <th class="meta">작성자 / 추천</th>
+    </tr>
+  </thead>
+  <tbody id="guild-list-body"></tbody>
+</table>
+
+<script src="./sb_config.js"></script>
+<script src="./data2/guild_list.js"></script>
+<script>
+// ?from= 파라미터를 읽어서 뒤로가기 URL 결정
+(function() {
+  const from = new URLSearchParams(location.search).get('from');
+  const allowed = ['community','weekly','guide','info'];
+  const backBtn = document.getElementById('back-btn');
+  if(from && allowed.includes(from)) {
+    backBtn.href = `./index.html?tab=${from}`;
+  }
+})();
+
+const user = getUser();
+let activeContent = '';
+let activeAge = '';
+let allDbPosts = [];
+
+function getBlockList() { try { return JSON.parse(localStorage.getItem('block_list') || '[]'); } catch { return []; } }
+function saveBlockList(list) { localStorage.setItem('block_list', JSON.stringify(list)); }
+function blockUser(userId, nickname) {
+  if(!confirm(`"${nickname}"님을 차단할까요?`)) return;
+  const list = getBlockList();
+  if(!list.includes(userId)) { list.push(userId); saveBlockList(list); }
+  renderList();
+}
+function showBlockList() {
+  const list = getBlockList();
+  if(list.length === 0) { alert('차단한 유저가 없어요.'); return; }
+  if(confirm(`차단된 유저 ${list.length}명\n\n전체 차단 해제할까요?`)) { saveBlockList([]); renderList(); }
+}
+
+if(user) {
+  document.getElementById('user-info').textContent = user.nickname || user.username;
+  document.getElementById('auth-btn').textContent = '로그아웃';
+  document.getElementById('auth-btn').onclick = logout;
+  document.getElementById('write-btn').style.display = '';
+  if(user.is_admin) {
+    const adminBtn = document.createElement('button');
+    adminBtn.className = 'btn btn-danger';
+    adminBtn.textContent = '관리자';
+    adminBtn.onclick = () => location.href = './admin.html';
+    document.getElementById('header-right').appendChild(adminBtn);
+  }
+} else {
+  document.getElementById('auth-btn').textContent = '로그인';
+  document.getElementById('auth-btn').onclick = () => location.href = './login.html?from=' + encodeURIComponent(location.href.split('/').pop());
+}
+
+function setFilter(type, value, el) {
+  if(type === 'content') {
+    activeContent = value;
+    document.querySelectorAll('.filter-row:nth-child(1) .filter-btn').forEach(b => b.classList.remove('active'));
+  } else {
+    activeAge = value;
+    document.querySelectorAll('.filter-row:nth-child(2) .filter-btn').forEach(b => b.classList.remove('active'));
+  }
+  el.classList.add('active');
+  renderList();
+}
+
+function renderList() {
+  const tbody = document.getElementById('guild-list-body');
+  const blockList = getBlockList();
+  const blockedInfo = document.getElementById('blocked-info');
+  blockedInfo.innerHTML = blockList.length > 0 ? `<div class="blocked-count">차단된 유저 ${blockList.length}명 · <a onclick="showBlockList()">차단 관리</a></div>` : '';
+
+  const filtered = allDbPosts.filter(p => {
+    if(blockList.includes(p.user_id)) return false;
+    let tags = [];
+    try { tags = JSON.parse(p.tags || '[]'); } catch {}
+    const contentOk = !activeContent || tags.includes(activeContent);
+    const ageOk = !activeAge || tags.includes(activeAge);
+    return contentOk && ageOk;
+  });
+
+  tbody.innerHTML = '';
+
+  if(filtered.length > 0) {
+    const normalPosts = filtered.filter(p => !p.is_pinned);
+    filtered.forEach(p => {
+      const num = p.is_pinned ? '📌' : normalPosts.length - normalPosts.indexOf(p);
+      const isMe = user && user.id === p.user_id;
+      const blockBtn = user && !isMe ? `<button class="block-btn" onclick="event.stopPropagation();blockUser('${p.user_id}','${p.nickname||p.username}')">차단</button>` : '';
+      const tr = document.createElement('tr');
+      tr.onclick = () => location.href = `./community_view.html?id=${p.id}&back=guild`;
+      tr.innerHTML = `
+        <td class="num">${num}</td>
+        <td class="title">
+          <a class="guild-title-link" href="./community_view.html?id=${p.id}&back=guild">
+            ${p.is_verified ? '<span class="verify-badge">✅</span>' : ''}
+            ${p.title}
+          </a>
+        </td>
+        <td class="meta">
+          <div class="meta-wrap">
+            <span class="meta-author">${p.nickname || p.username}</span>
+            <span class="meta-likes">❤ ${p.likes || 0}</span>
+            ${blockBtn}
+          </div>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  if(guildList && guildList.length > 0 && !activeContent && !activeAge) {
+    guildList.forEach(g => {
+      const tr = document.createElement('tr');
+      tr.onclick = () => location.href = `./guild_view.html?id=${g.id}`;
+      tr.innerHTML = `
+        <td class="num">${g.id}</td>
+        <td class="title">
+          <a class="guild-title-link" href="./guild_view.html?id=${g.id}">
+            <img class="guild-logo-small" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/guild/${g.id}.png" alt="">
+            <span class="verify-badge">✅</span>
+            ${g.title}
+          </a>
+        </td>
+        <td class="meta">
+          <div class="meta-wrap">
+            <span class="meta-author">닉스</span>
+            <span class="meta-likes">-</span>
+          </div>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  if(filtered.length === 0 && (!guildList || guildList.length === 0 || activeContent || activeAge)) {
+    tbody.innerHTML = '<tr><td colspan="3" class="empty">해당하는 길드가 없습니다.</td></tr>';
+  }
+}
+
+async function loadDbPosts() {
+  const tbody = document.getElementById('guild-list-body');
+  tbody.innerHTML = '<tr><td colspan="3" class="empty">로딩 중...</td></tr>';
+  try {
+    const dbPosts = await supabase('GET', 'posts', null, '?board=eq.guild&order=is_pinned.desc,updated_at.desc');
+    allDbPosts = dbPosts || [];
+    renderList();
+  } catch(e) { tbody.innerHTML = `<tr><td colspan="3" class="empty">불러오기 실패: ${e.message}</td></tr>`; }
+}
+
+loadDbPosts();
+</script>
+<script>
+/* ── data-theme 동기화 (theme.js 연동) ── */
+(function(){
+  var link=document.getElementById('theme-css');
+  if(!link)return;
+  var sync=function(){
+    var c=document.getElementById('custom-theme-style');
+    if(c&&c.textContent&&c.textContent.length>0){document.documentElement.removeAttribute('data-theme');return;}
+    var m=String(link.href||'').match(/theme-(dark|light|beige)\.css/);
+    document.documentElement.setAttribute('data-theme',m?m[1]:'dark');
+  };
+  sync();
+  new MutationObserver(sync).observe(link,{attributes:true,attributeFilter:['href']});
+  new MutationObserver(sync).observe(document.head,{childList:true,subtree:true,characterData:true});
+})();
+</script>
+</body>
+</html>

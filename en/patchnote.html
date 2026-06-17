@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Release Notes - Dragon Info Site made by Nix</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--text);padding:12px}
+#tab-bar{display:flex;gap:0;margin-bottom:16px;border-bottom:2px solid var(--border);align-items:flex-end}
+#site-title{display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;margin-right:16px;margin-bottom:6px;border:1.5px solid var(--border3);border-radius:20px;padding:10px 18px;transition:border-color 0.15s;flex-shrink:0}
+#site-title:hover{border-color:var(--accent)}
+#site-title .title-main{font-size:16px;font-weight:700;color:var(--text2);line-height:1.4}
+#site-title .title-sub{font-size:12px;color:var(--text4);line-height:1.4}
+.tab-btn{padding:10px 20px;font-size:13px;font-weight:500;background:none;border:none;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;text-decoration:none;display:inline-block}
+.tab-btn:hover{color:var(--text2)}
+.tab-btn.active{color:var(--accent);border-bottom:2px solid var(--accent)}
+#tab-bar a{text-decoration:none}
+@media(max-width:600px){.tab-btn{display:none}}
+
+h1{font-size:20px;color:var(--text2);margin-bottom:20px}
+
+.patch-list{display:flex;flex-direction:column;gap:16px;max-width:800px}
+.patch-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:20px}
+.patch-header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.patch-version{font-size:14px;font-weight:700;color:var(--accent)}
+.patch-date{font-size:12px;color:var(--text4)}
+.patch-badge{font-size:10px;padding:2px 8px;border-radius:10px;margin-left:auto}
+.badge-new{background:rgba(102,187,106,0.15);color:#66bb6a;border:1px solid rgba(102,187,106,0.3)}
+.badge-fix{background:rgba(239,83,80,0.15);color:#ef5350;border:1px solid rgba(239,83,80,0.3)}
+.badge-update{background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-border)}
+.patch-content{font-size:13px;color:var(--text2);line-height:2}
+.patch-content li{list-style:none;padding-left:12px;position:relative}
+.patch-content li::before{content:"·";position:absolute;left:0;color:var(--accent)}
+
+[data-theme="dark"]{--bg:#0e1116;--bg2:#161a22;--bg3:#1c212c;--border:#23293a;--border2:#1b1f2a;--border3:#2d3447;--text:#eaecf2;--text2:#b3b9c7;--text3:#7d8597;--text4:#565d6e;--accent:#7aa2f7;--accent-bg:rgba(122,162,247,0.12);--accent-border:rgba(122,162,247,0.30)}
+[data-theme="light"]{--bg:#f7f7f8;--bg2:#ffffff;--bg3:#f1f2f4;--border:#e6e7ea;--border2:#eeeff2;--border3:#d4d6db;--text:#15171c;--text2:#4a4d57;--text3:#71757f;--text4:#9aa0aa;--accent:#2f6fed;--accent-bg:rgba(47,111,237,0.10);--accent-border:rgba(47,111,237,0.32)}
+[data-theme="beige"]{--bg:#f3ecdd;--bg2:#faf3e2;--bg3:#ebe0c7;--border:#d8caa8;--border2:#e1d4b3;--border3:#c0ad84;--text:#2a2316;--text2:#5a4e34;--text3:#837553;--text4:#a99971;--accent:#b06a1e;--accent-bg:rgba(176,106,30,0.10);--accent-border:rgba(176,106,30,0.32)}
+</style>
+<link id="theme-css" rel="stylesheet" href="../theme-dark.css">
+<script src="./theme.js"></script>
+</head>
+<body>
+<style>
+#lang-btn{padding:6px 14px;border-radius:20px;border:1px solid var(--border3);background:var(--bg2);color:var(--text2);font-size:12px;font-family:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:4px;transition:all 0.15s;flex-shrink:0;align-self:center;margin-bottom:6px}
+#lang-btn:hover{border-color:var(--accent);color:var(--text)}
+</style>
+<div id="tab-bar">
+  <a href="./index.html" id="site-title">
+    <span class="title-main">Main</span>
+    <span class="title-sub">made by nix</span>
+  </a>
+</div>
+
+<h1>Release Notes</h1>
+
+<div class="patch-list" id="patch-list">
+
+  <div class="patch-card">
+    <div class="patch-header">
+      <span class="patch-version">v0.0.7</span>
+      <span class="patch-date">2026-05-23</span>
+      <span class="patch-badge badge-new">NEW</span>
+    </div>
+    <ul class="patch-content">
+      <li>Overall UI improvements</li>
+      <li>Added My Spec page for calculators</li>
+      <li>Added spec export/import feature</li>
+    </ul>
+  </div>
+
+  <div class="patch-card">
+    <div class="patch-header">
+      <span class="patch-version">v0.0.6</span>
+      <span class="patch-date">2026-05-06</span>
+      <span class="patch-badge badge-new">NEW</span>
+    </div>
+    <ul class="patch-content">
+      <li>Added Spirit Auto-Calculator</li>
+    </ul>
+  </div>
+
+  <div class="patch-card">
+    <div class="patch-header">
+      <span class="patch-version">v0.0.5</span>
+      <span class="patch-date">2026-04-22</span>
+      <span class="patch-badge badge-update">UPDATE</span>
+    </div>
+    <ul class="patch-content">
+      <li>Updated Weekly Info page</li>
+    </ul>
+  </div>
+
+  <div class="patch-card">
+    <div class="patch-header">
+      <span class="patch-version">v0.0.1</span>
+      <span class="patch-date">2026-04-20</span>
+      <span class="patch-badge badge-new">NEW</span>
+    </div>
+    <ul class="patch-content">
+        <li>Added multi-select for Element & Type</li>
+        <li>Added Dragon Dex with image support</li>
+        <li>Added SSS Ranking</li>
+        <li>Added Arha Gate combos & auto-combo calculator</li>
+        <li>Added Raid Info page</li>
+        <li>Improved mobile & PC UI</li>
+    </ul>
+  </div>
+
+</div>
+<script>
+(function(){var link=document.getElementById('theme-css');if(!link)return;var sync=function(){var c=document.getElementById('custom-theme-style');if(c&&c.textContent&&c.textContent.length>0){document.documentElement.removeAttribute('data-theme');return;}var m=String(link.href||'').match(/theme-(dark|light|beige)\.css/);document.documentElement.setAttribute('data-theme',m?m[1]:'dark');};sync();new MutationObserver(sync).observe(link,{attributes:true,attributeFilter:['href']});new MutationObserver(sync).observe(document.head,{childList:true,subtree:true,characterData:true});})();
+</script>
+</body>
+</html>

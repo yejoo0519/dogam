@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>공략 & 가이드</title>
+<link id="theme-css" rel="stylesheet" href="./theme-dark.css">
+<script src="./theme.js"></script>
+<style>
+/* ── 테마 팔레트 (index.html과 동일) ── */
+[data-theme="dark"]{
+  --bg:#0e1116;--bg2:#161a22;--bg3:#1c212c;
+  --border:#23293a;--border2:#1b1f2a;--border3:#2d3447;
+  --text:#eaecf2;--text2:#b3b9c7;--text3:#7d8597;--text4:#565d6e;
+  --accent:#7aa2f7;--accent-bg:rgba(122,162,247,0.12);--accent-border:rgba(122,162,247,0.30);
+}
+[data-theme="light"]{
+  --bg:#f7f7f8;--bg2:#ffffff;--bg3:#f1f2f4;
+  --border:#e6e7ea;--border2:#eeeff2;--border3:#d4d6db;
+  --text:#15171c;--text2:#4a4d57;--text3:#71757f;--text4:#9aa0aa;
+  --accent:#2f6fed;--accent-bg:rgba(47,111,237,0.10);--accent-border:rgba(47,111,237,0.32);
+}
+[data-theme="beige"]{
+  --bg:#f3ecdd;--bg2:#faf3e2;--bg3:#ebe0c7;
+  --border:#d8caa8;--border2:#e1d4b3;--border3:#c0ad84;
+  --text:#2a2316;--text2:#5a4e34;--text3:#837553;--text4:#a99971;
+  --accent:#b06a1e;--accent-bg:rgba(176,106,30,0.10);--accent-border:rgba(176,106,30,0.32);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--text);padding:16px}
+.back-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;text-decoration:none;margin-bottom:20px;transition:all 0.15s}
+.back-btn:hover{border-color:var(--accent);color:var(--text)}
+.post-header{border-bottom:1px solid var(--border);padding-bottom:16px;margin-bottom:24px}
+.post-title{font-size:22px;font-weight:700;color:var(--text);margin-bottom:12px;line-height:1.4}
+.post-meta{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.post-meta-item{font-size:12px;color:var(--text4)}
+.post-meta-item span{color:var(--text2);margin-left:4px}
+.copy-btn{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:12px;border:1px solid var(--border3);background:none;color:var(--text3);font-size:11px;cursor:pointer;font-family:inherit;transition:all 0.15s;margin-left:auto}
+.copy-btn:hover{border-color:var(--accent);color:var(--accent)}
+.post-body{max-width:780px;line-height:1.9;font-size:14px;color:var(--text2)}
+.post-body .section-title{font-size:15px;font-weight:700;color:var(--accent);margin:28px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border2)}
+.post-body p{margin-bottom:10px;word-break:keep-all}
+.post-body .post-img{width:100%;max-width:600px;border-radius:8px;margin:12px 0;display:block}
+.post-body hr{border:none;border-top:1px solid var(--border2);margin:24px 0}
+.post-body .highlight{color:#f5c842;font-weight:600}
+.post-body .quote{background:var(--bg3);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:10px 14px;margin:12px 0;font-size:13px;color:var(--text2);line-height:1.7}
+.post-body .tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;margin:0 2px;vertical-align:middle}
+.tag-water{background:#e3f2fd;color:#1565c0}
+.tag-fire{background:#fce4ec;color:#b71c1c}
+.tag-wind{background:#e8f5e9;color:#1b5e20}
+.tag-earth{background:#fff3e0;color:#e65100}
+.tag-light{background:#fffde7;color:#f57f17}
+.tag-dark{background:#ede7f6;color:#4a148c}
+.tag-dawn{background:#fff8e1;color:#6d4c41}
+.tag-dusk{background:#fdf2f8;color:#880e4f}
+.tag-nightmare{background:#f3e5f5;color:#6a1b9a}
+.tag-atk{background:var(--bg3);color:var(--text2);border:1px solid var(--border3)}
+.tag-def{background:var(--bg3);color:var(--text2);border:1px solid var(--border3)}
+.tag-hp{background:var(--bg3);color:var(--text2);border:1px solid var(--border3)}
+.post-footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--border)}
+</style>
+</head>
+<body>
+
+<a href="./guide.html" class="back-btn">← 목록으로</a>
+
+<div class="post-header">
+  <div class="post-title" id="post-title">제목 로딩 중...</div>
+  <div class="post-meta">
+    <div class="post-meta-item">작성일 <span id="post-created">-</span></div>
+    <div class="post-meta-item">수정일 <span id="post-updated">-</span></div>
+    <button class="copy-btn" onclick="copyLink()">🔗 링크 복사</button>
+  </div>
+</div>
+
+<div class="post-body" id="post-body">
+  로딩 중...
+</div>
+
+<div class="post-footer">
+  <a href="./guide.html" class="back-btn">← 목록으로</a>
+</div>
+
+<script>
+function copyLink() {
+  navigator.clipboard.writeText(location.href).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent = '✓ 복사됨';
+    setTimeout(() => btn.innerHTML = '🔗 링크 복사', 2000);
+  });
+}
+
+const params = new URLSearchParams(location.search);
+const id = params.get('id');
+
+if(id) {
+  const script = document.createElement('script');
+  script.src = `./data/guide${id}.js`;
+  script.onload = () => {
+    document.title = guideContent.title + ' - 공략&가이드';
+    document.getElementById('post-title').textContent = guideContent.title;
+    document.getElementById('post-created').textContent = guideContent.created;
+    document.getElementById('post-updated').textContent = guideContent.updated;
+    document.getElementById('post-body').innerHTML = guideContent.body;
+  };
+  script.onerror = () => {
+    document.getElementById('post-body').innerHTML = '<div style="color:#666;padding:40px 0;text-align:center">글을 찾을 수 없습니다.</div>';
+  };
+  document.head.appendChild(script);
+}
+</script>
+<script>
+/* ── data-theme 동기화 (theme.js 연동) ── */
+(function(){
+  var link=document.getElementById('theme-css');
+  if(!link)return;
+  var sync=function(){
+    var c=document.getElementById('custom-theme-style');
+    if(c&&c.textContent&&c.textContent.length>0){document.documentElement.removeAttribute('data-theme');return;}
+    var m=String(link.href||'').match(/theme-(dark|light|beige)\.css/);
+    document.documentElement.setAttribute('data-theme',m?m[1]:'dark');
+  };
+  sync();
+  new MutationObserver(sync).observe(link,{attributes:true,attributeFilter:['href']});
+  new MutationObserver(sync).observe(document.head,{childList:true,subtree:true,characterData:true});
+})();
+</script>
+</body>
+</html>

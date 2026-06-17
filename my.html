@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>내 스펙 - 종합 정보사이트</title>
+<link id="theme-css" rel="stylesheet" href="./theme-dark.css">
+<script src="./theme.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;padding-bottom:80px}
+.hd{display:flex;align-items:center;gap:14px;padding:12px 20px;background:var(--sf);border-bottom:2px solid var(--gold);position:sticky;top:0;z-index:100}
+.hd-icon{font-size:26px}.hd-t{font-size:15px;font-weight:800;color:var(--gold)}.hd-s{font-size:11px;color:var(--dim);margin-top:2px}
+.ti{max-width:1200px;margin:0 auto;padding:14px 24px}
+.sec{background:var(--sf);border:1px solid var(--bd);border-radius:8px;margin-bottom:14px;overflow:hidden}
+.sec-hd{display:flex;align-items:center;justify-content:space-between;padding:9px 16px;background:var(--sf2);border-bottom:1px solid var(--bd);font-size:11px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.5px}
+.sec-bd{padding:14px 16px}
+select,input[type=number],input[type=text]{background:var(--sf2);border:1px solid var(--bd);color:var(--text);padding:5px 9px;border-radius:5px;font-family:'Malgun Gothic',sans-serif;font-size:13px}
+select:focus,input:focus{outline:none;border-color:var(--gold)}
+select:disabled,input:disabled{opacity:.3;cursor:not-allowed}
+
+/* 계산기 바로가기 */
+.calc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+@media(max-width:700px){.calc-grid{grid-template-columns:1fr}}
+.calc-card{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:16px 20px;text-decoration:none;display:block;transition:border-color .15s,background .15s;position:relative}
+.calc-card:hover{border-color:var(--gold);background:var(--sf2)}
+.calc-card-title{font-size:15px;font-weight:800;color:var(--text);margin-bottom:4px}
+.calc-card-desc{font-size:12px;color:var(--dim);line-height:1.6}
+.calc-badge{display:inline-block;font-size:10px;padding:2px 8px;border-radius:8px;margin-bottom:8px;font-weight:700}
+.badge-blue{background:rgba(100,181,246,.15);color:#64b5f6;border:1px solid rgba(100,181,246,.3)}
+.badge-orange{background:rgba(255,152,0,.15);color:#ffa726;border:1px solid rgba(255,152,0,.3)}
+.badge-green{background:rgba(102,187,106,.15);color:#66bb6a;border:1px solid rgba(102,187,106,.3)}
+.badge-purple{background:rgba(167,139,250,.15);color:#a78bfa;border:1px solid rgba(167,139,250,.3)}
+.badge-guild{background:rgba(122,162,247,.15);color:#7aa2f7;border:1px solid rgba(122,162,247,.3)}
+
+/* 내보내기/불러오기 */
+.io-wrap{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start;margin-bottom:14px}
+.io-box{flex:1;min-width:240px;background:var(--sf2);border:1px solid var(--bd);border-radius:8px;padding:14px 16px}
+.io-box-title{font-size:11px;font-weight:800;color:var(--gold);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px}
+.code-display{font-family:'Courier New',monospace;font-size:22px;font-weight:800;letter-spacing:4px;color:var(--gold);background:var(--sf);border:1px solid var(--bd);border-radius:6px;padding:10px 14px;text-align:center;margin-bottom:8px;word-break:break-all;min-height:46px;display:flex;align-items:center;justify-content:center}
+.code-input{width:100%;font-family:'Courier New',monospace;font-size:18px;font-weight:800;letter-spacing:4px;text-align:center;text-transform:uppercase;margin-bottom:8px}
+.btn-gold{background:none;border:1px solid var(--gold);color:var(--gold);padding:8px 16px;border-radius:5px;cursor:pointer;font-family:'Malgun Gothic',sans-serif;font-size:13px;font-weight:700;width:100%;transition:background .15s}
+.btn-gold:hover{background:rgba(232,184,75,.1)}
+.btn-white{background:none;border:1px solid #fff;color:#fff;padding:6px 13px;border-radius:5px;cursor:pointer;font-family:'Malgun Gothic',sans-serif;font-size:13px;font-weight:700}
+.btn-white:hover{background:rgba(255,255,255,.1)}
+.btn-reset{background:none;border:1px solid var(--red);color:var(--red);padding:6px 13px;border-radius:5px;cursor:pointer;font-family:'Malgun Gothic',sans-serif;font-size:13px;font-weight:700}
+.btn-reset:hover{background:rgba(248,113,113,.1)}
+.btn-red{background:none;border:1px solid var(--red);color:var(--red);padding:3px 9px;border-radius:4px;cursor:pointer;font-family:'Malgun Gothic',sans-serif;font-size:12px}
+.btn-save-main{width:100%;padding:14px;background:linear-gradient(135deg,var(--gold2),var(--gold));border:none;border-radius:8px;color:#0a0c18;font-family:'Malgun Gothic',sans-serif;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:14px;letter-spacing:-.3px;transition:opacity .15s}
+.btn-save-main:hover{opacity:.9}
+
+.save-row{display:flex;align-items:center;justify-content:flex-end;gap:14px;margin-bottom:10px}
+.save-msg{font-size:12px;color:var(--green)}
+
+/* 스펙 그리드 */
+.spec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:start}
+@media(max-width:1100px){.spec-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){.spec-grid{grid-template-columns:1fr}}
+.spec-col{display:flex;flex-direction:column;gap:14px}
+.spec-col .sec{margin-bottom:0}
+
+/* 젬 */
+.gem-grid{display:grid;grid-template-columns:42px repeat(3,1fr);gap:6px;align-items:center}
+.gem-hdr{font-size:11px;color:var(--dim);text-align:center}
+.gem-lbl{font-weight:800;font-size:13px}
+.gem-grid input{width:100%;text-align:center;padding:5px;font-size:13px}
+.gem-grid input[type=number]::-webkit-outer-spin-button,.gem-grid input[type=number]::-webkit-inner-spin-button{-webkit-appearance:auto!important;margin:0}
+.gem-grid input[type=number]{appearance:auto;-moz-appearance:number-input!important}
+
+/* 컬렉션 */
+.coll-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.coll-g label{display:block;font-size:12px;color:var(--dim);margin-bottom:4px}
+.coll-g input{width:100%;text-align:center}
+
+/* 장신구 */
+.acc-card{background:var(--sf2);border:1px solid var(--bd);border-radius:6px;padding:8px 12px;margin-bottom:8px}
+.acc-card-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.acc-search-wrap{position:relative;flex:1;min-width:140px}
+.acc-search-input{width:100%;background:var(--sf2);border:1px solid var(--bd);color:var(--text);padding:5px 9px;border-radius:5px;font-family:'Malgun Gothic',sans-serif;font-size:13px}
+.acc-search-input:focus{outline:none;border-color:var(--gold)}
+.acc-search-input::placeholder{color:var(--dimmer)}
+.acc-dropdown{position:fixed;background:var(--sf2);border:1px solid var(--gold);border-radius:5px;max-height:200px;overflow-y:auto;z-index:1000;margin-top:2px;display:none}
+.acc-dropdown.open{display:block}
+.acc-drop-item{padding:6px 10px;font-size:13px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:8px;color:var(--text);font-family:'Malgun Gothic',sans-serif}
+.acc-drop-item:hover{background:rgba(232,184,75,.12)}
+.acc-preset-row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;padding:10px 16px;border-bottom:1px solid var(--bd);background:rgba(255,255,255,.015)}
+.acc-preset-row button{padding:6px 4px}
+.pend-preset-row{display:flex;justify-content:flex-end;padding:10px 16px;border-bottom:1px solid var(--bd);background:rgba(255,255,255,.015)}
+.pend-preset-row button{padding:6px 13px}
+
+/* 펜던트 */
+.pcard{background:var(--sf2);border:1px solid var(--bd);border-radius:6px;padding:12px;margin-bottom:10px}
+.pcard-hd{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.popt-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:13px}
+.popt-idx{color:var(--dim);min-width:22px;font-size:11px}
+
+/* 공통 */
+.acc-st{font-size:11px;min-width:68px}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+input[type=number]{appearance:textfield;-moz-appearance:textfield}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--gold);color:#0a0c18;padding:10px 24px;border-radius:8px;font-weight:800;font-size:14px;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none}
+/* 토글 섹션 */
+.toggle-sec{border:1px solid var(--bd);border-radius:8px;margin-bottom:10px;overflow:hidden}
+.toggle-sec-hd{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--sf2);cursor:pointer;user-select:none;font-size:13px;font-weight:800;color:var(--text)}
+.toggle-sec-hd:hover{background:var(--sf)}
+.toggle-arrow{font-size:11px;color:var(--dim);transition:transform .2s}
+.toggle-sec-bd{display:none;padding:12px 16px;background:var(--sf)}
+.toggle-sec-bd.open{display:block}
+.dragon-summary-item{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--bd);font-size:12px}
+.dragon-summary-item:last-child{border-bottom:none}
+.acc-summary-item{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--bd);font-size:12px}
+.acc-summary-item:last-child{border-bottom:none}
+.toast.show{opacity:1}
+/* ── 테마 팔레트 ── */
+[data-theme="dark"]{
+  --bg:#0e1116;--bg2:#161a22;--bg3:#1c212c;
+  --border:#23293a;--border2:#1b1f2a;--border3:#2d3447;
+  --text:#eaecf2;--text2:#b3b9c7;--text3:#7d8597;--text4:#565d6e;
+  --accent:#7aa2f7;--accent-bg:rgba(122,162,247,0.12);--accent-border:rgba(122,162,247,0.30);
+}
+[data-theme="light"]{
+  --bg:#f7f7f8;--bg2:#ffffff;--bg3:#f1f2f4;
+  --border:#e6e7ea;--border2:#eeeff2;--border3:#d4d6db;
+  --text:#15171c;--text2:#4a4d57;--text3:#71757f;--text4:#9aa0aa;
+  --accent:#2f6fed;--accent-bg:rgba(47,111,237,0.10);--accent-border:rgba(47,111,237,0.32);
+}
+[data-theme="beige"]{
+  --bg:#f3ecdd;--bg2:#faf3e2;--bg3:#ebe0c7;
+  --border:#d8caa8;--border2:#e1d4b3;--border3:#c0ad84;
+  --text:#2a2316;--text2:#5a4e34;--text3:#837553;--text4:#a99971;
+  --accent:#b06a1e;--accent-bg:rgba(176,106,30,0.10);--accent-border:rgba(176,106,30,0.32);
+}
+/* spec 커스텀 변수 → 테마 변수로 매핑 */
+:root{
+  --sf:var(--bg2);--sf2:var(--bg3);--bd:var(--border);
+  --gold:var(--accent);--gold2:var(--accent);
+  --dim:var(--text3);--dimmer:var(--text4);
+  --red:#f87171;--green:#4ade80;--blue:#60a5fa;
+  --hpc:#fbbf24;--atc:#f87171;--dfc:#60a5fa;
+}
+</style>
+</head>
+<body>
+
+<div class="hd">
+  <a href="./index.html?tab=calculator" style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;border:1px solid var(--bd);background:var(--sf2);color:var(--text);text-decoration:none;font-size:16px;flex-shrink:0">←</a>
+  <div class="hd-icon">⚙️</div>
+  <div><div class="hd-t">내 스펙 관리</div><div class="hd-s">장신구 · 젬 · 펜던트 · 컬렉션 — 세 계산기에 공통 적용</div></div>
+  <div style="margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+    <span class="save-msg" id="save-msg"></span>
+    <span id="hd-user" style="font-size:12px;color:var(--dim)"></span>
+    <button id="hd-auth-btn" class="btn-white" style="font-size:12px;padding:5px 12px"></button>
+    <button class="btn-reset" onclick="resetAll()">↺ 전체 초기화</button>
+    <button class="btn-gold" style="padding:8px 18px" onclick="doSave()">💾 저장</button>
+  </div>
+</div>
+
+<div class="ti">
+
+  <!-- 계산기 바로가기 -->
+  <div class="calc-grid">
+    <a href="./calculator.html?from=spec" class="calc-card">
+      <div class="calc-badge badge-blue">계산기</div>
+      <div class="calc-card-title">정령 최적화 계산기</div>
+      <div class="calc-card-desc">본인 셋팅 저장 · 정령 자동 비밸셋팅</div>
+    </a>
+    <a href="./pvp.html?from=spec" class="calc-card">
+      <div class="calc-badge badge-orange">오리지널 버전</div>
+      <div class="calc-card-title">길드전 자동 계산기</div>
+      <div class="calc-card-desc">9.0 고정 · 너프 제외 결과 출력</div>
+    </a>
+    <a href="./noob.html?from=spec" class="calc-card">
+      <div class="calc-badge badge-green">뉴비 버전</div>
+      <div class="calc-card-title">길드전 자동 계산기</div>
+      <div class="calc-card-desc">7.0~9.0 선택가능 · 너프 적용 출력 가능</div>
+    </a>
+  </div>
+
+  <!-- 길드 바로가기 -->
+  <div style="margin-bottom:20px">
+    <div style="font-size:11px;font-weight:800;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">⚔️ 길드</div>
+    <div class="calc-grid" style="grid-template-columns:repeat(2,1fr)">
+      <a href="./gd.html" class="calc-card">
+        <div class="calc-badge badge-guild">길드원</div>
+        <div class="calc-card-title">길드 연동</div>
+        <div class="calc-card-desc">코드 입력 · 가입 요청 · 이번 주 셋팅 확인</div>
+      </a>
+      <a href="./gdgm.html" class="calc-card">
+        <div class="calc-badge badge-purple">관리진</div>
+        <div class="calc-card-title">길드 관리</div>
+        <div class="calc-card-desc">가입 수락 · 순위 확인 · 길드전 기록</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- 내보내기 / 불러오기 -->
+  <div class="io-wrap">
+    <div class="io-box">
+      <div class="io-box-title">📤 내보내기</div>
+      <div class="code-display" id="export-code">—</div>
+      <div style="font-size:11px;color:var(--dim);margin-bottom:8px;text-align:center">코드를 공유하면 다른 기기에서 불러올 수 있어요</div>
+      <button class="btn-gold" onclick="doExport()">코드 생성</button>
+    </div>
+    <div class="io-box">
+      <div class="io-box-title">📥 불러오기</div>
+      <input class="code-input acc-search-input" id="import-code" placeholder="코드 12자리 입력" maxlength="12">
+      <div style="font-size:11px;color:var(--dim);margin-bottom:8px">⚠ 현재 스펙이 덮어씌워집니다</div>
+      <button class="btn-gold" onclick="doImport()">불러오기</button>
+    </div>
+  </div>
+
+  <!-- 드래곤/장신구 셋팅 토글 -->
+  <div class="toggle-sec">
+    <div class="toggle-sec-hd" onclick="toggleSection('dragon-section')">
+      <span>🐉 드래곤 셋팅</span>
+      <span class="toggle-arrow" id="arrow-dragon-section">▼</span>
+    </div>
+    <div class="toggle-sec-bd" id="dragon-section">
+      <div id="dragon-summary-wrap">
+        <div style="color:var(--dim);font-size:12px;text-align:center;padding:10px 0">저장된 드래곤 셋팅이 없어요.<br>pvp/noob 계산기의 내 용 정보에서 <b>내 스펙으로 저장</b>을 눌러주세요.</div>
+      </div>
+    </div>
+  </div>
+  <div class="toggle-sec">
+    <div class="toggle-sec-hd" onclick="toggleSection('acc-section')">
+      <span>✨ 장신구 셋팅</span>
+      <span class="toggle-arrow" id="arrow-acc-section">▼</span>
+    </div>
+    <div class="toggle-sec-bd" id="acc-section">
+      <div id="acc-summary-wrap">
+        <div style="color:var(--dim);font-size:12px;text-align:center;padding:10px 0">등록된 장신구가 없어요.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 스펙 3열 -->
+  <div class="spec-grid">
+
+    <!-- 1열: 젬 + 컬렉션 -->
+    <div class="spec-col">
+      <div class="sec">
+        <div class="sec-hd">
+          <span>💎 젬 보유량</span>
+          <button class="btn-reset" onclick="resetGems()">↺</button>
+        </div>
+        <div class="sec-bd">
+          <div class="gem-grid">
+            <div class="gem-hdr"></div>
+            <div class="gem-hdr" style="color:var(--hpc)">체</div>
+            <div class="gem-hdr" style="color:var(--atc)">공</div>
+            <div class="gem-hdr" style="color:var(--dfc)">방</div>
+            <div class="gem-lbl">37젬</div>
+            <input type="number" id="gem-hp-37" min="0" value="0" oninput="onGem('hp',37,this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+            <input type="number" id="gem-atk-37" min="0" value="0" oninput="onGem('atk',37,this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+            <input type="number" id="gem-def-37" min="0" value="0" oninput="onGem('def',37,this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+            <div class="gem-lbl">38젬</div>
+            <input type="number" id="gem-hp-38" min="0" value="0" oninput="onGem('hp',38,this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+            <input type="number" id="gem-atk-38" min="0" value="0" oninput="onGem('atk',38,this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+            <input type="number" id="gem-def-38" min="0" value="0" oninput="onGem('def',38,this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+            <div class="gem-lbl">39젬</div>
+            <input type="number" id="gem-hp-39" min="0" value="0" oninput="onGem('hp',39,this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+            <input type="number" id="gem-atk-39" min="0" value="0" oninput="onGem('atk',39,this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+            <input type="number" id="gem-def-39" min="0" value="0" oninput="onGem('def',39,this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+            <div class="gem-lbl">40젬</div>
+            <input type="number" id="gem-hp-40" min="0" value="0" oninput="onGem('hp',40,this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+            <input type="number" id="gem-atk-40" min="0" value="0" oninput="onGem('atk',40,this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+            <input type="number" id="gem-def-40" min="0" value="0" oninput="onGem('def',40,this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+          </div>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="sec-hd">
+          <span>📚 컬렉션 스탯</span>
+          <button class="btn-white" onclick="setFullCollection()">풀컬</button>
+        </div>
+        <div class="sec-bd">
+          <div class="coll-grid">
+            <div class="coll-g"><label>체력</label><input type="number" id="coll-hp" min="0" value="0" oninput="onColl('hp',this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()"></div>
+            <div class="coll-g"><label>공격</label><input type="number" id="coll-atk" min="0" value="0" oninput="onColl('atk',this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()"></div>
+            <div class="coll-g"><label>방어</label><input type="number" id="coll-def" min="0" value="0" oninput="onColl('def',this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2열: 장신구 -->
+    <div class="spec-col">
+      <div class="sec">
+        <div class="sec-hd">
+          <span>⚒ 장신구 &nbsp;<label style="font-size:11px;font-weight:400;color:#fff;cursor:pointer">스탯만 <input type="checkbox" id="chk-stat-only" checked onchange="renderAcc()" style="accent-color:var(--gold)"></label></span>
+          <div style="display:flex;gap:6px">
+            <button class="btn-reset" onclick="resetAcc()">↺</button>
+            <button class="btn-gold" onclick="sortAccCards();renderAcc();qSave()">정렬</button>
+            <button class="btn-white" onclick="addAcc()">+ 추가</button>
+          </div>
+        </div>
+        <div class="acc-preset-row">
+          <button class="btn-white" onclick="addAccBulk(16)">16</button>
+          <button class="btn-white" onclick="addAccBulk(17)">17</button>
+          <button class="btn-white" onclick="addAccBulk(18)">18</button>
+          <button class="btn-white" onclick="addAccBulk(19)">19</button>
+          <button class="btn-white" onclick="addAccBulk(20)">20</button>
+        </div>
+        <div class="sec-bd"><div id="acc-list"><div style="color:var(--dimmer);font-size:13px">보유 장신구 없음</div></div></div>
+      </div>
+    </div>
+
+    <!-- 3열: 펜던트 -->
+    <div class="spec-col">
+      <div class="sec">
+        <div class="sec-hd">
+          <span>🌙 펜던트</span>
+          <div style="display:flex;gap:6px">
+            <button class="btn-reset" onclick="resetPend()">↺</button>
+            <button class="btn-gold" onclick="sortPendants();renderPends();qSave()">정렬</button>
+            <button class="btn-white" onclick="addPendant()">+ 추가</button>
+          </div>
+        </div>
+        <div class="pend-preset-row">
+          <button class="btn-white" onclick="addMoonPendantSet()">달펜 세트</button>
+        </div>
+        <div class="sec-bd"><div id="pend-list"><div style="color:var(--dimmer);font-size:13px">보유 펜던트 없음</div></div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="./sb_config.js"></script>
+<script>
+// ================================================================
+// 이미지 / 장신구 DB
+// ================================================================
+const TEM_BASE='https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/tem';
+const ACC_IMG_MAP={
+  '20':{'빛뿔':12,'바뿔':13,'악보':20,'황보':21,'여보':22,'대뿔':1433,'물뿔':1435,'불뿔':1437},
+  '19':{'악보':1273,'황보':1274,'여보':1275,'바뿔':1276,'대뿔':1306,'물뿔':1308,'불뿔':1310},
+  '18':{'빛뿔':1209,'악보':1205,'황보':1206,'여보':1207,'바뿔':1202,'대뿔':1247,'물뿔':1249,'불뿔':1251},
+  '17':{'악보':1102,'황보':1103,'여보':1104,'바뿔':1105,'대뿔':1130,'물뿔':1132,'불뿔':1134},
+  '16':{'악보':1046,'황보':1047,'여보':1048,'바뿔':1049,'대뿔':1130,'물뿔':1132,'불뿔':1134},
+};
+const accImg=(lv,name)=>{const n=ACC_IMG_MAP[String(lv)]?.[name];return n?`${TEM_BASE}/${n}.png`:'';}
+const IMG_빛뿔18=accImg(18,'빛뿔'),IMG_빛뿔20=accImg(20,'빛뿔');
+const IMG_악보16=accImg(16,'악보'),IMG_황보16=accImg(16,'황보'),IMG_여보16=accImg(16,'여보');
+const IMG_물16=accImg(16,'물뿔'),IMG_불16=accImg(16,'불뿔'),IMG_땅16=accImg(16,'대뿔'),IMG_바람16=accImg(16,'바뿔');
+const IMG_악보17=accImg(17,'악보'),IMG_황보17=accImg(17,'황보'),IMG_여보17=accImg(17,'여보');
+const IMG_물17=accImg(17,'물뿔'),IMG_불17=accImg(17,'불뿔'),IMG_땅17=accImg(17,'대뿔'),IMG_바람17=accImg(17,'바뿔');
+const IMG_악보18=accImg(18,'악보'),IMG_황보18=accImg(18,'황보'),IMG_여보18=accImg(18,'여보');
+const IMG_물18=accImg(18,'물뿔'),IMG_불18=accImg(18,'불뿔'),IMG_땅18=accImg(18,'대뿔'),IMG_바람18=accImg(18,'바뿔');
+const IMG_악보19=accImg(19,'악보'),IMG_황보19=accImg(19,'황보'),IMG_여보19=accImg(19,'여보');
+const IMG_물19=accImg(19,'물뿔'),IMG_불19=accImg(19,'불뿔'),IMG_땅19=accImg(19,'대뿔'),IMG_바람19=accImg(19,'바뿔');
+const IMG_악보20=accImg(20,'악보'),IMG_황보20=accImg(20,'황보'),IMG_여보20=accImg(20,'여보');
+const IMG_물20=accImg(20,'물뿔'),IMG_불20=accImg(20,'불뿔'),IMG_땅20=accImg(20,'대뿔'),IMG_바뿔20=accImg(20,'바뿔');
+const IMG_PEND={태양:`${TEM_BASE}/1337.png`,달:`${TEM_BASE}/1336.png`,별:`${TEM_BASE}/1335.png`};
+
+const ACC_DB=[
+  {n:'빛뿔 (크/체) 18',hp:0.08,atk:0,def:0,img:IMG_빛뿔18},
+  {n:'빛뿔 (크/공) 18',hp:0,atk:0.08,def:0,img:IMG_빛뿔18},
+  {n:'빛뿔 (크/방) 18',hp:0,atk:0,def:0.08,img:IMG_빛뿔18},
+  {n:'빛뿔 (크/체) 20',hp:0.1,atk:0,def:0,img:IMG_빛뿔20},
+  {n:'빛뿔 (크/공) 20',hp:0,atk:0.1,def:0,img:IMG_빛뿔20},
+  {n:'빛뿔 (크/방) 20',hp:0,atk:0,def:0.1,img:IMG_빛뿔20},
+  {n:'악몽 수호자의 보주 (악보) 16',hp:0.16,atk:0,def:0,img:IMG_악보16},
+  {n:'황혼 수호자의 보주 (황보) 16',hp:0,atk:0.16,def:0,img:IMG_황보16},
+  {n:'여명 수호자의 보주 (여보) 16',hp:0,atk:0,def:0.16,img:IMG_여보16},
+  {n:'물뿔 (체/공) 16',hp:0.1,atk:0.06,def:0,img:IMG_물16},
+  {n:'물뿔 (체/방) 16',hp:0.1,atk:0,def:0.06,img:IMG_물16},
+  {n:'불뿔 (공/체) 16',hp:0.06,atk:0.1,def:0,img:IMG_불16},
+  {n:'불뿔 (공/방) 16',hp:0,atk:0.1,def:0.06,img:IMG_불16},
+  {n:'대뿔 (방/체) 16',hp:0.06,atk:0,def:0.1,img:IMG_땅16},
+  {n:'대뿔 (방/공) 16',hp:0,atk:0.06,def:0.1,img:IMG_땅16},
+  {n:'바뿔 (체/방) 16',hp:0.08,atk:0,def:0.08,img:IMG_바람16},
+  {n:'바뿔 (공/체) 16',hp:0.08,atk:0.08,def:0,img:IMG_바람16},
+  {n:'바뿔 (공/방) 16',hp:0,atk:0.08,def:0.08,img:IMG_바람16},
+  {n:'악몽 수호자의 보주 (악보) 17',hp:0.17,atk:0,def:0,img:IMG_악보17},
+  {n:'황혼 수호자의 보주 (황보) 17',hp:0,atk:0.17,def:0,img:IMG_황보17},
+  {n:'여명 수호자의 보주 (여보) 17',hp:0,atk:0,def:0.17,img:IMG_여보17},
+  {n:'물뿔 (체/공) 17',hp:0.11,atk:0.06,def:0,img:IMG_물17},
+  {n:'물뿔 (체/방) 17',hp:0.11,atk:0,def:0.06,img:IMG_물17},
+  {n:'불뿔 (공/체) 17',hp:0.06,atk:0.11,def:0,img:IMG_불17},
+  {n:'불뿔 (공/방) 17',hp:0,atk:0.11,def:0.06,img:IMG_불17},
+  {n:'대뿔 (방/체) 17',hp:0.06,atk:0,def:0.11,img:IMG_땅17},
+  {n:'대뿔 (방/공) 17',hp:0,atk:0.06,def:0.11,img:IMG_땅17},
+  {n:'바뿔 (체/방) 17',hp:0.09,atk:0,def:0.08,img:IMG_바람17},
+  {n:'바뿔 (공/체) 17',hp:0.08,atk:0.09,def:0,img:IMG_바람17},
+  {n:'바뿔 (공/방) 17',hp:0,atk:0.09,def:0.08,img:IMG_바람17},
+  {n:'악몽 수호자의 보주 (악보) 18',hp:0.18,atk:0,def:0,img:IMG_악보18},
+  {n:'황혼 수호자의 보주 (황보) 18',hp:0,atk:0.18,def:0,img:IMG_황보18},
+  {n:'여명 수호자의 보주 (여보) 18',hp:0,atk:0,def:0.18,img:IMG_여보18},
+  {n:'물뿔 (체/공) 18',hp:0.12,atk:0.06,def:0,img:IMG_물18},
+  {n:'물뿔 (체/방) 18',hp:0.12,atk:0,def:0.06,img:IMG_물18},
+  {n:'불뿔 (공/체) 18',hp:0.06,atk:0.12,def:0,img:IMG_불18},
+  {n:'불뿔 (공/방) 18',hp:0,atk:0.12,def:0.06,img:IMG_불18},
+  {n:'대뿔 (방/체) 18',hp:0.06,atk:0,def:0.12,img:IMG_땅18},
+  {n:'대뿔 (방/공) 18',hp:0,atk:0.06,def:0.12,img:IMG_땅18},
+  {n:'바뿔 (체/방) 18',hp:0.09,atk:0,def:0.09,img:IMG_바람18},
+  {n:'바뿔 (공/체) 18',hp:0.09,atk:0.09,def:0,img:IMG_바람18},
+  {n:'바뿔 (공/방) 18',hp:0,atk:0.09,def:0.09,img:IMG_바람18},
+  {n:'악몽 수호자의 보주 (악보) 19',hp:0.19,atk:0,def:0,img:IMG_악보19},
+  {n:'황혼 수호자의 보주 (황보) 19',hp:0,atk:0.19,def:0,img:IMG_황보19},
+  {n:'여명 수호자의 보주 (여보) 19',hp:0,atk:0,def:0.19,img:IMG_여보19},
+  {n:'물뿔 (체/공) 19',hp:0.13,atk:0.06,def:0,img:IMG_물19},
+  {n:'물뿔 (체/방) 19',hp:0.13,atk:0,def:0.06,img:IMG_물19},
+  {n:'불뿔 (공/체) 19',hp:0.06,atk:0.13,def:0,img:IMG_불19},
+  {n:'불뿔 (공/방) 19',hp:0,atk:0.13,def:0.06,img:IMG_불19},
+  {n:'대뿔 (방/체) 19',hp:0.06,atk:0,def:0.13,img:IMG_땅19},
+  {n:'대뿔 (방/공) 19',hp:0,atk:0.06,def:0.13,img:IMG_땅19},
+  {n:'바뿔 (체/방) 19',hp:0.1,atk:0,def:0.09,img:IMG_바람19},
+  {n:'바뿔 (공/체) 19',hp:0.09,atk:0.1,def:0,img:IMG_바람19},
+  {n:'바뿔 (공/방) 19',hp:0,atk:0.1,def:0.09,img:IMG_바람19},
+  {n:'악몽 수호자의 보주 (악보) 20',hp:0.2,atk:0,def:0,img:IMG_악보20},
+  {n:'황혼 수호자의 보주 (황보) 20',hp:0,atk:0.2,def:0,img:IMG_황보20},
+  {n:'여명 수호자의 보주 (여보) 20',hp:0,atk:0,def:0.2,img:IMG_여보20},
+  {n:'물뿔 (체/공) 20',hp:0.14,atk:0.06,def:0,img:IMG_물20},
+  {n:'물뿔 (체/방) 20',hp:0.14,atk:0,def:0.06,img:IMG_물20},
+  {n:'불뿔 (공/체) 20',hp:0.06,atk:0.14,def:0,img:IMG_불20},
+  {n:'불뿔 (공/방) 20',hp:0,atk:0.14,def:0.06,img:IMG_불20},
+  {n:'대뿔 (방/체) 20',hp:0.06,atk:0,def:0.14,img:IMG_땅20},
+  {n:'대뿔 (방/공) 20',hp:0,atk:0.06,def:0.14,img:IMG_땅20},
+  {n:'바뿔 (체/방) 20',hp:0.1,atk:0,def:0.1,img:IMG_바뿔20},
+  {n:'바뿔 (공/체) 20',hp:0.1,atk:0.1,def:0,img:IMG_바뿔20},
+  {n:'바뿔 (공/방) 20',hp:0,atk:0.1,def:0.1,img:IMG_바뿔20},
+];
+const ACC_TYPE_ORDER=['악보','황보','여보','물뿔','불뿔','대뿔','바뿔','빛뿔'];
+const ENC_ORDER={hp:0,atk:1,def:2,none:3};
+const SKEYS=['hp','atk','def'];
+const SK={hp:'체',atk:'공',def:'방'};
+
+// ================================================================
+// 상태 & 저장 (공통 키)
+// ================================================================
+const SPEC_KEY='dv1sim_spec';
+
+const DRAGON_CATS=['땅','물','불','바람','빛','어둠','황혼','여명','악몽'];
+const mkSpec=()=>({
+  accCards:[],
+  gems:{hp:{37:0,38:0,39:0,40:0},atk:{37:0,38:0,39:0,40:0},def:{37:0,38:0,39:0,40:0}},
+  pendants:[],
+  coll:{hp:0,atk:0,def:0},
+  dragonCards:Object.fromEntries(DRAGON_CATS.map(c=>[c,[]])),
+});
+
+let S=mkSpec();
+
+function applySpec(p){
+  S={...mkSpec(),...p,
+    accCards:p.accCards||[],
+    gems:{...mkSpec().gems,...(p.gems||{})},
+    pendants:p.pendants||[],
+    coll:{...mkSpec().coll,...(p.coll||{})},
+    dragonCards:{...mkSpec().dragonCards,...(p.dragonCards||{})}
+  };
+}
+function doLoad(){
+  try{
+    let raw=localStorage.getItem(SPEC_KEY);
+    if(!raw){
+      const legacy=['dv1sim_calculator','dv1sim_pvp','dv1sim_noob'];
+      for(const k of legacy){const r=localStorage.getItem(k);if(r){raw=r;break;}}
+    }
+    if(!raw)return;
+    const p=JSON.parse(raw);
+    // dragonCards가 spec에 없으면 pvp에서 가져오기
+    if(!p.dragonCards){
+      try{
+        const pvpRaw=localStorage.getItem('dv1sim_pvp');
+        if(pvpRaw){const pvp=JSON.parse(pvpRaw);if(pvp.dragonCards)p.dragonCards=pvp.dragonCards;}
+      }catch(e){}
+    }
+    applySpec(p);
+  }catch(e){console.error(e);}
+}
+async function doLoadCloud(){
+  clearTimeout(saveT);
+  const u=getUser();
+  if(!u)return;
+  try{
+    const rows=await supabase('GET','users',null,`?id=eq.${u.id}&select=spec_data`);
+    if(rows&&rows[0]&&rows[0].spec_data){
+      const p=typeof rows[0].spec_data==='string'?JSON.parse(rows[0].spec_data):rows[0].spec_data;
+
+      const hasCloudDragons=p.dragonCards&&Object.values(p.dragonCards).some(arr=>Array.isArray(arr)&&arr.some(d=>d&&d.name));
+      const hasLocalDragons=S.dragonCards&&Object.values(S.dragonCards).some(arr=>Array.isArray(arr)&&arr.some(d=>d&&d.name));
+      const dragonPending=localStorage.getItem('dv1sim_dragon_pending');
+      if(dragonPending){
+        // 저장 버튼 눌렀음 → dv1sim_spec에서 최신 dragonCards 읽기 (my.html 메모리가 구버전일 수 있음)
+        try{
+          const specRaw=localStorage.getItem('dv1sim_spec');
+          const spec=specRaw?JSON.parse(specRaw):{};
+          p.dragonCards=spec.dragonCards||{};
+        }catch(e){p.dragonCards=S.dragonCards;}
+        localStorage.removeItem('dv1sim_dragon_pending');
+      } else if(!hasCloudDragons&&hasLocalDragons){
+        p.dragonCards=S.dragonCards;
+      }
+
+      applySpec(p);
+      localSave();
+
+      // flag 있을 때만 Supabase 업데이트 (일반 로드 시 재저장 안 함 - 구버전 덮어쓰기 방지)
+      if(dragonPending||(!hasCloudDragons&&hasLocalDragons)){
+        supabase('PATCH','users',{spec_data:JSON.stringify(S)},`?id=eq.${u.id}`)
+          .catch(e=>console.warn('클라우드 저장 실패:',e));
+      }
+
+      renderAll();
+      showToast('클라우드에서 스펙을 불러왔어요!');
+    }
+  }catch(e){console.warn('클라우드 로드 실패:',e);}
+}
+
+let saveT=null;
+
+// localSave: localStorage + pvp/noob 동기화 (자동저장용)
+function localSave(){
+  localStorage.setItem(SPEC_KEY,JSON.stringify(S));
+  const specFields={accCards:S.accCards||[],gems:S.gems||{},pendants:S.pendants||[],coll:S.coll||{}};
+  ['dv1sim_pvp','dv1sim_noob','dv1sim_calculator'].forEach(key=>{
+    try{const raw=localStorage.getItem(key);const existing=raw?JSON.parse(raw):{};localStorage.setItem(key,JSON.stringify({...existing,...specFields}));}catch(e){}
+  });
+  if(S.dragonCards){
+    ['dv1sim_pvp','dv1sim_noob'].forEach(key=>{
+      try{const raw=localStorage.getItem(key);const existing=raw?JSON.parse(raw):{};localStorage.setItem(key,JSON.stringify({...existing,dragonCards:S.dragonCards}));}catch(e){}
+    });
+  }
+  renderToggleSections();
+}
+
+// doSave: localStorage + pvp/noob 저장. saveCloud=true면 Supabase도 저장
+function doSave(saveCloud=true){
+  clearTimeout(saveT);
+  // Supabase 저장 전 dv1sim_spec의 최신 dragonCards 반영 (pvp/noob 변경분 포함)
+  try{
+    const specRaw=localStorage.getItem('dv1sim_spec');
+    if(specRaw){const spec=JSON.parse(specRaw);if(spec.dragonCards)S.dragonCards=spec.dragonCards;}
+  }catch(e){}
+  localSave();
+  const el=document.getElementById('save-msg');
+  if(el&&saveCloud){el.textContent='✓ 저장됨';setTimeout(()=>el.textContent='',2000);}
+  if(saveCloud){
+    const u=getUser();
+    if(u){
+      supabase('PATCH','users',{spec_data:JSON.stringify(S)},`?id=eq.${u.id}`)
+        .catch(e=>console.warn('클라우드 저장 실패:',e));
+      localStorage.removeItem('dv1sim_dragon_pending');
+    }
+  }
+}
+
+// qSave: 자동저장. saveCloud=false면 localStorage만 (Supabase 건드리지 않음)
+function qSave(saveCloud=true){clearTimeout(saveT);saveT=setTimeout(()=>doSave(saveCloud),1200);}
+
+function resetAll(){
+  if(!confirm('장신구 / 젬 / 펜던트 / 컬렉션 / 드래곤 정보가 모두 초기화됩니다.\n계속하시겠습니까?'))return;
+  S=mkSpec();
+  renderAll();
+  // pvp / noob의 dragonCards도 초기화
+  ['dv1sim_pvp','dv1sim_noob'].forEach(key=>{
+    try{
+      const raw=localStorage.getItem(key);
+      if(raw){
+        const ex=JSON.parse(raw);
+        ex.dragonCards=Object.fromEntries(DRAGON_CATS.map(c=>[c,[]]));
+        localStorage.setItem(key,JSON.stringify(ex));
+      }
+    }catch(e){}
+  });
+  // localStorage + Supabase 모두 초기화
+  clearTimeout(saveT);
+  localSave();
+  const u=getUser();
+  if(u){
+    supabase('PATCH','users',{spec_data:JSON.stringify(S)},`?id=eq.${u.id}`)
+      .catch(e=>console.warn('클라우드 초기화 실패:',e));
+  }
+}
+
+function renderAll(){
+  renderAcc();populateGems();renderPends();populateColl();
+  renderToggleSections();
+}
+
+// ================================================================
+// 드래곤 이미지
+// ================================================================
+const DRAGON_IMG_NUM={"패트":25,"타이거":50,"램곤":103,"헝그리":131,"머드":140,"오렌지리프":164,"지진":322,"포이즌리버":337,"포폰":349,"애플칙":415,"알데바란":519,"에그마용":593,"파워":14,"데빌곤":97,"베가본드":159,"레오벡터":483,"바스카":696,"바위":15,"지하땅굴":16,"에그":19,"리프":28,"스마트":32,"타투":62,"팀버":108,"플라워":113,"파키":559,"히드라곤":13,"콜로서스":196,"레이어스":246,"리베티":393,"케찰코아틀":568,"골든혼":57,"머스타드해머":73,"칸타카":400,"아스타테":426,"헤임달":659,"논":667,"파이썬":92,"헤라클레스":105,"스파인":63,"스콜피온":76,"다로스":268,"즈믄":392,"아카이아":672,"크로마 아카이아":673,"네시":10,"스왐프":24,"툰드라":123,"유르카":615,"알레샤":648,"크로마 알레샤":649,"볼바":660,"빙하고룡":9,"페어리":17,"샤크곤":58,"메갈로돈":124,"블리자드":367,"베른하르트":502,"루드라":579,"피싱테일":691,"루미네스":134,"프로그":29,"현무":67,"루피아":110,"스터드":112,"위드미":218,"폴투누스":529,"스카트":647,"로키":655,"블루라이트닝":89,"바이올렛":98,"해마곤":114,"베놈":248,"브리트라":394,"프로즌":453,"루살카":600,"테일":11,"수룡":12,"슬라임":42,"퍼플립스":91,"마리노":138,"나트론":345,"레굴루스":517,"크로마 레굴루스":518,"미니":23,"아쿠아":132,"아이스 드레이크":198,"세크레타":230,"트로페우스":416,"마소티스":496,"옥타":620,"크로마 옥타":621,"붐버":141,"포포모":274,"염화룡":527,"파이거":651,"크로마 파이거":652,"파이어":5,"피닉스":8,"레드와이번":74,"말소자":107,"수라":429,"엔투라스":438,"라센티":555,"배틀":96,"번네스":135,"데모니오":169,"스파이크":26,"너티빌런":145,"와일드":244,"루가르":250,"토트":544,"스카투스":653,"크로마 스카투스":654,"아이언":93,"번개고룡":6,"라바":7,"본헤드":71,"플레임":100,"레드불":122,"므네이아":147,"블레이즈":629,"적마룡":689,"자룡":95,"금오":51,"푸투룸":231,"이그나":366,"화귀":489,"타나토스":535,"헬":20,"인섹트":27,"샌드":31,"볼케이노":88,"이그니스":127,"가루다":225,"마룡":305,"불나래":613,"크로마 불나래":614,"윈드":2,"식스 레그 혼":3,"뮤직":33,"가디언":59,"토템":106,"클라우드":115,"핑크벨":165,"엠파이어":319,"혼":344,"청룡":4,"페이퍼":156,"스트라이커":224,"아스티":255,"아라카":290,"거스트":370,"블루썬더":594,"크로마 블루썬더":595,"프로스티":65,"해태":75,"스틸윙":260,"키갈":397,"리티오":644,"크로마 리티오":645,"제트":137,"스왈로우":151,"카오스":186,"제피로스":350,"보레아스":486,"레이디":18,"타이푼":111,"태엽":160,"센투라":387,"티르":508,"루루":694,"크로마 루루":695,"에일리언":22,"윙스":30,"메탈 마그넷":52,"i곤":152,"피스":154,"그레이탄":266,"레인보우배트곤":289,"에트왈":389,"피타야":563,"토르":661,"오로":94,"카멜레용":37,"레인보우":61,"샴":70,"삐에로":81,"시타엘":192,"엔젤주니어":432,"큐피트":40,"모리카":158,"오르도":229,"솔라":348,"카루라":373,"아톤":408,"스워드":458,"바르그":531,"야즈니르":665,"아르고":104,"나이트":77,"순둥곤":84,"사나래":142,"로루스":209,"헤이즈":219,"개틀링곤":501,"솔루카니스":597,"프로텍트":633,"크로마 프로텍트":634,"크리마용":68,"라이곤":36,"캥거레빗":39,"네온":99,"슈팅스타":129,"깨비곤":136,"미나스":378,"알투스":606,"메라크":686,"스파이시":78,"고대신룡":1,"엔젤":21,"에메랄드":35,"치킨헤드":38,"골드":41,"백룡":54,"오로라":125,"아실리":206,"스타에이스":271,"테디":275,"베르나":342,"라파엘":79,"고대 주니어":64,"파라오곤":82,"바르라아":202,"아르테미스":309,"화이트썬더":372,"탈릿사":409,"아만타":509,"샤흐":513,"프랑켄":85,"블랙티어":162,"원더":197,"블랙찡또":207,"문라이트":213,"말로단":272,"마그나스":573,"카스룩스":604,"블레이드":43,"서펀트":48,"G네":49,"유니":56,"다크프로스티":66,"쉐도우":83,"닌자":86,"블랙퀸":101,"스플렌더":161,"타임머신":191,"아자크":452,"베타라":601,"크로마 베타라":602,"오벡스":676,"베네지":72,"투탕카":139,"블랙아머":163,"쿠로이":166,"카르나":303,"쿠베라":380,"포르타":575,"흑룡":34,"메탈":44,"미이라곤":45,"스켈레곤":47,"다크닉스":53,"히에나곤":55,"크레센트":60,"윗치":90,"캣츠곤":126,"타르타로스":128,"다크폴":130,"피데스":611,"요르문간드":662,"티아매트":674,"바알":80,"시그마":102,"드라고노이드":87,"유니버스":252,"베히모스":259,"다크나이트":368,"고트":557,"뱃도치":46,"코브라곤":109,"마르바스":241,"스케어":281,"드래곤 슬레이어":351,"마카라":467,"리치몬드":497,"크로마 리치몬드":498,"하트샤":681,"데몽과가고일":69,"베리스":463,"아말테아":566,"야누스":650,"합라":287,"셀마사":296,"울르":623,"엘리고스":473,"라스":540,"조화룡":569,"할리벨":232,"타아비레":233,"보상이용":334,"루크바트":603,"프레이야":698,"미미르":476,"네비아":484,"아프로디테":625,"킨더":358,"암두시아스":481,"코르투스":587,"이클립스":469,"템피오스":635,"흐레스벨그":677,"카라선":298,"렉스톤":301,"틸키":365,"하리카":411,"데스락":447,"세에레":530,"차차웅":583,"렉몰 리버스":385,"네뷸라":516,"인베르소":641,"레긴레이프":687,"크로마 레긴레이프":688,"발라크":234,"에피트":590,"마누스":663,"베팔":235,"포메쿨":302,"프라이드":538,"단탈리온":236,"네무스":547,"블라드":697,"디멘션":355,"쉴로시":617,"잠식된 요르문간드":664,"레무레스":671,"벨레드":470,"미스핏":526,"크로마 벨레드":574,"움브라":347,"루드오어":457,"크레바스":554,"발레포르":684,"크로마 발레포르":685,"애니마라":448,"롱기누스":523,"마스테마":532,"자간":237,"커스리퍼":622,"진":637,"크툴루":703,"크로마 크툴루":704,};
+const DRAGON_IMG_BASE="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main";
+function getDragonImgUrl(name){
+  let n=DRAGON_IMG_NUM[name];
+  if(!n){const s=name.replace(/ 드래곤$/,'').replace(/드래곤$/,'').trim();n=DRAGON_IMG_NUM[s];}
+  if(!n)return null;
+  return DRAGON_IMG_BASE+"/dragon/"+n+"/profile/8.png";
+}
+
+// ================================================================
+// 토글 섹션
+// ================================================================
+function toggleSection(id){
+  const bd=document.getElementById(id);
+  const arrow=document.getElementById('arrow-'+id);
+  if(!bd)return;
+  const open=!bd.classList.contains('open');
+  bd.classList.toggle('open',open);
+  if(arrow)arrow.style.transform=open?'rotate(180deg)':'';
+}
+
+function renderToggleSections(){
+  renderDragonSummary();
+  renderAccSummary();
+}
+
+const ELEM_ICON={'땅':11,'물':12,'불':13,'바람':14,'빛':84,'어둠':87,'황혼':487,'여명':486,'악몽':488};
+const DTYPE_COLOR={'체공형':'#f87171','방어형':'#60a5fa','공격형':'#fb923c','균형형':'#a78bfa','체형':'#fbbf24','공형':'#f87171','방형':'#60a5fa'};
+
+function renderDragonSummary(){
+  const el=document.getElementById('dragon-summary-wrap');
+  if(!el)return;
+  const dc=S.dragonCards||{};
+  const allDragons=DRAGON_CATS.flatMap(cat=>(dc[cat]||[]).filter(d=>d.name).map(d=>({...d,cat})));
+  if(!allDragons.length){
+    el.innerHTML='<div style="color:var(--dim);font-size:12px;text-align:center;padding:10px 0">저장된 드래곤 셋팅이 없어요.<br>pvp/noob 계산기의 내 용 정보에서 <b>내 스펙으로 저장</b>을 눌러주세요.</div>';
+    return;
+  }
+  const SK_LABEL={hp:'체력',atk:'공격',def:'방어'};
+  const byAttr=DRAGON_CATS.filter(cat=>(dc[cat]||[]).some(d=>d.name));
+  let html='';
+  byAttr.forEach(cat=>{
+    const list=(dc[cat]||[]).filter(d=>d.name);
+    const elemIconUrl=`https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/${ELEM_ICON[cat]||11}.png`;
+    html+=`<div style="margin-bottom:14px">
+      <div style="display:flex;align-items:center;gap:6px;font-size:11px;font-weight:800;color:var(--dim);margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--bd)">
+        <img src="${elemIconUrl}" style="width:16px;height:16px;object-fit:contain">${cat} (${list.length}마리)
+      </div>`;
+    list.forEach(d=>{
+      const dc_col=DTYPE_COLOR[d.dtype]||'#aaa';
+      const imgUrl=getDragonImgUrl(d.name);
+      const imgHtml=imgUrl
+        ?`<img src="${imgUrl}" style="width:40px;height:40px;object-fit:contain;border-radius:6px;border:1px solid var(--bd);background:var(--sf2)" onerror="this.style.display='none'">`
+        :`<div style="width:40px;height:40px;border-radius:6px;border:1px solid var(--bd);background:var(--sf2);flex-shrink:0"></div>`;
+      const opts=(d.opts||[]).filter(o=>o.stat&&o.type).map((o,i)=>{
+        const col=o.stat==='hp'?'#fbbf24':o.stat==='atk'?'#f87171':'#60a5fa';
+        const typeLabel=o.type==='%'?'%':'+';
+        return `<span style="color:${col};font-size:11px">${SK_LABEL[o.stat]}${typeLabel}</span>`;
+      }).join('<span style="color:var(--dim);">/</span>');
+      const bonusLabel={hp:'체력+40',atk:'공격+10',def:'방어+10'};
+      const bonusHtml=d.bonus?`<span style="font-size:10px;color:var(--gold);margin-left:4px">${bonusLabel[d.bonus]||''}</span>`:'';
+      html+=`<div class="dragon-summary-item" style="gap:10px;padding:6px 0;align-items:center">
+        ${imgHtml}
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
+            <img src="${elemIconUrl}" style="width:14px;height:14px;object-fit:contain">
+            <span style="font-weight:800;font-size:13px">${d.name}</span>
+            <span style="font-size:11px;padding:1px 6px;border-radius:3px;border:1px solid ${dc_col};color:${dc_col}">${d.dtype||'-'}</span>
+          </div>
+          <div style="font-size:11px;color:var(--dim)">
+            ${d.growth||''} ${d.grade||''}${bonusHtml}
+            ${opts?`<span style="margin-left:6px">${opts}</span>`:''}
+          </div>
+        </div>
+      </div>`;
+    });
+    html+='</div>';
+  });
+  el.innerHTML=html;
+}
+
+function renderAccSummary(){
+  const el=document.getElementById('acc-summary-wrap');
+  if(!el)return;
+  if(!S.accCards||!S.accCards.length){
+    el.innerHTML='<div style="color:var(--dim);font-size:12px;text-align:center;padding:10px 0">등록된 장신구가 없어요.</div>';
+    return;
+  }
+  let html='';
+  S.accCards.forEach(card=>{
+    if(!card.name)return;
+    const a=ACC_DB.find(x=>x.n===card.name);
+    const img=a&&a.img?`<img src="${a.img}" style="width:28px;height:28px;object-fit:contain;border-radius:4px">`:'';
+    const encCol=card.enchant==='hp'?'#fbbf24':card.enchant==='atk'?'#f87171':card.enchant==='def'?'#60a5fa':'#555';
+    const encLbl=card.enchant==='hp'?'체+21%':card.enchant==='atk'?'공+21%':card.enchant==='def'?'방+21%':'없음';
+    html+=`<div class="acc-summary-item">
+      ${img}
+      <span style="flex:1;font-size:12px">${card.name}</span>
+      <span style="font-size:11px;padding:1px 6px;border-radius:3px;border:1px solid ${encCol};color:${encCol}">${encLbl}</span>
+    </div>`;
+  });
+  el.innerHTML=html||'<div style="color:var(--dim);font-size:12px;text-align:center;padding:10px 0">등록된 장신구가 없어요.</div>';
+}
+
+// ================================================================
+// 내보내기 / 불러오기
+// ================================================================
+function genCode(){
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  return Array.from({length:12},()=>chars[Math.floor(Math.random()*chars.length)]).join('');
+}
+
+async function doExport(){
+  const codeEl=document.getElementById('export-code');
+  try{
+    codeEl.textContent='생성 중...';
+    const code=genCode();
+    // 최신 dragonCards는 dv1sim_spec에서 읽기
+    let dragonCards=S.dragonCards||{};
+    try{
+      const specRaw=localStorage.getItem('dv1sim_spec');
+      if(specRaw){const spec=JSON.parse(specRaw);if(spec.dragonCards)dragonCards=spec.dragonCards;}
+    }catch(e){}
+    const data={accCards:S.accCards,gems:S.gems,pendants:S.pendants,coll:S.coll,dragonCards};
+    await supabase('POST','spec_shares',{code,spec_data:data});
+    codeEl.textContent=code;
+    try{await navigator.clipboard.writeText(code);showToast('코드가 클립보드에 복사됐어요!');}
+    catch{showToast('코드: '+code);}
+  }catch(e){
+    codeEl.textContent='—';
+    alert('오류: '+e.message);
+  }
+}
+
+async function doImport(){
+  const code=document.getElementById('import-code').value.trim().toUpperCase();
+  if(code.length!==12){alert('12자리 코드를 입력해주세요.');return;}
+  try{
+    const res=await supabase('GET','spec_shares',null,`?code=eq.${code}&select=spec_data`);
+    if(!res||!res.length){alert('코드를 찾을 수 없습니다. 코드를 다시 확인해주세요.');return;}
+    const data=res[0].spec_data;
+    S.accCards=data.accCards||[];
+    S.gems={...mkSpec().gems,...(data.gems||{})};
+    S.pendants=data.pendants||[];
+    S.coll={...mkSpec().coll,...(data.coll||{})};
+    S.dragonCards={...mkSpec().dragonCards,...(data.dragonCards||{})};
+    // dv1sim_spec에 dragonCards 먼저 반영 (doSave가 dv1sim_spec을 읽으므로)
+    try{
+      const specRaw=localStorage.getItem('dv1sim_spec');
+      const spec=specRaw?JSON.parse(specRaw):{};
+      spec.dragonCards=S.dragonCards;
+      localStorage.setItem('dv1sim_spec',JSON.stringify(spec));
+    }catch(e){}
+    // pvp/noob에 dragonCards 동기화
+    ['dv1sim_pvp','dv1sim_noob'].forEach(key=>{
+      try{const raw=localStorage.getItem(key);const ex=raw?JSON.parse(raw):{};localStorage.setItem(key,JSON.stringify({...ex,dragonCards:S.dragonCards}));}catch(e){}
+    });
+    doSave();
+    renderAll();
+    document.getElementById('import-code').value='';
+    showToast('스펙을 불러왔어요!');
+  }catch(e){alert('오류: '+e.message);}
+}
+
+function showToast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg;
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),2500);
+}
+
+// ================================================================
+// 젬
+// ================================================================
+function populateGems(){
+  for(const s of SKEYS)for(const lv of [37,38,39,40]){
+    const el=document.getElementById(`gem-${s}-${lv}`);
+    if(el)el.value=S.gems[s]?.[lv]||0;
+  }
+}
+function onGem(stat,lv,val){
+  S.gems[stat][lv]=Math.max(0,parseInt(val)||0);
+  qSave();
+}
+function resetGems(){
+  if(!confirm('젬 입력값을 초기화합니다.'))return;
+  S.gems=mkSpec().gems;populateGems();qSave();
+}
+
+// ================================================================
+// 컬렉션
+// ================================================================
+function populateColl(){
+  document.getElementById('coll-hp').value=S.coll.hp||0;
+  document.getElementById('coll-atk').value=S.coll.atk||0;
+  document.getElementById('coll-def').value=S.coll.def||0;
+}
+function onColl(stat,val){S.coll[stat]=Math.max(0,parseInt(val)||0);qSave();}
+function setFullCollection(){S.coll={hp:240,atk:60,def:60};populateColl();qSave();}
+
+// ================================================================
+// 장신구
+// ================================================================
+function fmtAccSt(a){
+  if(!a)return'';
+  const p=[];
+  if(a.hp>0)p.push(`<span style="color:var(--hpc)">체${(a.hp*100).toFixed(0)}%</span>`);
+  if(a.atk>0)p.push(`<span style="color:var(--atc)">공${(a.atk*100).toFixed(0)}%</span>`);
+  if(a.def>0)p.push(`<span style="color:var(--dfc)">방${(a.def*100).toFixed(0)}%</span>`);
+  return p.length?p.join(' '):'<span style="color:var(--dimmer)">크리/회피</span>';
+}
+function applyEncColor(sel){
+  const v=sel.value;
+  sel.style.color=v==='hp'?'var(--gold)':v==='atk'?'var(--red)':v==='def'?'var(--blue)':'var(--text)';
+}
+function renderAcc(){
+  const list=document.getElementById('acc-list');
+  if(!list)return;
+  if(!S.accCards.length){list.innerHTML='<div style="color:var(--dimmer);font-size:13px">보유 장신구 없음</div>';return;}
+  let html='';
+  S.accCards.forEach((card,ci)=>{
+    const a=ACC_DB.find(x=>x.n===card.name);
+    const stHtml=a?fmtAccSt(a):'<span style="color:var(--dimmer)">-</span>';
+    html+=`<div class="acc-card"><div class="acc-card-row">
+      <div class="acc-search-wrap" id="acc-wrap-${ci}">
+        <input class="acc-search-input" id="acc-inp-${ci}" value="${card.name||''}" placeholder="장신구 검색..."
+          oninput="filterAccDrop(${ci},this.value)"
+          onfocus="openAccDrop(${ci})"
+          onblur="setTimeout(()=>closeAccDrop(${ci},this),150)"
+          onkeydown="accNavKey(event,${ci})">
+        <div class="acc-dropdown" id="acc-drop-${ci}"></div>
+      </div>
+      ${a&&a.img?`<img src="${a.img}" style="width:40px;height:40px;object-fit:contain;flex-shrink:0">`:' <span style="width:40px;flex-shrink:0"></span>'}
+      <span style="font-size:11px;min-width:80px">${stHtml}</span>
+      <span style="font-size:11px;color:var(--dim);font-weight:700;flex-shrink:0">인챈트</span>
+      <select style="font-size:12px" onchange="onAccEnc(${ci},this.value);applyEncColor(this)">
+        <option value="none" ${card.enchant==='none'?'selected':''}>상관X</option>
+        <option value="hp" ${card.enchant==='hp'?'selected':''}>체 +21%</option>
+        <option value="atk" ${card.enchant==='atk'?'selected':''}>공 +21%</option>
+        <option value="def" ${card.enchant==='def'?'selected':''}>방 +21%</option>
+      </select>
+      <button class="btn-red" onclick="delAcc(${ci})">삭제</button>
+    </div></div>`;
+  });
+  list.innerHTML=html;
+  document.querySelectorAll('#acc-list select').forEach(sel=>applyEncColor(sel));
+}
+function openAccDrop(ci){
+  filterAccDrop(ci,document.getElementById('acc-inp-'+ci).value);
+  const drop=document.getElementById('acc-drop-'+ci);
+  const inp=document.getElementById('acc-inp-'+ci);
+  const r=inp.getBoundingClientRect();
+  drop.style.top=(r.bottom+2)+'px';
+  drop.style.left=r.left+'px';
+  drop.style.width=r.width+'px';
+  drop.classList.add('open');
+}
+function closeAccDrop(ci,el){
+  const drop=document.getElementById('acc-drop-'+ci);
+  if(!drop)return;
+  drop.classList.remove('open');
+  if(el){const valid=ACC_DB.some(a=>a.n===el.value);if(!valid){S.accCards[ci].name='';S.accCards[ci].enchant='none';el.value='';qSave();}}
+}
+function accNavKey(e,ci){
+  const drop=document.getElementById('acc-drop-'+ci);
+  if(!drop||!drop.classList.contains('open'))return;
+  const items=[...drop.querySelectorAll('.acc-drop-item')];
+  if(!items.length)return;
+  const cur=drop.querySelector('.acc-drop-item.focused');
+  let idx=items.indexOf(cur);
+  if(e.key==='ArrowDown'){e.preventDefault();idx=Math.min(idx+1,items.length-1);items.forEach(el=>el.classList.remove('focused'));items[idx].classList.add('focused');items[idx].scrollIntoView({block:'nearest'});}
+  else if(e.key==='ArrowUp'){e.preventDefault();idx=Math.max(idx-1,0);items.forEach(el=>el.classList.remove('focused'));items[idx].classList.add('focused');items[idx].scrollIntoView({block:'nearest'});}
+  else if(e.key==='Enter'){e.preventDefault();if(cur)cur.dispatchEvent(new MouseEvent('mousedown'));}
+  else if(e.key==='Escape'){closeAccDrop(ci);}
+}
+function filterAccDrop(ci,q){
+  const drop=document.getElementById('acc-drop-'+ci);
+  if(!drop)return;
+  const inp=document.getElementById('acc-inp-'+ci);
+  if(inp){const r=inp.getBoundingClientRect();drop.style.top=(r.bottom+2)+'px';drop.style.left=r.left+'px';drop.style.width=r.width+'px';}
+  const kw=(q||'').toLowerCase().trim();
+  const statOnly=document.getElementById('chk-stat-only')?.checked;
+  let filtered=statOnly?ACC_DB.filter(a=>!a.n.startsWith('빛뿔')):ACC_DB;
+  if(kw)filtered=filtered.filter(a=>a.n.toLowerCase().includes(kw));
+  drop.innerHTML=filtered.slice(0,30).map(a=>`<div class="acc-drop-item" onmousedown="selectAcc(${ci},'${a.n.replace(/'/g,"\\'")}')"><span>${a.n}</span></div>`).join('');
+  drop.classList.add('open');
+}
+function selectAcc(ci,name){
+  S.accCards[ci].name=name;
+  const inp=document.getElementById('acc-inp-'+ci);
+  if(inp)inp.value=name;
+  closeAccDrop(ci);renderAcc();qSave();
+}
+function addAcc(){S.accCards.unshift({name:'',enchant:'none'});renderAcc();qSave();}
+function getAccNum(name){const m=name.match(/(\d+)\s*$/);return m?parseInt(m[1]):0;}
+function getAccType(name){for(let i=0;i<ACC_TYPE_ORDER.length;i++){const t=ACC_TYPE_ORDER[i];if(name.startsWith(t)||name.includes(`(${t})`))return i;}return 99;}
+function sortAccCards(){
+  S.accCards=S.accCards.map((c,i)=>({...c,_idx:i}));
+  S.accCards.sort((a,b)=>{
+    const nA=getAccNum(a.name||''),nB=getAccNum(b.name||'');
+    if(nB!==nA)return nB-nA;
+    const tA=getAccType(a.name||''),tB=getAccType(b.name||'');
+    if(tA!==tB)return tA-tB;
+    const eA=ENC_ORDER[a.enchant]??3,eB=ENC_ORDER[b.enchant]??3;
+    if(eA!==eB)return eA-eB;
+    return a._idx-b._idx;
+  });
+  S.accCards=S.accCards.map(({_idx,...c})=>c);
+}
+function addAccBulk(lv){
+  const statOnly=document.getElementById('chk-stat-only')?.checked;
+  const targets=ACC_DB.filter(a=>getAccNum(a.n)===lv&&(!statOnly||!a.n.startsWith('빛뿔')));
+  if(!targets.length){alert(`${lv} 장신구를 찾을 수 없습니다.`);return;}
+  targets.forEach(a=>S.accCards.unshift({name:a.n,enchant:'none'}));
+  sortAccCards();renderAcc();qSave();
+  alert(`${lv} 장신구 1세트가 추가되었습니다.`);
+}
+function delAcc(ci){S.accCards.splice(ci,1);renderAcc();qSave();}
+function resetAcc(){if(!confirm('장신구를 전부 초기화합니다.'))return;S.accCards=[];renderAcc();qSave();}
+function onAccEnc(ci,enc){S.accCards[ci].enchant=enc;qSave();}
+
+// ================================================================
+// 펜던트
+// ================================================================
+function getPendOrder(type){return type==='태양'?0:type==='달'?1:2;}
+function getPendSum(p){const mo=p.type==='태양'?3:p.type==='달'?2:1;return p.options.slice(0,mo).reduce((s,o)=>s+(o.val||0),0);}
+function sortPendants(){
+  S.pendants=S.pendants.map((p,i)=>({...p,_idx:i}));
+  S.pendants.sort((a,b)=>{const oA=getPendOrder(a.type),oB=getPendOrder(b.type);if(oA!==oB)return oA-oB;const sA=getPendSum(a),sB=getPendSum(b);if(sB!==sA)return sB-sA;return a._idx-b._idx;});
+  S.pendants=S.pendants.map(({_idx,...p})=>p);
+}
+function getPendSummary(p){
+  if(!p)return'';
+  const mo=p.type==='태양'?3:p.type==='달'?2:1;
+  return p.options.slice(0,mo).map(o=>`${SK[o.stat]||'?'}${o.val||0}%`).join('/');
+}
+function renderPends(){
+  const el=document.getElementById('pend-list');
+  if(!el)return;
+  if(!S.pendants.length){el.innerHTML='<div style="color:var(--dimmer);font-size:13px">보유 펜던트 없음</div>';return;}
+  let html='';
+  S.pendants.forEach((p,pi)=>{
+    const mo=p.type==='태양'?3:p.type==='달'?2:1;
+    let opts='';
+    for(let oi=0;oi<mo;oi++){
+      const o=p.options[oi]||{stat:'hp',val:1};
+      opts+=`<div class="popt-row"><span class="popt-idx">${oi+1}옵</span>
+        <select onchange="onPOpt(${pi},${oi},'stat',this.value)">
+          <option value="hp" ${o.stat==='hp'?'selected':''}>체력</option>
+          <option value="atk" ${o.stat==='atk'?'selected':''}>공격</option>
+          <option value="def" ${o.stat==='def'?'selected':''}>방어</option>
+        </select>
+        <input type="number" min="1" max="6" value="${o.val||1}" style="width:50px;text-align:center" onchange="validatePOpt(this,${pi},${oi})" onkeydown="if(event.key==='Enter')this.blur()">
+        <span style="color:var(--dim)">%</span></div>`;
+    }
+    html+=`<div class="pcard"><div class="pcard-hd">
+      <select onchange="onPType(${pi},this.value)" style="width:100px">
+        <option value="태양" ${p.type==='태양'?'selected':''}>태양 (3옵)</option>
+        <option value="달" ${p.type==='달'?'selected':''}>달 (2옵)</option>
+        <option value="별" ${p.type==='별'?'selected':''}>별 (1옵)</option>
+      </select>
+      <img src="${IMG_PEND[p.type]||''}" style="width:36px;height:36px;object-fit:contain;border-radius:4px">
+      <span id="pend-summ-${pi}" style="color:#fff;font-size:12px">(${getPendSummary(p)})</span>
+      <button class="btn-red" onclick="delPend(${pi})" style="margin-left:auto">삭제</button>
+    </div><div style="display:flex;flex-wrap:wrap;gap:10px 16px;margin-top:2px">${opts}</div></div>`;
+  });
+  el.innerHTML=html;
+}
+function updatePendSummary(pi){const el=document.getElementById(`pend-summ-${pi}`);const p=S.pendants[pi];if(el&&p)el.textContent=`(${getPendSummary(p)})`;}
+function addPendant(){S.pendants.unshift({type:'달',options:[{stat:'hp',val:1},{stat:'hp',val:1}]});renderPends();qSave();}
+function addMoonPendantSet(){
+  const combos=[['hp','hp'],['hp','atk'],['hp','def'],['atk','atk'],['atk','def'],['def','def']];
+  S.pendants.unshift(...combos.map(([a,b])=>({type:'달',options:[{stat:a,val:6},{stat:b,val:6}]})));
+  renderPends();qSave();alert('달펜 세트 1개(6종)가 추가되었습니다.');
+}
+function delPend(i){S.pendants.splice(i,1);renderPends();qSave();}
+function resetPend(){if(!confirm('펜던트를 전부 초기화합니다.'))return;S.pendants=[];renderPends();qSave();}
+function onPType(pi,type){
+  S.pendants[pi].type=type;
+  const max=type==='태양'?3:type==='달'?2:1;
+  while(S.pendants[pi].options.length<max)S.pendants[pi].options.push({stat:'hp',val:1});
+  S.pendants[pi].options=S.pendants[pi].options.slice(0,max);
+  renderPends();qSave();
+}
+function validatePOpt(el,pi,oi){
+  const n=parseInt(el.value);
+  if(el.value===''||isNaN(n)||n<1||n>6){alert('1~6 사이의 정수를 입력해주세요.');el.value='';return;}
+  onPOpt(pi,oi,'val',n);
+}
+function onPOpt(pi,oi,field,val){
+  if(!S.pendants[pi].options[oi])S.pendants[pi].options[oi]={stat:'hp',val:1};
+  S.pendants[pi].options[oi][field]=val;
+  updatePendSummary(pi);qSave();
+}
+
+// ================================================================
+// 초기화
+// ================================================================
+function init(){
+  doLoad();
+  renderAll();
+  // 유저 헤더 UI
+  const u=getUser();
+  const hdUser=document.getElementById('hd-user');
+  const hdBtn=document.getElementById('hd-auth-btn');
+  if(u){
+    if(hdUser)hdUser.textContent='👤 '+( u.nickname||u.username);
+    if(hdBtn){hdBtn.textContent='로그아웃';hdBtn.onclick=()=>{if(confirm('로그아웃할까요?')){logout();location.reload();}};}
+    // 클라우드에서 불러오기 시도
+    doLoadCloud();
+  }else{
+    if(hdUser)hdUser.textContent='';
+    if(hdBtn){
+      hdBtn.textContent='로그인';
+      hdBtn.onclick=()=>location.href='./login.html?from=my.html';
+    }
+  }
+}
+document.addEventListener('DOMContentLoaded',init);
+</script>
+<script>
+/* ── data-theme 동기화 ── */
+(function(){
+  var link=document.getElementById('theme-css');
+  if(!link)return;
+  var sync=function(){
+    var c=document.getElementById('custom-theme-style');
+    if(c&&c.textContent&&c.textContent.length>0){document.documentElement.removeAttribute('data-theme');return;}
+    var m=String(link.href||'').match(/theme-(dark|light|beige)\.css/);
+    document.documentElement.setAttribute('data-theme',m?m[1]:'dark');
+  };
+  sync();
+  new MutationObserver(sync).observe(link,{attributes:true,attributeFilter:['href']});
+  new MutationObserver(sync).observe(document.head,{childList:true,subtree:true,characterData:true});
+})();
+</script>
+</body>
+</html>

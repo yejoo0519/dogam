@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dragon Village Info · made by Nix</title>
+<link id="theme-css" rel="stylesheet" href="../theme-dark.css">
+<script src="./theme.js"></script>
+<style>
+  :root {
+    --bg-soft:var(--bg);--border-strong:var(--border3,var(--border));
+    --tone-sky:#5fa8ee;--tone-violet:#9d7bff;--tone-amber:#e6a23a;--tone-rose:#ec6a8d;--tone-emerald:#4cb88a;
+  }
+  [data-theme="dark"]{--bg:#0e1116;--bg2:#161a22;--bg3:#1c212c;--border:#23293a;--border2:#1b1f2a;--border3:#2d3447;--text:#eaecf2;--text2:#b3b9c7;--text3:#7d8597;--text4:#565d6e;--accent:#7aa2f7;--accent-bg:rgba(122,162,247,0.12);--accent-border:rgba(122,162,247,0.30)}
+  [data-theme="light"]{--bg:#f7f7f8;--bg2:#ffffff;--bg3:#f1f2f4;--border:#e6e7ea;--border2:#eeeff2;--border3:#d4d6db;--text:#15171c;--text2:#4a4d57;--text3:#71757f;--text4:#9aa0aa;--accent:#2f6fed;--accent-bg:rgba(47,111,237,0.10);--accent-border:rgba(47,111,237,0.32)}
+  [data-theme="beige"]{--bg:#f3ecdd;--bg2:#faf3e2;--bg3:#ebe0c7;--border:#d8caa8;--border2:#e1d4b3;--border3:#c0ad84;--text:#2a2316;--text2:#5a4e34;--text3:#837553;--text4:#a99971;--accent:#b06a1e;--accent-bg:rgba(176,106,30,0.10);--accent-border:rgba(176,106,30,0.32)}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Malgun Gothic',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer;background:none;border:none;color:inherit}
+  [data-scroll-x]{scrollbar-width:none}
+  [data-scroll-x]::-webkit-scrollbar{display:none;height:0}
+  .page{max-width:1100px;margin:0 auto;padding:32px 56px 24px}
+  .header-actions{display:flex;justify-content:flex-end;gap:6px}
+  .pill-btn{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:11px;padding:5px 10px;border-radius:999px;white-space:nowrap}
+  .pill-btn:hover{border-color:var(--accent);color:var(--text)}
+  .hero{display:flex;flex-direction:column;gap:12px;padding:24px 0 8px}
+  .hero-marker{display:flex;align-items:center;gap:8px}
+  .hero-marker .line{display:inline-block;width:24px;height:2px;background:var(--accent)}
+  .h-section{font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);white-space:nowrap}
+  .h-display{font-size:46px;font-weight:800;letter-spacing:-0.025em;line-height:1.1;color:var(--text)}
+  .hero-desc{font-size:15px;color:var(--text2);max-width:520px;line-height:1.55}
+  .stats-strip{display:flex;gap:18px;margin-top:4px;font-size:11px;color:var(--text3)}
+  .stats-strip strong{color:var(--text);font-weight:600;font-variant-numeric:tabular-nums}
+  .tab-bar{display:flex;gap:24px;border-bottom:1px solid var(--border);overflow-x:auto;overflow-y:hidden;margin-top:28px}
+  .tab{padding:12px 0;font-size:13px;font-weight:500;color:var(--text3);border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}
+  .tab:hover{color:var(--text2)}
+  .tab.active{color:var(--text);font-weight:700;border-bottom-color:var(--accent)}
+  .body{display:flex;gap:36px;align-items:flex-start;margin-top:28px}
+  .main-column{flex:1;min-width:0;display:flex;flex-direction:column;gap:22px}
+  .category{display:none;flex-direction:column;gap:22px}
+  .category.active{display:flex}
+  .cat-head{display:flex;align-items:baseline;gap:10px;white-space:nowrap}
+  .cat-head h3{font-size:20px;font-weight:700}
+  .cat-head .meta{font-size:12px;color:var(--text3)}
+  .cards{display:grid;gap:14px;grid-template-columns:repeat(2,1fr)}
+  .cards.tri{grid-template-columns:repeat(3,1fr)}
+  .card{display:flex;gap:12px;align-items:flex-start;padding:18px 18px 18px 14px;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:6px;background:var(--bg2);transition:background .15s,border-color .15s}
+  .card:hover{background:var(--bg3)}
+  .card-body{flex:1;min-width:0}
+  .card-title{font-size:16px;font-weight:650;margin-bottom:4px}
+  .card-desc{font-size:12px;line-height:1.55;color:var(--text2)}
+  .icon-tile{width:32px;height:32px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0}
+  .icon-tile.sky{background:color-mix(in oklab,var(--tone-sky) 18%,transparent);color:var(--tone-sky)}
+  .icon-tile.violet{background:color-mix(in oklab,var(--tone-violet) 18%,transparent);color:var(--tone-violet)}
+  .icon-tile.amber{background:color-mix(in oklab,var(--tone-amber) 18%,transparent);color:var(--tone-amber)}
+  .icon-tile.rose{background:color-mix(in oklab,var(--tone-rose) 18%,transparent);color:var(--tone-rose)}
+  .icon-tile.emerald{background:color-mix(in oklab,var(--tone-emerald) 18%,transparent);color:var(--tone-emerald)}
+  .side-rail{width:240px;flex-shrink:0;position:sticky;top:24px;display:flex;flex-direction:column;gap:16px}
+  .patch-aside{padding:16px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;cursor:pointer;transition:border-color .15s}
+  .patch-aside:hover{border-color:var(--accent)}
+  .patch-aside-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;gap:8px}
+  .patch-aside-more{font-size:10px;color:var(--accent);white-space:nowrap}
+  .patch-item{padding-bottom:12px;border-bottom:1px solid var(--border2)}
+  .patch-item:last-child{border-bottom:none;padding-bottom:0}
+  .patch-item+.patch-item{padding-top:10px}
+  .patch-item-head{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+  .patch-ver{font-size:11px;font-weight:700;color:var(--accent)}
+  .patch-date{font-size:10px;color:var(--text4)}
+  .patch-badge{font-size:9px;font-weight:700;letter-spacing:0.06em;padding:2px 6px;border-radius:4px}
+  .badge-new{background:color-mix(in oklab,var(--tone-emerald) 16%,transparent);color:var(--tone-emerald)}
+  .badge-fix{background:color-mix(in oklab,var(--tone-rose) 16%,transparent);color:var(--tone-rose)}
+  .badge-update{background:var(--accent-bg);color:var(--accent)}
+  .patch-item ul{list-style:none}
+  .patch-item li{font-size:11px;line-height:1.5;color:var(--text2);padding-left:8px;position:relative}
+  .patch-item li::before{content:"·";position:absolute;left:0;color:var(--accent)}
+  .day-card{display:flex;align-items:center;gap:10px;padding:14px;border-radius:12px;border:1px dashed var(--border-strong);background:transparent;text-align:left;width:100%}
+  .day-card:hover{border-color:var(--accent);border-style:solid}
+  .day-icon{width:32px;height:32px;border-radius:999px;background:var(--bg3);flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .day-icon img{width:80%;height:80%;object-fit:contain}
+  .day-text-title{font-size:12px;font-weight:600;color:var(--text)}
+  .day-text-sub{font-size:10px;color:var(--text3)}
+  .page-footer{display:flex;flex-direction:column;gap:12px;border-top:1px solid var(--border);padding:20px 0 4px;margin-top:28px;color:var(--text3);font-size:11px}
+  .footer-links{display:flex;gap:10px;flex-wrap:wrap}
+  .contact-pill{display:inline-flex;align-items:center;gap:8px;padding:6px 12px 6px 6px;border-radius:999px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;white-space:nowrap}
+  .contact-pill:hover{border-color:var(--accent);color:var(--text)}
+  .contact-dot{width:18px;height:18px;border-radius:999px;font-size:10px;font-weight:800;display:inline-flex;align-items:center;justify-content:center}
+  .contact-dot.k{background:#FEE500;color:#3C1E1E}
+  .contact-dot.d{background:#5865F2;color:#fff}
+  .contact-dot.g{background:#4285F4;color:#fff}
+  .footer-meta{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  .mobile-only{display:none}
+  .mobile-bar{display:none}
+  .patch-modal-overlay,.item-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:500;align-items:center;justify-content:center}
+  .patch-modal-overlay.open,.item-modal-overlay.open{display:flex}
+  .patch-modal{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;width:90%;max-width:480px;max-height:70vh;overflow-y:auto;position:relative}
+  .patch-modal-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+  .patch-modal-close,.item-modal-close{position:absolute;top:14px;right:16px;color:var(--text2);font-size:18px}
+  .patch-modal-close:hover,.item-modal-close:hover{color:var(--text)}
+  .patch-item-modal{margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border2)}
+  .patch-item-modal:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+  .patch-item-content{font-size:12px;color:var(--text2);line-height:2;margin-top:8px}
+  .patch-item-content li{list-style:none;padding-left:12px;position:relative}
+  .patch-item-content li::before{content:"·";position:absolute;left:0;color:var(--accent)}
+  .patch-more-btn{display:block;width:100%;margin-top:16px;padding:10px;background:var(--bg3);border:1px solid var(--border3,var(--border));border-radius:8px;color:var(--accent);font-size:13px;font-weight:600;text-align:center;text-decoration:none}
+  .patch-more-btn:hover{border-color:var(--accent)}
+  .item-modal{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;width:90%;max-width:400px;position:relative;text-align:center}
+  .item-modal-title{font-size:14px;font-weight:700;color:var(--accent);margin-bottom:12px}
+  .item-modal img{width:100%;border-radius:8px;display:block}
+  @media(max-width:700px){
+    .page{padding:0 18px 18px}
+    .pc-only{display:none!important}
+    .mobile-only{display:flex}
+    .mobile-sticky{position:sticky;top:0;margin:0 -18px 12px;padding:12px 16px;background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;z-index:20}
+    .mobile-logo{display:flex;align-items:center;gap:8px}
+    .mobile-logo-tile{width:24px;height:24px;border-radius:6px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px}
+    .mobile-logo-text{font-size:13px;font-weight:700}
+    .mobile-actions{display:flex;gap:4px}
+    .icon-btn{width:32px;height:32px;border-radius:999px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;display:inline-flex;align-items:center;justify-content:center}
+    .h-display{font-size:32px}
+    .hero-desc{font-size:13px}
+    .hero{padding:8px 0}
+    .tab-bar{justify-content:center;gap:14px}
+    .body{flex-direction:column;gap:22px}
+    .side-rail{width:100%;position:static}
+    .cards{grid-template-columns:1fr}
+    .cards.tri{grid-template-columns:1fr}
+    .mobile-bar{display:flex;position:fixed;bottom:0;left:0;right:0;padding:8px 8px calc(env(safe-area-inset-bottom,0px) + 6px);background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--border);z-index:30}
+    .page{padding-bottom:80px}
+    .mobile-bar button{flex:1;height:48px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--text3);font-size:10px;font-weight:500;position:relative}
+    .mobile-bar button .glyph{font-size:17px;line-height:1}
+    .mobile-bar button.active{color:var(--accent);font-weight:700}
+    .mobile-bar button.active::after{content:'';position:absolute;top:-1px;left:50%;transform:translateX(-50%);width:24px;height:2px;background:var(--accent);border-radius:999px}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="mobile-sticky mobile-only">
+    <div class="mobile-logo">
+      <div class="mobile-logo-tile">N</div>
+      <span class="mobile-logo-text">Dragon Village Info</span>
+    </div>
+    <div class="mobile-actions">
+      <a href="../index.html" class="icon-btn">🌐</a>
+      <button class="icon-btn" onclick="openThemeModal()">🎨</button>
+    </div>
+  </div>
+
+  <div class="header-actions pc-only">
+    <a href="../index.html" class="pill-btn">🌐 KR</a>
+    <button class="pill-btn" onclick="openThemeModal()">🎨 Theme</button>
+  </div>
+
+  <header class="hero">
+    <div class="hero-marker">
+      <span class="line"></span>
+      <span class="h-section">made by Nix</span>
+    </div>
+    <h1 class="h-display">Dragon Village Info</h1>
+    <p class="hero-desc">Transcend tier list, dragon dex, raid info, guides, and auto calculators — all in one place.</p>
+    <div class="stats-strip">
+      <span>Today <strong id="s-today">-</strong></span>
+      <span>Total <strong id="s-total">-</strong></span>
+      <span>Members <strong id="s-members">-</strong></span>
+    </div>
+  </header>
+
+  <nav class="tab-bar" data-scroll-x>
+    <button class="tab active" onclick="switchTab('info',this)">Info</button>
+    <button class="tab" onclick="switchTab('calculator',this)">Calculator</button>
+  </nav>
+
+  <div class="body">
+    <main class="main-column">
+
+      <section class="category active" id="cat-info">
+        <div class="cat-head"><h3>Info</h3><span class="meta">· 5 pages</span></div>
+        <div class="cards">
+          <a href="./tier.html" class="card">
+            <span class="icon-tile sky">★</span>
+            <div class="card-body">
+              <div class="card-title">Transcend Tier List</div>
+              <div class="card-desc">Transcend dragon tier info · Element &amp; Type filter</div>
+            </div>
+          </a>
+          <a href="./dex.html" class="card">
+            <span class="icon-tile violet">D</span>
+            <div class="card-body">
+              <div class="card-title">Dragon Dex</div>
+              <div class="card-desc">697 dragons · Element · Type · Stage filter</div>
+            </div>
+          </a>
+          <a href="./sss.html" class="card">
+            <span class="icon-tile amber">S</span>
+            <div class="card-body">
+              <div class="card-title">SSS Ranking</div>
+              <div class="card-desc">Lv.45 / Lv.21 SSS dragon ranking · Element filter</div>
+            </div>
+          </a>
+          <a href="./raid.html" class="card">
+            <span class="icon-tile rose">入</span>
+            <div class="card-body">
+              <div class="card-title">Arha Gate</div>
+              <div class="card-desc">Diderak &amp; flat Arha combos · Auto combo calculator</div>
+            </div>
+          </a>
+          <a href="./raid_info.html" class="card">
+            <span class="icon-tile emerald">R</span>
+            <div class="card-body">
+              <div class="card-title">Raid Info</div>
+              <div class="card-desc">Arha Field · Normal Raid · Guild Raid boss details</div>
+            </div>
+          </a>
+        </div>
+      </section>
+
+
+
+      <section class="category" id="cat-calculator">
+        <div class="cat-head"><h3>Calculator</h3><span class="meta">· 3 pages</span></div>
+        <div class="cards tri">
+          <a href="../calculator.html?from=calculator" class="card">
+            <span class="icon-tile sky">C</span>
+            <div class="card-body">
+              <div class="card-title">Spirit Calculator</div>
+              <div class="card-desc">Save your setup · Auto spirit optimization</div>
+            </div>
+          </a>
+          <a href="../pvp.html?from=calculator" class="card">
+            <span class="icon-tile amber">PV</span>
+            <div class="card-body">
+              <div class="card-title">Guild Battle Sim (Original)</div>
+              <div class="card-desc">v9.0 fixed · No nerfs · Weekly best setup</div>
+            </div>
+          </a>
+          <a href="../noob.html?from=calculator" class="card">
+            <span class="icon-tile emerald">NB</span>
+            <div class="card-body">
+              <div class="card-title">Guild Battle Sim (Beginner)</div>
+              <div class="card-desc">v7.0~9.0 selectable · Nerfed output</div>
+            </div>
+          </a>
+        </div>
+      </section>
+
+    </main>
+
+    <aside class="side-rail pc-only">
+      <div class="patch-aside" onclick="openPatchModal()">
+        <div class="patch-aside-head">
+          <span class="h-section">Patch Notes</span>
+          <span class="patch-aside-more">All →</span>
+        </div>
+        <div class="patch-item">
+          <div class="patch-item-head">
+            <span class="patch-ver">v0.0.7</span>
+            <span class="patch-date">2026-05-23</span>
+            <span class="patch-badge badge-new">NEW</span>
+          </div>
+          <ul><li>Overall UI improvements</li></ul>
+          <ul><li>Added My Spec page for calculators</li></ul>
+          <ul><li>Added spec export/import feature</li></ul>
+        </div>
+        <div class="patch-item">
+          <div class="patch-item-head">
+            <span class="patch-ver">v0.0.6</span>
+            <span class="patch-date">2026-05-06</span>
+            <span class="patch-badge badge-new">NEW</span>
+          </div>
+          <ul><li>Added Spirit Auto-Calculator</li></ul>
+        </div>
+        <div class="patch-item">
+          <div class="patch-item-head">
+            <span class="patch-ver">v0.0.5</span>
+            <span class="patch-date">2026-04-22</span>
+            <span class="patch-badge badge-update">UPDATE</span>
+          </div>
+          <ul><li>Updated Weekly Info page</li></ul>
+        </div>
+      </div>
+      <button class="day-card" onclick="openItemModal()">
+        <div class="day-icon">
+          <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/Day.png" alt="Daily Item" onerror="this.style.display='none'">
+        </div>
+        <div>
+          <div class="day-text-title">Daily Item</div>
+          <div class="day-text-sub">View today's items</div>
+        </div>
+      </button>
+    </aside>
+  </div>
+
+  <footer class="page-footer">
+    <div class="footer-links">
+      <a href="https://open.kakao.com/o/sgNwijri" target="_blank" class="contact-pill">
+        <span class="contact-dot k">K</span> KakaoTalk
+      </a>
+      <a href="https://discord.com/users/629966669875511296" target="_blank" class="contact-pill">
+        <span class="contact-dot d">D</span> Discord
+      </a>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLScWwjkEQmUNvr28M0iNDNAw7q5GW5tw-PU3u0cWhELaSg4dLA/viewform?usp=publish-editor" target="_blank" class="contact-pill">
+        <span class="contact-dot g">G</span> Google Form
+      </a>
+    </div>
+    <div class="footer-meta">
+      <span>© 2026 Dragon Village Info · made by Nix<br>Calculator by 리레프</span>
+      <span>Response time may take 1–2 days.</span>
+    </div>
+  </footer>
+
+  <nav class="mobile-bar mobile-only">
+    <button class="active" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+      <span class="glyph">⌂</span><span>Home</span>
+    </button>
+    <button onclick="openItemModal()">
+      <span class="glyph">☀</span><span>Daily</span>
+    </button>
+    <button onclick="openPatchModal()">
+      <span class="glyph">📋</span><span>Patch</span>
+    </button>
+    <button onclick="location.href='../my.html'">
+      <span class="glyph">👤</span><span>My Info</span>
+    </button>
+  </nav>
+
+</div>
+
+<div class="patch-modal-overlay" id="patch-modal-overlay" onclick="closePatchModal(event)">
+  <div class="patch-modal" onclick="event.stopPropagation()">
+    <button class="patch-modal-close" onclick="closePatchModal()">✕</button>
+    <div class="patch-modal-title">📋 Patch Notes</div>
+    <div>
+      <div class="patch-item-modal">
+        <div class="patch-item-head"><span class="patch-ver">v0.0.7</span><span class="patch-date">2026-05-23</span><span class="patch-badge badge-new">NEW</span></div>
+        <ul class="patch-item-content">
+          <li>Overall UI improvements</li>
+          <li>Added My Spec page for calculators</li>
+          <li>Added spec export/import feature</li>
+        </ul>
+      </div>
+      <div class="patch-item-modal">
+        <div class="patch-item-head"><span class="patch-ver">v0.0.6</span><span class="patch-date">2026-05-06</span><span class="patch-badge badge-new">NEW</span></div>
+        <ul class="patch-item-content"><li>Added Spirit Auto-Calculator</li><li style="color:#666">Please report any bugs.</li></ul>
+      </div>
+      <div class="patch-item-modal">
+        <div class="patch-item-head"><span class="patch-ver">v0.0.5</span><span class="patch-date">2026-04-22</span><span class="patch-badge badge-update">UPDATE</span></div>
+        <ul class="patch-item-content"><li>Updated Weekly Info page</li></ul>
+      </div>
+      <div class="patch-item-modal">
+        <div class="patch-item-head"><span class="patch-ver">v0.0.1</span><span class="patch-date">2026-04-20</span><span class="patch-badge badge-new">NEW</span></div>
+        <ul class="patch-item-content">
+          <li>Added multi-select for Element &amp; Type</li>
+          <li>Added Dragon Dex with image support</li>
+          <li>Added SSS Ranking</li>
+          <li>Added Arha Gate combos &amp; auto-combo calculator</li>
+          <li>Added Raid Info page</li>
+          <li>Improved mobile &amp; PC UI</li>
+        </ul>
+      </div>
+    </div>
+    <a href="./patchnote.html" class="patch-more-btn">View All Patch Notes →</a>
+  </div>
+</div>
+
+<div class="item-modal-overlay" id="item-modal-overlay" onclick="closeItemModal(event)">
+  <div class="item-modal" onclick="event.stopPropagation()">
+    <button class="item-modal-close" onclick="closeItemModal()">✕</button>
+    <div class="item-modal-title">Daily Item</div>
+    <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/item.png" alt="Daily Item">
+  </div>
+</div>
+
+<script>
+function openPatchModal(){document.getElementById('patch-modal-overlay').classList.add('open')}
+function closePatchModal(e){if(!e||e.target===document.getElementById('patch-modal-overlay'))document.getElementById('patch-modal-overlay').classList.remove('open')}
+function openItemModal(){document.getElementById('item-modal-overlay').classList.add('open')}
+function closeItemModal(e){if(!e||e.target===document.getElementById('item-modal-overlay'))document.getElementById('item-modal-overlay').classList.remove('open')}
+function switchTab(tab,el){
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.category').forEach(c=>c.classList.remove('active'));
+  (el||event.currentTarget).classList.add('active');
+  const cat=document.getElementById('cat-'+tab);
+  if(cat)cat.classList.add('active');
+  try{const url=new URL(location.href);if(tab==='info')url.searchParams.delete('tab');else url.searchParams.set('tab',tab);history.replaceState(null,'',url.toString())}catch(e){}
+}
+(function(){
+  const tab=new URLSearchParams(location.search).get('tab');
+  if(!tab)return;
+  const btn=document.querySelector('.tab[onclick*="\''+tab+'\'"]');
+  if(btn)switchTab(tab,btn);
+})();
+(function(){
+  var link=document.getElementById('theme-css');
+  if(!link)return;
+  var sync=function(){
+    var c=document.getElementById('custom-theme-style');
+    if(c&&c.textContent&&c.textContent.length>0){document.documentElement.removeAttribute('data-theme');return;}
+    var m=String(link.href||'').match(/theme-(dark|light|beige)\.css/);
+    document.documentElement.setAttribute('data-theme',m?m[1]:'dark');
+  };
+  sync();
+  new MutationObserver(sync).observe(link,{attributes:true,attributeFilter:['href']});
+  new MutationObserver(sync).observe(document.head,{childList:true,subtree:true,characterData:true});
+})();
+</script>
+</body>
+</html>

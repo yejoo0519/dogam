@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>패치노트 - 종합 정보사이트 made by 닉스</title>
+<link id="theme-css" rel="stylesheet" href="./theme-dark.css">
+<script src="./theme.js"></script>
+<style>
+/* ── 테마 팔레트 (index.html과 동일) ── */
+[data-theme="dark"]{
+  --bg:#0e1116;--bg2:#161a22;--bg3:#1c212c;
+  --border:#23293a;--border2:#1b1f2a;--border3:#2d3447;
+  --text:#eaecf2;--text2:#b3b9c7;--text3:#7d8597;--text4:#565d6e;
+  --accent:#7aa2f7;--accent-bg:rgba(122,162,247,0.12);--accent-border:rgba(122,162,247,0.30);
+}
+[data-theme="light"]{
+  --bg:#f7f7f8;--bg2:#ffffff;--bg3:#f1f2f4;
+  --border:#e6e7ea;--border2:#eeeff2;--border3:#d4d6db;
+  --text:#15171c;--text2:#4a4d57;--text3:#71757f;--text4:#9aa0aa;
+  --accent:#2f6fed;--accent-bg:rgba(47,111,237,0.10);--accent-border:rgba(47,111,237,0.32);
+}
+[data-theme="beige"]{
+  --bg:#f3ecdd;--bg2:#faf3e2;--bg3:#ebe0c7;
+  --border:#d8caa8;--border2:#e1d4b3;--border3:#c0ad84;
+  --text:#2a2316;--text2:#5a4e34;--text3:#837553;--text4:#a99971;
+  --accent:#b06a1e;--accent-bg:rgba(176,106,30,0.10);--accent-border:rgba(176,106,30,0.32);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--text);padding:12px}
+#tab-bar{display:flex;gap:0;margin-bottom:16px;border-bottom:2px solid var(--border);align-items:flex-end}
+#site-title{display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;margin-right:16px;margin-bottom:6px;border:1.5px solid var(--border3);border-radius:20px;padding:10px 18px;transition:border-color 0.15s;flex-shrink:0}
+#site-title:hover{border-color:var(--accent)}
+#site-title .title-main{font-size:16px;font-weight:700;color:var(--text2);line-height:1.4}
+#site-title .title-sub{font-size:12px;color:var(--text4);line-height:1.4}
+.tab-btn{padding:10px 20px;font-size:13px;font-weight:500;background:none;border:none;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;text-decoration:none;display:inline-block}
+.tab-btn:hover{color:var(--text2)}
+.tab-btn.active{color:var(--accent);border-bottom:2px solid var(--accent)}
+#tab-bar a{text-decoration:none}
+@media(max-width:600px){.tab-btn{display:none}}
+h1{font-size:20px;color:var(--text2);margin-bottom:20px}
+.patch-list{display:flex;flex-direction:column;gap:16px;max-width:800px}
+.patch-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:20px}
+.patch-header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.patch-version{font-size:14px;font-weight:700;color:var(--accent)}
+.patch-date{font-size:12px;color:var(--text4)}
+.patch-badge{font-size:10px;padding:2px 8px;border-radius:10px;margin-left:auto}
+.badge-new{background:rgba(102,187,106,0.15);color:#66bb6a;border:1px solid rgba(102,187,106,0.3)}
+.badge-fix{background:rgba(239,83,80,0.15);color:#ef5350;border:1px solid rgba(239,83,80,0.3)}
+.badge-update{background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-border)}
+.patch-content{font-size:13px;color:var(--text2);line-height:2}
+.patch-content li{list-style:none;padding-left:12px;position:relative}
+.patch-content li::before{content:"·";position:absolute;left:0;color:var(--accent)}
+</style>
+</head>
+<body>
+<div id="tab-bar">
+  <a href="./index.html" id="site-title">
+    <span class="title-main">메인화면 이동</span>
+    <span class="title-sub">made by 닉스</span>
+  </a>
+</div>
+
+
+<h1>패치노트</h1>
+<div class="patch-list" id="patch-list">
+<div class="patch-card">
+  <div class="patch-header">
+    <span class="patch-version">v0.0.9</span>
+    <span class="patch-date">2026-05-28</span>
+    <span class="patch-badge badge-new">NEW</span>
+  </div>
+  <ul class="patch-content">
+    <li>계산기와 연동되는 길드 편의성 기능 추가</li>
+    <li>아이디, 비밀번호 찾기 / 비밀번호 변경 기능 추가</li>
+    <li>계산기 스펙 수정 내 스펙 탭으로 전체 통합</li>
+    <li style="color:#666">오류 발생시 문의 부탁드립니다.</li>
+  </ul>
+</div>
+
+<div class="patch-list" id="patch-list">
+<div class="patch-card">
+  <div class="patch-header">
+    <span class="patch-version">v0.0.8</span>
+    <span class="patch-date">2026-05-26</span>
+    <span class="patch-badge badge-new">NEW</span>
+  </div>
+  <ul class="patch-content">
+    <li>계산기 모바일 Ui 개선</li>
+    <li>로그인 시 드래곤 데이터도 저장되게 개선</li>
+    <li>새로운 드래곤 3종 데이터 추가</li>
+    <li style="color:#666">오류 발생시 문의 부탁드립니다.</li>
+  </ul>
+</div>
+
+<div class="patch-list" id="patch-list">
+<div class="patch-card">
+  <div class="patch-header">
+    <span class="patch-version">v0.0.7</span>
+    <span class="patch-date">2026-05-23</span>
+    <span class="patch-badge badge-new">NEW</span>
+  </div>
+  <ul class="patch-content">
+    <li>전체적인 Ui 개선</li>
+    <li>계산기에 적용될 내 스펙 창 추가</li>
+    <li>내 스펙 내보내기/불러오기 기능 추가</li>
+    <li style="color:#666">오류 발생시 문의 부탁드립니다.</li>
+  </ul>
+</div>
+
+<div class="patch-list" id="patch-list">
+<div class="patch-card">
+  <div class="patch-header">
+    <span class="patch-version">v0.0.6</span>
+    <span class="patch-date">2026-05-06</span>
+    <span class="patch-badge badge-new">NEW</span>
+  </div>
+  <ul class="patch-content">
+    <li>비밸 기준 자동 계산기 추가</li>
+    <li style="color:#666">오류 발생시 문의 부탁드립니다.</li>
+  </ul>
+</div>
+
+<div class="patch-list" id="patch-list">
+<div class="patch-card">
+  <div class="patch-header">
+    <span class="patch-version">v0.0.5</span>
+    <span class="patch-date">2026-04-27</span>
+    <span class="patch-badge badge-new">NEW</span>
+  </div>
+  <ul class="patch-content">
+    <li>Ui 개선</li>
+    <li style="color:#666">└ 커스텀 테마가 추가됩니다.</li>
+    <li>로그인 기능 및 작성 기능 추가</li>
+    <li style="color:#666">└ 연동되는 여러 기능 추가예정</li>
+    <li>길드홍보 &amp; 커뮤니티 탭 추가</li>
+    <li style="color:#666">└ 직접 원하는 카테고리에서 작성하시면 됩니다.</li>
+    <li>이용해주셔서 항상 감사드립니다.</li>
+    <li style="color:#666">좋은하루 되세요(_ _)</li>
+  </ul>
+</div>
+  
+<div class="patch-list" id="patch-list">
+<div class="patch-card">
+  <div class="patch-header">
+    <span class="patch-version">v0.0.4</span>
+    <span class="patch-date">2026-04-24</span>
+    <span class="patch-badge badge-new">NEW</span>
+  </div>
+  <ul class="patch-content">
+    <li>주간 버프 추가 (레무리아, 레이드, 길드전)</li>
+    <li style="color:#666">└ 길드전 길은 이미지 준비중입니다.</li>
+    <li>방랑상인 추가</li>
+    <li style="color:#666">└ 방랑상인 아이템이 공개될 경우 업데이트 됩니다.</li>
+    <li>공략 &amp; 가이드 탭 추가</li>
+    <li style="color:#666">└ 내용은 차근차근 업데이트 예정입니다.</li>
+    <li>알레샤 공략 추가</li>
+  </ul>
+</div>
+  
+  <!-- 패치노트 작성 예시 — 아래 형식으로 복사해서 추가하세요 -->
+    <div class="patch-card">
+    <div class="patch-header">
+      <span class="patch-version">v0.0.3</span>
+      <span class="patch-date">2026-04-22</span>
+      <span class="patch-badge badge-new">NEW</span>
+    </div>
+    <ul class="patch-content">
+      <li>레이드 정보 추가</li></li>
+    </ul>
+  </div>
+
+    <div class="patch-card">
+    <div class="patch-header">
+      <span class="patch-version">v0.0.2</span>
+      <span class="patch-date">2026-04-21</span>
+      <span class="patch-badge badge-new">NEW</span>
+    </div>
+    <ul class="patch-content">
+      <li>일르하 보스 추가</li>
+      <li>디멘션, 데스락 출현 조건 추</li>
+      <li>디데락 자동 조합 알고리즘 개선</li>
+      <li>등급용 티어표 폭스, 방확 아이콘 추가</li>
+    </ul>
+  </div>
+  
+  <div class="patch-card">
+    <div class="patch-header">
+      <span class="patch-version">v0.0.1</span>
+      <span class="patch-date">2026-04-20</span>
+      <span class="patch-badge badge-new">NEW</span>
+    </div>
+    <ul class="patch-content">
+      <li>속성 및 타입 중복 선택기능 추가</li>
+      <li>드래곤 도감 추가, 이미지 연동</li>
+      <li>등급용(SSS) 순위 추가</li>
+      <li>아르하입구 조합 추가 및 디데락 자동 조합 기능제공</li>
+      <li>레이드 정보 창 추가</li>
+      <li>모바일 및 PC UI 개선</li>
+    </ul>
+  </div>
+
+</div>
+<script>
+/* ── data-theme 동기화 (theme.js 연동) ── */
+(function(){
+  var link=document.getElementById('theme-css');
+  if(!link)return;
+  var sync=function(){
+    var c=document.getElementById('custom-theme-style');
+    if(c&&c.textContent&&c.textContent.length>0){document.documentElement.removeAttribute('data-theme');return;}
+    var m=String(link.href||'').match(/theme-(dark|light|beige)\.css/);
+    document.documentElement.setAttribute('data-theme',m?m[1]:'dark');
+  };
+  sync();
+  new MutationObserver(sync).observe(link,{attributes:true,attributeFilter:['href']});
+  new MutationObserver(sync).observe(document.head,{childList:true,subtree:true,characterData:true});
+})();
+</script>
+</body>
+</html>

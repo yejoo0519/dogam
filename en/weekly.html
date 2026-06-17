@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weekly Info</title>
+<link id="theme-css" rel="stylesheet" href="../theme-dark.css">
+<script src="./theme.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--text);padding:12px}
+.back-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;text-decoration:none;margin-bottom:16px;transition:all 0.15s}
+.back-btn:hover{border-color:var(--accent);color:var(--text)}
+h1{font-size:20px;color:var(--text2);margin-bottom:16px}
+.main-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:16px}
+.main-tab{padding:10px 20px;font-size:13px;font-weight:600;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);cursor:pointer;font-family:inherit;margin-bottom:-1px}
+.main-tab:hover{color:var(--text2)}
+.main-tab.active{color:var(--accent);border-bottom:2px solid var(--accent)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.section{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px}
+.section-title{font-size:13px;font-weight:700;color:var(--accent);margin-bottom:12px;letter-spacing:0.05em}
+.raid-grid{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;padding:4px 0}
+.raid-grid img{width:80px;height:80px;object-fit:contain;border-radius:10px;border:1px solid var(--border);background:var(--bg3)}
+.lemuria-main img{width:100%;max-width:420px;border-radius:12px;display:block;margin:0 auto 12px}
+.lemuria-sub{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.lemuria-sub img{width:72px;height:72px;object-fit:contain;border-radius:8px;border:1px solid var(--border);background:var(--bg3)}
+.sub-tabs{display:flex;gap:0;border-bottom:1px solid var(--border2);margin-bottom:12px}
+.sub-tab{padding:7px 16px;font-size:12px;font-weight:600;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);cursor:pointer;font-family:inherit;margin-bottom:-1px}
+.sub-tab:hover{color:var(--text2)}
+.sub-tab.active{color:var(--accent);border-bottom:2px solid var(--accent)}
+.sub-content{display:none}
+.sub-content.active{display:block}
+.buff-label{font-size:12px;color:var(--text2);font-weight:700;margin-bottom:8px}
+.buff-cards{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.buff-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px;display:flex;flex-direction:column;align-items:center;gap:8px;min-width:90px}
+.buff-card-img{width:56px;height:56px;object-fit:contain;border-radius:6px}
+.buff-stat-item{display:flex;align-items:center;gap:4px}
+.buff-stat-img{width:22px;height:22px;object-fit:contain}
+.arrow-up{color:#66bb6a;font-size:12px;font-weight:700}
+.arrow-down{color:#ef5350;font-size:12px;font-weight:700}
+.map-img{width:100%;max-width:500px;border-radius:10px;display:block;margin:0 auto}
+@media(max-width:600px){
+  .raid-grid{flex-wrap:nowrap;gap:6px}
+  .raid-grid img{width:18%;height:auto;flex-shrink:0}
+  .lemuria-sub img{width:60px;height:60px}
+  .buff-cards{flex-wrap:nowrap}
+  .buff-card{min-width:0;width:calc(25% - 9px);padding:8px 4px}
+  .buff-card-img{width:36px;height:36px}
+  .buff-stat-img{width:16px;height:16px}
+  .arrow-up,.arrow-down{font-size:10px}
+}
+
+
+#lang-btn{padding:6px 14px;border-radius:20px;border:1px solid var(--border3);background:var(--bg2);color:var(--text2);font-size:12px;font-family:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:4px;transition:all 0.15s;flex-shrink:0;align-self:center;margin-bottom:6px}
+#lang-btn:hover{border-color:var(--accent);color:var(--text)}
+
+[data-theme="dark"]{--bg:#0e1116;--bg2:#161a22;--bg3:#1c212c;--border:#23293a;--border2:#1b1f2a;--border3:#2d3447;--text:#eaecf2;--text2:#b3b9c7;--text3:#7d8597;--text4:#565d6e;--accent:#7aa2f7;--accent-bg:rgba(122,162,247,0.12);--accent-border:rgba(122,162,247,0.30)}
+[data-theme="light"]{--bg:#f7f7f8;--bg2:#ffffff;--bg3:#f1f2f4;--border:#e6e7ea;--border2:#eeeff2;--border3:#d4d6db;--text:#15171c;--text2:#4a4d57;--text3:#71757f;--text4:#9aa0aa;--accent:#2f6fed;--accent-bg:rgba(47,111,237,0.10);--accent-border:rgba(47,111,237,0.32)}
+[data-theme="beige"]{--bg:#f3ecdd;--bg2:#faf3e2;--bg3:#ebe0c7;--border:#d8caa8;--border2:#e1d4b3;--border3:#c0ad84;--text:#2a2316;--text2:#5a4e34;--text3:#837553;--text4:#a99971;--accent:#b06a1e;--accent-bg:rgba(176,106,30,0.10);--accent-border:rgba(176,106,30,0.32)}
+</style>
+</head>
+<body>
+
+<div style="display:flex;align-items:center;gap:8px;margin-bottom:16px"><a id="back-btn" href="../index.html" class="back-btn" style="margin-bottom:0">← Back to Main</a><a href="../index.html" id="lang-btn" style="margin-bottom:0">🌐 KR</a></div>
+<h1>Weekly Info</h1>
+
+<div class="main-tabs">
+  <button class="main-tab active" onclick="switchMainTab('lemuria', this)">Lemuria</button>
+  <button class="main-tab" onclick="switchMainTab('raid', this)">Raid</button>
+  <button class="main-tab" onclick="switchMainTab('guild', this)">Guild Battle</button>
+</div>
+
+<!-- Lemuria -->
+<div class="tab-content active" id="tab-lemuria">
+  <div class="section">
+    <div class="section-title">This Week Lemuria</div>
+    <div class="section-title">5.13~5.19</div>
+    <div class="lemuria-main">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/week/6.png" alt="">
+    </div>
+    <div class="lemuria-sub">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/week/7.png" alt="">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/week/8.png" alt="">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/week/en9.png" alt="">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/week/en10.png" alt="">
+    </div>
+  </div>
+</div>
+
+<!-- Raid -->
+<div class="tab-content" id="tab-raid">
+  <div class="section">
+    <div class="section-title">This Week's Bonus Dragons</div>
+    <div class="section-title">5.11~5.24</div>
+    <div class="raid-grid">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/week/1.png" alt="">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/week/2.png" alt="">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/week/3.png" alt="">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/week/4.png" alt="">
+      <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/week/5.png" alt="">
+    </div>
+  </div>
+</div>
+
+<!-- Guild Battle -->
+<div class="tab-content" id="tab-guild">
+  <div class="section">
+    <div class="sub-tabs">
+      <button class="sub-tab active" onclick="switchSubTab('buff', this)">Buffs</button>
+      <button class="sub-tab" onclick="switchSubTab('map', this)">Map</button>
+    </div>
+
+    <!-- Buffs -->
+    <div class="sub-content active" id="sub-buff">
+      <div class="buff-label">This Week</div>
+      <div class="buff-label">5.20~5.24</div>
+      <div class="buff-cards">
+        <div class="buff-card">
+          <img class="buff-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/week/11.png" alt="">
+          <div class="buff-stat-item">
+            <img class="buff-stat-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/week/W1.png" alt="">
+            <span class="arrow-up">▲</span>
+          </div>
+        </div>
+        <div class="buff-card">
+          <img class="buff-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/week/en12.png" alt="">
+          <div class="buff-stat-item">
+            <img class="buff-stat-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/week/W2.png" alt="">
+            <span class="arrow-up">▲</span>
+          </div>
+        </div>
+        <div class="buff-card">
+          <img class="buff-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/week/13.png" alt="">
+          <div class="buff-stat-item">
+            <img class="buff-stat-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/week/U1.png" alt="">
+            <span class="arrow-down">▼</span>
+          </div>
+        </div>
+        <div class="buff-card">
+          <img class="buff-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/week/en14.png" alt="">
+          <div class="buff-stat-item">
+            <img class="buff-stat-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/week/U2.png" alt="">
+            <span class="arrow-down">▼</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="buff-label">Next Week</div>
+      <div class="buff-label">5.27~5.31</div>
+      <div class="buff-cards">
+        <div class="buff-card">
+          <img class="buff-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/week/15.png" alt="">
+          <div class="buff-stat-item">
+            <img class="buff-stat-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/week/W3.png" alt="">
+            <span class="arrow-up">▲</span>
+          </div>
+        </div>
+        <div class="buff-card">
+          <img class="buff-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/week/en16.png" alt="">
+          <div class="buff-stat-item">
+            <img class="buff-stat-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/week/W4.png" alt="">
+            <span class="arrow-up">▲</span>
+          </div>
+        </div>
+        <div class="buff-card">
+          <img class="buff-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/week/17.png" alt="">
+          <div class="buff-stat-item">
+            <img class="buff-stat-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/week/U3.png" alt="">
+            <span class="arrow-down">▼</span>
+          </div>
+        </div>
+        <div class="buff-card">
+          <img class="buff-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/week/en18.png" alt="">
+          <div class="buff-stat-item">
+            <img class="buff-stat-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/week/U4.png" alt="">
+            <span class="arrow-down">▼</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 길 -->
+    <div class="sub-content" id="sub-map">
+      <div class="section-title">5.13~5.17</div>
+      <img class="map-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/week/en19.png" alt="This Week 길">
+    </div>
+  </div>
+</div>
+
+<script>
+// ?from= 파라미터를 읽어서 뒤로가기 URL 결정
+(function() {
+  const from = new URLSearchParams(location.search).get('from');
+  const allowed = ['community','weekly','guide','info'];
+  const backBtn = document.getElementById('back-btn');
+  if(from && allowed.includes(from)) {
+    backBtn.href = `./index.html?tab=${from}`;
+  }
+})();
+
+function switchMainTab(tab, el) {
+  document.querySelectorAll('.main-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-'+tab).classList.add('active');
+}
+function switchSubTab(tab, el) {
+  document.querySelectorAll('.sub-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.sub-content').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('sub-'+tab).classList.add('active');
+}
+</script>
+<script>
+(function(){var link=document.getElementById('theme-css');if(!link)return;var sync=function(){var c=document.getElementById('custom-theme-style');if(c&&c.textContent&&c.textContent.length>0){document.documentElement.removeAttribute('data-theme');return;}var m=String(link.href||'').match(/theme-(dark|light|beige)\.css/);document.documentElement.setAttribute('data-theme',m?m[1]:'dark');};sync();new MutationObserver(sync).observe(link,{attributes:true,attributeFilter:['href']});new MutationObserver(sync).observe(document.head,{childList:true,subtree:true,characterData:true});})();
+</script>
+</body>
+</html>

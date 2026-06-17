@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>종합 정보사이트 made by 닉스</title>
+<meta property="og:title" content="종합 정보사이트 made by 닉스">
+<meta property="og:description" content="드래곤빌리지 종합 정보사이트 - 초월 등급표, 도감, 레이드, 공략, 커뮤니티">
+<meta property="og:image" content="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/main.jpg">
+<meta property="og:url" content="https://yejoo0519.github.io/dogam">
+<meta property="og:type" content="website">
+
+<!-- 원본 테마 시스템 (그대로 사용) -->
+<link id="theme-css" rel="stylesheet" href="./theme-dark.css">
+
+<!-- 번들 시 theme.js 코드 내에서 문자열로 참조되는 CSS 파일들 — 번들러가 인라인하도록 표시 -->
+<meta name="ext-resource-dependency" content="./theme-dark.css"  data-resource-id="theme-dark">
+<meta name="ext-resource-dependency" content="./theme-light.css" data-resource-id="theme-light">
+<meta name="ext-resource-dependency" content="./theme-beige.css" data-resource-id="theme-beige">
+
+<script src="./theme.js"></script>
+
+<!-- 번들된 단일 파일에서만 동작: theme.js 의 THEMES 객체 경로를 blob URL 로 치환 -->
+<script>
+  if (typeof THEMES !== 'undefined' && window.__resources) {
+    if (window.__resources['theme-dark'])  THEMES.dark.file  = window.__resources['theme-dark'];
+    if (window.__resources['theme-light']) THEMES.light.file = window.__resources['theme-light'];
+    if (window.__resources['theme-beige']) THEMES.beige.file = window.__resources['theme-beige'];
+    // 현재 적용된 테마도 다시 한 번 적용 (loadSavedTheme 가 이미 실행됐을 수 있으므로)
+    if (typeof loadSavedTheme === 'function') loadSavedTheme();
+  }
+</script>
+
+<style>
+  /* ─── 추가 디자인 토큰 (원본 theme-*.css 위에 얹는 값들) ───────────────── */
+  :root {
+    --bg-soft:       var(--bg);
+    --border-strong: var(--border3, var(--border));
+    --accent-soft:   var(--accent-bg);
+    --accent-line:   var(--accent-border);
+    --shadow:        0 1px 0 rgba(255,255,255,0.04) inset, 0 8px 24px rgba(0,0,0,0.35);
+    --shadow-sm:     0 1px 2px rgba(0,0,0,0.06);
+    --chip-bg:       rgba(127,127,127,0.08);
+    --tone-sky:      #5fa8ee;
+    --tone-violet:   #9d7bff;
+    --tone-amber:    #e6a23a;
+    --tone-rose:     #ec6a8d;
+    --tone-emerald:  #4cb88a;
+  }
+  /* 리디자인된 컬러 팔레트 — theme.js 가 data-theme 속성을 셋팅하면 적용 */
+  [data-theme="dark"] {
+    --bg: #0e1116; --bg2: #161a22; --bg3: #1c212c;
+    --border: #23293a; --border2: #1b1f2a; --border3: #2d3447;
+    --text: #eaecf2; --text2: #b3b9c7; --text3: #7d8597; --text4: #565d6e;
+    --accent: #7aa2f7; --accent-bg: rgba(122,162,247,0.12); --accent-border: rgba(122,162,247,0.30);
+  }
+  [data-theme="light"] {
+    --bg: #f7f7f8; --bg2: #ffffff; --bg3: #f1f2f4;
+    --border: #e6e7ea; --border2: #eeeff2; --border3: #d4d6db;
+    --text: #15171c; --text2: #4a4d57; --text3: #71757f; --text4: #9aa0aa;
+    --accent: #2f6fed; --accent-bg: rgba(47,111,237,0.10); --accent-border: rgba(47,111,237,0.32);
+  }
+  [data-theme="beige"] {
+    --bg: #f3ecdd; --bg2: #faf3e2; --bg3: #ebe0c7;
+    --border: #d8caa8; --border2: #e1d4b3; --border3: #c0ad84;
+    --text: #2a2316; --text2: #5a4e34; --text3: #837553; --text4: #a99971;
+    --accent: #b06a1e; --accent-bg: rgba(176,106,30,0.10); --accent-border: rgba(176,106,30,0.32);
+  }
+
+  /* ─── Base ───────────────────────────────────────────────────────── */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Malgun Gothic', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+         background: var(--bg); color: var(--text); min-height: 100vh; }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; background: none; border: none; color: inherit; }
+  [data-scroll-x] { scrollbar-width: none; }
+  [data-scroll-x]::-webkit-scrollbar { display: none; height: 0; }
+
+  /* ─── 페이지 셸 ──────────────────────────────────────────────────── */
+  .page { max-width: 1100px; margin: 0 auto; padding: 32px 56px 24px; }
+
+  /* PC 헤더 — 오른쪽에 EN / 테마 버튼 */
+  .header-actions { display: flex; justify-content: flex-end; gap: 6px; }
+  .pill-btn { display: inline-flex; align-items: center; gap: 4px;
+              border: 1px solid var(--border); background: var(--bg2);
+              color: var(--text2); font-size: 11px; padding: 5px 10px;
+              border-radius: 999px; white-space: nowrap; }
+  .pill-btn:hover { border-color: var(--accent); color: var(--text); }
+
+  /* 헤드라인 영역 */
+  .hero { display: flex; flex-direction: column; gap: 12px; padding: 24px 0 8px; }
+  .hero-marker { display: flex; align-items: center; gap: 8px; }
+  .hero-marker .line { display: inline-block; width: 24px; height: 2px; background: var(--accent); }
+  .h-section { font-size: 11px; font-weight: 600; letter-spacing: 0.12em;
+               text-transform: uppercase; color: var(--text3); white-space: nowrap; }
+  .h-display { font-size: 46px; font-weight: 800; letter-spacing: -0.025em;
+               line-height: 1.1; color: var(--text); }
+  .hero-desc { font-size: 15px; color: var(--text2); max-width: 520px; line-height: 1.55; }
+
+  .stats-strip { display: flex; gap: 18px; margin-top: 4px;
+                 font-size: 11px; color: var(--text3); }
+  .stats-strip strong { color: var(--text); font-weight: 600;
+                        font-variant-numeric: tabular-nums; }
+
+  /* 탭 바 */
+  .tab-bar { display: flex; gap: 24px;
+             border-bottom: 1px solid var(--border);
+             overflow-x: auto; overflow-y: hidden;
+             margin-top: 28px; }
+  .tab { padding: 12px 0; font-size: 13px; font-weight: 500;
+         color: var(--text3); border-bottom: 2px solid transparent;
+         margin-bottom: -1px; white-space: nowrap; }
+  .tab:hover { color: var(--text2); }
+  .tab.active { color: var(--text); font-weight: 700;
+                border-bottom-color: var(--accent); }
+
+  /* 본문 그리드 */
+  .body { display: flex; gap: 36px; align-items: flex-start; margin-top: 28px; }
+  .main-column { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 22px; }
+  .category { display: none; flex-direction: column; gap: 22px; }
+  .category.active { display: flex; }
+  .cat-head { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+  .cat-head-inner { display: flex; align-items: baseline; gap: 10px; }
+  .cat-head-row { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+  .my-spec-btn { display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; border-radius: 20px; border: 1px solid var(--accent-border); background: var(--accent-bg); color: var(--accent); font-size: 11px; font-weight: 600; text-decoration: none; cursor: pointer; transition: all .15s; white-space: nowrap; }
+  .my-spec-btn:hover { background: rgba(122,162,247,0.22); border-color: var(--accent); }
+  .cat-head h3 { font-size: 20px; font-weight: 700; }
+  .cat-head .meta { font-size: 12px; color: var(--text3); }
+
+  .cards { display: grid; gap: 14px;
+           grid-template-columns: repeat(2, 1fr); }
+  .cards.tri { grid-template-columns: repeat(3, 1fr); }
+
+  /* 카드 — 좌측 액센트 보더 스타일 */
+  .card { display: flex; gap: 12px; align-items: flex-start;
+          padding: 18px 18px 18px 14px;
+          border: 1px solid var(--border);
+          border-left: 3px solid var(--accent);
+          border-radius: 6px;
+          background: var(--bg2);
+          transition: background .15s, border-color .15s; }
+  .card:hover { background: var(--bg3); }
+  .card-body { flex: 1; min-width: 0; }
+  .card-title { font-size: 16px; font-weight: 650; margin-bottom: 4px; }
+  .card-desc { font-size: 12px; line-height: 1.55; color: var(--text2); }
+
+  /* 아이콘 타일 (모노그램) */
+  .icon-tile { width: 32px; height: 32px; border-radius: 6px;
+               display: inline-flex; align-items: center; justify-content: center;
+               font-weight: 700; font-size: 14px; flex-shrink: 0; }
+  .icon-tile.sky     { background: color-mix(in oklab, var(--tone-sky)     18%, transparent); color: var(--tone-sky); }
+  .icon-tile.violet  { background: color-mix(in oklab, var(--tone-violet)  18%, transparent); color: var(--tone-violet); }
+  .icon-tile.amber   { background: color-mix(in oklab, var(--tone-amber)   18%, transparent); color: var(--tone-amber); }
+  .icon-tile.rose    { background: color-mix(in oklab, var(--tone-rose)    18%, transparent); color: var(--tone-rose); }
+  .icon-tile.emerald { background: color-mix(in oklab, var(--tone-emerald) 18%, transparent); color: var(--tone-emerald); }
+
+  /* 우측 사이드 레일 — 패치노트 */
+  .side-rail { width: 240px; flex-shrink: 0; position: sticky; top: 24px;
+               display: flex; flex-direction: column; gap: 16px; }
+  .patch-aside { padding: 16px; background: var(--bg2);
+                 border: 1px solid var(--border); border-radius: 12px;
+                 cursor: pointer; transition: border-color .15s; }
+  .patch-aside:hover { border-color: var(--accent); }
+  .patch-aside-head { display: flex; justify-content: space-between;
+                      align-items: baseline; margin-bottom: 12px; gap: 8px; }
+  .patch-aside-more { font-size: 10px; color: var(--accent); white-space: nowrap; }
+
+  .patch-item { padding-bottom: 12px;
+                border-bottom: 1px solid var(--border2); }
+  .patch-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .patch-item + .patch-item { padding-top: 10px; }
+  .patch-item-head { display: flex; align-items: center; gap: 6px;
+                     margin-bottom: 6px; }
+  .patch-ver { font-size: 11px; font-weight: 700; color: var(--accent); }
+  .patch-date { font-size: 10px; color: var(--text4); }
+  .patch-badge { font-size: 9px; font-weight: 700; letter-spacing: 0.06em;
+                 padding: 2px 6px; border-radius: 4px; }
+  .badge-new    { background: color-mix(in oklab, var(--tone-emerald) 16%, transparent); color: var(--tone-emerald); }
+  .badge-fix    { background: color-mix(in oklab, var(--tone-rose) 16%, transparent); color: var(--tone-rose); }
+  .badge-update { background: var(--accent-bg); color: var(--accent); }
+  .patch-item ul { list-style: none; }
+  .patch-item li { font-size: 11px; line-height: 1.5; color: var(--text2);
+                   padding-left: 8px; position: relative; }
+  .patch-item li::before { content: "·"; position: absolute; left: 0; color: var(--accent); }
+
+  /* 푸터 */
+  .page-footer { display: flex; flex-direction: column; gap: 12px;
+                 border-top: 1px solid var(--border);
+                 padding: 20px 0 4px; margin-top: 28px;
+                 color: var(--text3); font-size: 11px; }
+  .footer-links { display: flex; gap: 10px; flex-wrap: wrap; }
+  .contact-pill { display: inline-flex; align-items: center; gap: 8px;
+                  padding: 6px 12px 6px 6px; border-radius: 999px;
+                  border: 1px solid var(--border); background: var(--bg2);
+                  color: var(--text2); font-size: 12px; white-space: nowrap; }
+  .contact-pill:hover { border-color: var(--accent); color: var(--text); }
+  .contact-dot { width: 18px; height: 18px; border-radius: 999px;
+                 font-size: 10px; font-weight: 800;
+                 display: inline-flex; align-items: center; justify-content: center; }
+  .contact-dot.k { background: #FEE500; color: #3C1E1E; }
+  .contact-dot.d { background: #5865F2; color: #fff; }
+  .footer-meta { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+
+  /* ─── 모바일 ──────────────────────────────────────────────────── */
+  .mobile-only { display: none; }
+  .mobile-bar { display: none; }
+
+  @media (max-width: 700px) {
+    .page { padding: 0 18px 18px; }
+    .pc-only { display: none !important; }
+    .mobile-only { display: flex; }
+
+    /* 모바일 스티키 헤더 */
+    .mobile-sticky { position: sticky; top: 0;
+                     margin: 0 -18px 12px;
+                     padding: 12px 16px;
+                     background: var(--bg);
+                     border-bottom: 1px solid var(--border);
+                     display: flex; align-items: center; justify-content: space-between;
+                     z-index: 20; }
+    .mobile-logo { display: flex; align-items: center; gap: 8px; }
+    .mobile-logo-tile { width: 24px; height: 24px; border-radius: 6px;
+                        background: var(--accent); color: #fff;
+                        display: flex; align-items: center; justify-content: center;
+                        font-weight: 800; font-size: 11px; }
+    .mobile-logo-text { font-size: 13px; font-weight: 700; }
+    .mobile-actions { display: flex; gap: 4px; }
+    .icon-btn { width: 32px; height: 32px; border-radius: 999px;
+                border: 1px solid var(--border); background: var(--bg2);
+                color: var(--text2); font-size: 12px;
+                display: inline-flex; align-items: center; justify-content: center; }
+
+    .h-display { font-size: 32px; }
+    .hero-desc { font-size: 13px; }
+    .hero { padding: 8px 0; }
+    .tab-bar { justify-content: center; gap: 14px; }
+    .body { flex-direction: column; gap: 22px; }
+    .side-rail { width: 100%; position: static; }
+    .cards { grid-template-columns: 1fr; }
+    .cards.tri { grid-template-columns: 1fr; }
+
+    /* 하단 액션 바 */
+    .mobile-bar { display: flex; position: fixed; bottom: 0; left: 0; right: 0;
+                  padding: 8px 8px calc(env(safe-area-inset-bottom, 0px) + 6px);
+                  background: color-mix(in srgb, var(--bg) 94%, transparent);
+                  backdrop-filter: blur(12px);
+                  -webkit-backdrop-filter: blur(12px);
+                  border-top: 1px solid var(--border);
+                  z-index: 30; }
+    .page { padding-bottom: 80px; }
+    .mobile-bar button { flex: 1; height: 48px;
+                          display: flex; flex-direction: column;
+                          align-items: center; justify-content: center; gap: 2px;
+                          color: var(--text3); font-size: 10px; font-weight: 500;
+                          position: relative; }
+    .mobile-bar button .glyph { font-size: 17px; line-height: 1; }
+    .mobile-bar button.active { color: var(--accent); font-weight: 700; }
+    .mobile-bar button.active::after { content: ''; position: absolute;
+                                       top: -1px; left: 50%; transform: translateX(-50%);
+                                       width: 24px; height: 2px; background: var(--accent);
+                                       border-radius: 999px; }
+  }
+
+  /* ─── 모달 (원본 그대로) ─────────────────────────────────────── */
+  .patch-modal-overlay { display: none; position: fixed; inset: 0;
+                        background: rgba(0,0,0,0.7); z-index: 500;
+                        align-items: center; justify-content: center; }
+  .patch-modal-overlay.open { display: flex; }
+  .patch-modal { background: var(--bg2); border: 1px solid var(--border);
+                 border-radius: 12px; padding: 24px; width: 90%; max-width: 480px;
+                 max-height: 70vh; overflow-y: auto; position: relative; }
+  .patch-modal-title { font-size: 16px; font-weight: 700; color: var(--text);
+                       margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .patch-modal-close { position: absolute; top: 14px; right: 16px;
+                       color: var(--text2); font-size: 18px; }
+  .patch-modal-close:hover { color: var(--text); }
+  .patch-item-modal { margin-bottom: 16px; padding-bottom: 16px;
+                      border-bottom: 1px solid var(--border2); }
+  .patch-item-modal:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .patch-item-content { font-size: 12px; color: var(--text2); line-height: 2; margin-top: 8px; }
+  .patch-item-content li { list-style: none; padding-left: 12px; position: relative; }
+  .patch-item-content li::before { content: "·"; position: absolute; left: 0; color: var(--accent); }
+  .patch-more-btn { display: block; width: 100%; margin-top: 16px; padding: 10px;
+                    background: var(--bg3); border: 1px solid var(--border3, var(--border));
+                    border-radius: 8px; color: var(--accent); font-size: 13px; font-weight: 600;
+                    text-align: center; text-decoration: none; }
+  .patch-more-btn:hover { border-color: var(--accent); }
+
+  /* ── 어드민 회원 카드 ── */
+  .admin-member-card{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;flex-wrap:wrap}
+  .admin-member-info{flex:1;min-width:0}
+  .admin-member-name{font-size:13px;font-weight:700}
+  .admin-member-meta{font-size:11px;color:var(--text4);margin-top:2px}
+  .admin-ban-btn{padding:4px 10px;border-radius:5px;border:none;cursor:pointer;font-size:12px;font-weight:700;font-family:inherit;white-space:nowrap}
+  .ban-on{background:rgba(239,83,80,.12);border:1px solid rgba(239,83,80,.3);color:#ef5350}
+  .ban-off{background:rgba(102,187,106,.12);border:1px solid rgba(102,187,106,.3);color:#66bb6a}
+  /* pill-btn 로그인 상태 */
+  .pill-btn.auth-user{color:var(--accent);background:var(--accent-bg);border-color:var(--accent-border);cursor:default}
+</style>
+</head>
+
+<body>
+
+<template id="__bundler_thumbnail" data-bg-color="#0e1116">
+  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100" height="100" fill="#0e1116"/>
+    <rect x="30" y="30" width="40" height="40" rx="8" fill="#7aa2f7"/>
+    <text x="50" y="58" font-family="-apple-system, sans-serif" font-size="22" font-weight="800" text-anchor="middle" fill="#fff">N</text>
+  </svg>
+</template>
+
+<div class="page">
+
+  <!-- 모바일 스티키 헤더 -->
+  <div class="mobile-sticky mobile-only">
+    <div class="mobile-logo">
+      <div class="mobile-logo-tile">N</div>
+      <span class="mobile-logo-text">종합 정보사이트</span>
+    </div>
+    <div class="mobile-actions">
+      <a href="./en/index.html" class="icon-btn">🌐</a>
+      <button class="icon-btn" onclick="openThemeModal()">🎨</button>
+      <button class="icon-btn" id="mob-auth-icon" onclick="handleMobAuth()">👤</button>
+    </div>
+  </div>
+
+  <!-- PC 헤더 액션 -->
+  <div class="header-actions pc-only">
+    <a href="./en/index.html" class="pill-btn">🌐 EN</a>
+    <button class="pill-btn" onclick="openThemeModal()">🎨 테마</button>
+    <div id="pc-auth" style="display:flex;gap:6px;align-items:center;margin-left:4px"></div>
+  </div>
+
+  <!-- 헤드라인 -->
+  <header class="hero">
+    <div class="hero-marker">
+      <span class="line"></span>
+      <span class="h-section">made by 닉스</span>
+    </div>
+    <h1 class="h-display">종합 정보사이트</h1>
+    <p class="hero-desc">드래곤빌리지 초월 등급표, 도감, 레이드, 공략, 커뮤니티, 자동 계산기까지 — 한 페이지에서.</p>
+    <div class="stats-strip" id="stats-strip">
+      <span>오늘 <strong id="s-today">-</strong></span>
+      <span>누적 <strong id="s-total">-</strong></span>
+      <span>회원 <strong id="s-members">-</strong></span>
+    </div>
+  </header>
+
+  <!-- 탭 바 -->
+  <nav class="tab-bar" data-scroll-x>
+    <button class="tab active" onclick="switchTab('info', this)">정보</button>
+    <button class="tab" onclick="switchTab('guide', this)">공략 &amp; 가이드</button>
+    <button class="tab" onclick="switchTab('weekly', this)">주간</button>
+    <button class="tab" onclick="switchTab('community', this)">커뮤니티</button>
+    <button class="tab" onclick="switchTab('calculator', this)">계산기</button>
+    <button class="tab" id="tab-admin" onclick="switchTab('admin', this)" style="display:none">⚙️ 어드민</button>
+  </nav>
+
+  <!-- 본문 -->
+  <div class="body">
+    <main class="main-column">
+
+      <section class="category active" id="cat-info">
+        <div class="cat-head"><h3>정보</h3><span class="meta">· 5개 메뉴</span></div>
+        <div class="cards">
+          <a href="./tier.html" class="card">
+            <span class="icon-tile sky">초등</span>
+            <div class="card-body">
+              <div class="card-title">초월 등급표</div>
+              <div class="card-desc">속성별 초월 드래곤 등급 정보 · 속성 · 타입 필터</div>
+            </div>
+          </a>
+          <a href="./dex.html" class="card">
+            <span class="icon-tile violet">도감</span>
+            <div class="card-body">
+              <div class="card-title">드래곤 도감</div>
+              <div class="card-desc">전체 697마리 드래곤 정보 · 속성 · 타입 · 단계 필터</div>
+            </div>
+          </a>
+          <a href="./sss.html" class="card">
+            <span class="icon-tile amber">트스</span>
+            <div class="card-body">
+              <div class="card-title">SSS 랭킹</div>
+              <div class="card-desc">Lv.45 / Lv.21 SSS 드래곤 랭킹 · 속성 필터 지원</div>
+            </div>
+          </a>
+          <a href="./raid.html" class="card">
+            <span class="icon-tile rose">알하</span>
+            <div class="card-body">
+              <div class="card-title">아르하 입구</div>
+              <div class="card-desc">디데락 조합, 평르하 조합 · 자동 조합기능 제공</div>
+            </div>
+          </a>
+          <a href="./pkg.html" class="card">
+            <span class="icon-tile emerald">패키</span>
+            <div class="card-body">
+              <div class="card-title">패키지 복각 주기</div>
+              <div class="card-desc">패키지별 복각 주기 · 마지막 복각일 · 예상 복각일</div>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <section class="category" id="cat-guide">
+        <div class="cat-head"><h3>공략 &amp; 가이드</h3><span class="meta">· 2개 메뉴</span></div>
+        <div class="cards">
+          <a href="./guide.html?from=guide" class="card">
+            <span class="icon-tile amber">팁게</span>
+            <div class="card-body">
+              <div class="card-title">공략 &amp; 가이드</div>
+              <div class="card-desc">드래곤 공략 및 레이드 가이드 · 글 목록</div>
+            </div>
+          </a>
+          <a href="./raid_info.html" class="card">
+            <span class="icon-tile emerald">조합</span>
+            <div class="card-body">
+              <div class="card-title">레이드 정보</div>
+              <div class="card-desc">아르하필드 · 일반 레이드 · 레무리아 보스 상세</div>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <section class="category" id="cat-weekly">
+        <div class="cat-head"><h3>주간</h3><span class="meta">· 1개 메뉴</span></div>
+        <div class="cards">
+          <a href="./weekly.html?from=weekly" class="card">
+            <span class="icon-tile sky">주간</span>
+            <div class="card-body">
+              <div class="card-title">주간 정보</div>
+              <div class="card-desc">레무리아 · 레이드 · 길드전 · 매주 업데이트</div>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <section class="category" id="cat-community">
+        <div class="cat-head"><h3>커뮤니티</h3><span class="meta">· 2개 메뉴</span></div>
+        <div class="cards">
+          <a href="./guild.html?from=community" class="card">
+            <span class="icon-tile emerald">길드</span>
+            <div class="card-body">
+              <div class="card-title">길드</div>
+              <div class="card-desc">길드 홍보 및 모집 정보</div>
+            </div>
+          </a>
+          <a href="./friend.html?from=community" class="card">
+            <span class="icon-tile violet">친추</span>
+            <div class="card-body">
+              <div class="card-title">친구요청</div>
+              <div class="card-desc">정기친구 · 레이드 프리미엄 · 친구 게시판</div>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <section class="category" id="cat-calculator">
+        <div class="cat-head cat-head-row">
+          <div class="cat-head-inner"><h3>계산기</h3><span class="meta">· 3개 메뉴</span></div>
+          <a href="./my.html" class="my-spec-btn">👤 내 스펙 →</a>
+        </div>
+        <div class="cards tri">
+          <a href="./calculator.html?from=calculator" class="card">
+            <span class="icon-tile sky">정령</span>
+            <div class="card-body">
+              <div class="card-title">자동 계산기</div>
+              <div class="card-desc">본인 셋팅 저장 · 정령 자동 비밸셋팅</div>
+            </div>
+          </a>
+          <a href="./pvp.html?from=calculator" class="card">
+            <span class="icon-tile amber">일반</span>
+            <div class="card-body">
+              <div class="card-title">길드전 계산기<br>(오리지널)</div>
+              <div class="card-desc">9.0 고정 · 너프 제외 · 매주 최적셋팅</div>
+            </div>
+          </a>
+          <a href="./noob.html?from=calculator" class="card">
+            <span class="icon-tile emerald">뉴비</span>
+            <div class="card-body">
+              <div class="card-title">길드전 계산기<br>(뉴비)</div>
+              <div class="card-desc">7.0~9.0 선택 · 너프 적용 출력</div>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <section class="category" id="cat-admin">
+        <div class="cat-head"><h3>⚙️ 어드민</h3><span class="meta">· 관리자 전용</span></div>
+        <div class="cards tri" style="margin-bottom:20px">
+          <a href="./gdgm.html" class="card">
+            <span class="icon-tile violet">길드</span>
+            <div class="card-body">
+              <div class="card-title">전체 길드 관리</div>
+              <div class="card-desc">모든 길드 데이터 열람 · 순위 확인</div>
+            </div>
+          </a>
+          <a href="./account.html" class="card">
+            <span class="icon-tile sky">계정</span>
+            <div class="card-body">
+              <div class="card-title">계정 관리</div>
+              <div class="card-desc">아이디·비밀번호 찾기 · 닉네임 변경</div>
+            </div>
+          </a>
+        </div>
+          <a href="./admin_users.html" class="card">
+            <span class="icon-tile rose">회원</span>
+            <div class="card-body">
+              <div class="card-title">회원 관리</div>
+              <div class="card-desc">전체 회원 목록 · 계정 정지 · 검색</div>
+            </div>
+          </a>
+      </section>
+
+    </main>
+
+    <!-- 우측 사이드 (PC) -->
+    <aside class="side-rail pc-only">
+      <div class="patch-aside" onclick="openPatchModal()">
+        <div class="patch-aside-head">
+          <span class="h-section">패치노트</span>
+          <span class="patch-aside-more">전체 →</span>
+        </div>
+        <div class="patch-item">
+          <div class="patch-item-head">
+            <span class="patch-ver">v0.0.10</span>
+            <span class="patch-date">2026-05-29</span>
+            <span class="patch-badge badge-new">NEW</span>
+          </div>
+          <ul><li>크툴루, 크크툴 두마리의 이미지가 업데이트</li></li></ul>
+          <ul><li>뉴비버전 계산기 너프 스텟 반영되게 수정</li></li></ul>
+        </div>
+        <div class="patch-item">
+          <div class="patch-item-head">
+            <span class="patch-ver">v0.0.8</span>
+            <span class="patch-date">2026-05-26</span>
+            <span class="patch-badge badge-new">NEW</span>
+          </div>
+          <ul><li>계산기와 연동되는 길드 편의성 기능 추가</li></li></ul>
+          <ul><li>아이디, 비밀번호 찾기 / 비밀번호 변경 기능 추가</li></li></ul>
+          <ul><li>계산기 스펙 수정 내 스펙 탭으로 전체 통합</li></li></ul>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- 푸터 -->
+  <footer class="page-footer">
+    <div class="footer-links">
+      <a href="https://open.kakao.com/o/sgNwijri" target="_blank" class="contact-pill">
+        <span class="contact-dot k">K</span> 카카오톡 문의
+      </a>
+      <a href="https://discord.com/users/629966669875511296" target="_blank" class="contact-pill">
+        <span class="contact-dot d">D</span> 디스코드
+
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSdsQPhcdYw7hC3l-eDyjgDu9y8Jj_07px_tucgakNFPfTtPyQ/viewform?usp=publish-editor" target="_blank" class="contact-pill">
+        <span class="contact-dot G">G</span> 구글 설문 폼
+      </a>
+    </div>
+    <div class="footer-meta">
+      <span>© 종합 정보사이트 · made by 닉스
+        <br>계산기 개발 · made by 리레프
+      </span>
+      <span>문의 후 답변까지 1~2일 소요될 수 있습니다.</span>
+    </div>
+  </footer>
+
+  <!-- 모바일 하단 액션 바 -->
+  <nav class="mobile-bar mobile-only">
+    <button class="active" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+      <span class="glyph">⌂</span><span>홈</span>
+    </button>
+    <button onclick="openPatchModal()">
+      <span class="glyph">📋</span><span>패치노트</span>
+    </button>
+    <button onclick="location.href='./my.html'">
+      <span class="glyph">👤</span><span>내 스펙</span>
+    </button>
+  </nav>
+
+</div>
+
+<!-- 패치노트 모달 (원본 그대로) -->
+<div class="patch-modal-overlay" id="patch-modal-overlay" onclick="closePatchModal(event)">
+  <div class="patch-modal" onclick="event.stopPropagation()">
+    <button class="patch-modal-close" onclick="closePatchModal()">✕</button>
+    <div class="patch-modal-title">📋 패치노트</div>
+    <div id="patch-modal-body">
+      <div class="patch-item-modal">
+        <div class="patch-item-head">
+          <span class="patch-ver">v0.0.9</span>
+          <span class="patch-date">2026-05-29</span>
+          <span class="patch-badge badge-new">NEW</span>
+        </div>
+        <ul class="patch-item-content">
+          <ul><li>크툴루, 크크툴 두마리의 이미지가 업데이트</li></li></ul>
+          <ul><li>뉴비버전 계산기 너프 스텟 반영되게 수정</li></li></ul>
+          <li style="color:#666">오류 발생시 문의 부탁드립니다.</li>
+        </ul>
+      </div>
+    </div>
+    <a href="./patchnote.html" class="patch-more-btn">전체 패치노트 보기 →</a>
+  </div>
+</div>
+
+<!-- Supabase 설정 (원본 그대로) -->
+<script src="./sb_config.js"></script>
+
+<script>
+  // ─── 모달 (원본 그대로) ─────────────────────────────────────
+  function openPatchModal()  { document.getElementById('patch-modal-overlay').classList.add('open'); }
+  function closePatchModal(e){ if (!e || e.target === document.getElementById('patch-modal-overlay')) document.getElementById('patch-modal-overlay').classList.remove('open'); }
+
+  // ─── 탭 전환 (URL ?tab= 동기화) ──────────────────────────────
+  function switchTab(tab, el) {
+    document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.category').forEach(c => c.classList.remove('active'));
+    (el || event.currentTarget).classList.add('active');
+    const cat = document.getElementById('cat-' + tab);
+    if (cat) cat.classList.add('active');
+    try {
+      const url = new URL(location.href);
+      if (tab === 'info') url.searchParams.delete('tab');
+      else url.searchParams.set('tab', tab);
+      history.replaceState(null, '', url.toString());
+    } catch(e) { /* srcdoc/iframe 환경에서는 무시 */ }
+  }
+
+
+  // ─── 인증 UI ────────────────────────────────────────────────
+  let _adminMembers=[], _adminPage=0, _adminQ='';
+  const PAGE_SIZE=15;
+
+  function initAuth(){
+    const user=getUser();
+    const pc=document.getElementById('pc-auth');
+    const mob=document.getElementById('mob-auth-icon');
+
+    if(user){
+      // PC: 닉네임 + 로그아웃
+      if(pc) pc.innerHTML=`
+        <span class="pill-btn auth-user" style="pointer-events:none">👤 ${user.nickname||user.username}</span>
+        <a href="./my.html" class="pill-btn">내 스펙</a>
+        <button class="pill-btn" onclick="doLogout()">로그아웃</button>`;
+      // 모바일 아이콘
+      if(mob) mob.title='내 스펙';
+      // 어드민 탭
+      if(user.is_admin){
+        const t=document.getElementById('tab-admin');
+        if(t) t.style.display='';
+        loadAdminMembers();
+      }
+    }else{
+      if(pc) pc.innerHTML=`
+        <a href="./login.html" class="pill-btn">로그인</a>
+        <a href="./register.html" class="pill-btn">회원가입</a>`;
+      if(mob) mob.title='로그인';
+    }
+  }
+
+  function handleMobAuth(){
+    const user=getUser();
+    location.href=user?'./my.html':'./login.html';
+  }
+
+  function doLogout(){
+    if(!confirm('로그아웃할까요?'))return;
+    logout();
+    location.reload();
+  }
+
+  // ─── 어드민: 회원 목록 ───────────────────────────────────────
+  async function loadAdminMembers(){
+    const list=document.getElementById('admin-member-list');
+    if(!list)return;
+    list.innerHTML='<div style="color:var(--text4);font-size:13px;text-align:center;padding:20px">로딩 중...</div>';
+    try{
+      const rows=await supabase('GET','users',null,'?order=id.desc&select=id,username,nickname,friend_code,is_banned,is_admin');
+      _adminMembers=rows||[];
+      _adminPage=0;
+      _adminQ='';
+      document.getElementById('admin-search').value='';
+      renderAdminMembers();
+    }catch(e){
+      list.innerHTML='<div style="color:#ef5350;font-size:13px;text-align:center;padding:20px">로드 오류</div>';
+    }
+  }
+
+  function adminSearch(){
+    _adminQ=(document.getElementById('admin-search').value||'').trim().toLowerCase();
+    _adminPage=0;
+    renderAdminMembers();
+  }
+
+  function renderAdminMembers(){
+    const list=document.getElementById('admin-member-list');
+    const pg=document.getElementById('admin-pagination');
+    if(!list)return;
+    const filtered=_adminQ
+      ?_adminMembers.filter(u=>(u.nickname||'').toLowerCase().includes(_adminQ)||(u.username||'').toLowerCase().includes(_adminQ))
+      :_adminMembers;
+    const total=filtered.length;
+    const pages=Math.max(1,Math.ceil(total/PAGE_SIZE));
+    _adminPage=Math.min(_adminPage,pages-1);
+    const slice=filtered.slice(_adminPage*PAGE_SIZE,(_adminPage+1)*PAGE_SIZE);
+    if(!slice.length){list.innerHTML='<div style="color:var(--text4);font-size:13px;text-align:center;padding:20px">회원이 없습니다.</div>';pg.innerHTML='';return;}
+    list.innerHTML=slice.map(u=>`
+      <div class="admin-member-card">
+        <div class="admin-member-info">
+          <div class="admin-member-name">
+            ${u.nickname||u.username}
+            ${u.is_admin?'<span style="font-size:10px;padding:1px 6px;border-radius:3px;background:rgba(167,139,250,.15);color:#a78bfa;border:1px solid rgba(167,139,250,.3);margin-left:4px">어드민</span>':''}
+            ${u.is_banned?'<span style="font-size:10px;padding:1px 6px;border-radius:3px;background:rgba(239,83,80,.12);color:#ef5350;border:1px solid rgba(239,83,80,.3);margin-left:4px">정지</span>':''}
+          </div>
+          <div class="admin-member-meta">@${u.username} · ${u.friend_code||'—'}</div>
+        </div>
+        ${!u.is_admin?`<button class="admin-ban-btn ${u.is_banned?'ban-off':'ban-on'}" onclick="toggleBan(${u.id},${!!u.is_banned},'${u.nickname||u.username}')">${u.is_banned?'정지 해제':'계정 정지'}</button>`:'<span style="font-size:11px;color:var(--text4)">나</span>'}
+      </div>`).join('');
+    // 페이지네이션
+    if(pages<=1){pg.innerHTML='';return;}
+    let btns='';
+    for(let i=0;i<pages;i++) btns+=`<button onclick="_adminPage=${i};renderAdminMembers()" style="padding:4px 10px;border-radius:5px;border:1px solid var(--border);background:${i===_adminPage?'var(--accent-bg)':'var(--bg3)'};color:${i===_adminPage?'var(--accent)':'var(--text3)'};cursor:pointer;font-family:inherit;font-size:12px">${i+1}</button>`;
+    pg.innerHTML=btns;
+  }
+
+  async function toggleBan(id,isBanned,name){
+    if(!confirm(`${name}님을 ${isBanned?'정지 해제':'계정 정지'}할까요?`))return;
+    try{
+      await supabase('PATCH','users',{is_banned:!isBanned},`?id=eq.${id}`);
+      const u=_adminMembers.find(m=>m.id===id);
+      if(u)u.is_banned=!isBanned;
+      renderAdminMembers();
+    }catch(e){alert('오류: '+(e.message||e));}
+  }
+
+  // 초기화 실행
+  initAuth();
+
+  // ─── 방문자 통계 (원본 trackVisitor 그대로) ─────────────────
+  async function trackVisitor() {
+    try {
+      const today = new Date().toISOString().slice(0,10);
+      const lastVisit = localStorage.getItem('last_visit');
+      if (lastVisit !== today) {
+        await supabase('POST', 'visitors', { visited_at: today });
+        localStorage.setItem('last_visit', today);
+      }
+      const todayCount  = await getCount('visitors', `?visited_at=eq.${today}`);
+      const totalCount  = await getCount('visitors');
+      const memberCount = await getCount('users');
+      document.getElementById('s-today').textContent   = todayCount.toLocaleString();
+      document.getElementById('s-total').textContent   = totalCount.toLocaleString();
+      document.getElementById('s-members').textContent = memberCount.toLocaleString();
+    } catch (e) { console.error(e); }
+  }
+  if (typeof supabase === 'function' && typeof getCount === 'function') trackVisitor();
+
+  // ─── ?tab= 파라미터 자동 활성화 ──────────────────────────────
+  (function() {
+    const tab = new URLSearchParams(location.search).get('tab');
+    if (!tab) return;
+    const btn = document.querySelector(`.tab[onclick*="'${tab}'"]`);
+    if (btn) switchTab(tab, btn);
+  })();
+
+  // ─── theme.js 가 로드한 CSS 파일을 감지해 <html data-theme=...> 셋팅 ────
+  //  → 리디자인된 [data-theme="dark"] 컬러 팔레트가 원본 위에 오버라이드됨
+  //  → 사용자가 커스텀 테마를 선택하면 data-theme 속성을 비워 사용자 색이 우선
+  (function(){
+    var link = document.getElementById('theme-css');
+    if (!link) return;
+    var sync = function() {
+      var c = document.getElementById('custom-theme-style');
+      if (c && c.textContent && c.textContent.length > 0) {
+        document.documentElement.removeAttribute('data-theme');
+        return;
+      }
+      var m = String(link.href || '').match(/theme-(dark|light|beige)\.css/);
+      document.documentElement.setAttribute('data-theme', m ? m[1] : 'dark');
+    };
+    sync();
+    new MutationObserver(sync).observe(link, { attributes: true, attributeFilter: ['href'] });
+    new MutationObserver(sync).observe(document.head, { childList: true, subtree: true, characterData: true });
+  })();
+</script>
+
+</body>
+</html>

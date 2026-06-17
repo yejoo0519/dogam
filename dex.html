@@ -48,8 +48,26 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
 
 /* 이미지 박스 */
 .img-box{width:190px;flex-shrink:0;border:1px solid var(--border3);border-radius:10px;background:var(--bg3);display:flex;align-items:center;justify-content:center;min-height:190px;overflow:hidden}
-.main-img{width:170px;height:170px;object-fit:contain;display:block}
+.main-img{width:170px;height:170px;object-fit:contain;display:block;cursor:zoom-in}
 .main-img-ph{width:170px;height:170px;display:none;align-items:center;justify-content:center;color:var(--text4);font-size:12px}
+
+/* 라이트박스 (이미지 확대 보기) */
+#lightbox{position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;padding:24px;cursor:zoom-out;animation:fadeIn 0.15s}
+#lightbox.open{display:flex}
+#lightbox-img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:10px;cursor:default;box-shadow:0 8px 40px rgba(0,0,0,0.5)}
+#lightbox-close{position:absolute;top:18px;right:22px;width:42px;height:42px;border-radius:50%;border:none;background:rgba(255,255,255,0.14);color:#fff;font-size:24px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
+#lightbox-close:hover{background:rgba(255,255,255,0.28)}
+
+/* 다운로드 버튼 / 메뉴 */
+.strip-actions{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.dl-btn{width:34px;height:34px;padding:0;border-radius:8px;border:1px solid var(--border3);background:var(--bg3);color:var(--text2);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.1s}
+.dl-btn:hover{background:var(--border);color:var(--text)}
+.dl-btn:disabled{opacity:0.5;cursor:default}
+#dl-menu{position:absolute;z-index:9998;display:none;flex-direction:column;background:var(--bg2);border:1px solid var(--border3);border-radius:8px;box-shadow:0 6px 24px rgba(0,0,0,0.3);overflow:hidden;min-width:150px}
+#dl-menu.open{display:flex}
+#dl-menu button{padding:10px 14px;border:none;background:none;color:var(--text2);font-size:13px;text-align:left;cursor:pointer;white-space:nowrap}
+#dl-menu button:hover{background:var(--bg3);color:var(--text)}
+#dl-menu button:not(:last-child){border-bottom:1px solid var(--border2)}
 
 /* 정보 패널 */
 .info-panel{flex:1;display:flex;flex-direction:column;gap:10px;min-width:0}
@@ -125,6 +143,16 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
   </div>
   <div id="entries"></div>
   <div id="pagination"></div>
+</div>
+
+<div id="lightbox" onclick="closeLightbox()">
+  <button id="lightbox-close" onclick="closeLightbox()">&times;</button>
+  <img id="lightbox-img" src="" alt="" onclick="event.stopPropagation()">
+</div>
+
+<div id="dl-menu">
+  <button onclick="dlCurrent()">현재 단계</button>
+  <button onclick="dlAll()">전체 단계 (ZIP)</button>
 </div>
 
 <script>
@@ -1004,6 +1032,7 @@ function buildEntry(d, idx){
         <img class="main-img" id="mimg-${idx}"
           src="${initFull}"
           alt="${d.n}"
+          onclick="openLightbox(this)"
           onerror="this.style.display='none';document.getElementById('mph-${idx}').style.display='flex'"
           style="${initFull?'':'display:none'}">
         <div class="main-img-ph" id="mph-${idx}" style="${initFull?'display:none':'display:flex'}">이미지 없음</div>
@@ -1028,7 +1057,10 @@ function buildEntry(d, idx){
         <div class="desc-box" style="${(typeof dexDescMap!=='undefined'&&dexDescMap[d.n])||d.desc?'':'font-style:italic'}">${(typeof dexDescMap!=='undefined'&&dexDescMap[d.n])||d.desc||'(설명 데이터가 아직 없습니다)'}</div>
         <div class="strip-row">
           <div class="profile-strip" id="strip-${idx}"></div>
-          <button class="state-btn" id="sbtn-${idx}" onclick="toggleStat(${idx})">State펼치기 ▼</button>
+          <div class="strip-actions">
+            <button class="dl-btn" id="dlbtn-${idx}" onclick="openDlMenu(event, ${idx})" title="이미지 다운로드">⬇</button>
+            <button class="state-btn" id="sbtn-${idx}" onclick="toggleStat(${idx})">State펼치기 ▼</button>
+          </div>
         </div>
       </div>
     </div>
@@ -1063,14 +1095,11 @@ function buildEntry(d, idx){
       img.src = pUrl;
       img.alt = s.l;
       img.onerror = function(){
-        if(s.i === 5){
-          this.closest(".pthumb").style.display = "none";
-        } else {
-          this.style.display = "none";
-          const ph = document.createElement("div");
-          ph.className = "pthumb-ph"; ph.textContent = s.l[0];
-          this.parentNode.insertBefore(ph, this);
-        }
+        this.style.display = "none";
+        const ph = document.createElement("div");
+        ph.className = "pthumb-ph"; ph.textContent = s.l[0];
+        this.parentNode.insertBefore(ph, this);
+        if(s.i === 5) this.closest(".pthumb").classList.add("unavail");
       };
       thumbWrap.appendChild(img);
     } else {
@@ -1182,6 +1211,124 @@ function buildPagination(total, totalPages){
   new MutationObserver(sync).observe(link,{attributes:true,attributeFilter:["href"]});
   new MutationObserver(sync).observe(document.head,{childList:true,subtree:true,characterData:true});
 })();
+
+// ── 라이트박스 ──
+function openLightbox(img){
+  if(!img || img.style.display === "none" || !img.getAttribute("src")) return;
+  const lb = document.getElementById("lightbox");
+  const lbImg = document.getElementById("lightbox-img");
+  lbImg.src = img.src;
+  lbImg.alt = img.alt || "";
+  lb.classList.add("open");
+}
+function closeLightbox(){
+  document.getElementById("lightbox").classList.remove("open");
+}
+document.addEventListener("keydown", function(e){
+  if(e.key === "Escape"){ closeLightbox(); closeDlMenu(); }
+});
+
+// ── 이미지 다운로드 ──
+let dlMenuIdx = null;
+function openDlMenu(e, idx){
+  e.stopPropagation();
+  dlMenuIdx = idx;
+  const menu = document.getElementById("dl-menu");
+  menu.classList.add("open");
+  const r = e.currentTarget.getBoundingClientRect();
+  const mw = menu.offsetWidth;
+  let left = r.left + window.scrollX;
+  const vw = document.documentElement.clientWidth;
+  if(r.left + mw > vw - 8) left = r.right + window.scrollX - mw;
+  if(left < window.scrollX + 8) left = window.scrollX + 8;
+  menu.style.left = left + "px";
+  menu.style.top = (r.bottom + window.scrollY + 4) + "px";
+}
+function closeDlMenu(){
+  document.getElementById("dl-menu").classList.remove("open");
+  dlMenuIdx = null;
+}
+document.addEventListener("click", function(e){
+  const menu = document.getElementById("dl-menu");
+  if(menu.classList.contains("open") && !menu.contains(e.target)) closeDlMenu();
+});
+
+async function saveBlob(url, filename){
+  const resp = await fetch(url);
+  if(!resp.ok) throw new Error("HTTP " + resp.status);
+  const blob = await resp.blob();
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1500);
+}
+
+async function dlCurrent(){
+  const idx = dlMenuIdx;
+  closeDlMenu();
+  if(idx === null) return;
+  const d = dexData[idx];
+  const si = stageState[idx] || 4;
+  const label = STAGES.find(s => s.i === si).l;
+  const url = fullUrl(d.n, si);
+  if(!url){ alert("받을 수 있는 이미지가 없습니다."); return; }
+  try{
+    await saveBlob(url, `${d.n}_${label}.png`);
+  }catch(err){
+    alert("이미지를 받지 못했습니다. (해당 단계 이미지가 없을 수 있습니다)");
+  }
+}
+
+let _jszipLoad = null;
+function loadJSZip(){
+  if(window.JSZip) return Promise.resolve();
+  if(_jszipLoad) return _jszipLoad;
+  _jszipLoad = new Promise((res, rej) => {
+    const sc = document.createElement("script");
+    sc.src = "https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js";
+    sc.onload = res;
+    sc.onerror = () => rej(new Error("JSZip 로드 실패"));
+    document.head.appendChild(sc);
+  });
+  return _jszipLoad;
+}
+
+async function dlAll(){
+  const idx = dlMenuIdx;
+  closeDlMenu();
+  if(idx === null) return;
+  const d = dexData[idx];
+  const btn = document.getElementById("dlbtn-" + idx);
+  const stages = STAGES.filter(s => stageAvail(d, s.i));
+  try{
+    if(btn){ btn.disabled = true; btn.textContent = "…"; }
+    await loadJSZip();
+    const zip = new JSZip();
+    let added = 0;
+    for(const s of stages){
+      const url = fullUrl(d.n, s.i);
+      if(!url) continue;
+      try{
+        const resp = await fetch(url);
+        if(!resp.ok) continue;
+        zip.file(`${s.i}_${s.l}.png`, await resp.blob());
+        added++;
+      }catch(_){}
+    }
+    if(added === 0){ alert("받을 수 있는 이미지가 없습니다."); return; }
+    const content = await zip.generateAsync({type:"blob"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(content);
+    a.download = `${d.n}.zip`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1500);
+  }catch(err){
+    alert("ZIP 생성에 실패했습니다: " + err.message);
+  }finally{
+    if(btn){ btn.disabled = false; btn.textContent = "⬇"; }
+  }
+}
 
 renderAll();
 </script>

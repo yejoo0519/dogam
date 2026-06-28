@@ -445,7 +445,9 @@ const BASE={
 };
 
 // 젬 DB (단계별 체/공/방 수치)
-const GEM={37:{hp:148,atk:37,def:37},38:{hp:152,atk:38,def:38},39:{hp:156,atk:39,def:39},40:{hp:160,atk:40,def:40}};
+const GEM={36:{hp:144,atk:36,def:36},37:{hp:148,atk:37,def:37},38:{hp:152,atk:38,def:38},39:{hp:156,atk:39,def:39},40:{hp:160,atk:40,def:40}};
+const FALLBACK_GEM_LV=36;
+const FALLBACK_GEM_COUNT=999;
 
 // 정령 DB: +옵 수치 (스탯×옵번호), %옵 수치 (옵번호), 부가옵 수치
 const SP_PLUS={hp:{1:216,2:240,3:264,4:480},atk:{1:54,2:60,3:66,4:120},def:{1:54,2:60,3:66,4:120}};
@@ -1121,6 +1123,10 @@ function buildPool(){
   for(const s of SKEYS)for(const lv of [37,38,39,40]){
     const cnt=S.gems[s]?.[lv]||0;
     if(cnt>0)pool.push({s,lv,cnt,h:s==='hp'?GEM[lv].hp:0,a:s==='atk'?GEM[lv].atk:0,d:s==='def'?GEM[lv].def:0});
+  }
+  for(const s of SKEYS){
+    const lv=FALLBACK_GEM_LV;
+    pool.push({s,lv,cnt:FALLBACK_GEM_COUNT,h:s==='hp'?GEM[lv].hp:0,a:s==='atk'?GEM[lv].atk:0,d:s==='def'?GEM[lv].def:0});
   }
   return pool;
 }

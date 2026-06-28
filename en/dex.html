@@ -47,7 +47,19 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
 
 /* 이미지 박스 */
 .img-box{width:190px;flex-shrink:0;border:1px solid var(--border3);border-radius:10px;background:var(--bg3);display:flex;align-items:center;justify-content:center;min-height:190px;overflow:hidden}
-.main-img{width:170px;height:170px;object-fit:contain;display:block}
+.main-img{width:170px;height:170px;object-fit:contain;display:block;cursor:zoom-in}
+#lightbox{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.82);align-items:center;justify-content:center;padding:24px;box-sizing:border-box}
+#lightbox.open{display:flex}
+#lightbox-img{max-width:92vw;max-height:88vh;object-fit:contain;border-radius:10px;box-shadow:0 8px 40px rgba(0,0,0,.5)}
+#lightbox-close{position:absolute;top:16px;right:20px;width:40px;height:40px;border:none;border-radius:50%;background:rgba(255,255,255,.14);color:#fff;font-size:26px;line-height:38px;cursor:pointer}
+#lightbox-close:hover{background:rgba(255,255,255,.28)}
+.dl-btn{padding:6px 10px;border-radius:8px;border:1px solid var(--border3);background:var(--bg3);color:var(--text2);font-size:13px;cursor:pointer;flex-shrink:0;transition:background 0.1s}
+.dl-btn:hover{background:var(--bg2)}
+#dl-menu{display:none;position:absolute;z-index:9000;min-width:150px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;box-shadow:0 6px 24px rgba(0,0,0,.25);padding:4px;flex-direction:column;gap:2px}
+#dl-menu.open{display:flex}
+#dl-menu button{display:block;width:100%;text-align:left;padding:8px 10px;border:none;border-radius:6px;background:transparent;color:var(--text);font-size:13px;cursor:pointer}
+#dl-menu button:hover{background:var(--bg3)}
+#dl-menu button:disabled{opacity:.55;cursor:default}
 .main-img-ph{width:170px;height:170px;display:none;align-items:center;justify-content:center;color:var(--text4);font-size:12px}
 
 /* 정보 패널 */
@@ -1003,6 +1015,7 @@ function buildEntry(d, idx){
         <img class="main-img" id="mimg-${idx}"
           src="${initFull}"
           alt="${d.n}"
+          onclick="openLightbox(this)"
           onerror="this.style.display='none';document.getElementById('mph-${idx}').style.display='flex'"
           style="${initFull?'':'display:none'}">
         <div class="main-img-ph" id="mph-${idx}" style="${initFull?'display:none':'display:flex'}">No Image</div>
@@ -1026,7 +1039,10 @@ function buildEntry(d, idx){
         </div>
         <div class="strip-row">
           <div class="profile-strip" id="strip-${idx}"></div>
-          <button class="state-btn" id="sbtn-${idx}" onclick="toggleStat(${idx})">Show Stats ▼</button>
+          <div style="display:flex;gap:6px;align-items:center;flex-shrink:0">
+            <button class="dl-btn" id="dlbtn-${idx}" title="Download image" onclick="openDlMenu(event,this,${idx})">⬇</button>
+            <button class="state-btn" id="sbtn-${idx}" onclick="toggleStat(${idx})">Show Stats ▼</button>
+          </div>
         </div>
       </div>
     </div>
@@ -1159,11 +1175,11 @@ function buildPagination(total, totalPages){
     pg.appendChild(a);
   };
 
-  if(!isMobile) btn("«", 1, false, curPageNum === 1);
-  btn("‹", Math.max(1, groupStart - GROUP), false, groupStart === 1);
+  btn("«", 1, false, curPageNum === 1);
+  btn("‹", Math.max(1, groupStart - 1), false, groupStart === 1);
   for(let p = groupStart; p <= groupEnd; p++) btn(p, p, p === curPageNum, false);
-  btn("›", Math.min(totalPages, groupStart + GROUP), false, groupEnd === totalPages);
-  if(!isMobile) btn("»", totalPages, false, curPageNum === totalPages);
+  btn("›", Math.min(totalPages, groupEnd + 1), false, groupEnd === totalPages);
+  btn("»", totalPages, false, curPageNum === totalPages);
 }
 
 // 테마 동기화
@@ -1181,7 +1197,93 @@ function buildPagination(total, totalPages){
   new MutationObserver(sync).observe(document.head,{childList:true,subtree:true,characterData:true});
 })();
 
+// ── Lightbox (click main image to enlarge) ──
+function openLightbox(img){
+  if(!img||img.style.display==="none"||!img.getAttribute("src"))return;
+  document.getElementById("lightbox-img").src=img.src;
+  document.getElementById("lightbox-img").alt=img.alt||"";
+  document.getElementById("lightbox").classList.add("open");
+}
+function closeLightbox(){document.getElementById("lightbox").classList.remove("open");}
+
+// ── Download menu (current stage / all stages zip) ──
+let dlIdx=null;
+function openDlMenu(ev,btn,idx){
+  ev.stopPropagation();
+  dlIdx=idx;
+  const m=document.getElementById("dl-menu");
+  const r=btn.getBoundingClientRect();
+  m.style.top=(window.scrollY+r.bottom+4)+"px";
+  m.style.left=(window.scrollX+r.right-150)+"px";
+  m.classList.add("open");
+}
+function closeDlMenu(){document.getElementById("dl-menu").classList.remove("open");}
+function sanitizeName(s){return String(s||"image").replace(/[\\/:*?"<>|]+/g,"_").trim();}
+function triggerDownload(url,name){
+  const a=document.createElement("a");
+  a.href=url; a.download=name;
+  document.body.appendChild(a); a.click(); a.remove();
+}
+async function saveImage(url,name){
+  try{
+    const r=await fetch(url); if(!r.ok)throw new Error("fetch failed");
+    const b=await r.blob();
+    const ou=URL.createObjectURL(b);
+    triggerDownload(ou,name);
+    setTimeout(()=>URL.revokeObjectURL(ou),1500);
+  }catch(e){ window.open(url,"_blank"); }
+}
+async function dlCurrent(){
+  const idx=dlIdx; closeDlMenu(); if(idx==null)return;
+  const d=dexData[idx]; const stage=stageState[idx]||4;
+  const st=STAGES.find(s=>s.i===stage); const lbl=st?st.l:String(stage);
+  const url=fullUrl(d.n,stage); if(!url)return;
+  await saveImage(url, `${sanitizeName(d.n)}_${lbl}.png`);
+}
+let _jszipLoading=null;
+function ensureJSZip(){
+  if(window.JSZip)return Promise.resolve();
+  if(_jszipLoading)return _jszipLoading;
+  _jszipLoading=new Promise((res,rej)=>{
+    const s=document.createElement("script");
+    s.src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js";
+    s.onload=res; s.onerror=()=>rej(new Error("JSZip load failed"));
+    document.head.appendChild(s);
+  });
+  return _jszipLoading;
+}
+async function dlAllZip(){
+  const idx=dlIdx; closeDlMenu(); if(idx==null)return;
+  const d=dexData[idx];
+  const btn=document.getElementById("dl-zip");
+  try{
+    await ensureJSZip();
+    const zip=new JSZip();
+    let added=0;
+    for(const s of STAGES){
+      if(!stageAvail(d,s.i))continue;
+      const url=fullUrl(d.n,s.i); if(!url)continue;
+      try{ const r=await fetch(url); if(!r.ok)continue; const b=await r.blob(); zip.file(`${s.l}.png`,b); added++; }catch(e){}
+    }
+    if(!added){ window.alert("No images available to download."); return; }
+    const blob=await zip.generateAsync({type:"blob"});
+    const ou=URL.createObjectURL(blob);
+    triggerDownload(ou, `${sanitizeName(d.n)}.zip`);
+    setTimeout(()=>URL.revokeObjectURL(ou),2000);
+  }catch(e){ window.alert("Failed to build ZIP."); }
+}
+document.addEventListener("click",closeDlMenu);
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeLightbox();closeDlMenu();}});
+
 renderAll();
 </script>
+<div id="lightbox" onclick="closeLightbox()">
+  <button id="lightbox-close" onclick="closeLightbox()" aria-label="Close">&times;</button>
+  <img id="lightbox-img" src="" alt="" onclick="event.stopPropagation()">
+</div>
+<div id="dl-menu">
+  <button id="dl-cur" onclick="dlCurrent()">Current stage</button>
+  <button id="dl-zip" onclick="dlAllZip()">All stages (ZIP)</button>
+</div>
 </body>
 </html>

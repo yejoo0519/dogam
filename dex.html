@@ -1155,9 +1155,9 @@ function renderStat(d, idx, si){
   const tbody = document.getElementById("stbody-" + idx);
   const ss = dexStatMap[d.n] || null;
   tbody.innerHTML = [
+    {label:"체력",   key:"hp"},
     {label:"공격력", key:"atk"},
     {label:"방어력", key:"def"},
-    {label:"체력",   key:"hp"},
   ].map(r => {
     const s = ss ? ss[r.key] : null;
     if(!s) return `<tr>
@@ -1190,11 +1190,11 @@ function buildPagination(total, totalPages){
     pg.appendChild(a);
   };
 
-  if(!isMobile) btn("«", 1, false, curPageNum === 1);
-  btn("‹", Math.max(1, groupStart - GROUP), false, groupStart === 1);
+  btn("«", 1, false, curPageNum === 1);
+  btn("‹", Math.max(1, groupStart - 1), false, groupStart === 1);
   for(let p = groupStart; p <= groupEnd; p++) btn(p, p, p === curPageNum, false);
-  btn("›", Math.min(totalPages, groupStart + GROUP), false, groupEnd === totalPages);
-  if(!isMobile) btn("»", totalPages, false, curPageNum === totalPages);
+  btn("›", Math.min(totalPages, groupEnd + 1), false, groupEnd === totalPages);
+  btn("»", totalPages, false, curPageNum === totalPages);
 }
 
 // 테마 동기화

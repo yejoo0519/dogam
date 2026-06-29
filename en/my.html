@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Spec - Dragon Village Info</title>
+<link id="theme-css" rel="stylesheet" href="./theme-dark.css">
+<script src="./theme.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;padding-bottom:80px}
+.hd{display:flex;align-items:center;gap:14px;padding:12px 20px;background:var(--sf);border-bottom:2px solid var(--gold);position:sticky;top:0;z-index:100}
+.hd-icon{font-size:26px}.hd-t{font-size:15px;font-weight:800;color:var(--gold)}.hd-s{font-size:11px;color:var(--dim);margin-top:2px}
+.ti{max-width:1200px;margin:0 auto;padding:14px 24px}
+.sec{background:var(--sf);border:1px solid var(--bd);border-radius:8px;margin-bottom:14px;overflow:hidden}
+.sec-hd{display:flex;align-items:center;justify-content:space-between;padding:9px 16px;background:var(--sf2);border-bottom:1px solid var(--bd);font-size:11px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.5px}
+.sec-bd{padding:14px 16px}
+select,input[type=number],input[type=text]{background:var(--sf2);border:1px solid var(--bd);color:var(--text);padding:5px 9px;border-radius:5px;font-family:'Malgun Gothic',sans-serif;font-size:13px}
+select:focus,input:focus{outline:none;border-color:var(--gold)}
+select:disabled,input:disabled{opacity:.3;cursor:not-allowed}
+
+/* Calculators */
+.calc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+@media(max-width:700px){.calc-grid{grid-template-columns:1fr}}
+.calc-card{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:16px 20px;text-decoration:none;display:block;transition:border-color .15s,background .15s;position:relative}
+.calc-card:hover{border-color:var(--gold);background:var(--sf2)}
+.calc-card-title{font-size:15px;font-weight:800;color:var(--text);margin-bottom:4px}
+.calc-card-desc{font-size:12px;color:var(--dim);line-height:1.6}
+.calc-badge{display:inline-block;font-size:10px;padding:2px 8px;border-radius:8px;margin-bottom:8px;font-weight:700}
+.badge-blue{background:rgba(100,181,246,.15);color:#64b5f6;border:1px solid rgba(100,181,246,.3)}
+.badge-orange{background:rgba(255,152,0,.15);color:#ffa726;border:1px solid rgba(255,152,0,.3)}
+.badge-green{background:rgba(102,187,106,.15);color:#66bb6a;border:1px solid rgba(102,187,106,.3)}
+.badge-purple{background:rgba(167,139,250,.15);color:#a78bfa;border:1px solid rgba(167,139,250,.3)}
+.badge-guild{background:rgba(122,162,247,.15);color:#7aa2f7;border:1px solid rgba(122,162,247,.3)}
+
+/* Export / Import */
+.io-wrap{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start;margin-bottom:14px}
+.io-box{flex:1;min-width:240px;background:var(--sf2);border:1px solid var(--bd);border-radius:8px;padding:14px 16px}
+.io-box-title{font-size:11px;font-weight:800;color:var(--gold);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px}
+.code-display{font-family:'Courier New',monospace;font-size:22px;font-weight:800;letter-spacing:4px;color:var(--gold);background:var(--sf);border:1px solid var(--bd);border-radius:6px;padding:10px 14px;text-align:center;margin-bottom:8px;word-break:break-all;min-height:46px;display:flex;align-items:center;justify-content:center}
+.code-input{width:100%;font-family:'Courier New',monospace;font-size:18px;font-weight:800;letter-spacing:4px;text-align:center;text-transform:uppercase;margin-bottom:8px}
+.btn-gold{background:none;border:1px solid var(--gold);color:var(--gold);padding:8px 16px;border-radius:5px;cursor:pointer;font-family:'Malgun Gothic',sans-serif;font-size:13px;font-weight:700;width:100%;transition:background .15s}
+.btn-gold:hover{background:rgba(232,184,75,.1)}
+.btn-white{background:none;border:1px solid #fff;color:#fff;padding:6px 13px;border-radius:5px;cursor:pointer;font-family:'Malgun Gothic',sans-serif;font-size:13px;font-weight:700}
+.btn-white:hover{background:rgba(255,255,255,.1)}
+.btn-reset{background:none;border:1px solid var(--red);color:var(--red);padding:6px 13px;border-radius:5px;cursor:pointer;font-family:'Malgun Gothic',sans-serif;font-size:13px;font-weight:700}
+.btn-reset:hover{background:rgba(248,113,113,.1)}
+.btn-red{background:none;border:1px solid var(--red);color:var(--red);padding:3px 9px;border-radius:4px;cursor:pointer;font-family:'Malgun Gothic',sans-serif;font-size:12px}
+.btn-save-main{width:100%;padding:14px;background:linear-gradient(135deg,var(--gold2),var(--gold));border:none;border-radius:8px;color:#0a0c18;font-family:'Malgun Gothic',sans-serif;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:14px;letter-spacing:-.3px;transition:opacity .15s}
+.btn-save-main:hover{opacity:.9}
+
+.save-row{display:flex;align-items:center;justify-content:flex-end;gap:14px;margin-bottom:10px}
+.save-msg{font-size:12px;color:var(--green)}
+
+/* 스펙 그리드 */
+.spec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:start}
+@media(max-width:1100px){.spec-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){.spec-grid{grid-template-columns:1fr}}
+.spec-col{display:flex;flex-direction:column;gap:14px}
+.spec-col .sec{margin-bottom:0}
+
+/* 젬 */
+.gem-grid{display:grid;grid-template-columns:42px repeat(3,1fr);gap:6px;align-items:center}
+.gem-hdr{font-size:11px;color:var(--dim);text-align:center}
+.gem-lbl{font-weight:800;font-size:13px}
+.gem-grid input{width:100%;text-align:center;padding:5px;font-size:13px}
+.gem-grid input[type=number]::-webkit-outer-spin-button,.gem-grid input[type=number]::-webkit-inner-spin-button{-webkit-appearance:auto!important;margin:0}
+.gem-grid input[type=number]{appearance:auto;-moz-appearance:number-input!important}
+
+/* Collection */
+.coll-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.coll-g label{display:block;font-size:12px;color:var(--dim);margin-bottom:4px}
+.coll-g input{width:100%;text-align:center}
+
+/* Accessory */
+.acc-card{background:var(--sf2);border:1px solid var(--bd);border-radius:6px;padding:8px 12px;margin-bottom:8px}
+.acc-card-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.acc-search-wrap{position:relative;flex:1;min-width:140px}
+.acc-search-input{width:100%;background:var(--sf2);border:1px solid var(--bd);color:var(--text);padding:5px 9px;border-radius:5px;font-family:'Malgun Gothic',sans-serif;font-size:13px}
+.acc-search-input:focus{outline:none;border-color:var(--gold)}
+.acc-search-input::placeholder{color:var(--dimmer)}
+.acc-dropdown{position:fixed;background:var(--sf2);border:1px solid var(--gold);border-radius:5px;max-height:200px;overflow-y:auto;z-index:1000;margin-top:2px;display:none}
+.acc-dropdown.open{display:block}
+.acc-drop-item{padding:6px 10px;font-size:13px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:8px;color:var(--text);font-family:'Malgun Gothic',sans-serif}
+.acc-drop-item:hover{background:rgba(232,184,75,.12)}
+.acc-preset-row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;padding:10px 16px;border-bottom:1px solid var(--bd);background:rgba(255,255,255,.015)}
+.acc-preset-row button{padding:6px 4px}
+.pend-preset-row{display:flex;justify-content:flex-end;padding:10px 16px;border-bottom:1px solid var(--bd);background:rgba(255,255,255,.015)}
+.pend-preset-row button{padding:6px 13px}
+
+/* Pendant */
+.pcard{background:var(--sf2);border:1px solid var(--bd);border-radius:6px;padding:12px;margin-bottom:10px}
+.pcard-hd{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.popt-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:13px}
+.popt-idx{color:var(--dim);min-width:22px;font-size:11px}
+
+/* 공통 */
+.acc-st{font-size:11px;min-width:68px}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+input[type=number]{appearance:textfield;-moz-appearance:textfield}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--gold);color:#0a0c18;padding:10px 24px;border-radius:8px;font-weight:800;font-size:14px;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none}
+/* 토글 섹션 */
+.toggle-sec{border:1px solid var(--bd);border-radius:8px;margin-bottom:10px;overflow:hidden}
+.toggle-sec-hd{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--sf2);cursor:pointer;user-select:none;font-size:13px;font-weight:800;color:var(--text)}
+.toggle-sec-hd:hover{background:var(--sf)}
+.toggle-arrow{font-size:11px;color:var(--dim);transition:transform .2s}
+.toggle-sec-bd{display:none;padding:12px 16px;background:var(--sf)}
+.toggle-sec-bd.open{display:block}
+.dragon-summary-item{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--bd);font-size:12px}
+.dragon-summary-item:last-child{border-bottom:none}
+.acc-summary-item{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--bd);font-size:12px}
+.acc-summary-item:last-child{border-bottom:none}
+.toast.show{opacity:1}
+/* ── 테마 팔레트 ── */
+[data-theme="dark"]{
+  --bg:#0e1116;--bg2:#161a22;--bg3:#1c212c;
+  --border:#23293a;--border2:#1b1f2a;--border3:#2d3447;
+  --text:#eaecf2;--text2:#b3b9c7;--text3:#7d8597;--text4:#565d6e;
+  --accent:#7aa2f7;--accent-bg:rgba(122,162,247,0.12);--accent-border:rgba(122,162,247,0.30);
+}
+[data-theme="light"]{
+  --bg:#f7f7f8;--bg2:#ffffff;--bg3:#f1f2f4;
+  --border:#e6e7ea;--border2:#eeeff2;--border3:#d4d6db;
+  --text:#15171c;--text2:#4a4d57;--text3:#71757f;--text4:#9aa0aa;
+  --accent:#2f6fed;--accent-bg:rgba(47,111,237,0.10);--accent-border:rgba(47,111,237,0.32);
+}
+[data-theme="beige"]{
+  --bg:#f3ecdd;--bg2:#faf3e2;--bg3:#ebe0c7;
+  --border:#d8caa8;--border2:#e1d4b3;--border3:#c0ad84;
+  --text:#2a2316;--text2:#5a4e34;--text3:#837553;--text4:#a99971;
+  --accent:#b06a1e;--accent-bg:rgba(176,106,30,0.10);--accent-border:rgba(176,106,30,0.32);
+}
+/* spec 커스텀 변수 → 테마 변수로 매핑 */
+:root{
+  --sf:var(--bg2);--sf2:var(--bg3);--bd:var(--border);
+  --gold:var(--accent);--gold2:var(--accent);
+  --dim:var(--text3);--dimmer:var(--text4);
+  --red:#f87171;--green:#4ade80;--blue:#60a5fa;
+  --hpc:#fbbf24;--atc:#f87171;--dfc:#60a5fa;
+}
+</style>
+</head>
+<body>
+
+<div class="hd">
+  <a href="./index.html?tab=calculator" style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;border:1px solid var(--bd);background:var(--sf2);color:var(--text);text-decoration:none;font-size:16px;flex-shrink:0">←</a>
+  <div class="hd-icon">⚙️</div>
+  <div><div class="hd-t">Manage My Spec</div><div class="hd-s">Accessory · Gem · Pendant · Collection — Applied to all three calculators</div></div>
+  <div style="margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+    <span class="save-msg" id="save-msg"></span>
+    <button class="btn-reset" onclick="resetAll()">↺ Reset all</button>
+    <button class="btn-gold" style="padding:8px 18px" onclick="doSave()">💾 Save</button>
+  </div>
+</div>
+
+<div class="ti">
+
+  <!-- Calculators -->
+  <div class="calc-grid">
+    <a href="./calculator.html?from=spec" class="calc-card">
+      <div class="calc-badge badge-blue">Calculator</div>
+      <div class="calc-card-title">Spirit Optimizer</div>
+      <div class="calc-card-desc">Save your spec · auto spirit B-Val setup</div>
+    </a>
+    <a href="./pvp.html?from=spec" class="calc-card">
+      <div class="calc-badge badge-orange">Original ver.</div>
+      <div class="calc-card-title">Guild War Auto-Calculator</div>
+      <div class="calc-card-desc">Fixed 9.0 · results without nerf</div>
+    </a>
+    <a href="./noob.html?from=spec" class="calc-card">
+      <div class="calc-badge badge-green">Newbie ver.</div>
+      <div class="calc-card-title">Guild War Auto-Calculator</div>
+      <div class="calc-card-desc">7.0–9.0 selectable · nerf applied</div>
+    </a>
+  </div>
+
+  
+  <!-- Export / Import -->
+  <div class="io-wrap">
+    <div class="io-box">
+      <div class="io-box-title">📤 Export</div>
+      <div class="code-display" id="export-code">—</div>
+      <div style="font-size:11px;color:var(--dim);margin-bottom:8px;text-align:center">Share the code to load on another device</div>
+      <button class="btn-gold" onclick="doExport()">Generate code</button>
+    </div>
+    <div class="io-box">
+      <div class="io-box-title">📥 Import</div>
+      <input class="code-input acc-search-input" id="import-code" placeholder="Paste code" maxlength="12">
+      <div style="font-size:11px;color:var(--dim);margin-bottom:8px">⚠ Your current spec will be overwritten</div>
+      <button class="btn-gold" onclick="doImport()">Import</button>
+    </div>
+  </div>
+
+  <!-- Dragon/Accessory Setup 토글 -->
+  <div class="toggle-sec">
+    <div class="toggle-sec-hd" onclick="toggleSection('dragon-section')">
+      <span>🐉 Dragon Setup</span>
+      <span class="toggle-arrow" id="arrow-dragon-section">▼</span>
+    </div>
+    <div class="toggle-sec-bd" id="dragon-section">
+      <div id="dragon-summary-wrap">
+        <div style="color:var(--dim);font-size:12px;text-align:center;padding:10px 0">No saved dragon setup.<br>In the My Dragons section of the pvp/noob calculators, tap <b>Save to My Spec</b>.</div>
+      </div>
+    </div>
+  </div>
+  <div class="toggle-sec">
+    <div class="toggle-sec-hd" onclick="toggleSection('acc-section')">
+      <span>✨ Accessory Setup</span>
+      <span class="toggle-arrow" id="arrow-acc-section">▼</span>
+    </div>
+    <div class="toggle-sec-bd" id="acc-section">
+      <div id="acc-summary-wrap">
+        <div style="color:var(--dim);font-size:12px;text-align:center;padding:10px 0">No accessories registered.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 스펙 3열 -->
+  <div class="spec-grid">
+
+    <!-- 1열: 젬 + Collection -->
+    <div class="spec-col">
+      <div class="sec">
+        <div class="sec-hd">
+          <span>💎 Gems Owned</span>
+          <button class="btn-reset" onclick="resetGems()">↺</button>
+        </div>
+        <div class="sec-bd">
+          <div class="gem-grid">
+            <div class="gem-hdr"></div>
+            <div class="gem-hdr" style="color:var(--hpc)">HP</div>
+            <div class="gem-hdr" style="color:var(--atc)">ATK</div>
+            <div class="gem-hdr" style="color:var(--dfc)">DEF</div>
+            <div class="gem-lbl">37</div>
+            <input type="number" id="gem-hp-37" min="0" value="0" oninput="onGem('hp',37,this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+            <input type="number" id="gem-atk-37" min="0" value="0" oninput="onGem('atk',37,this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+            <input type="number" id="gem-def-37" min="0" value="0" oninput="onGem('def',37,this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+            <div class="gem-lbl">38</div>
+            <input type="number" id="gem-hp-38" min="0" value="0" oninput="onGem('hp',38,this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+            <input type="number" id="gem-atk-38" min="0" value="0" oninput="onGem('atk',38,this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+            <input type="number" id="gem-def-38" min="0" value="0" oninput="onGem('def',38,this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+            <div class="gem-lbl">39</div>
+            <input type="number" id="gem-hp-39" min="0" value="0" oninput="onGem('hp',39,this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+            <input type="number" id="gem-atk-39" min="0" value="0" oninput="onGem('atk',39,this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+            <input type="number" id="gem-def-39" min="0" value="0" oninput="onGem('def',39,this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+            <div class="gem-lbl">40</div>
+            <input type="number" id="gem-hp-40" min="0" value="0" oninput="onGem('hp',40,this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+            <input type="number" id="gem-atk-40" min="0" value="0" oninput="onGem('atk',40,this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+            <input type="number" id="gem-def-40" min="0" value="0" oninput="onGem('def',40,this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+          </div>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="sec-hd">
+          <span>📚 Collection Stat</span>
+          <button class="btn-white" onclick="setFullCollection()">Full</button>
+        </div>
+        <div class="sec-bd">
+          <div class="coll-grid">
+            <div class="coll-g"><label>HP</label><input type="number" id="coll-hp" min="0" value="0" oninput="onColl('hp',this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()"></div>
+            <div class="coll-g"><label>ATK</label><input type="number" id="coll-atk" min="0" value="0" oninput="onColl('atk',this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()"></div>
+            <div class="coll-g"><label>DEF</label><input type="number" id="coll-def" min="0" value="0" oninput="onColl('def',this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2열: Accessory -->
+    <div class="spec-col">
+      <div class="sec">
+        <div class="sec-hd">
+          <span>⚒ Accessory &nbsp;<label style="font-size:11px;font-weight:400;color:#fff;cursor:pointer">Stat only <input type="checkbox" id="chk-stat-only" checked onchange="renderAcc()" style="accent-color:var(--gold)"></label></span>
+          <div style="display:flex;gap:6px">
+            <button class="btn-reset" onclick="resetAcc()">↺</button>
+            <button class="btn-gold" onclick="sortAccCards();renderAcc();qSave()">Sort</button>
+            <button class="btn-white" onclick="addAcc()">+ Add</button>
+          </div>
+        </div>
+        <div class="acc-preset-row">
+          <button class="btn-white" onclick="addAccBulk(16)">16</button>
+          <button class="btn-white" onclick="addAccBulk(17)">17</button>
+          <button class="btn-white" onclick="addAccBulk(18)">18</button>
+          <button class="btn-white" onclick="addAccBulk(19)">19</button>
+          <button class="btn-white" onclick="addAccBulk(20)">20</button>
+        </div>
+        <div class="sec-bd"><div id="acc-list"><div style="color:var(--dimmer);font-size:13px">No accessories</div></div></div>
+      </div>
+    </div>
+
+    <!-- 3열: Pendant -->
+    <div class="spec-col">
+      <div class="sec">
+        <div class="sec-hd">
+          <span>🌙 Pendant</span>
+          <div style="display:flex;gap:6px">
+            <button class="btn-reset" onclick="resetPend()">↺</button>
+            <button class="btn-gold" onclick="sortPendants();renderPends();qSave()">Sort</button>
+            <button class="btn-white" onclick="addPendant()">+ Add</button>
+          </div>
+        </div>
+        <div class="pend-preset-row">
+          <button class="btn-white" onclick="addMoonPendantSet()">Moon-pendant set</button>
+        </div>
+        <div class="sec-bd"><div id="pend-list"><div style="color:var(--dimmer);font-size:13px">No pendants</div></div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>function getUser(){return null;}async function supabase(){return null;}function logout(){}</script>
+<script>
+// ================================================================
+// 이미지 / Accessory DB
+// ================================================================
+const TEM_BASE='https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/tem';
+const ACC_IMG_MAP={
+  '20':{'빛뿔':12,'바뿔':13,'악보':20,'황보':21,'여보':22,'대뿔':1433,'물뿔':1435,'불뿔':1437},
+  '19':{'악보':1273,'황보':1274,'여보':1275,'바뿔':1276,'대뿔':1306,'물뿔':1308,'불뿔':1310},
+  '18':{'빛뿔':1209,'악보':1205,'황보':1206,'여보':1207,'바뿔':1202,'대뿔':1247,'물뿔':1249,'불뿔':1251},
+  '17':{'악보':1102,'황보':1103,'여보':1104,'바뿔':1105,'대뿔':1130,'물뿔':1132,'불뿔':1134},
+  '16':{'악보':1046,'황보':1047,'여보':1048,'바뿔':1049,'대뿔':1130,'물뿔':1132,'불뿔':1134},
+};
+const accImg=(lv,name)=>{const n=ACC_IMG_MAP[String(lv)]?.[name];return n?`${TEM_BASE}/${n}.png`:'';}
+const IMG_빛뿔18=accImg(18,'빛뿔'),IMG_빛뿔20=accImg(20,'빛뿔');
+const IMG_악보16=accImg(16,'악보'),IMG_황보16=accImg(16,'황보'),IMG_여보16=accImg(16,'여보');
+const IMG_물16=accImg(16,'물뿔'),IMG_불16=accImg(16,'불뿔'),IMG_땅16=accImg(16,'대뿔'),IMG_바람16=accImg(16,'바뿔');
+const IMG_악보17=accImg(17,'악보'),IMG_황보17=accImg(17,'황보'),IMG_여보17=accImg(17,'여보');
+const IMG_물17=accImg(17,'물뿔'),IMG_불17=accImg(17,'불뿔'),IMG_땅17=accImg(17,'대뿔'),IMG_바람17=accImg(17,'바뿔');
+const IMG_악보18=accImg(18,'악보'),IMG_황보18=accImg(18,'황보'),IMG_여보18=accImg(18,'여보');
+const IMG_물18=accImg(18,'물뿔'),IMG_불18=accImg(18,'불뿔'),IMG_땅18=accImg(18,'대뿔'),IMG_바람18=accImg(18,'바뿔');
+const IMG_악보19=accImg(19,'악보'),IMG_황보19=accImg(19,'황보'),IMG_여보19=accImg(19,'여보');
+const IMG_물19=accImg(19,'물뿔'),IMG_불19=accImg(19,'불뿔'),IMG_땅19=accImg(19,'대뿔'),IMG_바람19=accImg(19,'바뿔');
+const IMG_악보20=accImg(20,'악보'),IMG_황보20=accImg(20,'황보'),IMG_여보20=accImg(20,'여보');
+const IMG_물20=accImg(20,'물뿔'),IMG_불20=accImg(20,'불뿔'),IMG_땅20=accImg(20,'대뿔'),IMG_바뿔20=accImg(20,'바뿔');
+const IMG_PEND={태양:`${TEM_BASE}/1337.png`,달:`${TEM_BASE}/1336.png`,별:`${TEM_BASE}/1335.png`};
+
+const ACC_DB=[
+  {n:'Horn of light +18 (Crit/HP)',hp:0.08,atk:0,def:0,img:IMG_빛뿔18},
+  {n:'Horn of light +18 (Crit/ATK)',hp:0,atk:0.08,def:0,img:IMG_빛뿔18},
+  {n:'Horn of light +18 (Crit/DEF)',hp:0,atk:0,def:0.08,img:IMG_빛뿔18},
+  {n:'Horn of light +20 (Crit/HP)',hp:0.1,atk:0,def:0,img:IMG_빛뿔20},
+  {n:'Horn of light +20 (Crit/ATK)',hp:0,atk:0.1,def:0,img:IMG_빛뿔20},
+  {n:'Horn of light +20 (Crit/DEF)',hp:0,atk:0,def:0.1,img:IMG_빛뿔20},
+  {n:'Nightmare Orb +16 (HP)',hp:0.16,atk:0,def:0,img:IMG_악보16},
+  {n:'Dusk Orb +16 (ATK)',hp:0,atk:0.16,def:0,img:IMG_황보16},
+  {n:'Dawn Orb +16 (DEF)',hp:0,atk:0,def:0.16,img:IMG_여보16},
+  {n:'Horn of water +16 (HP/ATK)',hp:0.1,atk:0.06,def:0,img:IMG_물16},
+  {n:'Horn of water +16 (HP/DEF)',hp:0.1,atk:0,def:0.06,img:IMG_물16},
+  {n:'Horn of fire +16 (ATK/HP)',hp:0.06,atk:0.1,def:0,img:IMG_불16},
+  {n:'Horn of fire +16 (ATK/DEF)',hp:0,atk:0.1,def:0.06,img:IMG_불16},
+  {n:'Horn of earth +16 (DEF/HP)',hp:0.06,atk:0,def:0.1,img:IMG_땅16},
+  {n:'Horn of earth +16 (DEF/ATK)',hp:0,atk:0.06,def:0.1,img:IMG_땅16},
+  {n:'Horn of wind +16 (HP/DEF)',hp:0.08,atk:0,def:0.08,img:IMG_바람16},
+  {n:'Horn of wind +16 (ATK/HP)',hp:0.08,atk:0.08,def:0,img:IMG_바람16},
+  {n:'Horn of wind +16 (ATK/DEF)',hp:0,atk:0.08,def:0.08,img:IMG_바람16},
+  {n:'Nightmare Orb +17 (HP)',hp:0.17,atk:0,def:0,img:IMG_악보17},
+  {n:'Dusk Orb +17 (ATK)',hp:0,atk:0.17,def:0,img:IMG_황보17},
+  {n:'Dawn Orb +17 (DEF)',hp:0,atk:0,def:0.17,img:IMG_여보17},
+  {n:'Horn of water +17 (HP/ATK)',hp:0.11,atk:0.06,def:0,img:IMG_물17},
+  {n:'Horn of water +17 (HP/DEF)',hp:0.11,atk:0,def:0.06,img:IMG_물17},
+  {n:'Horn of fire +17 (ATK/HP)',hp:0.06,atk:0.11,def:0,img:IMG_불17},
+  {n:'Horn of fire +17 (ATK/DEF)',hp:0,atk:0.11,def:0.06,img:IMG_불17},
+  {n:'Horn of earth +17 (DEF/HP)',hp:0.06,atk:0,def:0.11,img:IMG_땅17},
+  {n:'Horn of earth +17 (DEF/ATK)',hp:0,atk:0.06,def:0.11,img:IMG_땅17},
+  {n:'Horn of wind +17 (HP/DEF)',hp:0.09,atk:0,def:0.08,img:IMG_바람17},
+  {n:'Horn of wind +17 (ATK/HP)',hp:0.08,atk:0.09,def:0,img:IMG_바람17},
+  {n:'Horn of wind +17 (ATK/DEF)',hp:0,atk:0.09,def:0.08,img:IMG_바람17},
+  {n:'Nightmare Orb +18 (HP)',hp:0.18,atk:0,def:0,img:IMG_악보18},
+  {n:'Dusk Orb +18 (ATK)',hp:0,atk:0.18,def:0,img:IMG_황보18},
+  {n:'Dawn Orb +18 (DEF)',hp:0,atk:0,def:0.18,img:IMG_여보18},
+  {n:'Horn of water +18 (HP/ATK)',hp:0.12,atk:0.06,def:0,img:IMG_물18},
+  {n:'Horn of water +18 (HP/DEF)',hp:0.12,atk:0,def:0.06,img:IMG_물18},
+  {n:'Horn of fire +18 (ATK/HP)',hp:0.06,atk:0.12,def:0,img:IMG_불18},
+  {n:'Horn of fire +18 (ATK/DEF)',hp:0,atk:0.12,def:0.06,img:IMG_불18},
+  {n:'Horn of earth +18 (DEF/HP)',hp:0.06,atk:0,def:0.12,img:IMG_땅18},
+  {n:'Horn of earth +18 (DEF/ATK)',hp:0,atk:0.06,def:0.12,img:IMG_땅18},
+  {n:'Horn of wind +18 (HP/DEF)',hp:0.09,atk:0,def:0.09,img:IMG_바람18},
+  {n:'Horn of wind +18 (ATK/HP)',hp:0.09,atk:0.09,def:0,img:IMG_바람18},
+  {n:'Horn of wind +18 (ATK/DEF)',hp:0,atk:0.09,def:0.09,img:IMG_바람18},
+  {n:'Nightmare Orb +19 (HP)',hp:0.19,atk:0,def:0,img:IMG_악보19},
+  {n:'Dusk Orb +19 (ATK)',hp:0,atk:0.19,def:0,img:IMG_황보19},
+  {n:'Dawn Orb +19 (DEF)',hp:0,atk:0,def:0.19,img:IMG_여보19},
+  {n:'Horn of water +19 (HP/ATK)',hp:0.13,atk:0.06,def:0,img:IMG_물19},
+  {n:'Horn of water +19 (HP/DEF)',hp:0.13,atk:0,def:0.06,img:IMG_물19},
+  {n:'Horn of fire +19 (ATK/HP)',hp:0.06,atk:0.13,def:0,img:IMG_불19},
+  {n:'Horn of fire +19 (ATK/DEF)',hp:0,atk:0.13,def:0.06,img:IMG_불19},
+  {n:'Horn of earth +19 (DEF/HP)',hp:0.06,atk:0,def:0.13,img:IMG_땅19},
+  {n:'Horn of earth +19 (DEF/ATK)',hp:0,atk:0.06,def:0.13,img:IMG_땅19},
+  {n:'Horn of wind +19 (HP/DEF)',hp:0.1,atk:0,def:0.09,img:IMG_바람19},
+  {n:'Horn of wind +19 (ATK/HP)',hp:0.09,atk:0.1,def:0,img:IMG_바람19},
+  {n:'Horn of wind +19 (ATK/DEF)',hp:0,atk:0.1,def:0.09,img:IMG_바람19},
+  {n:'Nightmare Orb +20 (HP)',hp:0.2,atk:0,def:0,img:IMG_악보20},
+  {n:'Dusk Orb +20 (ATK)',hp:0,atk:0.2,def:0,img:IMG_황보20},
+  {n:'Dawn Orb +20 (DEF)',hp:0,atk:0,def:0.2,img:IMG_여보20},
+  {n:'Horn of water +20 (HP/ATK)',hp:0.14,atk:0.06,def:0,img:IMG_물20},
+  {n:'Horn of water +20 (HP/DEF)',hp:0.14,atk:0,def:0.06,img:IMG_물20},
+  {n:'Horn of fire +20 (ATK/HP)',hp:0.06,atk:0.14,def:0,img:IMG_불20},
+  {n:'Horn of fire +20 (ATK/DEF)',hp:0,atk:0.14,def:0.06,img:IMG_불20},
+  {n:'Horn of earth +20 (DEF/HP)',hp:0.06,atk:0,def:0.14,img:IMG_땅20},
+  {n:'Horn of earth +20 (DEF/ATK)',hp:0,atk:0.06,def:0.14,img:IMG_땅20},
+  {n:'Horn of wind +20 (HP/DEF)',hp:0.1,atk:0,def:0.1,img:IMG_바뿔20},
+  {n:'Horn of wind +20 (ATK/HP)',hp:0.1,atk:0.1,def:0,img:IMG_바뿔20},
+  {n:'Horn of wind +20 (ATK/DEF)',hp:0,atk:0.1,def:0.1,img:IMG_바뿔20},
+];
+const ACC_TYPE_ORDER=['Nightmare Orb','Dusk Orb','Dawn Orb','Horn of water','Horn of fire','Horn of earth','Horn of wind','Horn of light'];
+const ENC_ORDER={hp:0,atk:1,def:2,none:3};
+const SKEYS=['hp','atk','def'];
+const SK={hp:'체',atk:'공',def:'방'};
+
+// ================================================================
+// State & Save (공통 키)
+// ================================================================
+const SPEC_KEY='dv1simEN_spec';
+
+const DRAGON_CATS=['땅','물','불','바람','빛','어둠','황혼','여명','악몽'];
+const CAT_LBL={'땅':'Earth','물':'Water','불':'Fire','바람':'Wind','빛':'Light','어둠':'Dark','황혼':'Dusk','여명':'Dawn','악몽':'Nightmare'};
+const DTYPE_LBL={'체력형':'HP','공격형':'ATK','방어형':'DEF','공방형':'ATK/DEF','체공형':'HP/ATK','체방형':'HP/DEF','균형형':'Balanced','체형':'HP','공형':'ATK','방형':'DEF'};
+const mkSpec=()=>({
+  accCards:[],
+  gems:{hp:{37:0,38:0,39:0,40:0},atk:{37:0,38:0,39:0,40:0},def:{37:0,38:0,39:0,40:0}},
+  pendants:[],
+  coll:{hp:0,atk:0,def:0},
+  dragonCards:Object.fromEntries(DRAGON_CATS.map(c=>[c,[]])),
+});
+
+let S=mkSpec();
+
+function applySpec(p){
+  S={...mkSpec(),...p,
+    accCards:p.accCards||[],
+    gems:{...mkSpec().gems,...(p.gems||{})},
+    pendants:p.pendants||[],
+    coll:{...mkSpec().coll,...(p.coll||{})},
+    dragonCards:{...mkSpec().dragonCards,...(p.dragonCards||{})}
+  };
+}
+function doLoad(){
+  try{
+    let raw=localStorage.getItem(SPEC_KEY);
+    if(!raw){
+      const legacy=['dv1simEN_calculator','dv1simEN_pvp','dv1simEN_noob'];
+      for(const k of legacy){const r=localStorage.getItem(k);if(r){raw=r;break;}}
+    }
+    if(!raw)return;
+    const p=JSON.parse(raw);
+    // dragonCards가 spec에 없으면 pvp에서 가져오기
+    if(!p.dragonCards){
+      try{
+        const pvpRaw=localStorage.getItem('dv1simEN_pvp');
+        if(pvpRaw){const pvp=JSON.parse(pvpRaw);if(pvp.dragonCards)p.dragonCards=pvp.dragonCards;}
+      }catch(e){}
+    }
+    applySpec(p);
+  }catch(e){console.error(e);}
+}
+async function doLoadCloud(){
+  clearTimeout(saveT);
+  const u=getUser();
+  if(!u)return;
+  try{
+    const rows=await supabase('GET','users',null,`?id=eq.${u.id}&select=spec_data`);
+    if(rows&&rows[0]&&rows[0].spec_data){
+      const p=typeof rows[0].spec_data==='string'?JSON.parse(rows[0].spec_data):rows[0].spec_data;
+
+      const hasCloudDragons=p.dragonCards&&Object.values(p.dragonCards).some(arr=>Array.isArray(arr)&&arr.some(d=>d&&d.name));
+      const hasLocalDragons=S.dragonCards&&Object.values(S.dragonCards).some(arr=>Array.isArray(arr)&&arr.some(d=>d&&d.name));
+      const dragonPending=localStorage.getItem('dv1simEN_dragon_pending');
+      if(dragonPending){
+        // Save 버튼 눌렀음 → dv1simEN_spec에서 최신 dragonCards 읽기 (my.html 메모리가 구버전일 수 있음)
+        try{
+          const specRaw=localStorage.getItem('dv1simEN_spec');
+          const spec=specRaw?JSON.parse(specRaw):{};
+          p.dragonCards=spec.dragonCards||{};
+        }catch(e){p.dragonCards=S.dragonCards;}
+        localStorage.removeItem('dv1simEN_dragon_pending');
+      } else if(!hasCloudDragons&&hasLocalDragons){
+        p.dragonCards=S.dragonCards;
+      }
+
+      applySpec(p);
+      localSave();
+
+      // flag 있을 때만 Supabase 업데이트 (일반 로드 시 재Save 안 함 - 구버전 덮어쓰기 방지)
+      if(dragonPending||(!hasCloudDragons&&hasLocalDragons)){
+        supabase('PATCH','users',{spec_data:JSON.stringify(S)},`?id=eq.${u.id}`)
+          .catch(e=>console.warn('Cloud save failed:',e));
+      }
+
+      renderAll();
+      showToast('Spec loaded from cloud!');
+    }
+  }catch(e){console.warn('Cloud load failed:',e);}
+}
+
+let saveT=null;
+
+// localSave: localStorage + pvp/noob 동기화 (자동Save용)
+function localSave(){
+  localStorage.setItem(SPEC_KEY,JSON.stringify(S));
+  const specFields={accCards:S.accCards||[],gems:S.gems||{},pendants:S.pendants||[],coll:S.coll||{}};
+  ['dv1simEN_pvp','dv1simEN_noob','dv1simEN_calculator'].forEach(key=>{
+    try{const raw=localStorage.getItem(key);const existing=raw?JSON.parse(raw):{};localStorage.setItem(key,JSON.stringify({...existing,...specFields}));}catch(e){}
+  });
+  if(S.dragonCards){
+    ['dv1simEN_pvp','dv1simEN_noob'].forEach(key=>{
+      try{const raw=localStorage.getItem(key);const existing=raw?JSON.parse(raw):{};localStorage.setItem(key,JSON.stringify({...existing,dragonCards:S.dragonCards}));}catch(e){}
+    });
+  }
+  renderToggleSections();
+}
+
+// doSave: localStorage + pvp/noob Save. saveCloud=true면 Supabase도 Save
+function doSave(saveCloud=true){
+  clearTimeout(saveT);
+  // Supabase Save 전 dv1simEN_spec의 최신 dragonCards 반영 (pvp/noob 변경분 포함)
+  try{
+    const specRaw=localStorage.getItem('dv1simEN_spec');
+    if(specRaw){const spec=JSON.parse(specRaw);if(spec.dragonCards)S.dragonCards=spec.dragonCards;}
+  }catch(e){}
+  localSave();
+  const el=document.getElementById('save-msg');
+  if(el&&saveCloud){el.textContent='✓ Saved';setTimeout(()=>el.textContent='',2000);}
+  if(saveCloud){
+    const u=getUser();
+    if(u){
+      supabase('PATCH','users',{spec_data:JSON.stringify(S)},`?id=eq.${u.id}`)
+        .catch(e=>console.warn('Cloud save failed:',e));
+      localStorage.removeItem('dv1simEN_dragon_pending');
+    }
+  }
+}
+
+// qSave: 자동Save. saveCloud=false면 localStorage만 (Supabase 건드리지 않음)
+function qSave(saveCloud=true){clearTimeout(saveT);saveT=setTimeout(()=>doSave(saveCloud),1200);}
+
+function resetAll(){
+  if(!confirm('All accessory / gem / pendant / collection / dragon data will be reset.\nContinue?'))return;
+  S=mkSpec();
+  renderAll();
+  // pvp / noob의 dragonCards도 Reset
+  ['dv1simEN_pvp','dv1simEN_noob'].forEach(key=>{
+    try{
+      const raw=localStorage.getItem(key);
+      if(raw){
+        const ex=JSON.parse(raw);
+        ex.dragonCards=Object.fromEntries(DRAGON_CATS.map(c=>[c,[]]));
+        localStorage.setItem(key,JSON.stringify(ex));
+      }
+    }catch(e){}
+  });
+  // localStorage + Supabase 모두 Reset
+  clearTimeout(saveT);
+  localSave();
+  const u=getUser();
+  if(u){
+    supabase('PATCH','users',{spec_data:JSON.stringify(S)},`?id=eq.${u.id}`)
+      .catch(e=>console.warn('Cloud reset failed:',e));
+  }
+}
+
+function renderAll(){
+  renderAcc();populateGems();renderPends();populateColl();
+  renderToggleSections();
+}
+
+// ================================================================
+// Dragon 이미지
+// ================================================================
+const DRAGON_IMG_NUM={"Mangtaegon":705,"Undine":706,"Chroma Undine":707,"Seraphim":708,"Fat Dragon":25,"Tiger Dragon":50,"Lambgon":103,"Hungry Dragon":131,"Mud Dragon":140,"Orange Leaf Dragon":164,"Earthquake":322,"Poison River":337,"Popon":349,"Appleche Dragon":415,"Aldebaran":519,"Eggmayong":593,"Power Dragon":14,"Devilgon":97,"Vegabond Dragon":159,"Leo Vector":483,"Vaska":696,"Rock Dragon":15,"Underground Dragon":16,"Egg Dragon":19,"Leaf Dragon":28,"Smart Dragon":32,"Tattoo":62,"Timber":108,"Flower":113,"Pachy":559,"Hydra Dragon":13,"Collosus":196,"Layers":246,"Liberte":393,"Quetzalcoatl":568,"Golden Horn Dragon":57,"Mustard Hammer":73,"Kanthaka":400,"Astarte":426,"Heimdallr":659,"Non":667,"Python":92,"Hercules Dragon":105,"Spine":63,"Scorpion Dragon":76,"Daros":268,"Zimon":392,"Acaia":672,"Chroma Acaia":673,"Ness":10,"Swamp Dragon":24,"Tundra Dragon":123,"Yurqa":615,"Alresch":648,"Chroma Alresch":649,"Volva":660,"Frost Dragon":9,"Fairy Dragon":17,"Shark Dragon":58,"Megalodon":124,"Blizzard":367,"Bernhard":502,"Rudra":579,"Fishing Tail Dragon":691,"Luminesce":134,"Frog Dragon":29,"Snake Dragon":67,"Rupia":110,"Stud":112,"Withme":218,"Portunus":529,"Skat":647,"Loki":655,"Blue Lightning":89,"Violet Dragon":98,"Haema":114,"Venom Dragon":248,"Vritra":394,"Frozen":453,"Rusalka":600,"Tail Dragon":11,"Water Dragon":12,"Slime Dragon":42,"Purple Lips":91,"Marino Dragon":138,"Natron":345,"Regulus":517,"Chroma Regulus":518,"Mini Dragon":23,"Aqua Dragon":132,"IceDrake":198,"Secreta":230,"Tropheus":416,"Myosotis":496,"Octa":620,"Chroma Octa":621,"Bomber Dragon":141,"Popomo":274,"Yeomhwa Dragon":527,"Figar":651,"Chroma Figar":652,"Fire Dragon":5,"Phoenix":8,"Red Wybern":74,"Malsoja":107,"Sura Dragon":429,"Enturath":438,"Lancenti":555,"Battle Dragon":96,"Burnesce":135,"Demonio":169,"Spike Dragon":26,"Naughty Villan":145,"Wild Dragon":244,"Rugar Dragon":250,"Thoth":544,"Scartooth":653,"Chroma Scartooth":654,"Iron":93,"Lightning Dragon":6,"Lava Dragon":7,"Bone Head":71,"Flame Dragon":100,"Redbull Dragon":122,"Mneia":147,"Blaze Dragon":629,"Red Horse Dragon":689,"Jaryong":95,"Goldenfly Dragon":51,"Futurum":231,"Igna":366,"Hwa gui Dragon":489,"Tanatos":535,"Hell Dragon":20,"Insect Dragon":27,"Sand Dragon":31,"Volcano Dragon":88,"Ignis":127,"Garuda":225,"Evil Dragon":305,"Firetail":613,"Chroma Firetail":614,"Wind Dragon":2,"Six Legged Dragon":3,"Music Dragon":33,"Guardian":59,"Totem":106,"Cloud":115,"Pink Bell Dragon":165,"Empire":319,"Spirit":344,"Blue Dragon":4,"Paper Dragon":156,"Striker":224,"Asti Dragon":255,"Araca":290,"Gust":370,"Blue Thunder":594,"Chroma Blue Thunder":595,"Frosty":65,"Haetai":75,"Steelwing":260,"Kigal":397,"Litio":644,"Chroma Litio":645,"Jet Dragon":137,"Swallow":151,"Chaos":186,"Zephyros":350,"Boreas":486,"Lady Dragon":18,"Tyfoon":111,"Spring Dragon":160,"Centura":387,"Tyr":508,"Lulu":694,"Chroma Lulu":695,"Alien Dragon":22,"Wing Dragon":30,"Metal Magnet Dragon":52,"iGon":152,"Peace Dragon":154,"Graytan":266,"Rainbowbatgon":289,"Etoile Dragon":389,"Pitaya":563,"Thor":661,"Oro":94,"Cameleon Dragon":37,"Rainbow":61,"Siamese Dragon":70,"Pierrot Dragon":81,"Citael":192,"Angel Jr.":432,"Cupid Dragon":40,"Morika Dragon":158,"Ordo":229,"Sola":348,"Karura":373,"Aton":408,"Sword":458,"Vargr":531,"Yajnir":665,"Argo Dragon":104,"Knight Dragon":77,"Marshmallow Dragon":84,"Sanare Dragon":142,"Roloce":209,"Haze":219,"Gautling-gon":501,"Solucanis":597,"Protect Dragon":633,"Chroma Protect Dragon":634,"Xmas Dragon":68,"Ligon":36,"Kanggarabbit Dragon":39,"Neon Dragon":99,"Shooting Star":129,"Goblin Dragon":136,"Minas Dragon":378,"Atlus":606,"Merak":686,"Spicy":78,"God Dragon":1,"Angel Dragon":21,"Emerald Dragon":35,"Chickenhead Dragon":38,"Gold Dragon":41,"White Dragon":54,"Aurora Dragon":125,"Asili":206,"Star Ace":271,"Teddy Dragon":275,"Berna":342,"Rafael":79,"God Jr.":64,"Pharaogon":82,"Bar'rah":202,"Artemis Dragon":309,"Whitethunder":372,"Talissah":409,"Amanta":509,"Shah":513,"Franken Dragon":85,"Black Tear Dragon":162,"Wonder Dragon":197,"Black Jindo":207,"Moon Light":213,"Maloden":272,"Magnas":573,"Caslux":604,"Blade Dragon":43,"Serpent Dragon":48,"Contipede Dragon":49,"Ghost Dragon":56,"Dark Frosty":66,"Shadow":83,"Ninja Dragon":86,"Black Queen":101,"Splender Dragon":161,"Time Machine":191,"Azak":452,"Vetala":601,"Chroma Vetala":602,"Obex":676,"Venezie":72,"Tutankha":139,"Black Armor Dragon":163,"Kuroy Dragon":166,"Karna":303,"Kubera":380,"Porta":575,"Black Dragon":34,"Metal Dragon":44,"Mummy Dragon":45,"Skelegon":47,"Dark Nix":53,"Hyena Dragon":55,"Crescent":60,"Witch Dragon":90,"Catsgon":126,"Tartaros":128,"Dark Fal":130,"Fides":611,"Jormungandr":662,"Tiamat":674,"Baal":80,"Sigma Dragon":102,"Dragonoid":87,"Universe":252,"Behemoth":259,"Dark Knight":368,"Goat":557,"Hedgebat Dragon":46,"Cobra":109,"Marbas":241,"Scare":281,"Dragon Slayer":351,"Makara":467,"Lichmond":497,"Chroma Lichmond":498,"Hatshya":681,"Demong&Gargoyle":69,"Berith":463,"Amaltheia":566,"Janus":650,"Hapla":287,"Selmasa":296,"Ullr":623,"Eligos":473,"Wrath":540,"Harmonious Dragon":569,"Harleybell":232,"Taabire":233,"Reward Dragon":334,"Rukbat":603,"Freyja":698,"Mimir":476,"Nebia":484,"Aphrodite":625,"Kinder Dragon":358,"Amdusias":481,"Cortus":587,"Eclipse":469,"Tempios":635,"Hresvelgr":677,"Characen":298,"Rexton":301,"Tilki":365,"Harika":411,"Deathlock":447,"Seere":530,"Chachawung":583,"Rekmall Reverse":385,"Nebula":516,"Inverso":641,"Reginleif":687,"Chroma Reginleif":688,"Ballack":234,"Epit":590,"Manus":663,"Vefal":235,"Pomekle":302,"Pride":538,"Dantalion":236,"Nemus":547,"Vlad":697,"Dimension Dragon":355,"Slosi":617,"Corrupted Jormungandr":664,"Lemures":671,"Beleth":470,"Mysfit":526,"Chroma Beleth":574,"Umbra":347,"Rude Ore":457,"Crevasse":554,"Valefor":684,"Chroma Valefor":685,"Animala":448,"Longinus":523,"Mastema":532,"Jagan":237,"Curse Reaper":622,"Jin":637,"Cthulhu":703,"Chroma Cthulhu":704,};
+const DRAGON_IMG_BASE="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main";
+function getDragonImgUrl(name){
+  let n=DRAGON_IMG_NUM[name];
+  if(!n){const s=name.replace(/ Dragon$/,'').replace(/Dragon$/,'').trim();n=DRAGON_IMG_NUM[s];}
+  if(!n)return null;
+  return DRAGON_IMG_BASE+"/dragon/"+n+"/profile/8.png";
+}
+
+// ================================================================
+// 토글 섹션
+// ================================================================
+function toggleSection(id){
+  const bd=document.getElementById(id);
+  const arrow=document.getElementById('arrow-'+id);
+  if(!bd)return;
+  const open=!bd.classList.contains('open');
+  bd.classList.toggle('open',open);
+  if(arrow)arrow.style.transform=open?'rotate(180deg)':'';
+}
+
+function renderToggleSections(){
+  renderDragonSummary();
+  renderAccSummary();
+}
+
+const ELEM_ICON={'땅':11,'물':12,'불':13,'바람':14,'빛':84,'어둠':87,'황혼':487,'여명':486,'악몽':488};
+const DTYPE_COLOR={'체공형':'#f87171','방어형':'#60a5fa','공격형':'#fb923c','균형형':'#a78bfa','체형':'#fbbf24','공형':'#f87171','방형':'#60a5fa'};
+
+function renderDragonSummary(){
+  const el=document.getElementById('dragon-summary-wrap');
+  if(!el)return;
+  const dc=S.dragonCards||{};
+  const allDragons=DRAGON_CATS.flatMap(cat=>(dc[cat]||[]).filter(d=>d.name).map(d=>({...d,cat})));
+  if(!allDragons.length){
+    el.innerHTML='<div style="color:var(--dim);font-size:12px;text-align:center;padding:10px 0">No saved dragon setup.<br>In the My Dragons section of the pvp/noob calculators, tap <b>Save to My Spec</b>.</div>';
+    return;
+  }
+  const SK_LABEL={hp:'HP',atk:'ATK',def:'DEF'};
+  const byAttr=DRAGON_CATS.filter(cat=>(dc[cat]||[]).some(d=>d.name));
+  let html='';
+  byAttr.forEach(cat=>{
+    const list=(dc[cat]||[]).filter(d=>d.name);
+    const elemIconUrl=`https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/${ELEM_ICON[cat]||11}.png`;
+    html+=`<div style="margin-bottom:14px">
+      <div style="display:flex;align-items:center;gap:6px;font-size:11px;font-weight:800;color:var(--dim);margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--bd)">
+        <img src="${elemIconUrl}" onerror="this.style.display='none'" style="width:16px;height:16px;object-fit:contain">${CAT_LBL[cat]||cat} (${list.length})
+      </div>`;
+    list.forEach(d=>{
+      const dc_col=DTYPE_COLOR[d.dtype]||'#aaa';
+      const imgUrl=getDragonImgUrl(d.name);
+      const imgHtml=imgUrl
+        ?`<img src="${imgUrl}" style="width:40px;height:40px;object-fit:contain;border-radius:6px;border:1px solid var(--bd);background:var(--sf2)" onerror="this.style.display='none'">`
+        :`<div style="width:40px;height:40px;border-radius:6px;border:1px solid var(--bd);background:var(--sf2);flex-shrink:0"></div>`;
+      const opts=(d.opts||[]).filter(o=>o.stat&&o.type).map((o,i)=>{
+        const col=o.stat==='hp'?'#fbbf24':o.stat==='atk'?'#f87171':'#60a5fa';
+        const typeLabel=o.type==='%'?'%':'+';
+        return `<span style="color:${col};font-size:11px">${SK_LABEL[o.stat]}${typeLabel}</span>`;
+      }).join('<span style="color:var(--dim);">/</span>');
+      const bonusLabel={hp:'HP+40',atk:'ATK+10',def:'DEF+10'};
+      const bonusHtml=d.bonus?`<span style="font-size:10px;color:var(--gold);margin-left:4px">${bonusLabel[d.bonus]||''}</span>`:'';
+      html+=`<div class="dragon-summary-item" style="gap:10px;padding:6px 0;align-items:center">
+        ${imgHtml}
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
+            <img src="${elemIconUrl}" style="width:14px;height:14px;object-fit:contain">
+            <span style="font-weight:800;font-size:13px">${d.name}</span>
+            <span style="font-size:11px;padding:1px 6px;border-radius:3px;border:1px solid ${dc_col};color:${dc_col}">${DTYPE_LBL[d.dtype]||d.dtype||'-'}</span>
+          </div>
+          <div style="font-size:11px;color:var(--dim)">
+            ${d.growth||''} ${d.grade||''}${bonusHtml}
+            ${opts?`<span style="margin-left:6px">${opts}</span>`:''}
+          </div>
+        </div>
+      </div>`;
+    });
+    html+='</div>';
+  });
+  el.innerHTML=html;
+}
+
+function renderAccSummary(){
+  const el=document.getElementById('acc-summary-wrap');
+  if(!el)return;
+  if(!S.accCards||!S.accCards.length){
+    el.innerHTML='<div style="color:var(--dim);font-size:12px;text-align:center;padding:10px 0">No accessories registered.</div>';
+    return;
+  }
+  let html='';
+  S.accCards.forEach(card=>{
+    if(!card.name)return;
+    const a=ACC_DB.find(x=>x.n===card.name);
+    const img=a&&a.img?`<img src="${a.img}" style="width:28px;height:28px;object-fit:contain;border-radius:4px">`:'';
+    const encCol=card.enchant==='hp'?'#fbbf24':card.enchant==='atk'?'#f87171':card.enchant==='def'?'#60a5fa':'#555';
+    const encLbl=card.enchant==='hp'?'HP+21%':card.enchant==='atk'?'ATK+21%':card.enchant==='def'?'DEF+21%':'없음';
+    html+=`<div class="acc-summary-item">
+      ${img}
+      <span style="flex:1;font-size:12px">${card.name}</span>
+      <span style="font-size:11px;padding:1px 6px;border-radius:3px;border:1px solid ${encCol};color:${encCol}">${encLbl}</span>
+    </div>`;
+  });
+  el.innerHTML=html||'<div style="color:var(--dim);font-size:12px;text-align:center;padding:10px 0">No accessories registered.</div>';
+}
+
+// ================================================================
+// Export / Import
+// ================================================================
+function genCode(){
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  return Array.from({length:12},()=>chars[Math.floor(Math.random()*chars.length)]).join('');
+}
+
+async function doExport(){
+  const codeEl=document.getElementById('export-code');
+  try{
+    let dragonCards=S.dragonCards||{};
+    try{
+      const specRaw=localStorage.getItem('dv1simEN_spec');
+      if(specRaw){const spec=JSON.parse(specRaw);if(spec.dragonCards)dragonCards=spec.dragonCards;}
+    }catch(e){}
+    const data={accCards:S.accCards,gems:S.gems,pendants:S.pendants,coll:S.coll,dragonCards};
+    const code=btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+    codeEl.textContent=code;
+    try{await navigator.clipboard.writeText(code);showToast('Code copied to clipboard!');}
+    catch{showToast('Code generated');}
+  }catch(e){
+    codeEl.textContent='—';
+    alert('Error: '+e.message);
+  }
+}
+
+async function doImport(){
+  const code=document.getElementById('import-code').value.trim();
+  if(!code){alert('Please paste a code.');return;}
+  try{
+    let data;
+    try{data=JSON.parse(decodeURIComponent(escape(atob(code))));}
+    catch(e){alert('Invalid code. Please check and try again.');return;}
+    S.accCards=data.accCards||[];
+    S.gems={...mkSpec().gems,...(data.gems||{})};
+    S.pendants=data.pendants||[];
+    S.coll={...mkSpec().coll,...(data.coll||{})};
+    S.dragonCards={...mkSpec().dragonCards,...(data.dragonCards||{})};
+    // dv1simEN_spec에 dragonCards 먼저 반영 (doSave가 dv1simEN_spec을 읽으므로)
+    try{
+      const specRaw=localStorage.getItem('dv1simEN_spec');
+      const spec=specRaw?JSON.parse(specRaw):{};
+      spec.dragonCards=S.dragonCards;
+      localStorage.setItem('dv1simEN_spec',JSON.stringify(spec));
+    }catch(e){}
+    // pvp/noob에 dragonCards 동기화
+    ['dv1simEN_pvp','dv1simEN_noob'].forEach(key=>{
+      try{const raw=localStorage.getItem(key);const ex=raw?JSON.parse(raw):{};localStorage.setItem(key,JSON.stringify({...ex,dragonCards:S.dragonCards}));}catch(e){}
+    });
+    doSave();
+    renderAll();
+    document.getElementById('import-code').value='';
+    showToast('Spec loaded!');
+  }catch(e){alert('Error: '+e.message);}
+}
+
+function showToast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg;
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),2500);
+}
+
+// ================================================================
+// 젬
+// ================================================================
+function populateGems(){
+  for(const s of SKEYS)for(const lv of [37,38,39,40]){
+    const el=document.getElementById(`gem-${s}-${lv}`);
+    if(el)el.value=S.gems[s]?.[lv]||0;
+  }
+}
+function onGem(stat,lv,val){
+  S.gems[stat][lv]=Math.max(0,parseInt(val)||0);
+  qSave();
+}
+function resetGems(){
+  if(!confirm('Reset gem inputs.'))return;
+  S.gems=mkSpec().gems;populateGems();qSave();
+}
+
+// ================================================================
+// Collection
+// ================================================================
+function populateColl(){
+  document.getElementById('coll-hp').value=S.coll.hp||0;
+  document.getElementById('coll-atk').value=S.coll.atk||0;
+  document.getElementById('coll-def').value=S.coll.def||0;
+}
+function onColl(stat,val){S.coll[stat]=Math.max(0,parseInt(val)||0);qSave();}
+function setFullCollection(){S.coll={hp:240,atk:60,def:60};populateColl();qSave();}
+
+// ================================================================
+// Accessory
+// ================================================================
+function fmtAccSt(a){
+  if(!a)return'';
+  const p=[];
+  if(a.hp>0)p.push(`<span style="color:var(--hpc)">HP${(a.hp*100).toFixed(0)}%</span>`);
+  if(a.atk>0)p.push(`<span style="color:var(--atc)">ATK${(a.atk*100).toFixed(0)}%</span>`);
+  if(a.def>0)p.push(`<span style="color:var(--dfc)">DEF${(a.def*100).toFixed(0)}%</span>`);
+  return p.length?p.join(' '):'<span style="color:var(--dimmer)">Crit/AVD</span>';
+}
+function applyEncColor(sel){
+  const v=sel.value;
+  sel.style.color=v==='hp'?'var(--gold)':v==='atk'?'var(--red)':v==='def'?'var(--blue)':'var(--text)';
+}
+function renderAcc(){
+  const list=document.getElementById('acc-list');
+  if(!list)return;
+  if(!S.accCards.length){list.innerHTML='<div style="color:var(--dimmer);font-size:13px">No accessories</div>';return;}
+  let html='';
+  S.accCards.forEach((card,ci)=>{
+    const a=ACC_DB.find(x=>x.n===card.name);
+    const stHtml=a?fmtAccSt(a):'<span style="color:var(--dimmer)">-</span>';
+    html+=`<div class="acc-card"><div class="acc-card-row">
+      <div class="acc-search-wrap" id="acc-wrap-${ci}">
+        <input class="acc-search-input" id="acc-inp-${ci}" value="${card.name||''}" placeholder="Search accessory..."
+          oninput="filterAccDrop(${ci},this.value)"
+          onfocus="openAccDrop(${ci})"
+          onblur="setTimeout(()=>closeAccDrop(${ci},this),150)"
+          onkeydown="accNavKey(event,${ci})">
+        <div class="acc-dropdown" id="acc-drop-${ci}"></div>
+      </div>
+      ${a&&a.img?`<img src="${a.img}" style="width:40px;height:40px;object-fit:contain;flex-shrink:0">`:' <span style="width:40px;flex-shrink:0"></span>'}
+      <span style="font-size:11px;min-width:80px">${stHtml}</span>
+      <span style="font-size:11px;color:var(--dim);font-weight:700;flex-shrink:0">Enchant</span>
+      <select style="font-size:12px" onchange="onAccEnc(${ci},this.value);applyEncColor(this)">
+        <option value="none" ${card.enchant==='none'?'selected':''}>Any</option>
+        <option value="hp" ${card.enchant==='hp'?'selected':''}>HP +21%</option>
+        <option value="atk" ${card.enchant==='atk'?'selected':''}>ATK +21%</option>
+        <option value="def" ${card.enchant==='def'?'selected':''}>DEF +21%</option>
+      </select>
+      <button class="btn-red" onclick="delAcc(${ci})">Delete</button>
+    </div></div>`;
+  });
+  list.innerHTML=html;
+  document.querySelectorAll('#acc-list select').forEach(sel=>applyEncColor(sel));
+}
+function openAccDrop(ci){
+  filterAccDrop(ci,document.getElementById('acc-inp-'+ci).value);
+  const drop=document.getElementById('acc-drop-'+ci);
+  const inp=document.getElementById('acc-inp-'+ci);
+  const r=inp.getBoundingClientRect();
+  drop.style.top=(r.bottom+2)+'px';
+  drop.style.left=r.left+'px';
+  drop.style.width=r.width+'px';
+  drop.classList.add('open');
+}
+function closeAccDrop(ci,el){
+  const drop=document.getElementById('acc-drop-'+ci);
+  if(!drop)return;
+  drop.classList.remove('open');
+  if(el){const valid=ACC_DB.some(a=>a.n===el.value);if(!valid){S.accCards[ci].name='';S.accCards[ci].enchant='none';el.value='';qSave();}}
+}
+function accNavKey(e,ci){
+  const drop=document.getElementById('acc-drop-'+ci);
+  if(!drop||!drop.classList.contains('open'))return;
+  const items=[...drop.querySelectorAll('.acc-drop-item')];
+  if(!items.length)return;
+  const cur=drop.querySelector('.acc-drop-item.focused');
+  let idx=items.indexOf(cur);
+  if(e.key==='ArrowDown'){e.preventDefault();idx=Math.min(idx+1,items.length-1);items.forEach(el=>el.classList.remove('focused'));items[idx].classList.add('focused');items[idx].scrollIntoView({block:'nearest'});}
+  else if(e.key==='ArrowUp'){e.preventDefault();idx=Math.max(idx-1,0);items.forEach(el=>el.classList.remove('focused'));items[idx].classList.add('focused');items[idx].scrollIntoView({block:'nearest'});}
+  else if(e.key==='Enter'){e.preventDefault();if(cur)cur.dispatchEvent(new MouseEvent('mousedown'));}
+  else if(e.key==='Escape'){closeAccDrop(ci);}
+}
+function filterAccDrop(ci,q){
+  const drop=document.getElementById('acc-drop-'+ci);
+  if(!drop)return;
+  const inp=document.getElementById('acc-inp-'+ci);
+  if(inp){const r=inp.getBoundingClientRect();drop.style.top=(r.bottom+2)+'px';drop.style.left=r.left+'px';drop.style.width=r.width+'px';}
+  const kw=(q||'').toLowerCase().trim();
+  const statOnly=document.getElementById('chk-stat-only')?.checked;
+  let filtered=statOnly?ACC_DB.filter(a=>!a.n.startsWith('Horn of light')):ACC_DB;
+  if(kw)filtered=filtered.filter(a=>a.n.toLowerCase().includes(kw));
+  drop.innerHTML=filtered.slice(0,30).map(a=>`<div class="acc-drop-item" onmousedown="selectAcc(${ci},'${a.n.replace(/'/g,"\\'")}')"><span>${a.n}</span></div>`).join('');
+  drop.classList.add('open');
+}
+function selectAcc(ci,name){
+  S.accCards[ci].name=name;
+  const inp=document.getElementById('acc-inp-'+ci);
+  if(inp)inp.value=name;
+  closeAccDrop(ci);renderAcc();qSave();
+}
+function addAcc(){S.accCards.unshift({name:'',enchant:'none'});renderAcc();qSave();}
+function getAccNum(name){const m=name.match(/\+(\d+)/)||name.match(/(\d+)\s*$/);return m?parseInt(m[1]):0;}
+function getAccType(name){for(let i=0;i<ACC_TYPE_ORDER.length;i++){const t=ACC_TYPE_ORDER[i];if(name.startsWith(t)||name.includes(`(${t})`))return i;}return 99;}
+function sortAccCards(){
+  S.accCards=S.accCards.map((c,i)=>({...c,_idx:i}));
+  S.accCards.sort((a,b)=>{
+    const nA=getAccNum(a.name||''),nB=getAccNum(b.name||'');
+    if(nB!==nA)return nB-nA;
+    const tA=getAccType(a.name||''),tB=getAccType(b.name||'');
+    if(tA!==tB)return tA-tB;
+    const eA=ENC_ORDER[a.enchant]??3,eB=ENC_ORDER[b.enchant]??3;
+    if(eA!==eB)return eA-eB;
+    return a._idx-b._idx;
+  });
+  S.accCards=S.accCards.map(({_idx,...c})=>c);
+}
+function addAccBulk(lv){
+  const statOnly=document.getElementById('chk-stat-only')?.checked;
+  const targets=ACC_DB.filter(a=>getAccNum(a.n)===lv&&(!statOnly||!a.n.startsWith('Horn of light')));
+  if(!targets.length){alert(`${lv} Accessory not found.`);return;}
+  targets.forEach(a=>S.accCards.unshift({name:a.n,enchant:'none'}));
+  sortAccCards();renderAcc();qSave();
+  alert(`${lv} An accessory set was added.`);
+}
+function delAcc(ci){S.accCards.splice(ci,1);renderAcc();qSave();}
+function resetAcc(){if(!confirm('Reset all accessories.'))return;S.accCards=[];renderAcc();qSave();}
+function onAccEnc(ci,enc){S.accCards[ci].enchant=enc;qSave();}
+
+// ================================================================
+// Pendant
+// ================================================================
+function getPendOrder(type){return type==='태양'?0:type==='달'?1:2;}
+function getPendSum(p){const mo=p.type==='태양'?3:p.type==='달'?2:1;return p.options.slice(0,mo).reduce((s,o)=>s+(o.val||0),0);}
+function sortPendants(){
+  S.pendants=S.pendants.map((p,i)=>({...p,_idx:i}));
+  S.pendants.sort((a,b)=>{const oA=getPendOrder(a.type),oB=getPendOrder(b.type);if(oA!==oB)return oA-oB;const sA=getPendSum(a),sB=getPendSum(b);if(sB!==sA)return sB-sA;return a._idx-b._idx;});
+  S.pendants=S.pendants.map(({_idx,...p})=>p);
+}
+function getPendSummary(p){
+  if(!p)return'';
+  const mo=p.type==='태양'?3:p.type==='달'?2:1;
+  return p.options.slice(0,mo).map(o=>`${SK[o.stat]||'?'}${o.val||0}%`).join('/');
+}
+function renderPends(){
+  const el=document.getElementById('pend-list');
+  if(!el)return;
+  if(!S.pendants.length){el.innerHTML='<div style="color:var(--dimmer);font-size:13px">No pendants</div>';return;}
+  let html='';
+  S.pendants.forEach((p,pi)=>{
+    const mo=p.type==='태양'?3:p.type==='달'?2:1;
+    let opts='';
+    for(let oi=0;oi<mo;oi++){
+      const o=p.options[oi]||{stat:'hp',val:1};
+      opts+=`<div class="popt-row"><span class="popt-idx">${oi+1}opt</span>
+        <select onchange="onPOpt(${pi},${oi},'stat',this.value)">
+          <option value="hp" ${o.stat==='hp'?'selected':''}>HP</option>
+          <option value="atk" ${o.stat==='atk'?'selected':''}>ATK</option>
+          <option value="def" ${o.stat==='def'?'selected':''}>DEF</option>
+        </select>
+        <input type="number" min="1" max="6" value="${o.val||1}" style="width:50px;text-align:center" onchange="validatePOpt(this,${pi},${oi})" onkeydown="if(event.key==='Enter')this.blur()">
+        <span style="color:var(--dim)">%</span></div>`;
+    }
+    html+=`<div class="pcard"><div class="pcard-hd">
+      <select onchange="onPType(${pi},this.value)" style="width:100px">
+        <option value="태양" ${p.type==='태양'?'selected':''}>Sun (3 opts)</option>
+        <option value="달" ${p.type==='달'?'selected':''}>Moon (2 opts)</option>
+        <option value="별" ${p.type==='별'?'selected':''}>Star (1 opt)</option>
+      </select>
+      <img src="${IMG_PEND[p.type]||''}" style="width:36px;height:36px;object-fit:contain;border-radius:4px">
+      <span id="pend-summ-${pi}" style="color:#fff;font-size:12px">(${getPendSummary(p)})</span>
+      <button class="btn-red" onclick="delPend(${pi})" style="margin-left:auto">Delete</button>
+    </div><div style="display:flex;flex-wrap:wrap;gap:10px 16px;margin-top:2px">${opts}</div></div>`;
+  });
+  el.innerHTML=html;
+}
+function updatePendSummary(pi){const el=document.getElementById(`pend-summ-${pi}`);const p=S.pendants[pi];if(el&&p)el.textContent=`(${getPendSummary(p)})`;}
+function addPendant(){S.pendants.unshift({type:'달',options:[{stat:'hp',val:1},{stat:'hp',val:1}]});renderPends();qSave();}
+function addMoonPendantSet(){
+  const combos=[['hp','hp'],['hp','atk'],['hp','def'],['atk','atk'],['atk','def'],['def','def']];
+  S.pendants.unshift(...combos.map(([a,b])=>({type:'달',options:[{stat:a,val:6},{stat:b,val:6}]})));
+  renderPends();qSave();alert('One Moon-pendant set (6 types) added.');
+}
+function delPend(i){S.pendants.splice(i,1);renderPends();qSave();}
+function resetPend(){if(!confirm('Reset all pendants.'))return;S.pendants=[];renderPends();qSave();}
+function onPType(pi,type){
+  S.pendants[pi].type=type;
+  const max=type==='태양'?3:type==='달'?2:1;
+  while(S.pendants[pi].options.length<max)S.pendants[pi].options.push({stat:'hp',val:1});
+  S.pendants[pi].options=S.pendants[pi].options.slice(0,max);
+  renderPends();qSave();
+}
+function validatePOpt(el,pi,oi){
+  const n=parseInt(el.value);
+  if(el.value===''||isNaN(n)||n<1||n>6){alert('1~6 please enter an integer between.');el.value='';return;}
+  onPOpt(pi,oi,'val',n);
+}
+function onPOpt(pi,oi,field,val){
+  if(!S.pendants[pi].options[oi])S.pendants[pi].options[oi]={stat:'hp',val:1};
+  S.pendants[pi].options[oi][field]=val;
+  updatePendSummary(pi);qSave();
+}
+
+// ================================================================
+// Reset
+// ================================================================
+function init(){
+  doLoad();
+  renderAll();
+  // 유저 헤더 UI
+  const u=getUser();
+  const hdUser=document.getElementById('hd-user');
+  const hdBtn=document.getElementById('hd-auth-btn');
+  if(u){
+    if(hdUser)hdUser.textContent='👤 '+( u.nickname||u.username);
+    if(hdBtn){hdBtn.textContent='Log out';hdBtn.onclick=()=>{if(confirm('Log out?')){logout();location.reload();}};}
+    // 클라우드에서 Import 시도
+    doLoadCloud();
+  }else{
+    if(hdUser)hdUser.textContent='';
+    if(hdBtn){
+      hdBtn.textContent='Login';
+      hdBtn.onclick=()=>location.href='./login.html?from=my.html';
+    }
+  }
+}
+document.addEventListener('DOMContentLoaded',init);
+</script>
+<script>
+/* ── data-theme 동기화 ── */
+(function(){
+  var link=document.getElementById('theme-css');
+  if(!link)return;
+  var sync=function(){
+    var c=document.getElementById('custom-theme-style');
+    if(c&&c.textContent&&c.textContent.length>0){document.documentElement.removeAttribute('data-theme');return;}
+    var m=String(link.href||'').match(/theme-(dark|light|beige)\.css/);
+    document.documentElement.setAttribute('data-theme',m?m[1]:'dark');
+  };
+  sync();
+  new MutationObserver(sync).observe(link,{attributes:true,attributeFilter:['href']});
+  new MutationObserver(sync).observe(document.head,{childList:true,subtree:true,characterData:true});
+})();
+</script>
+</body>
+</html>

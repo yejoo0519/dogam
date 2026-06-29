@@ -6,6 +6,7 @@
 <title>Dragon Village Info · made by Nix</title>
 <link id="theme-css" rel="stylesheet" href="../theme-dark.css">
 <script src="./theme.js"></script>
+<script src="../sb_config.js"></script>
 <style>
   :root {
     --bg-soft:var(--bg);--border-strong:var(--border3,var(--border));
@@ -221,21 +222,21 @@
       <section class="category" id="cat-calculator">
         <div class="cat-head"><h3>Calculator</h3><span class="meta">· 3 pages</span></div>
         <div class="cards tri">
-          <a href="../calculator.html?from=calculator" class="card">
+          <a href="./calculator.html?from=calculator" class="card">
             <span class="icon-tile sky">C</span>
             <div class="card-body">
               <div class="card-title">Spirit Calculator</div>
               <div class="card-desc">Save your setup · Auto spirit optimization</div>
             </div>
           </a>
-          <a href="../pvp.html?from=calculator" class="card">
+          <a href="./pvp.html?from=calculator" class="card">
             <span class="icon-tile amber">PV</span>
             <div class="card-body">
               <div class="card-title">Guild Battle Sim (Original)</div>
               <div class="card-desc">v9.0 fixed · No nerfs · Weekly best setup</div>
             </div>
           </a>
-          <a href="../noob.html?from=calculator" class="card">
+          <a href="./noob.html?from=calculator" class="card">
             <span class="icon-tile emerald">NB</span>
             <div class="card-body">
               <div class="card-title">Guild Battle Sim (Beginner)</div>
@@ -280,15 +281,6 @@
           <ul><li>Updated Weekly Info page</li></ul>
         </div>
       </div>
-      <button class="day-card" onclick="openItemModal()">
-        <div class="day-icon">
-          <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/Day.png" alt="Daily Item" onerror="this.style.display='none'">
-        </div>
-        <div>
-          <div class="day-text-title">Daily Item</div>
-          <div class="day-text-sub">View today's items</div>
-        </div>
-      </button>
     </aside>
   </div>
 
@@ -314,13 +306,10 @@
     <button class="active" onclick="window.scrollTo({top:0,behavior:'smooth'})">
       <span class="glyph">⌂</span><span>Home</span>
     </button>
-    <button onclick="openItemModal()">
-      <span class="glyph">☀</span><span>Daily</span>
-    </button>
     <button onclick="openPatchModal()">
       <span class="glyph">📋</span><span>Patch</span>
     </button>
-    <button onclick="location.href='../my.html'">
+    <button onclick="location.href='./my.html'">
       <span class="glyph">👤</span><span>My Info</span>
     </button>
   </nav>
@@ -364,19 +353,27 @@
   </div>
 </div>
 
-<div class="item-modal-overlay" id="item-modal-overlay" onclick="closeItemModal(event)">
-  <div class="item-modal" onclick="event.stopPropagation()">
-    <button class="item-modal-close" onclick="closeItemModal()">✕</button>
-    <div class="item-modal-title">Daily Item</div>
-    <img src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/item.png" alt="Daily Item">
-  </div>
-</div>
-
 <script>
+
+  // ─── Visitor stats ───
+  async function trackVisitor(){
+    try{
+      const today=new Date().toISOString().slice(0,10);
+      if(localStorage.getItem('last_visit')!==today){
+        await supabase('POST','visitors',{visited_at:today});
+        localStorage.setItem('last_visit',today);
+      }
+      const todayCount=await getCount('visitors',`?visited_at=eq.${today}`);
+      const totalCount=await getCount('visitors');
+      const memberCount=await getCount('users');
+      document.getElementById('s-today').textContent=todayCount.toLocaleString();
+      document.getElementById('s-total').textContent=totalCount.toLocaleString();
+      document.getElementById('s-members').textContent=memberCount.toLocaleString();
+    }catch(e){console.error(e);}
+  }
+  if(typeof supabase==='function'&&typeof getCount==='function')trackVisitor();
 function openPatchModal(){document.getElementById('patch-modal-overlay').classList.add('open')}
 function closePatchModal(e){if(!e||e.target===document.getElementById('patch-modal-overlay'))document.getElementById('patch-modal-overlay').classList.remove('open')}
-function openItemModal(){document.getElementById('item-modal-overlay').classList.add('open')}
-function closeItemModal(e){if(!e||e.target===document.getElementById('item-modal-overlay'))document.getElementById('item-modal-overlay').classList.remove('open')}
 function switchTab(tab,el){
   document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.category').forEach(c=>c.classList.remove('active'));

@@ -3087,7 +3087,7 @@ function renderSpecView(){
   if(col.atk)colP.push(`<span class="sv-gem-atk">공 +${col.atk}</span>`);
   if(col.def)colP.push(`<span class="sv-gem-def">방 +${col.def}</span>`);
   const colH=colP.length?colP.join('<span style="color:var(--dim)"> · </span>'):`<span class="sv-empty">0</span>`;
-  el.innerHTML=`<div class="sv-header"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:15px;font-weight:800">📋 내 스펙</span><span class="sv-badge">보기 전용</span></div><a href="./my.html" class="sv-edit-btn">✏️ my.html에서 수정 →</a></div>
+  el.innerHTML=`<div class="sv-header"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:15px;font-weight:800">📋 내 스펙</span><span class="sv-badge">보기 전용</span></div><a href="./my.html" class="sv-edit-btn">✏️ 내 스펙에서 수정 →</a></div>
   <div class="sv-grid">
     <div>
       <div class="sv-sec"><div class="sv-sec-hd">💎 젬 보유량</div><div class="sv-sec-bd">${gemH}</div></div>

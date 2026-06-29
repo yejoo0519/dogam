@@ -913,11 +913,11 @@ function openGalleryPanel(cat,ci){
   if(url){imgEl.src=url;imgEl.style.display='';}
   else imgEl.style.display='none';
   document.getElementById('gp-name').textContent=card.name||'(No name)';
-  document.getElementById('gp-type').textContent=(card.dtype||'')+(card.dtype&&card.growth?' · ':'')+((GROWTH_LBL[card.growth]||card.growth||''));
+  document.getElementById('gp-type').textContent=(T_TYPE_S[card.dtype]||card.dtype||'')+(card.dtype&&card.growth?' · ':'')+((GROWTH_LBL[card.growth]||card.growth||''));
   const gradeLabel=card.growth==='강림'||card.growth==='진각'?'7.0':card.grade||'-';
   document.getElementById('gp-rows').innerHTML=
     '<div class="gp-row"><div class="gp-label">Element</div><div class="gp-val">'+(CAT_LBL[cat]||cat)+'</div></div>'
-    +'<div class="gp-row"><div class="gp-label">Type</div><div class="gp-val">'+(card.dtype||'-')+'</div></div>'
+    +'<div class="gp-row"><div class="gp-label">Type</div><div class="gp-val">'+(T_TYPE_S[card.dtype]||card.dtype||'-')+'</div></div>'
     +'<div class="gp-row"><div class="gp-label">Advent stage</div><div class="gp-val">'+(GROWTH_LBL[card.growth]||card.growth||'-')+'</div></div>'
     +'<div class="gp-row"><div class="gp-label">Grade</div><div class="gp-val">'+gradeLabel+'</div></div>';
   const opts=card.opts||[];
@@ -1880,7 +1880,7 @@ function renderDragonInfo(){
               </div>
             </div>
             <label class="dragon-dupe-check">Duplicate <input type="checkbox" ${card.dupe?'checked':''} onchange="onDragonDupe('${cat}',${ci},this.checked)"></label>
-            <div class="readonly-field dragon-type-field">${escHtml(card.dtype||'Type')}</div>
+            <div class="readonly-field dragon-type-field">${escHtml(T_TYPE_S[card.dtype]||card.dtype||'Type')}</div>
             <select onchange="onDragonField('${cat}',${ci},'growth',this.value)">
               <option value="강림(축복)" ${card.growth==='강림(축복)'?'selected':''}>Advent (Blessing)</option>
               <option value="강림" ${card.growth==='강림'?'selected':''}>Advent</option>
@@ -2821,7 +2821,7 @@ function renderResDeck(results,excludedCount){
     const rank=i<3?medals[i]:`<span class="rank-n">${i+1}</span>`;
     const _an2={'땅':11,'물':12,'불':13,'바람':14,'빛':84,'어둠':87,'황혼':487,'여명':486,'악몽':488};
     const attrImg=`https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/${_an2[r.dragon.attr]||11}.png`;
-    const _SK={hp:'체력',atk:'공격',def:'방어'};
+    const _SK={hp:'HP',atk:'ATK',def:'DEF'};
     const _BL={hp:'HP+40',atk:'ATK+10',def:'DEF+10'};
     const _opts=r.dragon.opts||[];
     const _fO=(idx)=>{const o=_opts[idx]||{};if(!o.stat||!o.type)return null;return `${_SK[o.stat]}${fmtSpVal(idx+1,o.stat,o.type)}`;};
@@ -3062,7 +3062,7 @@ function renderSpecView(){
   if(col.atk)colP.push(`<span class="sv-gem-atk">ATK +${col.atk}</span>`);
   if(col.def)colP.push(`<span class="sv-gem-def">DEF +${col.def}</span>`);
   const colH=colP.length?colP.join('<span style="color:var(--dim)"> · </span>'):`<span class="sv-empty">0</span>`;
-  el.innerHTML=`<div class="sv-header"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:15px;font-weight:800">📋 My Spec</span><span class="sv-badge">View only</span></div><a href="./my.html" class="sv-edit-btn">✏️ Edit in my spec →</a></div>
+  el.innerHTML=`<div class="sv-header"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:15px;font-weight:800">📋 My Spec</span><span class="sv-badge">View only</span></div><a href="./my.html" class="sv-edit-btn">✏️ Edit in my.html →</a></div>
   <div class="sv-grid">
     <div>
       <div class="sv-sec"><div class="sv-sec-hd">💎 Gems Owned</div><div class="sv-sec-bd">${gemH}</div></div>

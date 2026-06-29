@@ -133,6 +133,7 @@
     .mobile-bar button.active{color:var(--accent);font-weight:700}
     .mobile-bar button.active::after{content:'';position:absolute;top:-1px;left:50%;transform:translateX(-50%);width:24px;height:2px;background:var(--accent);border-radius:999px}
   }
+  .pill-btn.auth-user{color:var(--accent);cursor:default}
 </style>
 </head>
 <body>
@@ -146,12 +147,14 @@
     <div class="mobile-actions">
       <a href="../index.html" class="icon-btn">🌐</a>
       <button class="icon-btn" onclick="openThemeModal()">🎨</button>
+      <button class="icon-btn" id="mob-auth-icon" onclick="handleMobAuth()">👤</button>
     </div>
   </div>
 
   <div class="header-actions pc-only">
     <a href="../index.html" class="pill-btn">🌐 KR</a>
     <button class="pill-btn" onclick="openThemeModal()">🎨 Theme</button>
+    <div id="pc-auth" style="display:flex;gap:6px;align-items:center;margin-left:4px"></div>
   </div>
 
   <header class="hero">
@@ -297,7 +300,7 @@
       </a>
     </div>
     <div class="footer-meta">
-      <span>© 2026 Dragon Village Info · made by Nix<br>Calculator by 리레프</span>
+      <span>© 2026 Dragon Village Info · made by Nix<br>Calculator by Nix</span>
       <span>Response time may take 1–2 days.</span>
     </div>
   </footer>
@@ -372,6 +375,36 @@
     }catch(e){console.error(e);}
   }
   if(typeof supabase==='function'&&typeof getCount==='function')trackVisitor();
+
+  // ── Login / auth ──
+  function initAuth(){
+    var user=(typeof getUser==='function')?getUser():null;
+    var pc=document.getElementById('pc-auth');
+    var mob=document.getElementById('mob-auth-icon');
+    if(user){
+      if(pc) pc.innerHTML=
+        '<span class="pill-btn auth-user" style="pointer-events:none">\u{1F464} '+(user.nickname||user.username)+'</span>'+
+        '<a href="./my.html" class="pill-btn">My Spec</a>'+
+        '<button class="pill-btn" onclick="doLogout()">Log out</button>';
+      if(mob) mob.title='My Spec';
+    }else{
+      if(pc) pc.innerHTML=
+        '<a href="./login.html" class="pill-btn">Login</a>'+
+        '<a href="./register.html" class="pill-btn">Sign up</a>';
+      if(mob) mob.title='Login';
+    }
+  }
+  function handleMobAuth(){
+    var user=(typeof getUser==='function')?getUser():null;
+    location.href=user?'./my.html':'./login.html';
+  }
+  function doLogout(){
+    if(!confirm('Log out?'))return;
+    if(typeof logout==='function')logout();
+    location.reload();
+  }
+  initAuth();
+
 function openPatchModal(){document.getElementById('patch-modal-overlay').classList.add('open')}
 function closePatchModal(e){if(!e||e.target===document.getElementById('patch-modal-overlay'))document.getElementById('patch-modal-overlay').classList.remove('open')}
 function switchTab(tab,el){

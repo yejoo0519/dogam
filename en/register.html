@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign up</title>
+<link id="theme-css" rel="stylesheet" href="../theme-dark.css">
+<script src="../theme.js"></script>
+<style>
+/* ── 테마 팔레트 (index.html과 동일) ── */
+[data-theme="dark"]{
+  --bg:#0e1116;--bg2:#161a22;--bg3:#1c212c;
+  --border:#23293a;--border2:#1b1f2a;--border3:#2d3447;
+  --text:#eaecf2;--text2:#b3b9c7;--text3:#7d8597;--text4:#565d6e;
+  --accent:#7aa2f7;--accent-bg:rgba(122,162,247,0.12);--accent-border:rgba(122,162,247,0.30);
+}
+[data-theme="light"]{
+  --bg:#f7f7f8;--bg2:#ffffff;--bg3:#f1f2f4;
+  --border:#e6e7ea;--border2:#eeeff2;--border3:#d4d6db;
+  --text:#15171c;--text2:#4a4d57;--text3:#71757f;--text4:#9aa0aa;
+  --accent:#2f6fed;--accent-bg:rgba(47,111,237,0.10);--accent-border:rgba(47,111,237,0.32);
+}
+[data-theme="beige"]{
+  --bg:#f3ecdd;--bg2:#faf3e2;--bg3:#ebe0c7;
+  --border:#d8caa8;--border2:#e1d4b3;--border3:#c0ad84;
+  --text:#2a2316;--text2:#5a4e34;--text3:#837553;--text4:#a99971;
+  --accent:#b06a1e;--accent-bg:rgba(176,106,30,0.10);--accent-border:rgba(176,106,30,0.32);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px}
+.box{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:28px;width:100%;max-width:380px}
+.box h2{font-size:18px;color:var(--text);margin-bottom:20px;text-align:center}
+.field{margin-bottom:14px}
+.field label{font-size:12px;color:var(--text2);margin-bottom:5px;display:block}
+.field input{width:100%;padding:9px 12px;background:var(--bg3);border:1px solid var(--border3);border-radius:8px;color:var(--text);font-size:13px;font-family:inherit}
+.field input:focus{outline:none;border-color:var(--accent)}
+.field-hint{font-size:11px;color:var(--text4);margin-top:3px}
+.field-hint.error{color:#ef5350}
+.field-hint.success{color:#66bb6a}
+.btn{width:100%;padding:11px;background:linear-gradient(90deg,#4a90d9,#5dcff5);border:none;border-radius:8px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:4px}
+.btn:hover{opacity:0.9}
+.msg{font-size:12px;margin-top:10px;text-align:center}
+.msg.error{color:#ef5350}
+.msg.success{color:#66bb6a}
+.link{text-align:center;margin-top:14px;font-size:12px;color:var(--text4)}
+.link a{color:var(--accent);text-decoration:none}
+</style>
+</head>
+<body>
+<div class="box">
+  <h2>Sign up</h2>
+  <div class="field">
+    <label>ID</label>
+    <input id="username" type="text" placeholder="Enter ID">
+  </div>
+  <div class="field">
+    <label>Nickname</label>
+    <input id="nickname" type="text" placeholder="Enter nickname" oninput="checkNickname()">
+    <div class="field-hint" id="nickname-hint">Name shown on the board.</div>
+  </div>
+  <div class="field">
+    <label>Friend code <span style="color:var(--text4);font-weight:400">(K + 6 alphanumeric)</span></label>
+    <input id="friend_code" type="text" placeholder="Enter in K000000 format" maxlength="7" oninput="handleFriendCodeInput(this)">
+    <div class="field-hint" id="friend-code-hint">Enter a 7-character code starting with K. (e.g. K1a2b3c)</div>
+  </div>
+  <div class="field">
+    <label>Password</label>
+    <input id="password" type="password" placeholder="Enter password">
+  </div>
+  <div class="field">
+    <label>Confirm password</label>
+    <input id="password2" type="password" placeholder="Re-enter password">
+  </div>
+  <button class="btn" onclick="register()">Sign up</button>
+  <div class="msg" id="msg"></div>
+  <div class="link"><a href="./login.html">Already have an account</a></div>
+  <div class="link" style="margin-top:8px"><a href="../account.html">Find ID/password / Change nickname</a></div>
+</div>
+
+<script src="../sb_config.js"></script>
+<script>
+let friendCodeValid = false;
+let nicknameValid = false;
+let nicknameTimer = null;
+
+async function checkNickname() {
+  const nickname = document.getElementById('nickname').value.trim();
+  const hint = document.getElementById('nickname-hint');
+
+  clearTimeout(nicknameTimer);
+
+  if(nickname.length === 0) {
+    hint.className = 'field-hint';
+    hint.textContent = 'Name shown on the board.';
+    nicknameValid = false;
+    return;
+  }
+  if(nickname.length < 2) {
+    hint.className = 'field-hint error';
+    hint.textContent = 'Nickname must be at least 2 characters.';
+    nicknameValid = false;
+    return;
+  }
+
+  // 타이핑 멈추고 400ms 후에 중복 확인 (API 요청 최소화)
+  nicknameTimer = setTimeout(async () => {
+    try {
+      const rows = await supabase('GET', 'users', null, `?nickname=eq.${encodeURIComponent(nickname)}&select=id`);
+      if(rows && rows.length > 0) {
+        hint.className = 'field-hint error';
+        hint.textContent = 'This nickname is already taken.';
+        nicknameValid = false;
+      } else {
+        hint.className = 'field-hint success';
+        hint.textContent = 'Nickname is available.';
+        nicknameValid = true;
+      }
+    } catch(e) {
+      nicknameValid = true;
+    }
+  }, 400);
+}
+
+function handleFriendCodeInput(el) {
+  const cursorPos = el.selectionStart;
+
+  const cleaned = el.value.replace(/[^a-zA-Z0-9]/g, '').toLowerCase().slice(0, 7);
+  el.value = cleaned;
+
+  const newPos = Math.min(cursorPos, el.value.length);
+  el.setSelectionRange(newPos, newPos);
+
+  checkFriendCode();
+}
+
+async function checkFriendCode() {
+  const code = document.getElementById('friend_code').value.trim();
+  const hint = document.getElementById('friend-code-hint');
+
+  if(code.length === 0) {
+    hint.className = 'field-hint';
+    hint.textContent = 'Enter a 7-character code starting with K. (e.g. K1a2b3c)';
+    friendCodeValid = false;
+    return;
+  }
+  if(code[0] !== 'k') {
+    hint.className = 'field-hint error';
+    hint.textContent = 'Friend code must start with K.';
+    friendCodeValid = false;
+    return;
+  }
+  if(!/^k[a-z0-9]{6}$/.test(code)) {
+    hint.className = 'field-hint error';
+    hint.textContent = 'Must be K + 6 alphanumeric characters.';
+    friendCodeValid = false;
+    return;
+  }
+  try {
+    const rows = await supabase('GET', 'users', null, `?friend_code=eq.${encodeURIComponent(code)}&select=id`);
+    if(rows && rows.length > 0) {
+      hint.className = 'field-hint error';
+      hint.textContent = 'This friend code is already taken.';
+      friendCodeValid = false;
+    } else {
+      hint.className = 'field-hint success';
+      hint.textContent = 'Friend code is available.';
+      friendCodeValid = true;
+    }
+  } catch(e) {
+    friendCodeValid = true;
+  }
+}
+
+async function register() {
+  const username = document.getElementById('username').value.trim();
+  const nickname = document.getElementById('nickname').value.trim();
+  const friend_code = document.getElementById('friend_code').value.trim();
+  const password = document.getElementById('password').value;
+  const password2 = document.getElementById('password2').value;
+  const msg = document.getElementById('msg');
+
+  if(!username || !password) { msg.className='msg error'; msg.textContent='Please enter your ID and password.'; return; }
+  if(!nickname) { msg.className='msg error'; msg.textContent='Please enter a nickname.'; return; }
+  if(!nicknameValid) { msg.className='msg error'; msg.textContent='Please check your nickname.'; return; }
+  if(!friend_code) { msg.className='msg error'; msg.textContent='Please enter a friend code.'; return; }
+  if(!/^k[a-z0-9]{6}$/.test(friend_code)) { msg.className='msg error'; msg.textContent='Friend code must be 7 characters starting with K.'; return; }
+  if(!friendCodeValid) { msg.className='msg error'; msg.textContent='Please check your friend code.'; return; }
+  if(username.length < 2) { msg.className='msg error'; msg.textContent='ID must be at least 2 characters.'; return; }
+  if(password.length < 4) { msg.className='msg error'; msg.textContent='Password must be at least 4 characters.'; return; }
+  if(password !== password2) { msg.className='msg error'; msg.textContent='Passwords do not match.'; return; }
+
+  try {
+    const hashed = await hashPassword(password);
+    await supabase('POST', 'users', { username, nickname, friend_code, password: hashed });
+    msg.className='msg success'; msg.textContent='Registered! Redirecting to the login page.';
+    setTimeout(() => location.href='./login.html', 1200);
+  } catch(e) {
+    if(e.message.includes('unique')) msg.textContent='This ID or friend code is already taken.';
+    else msg.textContent = 'An error occurred: ' + e.message;
+    msg.className='msg error';
+  }
+}
+</script>
+<script>
+/* ── data-theme 동기화 (theme.js 연동) ── */
+(function(){
+  var link=document.getElementById('theme-css');
+  if(!link)return;
+  var sync=function(){
+    var c=document.getElementById('custom-theme-style');
+    if(c&&c.textContent&&c.textContent.length>0){document.documentElement.removeAttribute('data-theme');return;}
+    var m=String(link.href||'').match(/theme-(dark|light|beige)\.css/);
+    document.documentElement.setAttribute('data-theme',m?m[1]:'dark');
+  };
+  sync();
+  new MutationObserver(sync).observe(link,{attributes:true,attributeFilter:['href']});
+  new MutationObserver(sync).observe(document.head,{childList:true,subtree:true,characterData:true});
+})();
+</script>
+</body>
+</html>

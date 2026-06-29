@@ -869,15 +869,15 @@ const dexData=[
 ];
 
 const dexElemIcons={
-  "땅":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/11.png",
-  "물":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/12.png",
-  "불":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/13.png",
-  "바람":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/14.png",
-  "빛":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/84.png",
-  "어둠":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/87.png",
-  "황혼":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/487.png",
-  "여명":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/486.png",
-  "악몽":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/488.png",
+  "땅":"./icon/11.png",
+  "물":"./icon/12.png",
+  "불":"./icon/13.png",
+  "바람":"./icon/14.png",
+  "빛":"./icon/84.png",
+  "어둠":"./icon/87.png",
+  "황혼":"./icon/487.png",
+  "여명":"./icon/486.png",
+  "악몽":"./icon/488.png",
 };
 
 const STAGES=[
@@ -974,7 +974,27 @@ function getN(name){
   const d = dexData.find(x => x.n === name);
   return d && d.id ? String(d.id) : null;
 }
-const BASE = "https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main";
+const BASE = ".";
+
+// ── 이미지 로딩 안정화: 실패 시 백오프 재시도 후 placeholder ──
+function dexImgRetry(img,onGiveUp){
+  var t=+(img.dataset.retry||0);
+  if(t<3){
+    img.dataset.retry=t+1;
+    var u=img.src.split('?')[0];
+    setTimeout(function(){ img.src=u+'?r='+Date.now(); }, 500*(t+1));
+  } else if(typeof onGiveUp==='function'){
+    onGiveUp.call(img);
+  }
+}
+function dexMainImgErr(img,idx){
+  dexImgRetry(img,function(){
+    img.style.display='none';
+    var ph=document.getElementById('mph-'+idx);
+    if(ph) ph.style.display='flex';
+  });
+}
+
 
 // 썸네일: dragon/{N}/profile/{stage}.png
 function profileUrl(name, stage){
@@ -1033,7 +1053,7 @@ function buildEntry(d, idx){
           src="${initFull}"
           alt="${d.n}"
           onclick="openLightbox(this)"
-          onerror="this.style.display='none';document.getElementById('mph-${idx}').style.display='flex'"
+          loading="lazy" onerror="dexMainImgErr(this,${idx})"
           style="${initFull?'':'display:none'}">
         <div class="main-img-ph" id="mph-${idx}" style="${initFull?'display:none':'display:flex'}">이미지 없음</div>
       </div>
@@ -1082,6 +1102,7 @@ function buildEntry(d, idx){
   const strip = wrap.querySelector(`#strip-${idx}`);
   STAGES.forEach(s => {
     const avail = stageAvail(d, s.i);
+    if(!avail) return; // 미보유 단계는 표시하지 않음
     const pUrl = profileUrl(d.n, s.i);
     const fallbackUrl = profileUrl(d.n, 4); // 성체 프로필 폴백
     const thumbWrap = document.createElement("div");
@@ -1092,14 +1113,17 @@ function buildEntry(d, idx){
       const img = document.createElement("img");
       img.className = "pthumb-img" + (s.i === 4 ? " sel" : "");
       // 성체(4)는 dexImgMap 이미지로 폴백, 나머지는 플레이스홀더
+      img.loading = "lazy";
       img.src = pUrl;
       img.alt = s.l;
       img.onerror = function(){
-        this.style.display = "none";
-        const ph = document.createElement("div");
-        ph.className = "pthumb-ph"; ph.textContent = s.l[0];
-        this.parentNode.insertBefore(ph, this);
-        if(s.i === 5) this.closest(".pthumb").classList.add("unavail");
+        if(s.i === 5){ this.closest(".pthumb").style.display = "none"; return; } // 캡슐 미보유: 깜빡임 없이 즉시 숨김
+        dexImgRetry(this, function(){
+          this.style.display = "none";
+          const ph = document.createElement("div");
+          ph.className = "pthumb-ph"; ph.textContent = s.l[0];
+          this.parentNode.insertBefore(ph, this);
+        });
       };
       thumbWrap.appendChild(img);
     } else {

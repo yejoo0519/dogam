@@ -1051,7 +1051,7 @@ function renderSpecView(){
   if(col.def)colP.push(`<span class="sv-gem-def">DEF +${col.def}</span>`);
   const colH=colP.length?colP.join('<span style="color:var(--dim)"> · </span>'):`<span class="sv-empty">0</span>`;
 
-  el.innerHTML=`<div class="sv-header"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:15px;font-weight:800">📋 My Spec</span><span class="sv-badge">View only</span></div><a href="./my.html" class="sv-edit-btn">✏️ Edit in my.html →</a></div>
+  el.innerHTML=`<div class="sv-header"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:15px;font-weight:800">📋 My Spec</span><span class="sv-badge">View only</span></div><a href="./my.html" class="sv-edit-btn">✏️ Edit in my spec →</a></div>
   <div class="sv-grid">
     <div>
       <div class="sv-sec"><div class="sv-sec-hd">💎 Gems Owned</div><div class="sv-sec-bd">${gemH}</div></div>

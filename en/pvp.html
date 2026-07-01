@@ -2046,7 +2046,7 @@ function onDragonBonus(cat,idx,val){
 // UI - 3vs3 Setup Buff/Debuff
 // ================================================================
 function settingAttrOptions(v){
-  return DRAGON_CATS.map(cat=>`<option value="${cat}" ${v===cat?'selected':''}>${cat}</option>`).join('');
+  return DRAGON_CATS.map(cat=>`<option value="${cat}" ${v===cat?'selected':''}>${CAT_LBL[cat]||cat}</option>`).join('');
 }
 
 function settingStatOptions(v){
@@ -2055,7 +2055,7 @@ function settingStatOptions(v){
 }
 
 function settingTypeOptions(v){
-  return DTYPES.map(t=>`<option value="${t}" ${v===t?'selected':''}>${t.replace('형','')}</option>`).join('');
+  return DTYPES.map(t=>`<option value="${t}" ${v===t?'selected':''}>${T_TYPE_S[t]||t.replace('형','')}</option>`).join('');
 }
 
 function settingBuffPanel(key,title){

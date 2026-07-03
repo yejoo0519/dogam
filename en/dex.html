@@ -6,7 +6,7 @@
 <title>Dragon Encyclopedia</title>
 <link id="theme-css" rel="stylesheet" href="../theme-dark.css">
 <script src="./theme.js"></script>
-<script src="./stat.js"></script>
+<script src="../stat.js"></script>
 <style>
 [data-theme="dark"]{--bg:#0e1116;--bg2:#161a22;--bg3:#1c212c;--border:#23293a;--border2:#1b1f2a;--border3:#2d3447;--text:#eaecf2;--text2:#b3b9c7;--text3:#7d8597;--text4:#565d6e;--accent:#7aa2f7;--accent-bg:rgba(122,162,247,0.12);--accent-border:rgba(122,162,247,0.30)}
 [data-theme="light"]{--bg:#f7f7f8;--bg2:#ffffff;--bg3:#f1f2f4;--border:#e6e7ea;--border2:#eeeff2;--border3:#d4d6db;--text:#15171c;--text2:#4a4d57;--text3:#71757f;--text4:#9aa0aa;--accent:#2f6fed;--accent-bg:rgba(47,111,237,0.10);--accent-border:rgba(47,111,237,0.32)}
@@ -35,6 +35,20 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
 .ftag.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 .filter-sep{width:1px;height:16px;background:var(--border3);margin:0 4px;flex-shrink:0;align-self:center}
 #filter-count{font-size:12px;color:var(--text3);margin-top:7px}
+#stat-filter-toggle-btn{margin-top:8px}
+#stat-filter-panel{display:none;margin-top:10px;padding:12px;border:1px solid var(--border3);border-radius:8px;background:var(--bg3)}
+#stat-filter-panel.open{display:block}
+.sf-table{width:100%;border-collapse:collapse;font-size:11px}
+.sf-table th{padding:4px 6px;color:var(--text3);font-weight:500;text-align:center}
+.sf-table td{padding:4px 10px;text-align:center}
+.sf-table td.sf-row-label{text-align:left;color:var(--text2);font-weight:600;white-space:nowrap}
+.sf-pair{display:flex;justify-content:center;align-items:center;gap:4px}
+.sf-input{width:56px;padding:5px 6px;border:1px solid var(--border3);border-radius:6px;font-size:11px;background:var(--bg2);color:var(--text);text-align:center;outline:none}
+.sf-input:focus{border-color:var(--accent-border)}
+.sf-input::placeholder{color:var(--text4)}
+.sf-tilde{color:var(--text4);margin:0 3px}
+#stat-filter-reset{margin-top:10px;padding:5px 12px;border-radius:16px;font-size:11px;border:1px solid var(--border3);cursor:pointer;background:var(--bg2);color:var(--text2)}
+#stat-filter-reset:hover{border-color:var(--accent-border);color:var(--text)}
 
 /* 메인 */
 #page{max-width:900px;margin:0 auto;padding:16px 16px 64px}
@@ -133,6 +147,38 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
       <input id="search-input" type="text" placeholder="Search dragons..." oninput="onFilter()">
     </div>
     <div id="filter-row"></div>
+    <button id="stat-filter-toggle-btn" class="ftag" onclick="toggleStatFilterPanel()">Stat Filter ▼</button>
+    <div id="stat-filter-panel">
+      <table class="sf-table">
+        <thead><tr>
+          <th class="sf-row-label"></th>
+          <th>Lv.1</th>
+          <th>Lv.45</th>
+          <th>Growth</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td class="sf-row-label">HP</td>
+            <td><div class="sf-pair"><input class="sf-input" type="number" placeholder="min" data-stat="hp" data-field="l1min"><input class="sf-input" type="number" placeholder="max" data-stat="hp" data-field="l1max"></div></td>
+            <td><div class="sf-pair"><input class="sf-input" type="number" placeholder="min" data-stat="hp" data-field="l45min"><input class="sf-input" type="number" placeholder="max" data-stat="hp" data-field="l45max"></div></td>
+            <td><input class="sf-input" type="number" placeholder="exact" data-stat="hp" data-field="gexact"></td>
+          </tr>
+          <tr>
+            <td class="sf-row-label">ATK</td>
+            <td><div class="sf-pair"><input class="sf-input" type="number" placeholder="min" data-stat="atk" data-field="l1min"><input class="sf-input" type="number" placeholder="max" data-stat="atk" data-field="l1max"></div></td>
+            <td><div class="sf-pair"><input class="sf-input" type="number" placeholder="min" data-stat="atk" data-field="l45min"><input class="sf-input" type="number" placeholder="max" data-stat="atk" data-field="l45max"></div></td>
+            <td><input class="sf-input" type="number" placeholder="exact" data-stat="atk" data-field="gexact"></td>
+          </tr>
+          <tr>
+            <td class="sf-row-label">DEF</td>
+            <td><div class="sf-pair"><input class="sf-input" type="number" placeholder="min" data-stat="def" data-field="l1min"><input class="sf-input" type="number" placeholder="max" data-stat="def" data-field="l1max"></div></td>
+            <td><div class="sf-pair"><input class="sf-input" type="number" placeholder="min" data-stat="def" data-field="l45min"><input class="sf-input" type="number" placeholder="max" data-stat="def" data-field="l45max"></div></td>
+            <td><input class="sf-input" type="number" placeholder="exact" data-stat="def" data-field="gexact"></td>
+          </tr>
+        </tbody>
+      </table>
+      <button id="stat-filter-reset" onclick="resetStatFilters()">Reset Filters</button>
+    </div>
   </div>
   <div id="entries"></div>
   <div id="pagination"></div>
@@ -899,11 +945,69 @@ let filterTypes = new Set();
 const ELEMS = ["Earth","Water","Fire","Wind","Light","Dark","Dusk","Dawn","Nightmare"];
 const TYPES = ["HP","ATK","DEF","HP-ATK","HP-DEF","ATK-DEF","NEU"];
 
+// Stat filter state: Lv1/Lv45/growth min-max per stat (hp/atk/def)
+let statFilters = {
+  hp:  { l1min:null, l1max:null, l45min:null, l45max:null, gexact:null },
+  atk: { l1min:null, l1max:null, l45min:null, l45max:null, gexact:null },
+  def: { l1min:null, l1max:null, l45min:null, l45max:null, gexact:null },
+};
+
+function toggleStatFilterPanel(){
+  const panel = document.getElementById("stat-filter-panel");
+  const btn = document.getElementById("stat-filter-toggle-btn");
+  const isOpen = panel.classList.contains("open");
+  panel.classList.toggle("open", !isOpen);
+  btn.textContent = isOpen ? "Stat Filter ▼" : "Stat Filter ▲";
+}
+
+function applyStatFilters(){
+  document.querySelectorAll("#stat-filter-panel .sf-input").forEach(inp => {
+    const stat = inp.dataset.stat, field = inp.dataset.field;
+    const v = inp.value.trim();
+    statFilters[stat][field] = v === "" ? null : Number(v);
+  });
+  curPageNum = 1;
+  sessionStorage.setItem("dv1_page", 1);
+  renderAll();
+}
+
+function resetStatFilters(){
+  document.querySelectorAll("#stat-filter-panel .sf-input").forEach(inp => inp.value = "");
+  ["hp","atk","def"].forEach(k => {
+    statFilters[k] = { l1min:null, l1max:null, l45min:null, l45max:null, gexact:null };
+  });
+  curPageNum = 1;
+  sessionStorage.setItem("dv1_page", 1);
+  renderAll();
+}
+
+function statFilterPass(d){
+  if(typeof dexStatMap === "undefined") return true; // stat.js 미로딩 시 필터 무시하고 통과
+  const ss = dexStatMap[d.id];
+  for(const key of ["hp","atk","def"]){
+    const f = statFilters[key];
+    const hasFilter = f.l1min!=null || f.l1max!=null || f.l45min!=null || f.l45max!=null || f.gexact!=null;
+    if(!hasFilter) continue;
+    if(!ss || !ss[key]) return false; // 데이터 없는 드래곤은 필터 켜진 스탯에서 제외
+    const s = ss[key];
+    const lv1 = s[0];
+    const growth = s[1];
+    const lv45 = s[0] + Math.round(s[1] * 44);
+    if(f.l1min!=null && lv1 < f.l1min) return false;
+    if(f.l1max!=null && lv1 > f.l1max) return false;
+    if(f.l45min!=null && lv45 < f.l45min) return false;
+    if(f.l45max!=null && lv45 > f.l45max) return false;
+    if(f.gexact!=null && growth !== f.gexact) return false;
+  }
+  return true;
+}
+
 function getFiltered(){
   return dexData.filter(d => {
     if(filterName && !d.n.includes(filterName)) return false;
     if(filterElems.size > 0 && !filterElems.has(d.e)) return false;
     if(filterTypes.size > 0 && !filterTypes.has(d.t)) return false;
+    if(!statFilterPass(d)) return false;
     return true;
   });
 }
@@ -1151,7 +1255,7 @@ function toggleStat(idx){
   const d = dexData[idx];
   const sec = document.getElementById("stat-" + idx);
   const btn = document.getElementById("sbtn-" + idx);
-  const isOpen = sec.style.display !== "none";
+  const isOpen = sec.style.display === "block";
   sec.style.display = isOpen ? "none" : "block";
   btn.textContent = isOpen ? "Show Stats ▼" : "Hide Stats ▲";
   if(!isOpen) renderStat(d, idx, stageState[idx] || 4);
@@ -1159,11 +1263,11 @@ function toggleStat(idx){
 
 function renderStat(d, idx, si){
   const tbody = document.getElementById("stbody-" + idx);
-  const ss = dexStatMap[d.n] || null;
+  const ss = (typeof dexStatMap !== "undefined" ? dexStatMap[d.id] : null) || null;
   tbody.innerHTML = [
+    {label:"HP",  key:"hp"},
     {label:"ATK", key:"atk"},
     {label:"DEF", key:"def"},
-    {label:"HP",  key:"hp"},
   ].map(r => {
     const s = ss ? ss[r.key] : null;
     if(!s) return `<tr>
@@ -1202,6 +1306,11 @@ function buildPagination(total, totalPages){
   btn("›", Math.min(totalPages, groupEnd + 1), false, groupEnd === totalPages);
   btn("»", totalPages, false, curPageNum === totalPages);
 }
+
+// Wire up stat filter input listeners
+document.querySelectorAll("#stat-filter-panel .sf-input").forEach(inp => {
+  inp.addEventListener("input", applyStatFilters);
+});
 
 // 테마 동기화
 (function(){

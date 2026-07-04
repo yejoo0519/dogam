@@ -98,7 +98,7 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
   <div class="raid-section">
     <div class="section-head">
       <div><span class="section-name">일반 레이드</span><span class="section-en">패턴 있음</span></div>
-      <span class="section-count">13보스</span>
+      <span class="section-count">14보스</span>
     </div>
     <div class="boss-cards">
       <div class="boss-card" onclick="showBoss(20,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/20.png"><span class="boss-card-name">레굴루스</span></div>
@@ -111,6 +111,7 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
       <div class="boss-card" onclick="showBoss(27,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/27.png"><span class="boss-card-name">리티오</span></div>
       <div class="boss-card" onclick="showBoss(29,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/29.png"><span class="boss-card-name">아카이아</span></div>
       <div class="boss-card" onclick="showBoss(30,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/30.png"><span class="boss-card-name">루루</span></div>
+      <div class="boss-card" onclick="showBoss(35,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/35.png"><span class="boss-card-name">크툴루</span></div>
       <div class="boss-card" onclick="showBoss(31,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/31.png"><span class="boss-card-name">펜리르</span></div>
       <div class="boss-card" onclick="showBoss(32,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/32.png"><span class="boss-card-name">지바타르</span></div>
       <div class="boss-card" onclick="showBoss(33,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/33.png"><span class="boss-card-name">카모플라쥬</span></div>
@@ -291,6 +292,12 @@ const BD={
       {c:'pat',l:'패턴',t:'평타가 단체 공격인 패턴을 보유한 레이드<br>단체 공격 후 매턴 50씩 회복합니다.'},
       {c:'ctr',l:'패턴 파훼',t:'<span class="t">공격형</span> 1마리 이상 사용 시 딜 감소 기믹이 사라집니다. (루루는 공격형 3마리 사용 시에도 딜이 감소되는 기믹이 없습니다)<br><span class="ta" data-a="불"></span>속성 3마리 통일 시 매턴 50 회복이 없어집니다.'},
       {c:'rec',l:'추천 조합',t:'보너스 사용 시: <span class="ta" data-a="불"></span>공격형 + <span class="bns">보너스</span> 2마리<br>공격형 1마리를 필수로 권장. 불속성 3마리보다 보너스 사용을 권장드립니다.'},
+    ]},
+  35:{name:'크툴루',section:'일반 레이드',weakAttr:['빛'],weakType:['공방형'],
+    cards:[
+      {c:'pat',l:'패턴',t:'4턴마다 공격 후 아군 드래곤에게 사슬을 부여합니다. (3턴간 봉인)<br>사슬이 부여된 아군은 보스에게 입는 피해가 증가합니다.<br>사슬 해제 후 패턴이 다시 반복됩니다.'},
+      {c:'ctr',l:'패턴 파훼',t:'<span class="ta" data-a="빛"></span> 1마리 이상 사용 시 사슬 개수가 3개에서 1개로 감소합니다. (남은 체력이 가장 높은 드래곤이 사슬에 묶입니다)<br><span class="t">공방형</span> 1마리 이상 사용 시 사슬이 부여된 드래곤이 입는 피해 증가 기믹이 사라집니다.'},
+      {c:'rec',l:'추천 조합',t:'탱커 1, 딜러 2<br><span class="ta" data-a="빛"></span><span class="t">공방형</span> 사용을 권장드립니다.'},
     ]},
   31:{name:'펜리르',section:'일반 레이드',weakAttr:['바람'],weakType:['체방형'],
     cards:[

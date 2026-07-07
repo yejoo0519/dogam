@@ -311,7 +311,7 @@ input[type=number]{appearance:textfield;-moz-appearance:textfield}
 
 <div class="toast" id="toast"></div>
 
-<script>function getUser(){return null;}async function supabase(){return null;}function logout(){}</script>
+<script src="../sb_config.js"></script>
 <script>
 // ================================================================
 // 이미지 / Accessory DB
@@ -685,16 +685,18 @@ function genCode(){
 async function doExport(){
   const codeEl=document.getElementById('export-code');
   try{
+    codeEl.textContent='Generating...';
+    const code=genCode();
     let dragonCards=S.dragonCards||{};
     try{
       const specRaw=localStorage.getItem('dv1simEN_spec');
       if(specRaw){const spec=JSON.parse(specRaw);if(spec.dragonCards)dragonCards=spec.dragonCards;}
     }catch(e){}
     const data={accCards:S.accCards,gems:S.gems,pendants:S.pendants,coll:S.coll,dragonCards};
-    const code=btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+    await supabase('POST','spec_shares',{code,spec_data:data});
     codeEl.textContent=code;
     try{await navigator.clipboard.writeText(code);showToast('Code copied to clipboard!');}
-    catch{showToast('Code generated');}
+    catch{showToast('Code: '+code);}
   }catch(e){
     codeEl.textContent='—';
     alert('Error: '+e.message);
@@ -702,12 +704,12 @@ async function doExport(){
 }
 
 async function doImport(){
-  const code=document.getElementById('import-code').value.trim();
-  if(!code){alert('Please paste a code.');return;}
+  const code=document.getElementById('import-code').value.trim().toUpperCase();
+  if(code.length!==12){alert('Please enter a 12-character code.');return;}
   try{
-    let data;
-    try{data=JSON.parse(decodeURIComponent(escape(atob(code))));}
-    catch(e){alert('Invalid code. Please check and try again.');return;}
+    const res=await supabase('GET','spec_shares',null,`?code=eq.${code}&select=spec_data`);
+    if(!res||!res.length){alert('Code not found. Please check and try again.');return;}
+    const data=res[0].spec_data;
     S.accCards=data.accCards||[];
     S.gems={...mkSpec().gems,...(data.gems||{})};
     S.pendants=data.pendants||[];

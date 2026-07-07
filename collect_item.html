@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>수집퀘 아이템</title>
+<link id="theme-css" rel="stylesheet" href="./theme-dark.css">
+<script src="./theme.js"></script>
+<style>
+[data-theme="dark"]{--bg:#0e1116;--bg2:#161a22;--bg3:#1c212c;--border:#23293a;--border2:#1b1f2a;--border3:#2d3447;--text:#eaecf2;--text2:#b3b9c7;--text3:#7d8597;--text4:#565d6e;--accent:#7aa2f7;--accent-bg:rgba(122,162,247,0.12);--accent-border:rgba(122,162,247,0.30)}
+[data-theme="light"]{--bg:#f7f7f8;--bg2:#ffffff;--bg3:#f1f2f4;--border:#e6e7ea;--border2:#eeeff2;--border3:#d4d6db;--text:#15171c;--text2:#4a4d57;--text3:#71757f;--text4:#9aa0aa;--accent:#2f6fed;--accent-bg:rgba(47,111,237,0.10);--accent-border:rgba(47,111,237,0.32)}
+[data-theme="beige"]{--bg:#f3ecdd;--bg2:#faf3e2;--bg3:#ebe0c7;--border:#d8caa8;--border2:#e1d4b3;--border3:#c0ad84;--text:#2a2316;--text2:#5a4e34;--text3:#837553;--text4:#a99971;--accent:#b06a1e;--accent-bg:rgba(176,106,30,0.10);--accent-border:rgba(176,106,30,0.32)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--text);padding:16px}
+.back-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;text-decoration:none;margin-bottom:20px;transition:all .15s}
+.back-btn:hover{border-color:var(--accent);color:var(--text)}
+.page-title{font-size:22px;font-weight:700;color:var(--text);margin-bottom:6px}
+.page-desc{font-size:12px;color:var(--text3);margin-bottom:20px}
+.item-grid{display:grid;grid-template-columns:1fr;gap:20px}
+@media(min-width:700px){.item-grid{grid-template-columns:1fr 1fr}}
+.item-section{}
+.section-head{display:flex;align-items:baseline;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.section-name{font-size:16px;font-weight:700;color:var(--text)}
+.section-source{font-size:11px;color:var(--text3)}
+.item-cards{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.item-card{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg2)}
+.item-card-img{width:36px;height:36px;object-fit:contain;border-radius:6px;flex-shrink:0;background:var(--bg3)}
+.item-card-body{min-width:0}
+.item-card-name{font-size:12px;font-weight:600;color:var(--text);line-height:1.3}
+.item-card-note{font-size:10px;color:var(--text4);line-height:1.3;margin-top:2px}
+.egg-card{cursor:pointer;transition:border-color .15s,background .15s}
+.egg-card:hover{border-color:var(--accent);background:var(--bg3)}
+/* 알조합 모달 */
+.egg-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:500;align-items:flex-start;justify-content:center;padding:20px 16px;overflow-y:auto}
+.egg-modal.open{display:flex}
+.egg-modal-box{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:22px;width:100%;max-width:480px;position:relative;margin:auto}
+.em-close{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer}
+.em-close:hover{color:var(--text)}
+.em-header{display:flex;align-items:center;gap:14px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.em-img{width:58px;height:58px;object-fit:contain;border-radius:10px;background:var(--bg3);border:1px solid var(--border2);flex-shrink:0}
+.em-name{font-size:18px;font-weight:700;color:var(--text)}
+.em-badges{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.em-badge-box{background:var(--bg3);border-radius:8px;padding:9px 12px;border:1px solid var(--border2)}
+.em-badge-label{font-size:10px;color:var(--text4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.em-badge-val{font-size:13px;font-weight:600;color:var(--text)}
+.em-badge-val.ok{color:#66bb6a}
+.em-badge-val.no{color:#ef5350}
+.em-card{background:var(--bg3);border-radius:8px;padding:12px 14px;border:1px solid var(--border2);margin-bottom:8px}
+.em-card:last-child{margin-bottom:0}
+.em-card-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:7px}
+.em-card-txt{font-size:13px;color:var(--text);line-height:1.7}
+.em-combo{display:flex;gap:8px;flex-wrap:wrap}
+.em-combo-item{display:flex;align-items:center;gap:6px;padding:5px 10px;border-radius:8px;background:var(--bg2);border:1px solid var(--border)}
+.em-combo-item img{width:24px;height:24px;object-fit:contain;border-radius:4px;background:var(--bg3)}
+.em-combo-item span{font-size:12px;font-weight:600;color:var(--text)}
+.em-none{font-size:12px;color:var(--text4)}
+.source-footer{margin-top:24px;padding-top:14px;border-top:1px solid var(--border);font-size:11px;color:var(--text4);line-height:1.8}
+.source-footer a{color:var(--accent);text-decoration:none}
+.source-footer a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<a id="back-btn" href="./index.html" class="back-btn">← 메인으로</a>
+<h1 class="page-title">수집퀘 아이템</h1>
+<p class="page-desc">길포 수집 미션 아이템 목록 · 카테고리 · 획득처 정리</p>
+
+<div class="item-grid">
+
+  <!-- 젬 (자동 탐험) -->
+  <div class="item-section">
+    <div class="section-head">
+      <span class="section-name">젬</span>
+      <span class="section-source">자동 탐험</span>
+    </div>
+    <div class="item-cards">
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">76~88젬</div></div></div>
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">19~22젬</div></div></div>
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">19~22젬</div></div></div>
+    </div>
+  </div>
+
+  <!-- 파티클 (점술집 젬 분해) -->
+  <div class="item-section">
+    <div class="section-head">
+      <span class="section-name">파티클</span>
+      <span class="section-source">점술집 젬 분해</span>
+    </div>
+    <div class="item-cards">
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">레드파티클</div></div></div>
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">블루파티클</div></div></div>
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">옐로우파티클</div></div></div>
+    </div>
+  </div>
+
+  <!-- 정기 (자동 탐험) -->
+  <div class="item-section">
+    <div class="section-head">
+      <span class="section-name">정기</span>
+      <span class="section-source">자동 탐험</span>
+    </div>
+    <div class="item-cards">
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">땅의 정기</div></div></div>
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">물의 정기</div></div></div>
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">불의 정기</div></div></div>
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">바람의 정기</div></div></div>
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">빛의 정기</div></div></div>
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">어둠의 정기</div></div></div>
+    </div>
+  </div>
+
+  <!-- 장신구 (자동 탐험) -->
+  <div class="item-section">
+    <div class="section-head">
+      <span class="section-name">장신구</span>
+      <span class="section-source">자동 탐험</span>
+    </div>
+    <div class="item-cards">
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">전설의 깃털 6%</div></div></div>
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">경험의 부적 7%</div><div class="item-card-note">상점 6만골드</div></div></div>
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">행운의 부적 15%</div></div></div>
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">골드의 부적 10%</div></div></div>
+    </div>
+  </div>
+
+  <!-- 음식 (상점) -->
+  <div class="item-section">
+    <div class="section-head">
+      <span class="section-name">음식</span>
+      <span class="section-source">상점</span>
+    </div>
+    <div class="item-cards">
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">파오파오 열매</div></div></div>
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">피래미오</div></div></div>
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">칠면조 구이</div></div></div>
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">유그드라실</div></div></div>
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">멜론</div></div></div>
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">어둠의 멜론</div></div></div>
+    </div>
+  </div>
+
+  <!-- 음식 (방랑상인) -->
+  <div class="item-section">
+    <div class="section-head">
+      <span class="section-name">음식</span>
+      <span class="section-source">방랑상인</span>
+    </div>
+    <div class="item-cards">
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">자몽</div></div></div>
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">피라냐</div></div></div>
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">닭다리</div></div></div>
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">풀잎</div></div></div>
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">포도</div></div></div>
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">튤립</div></div></div>
+    </div>
+  </div>
+
+  <!-- 장신구 (상점) -->
+  <div class="item-section">
+    <div class="section-head">
+      <span class="section-name">장신구</span>
+      <span class="section-source">상점</span>
+    </div>
+    <div class="item-cards">
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">용의 발톱</div></div></div>
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">전사의 발톱</div></div></div>
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">전사의 깃털</div></div></div>
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">경험의 부적 5%</div></div></div>
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">행운의 부적 10%</div></div></div>
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">골드의 부적 5%</div></div></div>
+    </div>
+  </div>
+
+  <!-- 기타 -->
+  <div class="item-section">
+    <div class="section-head">
+      <span class="section-name">기타</span>
+    </div>
+    <div class="item-cards">
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">20000골드</div></div></div>
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">30000골드</div></div></div>
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">자양강장제S</div><div class="item-card-note">던전 구역 자탐</div></div></div>
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">페르시온 부스러기</div><div class="item-card-note">보물 상자</div></div></div>
+    </div>
+  </div>
+
+  <!-- 검은 부화기 재료 -->
+  <div class="item-section">
+    <div class="section-head">
+      <span class="section-name">검은 부화기 재료</span>
+      <span class="section-source">희망의숲 ~ 무지개 동산 자탐</span>
+    </div>
+    <div class="item-cards">
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">안정 용액</div></div></div>
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">암흑 용액</div></div></div>
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">폭발 용액</div></div></div>
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">어둠의 결정체</div></div></div>
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">빛의 결정체</div></div></div>
+      <div class="item-card"><img class="item-card-img" src=""><div class="item-card-body"><div class="item-card-name">완전 무결한 물방울</div></div></div>
+    </div>
+  </div>
+
+  <!-- 드래곤 알 - 땅 -->
+  <div class="item-section">
+    <div class="section-head">
+      <span class="section-name">드래곤 알</span>
+      <span class="section-source">땅</span>
+    </div>
+    <div class="item-cards">
+      <div class="item-card egg-card" onclick="showEgg(13)"><img class="item-card-img" src="dragon/13/profile/1.png"><div class="item-card-body"><div class="item-card-name">히드라곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(14)"><img class="item-card-img" src="dragon/14/profile/1.png"><div class="item-card-body"><div class="item-card-name">파워 드래곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(15)"><img class="item-card-img" src="dragon/15/profile/1.png"><div class="item-card-body"><div class="item-card-name">바위 드래곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(16)"><img class="item-card-img" src="dragon/16/profile/1.png"><div class="item-card-body"><div class="item-card-name">지하땅굴 드래곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(19)"><img class="item-card-img" src="dragon/19/profile/1.png"><div class="item-card-body"><div class="item-card-name">에그 드래곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(25)"><img class="item-card-img" src="dragon/25/profile/1.png"><div class="item-card-body"><div class="item-card-name">패트 드래곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(28)"><img class="item-card-img" src="dragon/28/profile/1.png"><div class="item-card-body"><div class="item-card-name">리프 드래곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(32)"><img class="item-card-img" src="dragon/32/profile/1.png"><div class="item-card-body"><div class="item-card-name">스마트 드래곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(50)"><img class="item-card-img" src="dragon/50/profile/1.png"><div class="item-card-body"><div class="item-card-name">타이거 드래곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(57)"><img class="item-card-img" src="dragon/57/profile/1.png"><div class="item-card-body"><div class="item-card-name">골든혼</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(62)"><img class="item-card-img" src="dragon/62/profile/1.png"><div class="item-card-body"><div class="item-card-name">타투</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(63)"><img class="item-card-img" src="dragon/63/profile/1.png"><div class="item-card-body"><div class="item-card-name">스파인</div></div></div>
+    </div>
+  </div>
+
+  <!-- 드래곤 알 - 물 -->
+  <div class="item-section">
+    <div class="section-head">
+      <span class="section-name">드래곤 알</span>
+      <span class="section-source">물</span>
+    </div>
+    <div class="item-cards">
+      <div class="item-card egg-card" onclick="showEgg(9)"><img class="item-card-img" src="dragon/9/profile/1.png"><div class="item-card-body"><div class="item-card-name">빙하고룡</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(10)"><img class="item-card-img" src="dragon/10/profile/1.png"><div class="item-card-body"><div class="item-card-name">네시</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(11)"><img class="item-card-img" src="dragon/11/profile/1.png"><div class="item-card-body"><div class="item-card-name">테일 드래곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(12)"><img class="item-card-img" src="dragon/12/profile/1.png"><div class="item-card-body"><div class="item-card-name">수룡</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(17)"><img class="item-card-img" src="dragon/17/profile/1.png"><div class="item-card-body"><div class="item-card-name">페어리 드래곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(23)"><img class="item-card-img" src="dragon/23/profile/1.png"><div class="item-card-body"><div class="item-card-name">미니 드래곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(24)"><img class="item-card-img" src="dragon/24/profile/1.png"><div class="item-card-body"><div class="item-card-name">스왐프 드래곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(29)"><img class="item-card-img" src="dragon/29/profile/1.png"><div class="item-card-body"><div class="item-card-name">프로그 드래곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(42)"><img class="item-card-img" src="dragon/42/profile/1.png"><div class="item-card-body"><div class="item-card-name">슬라임 드래곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(58)"><img class="item-card-img" src="dragon/58/profile/1.png"><div class="item-card-body"><div class="item-card-name">샤크곤</div></div></div>
+    </div>
+  </div>
+
+  <!-- 드래곤 알 - 불 -->
+  <div class="item-section">
+    <div class="section-head">
+      <span class="section-name">드래곤 알</span>
+      <span class="section-source">불</span>
+    </div>
+    <div class="item-cards">
+      <div class="item-card egg-card" onclick="showEgg(5)"><img class="item-card-img" src="dragon/5/profile/1.png"><div class="item-card-body"><div class="item-card-name">파이어 드래곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(6)"><img class="item-card-img" src="dragon/6/profile/1.png"><div class="item-card-body"><div class="item-card-name">번개고룡</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(7)"><img class="item-card-img" src="dragon/7/profile/1.png"><div class="item-card-body"><div class="item-card-name">라바 드래곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(8)"><img class="item-card-img" src="dragon/8/profile/1.png"><div class="item-card-body"><div class="item-card-name">피닉스</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(20)"><img class="item-card-img" src="dragon/20/profile/1.png"><div class="item-card-body"><div class="item-card-name">헬 드래곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(26)"><img class="item-card-img" src="dragon/26/profile/1.png"><div class="item-card-body"><div class="item-card-name">스파이크 드래곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(27)"><img class="item-card-img" src="dragon/27/profile/1.png"><div class="item-card-body"><div class="item-card-name">인섹트 드래곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(31)"><img class="item-card-img" src="dragon/31/profile/1.png"><div class="item-card-body"><div class="item-card-name">샌드 드래곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(51)"><img class="item-card-img" src="dragon/51/profile/1.png"><div class="item-card-body"><div class="item-card-name">금오드래곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(71)"><img class="item-card-img" src="dragon/71/profile/1.png"><div class="item-card-body"><div class="item-card-name">본헤드</div></div></div>
+    </div>
+  </div>
+
+  <!-- 드래곤 알 - 바람 -->
+  <div class="item-section">
+    <div class="section-head">
+      <span class="section-name">드래곤 알</span>
+      <span class="section-source">바람</span>
+    </div>
+    <div class="item-cards">
+      <div class="item-card egg-card" onclick="showEgg(2)"><img class="item-card-img" src="dragon/2/profile/1.png"><div class="item-card-body"><div class="item-card-name">윈드 드래곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(3)"><img class="item-card-img" src="dragon/3/profile/1.png"><div class="item-card-body"><div class="item-card-name">식스 레그 혼</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(4)"><img class="item-card-img" src="dragon/4/profile/1.png"><div class="item-card-body"><div class="item-card-name">청룡</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(18)"><img class="item-card-img" src="dragon/18/profile/1.png"><div class="item-card-body"><div class="item-card-name">레이디 드래곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(22)"><img class="item-card-img" src="dragon/22/profile/1.png"><div class="item-card-body"><div class="item-card-name">에일리언 드래곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(30)"><img class="item-card-img" src="dragon/30/profile/1.png"><div class="item-card-body"><div class="item-card-name">윙스 드래곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(33)"><img class="item-card-img" src="dragon/33/profile/1.png"><div class="item-card-body"><div class="item-card-name">뮤직 드래곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(52)"><img class="item-card-img" src="dragon/52/profile/1.png"><div class="item-card-body"><div class="item-card-name">메탈 마그넷</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(59)"><img class="item-card-img" src="dragon/59/profile/1.png"><div class="item-card-body"><div class="item-card-name">가디언</div></div></div>
+    </div>
+  </div>
+
+  <!-- 드래곤 알 - 빛 -->
+  <div class="item-section">
+    <div class="section-head">
+      <span class="section-name">드래곤 알</span>
+      <span class="section-source">빛</span>
+    </div>
+    <div class="item-cards">
+      <div class="item-card egg-card" onclick="showEgg(21)"><img class="item-card-img" src="dragon/21/profile/1.png"><div class="item-card-body"><div class="item-card-name">엔젤 드래곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(35)"><img class="item-card-img" src="dragon/35/profile/1.png"><div class="item-card-body"><div class="item-card-name">에메랄드 드래곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(36)"><img class="item-card-img" src="dragon/36/profile/1.png"><div class="item-card-body"><div class="item-card-name">라이곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(37)"><img class="item-card-img" src="dragon/37/profile/1.png"><div class="item-card-body"><div class="item-card-name">카멜레용</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(38)"><img class="item-card-img" src="dragon/38/profile/1.png"><div class="item-card-body"><div class="item-card-name">치킨헤드 드래곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(39)"><img class="item-card-img" src="dragon/39/profile/1.png"><div class="item-card-body"><div class="item-card-name">캥거래빗 드래곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(40)"><img class="item-card-img" src="dragon/40/profile/1.png"><div class="item-card-body"><div class="item-card-name">큐피트용</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(41)"><img class="item-card-img" src="dragon/41/profile/1.png"><div class="item-card-body"><div class="item-card-name">골드 드래곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(61)"><img class="item-card-img" src="dragon/61/profile/1.png"><div class="item-card-body"><div class="item-card-name">레인보우</div></div></div>
+    </div>
+  </div>
+
+  <!-- 드래곤 알 - 어둠 -->
+  <div class="item-section">
+    <div class="section-head">
+      <span class="section-name">드래곤 알</span>
+      <span class="section-source">어둠</span>
+    </div>
+    <div class="item-cards">
+      <div class="item-card egg-card" onclick="showEgg(43)"><img class="item-card-img" src="dragon/43/profile/1.png"><div class="item-card-body"><div class="item-card-name">블레이드 드래곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(44)"><img class="item-card-img" src="dragon/44/profile/1.png"><div class="item-card-body"><div class="item-card-name">메탈 드래곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(45)"><img class="item-card-img" src="dragon/45/profile/1.png"><div class="item-card-body"><div class="item-card-name">미이라곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(46)"><img class="item-card-img" src="dragon/46/profile/1.png"><div class="item-card-body"><div class="item-card-name">뱃도치 드래곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(47)"><img class="item-card-img" src="dragon/47/profile/1.png"><div class="item-card-body"><div class="item-card-name">스켈레곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(48)"><img class="item-card-img" src="dragon/48/profile/1.png"><div class="item-card-body"><div class="item-card-name">서펀트 드래곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(49)"><img class="item-card-img" src="dragon/49/profile/1.png"><div class="item-card-body"><div class="item-card-name">G네 드래곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(55)"><img class="item-card-img" src="dragon/55/profile/1.png"><div class="item-card-body"><div class="item-card-name">히에나곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(56)"><img class="item-card-img" src="dragon/56/profile/1.png"><div class="item-card-body"><div class="item-card-name">유니드래곤</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(60)"><img class="item-card-img" src="dragon/60/profile/1.png"><div class="item-card-body"><div class="item-card-name">크레센트</div></div></div>
+      <div class="item-card egg-card" onclick="showEgg(72)"><img class="item-card-img" src="dragon/72/profile/1.png"><div class="item-card-body"><div class="item-card-name">베네지</div></div></div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- 알조합 모달 -->
+<div class="egg-modal" id="egg-modal" onclick="closeEgg(event)">
+  <div class="egg-modal-box">
+    <button class="em-close" onclick="closeEgg()">✕</button>
+    <div id="em-content"></div>
+  </div>
+</div>
+
+<script>
+const DRAGON_IMG = id => `dragon/${id}/profile/1.png`;
+const EGG={
+2:{name:'윈드 드래곤',source:'바람의 신전, 바람의 드래곤 알',breed:'O',eggcomb:'O',etc:'교배 메인용으로 사용 가능, 바람의 신전에서 뜰 확률 낮음',combo:[{n:'피닉스',id:8},{n:'테일 드래곤',id:11},{n:'스마트 드래곤',id:32}]},
+3:{name:'식스 레그 혼',source:'바람의 신전, 바람의 드래곤 알',breed:'O',eggcomb:'O',etc:'교배 메인용으로 사용 가능',combo:[{n:'에일리언 드래곤',id:22},{n:'히드라곤',id:13},{n:'윈드 드래곤',id:2}]},
+4:{name:'청룡',source:'바람의 신전, 바람의 드래곤 알',breed:'X',eggcomb:'O',etc:'-',combo:[{n:'고대신룡',id:1},{n:'리프 드래곤',id:28},{n:'윙스 드래곤',id:30}]},
+5:{name:'파이어 드래곤',source:'불의 산, 불의 드래곤 알',breed:'O',eggcomb:'O',etc:'-',combo:[{n:'번개고룡',id:6},{n:'피닉스',id:8},{n:'수룡',id:12}]},
+6:{name:'번개고룡',source:'불의 산, 불의 드래곤 알',breed:'X',eggcomb:'O',etc:'불의 산에서 뜰 확률 낮음',combo:[{n:'청룡',id:4},{n:'헬 드래곤',id:20},{n:'스파이크 드래곤',id:26}]},
+7:{name:'라바 드래곤',source:'불의 산, 불의 드래곤 알',breed:'X',eggcomb:'O',etc:'-',combo:[{n:'청룡',id:4},{n:'헬 드래곤',id:20},{n:'윈드 드래곤',id:2}]},
+8:{name:'피닉스',source:'불의 산, 불의 드래곤 알',breed:'X',eggcomb:'O',etc:'-',combo:[{n:'샌드 드래곤',id:31},{n:'빙하고룡',id:9},{n:'인섹트 드래곤',id:27}]},
+9:{name:'빙하고룡',source:'난파선, 물의 드래곤 알',breed:'X',eggcomb:'O',etc:'난파선에서 뜰 확률 낮음',combo:[{n:'네시',id:10},{n:'히드라곤',id:13},{n:'바위 드래곤',id:15}]},
+10:{name:'네시',source:'난파선, 물의 드래곤 알',breed:'X',eggcomb:'O',etc:'-',combo:[{n:'청룡',id:4},{n:'파이어 드래곤',id:5},{n:'인섹트 드래곤',id:27}]},
+11:{name:'테일 드래곤',source:'난파선, 물의 드래곤 알',breed:'X',eggcomb:'O',etc:'-',combo:[{n:'빙하고룡',id:9},{n:'프로그 드래곤',id:29},{n:'스마트 드래곤',id:32}]},
+12:{name:'수룡',source:'난파선, 물의 드래곤 알',breed:'O',eggcomb:'O',etc:'교배 메인용으로 사용 가능',combo:[{n:'빙하고룡',id:9},{n:'네시',id:10},{n:'파이어 드래곤',id:5}]},
+13:{name:'히드라곤',source:'희망의 숲, 땅의 드래곤 알',breed:'X',eggcomb:'O',etc:'-',combo:[{n:'바위 드래곤',id:15},{n:'스파이크 드래곤',id:26},{n:'에일리언 드래곤',id:22}]},
+14:{name:'파워 드래곤',source:'희망의 숲, 땅의 드래곤 알',breed:'X',eggcomb:'O',etc:'희망의 숲에서 뜰 확률 낮음',combo:[{n:'윈드 드래곤',id:2},{n:'라바 드래곤',id:7},{n:'미니 드래곤',id:23}]},
+15:{name:'바위 드래곤',source:'희망의 숲, 땅의 드래곤 알',breed:'X',eggcomb:'O',etc:'-',combo:[{n:'수룡',id:12},{n:'에일리언 드래곤',id:22},{n:'스파이크 드래곤',id:26}]},
+16:{name:'지하땅굴 드래곤',source:'희망의 숲, 땅의 드래곤 알',breed:'X',eggcomb:'O',etc:'-',combo:[{n:'피닉스',id:8},{n:'바위 드래곤',id:15},{n:'샌드 드래곤',id:31}]},
+17:{name:'페어리 드래곤',source:'옛 성터, 물의 드래곤 알',breed:'X',eggcomb:'O',etc:'-',combo:[{n:'지하땅굴 드래곤',id:16},{n:'프로그 드래곤',id:29},{n:'네시',id:10}]},
+18:{name:'레이디 드래곤',source:'바람의 신전, 바람의 드래곤 알',breed:'O',eggcomb:'O',etc:'-',combo:[{n:'빙하고룡',id:9},{n:'바위 드래곤',id:15},{n:'에그 드래곤',id:19}]},
+19:{name:'에그 드래곤',source:'희망의 숲, 땅의 드래곤 알',breed:'X',eggcomb:'O',etc:'-',combo:[{n:'레이디 드래곤',id:18},{n:'샌드 드래곤',id:31},{n:'헬 드래곤',id:20}]},
+20:{name:'헬 드래곤',source:'불의 산, 불의 드래곤 알',breed:'X',eggcomb:'O',etc:'-',combo:[{n:'스파이크 드래곤',id:26},{n:'번개고룡',id:6},{n:'청룡',id:4}]},
+21:{name:'엔젤 드래곤',source:'하늘의 신전, 빛의 드래곤 알',breed:'X',eggcomb:'O',etc:'-',combo:[{n:'고대신룡',id:1},{n:'에그 드래곤',id:19},{n:'에일리언 드래곤',id:22}]},
+22:{name:'에일리언 드래곤',source:'바람의 신전, 바람의 드래곤 알',breed:'O',eggcomb:'O',etc:'교배 메인용으로 사용 가능',combo:[{n:'청룡',id:4},{n:'파이어 드래곤',id:5},{n:'윙스 드래곤',id:30}]},
+23:{name:'미니 드래곤',source:'무지개 동산, 물의 드래곤 알',breed:'O',eggcomb:'O',etc:'교배 메인용으로 사용 가능',combo:[{n:'식스 레그 혼',id:3},{n:'윈드 드래곤',id:2},{n:'라바 드래곤',id:7}]},
+24:{name:'스왐프 드래곤',source:'무지개 동산, 물의 드래곤 알',breed:'X',eggcomb:'O',etc:'-',combo:[{n:'청룡',id:4},{n:'피닉스',id:8},{n:'윙스 드래곤',id:30}]},
+25:{name:'패트 드래곤',source:'희망의 숲, 땅의 드래곤 알',breed:'O',eggcomb:'O',etc:'교배 메인용으로 사용 가능',combo:[{n:'지하땅굴 드래곤',id:16},{n:'청룡',id:4},{n:'파이어 드래곤',id:5}]},
+26:{name:'스파이크 드래곤',source:'메마른 평원, 불의 드래곤 알',breed:'X',eggcomb:'O',etc:'-',combo:[{n:'바위 드래곤',id:15},{n:'뮤직 드래곤',id:33},{n:'레이디 드래곤',id:18}]},
+27:{name:'인섹트 드래곤',source:'메마른 평원, 불의 드래곤 알',breed:'X',eggcomb:'O',etc:'-',combo:[{n:'피닉스',id:8},{n:'페어리 드래곤',id:17},{n:'라바 드래곤',id:7}]},
+28:{name:'리프 드래곤',source:'옛 성터, 땅의 드래곤 알',breed:'X',eggcomb:'O',etc:'-',combo:[{n:'청룡',id:4},{n:'미니 드래곤',id:23},{n:'인섹트 드래곤',id:27}]},
+29:{name:'프로그 드래곤',source:'난파선, 물의 드래곤 알',breed:'X',eggcomb:'O',etc:'-',combo:[{n:'네시',id:10},{n:'피닉스',id:8},{n:'수룡',id:12}]},
+30:{name:'윙스 드래곤',source:'메마른 평원, 바람의 드래곤 알',breed:'O',eggcomb:'O',etc:'-',combo:[{n:'고대신룡',id:1},{n:'뮤직 드래곤',id:33},{n:'지하땅굴 드래곤',id:16}]},
+31:{name:'샌드 드래곤',source:'불의 산, 불의 드래곤 알',breed:'O',eggcomb:'O',etc:'-',combo:[{n:'수룡',id:12},{n:'인섹트 드래곤',id:27},{n:'파이어 드래곤',id:5}]},
+32:{name:'스마트 드래곤',source:'옛 성터, 땅의 드래곤 알',breed:'O',eggcomb:'O',etc:'-',combo:[{n:'피닉스',id:8},{n:'테일 드래곤',id:11},{n:'지하땅굴 드래곤',id:16}]},
+33:{name:'뮤직 드래곤',source:'메마른 평원, 바람의 드래곤 알',breed:'O',eggcomb:'O',etc:'-',combo:[{n:'윙스 드래곤',id:30},{n:'윈드 드래곤',id:2},{n:'파워 드래곤',id:14}]},
+35:{name:'에메랄드 드래곤',source:'하늘의 신전, 빛의 드래곤 알',breed:'O',eggcomb:'O',etc:'-',combo:[{n:'라이곤',id:36},{n:'캥거래빗 드래곤',id:39},{n:'큐피트용',id:40}]},
+36:{name:'라이곤',source:'하늘의 신전, 빛의 드래곤 알',breed:'O',eggcomb:'O',etc:'-',combo:[{n:'큐피트용',id:40},{n:'에메랄드 드래곤',id:35},{n:'골드 드래곤',id:41}]},
+37:{name:'카멜레용',source:'하늘의 신전, 빛의 드래곤 알',breed:'O',eggcomb:'O',etc:'-',combo:[{n:'라이곤',id:36},{n:'에메랄드 드래곤',id:35},{n:'골드 드래곤',id:41}]},
+38:{name:'치킨헤드 드래곤',source:'하늘의 신전, 빛의 드래곤 알',breed:'O',eggcomb:'O',etc:'-',combo:[{n:'라이곤',id:36},{n:'에메랄드 드래곤',id:35},{n:'카멜레용',id:37}]},
+39:{name:'캥거래빗 드래곤',source:'하늘의 신전, 빛의 드래곤 알',breed:'O',eggcomb:'O',etc:'-',combo:[{n:'큐피트용',id:40},{n:'에메랄드 드래곤',id:35},{n:'카멜레용',id:37}]},
+40:{name:'큐피트용',source:'메마른 평원, 빛의 드래곤 알',breed:'O',eggcomb:'O',etc:'-',combo:[{n:'캥거래빗 드래곤',id:39},{n:'에메랄드 드래곤',id:35},{n:'골드 드래곤',id:41}]},
+41:{name:'골드 드래곤',source:'하늘의 신전, 빛의 드래곤 알',breed:'O',eggcomb:'O',etc:'-',combo:[{n:'라이곤',id:36},{n:'에메랄드 드래곤',id:35},{n:'큐피트용',id:40}]},
+42:{name:'슬라임 드래곤',source:'난파선, 물의 드래곤 알',breed:'O',eggcomb:'X',etc:'-',combo:[]},
+43:{name:'블레이드 드래곤',source:'어둠의 제단, 어둠의 드래곤 알',breed:'O',eggcomb:'O',etc:'-',combo:[{n:'메탈 드래곤',id:44},{n:'서펀트 드래곤',id:48},{n:'스켈레곤',id:47}]},
+44:{name:'메탈 드래곤',source:'어둠의 제단, 어둠의 드래곤 알',breed:'O',eggcomb:'O',etc:'-',combo:[{n:'G네 드래곤',id:49},{n:'미이라곤',id:45},{n:'스켈레곤',id:47}]},
+45:{name:'미이라곤',source:'어둠의 제단, 어둠의 드래곤 알',breed:'O',eggcomb:'O',etc:'-',combo:[{n:'메탈 드래곤',id:44},{n:'뱃도치 드래곤',id:46},{n:'스켈레곤',id:47}]},
+46:{name:'뱃도치 드래곤',source:'나무던전, 어둠의 드래곤 알',breed:'O',eggcomb:'O',etc:'-',combo:[{n:'서펀트 드래곤',id:48},{n:'미이라곤',id:45},{n:'스켈레곤',id:47}]},
+47:{name:'스켈레곤',source:'나무던전, 어둠의 드래곤 알',breed:'O',eggcomb:'O',etc:'-',combo:[{n:'메탈 드래곤',id:44},{n:'뱃도치 드래곤',id:46},{n:'미이라곤',id:45}]},
+48:{name:'서펀트 드래곤',source:'나무던전, 어둠의 드래곤 알',breed:'O',eggcomb:'O',etc:'-',combo:[{n:'메탈 드래곤',id:44},{n:'뱃도치 드래곤',id:46},{n:'G네 드래곤',id:49}]},
+49:{name:'G네 드래곤',source:'나무던전, 어둠의 드래곤 알',breed:'O',eggcomb:'O',etc:'-',combo:[{n:'블레이드 드래곤',id:43},{n:'미이라곤',id:45},{n:'스켈레곤',id:47}]},
+50:{name:'타이거 드래곤',source:'옛 성터, 땅의 드래곤 알',breed:'O',eggcomb:'O',etc:'-',combo:[{n:'금오드래곤',id:51},{n:'히에나곤',id:55},{n:'메탈 마그넷',id:52}]},
+51:{name:'금오드래곤',source:'무지개 동산, 불의 드래곤 알',breed:'O',eggcomb:'O',etc:'-',combo:[{n:'골든혼',id:57},{n:'메탈 마그넷',id:52},{n:'타이거 드래곤',id:50}]},
+52:{name:'메탈 마그넷',source:'바람의 신전, 바람의 드래곤 알',breed:'O',eggcomb:'O',etc:'-',combo:[{n:'금오드래곤',id:51},{n:'타이거 드래곤',id:50},{n:'가디언',id:59}]},
+55:{name:'히에나곤',source:'고룡의 무덤, 어둠의 드래곤 알',breed:'O',eggcomb:'O',etc:'-',combo:[{n:'유니드래곤',id:56},{n:'가디언',id:59},{n:'골든혼',id:57}]},
+56:{name:'유니드래곤',source:'고룡의 무덤, 어둠의 드래곤 알',breed:'O',eggcomb:'O',etc:'-',combo:[{n:'샤크곤',id:58},{n:'가디언',id:59},{n:'골든혼',id:57}]},
+57:{name:'골든혼',source:'희망의 숲, 땅의 드래곤 알',breed:'O',eggcomb:'O',etc:'-',combo:[{n:'유니드래곤',id:56},{n:'샤크곤',id:58},{n:'가디언',id:59}]},
+58:{name:'샤크곤',source:'난파선, 물의 드래곤 알',breed:'O',eggcomb:'O',etc:'-',combo:[{n:'크레센트',id:60},{n:'가디언',id:59},{n:'레인보우',id:61}]},
+59:{name:'가디언',source:'바람의 신전, 바람의 드래곤 알',breed:'O',eggcomb:'X',etc:'-',combo:[]},
+60:{name:'크레센트',source:'고룡의 무덤, 어둠의 드래곤 알',breed:'O',eggcomb:'O',etc:'-',combo:[{n:'유니드래곤',id:56},{n:'히에나곤',id:55},{n:'골든혼',id:57}]},
+61:{name:'레인보우',source:'무지개 동산, 빛의 드래곤 알',breed:'O',eggcomb:'O',etc:'-',combo:[{n:'유니드래곤',id:56},{n:'타투',id:62},{n:'히에나곤',id:55}]},
+62:{name:'타투',source:'무지개 동산, 땅의 드래곤 알',breed:'O',eggcomb:'O',etc:'-',combo:[{n:'유니드래곤',id:56},{n:'레인보우',id:61},{n:'골든혼',id:57}]},
+63:{name:'스파인',source:'무지개 동산, 땅의 드래곤 알',breed:'O',eggcomb:'X',etc:'-',combo:[]},
+71:{name:'본헤드',source:'고룡의 무덤, 지하던전',breed:'X',eggcomb:'X',etc:'길드 상점에서 획득 가능 (50루비)',combo:[]},
+72:{name:'베네지',source:'어둠의 제단, 지하 던전',breed:'O',eggcomb:'x',etc:'길드 상점에서 획득 가능 (50루비)',combo:[]},
+};
+
+function showEgg(id){
+  const d = EGG[id];
+  if(!d) return;
+  const breedOk = d.breed === 'O';
+  const eggOk = d.eggcomb === 'O';
+  let comboHtml;
+  if(d.combo && d.combo.length){
+    comboHtml = '<div class="em-combo">' + d.combo.map(c =>
+      `<div class="em-combo-item"><img src="${DRAGON_IMG(c.id)}"><span>${c.n}</span></div>`
+    ).join('') + '</div>';
+  } else {
+    comboHtml = '<span class="em-none">조합 정보 없음</span>';
+  }
+  document.getElementById('em-content').innerHTML = `
+    <div class="em-header">
+      <img class="em-img" src="${DRAGON_IMG(id)}">
+      <div class="em-name">${d.name}</div>
+    </div>
+    <div class="em-badges">
+      <div class="em-badge-box"><div class="em-badge-label">교배 여부</div><div class="em-badge-val ${breedOk?'ok':'no'}">${d.breed}</div></div>
+      <div class="em-badge-box"><div class="em-badge-label">알조합 여부</div><div class="em-badge-val ${eggOk?'ok':'no'}">${d.eggcomb}</div></div>
+    </div>
+    <div class="em-card">
+      <div class="em-card-lbl">획득처</div>
+      <div class="em-card-txt">${d.source}</div>
+    </div>
+    <div class="em-card">
+      <div class="em-card-lbl">기타 사항</div>
+      <div class="em-card-txt">${d.etc}</div>
+    </div>
+    <div class="em-card">
+      <div class="em-card-lbl">알조합 재료 (3마리)</div>
+      <div class="em-card-txt">${comboHtml}</div>
+    </div>
+  `;
+  document.getElementById('egg-modal').classList.add('open');
+}
+function closeEgg(e){
+  if(!e || e.target === document.getElementById('egg-modal')){
+    document.getElementById('egg-modal').classList.remove('open');
+  }
+}
+</script>
+
+</body>
+</html>

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>종합 정보사이트 made by 닉스</title>
 <meta property="og:title" content="종합 정보사이트 made by 닉스">
-<meta property="og:description" content="드래곤빌리지 종합 정보사이트 - 초월 등급표, 도감, 레이드, 공략, 커뮤니티">
+<meta property="og:description" content="드래곤빌리지 종합 정보사이트 - 초월 등급표, 도감, 레이드, 공략, 길드">
 <meta property="og:image" content="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/main.jpg">
 <meta property="og:url" content="https://yejoo0519.github.io/dogam">
 <meta property="og:type" content="website">
@@ -154,6 +154,15 @@
   .icon-tile.rose    { background: color-mix(in oklab, var(--tone-rose)    18%, transparent); color: var(--tone-rose); }
   .icon-tile.emerald { background: color-mix(in oklab, var(--tone-emerald) 18%, transparent); color: var(--tone-emerald); }
 
+  /* 우측 사이드 레일 — 길드 배너 */
+  .guild-aside { display: flex; align-items: center; gap: 10px;
+                 padding: 12px 14px; background: var(--bg2);
+                 border: 1px solid var(--border); border-radius: 12px;
+                 transition: border-color .15s; }
+  .guild-aside:hover { border-color: var(--accent); }
+  .guild-aside-text { font-size: 13px; font-weight: 600; color: var(--text); flex: 1; }
+  .guild-aside-arrow { font-size: 12px; color: var(--accent); }
+
   /* 우측 사이드 레일 — 패치노트 */
   .side-rail { width: 240px; flex-shrink: 0; position: sticky; top: 24px;
                display: flex; flex-direction: column; gap: 16px; }
@@ -234,7 +243,7 @@
     .hero-desc { font-size: 13px; }
     .hero { padding: 8px 0; }
     .tab-bar { justify-content: center; gap: 14px; }
-    .body { flex-direction: column; gap: 22px; }
+    .body { flex-direction: column; gap: 22px; align-items: stretch; }
     .side-rail { width: 100%; position: static; }
     .cards { grid-template-columns: 1fr; }
     .cards.tri { grid-template-columns: 1fr; }
@@ -338,7 +347,7 @@
       <span class="h-section">made by 닉스</span>
     </div>
     <h1 class="h-display">종합 정보사이트</h1>
-    <p class="hero-desc">드래곤빌리지 초월 등급표, 도감, 레이드, 공략, 커뮤니티, 자동 계산기까지 — 한 페이지에서.</p>
+    <p class="hero-desc">드래곤빌리지 초월 등급표, 도감, 레이드, 공략, 길드, 자동 계산기까지 — 한 페이지에서.</p>
     <div class="stats-strip" id="stats-strip">
       <span>오늘 <strong id="s-today">-</strong></span>
       <span>누적 <strong id="s-total">-</strong></span>
@@ -350,8 +359,6 @@
   <nav class="tab-bar" data-scroll-x>
     <button class="tab active" onclick="switchTab('info', this)">정보</button>
     <button class="tab" onclick="switchTab('guide', this)">공략 &amp; 가이드</button>
-    <button class="tab" onclick="switchTab('weekly', this)">주간</button>
-    <button class="tab" onclick="switchTab('community', this)">커뮤니티</button>
     <button class="tab" onclick="switchTab('calculator', this)">계산기</button>
     <button class="tab" id="tab-admin" onclick="switchTab('admin', this)" style="display:none">⚙️ 어드민</button>
   </nav>
@@ -361,7 +368,7 @@
     <main class="main-column">
 
       <section class="category active" id="cat-info">
-        <div class="cat-head"><h3>정보</h3><span class="meta">· 5개 메뉴</span></div>
+        <div class="cat-head"><h3>정보</h3><span class="meta">· 4개 메뉴</span></div>
         <div class="cards">
           <a href="./tier.html" class="card">
             <span class="icon-tile sky">초등</span>
@@ -384,13 +391,6 @@
               <div class="card-desc">Lv.45 / Lv.21 SSS 드래곤 랭킹 · 속성 필터 지원</div>
             </div>
           </a>
-          <a href="./raid.html" class="card">
-            <span class="icon-tile rose">알하</span>
-            <div class="card-body">
-              <div class="card-title">아르하 입구</div>
-              <div class="card-desc">디데락 조합, 평르하 조합 · 자동 조합기능 제공</div>
-            </div>
-          </a>
           <a href="./pkg.html" class="card">
             <span class="icon-tile emerald">패키</span>
             <div class="card-body">
@@ -402,7 +402,7 @@
       </section>
 
       <section class="category" id="cat-guide">
-        <div class="cat-head"><h3>공략 &amp; 가이드</h3><span class="meta">· 2개 메뉴</span></div>
+        <div class="cat-head"><h3>공략 &amp; 가이드</h3><span class="meta">· 3개 메뉴</span></div>
         <div class="cards">
           <a href="./guide.html?from=guide" class="card">
             <span class="icon-tile amber">팁게</span>
@@ -418,40 +418,16 @@
               <div class="card-desc">아르하필드 · 일반 레이드 · 레무리아 보스 상세</div>
             </div>
           </a>
-        </div>
-      </section>
-
-      <section class="category" id="cat-weekly">
-        <div class="cat-head"><h3>주간</h3><span class="meta">· 1개 메뉴</span></div>
-        <div class="cards">
-          <a href="./weekly.html?from=weekly" class="card">
-            <span class="icon-tile sky">주간</span>
+          <a href="./raid.html" class="card">
+            <span class="icon-tile rose">알하</span>
             <div class="card-body">
-              <div class="card-title">주간 정보</div>
-              <div class="card-desc">레무리아 · 레이드 · 길드전 · 매주 업데이트</div>
+              <div class="card-title">아르하 입구</div>
+              <div class="card-desc">디데락 조합, 평르하 조합 · 자동 조합기능 제공</div>
             </div>
           </a>
         </div>
       </section>
 
-      <section class="category" id="cat-community">
-        <div class="cat-head"><h3>커뮤니티</h3><span class="meta">· 2개 메뉴</span></div>
-        <div class="cards">
-          <a href="./guild.html?from=community" class="card">
-            <span class="icon-tile emerald">길드</span>
-            <div class="card-body">
-              <div class="card-title">길드</div>
-              <div class="card-desc">길드 홍보 및 모집 정보</div>
-            </div>
-          </a>
-          <a href="./friend.html?from=community" class="card">
-            <span class="icon-tile violet">친추</span>
-            <div class="card-body">
-              <div class="card-title">친구요청</div>
-              <div class="card-desc">정기친구 · 레이드 프리미엄 · 친구 게시판</div>
-            </div>
-          </a>
-        </div>
       </section>
 
       <section class="category" id="cat-calculator">
@@ -515,6 +491,11 @@
 
     <!-- 우측 사이드 (PC) -->
     <aside class="side-rail pc-only">
+      <a href="./guild.html?from=index" class="guild-aside">
+        <span class="icon-tile emerald">길드</span>
+        <span class="guild-aside-text">길드 홍보 &amp; 모집</span>
+        <span class="guild-aside-arrow">→</span>
+      </a>
       <div class="patch-aside" onclick="openPatchModal()">
         <div class="patch-aside-head">
           <span class="h-section">패치노트</span>
@@ -571,6 +552,9 @@
     </button>
     <button onclick="openPatchModal()">
       <span class="glyph">📋</span><span>패치노트</span>
+    </button>
+    <button onclick="location.href='./guild.html?from=index'">
+      <span class="glyph">🛡️</span><span>길드</span>
     </button>
     <button onclick="location.href='./my.html'">
       <span class="glyph">👤</span><span>내 스펙</span>

@@ -8,7 +8,7 @@
 <script src="../dragon-data.js"></script>
 <link id="theme-css" rel="stylesheet" href="./theme-dark.css">
 <script src="../theme.js"></script>
-<script>function getUser(){return null;}async function supabase(){return null;}function logout(){}</script>
+<script src="../sb_config.js"></script>
 <style>
 
 *{box-sizing:border-box;margin:0;padding:0}
@@ -406,6 +406,10 @@ input[type=number]{appearance:textfield;-moz-appearance:textfield}
   <div class="sec" id="res-sec" style="display:none">
   <div class="sec-hd">🏆 Simulation Results — Top 3</div>
   <div class="res-wrap"><div id="res-body-avg"></div></div>
+  <div id="guild-send-wrap" style="display:none;padding:12px 16px;border-top:1px solid var(--bd);align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+    <span id="guild-send-label" style="font-size:12px;color:var(--dim)"></span>
+    <button class="btn-gold" id="guild-send-btn" onclick="sendToGuild()">📤 Submit This Week's Setup</button>
+  </div>
 </div>
 
 </div></div>
@@ -3108,8 +3112,87 @@ function renderSpecView(){
 <script>
 
 let _guildResult=null;
-async function afterSimComplete(results){return;}
-async function sendToGuild(){return;}
+async function afterSimComplete(results){
+  const wrap=document.getElementById('guild-send-wrap');
+  if(!wrap)return;
+  const lbl=document.getElementById('guild-send-label');
+  const btn=document.getElementById('guild-send-btn');
+  try{
+    const top3=(results||[]).slice(0,3);
+    if(!top3.length)return;
+    let settingsJson=null;
+    try{
+      const statWithBuff=Math.round(top3.reduce((s,r)=>s+r.bv,0)/top3.length);
+      const statNoBuff=Math.round(top3.reduce((s,r)=>{const c=r._calc||{};const nH=r.fH-(c.netBufH??c.bufH??0),nA=r.fA-(c.netBufA??c.bufA??0),nD=r.fD-(c.netBufD??c.bufD??0);return s+nH*nA*nD;},0)/top3.length);
+      settingsJson={deck:top3.map(r=>({
+        dragon:{
+          name:r.dragon.name,attr:r.dragon.attr,dtype:r.dragon.dtype,
+          grade:r.dragon.grade||'9.0',growth:r.dragon.growth||'Descent (Blessing)',
+          opts:r.dragon.opts||[],bonus:r.dragon.bonus||null
+        },
+        dragonImg:(typeof getDragonImgUrl==='function'?getDragonImgUrl(r.dragon.name):null),
+        accName:r.accN,
+        accImg:(()=>{try{const a=ACC_DB.find(x=>x.n===r.accN);return a&&a.img?a.img:null;}catch(e){return null;}})(),
+        enc:r.enc,pend:r.pend,gemAlloc:r.alloc,
+        fH:r.fH,fA:r.fA,fD:r.fD,bv:r.bv,
+        bufH:r._calc?.bufH||0,bufA:r._calc?.bufA||0,bufD:r._calc?.bufD||0,
+        debufH:r._calc?.debufH||0,debufA:r._calc?.debufA||0,debufD:r._calc?.debufD||0,
+        buff:r.buff||{hp:0,atk:0,def:0},
+        debuff:getDragonDebuffCounts(r.dragon)
+      }))};
+      _guildResult={statWithBuff,statNoBuff,settingsJson};
+    }catch(e){console.warn('settingsJson build error:',e);}
+    const user=(typeof getUser==='function')?getUser():null;
+    if(!user){lbl.innerHTML='<span style="color:var(--dimmer)">Log in to submit to a guild.</span>';btn.disabled=true;btn.textContent='📤 Submit This Week\'s Setup';wrap.style.display='flex';return;}
+    lbl.innerHTML='<span style="color:var(--dim)">Checking guild link...</span>';btn.disabled=true;btn.textContent='📤 Submit This Week\'s Setup';wrap.style.display='flex';
+    const members=await supabase('GET','guild_members',null,`?user_id=eq.${user.id}&status=eq.approved&select=guild_id,nickname,guilds(id,name)&limit=1`);
+    if(!members||!members.length){lbl.innerHTML='<span style="color:var(--dimmer)">No linked guild.</span>';return;}
+    const member=members[0];
+    const seasons=await supabase('GET','guild_seasons',null,`?guild_id=eq.${member.guild_id}&closed_at=is.null&order=opened_at.desc&limit=1`);
+    if(!seasons||!seasons.length){lbl.innerHTML='<span style="color:var(--dimmer)">No active season.</span>';return;}
+    const season=seasons[0];
+    if(_guildResult)Object.assign(_guildResult,{member,season});
+    else _guildResult={...(settingsJson?{settingsJson}:{}),member,season};
+    const exist=await supabase('GET','guild_weekly_settings',null,`?season_id=eq.${season.id}&user_id=eq.${user.id}&select=submitted_at&limit=1`);
+    const gname=member.guilds?.name||'Guild';
+    if(exist&&exist.length){
+      const t=new Date(exist[0].submitted_at).toLocaleString('en-US',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});
+      lbl.innerHTML=`<span style="color:var(--green)">✅ ${gname} — Submitted (${t})</span>`;
+      btn.textContent='🔄 Resubmit';
+    }else{
+      lbl.innerHTML=`<span style="color:var(--dim)">${gname} · ${season.season_label}</span>`;
+      btn.textContent='📤 Submit This Week\'s Setup';
+    }
+    btn.disabled=false;
+  }catch(e){
+    console.error('afterSimComplete error:',e);
+    lbl.innerHTML=`<span style="color:var(--dimmer)">Error: ${e.message||String(e)}</span>`;
+    wrap.style.display='flex';
+  }
+}
+async function sendToGuild(){
+  if(!_guildResult){alert('Please run the simulation first.');return;}
+  const{statWithBuff,statNoBuff,member,season,settingsJson}=_guildResult;
+  const user=getUser();if(!user){alert('You need to log in.');return;}
+  const btn=document.getElementById('guild-send-btn');
+  btn.disabled=true;btn.textContent='Submitting...';
+  try{
+    const exist=await supabase('GET','guild_weekly_settings',null,`?season_id=eq.${season.id}&user_id=eq.${user.id}&select=id&limit=1`);
+    if(exist&&exist.length){
+      await supabase('PATCH','guild_weekly_settings',{stat_no_buff:statNoBuff,stat_with_buff:statWithBuff,settings_json:settingsJson||null,submitted_at:new Date().toISOString()},`?id=eq.${exist[0].id}`);
+    }else{
+      await supabase('POST','guild_weekly_settings',{guild_id:member.guild_id,season_id:season.id,user_id:user.id,nickname:member.nickname,stat_no_buff:statNoBuff,stat_with_buff:statWithBuff,settings_json:settingsJson||null,submitted_at:new Date().toISOString()});
+    }
+    const t=new Date().toLocaleString('en-US',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});
+    const gname=member.guilds?.name||'Guild';
+    document.getElementById('guild-send-label').innerHTML=`<span style="color:var(--green)">✅ ${gname} — Submitted (${t})</span>`;
+    btn.textContent='🔄 Resubmit';btn.disabled=false;
+    let el=document.getElementById('_guild-toast');
+    if(!el){el=document.createElement('div');el.id='_guild-toast';el.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--gold);color:#0a0c18;padding:10px 24px;border-radius:8px;font-weight:800;font-size:14px;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap';document.body.appendChild(el);}
+    el.textContent='This week\'s setup was sent to your guild! 🎉';el.style.opacity='1';
+    setTimeout(()=>el.style.opacity='0',2800);
+  }catch(e){alert('Submit error: '+(e.message||'Please try again.'));btn.disabled=false;btn.textContent='📤 Submit This Week\'s Setup';}
+}
 
 </script>
 </body>

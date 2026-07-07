@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>체+방 전용 계산기 (개인용)</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0e1116;--sf:#161a22;--sf2:#1c212c;--bd:#23293a;
+  --text:#eaecf2;--text2:#b3b9c7;
+  --gold:#7aa2f7;--gold2:#7aa2f7;
+  --dim:#7d8597;--dimmer:#565d6e;
+  --red:#f87171;--green:#4ade80;--blue:#60a5fa;
+  --hpc:#fbbf24;--atc:#f87171;--dfc:#60a5fa;
+  --num:#4ade80;--string:#60a5fa;
+}
+body{font-family:'Nanum Gothic',-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
+.hd{display:flex;align-items:center;gap:14px;padding:12px 20px;background:var(--sf);border-bottom:2px solid var(--gold);position:sticky;top:0;z-index:100}
+.hd-icon{font-size:26px}.hd-t{font-size:15px;font-weight:800;color:var(--gold)}.hd-s{font-size:11px;color:var(--dim);margin-top:2px}
+.ti{max-width:1000px;margin:0 auto;padding:14px 24px}
+.sec{background:var(--sf);border:1px solid var(--bd);border-radius:8px;margin-bottom:14px;overflow:hidden}
+.sec-hd{display:flex;align-items:center;justify-content:space-between;padding:9px 16px;background:var(--sf2);border-bottom:1px solid var(--bd);font-size:11px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.5px}
+.sec-bd{padding:14px 16px}
+select,input[type=number],input[type=text]{background:var(--sf2);border:1px solid var(--bd);color:var(--text);padding:5px 9px;border-radius:5px;font-family:'Nanum Gothic',sans-serif;font-size:13px}
+select:focus,input:focus{outline:none;border-color:var(--gold)}
+.fg label{display:block;font-size:11px;color:var(--dim);margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px}
+.fg select,.fg input{width:100%}
+.cfg-lbl{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-bottom:7px}
+.btn-grp{display:flex;gap:4px;flex-wrap:wrap}
+.btn-grp button{flex:1;min-width:64px;padding:8px 4px;background:var(--sf2);border:1px solid var(--bd);border-radius:4px;color:var(--dim);cursor:pointer;font-family:'Nanum Gothic',sans-serif;font-size:13px;font-weight:700;transition:all .15s}
+.btn-grp button:hover{border-color:var(--dim)}
+.btn-grp button.active{background:rgba(122,162,247,.12);border-color:var(--gold);color:var(--gold)}
+.btn-reset{background:none;border:1px solid var(--red);color:var(--red);padding:6px 13px;border-radius:5px;cursor:pointer;font-family:'Nanum Gothic',sans-serif;font-size:13px;font-weight:700}
+.btn-reset:hover{background:rgba(248,113,113,.1)}
+.sp-opts{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:12px}
+.sp-ocard{display:flex;align-items:center;gap:7px;padding:8px 10px;background:var(--bg);border:1px solid var(--bd);border-radius:5px}
+.sp-onum{color:var(--gold);font-size:11px;font-weight:800;min-width:18px}
+.sp-ocard select{flex:1;font-size:12px}
+.sp-oval{color:var(--green);font-size:11px;min-width:46px;text-align:right}
+.sp-preset-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin-bottom:10px}
+@media (max-width:520px){
+  .sp-preset-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .sp-preset-name,.sp-preset-desc{display:block;margin-left:0}
+}
+.acc-card{background:var(--bg);border:1px solid var(--bd);border-radius:6px;padding:8px 12px;margin-bottom:8px}
+.acc-card-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.acc-search-wrap{position:relative;flex:1;min-width:140px}
+.acc-search-input{width:100%;background:var(--sf2);border:1px solid var(--bd);color:var(--text);padding:5px 9px;border-radius:5px;font-family:'Nanum Gothic',sans-serif;font-size:13px}
+.acc-search-input:focus{outline:none;border-color:var(--gold)}
+.acc-search-input::placeholder{color:var(--dimmer)}
+.acc-dropdown{position:absolute;top:100%;left:0;right:0;background:var(--sf2);border:1px solid var(--gold);border-radius:5px;max-height:200px;overflow-y:auto;z-index:200;margin-top:2px;display:none}
+.acc-dropdown.open{display:block}
+.acc-drop-item{padding:6px 10px;font-size:13px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:8px;color:var(--text);font-family:'Nanum Gothic',sans-serif}
+.acc-drop-item:hover{background:rgba(122,162,247,.12)}
+.acc-drop-item.focused{background:rgba(122,162,247,.2);outline:none}
+.acc-drop-name{flex:1}
+.btn-red{background:none;border:1px solid var(--red);color:var(--red);padding:3px 9px;border-radius:4px;cursor:pointer;font-family:'Nanum Gothic',sans-serif;font-size:12px}
+.btn-add{background:none;border:1px solid var(--gold);color:var(--gold);padding:6px 13px;border-radius:5px;cursor:pointer;font-family:'Nanum Gothic',sans-serif;font-size:13px;font-weight:700}
+.btn-add:hover{background:rgba(122,162,247,.1)}
+.sp-preset-btn{background:var(--sf2);border:1px solid var(--bd);border-radius:5px;padding:6px 8px;color:var(--text);cursor:pointer;font-family:'Nanum Gothic',sans-serif;text-align:center;transition:all .15s;min-height:34px;white-space:nowrap}
+.sp-preset-btn:hover{border-color:var(--gold);background:rgba(122,162,247,.08)}
+.sp-preset-btn.active{border-color:var(--gold);background:rgba(122,162,247,.14)}
+.sp-preset-name{display:inline;font-size:12px;font-weight:800;color:var(--gold)}
+.sp-preset-desc{display:inline;font-size:11px;color:var(--text);margin-left:5px}
+.btn-sim{width:100%;padding:14px;background:linear-gradient(135deg,var(--gold2),var(--gold));border:none;border-radius:8px;color:#0a0c18;font-family:'Nanum Gothic',sans-serif;font-size:16px;font-weight:800;cursor:pointer;margin:12px 0;letter-spacing:-.5px;transition:opacity .15s,transform .1s}
+.btn-sim:hover{opacity:.92}.btn-sim:active{transform:scale(.99)}
+.res-wrap{overflow-x:auto}
+.type-block{background:var(--sf);border:1px solid var(--bd);border-radius:8px;margin-bottom:10px;overflow:hidden}
+.type-hd{width:100%;display:flex;align-items:center;gap:10px;padding:11px 16px;background:var(--sf2);border:none;color:var(--text);cursor:pointer;font-family:'Nanum Gothic',sans-serif;font-size:13px;text-align:left}
+.type-hd:hover{background:rgba(255,255,255,.03)}
+.ty-caret{color:var(--gold);font-size:11px;transition:transform .15s;flex-shrink:0}
+.ty-caret.open{transform:rotate(90deg)}
+.ty-name{color:var(--gold);font-weight:800;flex-shrink:0}
+.ty-summary{color:var(--text2);font-size:12px;margin-left:auto;display:flex;align-items:center;gap:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.ty-bv{color:var(--green);font-weight:800;flex-shrink:0}
+.ty-body{display:none;padding:10px}
+.ty-body.open{display:block}
+.res-card{background:var(--bg);border:1px solid var(--bd);border-radius:6px;padding:10px 12px;margin-bottom:8px}
+.res-card:last-child{margin-bottom:0}
+.res-card.rank1{border-color:var(--gold);background:rgba(122,162,247,.05)}
+.res-card-hd{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.res-thumb{width:26px;height:26px;object-fit:contain;border:1px solid var(--bd);border-radius:5px;background:var(--sf2);flex-shrink:0}
+.res-thumb-sm{width:16px;height:16px;object-fit:contain;border:1px solid var(--bd);border-radius:3px;background:var(--sf2);vertical-align:-3px;margin-right:3px}
+.res-name{color:var(--text);font-weight:700;font-size:13px}
+.res-ench{color:var(--dim);font-size:11px;margin-left:auto}
+.res-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.res-cell{min-width:0}
+.res-cell label{display:block;font-size:10px;color:var(--dim);margin-bottom:2px;text-transform:uppercase;letter-spacing:.3px}
+.res-cell .v{font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.res-cell.bv .v{color:var(--gold);font-weight:800}
+.res-cell.wide{grid-column:span 2}
+.rk{color:var(--dimmer);font-size:12px;font-weight:700}
+.rk.rk1{color:var(--gold);font-weight:800}
+@media (max-width:600px){
+  .type-hd{flex-wrap:wrap}
+  .ty-summary{flex-basis:100%;margin-left:20px}
+  .res-grid{grid-template-columns:repeat(2,1fr)}
+  .res-cell.wide{grid-column:span 1}
+}
+.info-box{font-size:13px;line-height:1.9;color:var(--text2)}
+</style>
+</head>
+<body>
+
+<div class="hd">
+  <a href="./index.html?tab=calculator" style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;border:1px solid var(--bd);background:var(--sf2);color:var(--text2);text-decoration:none;font-size:16px;flex-shrink:0;transition:all 0.15s" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--bd)';this.style.color='var(--text2)'">←</a>
+  <div class="hd-icon">🛡️</div>
+  <div><div class="hd-t">체+방 전용 계산기</div><div class="hd-s">개인용 · 체력×방어 최고값 탐색</div></div>
+</div>
+
+<div class="ti">
+
+  <div class="sec">
+    <div class="sec-hd">⚙ 기본 설정</div>
+    <div class="sec-bd">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div>
+          <div class="cfg-lbl">폼</div>
+          <div class="btn-grp" id="tier-grp">
+            <button onclick="setTier('초월')">초월</button>
+            <button class="active" onclick="setTier('강림')">강림</button>
+          </div>
+        </div>
+        <div id="grd-wrap">
+          <div class="cfg-lbl">등급</div>
+          <div class="btn-grp" id="grd-grp">
+            <button onclick="setGrade('7.0')">7.0</button>
+            <button onclick="setGrade('8.0')">8.0</button>
+            <button class="active" onclick="setGrade('9.0')">9.0</button>
+          </div>
+        </div>
+        <div>
+          <div class="cfg-lbl">버프 (기본스탯 대비 %, 직접입력)</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+            <div class="fg"><label>체력버프 %</label><input type="number" id="buf-hp" value="0" min="0" step="0.1" onchange="onBuf('hp',this.value)"></div>
+            <div class="fg"><label>공격버프 %</label><input type="number" id="buf-atk" value="0" min="0" step="0.1" onchange="onBuf('atk',this.value)"></div>
+            <div class="fg"><label>방어버프 %</label><input type="number" id="buf-def" value="0" min="0" step="0.1" onchange="onBuf('def',this.value)"></div>
+          </div>
+        </div>
+        <div>
+          <div class="cfg-lbl">장신구</div>
+          <div class="btn-grp" id="acc-grp">
+            <button class="active" onclick="setAccCat('회깃')">회깃(회피깃털)</button>
+            <button onclick="setAccCat('어둠뿔')">어둠뿔</button>
+            <button onclick="setAccCat('스텟장신구')">스텟장신구</button>
+          </div>
+        </div>
+        <div>
+          <div class="cfg-lbl">인첸트 수치 (%, 직접입력)</div>
+          <input type="number" id="ench-pct" value="21" min="0" step="0.1" style="width:100%" onchange="setEnchPct(this.value)">
+        </div>
+        <div>
+          <div class="cfg-lbl">인첸트 대상</div>
+          <div class="btn-grp" id="ench-tgt-grp">
+            <button class="active" onclick="setEnchTarget('auto')">자동탐색</button>
+            <button onclick="setEnchTarget('hp')">체력 고정</button>
+            <button onclick="setEnchTarget('def')">방어 고정</button>
+          </div>
+        </div>
+        <div>
+          <div class="cfg-lbl">젬 레벨</div>
+          <div class="btn-grp" id="gem-grp">
+            <button class="active" onclick="setGemLv(36)">36</button>
+            <button onclick="setGemLv(37)">37</button>
+          </div>
+        </div>
+        <div>
+          <div class="cfg-lbl">펜던트 옵션 수 (옵션당 6% 고정)</div>
+          <div class="btn-grp" id="pend-grp">
+            <button onclick="setPendOpts(1)">1옵 (별의 펜던트)</button>
+            <button class="active" onclick="setPendOpts(2)">2옵 (달의 펜던트)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec" id="acc-sec" style="display:none">
+    <div class="sec-hd">
+      <span>💍 스텟장신구 (보유 목록)</span>
+      <div style="display:flex;gap:6px">
+        <button class="btn-add" onclick="addAcc()">+ 추가</button>
+        <button class="btn-reset" onclick="resetAcc()">↺</button>
+      </div>
+    </div>
+    <div class="sec-bd" id="acc-list"></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-hd">
+      <span>✨ 정령</span>
+      <button class="btn-reset" onclick="resetSpirit()">↺</button>
+    </div>
+    <div class="sec-bd" id="sp-bd"></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-hd">📌 고정값</div>
+    <div class="sec-bd info-box">
+      💎 젬: 레벨은 위에서 선택(36/37) · 5슬롯 체력/방어에만 배분 (자동 최적 탐색)<br>
+      📚 컬렉션: 체 240 / 공 60 / 방 60 고정<br>
+      🌙 펜던트: 옵션 6% 고정, 옵션 수(1옵/2옵)는 위에서 선택<br>
+    </div>
+  </div>
+
+  <button class="btn-sim" onclick="runCalc()">🛡️ 계산하기</button>
+
+  <div class="sec" id="res-sec" style="display:none">
+    <div class="sec-hd">🏆 결과 — 타입별 체방 젤 높은셋팅</div>
+    <div class="res-wrap"><div id="res-body"></div></div>
+  </div>
+
+</div>
+
+<script>
+// ================================================================
+// 상수
+// ================================================================
+const SK={hp:'체',atk:'공',def:'방'};
+const DTYPES=['체력형','공격형','방어형','체공형','체방형','공방형'];
+
+const BASE={
+  '7.0':{체력형:{hp:1252,atk:176,def:176},공격형:{hp:876,atk:285,def:161},방어형:{hp:788,atk:185,def:283},공방형:{hp:720,atk:242,def:243},체공형:{hp:1080,atk:262,def:133},체방형:{hp:1080,atk:133,def:262}},
+  '8.0':{체력형:{hp:1332,atk:176,def:176},공격형:{hp:876,atk:305,def:161},방어형:{hp:788,atk:185,def:303},공방형:{hp:720,atk:252,def:253},체공형:{hp:1120,atk:272,def:133},체방형:{hp:1120,atk:133,def:272}},
+  '9.0':{체력형:{hp:1412,atk:176,def:176},공격형:{hp:876,atk:325,def:161},방어형:{hp:788,atk:185,def:323},공방형:{hp:720,atk:262,def:263},체공형:{hp:1160,atk:282,def:133},체방형:{hp:1160,atk:133,def:282}},
+};
+
+const GEM={36:{hp:144,atk:36,def:36},37:{hp:148,atk:37,def:37}};
+
+const SP_PLUS={hp:{1:216,2:240,3:264,4:480},atk:{1:54,2:60,3:66,4:120},def:{1:54,2:60,3:66,4:120}};
+const SP_PCT={1:0.24,2:0.28,3:0.32,4:0.40};
+const SP_BONUS={hp:40,atk:10,def:10};
+const SP_PRESETS=[
+  {id:'custom',name:'직접입력',types:['','','','']},
+  {id:'last_plus',name:'막플',types:['%','%','%','+']},
+  {id:'all_pct',name:'올퍼',types:['%','%','%','%']},
+  {id:'one_four_plus',name:'14플',types:['+','%','%','+']},
+  {id:'first_plus',name:'24플',types:['%','+','%','+']},
+  {id:'first_only_plus',name:'1플',types:['+','%','%','%']}
+];
+
+// 장신구/펜던트 이미지 (기존 계산기와 동일한 저장소)
+const TEM_BASE='https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/tem';
+const ACC_IMG_MAP={
+  '20':{'빛뿔':12,'바뿔':13,'악보':20,'황보':21,'여보':22,'대뿔':1433,'물뿔':1435,'불뿔':1437},
+  '19':{'악보':1273,'황보':1274,'여보':1275,'바뿔':1276,'대뿔':1306,'물뿔':1308,'불뿔':1310},
+  '18':{'빛뿔':1209,'악보':1205,'황보':1206,'여보':1207,'바뿔':1202,'대뿔':1247,'물뿔':1249,'불뿔':1251},
+  '17':{'악보':1102,'황보':1103,'여보':1104,'바뿔':1105,'대뿔':1130,'물뿔':1132,'불뿔':1134},
+  '16':{'악보':1046,'황보':1047,'여보':1048,'바뿔':1049,'대뿔':1130,'물뿔':1132,'불뿔':1134},
+};
+const accImg=(lv,name)=>{const n=ACC_IMG_MAP[String(lv)]?.[name];return n?`${TEM_BASE}/${n}.png`:'';};
+const IMG_PEND={태양:`${TEM_BASE}/1337.png`,달:`${TEM_BASE}/1336.png`,별:`${TEM_BASE}/1335.png`};
+const IMG_어둠뿔=`${TEM_BASE}/760.png`;
+const IMG_회깃=`${TEM_BASE}/645.png`;
+
+// 장신구 DB (기존 계산기의 ACC_DB)
+const ACC_DB=[
+  {n:'빛뿔 (크/체) 18',hp:0.08, atk:0,    def:0   , img:accImg(18,'빛뿔')},
+  {n:'빛뿔 (크/공) 18',hp:0,    atk:0.08, def:0   , img:accImg(18,'빛뿔')},
+  {n:'빛뿔 (크/방) 18',hp:0,    atk:0,    def:0.08, img:accImg(18,'빛뿔')},
+  {n:'빛뿔 (크/체) 20',hp:0.1,  atk:0,    def:0   , img:accImg(20,'빛뿔')},
+  {n:'빛뿔 (크/공) 20',hp:0,    atk:0.1,  def:0   , img:accImg(20,'빛뿔')},
+  {n:'빛뿔 (크/방) 20',hp:0,    atk:0,    def:0.1 , img:accImg(20,'빛뿔')},
+
+  {n:'악몽 수호자의 보주 (악보) 16',hp:0.16, atk:0,    def:0   , img:accImg(16,'악보')},
+  {n:'황혼 수호자의 보주 (황보) 16',hp:0,    atk:0.16, def:0   , img:accImg(16,'황보')},
+  {n:'여명 수호자의 보주 (여보) 16',hp:0,    atk:0,    def:0.16, img:accImg(16,'여보')},
+  {n:'물뿔 (체/공) 16',hp:0.1,  atk:0.06, def:0   , img:accImg(16,'물뿔')},
+  {n:'물뿔 (체/방) 16',hp:0.1,  atk:0,    def:0.06, img:accImg(16,'물뿔')},
+  {n:'불뿔 (공/체) 16',hp:0.06, atk:0.1,  def:0   , img:accImg(16,'불뿔')},
+  {n:'불뿔 (공/방) 16',hp:0,    atk:0.1,  def:0.06, img:accImg(16,'불뿔')},
+  {n:'대뿔 (방/체) 16',hp:0.06, atk:0,    def:0.1 , img:accImg(16,'대뿔')},
+  {n:'대뿔 (방/공) 16',hp:0,    atk:0.06, def:0.1 , img:accImg(16,'대뿔')},
+  {n:'바뿔 (체/방) 16',hp:0.08, atk:0,    def:0.08, img:accImg(16,'바뿔')},
+  {n:'바뿔 (공/체) 16',hp:0.08, atk:0.08, def:0   , img:accImg(16,'바뿔')},
+  {n:'바뿔 (공/방) 16',hp:0,    atk:0.08, def:0.08, img:accImg(16,'바뿔')},
+
+  {n:'악몽 수호자의 보주 (악보) 17',hp:0.17, atk:0,    def:0   , img:accImg(17,'악보')},
+  {n:'황혼 수호자의 보주 (황보) 17',hp:0,    atk:0.17, def:0   , img:accImg(17,'황보')},
+  {n:'여명 수호자의 보주 (여보) 17',hp:0,    atk:0,    def:0.17, img:accImg(17,'여보')},
+  {n:'물뿔 (체/공) 17',hp:0.11, atk:0.06, def:0   , img:accImg(17,'물뿔')},
+  {n:'물뿔 (체/방) 17',hp:0.11, atk:0,    def:0.06, img:accImg(17,'물뿔')},
+  {n:'불뿔 (공/체) 17',hp:0.06, atk:0.11, def:0   , img:accImg(17,'불뿔')},
+  {n:'불뿔 (공/방) 17',hp:0,    atk:0.11, def:0.06, img:accImg(17,'불뿔')},
+  {n:'대뿔 (방/체) 17',hp:0.06, atk:0,    def:0.11, img:accImg(17,'대뿔')},
+  {n:'대뿔 (방/공) 17',hp:0,    atk:0.06, def:0.11, img:accImg(17,'대뿔')},
+  {n:'바뿔 (체/방) 17',hp:0.09, atk:0,    def:0.08, img:accImg(17,'바뿔')},
+  {n:'바뿔 (공/체) 17',hp:0.08, atk:0.09, def:0   , img:accImg(17,'바뿔')},
+  {n:'바뿔 (공/방) 17',hp:0,    atk:0.09, def:0.08, img:accImg(17,'바뿔')},
+
+  {n:'악몽 수호자의 보주 (악보) 18',hp:0.18, atk:0,    def:0   , img:accImg(18,'악보')},
+  {n:'황혼 수호자의 보주 (황보) 18',hp:0,    atk:0.18, def:0   , img:accImg(18,'황보')},
+  {n:'여명 수호자의 보주 (여보) 18',hp:0,    atk:0,    def:0.18, img:accImg(18,'여보')},
+  {n:'물뿔 (체/공) 18',hp:0.12, atk:0.06, def:0   , img:accImg(18,'물뿔')},
+  {n:'물뿔 (체/방) 18',hp:0.12, atk:0,    def:0.06, img:accImg(18,'물뿔')},
+  {n:'불뿔 (공/체) 18',hp:0.06, atk:0.12, def:0   , img:accImg(18,'불뿔')},
+  {n:'불뿔 (공/방) 18',hp:0,    atk:0.12, def:0.06, img:accImg(18,'불뿔')},
+  {n:'대뿔 (방/체) 18',hp:0.06, atk:0,    def:0.12, img:accImg(18,'대뿔')},
+  {n:'대뿔 (방/공) 18',hp:0,    atk:0.06, def:0.12, img:accImg(18,'대뿔')},
+  {n:'바뿔 (체/방) 18',hp:0.09, atk:0,    def:0.09, img:accImg(18,'바뿔')},
+  {n:'바뿔 (공/체) 18',hp:0.09, atk:0.09, def:0   , img:accImg(18,'바뿔')},
+  {n:'바뿔 (공/방) 18',hp:0,    atk:0.09, def:0.09, img:accImg(18,'바뿔')},
+
+  {n:'악몽 수호자의 보주 (악보) 19',hp:0.19, atk:0,    def:0   , img:accImg(19,'악보')},
+  {n:'황혼 수호자의 보주 (황보) 19',hp:0,    atk:0.19, def:0   , img:accImg(19,'황보')},
+  {n:'여명 수호자의 보주 (여보) 19',hp:0,    atk:0,    def:0.19, img:accImg(19,'여보')},
+  {n:'물뿔 (체/공) 19',hp:0.13, atk:0.06, def:0   , img:accImg(19,'물뿔')},
+  {n:'물뿔 (체/방) 19',hp:0.13, atk:0,    def:0.06, img:accImg(19,'물뿔')},
+  {n:'불뿔 (공/체) 19',hp:0.06, atk:0.13, def:0   , img:accImg(19,'불뿔')},
+  {n:'불뿔 (공/방) 19',hp:0,    atk:0.13, def:0.06, img:accImg(19,'불뿔')},
+  {n:'대뿔 (방/체) 19',hp:0.06, atk:0,    def:0.13, img:accImg(19,'대뿔')},
+  {n:'대뿔 (방/공) 19',hp:0,    atk:0.06, def:0.13, img:accImg(19,'대뿔')},
+  {n:'바뿔 (체/방) 19',hp:0.1,  atk:0,    def:0.09, img:accImg(19,'바뿔')},
+  {n:'바뿔 (공/체) 19',hp:0.09, atk:0.1,  def:0   , img:accImg(19,'바뿔')},
+  {n:'바뿔 (공/방) 19',hp:0,    atk:0.1,  def:0.09, img:accImg(19,'바뿔')},
+
+  {n:'악몽 수호자의 보주 (악보) 20',hp:0.2,  atk:0,    def:0   , img:accImg(20,'악보')},
+  {n:'황혼 수호자의 보주 (황보) 20',hp:0,    atk:0.2,  def:0   , img:accImg(20,'황보')},
+  {n:'여명 수호자의 보주 (여보) 20',hp:0,    atk:0,    def:0.2 , img:accImg(20,'여보')},
+  {n:'물뿔 (체/공) 20',hp:0.14, atk:0.06, def:0   , img:accImg(20,'물뿔')},
+  {n:'물뿔 (체/방) 20',hp:0.14, atk:0,    def:0.06, img:accImg(20,'물뿔')},
+  {n:'불뿔 (공/체) 20',hp:0.06, atk:0.14, def:0   , img:accImg(20,'불뿔')},
+  {n:'불뿔 (공/방) 20',hp:0,    atk:0.14, def:0.06, img:accImg(20,'불뿔')},
+  {n:'대뿔 (방/체) 20',hp:0.06, atk:0,    def:0.14, img:accImg(20,'대뿔')},
+  {n:'대뿔 (방/공) 20',hp:0,    atk:0.06, def:0.14, img:accImg(20,'대뿔')},
+  {n:'바뿔 (체/방) 20',hp:0.1,  atk:0,    def:0.1 , img:accImg(20,'바뿔')},
+  {n:'바뿔 (공/체) 20',hp:0.1,  atk:0.1,  def:0   , img:accImg(20,'바뿔')},
+  {n:'바뿔 (공/방) 20',hp:0,    atk:0.1,  def:0.1 , img:accImg(20,'바뿔')},
+];
+
+// ================================================================
+// 상태
+// ================================================================
+let simGrade='9.0', simAccCat='회깃', simPendOpts=2, simGemLv=36, simEnchPct=21, simEnchTarget='auto', simTier='강림';
+let buf={hp:0,atk:0,def:0};
+const SAVE_KEY='dv1_tank_calc_spirit';
+let S={
+  spirit:{opts:[{stat:'',type:''},{stat:'',type:''},{stat:'',type:''},{stat:'',type:''}],bonus:''},
+  accCards:[]
+};
+
+function doLoad(){
+  try{
+    const raw=localStorage.getItem(SAVE_KEY);
+    if(raw){
+      const p=JSON.parse(raw);
+      if(p.opts||p.bonus!==undefined){ // 구버전 호환 (spirit만 저장돼있던 경우)
+        S.spirit=p;
+      }else{
+        S.spirit=p.spirit||S.spirit;
+        S.accCards=p.accCards||[];
+      }
+    }
+  }catch(e){}
+}
+function doSave(){
+  try{localStorage.setItem(SAVE_KEY,JSON.stringify(S));}catch(e){}
+}
+
+function setTier(t){
+  simTier=t;
+  document.querySelectorAll('#tier-grp button').forEach(b=>b.classList.toggle('active',b.textContent===t));
+  document.getElementById('grd-wrap').style.display=t==='강림'?'':'none';
+}
+function setGrade(g){
+  simGrade=g;
+  document.querySelectorAll('#grd-grp button').forEach(b=>b.classList.toggle('active',b.textContent===g));
+}
+function setAccCat(cat){
+  simAccCat=cat;
+  document.querySelectorAll('#acc-grp button').forEach(b=>b.classList.toggle('active',b.textContent.startsWith(cat==='회깃'?'회깃':cat==='어둠뿔'?'어둠뿔':'스텟')));
+  document.getElementById('acc-sec').style.display=cat==='스텟장신구'?'':'none';
+}
+function setEnchTarget(t){
+  simEnchTarget=t;
+  document.querySelectorAll('#ench-tgt-grp button').forEach((b,i)=>b.classList.toggle('active',['auto','hp','def'][i]===t));
+}
+function getEnchList(){
+  if(simEnchTarget==='hp')return['hp'];
+  if(simEnchTarget==='def')return['def'];
+  return['hp','atk','def'];
+}
+function setEnchPct(val){
+  simEnchPct=Math.max(0,parseFloat(val)||0);
+  renderAcc();
+}
+function setGemLv(lv){
+  simGemLv=lv;
+  document.querySelectorAll('#gem-grp button').forEach(b=>b.classList.toggle('active',parseInt(b.textContent)===lv));
+}
+function setPendOpts(n){
+  simPendOpts=n;
+  document.querySelectorAll('#pend-grp button').forEach((b,i)=>b.classList.toggle('active',i===n-1));
+}
+function onBuf(stat,val){
+  buf[stat]=Math.max(0,parseFloat(val)||0); // %값 그대로 저장 (예: 15 = 15%)
+}
+
+// ================================================================
+// 정령 UI (기존 계산기와 동일한 방식)
+// ================================================================
+function spPresetLabel(type){return type==='%'?'%':type==='+'?'+':'-';}
+function isSpiritPresetActive(preset){
+  return preset.types.every((type,i)=>(S.spirit.opts[i]||{}).type===type);
+}
+function applySpiritPreset(id){
+  const preset=SP_PRESETS.find(p=>p.id===id);
+  if(!preset)return;
+  S.spirit.opts=preset.types.map((type,i)=>({stat:S.spirit.opts[i]?.stat||'',type}));
+  renderSpirit();doSave();
+}
+function fmtSpVal(n,stat,type){
+  if(!stat||!type)return'';
+  return type==='+'?`<b>+${SP_PLUS[stat][n]}</b>`:`<b>+${(SP_PCT[n]*100).toFixed(0)}%</b>`;
+}
+function onSpOpt(idx,field,val){
+  S.spirit.opts[idx][field]=val;
+  renderSpirit();doSave();
+}
+function onSpBonus(val){
+  S.spirit.bonus=val;
+  renderSpirit();doSave();
+}
+function resetSpirit(){
+  if(!confirm('정령 입력값이 초기화됩니다.'))return;
+  S.spirit={opts:[{stat:'',type:''},{stat:'',type:''},{stat:'',type:''},{stat:'',type:''}],bonus:''};
+  renderSpirit();doSave();
+}
+function renderSpirit(){
+  const el=document.getElementById('sp-bd');
+  if(!el)return;
+  const sp=S.spirit;
+  const presets=SP_PRESETS.map(p=>{
+    const desc=p.types.map(spPresetLabel).join('');
+    return `<button class="sp-preset-btn ${isSpiritPresetActive(p)?'active':''}" onclick="applySpiritPreset('${p.id}')">
+      <span class="sp-preset-name">${p.name}</span>
+      <span class="sp-preset-desc">${desc}</span>
+    </button>`;
+  }).join('');
+  let opts='';
+  for(let i=1;i<=4;i++){
+    const o=sp.opts[i-1]||{stat:'',type:''};
+    const v=(o.stat&&o.type)?fmtSpVal(i,o.stat,o.type):'';
+    opts+=`<div class="sp-ocard">
+      <span class="sp-onum">${i}옵</span>
+      <select onchange="onSpOpt(${i-1},'stat',this.value)">
+        <option value=""    ${!o.stat?'selected':''}>-</option>
+        <option value="hp"  ${o.stat==='hp'?'selected':''}>체력</option>
+        <option value="atk" ${o.stat==='atk'?'selected':''}>공격</option>
+        <option value="def" ${o.stat==='def'?'selected':''}>방어</option>
+      </select>
+      <select onchange="onSpOpt(${i-1},'type',this.value)">
+        <option value=""  ${!o.type?'selected':''}>-</option>
+        <option value="+" ${o.type==='+'?'selected':''}>+스탯</option>
+        <option value="%" ${o.type==='%'?'selected':''}>%스탯</option>
+      </select>
+      <span class="sp-oval">${v}</span>
+    </div>`;
+  }
+  el.innerHTML=`
+    <div class="sp-preset-grid">${presets}</div>
+    <div class="sp-opts">${opts}</div>
+    <div class="fg"><label>부가옵</label>
+      <select onchange="onSpBonus(this.value)">
+        <option value=""    ${!sp.bonus?'selected':''}>없음</option>
+        <option value="hp"  ${sp.bonus==='hp'?'selected':''}>체력 (+40)</option>
+        <option value="atk" ${sp.bonus==='atk'?'selected':''}>공격 (+10)</option>
+        <option value="def" ${sp.bonus==='def'?'selected':''}>방어 (+10)</option>
+      </select>
+    </div>`;
+}
+function procSpirit(){
+  const sp=S.spirit;
+  const plus={hp:0,atk:0,def:0},pct={hp:0,atk:0,def:0},bonus={hp:0,atk:0,def:0};
+  for(let i=0;i<4;i++){
+    const o=sp.opts[i];
+    if(!o||!o.stat||!o.type)continue;
+    if(o.type==='+')plus[o.stat]+=SP_PLUS[o.stat][i+1];
+    else if(o.type==='%')pct[o.stat]+=SP_PCT[i+1];
+  }
+  if(sp.bonus&&SP_BONUS[sp.bonus])bonus[sp.bonus]=SP_BONUS[sp.bonus];
+  return{plus,pct,bonus};
+}
+
+// ================================================================
+// 장신구 카드 UI (스텟장신구 보유 목록, 기존 계산기와 동일한 방식)
+// ================================================================
+function fmtAccSt(a){
+  if(!a)return'';
+  const p=[];
+  if(a.hp>0)p.push(`<span style="color:var(--hpc)">체${(a.hp*100).toFixed(0)}%</span>`);
+  if(a.atk>0)p.push(`<span style="color:var(--atc)">공${(a.atk*100).toFixed(0)}%</span>`);
+  if(a.def>0)p.push(`<span style="color:var(--dfc)">방${(a.def*100).toFixed(0)}%</span>`);
+  return p.length?p.join(' '):'<span style="color:var(--dimmer)">-</span>';
+}
+function applyEncColor(sel){
+  const v=sel.value;
+  sel.style.color=v==='hp'?'var(--gold)':v==='atk'?'var(--red)':v==='def'?'var(--blue)':'var(--text)';
+}
+function renderAcc(){
+  const list=document.getElementById('acc-list');
+  if(!list)return;
+  if(!S.accCards.length){
+    list.innerHTML='<div style="color:var(--dimmer);font-size:13px">보유 장신구 없음. + 추가 버튼으로 등록해줘.</div>';
+    return;
+  }
+  let html='';
+  S.accCards.forEach((card,ci)=>{
+    const a=ACC_DB.find(x=>x.n===card.name);
+    const stHtml=a?fmtAccSt(a):'<span style="color:var(--dimmer)">-</span>';
+    const imgHtml=a&&a.img?`<img src="${a.img}" style="width:32px;height:32px;object-fit:contain;flex-shrink:0;border:1px solid var(--bd);border-radius:3px;background:var(--bg)">`:'<div style="width:32px;height:32px;flex-shrink:0;border:1px solid var(--bd);border-radius:3px;background:var(--bg)"></div>';
+    html+=`<div class="acc-card">
+      <div class="acc-card-row">
+        ${imgHtml}
+        <div class="acc-search-wrap" id="acc-wrap-${ci}">
+          <input class="acc-search-input" id="acc-inp-${ci}" value="${card.name||''}" placeholder="장신구 검색..."
+            oninput="filterAccDrop(${ci},this.value)"
+            onfocus="openAccDrop(${ci})"
+            onblur="setTimeout(()=>closeAccDrop(${ci},this),150)"
+            onkeydown="accNavKey(event,${ci})">
+          <div class="acc-dropdown" id="acc-drop-${ci}"></div>
+        </div>
+        <span style="font-size:11px;min-width:80px">${stHtml}</span>
+        <span style="font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.3px;font-weight:700;flex-shrink:0">인챈트</span>
+        <select style="font-size:12px" onchange="onAccEnc(${ci},this.value);applyEncColor(this)">
+          <option value="none" ${card.enchant==='none'?'selected':''}>인챈트 상관X</option>
+          <option value="hp"   ${card.enchant==='hp'?'selected':''}>체 +${simEnchPct}%</option>
+          <option value="atk"  ${card.enchant==='atk'?'selected':''}>공 +${simEnchPct}%</option>
+          <option value="def"  ${card.enchant==='def'?'selected':''}>방 +${simEnchPct}%</option>
+        </select>
+        <button class="btn-red" onclick="delAcc(${ci})">삭제</button>
+      </div>
+    </div>`;
+  });
+  list.innerHTML=html;
+  document.querySelectorAll('#acc-list select').forEach(sel=>applyEncColor(sel));
+}
+function openAccDrop(ci){
+  filterAccDrop(ci, document.getElementById('acc-inp-'+ci).value);
+  const drop=document.getElementById('acc-drop-'+ci);
+  drop.classList.add('open');
+  const sec=drop.closest('.sec');
+  if(sec)sec.style.overflow='visible';
+}
+function closeAccDrop(ci,el){
+  const drop=document.getElementById('acc-drop-'+ci);
+  if(!drop)return;
+  drop.classList.remove('open');
+  const sec=drop.closest('.sec');
+  if(sec)sec.style.overflow='';
+  if(el){
+    const valid=ACC_DB.some(a=>a.n===el.value);
+    if(!valid){
+      S.accCards[ci].name='';
+      S.accCards[ci].enchant='none';
+      el.value='';
+      doSave();
+    }
+  }
+}
+function accNavKey(e,ci){
+  const drop=document.getElementById('acc-drop-'+ci);
+  if(!drop||!drop.classList.contains('open'))return;
+  const items=[...drop.querySelectorAll('.acc-drop-item')];
+  if(!items.length)return;
+  const cur=drop.querySelector('.acc-drop-item.focused');
+  let idx=items.indexOf(cur);
+  if(e.key==='ArrowDown'){
+    e.preventDefault();
+    idx=Math.min(idx+1,items.length-1);
+    items.forEach(el=>el.classList.remove('focused'));
+    items[idx].classList.add('focused');
+    items[idx].scrollIntoView({block:'nearest'});
+  }else if(e.key==='ArrowUp'){
+    e.preventDefault();
+    idx=Math.max(idx-1,0);
+    items.forEach(el=>el.classList.remove('focused'));
+    items[idx].classList.add('focused');
+    items[idx].scrollIntoView({block:'nearest'});
+  }else if(e.key==='Enter'){
+    e.preventDefault();
+    if(cur)cur.dispatchEvent(new MouseEvent('mousedown'));
+  }else if(e.key==='Escape'){
+    closeAccDrop(ci);
+  }
+}
+function filterAccDrop(ci,q){
+  const drop=document.getElementById('acc-drop-'+ci);
+  if(!drop)return;
+  const kw=q.toLowerCase().trim();
+  let filtered=kw?ACC_DB.filter(a=>a.n.toLowerCase().includes(kw)):ACC_DB;
+  drop.innerHTML=filtered.slice(0,30).map(a=>
+    `<div class="acc-drop-item" onmousedown="selectAcc(${ci},'${a.n.replace(/'/g,"\\'")}')">
+      <span class="acc-drop-name">${a.n}</span>
+    </div>`
+  ).join('');
+  drop.classList.add('open');
+}
+function selectAcc(ci,name){
+  S.accCards[ci].name=name;
+  const inp=document.getElementById('acc-inp-'+ci);
+  if(inp)inp.value=name;
+  closeAccDrop(ci);
+  renderAcc();doSave();
+}
+function addAcc(){
+  S.accCards.unshift({name:'',enchant:'none'});
+  renderAcc();doSave();
+}
+function delAcc(ci){
+  S.accCards.splice(ci,1);
+  renderAcc();doSave();
+}
+function resetAcc(){
+  if(!confirm('보유 장신구 목록이 전부 초기화됩니다.'))return;
+  S.accCards=[];
+  renderAcc();doSave();
+}
+function onAccEnc(ci,enc){
+  S.accCards[ci].enchant=enc;
+  doSave();
+}
+
+// ================================================================
+// 스탯 계산 (기존 계산기와 동일한 공식)
+// ================================================================
+function calcStat(B,G,P,AP,SP,PP,SL,SB,C,BU){
+  const a=Math.floor((B+G+P)*(1+AP));
+  const b=Math.floor(a*(1+SP));
+  const c=Math.floor(b*(1+PP));
+  const d=Math.floor(Math.floor(SL*(1+SP))*(1+PP));
+  const e=Math.floor(SB*(1+PP));
+  return c+d+e+C+BU;
+}
+
+// ================================================================
+// 장신구 후보 (어둠뿔 / 회깃 / 체+방 전용 장신구)
+// ================================================================
+function buildAccCandidates(){
+  const list=[];
+  if(simAccCat==='어둠뿔'){
+    // 자체 스탯: 회피+체력5% 또는 회피+방어5% (고정, 둘 중 하나) + 별도 인첸트(21%, hp/atk/def 자유)
+    const baseVariants=[
+      {label:'체5%',stat:'hp'},
+      {label:'방5%',stat:'def'},
+    ];
+    baseVariants.forEach(bvv=>{
+      getEnchList().forEach(enc=>{
+        list.push({
+          name:`어둠뿔 (자체:${bvv.label})`,
+          hp:(bvv.stat==='hp'?0.05:0)+(enc==='hp'?simEnchPct/100:0),
+          atk:(enc==='atk'?simEnchPct/100:0),
+          def:(bvv.stat==='def'?0.05:0)+(enc==='def'?simEnchPct/100:0),
+          ench:enc,
+          img:IMG_어둠뿔
+        });
+      });
+    });
+  }else if(simAccCat==='회깃'){
+    // 자체 스탯 없음(회피만 올려줌) + 인첸트(+21%)만 계산
+    getEnchList().forEach(enc=>{
+      list.push({
+        name:'회깃14',
+        hp:enc==='hp'?simEnchPct/100:0, atk:enc==='atk'?simEnchPct/100:0, def:enc==='def'?simEnchPct/100:0,
+        ench:enc,
+        img:IMG_회깃
+      });
+    });
+  }else{
+    // 스텟장신구: 내가 등록한 보유 장신구 목록에서 선택
+    const owned=(S.accCards||[]).map(c=>({...ACC_DB.find(a=>a.n===c.name),card:c})).filter(a=>a.n);
+    if(!owned.length){
+      alert('스텟장신구 목록에서 장신구를 1개 이상 추가해줘.');
+      return[];
+    }
+    owned.forEach(a=>{
+      const encs=a.card.enchant==='none'?getEnchList():[a.card.enchant];
+      encs.forEach(enc=>{
+        list.push({
+          name:a.n,
+          hp:a.hp+(enc==='hp'?simEnchPct/100:0),
+          atk:a.atk+(enc==='atk'?simEnchPct/100:0),
+          def:a.def+(enc==='def'?simEnchPct/100:0),
+          ench:enc
+        });
+      });
+    });
+  }
+  return list;
+}
+
+// ================================================================
+// 계산 실행
+// ================================================================
+function runCalc(){
+  const {plus:sP,pct:sPct,bonus:sB}=procSpirit();
+  const coll={hp:240,atk:60,def:60};
+  const accList=buildAccCandidates();
+  if(!accList.length)return;
+  // 젬 5슬롯: 체력/방어에만 배분
+  const gemSplits=[];
+  for(let n=0;n<=5;n++)gemSplits.push({nHp:n,nDef:5-n});
+  // 펜던트(옵션 6% 고정) - 옵션 수에 따라 조합 결정
+  const pendCombos = simPendOpts===1 ? [
+    {label:'체(1옵)',pH:0.06,pD:0},
+    {label:'방(1옵)',pH:0,pD:0.06},
+  ] : [
+    {label:'체+체',pH:0.06*2,pD:0},
+    {label:'체+방',pH:0.06,pD:0.06},
+    {label:'방+방',pH:0,pD:0.06*2},
+  ];
+
+  const typeResults=[];
+  for(const dt of DTYPES){
+    const bs = simTier==='초월' ? (typeof BASE_TRANSCEND!=='undefined'?BASE_TRANSCEND[dt]:null) : BASE[simGrade][dt];
+    if(!bs){alert('초월 기본 스탯 데이터가 아직 없어. 초월 타입별 체/공/방 스탯을 알려주면 추가할게.');return;}
+    const bh=bs.hp,ba=bs.atk,bd=bs.def;
+    const bufH=Math.floor(bh*buf.hp/100);
+    const bufA=Math.floor(ba*buf.atk/100);
+    const bufD=Math.floor(bd*buf.def/100);
+
+    const all=[];
+    for(const acc of accList){
+      for(const gs of gemSplits){
+        const g=GEM[simGemLv];
+        const gH=gs.nHp*g.hp, gD=gs.nDef*g.def;
+        for(const pend of pendCombos){
+          const fH=calcStat(bh,gH,24,acc.hp,sPct.hp,pend.pH,sP.hp,sB.hp,coll.hp,bufH);
+          const fA=calcStat(ba,0, 6,acc.atk,sPct.atk,0,      sP.atk,sB.atk,coll.atk,bufA);
+          const fD=calcStat(bd,gD,6,acc.def,sPct.def,pend.pD,sP.def,sB.def,coll.def,bufD);
+          const bv=fH*fD;
+          const ebv=fH+fD*4;
+          all.push({acc,gs,pend,fH,fA,fD,bv,ebv});
+        }
+      }
+    }
+    all.sort((a,b)=>b.bv-a.bv);
+    typeResults.push({dt,top5:all.slice(0,5)});
+  }
+  typeResults.sort((a,b)=>b.top5[0].bv-a.top5[0].bv);
+  renderResult(typeResults);
+}
+
+function accImgByName(acc){
+  if(acc.img)return acc.img;
+  const a=ACC_DB.find(x=>x.n===acc.name);
+  return a&&a.img?a.img:'';
+}
+function pendImg(){
+  return simPendOpts===1?IMG_PEND.별:IMG_PEND.달;
+}
+function imgTag(src,cls){
+  cls=cls||'res-thumb';
+  return src?`<img src="${src}" class="${cls}" onerror="this.style.visibility='hidden'">`:'';
+}
+function renderResult(typeResults){
+  const el=document.getElementById('res-body');
+  let html='';
+  typeResults.forEach(({dt,top5})=>{
+    const top=top5[0];
+    html+=`<div class="type-block">
+      <button class="type-hd" onclick="toggleType(this)">
+        <span class="ty-caret">▶</span>
+        <span class="ty-name">${dt}</span>
+        <span class="ty-summary">${imgTag(accImgByName(top.acc),'res-thumb-sm')}${top.acc.name} · 체${top.fH.toLocaleString('ko-KR')} / 방${top.fD.toLocaleString('ko-KR')} · 비밸 <span class="ty-bv">${top.bv.toLocaleString('ko-KR')}</span></span>
+      </button>
+      <div class="ty-body">`;
+    top5.forEach((r,i)=>{
+      const rank=i===0?'<span class="rk rk1">#1</span>':`<span class="rk">#${i+1}</span>`;
+      html+=`<div class="res-card ${i===0?'rank1':''}">
+        <div class="res-card-hd">
+          ${rank}
+          ${imgTag(accImgByName(r.acc))}
+          <span class="res-name">${r.acc.name}</span>
+          <span class="res-ench">인첸트:${SK[r.acc.ench]}</span>
+        </div>
+        <div class="res-grid">
+          <div class="res-cell"><label>젬(체/방)</label><span class="v">${r.gs.nHp} / ${r.gs.nDef}</span></div>
+          <div class="res-cell"><label>펜던트</label><span class="v str">${imgTag(pendImg(),'res-thumb-sm')}${r.pend.label}</span></div>
+          <div class="res-cell wide"><label>체 / 공 / 방</label><span class="v"><span style="color:var(--hpc)">${r.fH.toLocaleString('ko-KR')}</span> / <span style="color:var(--atc)">${r.fA.toLocaleString('ko-KR')}</span> / <span style="color:var(--dfc)">${r.fD.toLocaleString('ko-KR')}</span></span></div>
+          <div class="res-cell bv"><label>체×방</label><span class="v">${r.bv.toLocaleString('ko-KR')}</span></div>
+          <div class="res-cell bv"><label>체+방×4</label><span class="v">${r.ebv.toLocaleString('ko-KR')}</span></div>
+        </div>
+      </div>`;
+    });
+    html+='</div></div>';
+  });
+  el.innerHTML=html;
+  document.getElementById('res-sec').style.display='';
+  document.getElementById('res-sec').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function toggleType(btn){
+  const body=btn.nextElementSibling;
+  const caret=btn.querySelector('.ty-caret');
+  const open=body.classList.toggle('open');
+  caret.classList.toggle('open',open);
+}
+
+// ================================================================
+// 초기화
+// ================================================================
+function init(){
+  doLoad();
+  renderSpirit();
+  renderAcc();
+}
+document.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>

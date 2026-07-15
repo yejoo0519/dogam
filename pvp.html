@@ -1095,7 +1095,8 @@ const BASE={
 };
 
 // 젬 DB (단계별 체/공/방 수치)
-const GEM={36:{hp:144,atk:36,def:36},37:{hp:148,atk:37,def:37},38:{hp:152,atk:38,def:38},39:{hp:156,atk:39,def:39},40:{hp:160,atk:40,def:40}};
+const GEM={36:{hp:144,atk:36,def:36},37:{hp:152,atk:38,def:38},38:{hp:160,atk:40,def:40},39:{hp:168,atk:42,def:42},40:{hp:176,atk:44,def:44}};
+const GEM_NAME={36:36,37:38,38:40,39:42,40:44}; // 저장키(구 단계) → 표시명(신 단계)
 const FALLBACK_GEM_LV=36;
 const FALLBACK_GEM_COUNT=999;
 
@@ -1144,11 +1145,12 @@ let simGrade='9.0', simBuf=2;
 
 const SAVE_KEY='dv1sim_'+location.pathname.split('/').pop().replace(/\.[^.]+$/,'');
 
-// ── [일회성 마이그레이션] 2026-06-29~07-08 사이 EN 키(dv1simEN_)에 저장된 데이터 복구 ──
+// ── [일회성 마이그레이션 v2] EN 키(dv1simEN_) 데이터 복구 + 드래곤 셋팅 보존/복원 ──
 (function(){
   try{
     var MIG_ACC={'Horn of light +18 (Crit/HP)':'빛뿔 (크/체) 18','Horn of light +18 (Crit/ATK)':'빛뿔 (크/공) 18','Horn of light +18 (Crit/DEF)':'빛뿔 (크/방) 18','Horn of light +20 (Crit/HP)':'빛뿔 (크/체) 20','Horn of light +20 (Crit/ATK)':'빛뿔 (크/공) 20','Horn of light +20 (Crit/DEF)':'빛뿔 (크/방) 20','Nightmare Orb +16 (HP)':'악몽 수호자의 보주 (악보) 16','Dusk Orb +16 (ATK)':'황혼 수호자의 보주 (황보) 16','Dawn Orb +16 (DEF)':'여명 수호자의 보주 (여보) 16','Horn of water +16 (HP/ATK)':'물뿔 (체/공) 16','Horn of water +16 (HP/DEF)':'물뿔 (체/방) 16','Horn of fire +16 (ATK/HP)':'불뿔 (공/체) 16','Horn of fire +16 (ATK/DEF)':'불뿔 (공/방) 16','Horn of earth +16 (DEF/HP)':'대뿔 (방/체) 16','Horn of earth +16 (DEF/ATK)':'대뿔 (방/공) 16','Horn of wind +16 (HP/DEF)':'바뿔 (체/방) 16','Horn of wind +16 (ATK/HP)':'바뿔 (공/체) 16','Horn of wind +16 (ATK/DEF)':'바뿔 (공/방) 16','Nightmare Orb +17 (HP)':'악몽 수호자의 보주 (악보) 17','Dusk Orb +17 (ATK)':'황혼 수호자의 보주 (황보) 17','Dawn Orb +17 (DEF)':'여명 수호자의 보주 (여보) 17','Horn of water +17 (HP/ATK)':'물뿔 (체/공) 17','Horn of water +17 (HP/DEF)':'물뿔 (체/방) 17','Horn of fire +17 (ATK/HP)':'불뿔 (공/체) 17','Horn of fire +17 (ATK/DEF)':'불뿔 (공/방) 17','Horn of earth +17 (DEF/HP)':'대뿔 (방/체) 17','Horn of earth +17 (DEF/ATK)':'대뿔 (방/공) 17','Horn of wind +17 (HP/DEF)':'바뿔 (체/방) 17','Horn of wind +17 (ATK/HP)':'바뿔 (공/체) 17','Horn of wind +17 (ATK/DEF)':'바뿔 (공/방) 17','Nightmare Orb +18 (HP)':'악몽 수호자의 보주 (악보) 18','Dusk Orb +18 (ATK)':'황혼 수호자의 보주 (황보) 18','Dawn Orb +18 (DEF)':'여명 수호자의 보주 (여보) 18','Horn of water +18 (HP/ATK)':'물뿔 (체/공) 18','Horn of water +18 (HP/DEF)':'물뿔 (체/방) 18','Horn of fire +18 (ATK/HP)':'불뿔 (공/체) 18','Horn of fire +18 (ATK/DEF)':'불뿔 (공/방) 18','Horn of earth +18 (DEF/HP)':'대뿔 (방/체) 18','Horn of earth +18 (DEF/ATK)':'대뿔 (방/공) 18','Horn of wind +18 (HP/DEF)':'바뿔 (체/방) 18','Horn of wind +18 (ATK/HP)':'바뿔 (공/체) 18','Horn of wind +18 (ATK/DEF)':'바뿔 (공/방) 18','Nightmare Orb +19 (HP)':'악몽 수호자의 보주 (악보) 19','Dusk Orb +19 (ATK)':'황혼 수호자의 보주 (황보) 19','Dawn Orb +19 (DEF)':'여명 수호자의 보주 (여보) 19','Horn of water +19 (HP/ATK)':'물뿔 (체/공) 19','Horn of water +19 (HP/DEF)':'물뿔 (체/방) 19','Horn of fire +19 (ATK/HP)':'불뿔 (공/체) 19','Horn of fire +19 (ATK/DEF)':'불뿔 (공/방) 19','Horn of earth +19 (DEF/HP)':'대뿔 (방/체) 19','Horn of earth +19 (DEF/ATK)':'대뿔 (방/공) 19','Horn of wind +19 (HP/DEF)':'바뿔 (체/방) 19','Horn of wind +19 (ATK/HP)':'바뿔 (공/체) 19','Horn of wind +19 (ATK/DEF)':'바뿔 (공/방) 19','Nightmare Orb +20 (HP)':'악몽 수호자의 보주 (악보) 20','Dusk Orb +20 (ATK)':'황혼 수호자의 보주 (황보) 20','Dawn Orb +20 (DEF)':'여명 수호자의 보주 (여보) 20','Horn of water +20 (HP/ATK)':'물뿔 (체/공) 20','Horn of water +20 (HP/DEF)':'물뿔 (체/방) 20','Horn of fire +20 (ATK/HP)':'불뿔 (공/체) 20','Horn of fire +20 (ATK/DEF)':'불뿔 (공/방) 20','Horn of earth +20 (DEF/HP)':'대뿔 (방/체) 20','Horn of earth +20 (DEF/ATK)':'대뿔 (방/공) 20','Horn of wind +20 (HP/DEF)':'바뿔 (체/방) 20','Horn of wind +20 (ATK/HP)':'바뿔 (공/체) 20','Horn of wind +20 (ATK/DEF)':'바뿔 (공/방) 20'};
     var MIG_DRG={'Hydra Dragon':'히드라곤','Power Dragon':'파워 드래곤','Underground Dragon':'지하땅굴 드래곤','Egg Dragon':'에그 드래곤','Mustard Hammer':'머스타드해머','Scorpion Dragon':'스콜피온 드래곤','Python':'파이썬','Collosus':'콜로서스','Layers':'레이어스','Daros':'다로스','Earthquake':'지진','Zimon':'즈믄','Liberte':'리베티','Kanthaka':'칸타카','Appleche Dragon':'애플칙','Astarte':'아스타테','Leo Vector':'레오벡터','Aldebaran':'알데바란','Pachy':'파키','Quetzalcoatl':'케찰코아틀','Eggmayong':'에그마용','Heimdallr':'헤임달','Non':'논','Acaia':'아카이아','Chroma Acaia':'크로마 아카이아','Vaska':'바스카','Popon':'포폰','Poison River':'포이즌리버','Frost Dragon':'빙하고룡','Water Dragon':'수룡','Fairy Dragon':'페어리 드래곤','Shark Dragon':'샤크곤','IceDrake':'아이스 드레이크','Withme':'위드미','Secreta':'세크레타','Venom Dragon':'베놈 드래곤','Luminesce':'루미네스','Blizzard':'블리자드','Vritra':'브리트라','Tropheus':'트로페우스','Frozen':'프로즌','Myosotis':'마소티스','Bernhard':'베른하르트','Regulus':'레굴루스','Chroma Regulus':'크로마 레굴루스','Portunus':'폴투누스','Rudra':'루드라','Rusalka':'루살카','Yurqa':'유르카','Octa':'옥타','Chroma Octa':'크로마 옥타','Skat':'스카트','Alresch':'알레샤','Chroma Alresch':'크로마 알레샤','Loki':'로키','Volva':'볼바','Fishing Tail Dragon':'피싱테일 드래곤','Natron':'나트론','Swamp Dragon':'스왐프 드래곤','Undine':'운디네','Chroma Undine':'크로마 운디네','Fire Dragon':'파이어 드래곤','Lightning Dragon':'번개고룡','Phoenix':'피닉스','Red Wybern':'레드와이번','Iron':'아이언 드래곤','Jaryong':'자룡','Garuda':'가루다','Futurum':'푸투룸','Wild Dragon':'와일드 드래곤','Rugar Dragon':'루가르 드래곤','Popomo':'포포모','Evil Dragon':'마룡','Mneia':'므네이아','Burnesce':'번네스','Igna':'이그나','Sura Dragon':'수라 드래곤','Enturath':'엔투라스','Hwa gui Dragon':'화귀 드래곤','Yeomhwa Dragon':'염화룡','Tanatos':'타나토스','Thoth':'토트','Lancenti':'라센티','Firetail':'불나래','Chroma Firetail':'크로마 불나래','Blaze Dragon':'블레이즈 드래곤','Figar':'파이거','Chroma Figar':'크로마 파이거','Scartooth':'스카투스','Chroma Scartooth':'크로마 스카투스','Red Horse Dragon':'적마룡','Wind Dragon':'윈드 드래곤','Six Legged Dragon':'식스 레그 혼 드래곤','Blue Dragon':'청룡','Spring Dragon':'태엽 드래곤','Chaos':'카오스','Striker':'스트라이커','Asti Dragon':'아스티','Steelwing':'스틸윙','Graytan':'그레이탄','Araca':'아라카','Empire':'엠파이어','Gust':'거스트 드래곤','Centura':'센투라','Etoile Dragon':'에트왈 드래곤','Kigal':'키갈','Boreas':'보레아스','Tyr':'티르','Pitaya':'피타야','Blue Thunder':'블루썬더','Chroma Blue Thunder':'크로마 블루썬더','Litio':'리티오','Chroma Litio':'크로마 리티오','Thor':'토르','Lulu':'루루','Chroma Lulu':'크로마 루루','Zephyros':'제피로스','Spirit':'혼','God Dragon':'고대신룡','Angel Dragon':'엔젤 드래곤','Morika Dragon':'모리카 드래곤','Siamese Dragon':'샴 드래곤','Knight Dragon':'나이트 드래곤','Spicy':'스파이시','Rafael':'라파엘','White Dragon':'백룡','God Jr.':'고대 주니어','Argo Dragon':'아르고 드래곤','Citael':'시타엘','Bar\'rah':'바르라아','Asili':'아실리','Roloce':'로루스','Haze':'헤이즈','Ordo':'오르도','Star Ace':'스타에이스','Teddy Dragon':'테디 드래곤','Artemis Dragon':'아르테미스 드래곤','Whitethunder':'화이트썬더 드래곤','Karura':'카루라','Minas Dragon':'미나스 드래곤','Aton':'아톤','Talissah':'탈릿사','Angel Jr.':'엔젤주니어','Sword':'스워드','Gautling-gon':'개틀링곤','Amanta':'아만타','Shah':'샤흐','Vargr':'바르그','Solucanis':'솔루카니스','Atlus':'알투스','Protect Dragon':'프로텍트 드래곤','Chroma Protect Dragon':'크로마 프로텍트 드래곤','Yajnir':'야즈니르','Merak':'메라크','Sola':'솔라','Berna':'베르나','Seraphim':'세라핌','Venezie':'베네지','Baal':'바알','Dark Nix':'다크닉스','Sigma Dragon':'시그마 드래곤','Black Tear Dragon':'블랙티어 드래곤','Black Armor Dragon':'블랙아머 드래곤','Kuroy Dragon':'쿠로이 드래곤','Time Machine':'타임머신','Wonder Dragon':'원더 드래곤','Black Jindo':'블랙찡또','Moon Light':'문라이트','Marbas':'마르바스','Universe':'유니버스','Behemoth':'베히모스','Maloden':'말로단','Karna':'카르나','Dark Fal':'다크폴','Dark Knight':'다크나이트','Kubera':'쿠베라','Azak':'아자크','Makara':'마카라','Lichmond':'리치몬드','Chroma Lichmond':'크로마 리치몬드','Goat':'고트','Magnas':'마그나스','Porta':'포르타','Vetala':'베타라','Chroma Vetala':'크로마 베타라','Caslux':'카스룩스','Fides':'피데스','Jormungandr':'요르문간드','Tiamat':'티아매트','Obex':'오벡스','Cthulhu':'크툴루','Chroma Cthulhu':'크로마 크툴루','Hatshya':'하트샤','Dragon Slayer':'드래곤 슬레이어','Black Dragon':'흑룡','Harleybell':'할리벨','Taabire':'타아비레','Hapla':'합라','Selmasa':'셀마사','Berith':'베리스','Eligos':'엘리고스','Mimir':'미미르','Amdusias':'암두시아스','Nebia':'네비아','Wrath':'라스','Amaltheia':'아말테아','Harmonious Dragon':'조화룡','Cortus':'코르투스','Rukbat':'루크바트','Ullr':'울르','Aphrodite':'아프로디테','Janus':'야누스','Freyja':'프레이야','Kinder Dragon':'킨더 드래곤','Reward Dragon':'보상이용','Ballack':'발라크','Vefal':'베팔','Characen':'카라선','Rexton':'렉스톤','Pomekle':'포메쿨','Tilki':'틸키','Rekmall Reverse':'렉몰 리버스','Harika':'하리카','Deathlock':'데스락','Eclipse':'이클립스','Nebula':'네뷸라','Seere':'세에레','Pride':'프라이드','Chachawung':'차차웅','Epit':'에피트','Tempios':'템피오스','Inverso':'인베르소','Manus':'마누스','Hresvelgr':'흐레스벨그','Reginleif':'레긴레이프','Chroma Reginleif':'크로마 레긴레이프','Dantalion':'단탈리온','Jagan':'자간','Animala':'애니마라','Rude Ore':'루드오어','Beleth':'벨레드','Longinus':'롱기누스','Mysfit':'미스핏','Mastema':'마스테마','Nemus':'네무스','Crevasse':'크레바스','Chroma Beleth':'크로마 벨레드','Slosi':'쉴로시','Curse Reaper':'커스리퍼','Jin':'진','Corrupted Jormungandr':'잠식된 요르문간드','Lemures':'레무레스','Valefor':'발레포르','Chroma Valefor':'크로마 발레포르','Vlad':'블라드','Dimension Dragon':'디멘션 드래곤','Mangtaegon':'망태곤'};
+    var MIG_PAGE_HAS_DRAGONS=true;
     function migName(map,n){return (n&&map[n])?map[n]:n;}
     function migState(p){
       if(p&&p.accCards)p.accCards.forEach(function(c){if(c)c.name=migName(MIG_ACC,c.name);});
@@ -1157,17 +1159,65 @@ const SAVE_KEY='dv1sim_'+location.pathname.split('/').pop().replace(/\.[^.]+$/,'
       });
       return p;
     }
+    function hasDragons(p){
+      if(!p||!p.dragonCards)return false;
+      return Object.keys(p.dragonCards).some(function(cat){
+        return (p.dragonCards[cat]||[]).some(function(d){return d&&d.name;});
+      });
+    }
+    // [1단계] EN 키 → KR 키 (최초 1회). 덮어쓰기 전 백업, EN쪽 드래곤이 비었으면 기존 KR 드래곤 유지
     var pageFlag='dv1sim_mig_'+SAVE_KEY;
     if(!localStorage.getItem(pageFlag)){
       var enKey='dv1simEN_'+SAVE_KEY.replace(/^dv1sim_/,'');
       var enRaw=localStorage.getItem(enKey);
-      if(enRaw){localStorage.setItem(SAVE_KEY,JSON.stringify(migState(JSON.parse(enRaw))));}
+      if(enRaw){
+        var krRaw=localStorage.getItem(SAVE_KEY);
+        if(krRaw&&!localStorage.getItem('dv1sim_bak_'+SAVE_KEY))localStorage.setItem('dv1sim_bak_'+SAVE_KEY,krRaw);
+        var enP=migState(JSON.parse(enRaw));
+        if(MIG_PAGE_HAS_DRAGONS&&!hasDragons(enP)&&krRaw){
+          try{var krP=JSON.parse(krRaw);if(hasDragons(krP))enP.dragonCards=krP.dragonCards;}catch(_e2){}
+        }
+        localStorage.setItem(SAVE_KEY,JSON.stringify(enP));
+      }
       localStorage.setItem(pageFlag,'1');
     }
+    // 스펙: EN spec을 병합(필드 보존). 드래곤은 비어있는 쪽이 이기지 않음
     if(!localStorage.getItem('dv1sim_mig_spec')){
       var enSpec=localStorage.getItem('dv1simEN_spec');
-      if(enSpec){localStorage.setItem('dv1sim_spec',JSON.stringify(migState(JSON.parse(enSpec))));}
+      if(enSpec){
+        var krSpecRaw=localStorage.getItem('dv1sim_spec');
+        if(krSpecRaw&&!localStorage.getItem('dv1sim_bak_spec'))localStorage.setItem('dv1sim_bak_spec',krSpecRaw);
+        var enSp=migState(JSON.parse(enSpec));
+        var krSp={};try{krSp=krSpecRaw?JSON.parse(krSpecRaw):{};}catch(_e3){}
+        var merged=Object.assign({},krSp,enSp);
+        if(!hasDragons(enSp)&&hasDragons(krSp))merged.dragonCards=krSp.dragonCards;
+        localStorage.setItem('dv1sim_spec',JSON.stringify(merged));
+      }
       localStorage.setItem('dv1sim_mig_spec','1');
+    }
+    // [2단계 v2 복구] v1 초기버전을 거친 사용자 포함 전원 1회:
+    // (a) KR 키 안의 영어 이름 정규화(멱등) (b) 페이지 드래곤이 비었으면 spec → 백업 순으로 복원
+    if(!localStorage.getItem('dv1sim_mig2_'+SAVE_KEY)){
+      ['dv1sim_spec',SAVE_KEY].forEach(function(k){
+        try{var r0=localStorage.getItem(k);if(r0)localStorage.setItem(k,JSON.stringify(migState(JSON.parse(r0))));}catch(_e4){}
+      });
+      if(MIG_PAGE_HAS_DRAGONS){
+        try{
+          var curRaw=localStorage.getItem(SAVE_KEY);
+          var cur=curRaw?JSON.parse(curRaw):null;
+          if(cur&&!hasDragons(cur)){
+            var srcs=['dv1sim_spec','dv1sim_bak_'+SAVE_KEY];
+            for(var i=0;i<srcs.length;i++){
+              var sRaw=localStorage.getItem(srcs[i]);if(!sRaw)continue;
+              try{
+                var sP=migState(JSON.parse(sRaw));
+                if(hasDragons(sP)){cur.dragonCards=sP.dragonCards;localStorage.setItem(SAVE_KEY,JSON.stringify(cur));break;}
+              }catch(_e6){}
+            }
+          }
+        }catch(_e5){}
+      }
+      localStorage.setItem('dv1sim_mig2_'+SAVE_KEY,'1');
     }
   }catch(_e){console.warn('migration skip:',_e);}
 })();
@@ -3010,7 +3060,7 @@ function fmtGem(alloc){
   const parts=[];
   for(const s of SKEYS){
     const lvs=bySt[s].sort((a,b)=>b-a);
-    if(lvs.length)parts.push(`<span class="gem-tag" style="color:${cols[s]}">${SK[s]}${lvs.length}(${lvs.join(',')})</span>`);
+    if(lvs.length)parts.push(`<span class="gem-tag" style="color:${cols[s]}">${SK[s]}${lvs.length}(${lvs.map(l=>GEM_NAME[l]||l).join(',')})</span>`);
   }
   return parts.length?parts.join(''):'<span style="color:var(--dimmer)">없음</span>';
 }
@@ -3060,7 +3110,7 @@ function renderSpecView(){
   let gemRows='';
   for(const lv of [40,39,38,37]){
     const hp=S.gems?.hp?.[lv]||0,atk=S.gems?.atk?.[lv]||0,def=S.gems?.def?.[lv]||0;
-    if(hp||atk||def)gemRows+=`<tr><td style="color:var(--dim);font-weight:700">${lv}젬</td><td class="sv-gem-hp">${hp||'-'}</td><td class="sv-gem-atk">${atk||'-'}</td><td class="sv-gem-def">${def||'-'}</td></tr>`;
+    if(hp||atk||def)gemRows+=`<tr><td style="color:var(--dim);font-weight:700">${GEM_NAME[lv]||lv}젬 <span style="color:var(--dimmer);font-weight:400;font-size:10px">(기존 ${lv})</span></td><td class="sv-gem-hp">${hp||'-'}</td><td class="sv-gem-atk">${atk||'-'}</td><td class="sv-gem-def">${def||'-'}</td></tr>`;
   }
   const t={hp:0,atk:0,def:0};
   for(const s of ['hp','atk','def'])for(const lv of [37,38,39,40])t[s]+=(S.gems?.[s]?.[lv]||0);

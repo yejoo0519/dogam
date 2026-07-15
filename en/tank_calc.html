@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ko" data-theme="dark">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>체+방 전용 계산기 (개인용)</title>
+<title>HP+DEF Tank Calculator (Personal)</title>
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -107,24 +107,24 @@ select:focus,input:focus{outline:none;border-color:var(--gold)}
 <div class="hd">
   <a href="./index.html?tab=calculator" style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;border:1px solid var(--bd);background:var(--sf2);color:var(--text2);text-decoration:none;font-size:16px;flex-shrink:0;transition:all 0.15s" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--bd)';this.style.color='var(--text2)'">←</a>
   <div class="hd-icon">🛡️</div>
-  <div><div class="hd-t">체+방 전용 계산기</div><div class="hd-s">개인용 · 체력×방어 최고값 탐색</div></div>
+  <div><div class="hd-t">HP+DEF Tank Calculator</div><div class="hd-s">Personal · Find the max HP×DEF setup</div></div>
 </div>
 
 <div class="ti">
 
   <div class="sec">
-    <div class="sec-hd">⚙ 기본 설정</div>
+    <div class="sec-hd">⚙ Basic Settings</div>
     <div class="sec-bd">
       <div style="display:flex;flex-direction:column;gap:14px">
         <div>
-          <div class="cfg-lbl">폼</div>
+          <div class="cfg-lbl">Form</div>
           <div class="btn-grp" id="tier-grp">
-            <button onclick="setTier('초월')">초월</button>
-            <button class="active" onclick="setTier('강림')">강림</button>
+            <button data-v="초월" onclick="setTier('초월')">Transcended</button>
+            <button class="active" data-v="강림" onclick="setTier('강림')">Advent</button>
           </div>
         </div>
         <div id="grd-wrap">
-          <div class="cfg-lbl">등급</div>
+          <div class="cfg-lbl">Grade</div>
           <div class="btn-grp" id="grd-grp">
             <button onclick="setGrade('7.0')">7.0</button>
             <button onclick="setGrade('8.0')">8.0</button>
@@ -132,45 +132,45 @@ select:focus,input:focus{outline:none;border-color:var(--gold)}
           </div>
         </div>
         <div>
-          <div class="cfg-lbl">버프 (기본스탯 대비 %, 직접입력)</div>
+          <div class="cfg-lbl">Buff (% of base stats, manual input)</div>
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-            <div class="fg"><label>체력버프 %</label><input type="number" id="buf-hp" value="0" min="0" step="0.1" onchange="onBuf('hp',this.value)"></div>
-            <div class="fg"><label>공격버프 %</label><input type="number" id="buf-atk" value="0" min="0" step="0.1" onchange="onBuf('atk',this.value)"></div>
-            <div class="fg"><label>방어버프 %</label><input type="number" id="buf-def" value="0" min="0" step="0.1" onchange="onBuf('def',this.value)"></div>
+            <div class="fg"><label>HP Buff %</label><input type="number" id="buf-hp" value="0" min="0" step="0.1" onchange="onBuf('hp',this.value)"></div>
+            <div class="fg"><label>ATK Buff %</label><input type="number" id="buf-atk" value="0" min="0" step="0.1" onchange="onBuf('atk',this.value)"></div>
+            <div class="fg"><label>DEF Buff %</label><input type="number" id="buf-def" value="0" min="0" step="0.1" onchange="onBuf('def',this.value)"></div>
           </div>
         </div>
         <div>
-          <div class="cfg-lbl">장신구</div>
+          <div class="cfg-lbl">Accessory</div>
           <div class="btn-grp" id="acc-grp">
-            <button class="active" onclick="setAccCat('회깃')">회깃(회피깃털)</button>
-            <button onclick="setAccCat('어둠뿔')">어둠뿔</button>
-            <button onclick="setAccCat('스텟장신구')">스텟장신구</button>
+            <button class="active" data-cat="회깃" onclick="setAccCat('회깃')">Evasion Feather</button>
+            <button data-cat="어둠뿔" onclick="setAccCat('어둠뿔')">Dark Horn</button>
+            <button data-cat="스텟장신구" onclick="setAccCat('스텟장신구')">Stat Accessory</button>
           </div>
         </div>
         <div>
-          <div class="cfg-lbl">인첸트 수치 (%, 직접입력)</div>
+          <div class="cfg-lbl">Enchant value (%, manual input)</div>
           <input type="number" id="ench-pct" value="21" min="0" step="0.1" style="width:100%" onchange="setEnchPct(this.value)">
         </div>
         <div>
-          <div class="cfg-lbl">인첸트 대상</div>
+          <div class="cfg-lbl">Enchant target</div>
           <div class="btn-grp" id="ench-tgt-grp">
-            <button class="active" onclick="setEnchTarget('auto')">자동탐색</button>
-            <button onclick="setEnchTarget('hp')">체력 고정</button>
-            <button onclick="setEnchTarget('def')">방어 고정</button>
+            <button class="active" onclick="setEnchTarget('auto')">Auto</button>
+            <button onclick="setEnchTarget('hp')">HP fixed</button>
+            <button onclick="setEnchTarget('def')">DEF fixed</button>
           </div>
         </div>
         <div>
-          <div class="cfg-lbl">젬 레벨</div>
+          <div class="cfg-lbl">Gem level</div>
           <div class="btn-grp" id="gem-grp">
-            <button class="active" onclick="setGemLv(36)">36</button>
-            <button onclick="setGemLv(37)">37</button>
+            <button class="active" data-lv="36" onclick="setGemLv(36)">36</button>
+            <button data-lv="37" onclick="setGemLv(37)">38 <span style="opacity:.6;font-size:11px">(old 37)</span></button>
           </div>
         </div>
         <div>
-          <div class="cfg-lbl">펜던트 옵션 수 (옵션당 6% 고정)</div>
+          <div class="cfg-lbl">Pendant options (6% per option, fixed)</div>
           <div class="btn-grp" id="pend-grp">
-            <button onclick="setPendOpts(1)">1옵 (별의 펜던트)</button>
-            <button class="active" onclick="setPendOpts(2)">2옵 (달의 펜던트)</button>
+            <button onclick="setPendOpts(1)">1 opt (Star Pendant)</button>
+            <button class="active" onclick="setPendOpts(2)">2 opt (Moon Pendant)</button>
           </div>
         </div>
       </div>
@@ -179,9 +179,9 @@ select:focus,input:focus{outline:none;border-color:var(--gold)}
 
   <div class="sec" id="acc-sec" style="display:none">
     <div class="sec-hd">
-      <span>💍 스텟장신구 (보유 목록)</span>
+      <span>💍 Stat Accessories (owned list)</span>
       <div style="display:flex;gap:6px">
-        <button class="btn-add" onclick="addAcc()">+ 추가</button>
+        <button class="btn-add" onclick="addAcc()">+ Add</button>
         <button class="btn-reset" onclick="resetAcc()">↺</button>
       </div>
     </div>
@@ -190,25 +190,25 @@ select:focus,input:focus{outline:none;border-color:var(--gold)}
 
   <div class="sec">
     <div class="sec-hd">
-      <span>✨ 정령</span>
+      <span>✨ Spirit</span>
       <button class="btn-reset" onclick="resetSpirit()">↺</button>
     </div>
     <div class="sec-bd" id="sp-bd"></div>
   </div>
 
   <div class="sec">
-    <div class="sec-hd">📌 고정값</div>
+    <div class="sec-hd">📌 Fixed values</div>
     <div class="sec-bd info-box">
-      💎 젬: 레벨은 위에서 선택(36/37) · 5슬롯 체력/방어에만 배분 (자동 최적 탐색)<br>
-      📚 컬렉션: 체 240 / 공 60 / 방 60 고정<br>
-      🌙 펜던트: 옵션 6% 고정, 옵션 수(1옵/2옵)는 위에서 선택<br>
+      💎 Gem: level selected above (36/38) · 5 slots, HP/DEF only (auto-optimized)<br>
+      📚 Collection: HP 240 / ATK 60 / DEF 60 fixed<br>
+      🌙 Pendant: 6% per option fixed, option count (1/2) selected above<br>
     </div>
   </div>
 
-  <button class="btn-sim" onclick="runCalc()">🛡️ 계산하기</button>
+  <button class="btn-sim" onclick="runCalc()">🛡️ Calculate</button>
 
   <div class="sec" id="res-sec" style="display:none">
-    <div class="sec-hd">🏆 결과 — 타입별 체방 젤 높은셋팅</div>
+    <div class="sec-hd">🏆 Results — Best HP×DEF setup per type</div>
     <div class="res-wrap"><div id="res-body"></div></div>
   </div>
 
@@ -218,7 +218,8 @@ select:focus,input:focus{outline:none;border-color:var(--gold)}
 // ================================================================
 // 상수
 // ================================================================
-const SK={hp:'체',atk:'공',def:'방'};
+const SK={hp:'HP',atk:'ATK',def:'DEF'};
+const T_TYPE={'체력형':'HP Type','공격형':'ATK Type','방어형':'DEF Type','공방형':'ATK/DEF Type','체공형':'HP/ATK Type','체방형':'HP/DEF Type'};
 const DTYPES=['체력형','공격형','방어형','체공형','체방형','공방형'];
 
 const BASE={
@@ -233,12 +234,12 @@ const SP_PLUS={hp:{1:216,2:240,3:264,4:480},atk:{1:54,2:60,3:66,4:120},def:{1:54
 const SP_PCT={1:0.24,2:0.28,3:0.32,4:0.40};
 const SP_BONUS={hp:40,atk:10,def:10};
 const SP_PRESETS=[
-  {id:'custom',name:'직접입력',types:['','','','']},
-  {id:'last_plus',name:'막플',types:['%','%','%','+']},
-  {id:'all_pct',name:'올퍼',types:['%','%','%','%']},
-  {id:'one_four_plus',name:'14플',types:['+','%','%','+']},
-  {id:'first_plus',name:'24플',types:['%','+','%','+']},
-  {id:'first_only_plus',name:'1플',types:['+','%','%','%']}
+  {id:'custom',name:'Custom',types:['','','','']},
+  {id:'last_plus',name:'Ult+',types:['%','%','%','+']},
+  {id:'all_pct',name:'All%',types:['%','%','%','%']},
+  {id:'one_four_plus',name:'14+',types:['+','%','%','+']},
+  {id:'first_plus',name:'24+',types:['%','+','%','+']},
+  {id:'first_only_plus',name:'1st+',types:['+','%','%','%']}
 ];
 
 // 장신구/펜던트 이미지 (기존 계산기와 동일한 저장소)
@@ -257,77 +258,77 @@ const IMG_회깃=`${TEM_BASE}/645.png`;
 
 // 장신구 DB (기존 계산기의 ACC_DB)
 const ACC_DB=[
-  {n:'빛뿔 (크/체) 18',hp:0.08, atk:0,    def:0   , img:accImg(18,'빛뿔')},
-  {n:'빛뿔 (크/공) 18',hp:0,    atk:0.08, def:0   , img:accImg(18,'빛뿔')},
-  {n:'빛뿔 (크/방) 18',hp:0,    atk:0,    def:0.08, img:accImg(18,'빛뿔')},
-  {n:'빛뿔 (크/체) 20',hp:0.1,  atk:0,    def:0   , img:accImg(20,'빛뿔')},
-  {n:'빛뿔 (크/공) 20',hp:0,    atk:0.1,  def:0   , img:accImg(20,'빛뿔')},
-  {n:'빛뿔 (크/방) 20',hp:0,    atk:0,    def:0.1 , img:accImg(20,'빛뿔')},
+  {n:'Horn of light +18 (Crit/HP)',hp:0.08, atk:0,    def:0   , img:accImg(18,'빛뿔')},
+  {n:'Horn of light +18 (Crit/ATK)',hp:0,    atk:0.08, def:0   , img:accImg(18,'빛뿔')},
+  {n:'Horn of light +18 (Crit/DEF)',hp:0,    atk:0,    def:0.08, img:accImg(18,'빛뿔')},
+  {n:'Horn of light +20 (Crit/HP)',hp:0.1,  atk:0,    def:0   , img:accImg(20,'빛뿔')},
+  {n:'Horn of light +20 (Crit/ATK)',hp:0,    atk:0.1,  def:0   , img:accImg(20,'빛뿔')},
+  {n:'Horn of light +20 (Crit/DEF)',hp:0,    atk:0,    def:0.1 , img:accImg(20,'빛뿔')},
 
-  {n:'악몽 수호자의 보주 (악보) 16',hp:0.16, atk:0,    def:0   , img:accImg(16,'악보')},
-  {n:'황혼 수호자의 보주 (황보) 16',hp:0,    atk:0.16, def:0   , img:accImg(16,'황보')},
-  {n:'여명 수호자의 보주 (여보) 16',hp:0,    atk:0,    def:0.16, img:accImg(16,'여보')},
-  {n:'물뿔 (체/공) 16',hp:0.1,  atk:0.06, def:0   , img:accImg(16,'물뿔')},
-  {n:'물뿔 (체/방) 16',hp:0.1,  atk:0,    def:0.06, img:accImg(16,'물뿔')},
-  {n:'불뿔 (공/체) 16',hp:0.06, atk:0.1,  def:0   , img:accImg(16,'불뿔')},
-  {n:'불뿔 (공/방) 16',hp:0,    atk:0.1,  def:0.06, img:accImg(16,'불뿔')},
-  {n:'대뿔 (방/체) 16',hp:0.06, atk:0,    def:0.1 , img:accImg(16,'대뿔')},
-  {n:'대뿔 (방/공) 16',hp:0,    atk:0.06, def:0.1 , img:accImg(16,'대뿔')},
-  {n:'바뿔 (체/방) 16',hp:0.08, atk:0,    def:0.08, img:accImg(16,'바뿔')},
-  {n:'바뿔 (공/체) 16',hp:0.08, atk:0.08, def:0   , img:accImg(16,'바뿔')},
-  {n:'바뿔 (공/방) 16',hp:0,    atk:0.08, def:0.08, img:accImg(16,'바뿔')},
+  {n:'Nightmare Orb +16 (HP)',hp:0.16, atk:0,    def:0   , img:accImg(16,'악보')},
+  {n:'Dusk Orb +16 (ATK)',hp:0,    atk:0.16, def:0   , img:accImg(16,'황보')},
+  {n:'Dawn Orb +16 (DEF)',hp:0,    atk:0,    def:0.16, img:accImg(16,'여보')},
+  {n:'Horn of water +16 (HP/ATK)',hp:0.1,  atk:0.06, def:0   , img:accImg(16,'물뿔')},
+  {n:'Horn of water +16 (HP/DEF)',hp:0.1,  atk:0,    def:0.06, img:accImg(16,'물뿔')},
+  {n:'Horn of fire +16 (ATK/HP)',hp:0.06, atk:0.1,  def:0   , img:accImg(16,'불뿔')},
+  {n:'Horn of fire +16 (ATK/DEF)',hp:0,    atk:0.1,  def:0.06, img:accImg(16,'불뿔')},
+  {n:'Horn of earth +16 (DEF/HP)',hp:0.06, atk:0,    def:0.1 , img:accImg(16,'대뿔')},
+  {n:'Horn of earth +16 (DEF/ATK)',hp:0,    atk:0.06, def:0.1 , img:accImg(16,'대뿔')},
+  {n:'Horn of wind +16 (HP/DEF)',hp:0.08, atk:0,    def:0.08, img:accImg(16,'바뿔')},
+  {n:'Horn of wind +16 (ATK/HP)',hp:0.08, atk:0.08, def:0   , img:accImg(16,'바뿔')},
+  {n:'Horn of wind +16 (ATK/DEF)',hp:0,    atk:0.08, def:0.08, img:accImg(16,'바뿔')},
 
-  {n:'악몽 수호자의 보주 (악보) 17',hp:0.17, atk:0,    def:0   , img:accImg(17,'악보')},
-  {n:'황혼 수호자의 보주 (황보) 17',hp:0,    atk:0.17, def:0   , img:accImg(17,'황보')},
-  {n:'여명 수호자의 보주 (여보) 17',hp:0,    atk:0,    def:0.17, img:accImg(17,'여보')},
-  {n:'물뿔 (체/공) 17',hp:0.11, atk:0.06, def:0   , img:accImg(17,'물뿔')},
-  {n:'물뿔 (체/방) 17',hp:0.11, atk:0,    def:0.06, img:accImg(17,'물뿔')},
-  {n:'불뿔 (공/체) 17',hp:0.06, atk:0.11, def:0   , img:accImg(17,'불뿔')},
-  {n:'불뿔 (공/방) 17',hp:0,    atk:0.11, def:0.06, img:accImg(17,'불뿔')},
-  {n:'대뿔 (방/체) 17',hp:0.06, atk:0,    def:0.11, img:accImg(17,'대뿔')},
-  {n:'대뿔 (방/공) 17',hp:0,    atk:0.06, def:0.11, img:accImg(17,'대뿔')},
-  {n:'바뿔 (체/방) 17',hp:0.09, atk:0,    def:0.08, img:accImg(17,'바뿔')},
-  {n:'바뿔 (공/체) 17',hp:0.08, atk:0.09, def:0   , img:accImg(17,'바뿔')},
-  {n:'바뿔 (공/방) 17',hp:0,    atk:0.09, def:0.08, img:accImg(17,'바뿔')},
+  {n:'Nightmare Orb +17 (HP)',hp:0.17, atk:0,    def:0   , img:accImg(17,'악보')},
+  {n:'Dusk Orb +17 (ATK)',hp:0,    atk:0.17, def:0   , img:accImg(17,'황보')},
+  {n:'Dawn Orb +17 (DEF)',hp:0,    atk:0,    def:0.17, img:accImg(17,'여보')},
+  {n:'Horn of water +17 (HP/ATK)',hp:0.11, atk:0.06, def:0   , img:accImg(17,'물뿔')},
+  {n:'Horn of water +17 (HP/DEF)',hp:0.11, atk:0,    def:0.06, img:accImg(17,'물뿔')},
+  {n:'Horn of fire +17 (ATK/HP)',hp:0.06, atk:0.11, def:0   , img:accImg(17,'불뿔')},
+  {n:'Horn of fire +17 (ATK/DEF)',hp:0,    atk:0.11, def:0.06, img:accImg(17,'불뿔')},
+  {n:'Horn of earth +17 (DEF/HP)',hp:0.06, atk:0,    def:0.11, img:accImg(17,'대뿔')},
+  {n:'Horn of earth +17 (DEF/ATK)',hp:0,    atk:0.06, def:0.11, img:accImg(17,'대뿔')},
+  {n:'Horn of wind +17 (HP/DEF)',hp:0.09, atk:0,    def:0.08, img:accImg(17,'바뿔')},
+  {n:'Horn of wind +17 (ATK/HP)',hp:0.08, atk:0.09, def:0   , img:accImg(17,'바뿔')},
+  {n:'Horn of wind +17 (ATK/DEF)',hp:0,    atk:0.09, def:0.08, img:accImg(17,'바뿔')},
 
-  {n:'악몽 수호자의 보주 (악보) 18',hp:0.18, atk:0,    def:0   , img:accImg(18,'악보')},
-  {n:'황혼 수호자의 보주 (황보) 18',hp:0,    atk:0.18, def:0   , img:accImg(18,'황보')},
-  {n:'여명 수호자의 보주 (여보) 18',hp:0,    atk:0,    def:0.18, img:accImg(18,'여보')},
-  {n:'물뿔 (체/공) 18',hp:0.12, atk:0.06, def:0   , img:accImg(18,'물뿔')},
-  {n:'물뿔 (체/방) 18',hp:0.12, atk:0,    def:0.06, img:accImg(18,'물뿔')},
-  {n:'불뿔 (공/체) 18',hp:0.06, atk:0.12, def:0   , img:accImg(18,'불뿔')},
-  {n:'불뿔 (공/방) 18',hp:0,    atk:0.12, def:0.06, img:accImg(18,'불뿔')},
-  {n:'대뿔 (방/체) 18',hp:0.06, atk:0,    def:0.12, img:accImg(18,'대뿔')},
-  {n:'대뿔 (방/공) 18',hp:0,    atk:0.06, def:0.12, img:accImg(18,'대뿔')},
-  {n:'바뿔 (체/방) 18',hp:0.09, atk:0,    def:0.09, img:accImg(18,'바뿔')},
-  {n:'바뿔 (공/체) 18',hp:0.09, atk:0.09, def:0   , img:accImg(18,'바뿔')},
-  {n:'바뿔 (공/방) 18',hp:0,    atk:0.09, def:0.09, img:accImg(18,'바뿔')},
+  {n:'Nightmare Orb +18 (HP)',hp:0.18, atk:0,    def:0   , img:accImg(18,'악보')},
+  {n:'Dusk Orb +18 (ATK)',hp:0,    atk:0.18, def:0   , img:accImg(18,'황보')},
+  {n:'Dawn Orb +18 (DEF)',hp:0,    atk:0,    def:0.18, img:accImg(18,'여보')},
+  {n:'Horn of water +18 (HP/ATK)',hp:0.12, atk:0.06, def:0   , img:accImg(18,'물뿔')},
+  {n:'Horn of water +18 (HP/DEF)',hp:0.12, atk:0,    def:0.06, img:accImg(18,'물뿔')},
+  {n:'Horn of fire +18 (ATK/HP)',hp:0.06, atk:0.12, def:0   , img:accImg(18,'불뿔')},
+  {n:'Horn of fire +18 (ATK/DEF)',hp:0,    atk:0.12, def:0.06, img:accImg(18,'불뿔')},
+  {n:'Horn of earth +18 (DEF/HP)',hp:0.06, atk:0,    def:0.12, img:accImg(18,'대뿔')},
+  {n:'Horn of earth +18 (DEF/ATK)',hp:0,    atk:0.06, def:0.12, img:accImg(18,'대뿔')},
+  {n:'Horn of wind +18 (HP/DEF)',hp:0.09, atk:0,    def:0.09, img:accImg(18,'바뿔')},
+  {n:'Horn of wind +18 (ATK/HP)',hp:0.09, atk:0.09, def:0   , img:accImg(18,'바뿔')},
+  {n:'Horn of wind +18 (ATK/DEF)',hp:0,    atk:0.09, def:0.09, img:accImg(18,'바뿔')},
 
-  {n:'악몽 수호자의 보주 (악보) 19',hp:0.19, atk:0,    def:0   , img:accImg(19,'악보')},
-  {n:'황혼 수호자의 보주 (황보) 19',hp:0,    atk:0.19, def:0   , img:accImg(19,'황보')},
-  {n:'여명 수호자의 보주 (여보) 19',hp:0,    atk:0,    def:0.19, img:accImg(19,'여보')},
-  {n:'물뿔 (체/공) 19',hp:0.13, atk:0.06, def:0   , img:accImg(19,'물뿔')},
-  {n:'물뿔 (체/방) 19',hp:0.13, atk:0,    def:0.06, img:accImg(19,'물뿔')},
-  {n:'불뿔 (공/체) 19',hp:0.06, atk:0.13, def:0   , img:accImg(19,'불뿔')},
-  {n:'불뿔 (공/방) 19',hp:0,    atk:0.13, def:0.06, img:accImg(19,'불뿔')},
-  {n:'대뿔 (방/체) 19',hp:0.06, atk:0,    def:0.13, img:accImg(19,'대뿔')},
-  {n:'대뿔 (방/공) 19',hp:0,    atk:0.06, def:0.13, img:accImg(19,'대뿔')},
-  {n:'바뿔 (체/방) 19',hp:0.1,  atk:0,    def:0.09, img:accImg(19,'바뿔')},
-  {n:'바뿔 (공/체) 19',hp:0.09, atk:0.1,  def:0   , img:accImg(19,'바뿔')},
-  {n:'바뿔 (공/방) 19',hp:0,    atk:0.1,  def:0.09, img:accImg(19,'바뿔')},
+  {n:'Nightmare Orb +19 (HP)',hp:0.19, atk:0,    def:0   , img:accImg(19,'악보')},
+  {n:'Dusk Orb +19 (ATK)',hp:0,    atk:0.19, def:0   , img:accImg(19,'황보')},
+  {n:'Dawn Orb +19 (DEF)',hp:0,    atk:0,    def:0.19, img:accImg(19,'여보')},
+  {n:'Horn of water +19 (HP/ATK)',hp:0.13, atk:0.06, def:0   , img:accImg(19,'물뿔')},
+  {n:'Horn of water +19 (HP/DEF)',hp:0.13, atk:0,    def:0.06, img:accImg(19,'물뿔')},
+  {n:'Horn of fire +19 (ATK/HP)',hp:0.06, atk:0.13, def:0   , img:accImg(19,'불뿔')},
+  {n:'Horn of fire +19 (ATK/DEF)',hp:0,    atk:0.13, def:0.06, img:accImg(19,'불뿔')},
+  {n:'Horn of earth +19 (DEF/HP)',hp:0.06, atk:0,    def:0.13, img:accImg(19,'대뿔')},
+  {n:'Horn of earth +19 (DEF/ATK)',hp:0,    atk:0.06, def:0.13, img:accImg(19,'대뿔')},
+  {n:'Horn of wind +19 (HP/DEF)',hp:0.1,  atk:0,    def:0.09, img:accImg(19,'바뿔')},
+  {n:'Horn of wind +19 (ATK/HP)',hp:0.09, atk:0.1,  def:0   , img:accImg(19,'바뿔')},
+  {n:'Horn of wind +19 (ATK/DEF)',hp:0,    atk:0.1,  def:0.09, img:accImg(19,'바뿔')},
 
-  {n:'악몽 수호자의 보주 (악보) 20',hp:0.2,  atk:0,    def:0   , img:accImg(20,'악보')},
-  {n:'황혼 수호자의 보주 (황보) 20',hp:0,    atk:0.2,  def:0   , img:accImg(20,'황보')},
-  {n:'여명 수호자의 보주 (여보) 20',hp:0,    atk:0,    def:0.2 , img:accImg(20,'여보')},
-  {n:'물뿔 (체/공) 20',hp:0.14, atk:0.06, def:0   , img:accImg(20,'물뿔')},
-  {n:'물뿔 (체/방) 20',hp:0.14, atk:0,    def:0.06, img:accImg(20,'물뿔')},
-  {n:'불뿔 (공/체) 20',hp:0.06, atk:0.14, def:0   , img:accImg(20,'불뿔')},
-  {n:'불뿔 (공/방) 20',hp:0,    atk:0.14, def:0.06, img:accImg(20,'불뿔')},
-  {n:'대뿔 (방/체) 20',hp:0.06, atk:0,    def:0.14, img:accImg(20,'대뿔')},
-  {n:'대뿔 (방/공) 20',hp:0,    atk:0.06, def:0.14, img:accImg(20,'대뿔')},
-  {n:'바뿔 (체/방) 20',hp:0.1,  atk:0,    def:0.1 , img:accImg(20,'바뿔')},
-  {n:'바뿔 (공/체) 20',hp:0.1,  atk:0.1,  def:0   , img:accImg(20,'바뿔')},
-  {n:'바뿔 (공/방) 20',hp:0,    atk:0.1,  def:0.1 , img:accImg(20,'바뿔')},
+  {n:'Nightmare Orb +20 (HP)',hp:0.2,  atk:0,    def:0   , img:accImg(20,'악보')},
+  {n:'Dusk Orb +20 (ATK)',hp:0,    atk:0.2,  def:0   , img:accImg(20,'황보')},
+  {n:'Dawn Orb +20 (DEF)',hp:0,    atk:0,    def:0.2 , img:accImg(20,'여보')},
+  {n:'Horn of water +20 (HP/ATK)',hp:0.14, atk:0.06, def:0   , img:accImg(20,'물뿔')},
+  {n:'Horn of water +20 (HP/DEF)',hp:0.14, atk:0,    def:0.06, img:accImg(20,'물뿔')},
+  {n:'Horn of fire +20 (ATK/HP)',hp:0.06, atk:0.14, def:0   , img:accImg(20,'불뿔')},
+  {n:'Horn of fire +20 (ATK/DEF)',hp:0,    atk:0.14, def:0.06, img:accImg(20,'불뿔')},
+  {n:'Horn of earth +20 (DEF/HP)',hp:0.06, atk:0,    def:0.14, img:accImg(20,'대뿔')},
+  {n:'Horn of earth +20 (DEF/ATK)',hp:0,    atk:0.06, def:0.14, img:accImg(20,'대뿔')},
+  {n:'Horn of wind +20 (HP/DEF)',hp:0.1,  atk:0,    def:0.1 , img:accImg(20,'바뿔')},
+  {n:'Horn of wind +20 (ATK/HP)',hp:0.1,  atk:0.1,  def:0   , img:accImg(20,'바뿔')},
+  {n:'Horn of wind +20 (ATK/DEF)',hp:0,    atk:0.1,  def:0.1 , img:accImg(20,'바뿔')},
 ];
 
 // ================================================================
@@ -335,7 +336,7 @@ const ACC_DB=[
 // ================================================================
 let simGrade='9.0', simAccCat='회깃', simPendOpts=2, simGemLv=36, simEnchPct=21, simEnchTarget='auto', simTier='강림';
 let buf={hp:0,atk:0,def:0};
-const SAVE_KEY='dv1_tank_calc_spirit';
+const SAVE_KEY='dv1EN_tank_calc_spirit';
 let S={
   spirit:{opts:[{stat:'',type:''},{stat:'',type:''},{stat:'',type:''},{stat:'',type:''}],bonus:''},
   accCards:[]
@@ -361,7 +362,7 @@ function doSave(){
 
 function setTier(t){
   simTier=t;
-  document.querySelectorAll('#tier-grp button').forEach(b=>b.classList.toggle('active',b.textContent===t));
+  document.querySelectorAll('#tier-grp button').forEach(b=>b.classList.toggle('active',b.dataset.v===t));
   document.getElementById('grd-wrap').style.display=t==='강림'?'':'none';
 }
 function setGrade(g){
@@ -370,7 +371,7 @@ function setGrade(g){
 }
 function setAccCat(cat){
   simAccCat=cat;
-  document.querySelectorAll('#acc-grp button').forEach(b=>b.classList.toggle('active',b.textContent.startsWith(cat==='회깃'?'회깃':cat==='어둠뿔'?'어둠뿔':'스텟')));
+  document.querySelectorAll('#acc-grp button').forEach(b=>b.classList.toggle('active',b.dataset.cat===cat));
   document.getElementById('acc-sec').style.display=cat==='스텟장신구'?'':'none';
 }
 function setEnchTarget(t){
@@ -388,7 +389,7 @@ function setEnchPct(val){
 }
 function setGemLv(lv){
   simGemLv=lv;
-  document.querySelectorAll('#gem-grp button').forEach(b=>b.classList.toggle('active',parseInt(b.textContent)===lv));
+  document.querySelectorAll('#gem-grp button').forEach(b=>b.classList.toggle('active',parseInt(b.dataset.lv)===lv));
 }
 function setPendOpts(n){
   simPendOpts=n;
@@ -424,7 +425,7 @@ function onSpBonus(val){
   renderSpirit();doSave();
 }
 function resetSpirit(){
-  if(!confirm('정령 입력값이 초기화됩니다.'))return;
+  if(!confirm('Spirit inputs will be reset.'))return;
   S.spirit={opts:[{stat:'',type:''},{stat:'',type:''},{stat:'',type:''},{stat:'',type:''}],bonus:''};
   renderSpirit();doSave();
 }
@@ -444,17 +445,17 @@ function renderSpirit(){
     const o=sp.opts[i-1]||{stat:'',type:''};
     const v=(o.stat&&o.type)?fmtSpVal(i,o.stat,o.type):'';
     opts+=`<div class="sp-ocard">
-      <span class="sp-onum">${i}옵</span>
+      <span class="sp-onum">Opt ${i}</span>
       <select onchange="onSpOpt(${i-1},'stat',this.value)">
         <option value=""    ${!o.stat?'selected':''}>-</option>
-        <option value="hp"  ${o.stat==='hp'?'selected':''}>체력</option>
-        <option value="atk" ${o.stat==='atk'?'selected':''}>공격</option>
-        <option value="def" ${o.stat==='def'?'selected':''}>방어</option>
+        <option value="hp"  ${o.stat==='hp'?'selected':''}>HP</option>
+        <option value="atk" ${o.stat==='atk'?'selected':''}>ATK</option>
+        <option value="def" ${o.stat==='def'?'selected':''}>DEF</option>
       </select>
       <select onchange="onSpOpt(${i-1},'type',this.value)">
         <option value=""  ${!o.type?'selected':''}>-</option>
-        <option value="+" ${o.type==='+'?'selected':''}>+스탯</option>
-        <option value="%" ${o.type==='%'?'selected':''}>%스탯</option>
+        <option value="+" ${o.type==='+'?'selected':''}>+Stat</option>
+        <option value="%" ${o.type==='%'?'selected':''}>%Stat</option>
       </select>
       <span class="sp-oval">${v}</span>
     </div>`;
@@ -462,12 +463,12 @@ function renderSpirit(){
   el.innerHTML=`
     <div class="sp-preset-grid">${presets}</div>
     <div class="sp-opts">${opts}</div>
-    <div class="fg"><label>부가옵</label>
+    <div class="fg"><label>Bonus</label>
       <select onchange="onSpBonus(this.value)">
-        <option value=""    ${!sp.bonus?'selected':''}>없음</option>
-        <option value="hp"  ${sp.bonus==='hp'?'selected':''}>체력 (+40)</option>
-        <option value="atk" ${sp.bonus==='atk'?'selected':''}>공격 (+10)</option>
-        <option value="def" ${sp.bonus==='def'?'selected':''}>방어 (+10)</option>
+        <option value=""    ${!sp.bonus?'selected':''}>None</option>
+        <option value="hp"  ${sp.bonus==='hp'?'selected':''}>HP (+40)</option>
+        <option value="atk" ${sp.bonus==='atk'?'selected':''}>ATK (+10)</option>
+        <option value="def" ${sp.bonus==='def'?'selected':''}>DEF (+10)</option>
       </select>
     </div>`;
 }
@@ -490,9 +491,9 @@ function procSpirit(){
 function fmtAccSt(a){
   if(!a)return'';
   const p=[];
-  if(a.hp>0)p.push(`<span style="color:var(--hpc)">체${(a.hp*100).toFixed(0)}%</span>`);
-  if(a.atk>0)p.push(`<span style="color:var(--atc)">공${(a.atk*100).toFixed(0)}%</span>`);
-  if(a.def>0)p.push(`<span style="color:var(--dfc)">방${(a.def*100).toFixed(0)}%</span>`);
+  if(a.hp>0)p.push(`<span style="color:var(--hpc)">HP${(a.hp*100).toFixed(0)}%</span>`);
+  if(a.atk>0)p.push(`<span style="color:var(--atc)">ATK${(a.atk*100).toFixed(0)}%</span>`);
+  if(a.def>0)p.push(`<span style="color:var(--dfc)">DEF${(a.def*100).toFixed(0)}%</span>`);
   return p.length?p.join(' '):'<span style="color:var(--dimmer)">-</span>';
 }
 function applyEncColor(sel){
@@ -503,7 +504,7 @@ function renderAcc(){
   const list=document.getElementById('acc-list');
   if(!list)return;
   if(!S.accCards.length){
-    list.innerHTML='<div style="color:var(--dimmer);font-size:13px">보유 장신구 없음. + 추가 버튼으로 등록해줘.</div>';
+    list.innerHTML='<div style="color:var(--dimmer);font-size:13px">No accessories yet. Use the + Add button to register.</div>';
     return;
   }
   let html='';
@@ -515,7 +516,7 @@ function renderAcc(){
       <div class="acc-card-row">
         ${imgHtml}
         <div class="acc-search-wrap" id="acc-wrap-${ci}">
-          <input class="acc-search-input" id="acc-inp-${ci}" value="${card.name||''}" placeholder="장신구 검색..."
+          <input class="acc-search-input" id="acc-inp-${ci}" value="${card.name||''}" placeholder="Search accessory..."
             oninput="filterAccDrop(${ci},this.value)"
             onfocus="openAccDrop(${ci})"
             onblur="setTimeout(()=>closeAccDrop(${ci},this),150)"
@@ -523,14 +524,14 @@ function renderAcc(){
           <div class="acc-dropdown" id="acc-drop-${ci}"></div>
         </div>
         <span style="font-size:11px;min-width:80px">${stHtml}</span>
-        <span style="font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.3px;font-weight:700;flex-shrink:0">인챈트</span>
+        <span style="font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.3px;font-weight:700;flex-shrink:0">Enchant</span>
         <select style="font-size:12px" onchange="onAccEnc(${ci},this.value);applyEncColor(this)">
-          <option value="none" ${card.enchant==='none'?'selected':''}>인챈트 상관X</option>
-          <option value="hp"   ${card.enchant==='hp'?'selected':''}>체 +${simEnchPct}%</option>
-          <option value="atk"  ${card.enchant==='atk'?'selected':''}>공 +${simEnchPct}%</option>
-          <option value="def"  ${card.enchant==='def'?'selected':''}>방 +${simEnchPct}%</option>
+          <option value="none" ${card.enchant==='none'?'selected':''}>Any enchant</option>
+          <option value="hp"   ${card.enchant==='hp'?'selected':''}>HP +${simEnchPct}%</option>
+          <option value="atk"  ${card.enchant==='atk'?'selected':''}>ATK +${simEnchPct}%</option>
+          <option value="def"  ${card.enchant==='def'?'selected':''}>DEF +${simEnchPct}%</option>
         </select>
-        <button class="btn-red" onclick="delAcc(${ci})">삭제</button>
+        <button class="btn-red" onclick="delAcc(${ci})">Delete</button>
       </div>
     </div>`;
   });
@@ -614,7 +615,7 @@ function delAcc(ci){
   renderAcc();doSave();
 }
 function resetAcc(){
-  if(!confirm('보유 장신구 목록이 전부 초기화됩니다.'))return;
+  if(!confirm('All registered accessories will be removed.'))return;
   S.accCards=[];
   renderAcc();doSave();
 }
@@ -643,13 +644,13 @@ function buildAccCandidates(){
   if(simAccCat==='어둠뿔'){
     // 자체 스탯: 회피+체력5% 또는 회피+방어5% (고정, 둘 중 하나) + 별도 인첸트(21%, hp/atk/def 자유)
     const baseVariants=[
-      {label:'체5%',stat:'hp'},
-      {label:'방5%',stat:'def'},
+      {label:'HP5%',stat:'hp'},
+      {label:'DEF5%',stat:'def'},
     ];
     baseVariants.forEach(bvv=>{
       getEnchList().forEach(enc=>{
         list.push({
-          name:`어둠뿔 (자체:${bvv.label})`,
+          name:`Dark Horn (base: ${bvv.label})`,
           hp:(bvv.stat==='hp'?0.05:0)+(enc==='hp'?simEnchPct/100:0),
           atk:(enc==='atk'?simEnchPct/100:0),
           def:(bvv.stat==='def'?0.05:0)+(enc==='def'?simEnchPct/100:0),
@@ -662,7 +663,7 @@ function buildAccCandidates(){
     // 자체 스탯 없음(회피만 올려줌) + 인첸트(+21%)만 계산
     getEnchList().forEach(enc=>{
       list.push({
-        name:'회깃14',
+        name:'Evasion Feather 14',
         hp:enc==='hp'?simEnchPct/100:0, atk:enc==='atk'?simEnchPct/100:0, def:enc==='def'?simEnchPct/100:0,
         ench:enc,
         img:IMG_회깃
@@ -672,7 +673,7 @@ function buildAccCandidates(){
     // 스텟장신구: 내가 등록한 보유 장신구 목록에서 선택
     const owned=(S.accCards||[]).map(c=>({...ACC_DB.find(a=>a.n===c.name),card:c})).filter(a=>a.n);
     if(!owned.length){
-      alert('스텟장신구 목록에서 장신구를 1개 이상 추가해줘.');
+      alert('Add at least one accessory to the Stat Accessories list.');
       return[];
     }
     owned.forEach(a=>{
@@ -704,18 +705,18 @@ function runCalc(){
   for(let n=0;n<=5;n++)gemSplits.push({nHp:n,nDef:5-n});
   // 펜던트(옵션 6% 고정) - 옵션 수에 따라 조합 결정
   const pendCombos = simPendOpts===1 ? [
-    {label:'체(1옵)',pH:0.06,pD:0},
-    {label:'방(1옵)',pH:0,pD:0.06},
+    {label:'HP (1 opt)',pH:0.06,pD:0},
+    {label:'DEF (1 opt)',pH:0,pD:0.06},
   ] : [
-    {label:'체+체',pH:0.06*2,pD:0},
-    {label:'체+방',pH:0.06,pD:0.06},
-    {label:'방+방',pH:0,pD:0.06*2},
+    {label:'HP+HP',pH:0.06*2,pD:0},
+    {label:'HP+DEF',pH:0.06,pD:0.06},
+    {label:'DEF+DEF',pH:0,pD:0.06*2},
   ];
 
   const typeResults=[];
   for(const dt of DTYPES){
     const bs = simTier==='초월' ? (typeof BASE_TRANSCEND!=='undefined'?BASE_TRANSCEND[dt]:null) : BASE[simGrade][dt];
-    if(!bs){alert('초월 기본 스탯 데이터가 아직 없어. 초월 타입별 체/공/방 스탯을 알려주면 추가할게.');return;}
+    if(!bs){alert('Transcended base stat data is not available yet.');return;}
     const bh=bs.hp,ba=bs.atk,bd=bs.def;
     const bufH=Math.floor(bh*buf.hp/100);
     const bufA=Math.floor(ba*buf.atk/100);
@@ -763,8 +764,8 @@ function renderResult(typeResults){
     html+=`<div class="type-block">
       <button class="type-hd" onclick="toggleType(this)">
         <span class="ty-caret">▶</span>
-        <span class="ty-name">${dt}</span>
-        <span class="ty-summary">${imgTag(accImgByName(top.acc),'res-thumb-sm')}${top.acc.name} · 체${top.fH.toLocaleString('ko-KR')} / 방${top.fD.toLocaleString('ko-KR')} · 비밸 <span class="ty-bv">${top.bv.toLocaleString('ko-KR')}</span></span>
+        <span class="ty-name">${T_TYPE[dt]||dt}</span>
+        <span class="ty-summary">${imgTag(accImgByName(top.acc),'res-thumb-sm')}${top.acc.name} · HP ${top.fH.toLocaleString('en-US')} / DEF ${top.fD.toLocaleString('en-US')} · HP×DEF <span class="ty-bv">${top.bv.toLocaleString('en-US')}</span></span>
       </button>
       <div class="ty-body">`;
     top5.forEach((r,i)=>{
@@ -774,14 +775,14 @@ function renderResult(typeResults){
           ${rank}
           ${imgTag(accImgByName(r.acc))}
           <span class="res-name">${r.acc.name}</span>
-          <span class="res-ench">인첸트:${SK[r.acc.ench]}</span>
+          <span class="res-ench">Enchant: ${SK[r.acc.ench]}</span>
         </div>
         <div class="res-grid">
-          <div class="res-cell"><label>젬(체/방)</label><span class="v">${r.gs.nHp} / ${r.gs.nDef}</span></div>
-          <div class="res-cell"><label>펜던트</label><span class="v str">${imgTag(pendImg(),'res-thumb-sm')}${r.pend.label}</span></div>
-          <div class="res-cell wide"><label>체 / 공 / 방</label><span class="v"><span style="color:var(--hpc)">${r.fH.toLocaleString('ko-KR')}</span> / <span style="color:var(--atc)">${r.fA.toLocaleString('ko-KR')}</span> / <span style="color:var(--dfc)">${r.fD.toLocaleString('ko-KR')}</span></span></div>
-          <div class="res-cell bv"><label>체×방</label><span class="v">${r.bv.toLocaleString('ko-KR')}</span></div>
-          <div class="res-cell bv"><label>체+방×4</label><span class="v">${r.ebv.toLocaleString('ko-KR')}</span></div>
+          <div class="res-cell"><label>Gems (HP/DEF)</label><span class="v">${r.gs.nHp} / ${r.gs.nDef}</span></div>
+          <div class="res-cell"><label>Pendant</label><span class="v str">${imgTag(pendImg(),'res-thumb-sm')}${r.pend.label}</span></div>
+          <div class="res-cell wide"><label>HP / ATK / DEF</label><span class="v"><span style="color:var(--hpc)">${r.fH.toLocaleString('en-US')}</span> / <span style="color:var(--atc)">${r.fA.toLocaleString('en-US')}</span> / <span style="color:var(--dfc)">${r.fD.toLocaleString('en-US')}</span></span></div>
+          <div class="res-cell bv"><label>HP×DEF</label><span class="v">${r.bv.toLocaleString('en-US')}</span></div>
+          <div class="res-cell bv"><label>HP+DEF×4</label><span class="v">${r.ebv.toLocaleString('en-US')}</span></div>
         </div>
       </div>`;
     });

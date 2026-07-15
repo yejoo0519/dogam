@@ -518,7 +518,8 @@ const BASE={
 };
 
 // Gem DB (단계별 체/공/방 수치)
-const GEM={36:{hp:144,atk:36,def:36},37:{hp:148,atk:37,def:37},38:{hp:152,atk:38,def:38},39:{hp:156,atk:39,def:39},40:{hp:160,atk:40,def:40}};
+const GEM={36:{hp:144,atk:36,def:36},37:{hp:152,atk:38,def:38},38:{hp:160,atk:40,def:40},39:{hp:168,atk:42,def:42},40:{hp:176,atk:44,def:44}};
+const GEM_NAME={36:36,37:38,38:40,39:42,40:44}; // storage key (old tier) -> display name (new tier)
 const FALLBACK_GEM_LV=36;
 const FALLBACK_GEM_COUNT=999;
 
@@ -1094,7 +1095,7 @@ function renderSpecView(){
   let gemRows='';
   for(const lv of [40,39,38,37]){
     const hp=S.gems?.hp?.[lv]||0,atk=S.gems?.atk?.[lv]||0,def=S.gems?.def?.[lv]||0;
-    if(hp||atk||def) gemRows+=`<tr><td style="color:var(--dim);font-weight:700">${lv}Gem</td><td class="sv-gem-hp">${hp||'-'}</td><td class="sv-gem-atk">${atk||'-'}</td><td class="sv-gem-def">${def||'-'}</td></tr>`;
+    if(hp||atk||def) gemRows+=`<tr><td style="color:var(--dim);font-weight:700">${GEM_NAME[lv]||lv}Gem <span style="color:var(--dimmer);font-weight:400;font-size:10px">(old ${lv})</span></td><td class="sv-gem-hp">${hp||'-'}</td><td class="sv-gem-atk">${atk||'-'}</td><td class="sv-gem-def">${def||'-'}</td></tr>`;
   }
   const t={hp:0,atk:0,def:0};
   for(const s of ['hp','atk','def'])for(const lv of [37,38,39,40])t[s]+=(S.gems?.[s]?.[lv]||0);
@@ -1149,7 +1150,7 @@ function renderSpecSummary(targetId){
   for(const stat of ['hp','atk','def']){
     const g=S.gems?.[stat]||{};
     const lvs=[40,39,38,37].filter(lv=>(g[lv]||0)>0).flatMap(lv=>Array(g[lv]).fill(lv));
-    if(lvs.length)gemP.push(`<span class="${SKC[stat]}">${SKL[stat]}${lvs.length}(${lvs.join(',')})</span>`);
+    if(lvs.length)gemP.push(`<span class="${SKC[stat]}">${SKL[stat]}${lvs.length}(${lvs.map(l=>GEM_NAME[l]||l).join(',')})</span>`);
   }
   const accs=S.accCards||[];
   const ENC_LBL={atk:'ATK',hp:'HP',def:'DEF',balance:'BAL'};
@@ -1675,7 +1676,7 @@ function fmtGem(alloc){
   const parts=[];
   for(const s of SKEYS){
     const lvs=bySt[s].sort((a,b)=>b-a);
-    if(lvs.length)parts.push(`<span class="gem-tag" style="color:${cols[s]}">${SK[s]}${lvs.length}(${lvs.join(',')})</span>`);
+    if(lvs.length)parts.push(`<span class="gem-tag" style="color:${cols[s]}">${SK[s]}${lvs.length}(${lvs.map(l=>GEM_NAME[l]||l).join(',')})</span>`);
   }
   return parts.length?parts.join(''):'<span style="color:var(--dimmer)">None</span>';
 }

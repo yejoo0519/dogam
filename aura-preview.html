@@ -95,6 +95,18 @@
   .skin-btns button:hover { border-color: var(--sub); }
   .skin-btns button.on { border-color: var(--accent); }
 
+  .preload-desc { font-size: 12px; color: var(--sub); line-height: 1.6; margin-bottom: 8px; }
+  #preloadBtn {
+    background: var(--panel-2); border: 1px solid var(--line); color: var(--text);
+    font-size: 13px; padding: 9px 16px; border-radius: 8px; cursor: pointer;
+    transition: border-color .15s, color .15s;
+  }
+  #preloadBtn:hover { border-color: var(--sub); }
+  #preloadBtn.armed { border-color: #e6a23a; color: #e6a23a; font-weight: 700; }
+  #preloadBtn.running { border-color: var(--accent-2); color: var(--accent-2); }
+  #preloadBtn.done { border-color: var(--accent); color: var(--accent); cursor: default; }
+  #preloadStat { font-size: 12px; color: var(--sub); margin-top: 8px; line-height: 1.6; white-space: pre-line; }
+
   .section { margin-bottom: 14px; }
   .section h2 { font-size: 13px; color: var(--sub); margin-bottom: 8px; font-weight: 600; }
   .effect-btns { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -173,6 +185,13 @@
   <div id="dragonGrid"></div>
 </div>
 
+<div class="section">
+  <h2>전체 미리 받기</h2>
+  <p class="preload-desc">모든 드래곤 애니메이션(약 3.4GB)을 미리 다운로드 받는 기능입니다. 한 번 받아두면 다음부터는 로딩 없이 바로 재생. 중간에 멈춰도 이어받기 됩니다.</p>
+  <button id="preloadBtn">전체 드래곤 한 번에 받아두기 (약 3.4GB)</button>
+  <div id="preloadStat"></div>
+</div>
+
 
 <script>
 /* ═══════════════ CONFIG — 여기만 수정하면 됨 ═══════════════ */
@@ -206,6 +225,7 @@ const FRAME_REPOS = [
   { max: 9999, base: 'https://yejoo0519.github.io/dogam-frames5/gif/' },
 ];
 const ANIM_BASE = id => FRAME_REPOS.find(r => +id <= r.max).base + id + '/';
+const CACHE_NAME = 'dv1-aura-frames-v1';  // 프레임 브라우저 캐시 이름
 const FRAME_FILE = i => 'advent-wait_' + String(i).padStart(3, '0') + '.png';
 const DRAGON_FPS = 20;  // 재생 속도 — 스파인 내보내기 fps에 맞춰 조정
 
@@ -234,13 +254,32 @@ const player = {
   ctx: layerDragon.getContext('2d'),
   frames: null, t0: 0, raf: 0, token: 0,
 
-  _img(url) {
-    return new Promise(res => {
-      const im = new Image();
-      im.onload = () => res(im);
-      im.onerror = () => res(null);
-      im.src = url;
-    });
+  async _img(url) {
+    // 캐시 우선 → 없으면 네트워크에서 받아 캐시에 저장 (미리 받기와 공유)
+    try {
+      const cache = await caches.open(CACHE_NAME);
+      let res = await cache.match(url);
+      if (!res) {
+        res = await fetch(url);
+        if (!res.ok) return null;
+        try { await cache.put(url, res.clone()); } catch (e) { /* 저장공간 부족 시 그냥 재생만 */ }
+      }
+      const blob = await res.blob();
+      return await new Promise(resolve => {
+        const im = new Image();
+        im.onload = () => { URL.revokeObjectURL(im.src); resolve(im); };
+        im.onerror = () => { URL.revokeObjectURL(im.src); resolve(null); };
+        im.src = URL.createObjectURL(blob);
+      });
+    } catch (e) {
+      // Cache API 미지원 환경 폴백
+      return new Promise(res => {
+        const im = new Image();
+        im.onload = () => res(im);
+        im.onerror = () => res(null);
+        im.src = url;
+      });
+    }
   },
 
   async load(urlFor) {
@@ -433,6 +472,108 @@ function markSkin(btn) {
 document.getElementById('bgToggle').addEventListener('click', () => {
   document.getElementById('stage').classList.toggle('checker');
 });
+
+// ── 전체 미리 받기 (Cache Storage) ──
+const preloadBtn = document.getElementById('preloadBtn');
+const preloadStat = document.getElementById('preloadStat');
+const PRELOAD_IDLE_LABEL = preloadBtn.textContent;
+let preState = 'idle';   // idle | armed | running | done
+let preStop = false;
+let armTimer = 0;
+
+function fmtMB(b) { return (b / 1048576).toFixed(0) + 'MB'; }
+
+preloadBtn.addEventListener('click', async () => {
+  if (preState === 'idle') {
+    // 1차 클릭 → 와이파이 경고 + 재확인
+    preState = 'armed';
+    preloadBtn.classList.add('armed');
+    preloadBtn.textContent = '⚠️ 한 번 더 누르면 시작합니다';
+    preloadStat.textContent = '⚠️ 약 3.4GB를 내려받아요. 반드시 와이파이(Wi-Fi)에 연결된 상태에서 진행해 주세요!\n모바일 데이터로 받으면 요금이 크게 나올 수 있어요.';
+    clearTimeout(armTimer);
+    armTimer = setTimeout(() => {   // 8초 안에 재클릭 없으면 원상복구
+      if (preState === 'armed') {
+        preState = 'idle';
+        preloadBtn.classList.remove('armed');
+        preloadBtn.textContent = PRELOAD_IDLE_LABEL;
+        preloadStat.textContent = '';
+      }
+    }, 8000);
+    return;
+  }
+  if (preState === 'armed') {
+    // 2차 클릭 → 시작
+    clearTimeout(armTimer);
+    preState = 'running';
+    preStop = false;
+    preloadBtn.classList.remove('armed');
+    preloadBtn.classList.add('running');
+    preloadBtn.textContent = '⏸ 중지';
+    if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+    await runPreload();
+    return;
+  }
+  if (preState === 'running') { preStop = true; preloadBtn.textContent = '멈추는 중…'; }
+});
+
+async function runPreload() {
+  let cache;
+  try { cache = await caches.open(CACHE_NAME); }
+  catch (e) {
+    preloadStat.textContent = '이 브라우저에서는 미리 받기를 지원하지 않아요.';
+    resetPreloadBtn(); return;
+  }
+  let bytes = 0, doneCnt = 0;
+  try {
+    for (const dr of DRAGONS) {
+      if (preStop) break;
+      const base = ANIM_BASE(dr.id);
+      let i = 0, miss = false;
+      while (!miss && i < 1000) {
+        const jobs = [];
+        for (let b = 0; b < 8; b++) {
+          const url = base + FRAME_FILE(i + b);
+          jobs.push((async () => {
+            if (await cache.match(url)) return 'hit';
+            const r = await fetch(url).catch(() => null);
+            if (!r || !r.ok) return 'miss';
+            const size = +r.headers.get('content-length') || 0;
+            await cache.put(url, r);
+            return size;
+          })());
+        }
+        const results = await Promise.all(jobs);
+        for (const r of results) {
+          if (r === 'miss') { miss = true; break; }
+          if (typeof r === 'number') bytes += r;
+        }
+        i += 8;
+        preloadStat.textContent = '받는 중… ' + doneCnt + '/' + DRAGONS.length + '마리 · ' + fmtMB(bytes) + '\n현재: ' + dr.name;
+        if (preStop) break;
+      }
+      doneCnt++;
+    }
+  } catch (e) {
+    preloadStat.textContent = '저장 공간이 부족해서 중단됐어요 (' + doneCnt + '/' + DRAGONS.length + '마리 · ' + fmtMB(bytes) + ').\n기기 저장 공간을 확보한 뒤 다시 눌러 주세요. 받은 부분까지는 저장돼 있어요.';
+    resetPreloadBtn(); return;
+  }
+  if (preStop) {
+    preloadStat.textContent = '중지됨 — ' + doneCnt + '/' + DRAGONS.length + '마리까지 받아뒀어요 (' + fmtMB(bytes) + ').\n다시 누르면 이어서 받아요.';
+    resetPreloadBtn();
+  } else {
+    preState = 'done';
+    preloadBtn.classList.remove('running');
+    preloadBtn.classList.add('done');
+    preloadBtn.textContent = '✓ 전체 받기 완료';
+    preloadStat.textContent = '완료! 이제 모든 드래곤이 로딩 없이 바로 재생돼요.' + (bytes ? ' (이번에 받은 용량: ' + fmtMB(bytes) + ')' : '');
+  }
+}
+
+function resetPreloadBtn() {
+  preState = 'idle';
+  preloadBtn.classList.remove('armed', 'running');
+  preloadBtn.textContent = PRELOAD_IDLE_LABEL;
+}
 
 
 

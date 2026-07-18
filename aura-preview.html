@@ -51,6 +51,9 @@
     background-position: 0 0, 11px 11px;
     background-color: #1a1725;
   }
+  @media (max-width: 700px) {
+    #stage { height: 340px; }
+  }
   .layer {
     position: absolute;
     left: 50%;
@@ -187,7 +190,7 @@
 
 <div class="section">
   <h2>전체 미리 받기</h2>
-  <p class="preload-desc">모든 드래곤 애니메이션(약 3.4GB)을 미리 다운로드 받는 기능입니다. 한 번 받아두면 다음부터는 로딩 없이 바로 재생. 중간에 멈춰도 이어받기 됩니다.</p>
+  <p class="preload-desc">모든 드래곤 애니메이션(약 3.4GB)을 브라우저에 받아둬요. 한 번 받아두면 다음부터는 로딩 없이 바로 재생돼요. 중간에 멈춰도 이어받기 됩니다.</p>
   <button id="preloadBtn">전체 드래곤 한 번에 받아두기 (약 3.4GB)</button>
   <div id="preloadStat"></div>
 </div>
@@ -334,8 +337,24 @@ const player = {
   }
 };
 
+// ── 화면 크기 대응: 스테이지 폭에 맞춰 전체 비율 축소 (PC 820px 기준) ──
+const STAGE_REF_WIDTH = 820;
+let viewScale = 1;
+function calcViewScale() {
+  const w = document.getElementById('stage').clientWidth || STAGE_REF_WIDTH;
+  viewScale = Math.min(1, w / STAGE_REF_WIDTH);
+}
+calcViewScale();
+window.addEventListener('resize', () => {
+  calcViewScale();
+  [layerBack, layerDragon, layerDragonImg, layerFront].forEach(el => {
+    if (el._dy !== undefined) applyTransform(el, el._dy, el._sc);
+  });
+});
+
 function applyTransform(el, dy, scale) {
-  el.style.transform = 'translate(-50%, calc(-50% - ' + dy + 'px)) scale(' + scale + ')';
+  el._dy = dy; el._sc = scale;
+  el.style.transform = 'translate(-50%, calc(-50% - ' + (dy * viewScale) + 'px)) scale(' + (scale * viewScale) + ')';
 }
 
 function applyImgLayer(img, src, dy, scale) {

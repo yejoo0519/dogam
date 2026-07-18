@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aura Preview</title>
+<style>
+  :root {
+    --bg: #14121c;
+    --panel: #1e1b2a;
+    --panel-2: #262238;
+    --line: #3a3454;
+    --text: #eae6f7;
+    --sub: #9a92b8;
+    --accent: #56d4b1;
+    --accent-2: #7aa7ff;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    padding: 20px;
+    max-width: 860px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 20px; margin-bottom: 4px; }
+  #backBtn {
+    display: inline-flex; align-items: center; gap: 4px;
+    border: 1px solid var(--line); background: var(--panel);
+    color: var(--sub); font-size: 12px; padding: 5px 12px;
+    border-radius: 999px; text-decoration: none; margin-bottom: 12px;
+  }
+  #backBtn:hover { border-color: var(--accent); color: var(--text); }
+  .desc { font-size: 13px; color: var(--sub); margin-bottom: 16px; }
+
+  #stage {
+    position: relative;
+    height: 500px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 14px;
+  }
+  #stage.checker {
+    background-image:
+      linear-gradient(45deg, #24202f 25%, transparent 25%, transparent 75%, #24202f 75%),
+      linear-gradient(45deg, #24202f 25%, transparent 25%, transparent 75%, #24202f 75%);
+    background-size: 22px 22px;
+    background-position: 0 0, 11px 11px;
+    background-color: #1a1725;
+  }
+  @media (max-width: 700px) {
+    #stage { height: 340px; }
+  }
+  .layer {
+    position: absolute;
+    left: 50%;
+    top: 48.4%;  /* 500px 기준 242px — 기존 440px×55%와 동일한 절대 위치 (아래 여유만 늘림) */
+    transform-origin: center center;
+    pointer-events: none;
+    display: none;
+  }
+  .layer.on { display: block; }
+  #layerBack   { z-index: 1; }
+  #layerDragon, #layerDragonImg { z-index: 2; }
+  #layerFront  { z-index: 3; }
+  #stageMsg {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--sub); font-size: 14px; text-align: center; line-height: 1.6;
+    padding: 0 30px;
+  }
+  #bgToggle {
+    position: absolute; top: 10px; right: 10px; z-index: 5;
+    background: rgba(0,0,0,.35); border: 1px solid var(--line); color: var(--sub);
+    font-size: 11px; padding: 4px 10px; border-radius: 6px; cursor: pointer;
+  }
+  #layerSkin {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; z-index: 0; display: none;
+  }
+  #layerSkin.on { display: block; }
+  .skin-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+  .skin-btns button {
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 4px;
+    width: 58px; height: 55px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text); font-size: 13px;
+    transition: border-color .15s;
+  }
+  .skin-btns button img { width: 100%; height: 100%; object-fit: contain; }
+  .skin-btns button:hover { border-color: var(--sub); }
+  .skin-btns button.on { border-color: var(--accent); }
+
+  .preload-desc { font-size: 12px; color: var(--sub); line-height: 1.6; margin-bottom: 8px; }
+  #preloadBtn {
+    background: var(--panel-2); border: 1px solid var(--line); color: var(--text);
+    font-size: 13px; padding: 9px 16px; border-radius: 8px; cursor: pointer;
+    transition: border-color .15s, color .15s;
+  }
+  #preloadBtn:hover { border-color: var(--sub); }
+  #preloadBtn.armed { border-color: #e6a23a; color: #e6a23a; font-weight: 700; }
+  #preloadBtn.running { border-color: var(--accent-2); color: var(--accent-2); }
+  #preloadBtn.done { border-color: var(--accent); color: var(--accent); cursor: default; }
+  #preloadStat { font-size: 12px; color: var(--sub); margin-top: 8px; line-height: 1.6; white-space: pre-line; }
+
+  .section { margin-bottom: 14px; }
+  .section h2 { font-size: 13px; color: var(--sub); margin-bottom: 8px; font-weight: 600; }
+  .effect-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+  .effect-btns button {
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    color: var(--text);
+    font-size: 13px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color .15s;
+  }
+  .effect-btns button:hover { border-color: var(--sub); }
+  .effect-btns button.on { border-color: var(--accent); color: var(--accent); font-weight: 700; }
+
+  #dragonGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+    gap: 8px;
+  }
+  .dragon-icon {
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    aspect-ratio: 1;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    overflow: hidden;
+    transition: border-color .15s;
+    padding: 4px;
+  }
+  .dragon-icon:hover { border-color: var(--sub); }
+  .dragon-icon.on { border-color: var(--accent); }
+  .dragon-icon img { width: 100%; height: 100%; object-fit: contain; }
+  .dragon-icon .nm {
+    font-size: 10px; color: var(--sub);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+  }
+
+</style>
+</head>
+<body>
+
+<a href="index.html?tab=convenience" id="backBtn">← Back to Main</a>
+<h1>Aura Preview</h1>
+<p class="desc">Pick an aura effect and a dragon to preview how they look together. Auras can't be removed once equipped in-game, so check here first!</p>
+
+<div id="stage" class="checker">
+  <button id="bgToggle">Toggle BG</button>
+  <img id="layerSkin" alt="">
+  <img class="layer" id="layerBack" alt="">
+  <canvas class="layer" id="layerDragon"></canvas>
+  <img class="layer" id="layerDragonImg" alt="">
+  <img class="layer" id="layerFront" alt="">
+  <div id="stageMsg">Select an effect and a dragon below</div>
+</div>
+
+<div class="section">
+  <h2>Effect</h2>
+  <div class="effect-btns" id="effectBtns"></div>
+</div>
+
+<div class="section">
+  <h2>Cave Skin</h2>
+  <div class="skin-btns" id="skinBtns"></div>
+</div>
+
+<div class="section">
+  <h2>Dragon</h2>
+  <div class="effect-btns" id="elemBtns" style="margin-bottom:8px;"></div>
+  <div id="dragonGrid"></div>
+</div>
+
+<div class="section">
+  <h2>Download All</h2>
+  <p class="preload-desc">Downloads every dragon animation (about 3.4GB) into your browser. Once downloaded, all dragons play instantly with no loading. You can stop anytime and resume later.</p>
+  <button id="preloadBtn">Download all dragons at once (about 3.4GB)</button>
+  <div id="preloadStat"></div>
+</div>
+
+
+<script>
+/* ═══════════════ CONFIG — 여기만 수정하면 됨 ═══════════════ */
+
+// 이펙트 전역 배율: 오라 에셋(1x)과 드래곤 렌더(2x)의 해상도 차이 보정 — 인게임 비율 기준
+const FX_BASE_SCALE = 2;
+
+// 배경 동굴 스킨: cave_skin/ 폴더에 cave_skin1.jpg ~ cave_skin14.jpg (배경), cave_1.png ~ cave_14.png (아이콘)
+const SKIN_COUNT = 14;
+const SKIN_SRC = n => '../cave_skin/cave_skin' + n + '.jpg';
+const SKIN_ICON = n => '../cave_skin/cave_' + n + '.png';
+
+// 이펙트 목록: 파일은 effects/ 폴더에. dy = 위로 이동 px (음수면 아래), scale = 배율
+// front/back은 캔버스 중심이 같은 점에 놓이도록 자동 정렬됨 (게임과 동일)
+// scale 값은 FX_BASE_SCALE과 곱해짐 (조정 슬라이더에 표시되는 값 그대로 복사하면 됨)
+const EFFECTS = [
+  { id: 'aura1', name: 'Earth Aura',   front: '../effects/aura1_front.webp', back: '../effects/aura1_back.webp', dy: 0, scale: 1 },
+  { id: 'aura2', name: 'Water Aura',   front: '../effects/aura2_front.webp', back: '../effects/aura2_back.webp', dy: 0, scale: 1 },
+  { id: 'aura3', name: 'Fire Aura',   front: '../effects/aura3_front.webp', back: '../effects/aura3_back.webp', dy: 0, scale: 1 },
+  { id: 'aura4', name: 'Wind Aura', front: '../effects/aura4_front.webp', back: '../effects/aura4_back.webp', dy: 0, scale: 1 },
+];
+
+// 드래곤 애니메이션: 프레임 PNG는 별도 저장소(dogam-frames1~)에 분산 호스팅
+//   각 저장소의 gif/{id}/ 안에 advent-wait_000.png ... (3자리, 0부터)
+//   max = 해당 저장소의 마지막 드래곤 ID. 신규 드래곤(709~)은 dogam-frames5에 올리면 됨
+const FRAME_REPOS = [
+  { max: 301,  base: 'https://yejoo0519.github.io/dogam-frames1/gif/' },
+  { max: 517,  base: 'https://yejoo0519.github.io/dogam-frames2/gif/' },
+  { max: 650,  base: 'https://yejoo0519.github.io/dogam-frames3/gif/' },
+  { max: 708,  base: 'https://yejoo0519.github.io/dogam-frames4/gif/' },
+  { max: 9999, base: 'https://yejoo0519.github.io/dogam-frames5/gif/' },
+];
+const ANIM_BASE = id => FRAME_REPOS.find(r => +id <= r.max).base + id + '/';
+const CACHE_NAME = 'dv1-aura-frames-v1';  // 프레임 브라우저 캐시 이름
+const FRAME_FILE = i => 'advent-wait_' + String(i).padStart(3, '0') + '.png';
+const DRAGON_FPS = 20;  // 재생 속도 — 스파인 내보내기 fps에 맞춰 조정
+
+// 강림(프로필 8) 있는 드래곤 — dex.html 데이터에서 자동 생성 (257마리, [id, 이름, 속성])
+const ADVENT_DRAGONS = [[1,"고대신룡","빛"],[2,"윈드 드래곤","바람"],[3,"식스 레그 혼 드래곤","바람"],[4,"청룡","바람"],[5,"파이어 드래곤","불"],[6,"번개고룡","불"],[8,"피닉스","불"],[9,"빙하고룡","물"],[12,"수룡","물"],[13,"히드라곤","땅"],[14,"파워 드래곤","땅"],[16,"지하땅굴 드래곤","땅"],[17,"페어리 드래곤","물"],[19,"에그 드래곤","땅"],[21,"엔젤 드래곤","빛"],[24,"스왐프 드래곤","물"],[34,"흑룡","어둠"],[53,"다크닉스","어둠"],[54,"백룡","빛"],[58,"샤크곤","물"],[64,"고대 주니어","빛"],[70,"샴 드래곤","빛"],[72,"베네지","어둠"],[73,"머스타 드해머","땅"],[74,"레드와이번","불"],[76,"스콜피온 드래곤","땅"],[77,"나이트 드래곤","빛"],[78,"스파이시","빛"],[79,"라파엘","빛"],[80,"바알","어둠"],[92,"파이썬","땅"],[93,"아이언 드래곤","불"],[95,"자룡","불"],[102,"시그마 드래곤","어둠"],[104,"아르고 드래곤","빛"],[130,"다크폴","어둠"],[134,"루미네스","물"],[135,"번네스","불"],[147,"므네이아","불"],[158,"모리카 드래곤","빛"],[160,"태엽 드래곤","바람"],[162,"블랙티어 드래곤","어둠"],[163,"블랙아머 드래곤","어둠"],[166,"쿠로이 드래곤","어둠"],[186,"카오스","바람"],[191,"타임머신","어둠"],[192,"시타엘","빛"],[196,"콜로서스","땅"],[197,"원더 드래곤","어둠"],[198,"아이스 드레이크","물"],[202,"바르라아","빛"],[206,"아실리","빛"],[207,"블랙찡또","어둠"],[209,"로루스","빛"],[213,"문라이트","어둠"],[218,"위드미","물"],[219,"헤이즈","빛"],[224,"스트라이커","바람"],[225,"가루다","불"],[229,"오르도","빛"],[230,"세크레타","물"],[231,"푸투룸","불"],[232,"할리벨","여명"],[233,"타아비레","여명"],[234,"발라크","황혼"],[235,"베팔","황혼"],[236,"단탈리온","악몽"],[237,"자간","악몽"],[241,"마르바스","어둠"],[244,"와일드 드래곤","불"],[246,"레이어스","땅"],[248,"베놈 드래곤","물"],[250,"루가르 드래곤","불"],[252,"유니버스","어둠"],[255,"아스티","바람"],[259,"베히모스","어둠"],[260,"스틸윙","바람"],[266,"그레이탄","바람"],[268,"다로스","땅"],[271,"스타에이스","빛"],[272,"말로단","어둠"],[274,"포포모","불"],[275,"테디 드래곤","빛"],[287,"합라","여명"],[290,"아라카","바람"],[296,"셀마사","여명"],[298,"카라선","황혼"],[301,"렉스톤","황혼"],[302,"포메쿨","황혼"],[303,"카르나","어둠"],[305,"마룡","불"],[309,"아르테미스 드래곤","빛"],[319,"엠파이어","바람"],[322,"지진","땅"],[334,"보상이용","여명"],[337,"포이즌리버","땅"],[342,"베르나","빛"],[344,"혼","바람"],[345,"나트론","물"],[348,"솔라","빛"],[349,"포폰","땅"],[350,"제피로스","바람"],[351,"드래곤 슬레이어","어둠"],[355,"디멘션 드래곤","악몽"],[358,"킨더 드래곤","여명"],[365,"틸키","황혼"],[366,"이그나","불"],[367,"블리자드","물"],[368,"다크나이트","어둠"],[370,"거스트 드래곤","바람"],[372,"화이트썬더 드래곤","빛"],[373,"카루라","빛"],[378,"미나스 드래곤","빛"],[380,"쿠베라","어둠"],[385,"렉몰 리버스","황혼"],[387,"센투라","바람"],[389,"에트왈 드래곤","바람"],[392,"즈믄","땅"],[393,"리베티","땅"],[394,"브리트라","물"],[397,"키갈","바람"],[400,"칸타카","땅"],[408,"아톤","빛"],[409,"탈릿사","빛"],[411,"하리카","황혼"],[415,"애플칙","땅"],[416,"트로페우스","물"],[426,"아스타테","땅"],[429,"수라 드래곤","불"],[432,"엔젤주니어","빛"],[438,"엔투라스","불"],[447,"데스락","황혼"],[448,"애니마라","악몽"],[452,"아자크","어둠"],[453,"프로즌","물"],[457,"루드오어","악몽"],[458,"스워드","빛"],[463,"베리스","여명"],[467,"마카라","어둠"],[469,"이클립스","황혼"],[470,"벨레드","악몽"],[473,"엘리고스","여명"],[476,"미미르","여명"],[481,"암두시아스","여명"],[483,"레오벡터","땅"],[484,"네비아","여명"],[486,"보레아스","바람"],[489,"화귀 드래곤","불"],[496,"마소티스","물"],[497,"리치몬드","어둠"],[498,"크로마 리치몬드","어둠"],[501,"개틀링곤","빛"],[502,"베른하르트","물"],[508,"티르","바람"],[509,"아만타","빛"],[513,"샤흐","빛"],[516,"네뷸라","황혼"],[517,"레굴루스","물"],[518,"크로마 레굴루스","물"],[519,"알데바란","땅"],[523,"롱기누스","악몽"],[526,"미스핏","악몽"],[527,"염화룡","불"],[529,"폴투누스","물"],[530,"세에레","황혼"],[531,"바르그","빛"],[532,"마스테마","악몽"],[535,"타나토스","불"],[538,"프라이드","황혼"],[540,"라스","여명"],[544,"토트","불"],[547,"네무스","악몽"],[554,"크레바스","악몽"],[555,"라센티","불"],[557,"고트","어둠"],[559,"파키","땅"],[563,"피타야","바람"],[566,"아말테아","여명"],[568,"케찰코아틀","땅"],[569,"조화룡","여명"],[573,"마그나스","어둠"],[574,"크로마 벨레드","악몽"],[575,"포르타","어둠"],[579,"루드라","물"],[583,"차차웅","황혼"],[587,"코르투스","여명"],[590,"에피트","황혼"],[593,"에그마용","땅"],[594,"블루썬더","바람"],[595,"크로마 블루썬더","바람"],[597,"솔루카니스","빛"],[600,"루살카","물"],[601,"베타라","어둠"],[602,"크로마 베타라","어둠"],[603,"루크바트","여명"],[604,"카스룩스","어둠"],[606,"알투스","빛"],[611,"피데스","어둠"],[613,"불나래","불"],[614,"크로마 불나래","불"],[615,"유르카","물"],[617,"쉴로시","악몽"],[620,"옥타","물"],[621,"크로마 옥타","물"],[622,"커스리퍼","악몽"],[623,"울르","여명"],[625,"아프로디테","여명"],[629,"블레이즈 드래곤","불"],[633,"프로텍트 드래곤","빛"],[634,"크로마 프로텍트 드래곤","빛"],[635,"템피오스","황혼"],[637,"진","악몽"],[641,"인베르소","황혼"],[644,"리티오","바람"],[645,"크로마 리티오","바람"],[647,"스카트","물"],[648,"알레샤","물"],[649,"크로마 알레샤","물"],[650,"야누스","여명"],[651,"파이거","불"],[652,"크로마 파이거","불"],[653,"스카투스","불"],[654,"크로마 스카투스","불"],[655,"로키","물"],[659,"헤임달","땅"],[660,"볼바","물"],[661,"토르","바람"],[662,"요르문간드","어둠"],[663,"마누스","황혼"],[664,"잠식된 요르문간드","악몽"],[665,"야즈니르","빛"],[667,"논","땅"],[671,"레무레스","악몽"],[672,"아카이아","땅"],[673,"크로마 아카이아","땅"],[674,"티아매트","어둠"],[676,"오벡스","어둠"],[677,"흐레스벨그","황혼"],[681,"하트샤","어둠"],[684,"발레포르","악몽"],[685,"크로마 발레포르","악몽"],[686,"메라크","빛"],[687,"레긴레이프","황혼"],[688,"크로마 레긴레이프","황혼"],[689,"적마룡","불"],[691,"피싱테일 드래곤","물"],[694,"루루","바람"],[695,"크로마 루루","바람"],[696,"바스카","땅"],[697,"블라드","악몽"],[698,"프레이야","여명"],[703,"크툴루","어둠"],[704,"크로마 크툴루","어둠"],[705,"망태곤","악몽"],[706,"운디네","물"],[707,"크로마 운디네","물"],[708,"세라핌","빛"]];
+const DRAGONS = ADVENT_DRAGONS.map(([id, name, elem]) => ({
+  id: String(id), name, elem,
+  icon: '../dragon/' + id + '/profile/8.png',
+  dy: 0, scale: 1
+}));
+
+/* ═══════════════════════════════════════════════════════════ */
+
+const layerBack = document.getElementById('layerBack');
+const layerDragon = document.getElementById('layerDragon');      // 캔버스 (구운 애니메이션)
+const layerDragonImg = document.getElementById('layerDragonImg'); // 이미지 (GIF/WebP 폴백)
+const layerFront = document.getElementById('layerFront');
+const stageMsg = document.getElementById('stageMsg');
+const DEFAULT_MSG = stageMsg.textContent;
+
+let curEffect = null;
+let curDragon = null;
+
+/* ── 프레임 PNG 시퀀스 플레이어 ── */
+const player = {
+  ctx: layerDragon.getContext('2d'),
+  frames: null, t0: 0, raf: 0, token: 0,
+
+  async _img(url) {
+    // 캐시 우선 → 없으면 네트워크에서 받아 캐시에 저장 (미리 받기와 공유)
+    try {
+      const cache = await caches.open(CACHE_NAME);
+      let res = await cache.match(url);
+      if (!res) {
+        res = await fetch(url);
+        if (!res.ok) return null;
+        try { await cache.put(url, res.clone()); } catch (e) { /* 저장공간 부족 시 그냥 재생만 */ }
+      }
+      const blob = await res.blob();
+      return await new Promise(resolve => {
+        const im = new Image();
+        im.onload = () => { URL.revokeObjectURL(im.src); resolve(im); };
+        im.onerror = () => { URL.revokeObjectURL(im.src); resolve(null); };
+        im.src = URL.createObjectURL(blob);
+      });
+    } catch (e) {
+      // Cache API 미지원 환경 폴백
+      return new Promise(res => {
+        const im = new Image();
+        im.onload = () => res(im);
+        im.onerror = () => res(null);
+        im.src = url;
+      });
+    }
+  },
+
+  async load(urlFor) {
+    const my = ++this.token;
+    this.stop();
+    const frames = [];
+    let i = 0, done = false;
+    while (!done && i < 1000) {
+      // 12장씩 병렬 로드 (없는 번호가 나오면 거기서 끝)
+      const batch = [];
+      for (let b = 0; b < 12; b++) batch.push(this._img(urlFor(i + b)));
+      const results = await Promise.all(batch);
+      if (my !== this.token) return false;
+      for (const r of results) {
+        if (r) frames.push(r);
+        else { done = true; break; }
+      }
+      i += 12;
+      if (!done) {
+        stageMsg.textContent = 'Loading dragon… ' + frames.length + ' frames';
+        stageMsg.style.display = 'flex';
+      }
+    }
+    if (my !== this.token) return false;
+    if (!frames.length) throw new Error('no frames');
+    this.frames = frames;
+    layerDragon.width = frames[0].naturalWidth;
+    layerDragon.height = frames[0].naturalHeight;
+    this.t0 = performance.now();
+    this.play();
+    return true;
+  },
+
+
+  play() {
+    cancelAnimationFrame(this.raf);
+    const step = () => {
+      this.raf = requestAnimationFrame(step);
+      const fr = this.frames;
+      if (!fr) return;
+      const fi = Math.floor((performance.now() - this.t0) / 1000 * DRAGON_FPS) % fr.length;
+      const ctx = this.ctx;
+      ctx.clearRect(0, 0, layerDragon.width, layerDragon.height);
+      ctx.drawImage(fr[fi], 0, 0);
+    };
+    step();
+  },
+
+  stop() {
+    cancelAnimationFrame(this.raf);
+    this.frames = null;
+  }
+};
+
+// ── 화면 크기 대응: 스테이지 폭에 맞춰 전체 비율 축소 (PC 820px 기준) ──
+const STAGE_REF_WIDTH = 820;
+let viewScale = 1;
+function calcViewScale() {
+  const w = document.getElementById('stage').clientWidth || STAGE_REF_WIDTH;
+  viewScale = Math.min(1, w / STAGE_REF_WIDTH);
+}
+calcViewScale();
+window.addEventListener('resize', () => {
+  calcViewScale();
+  [layerBack, layerDragon, layerDragonImg, layerFront].forEach(el => {
+    if (el._dy !== undefined) applyTransform(el, el._dy, el._sc);
+  });
+});
+
+function applyTransform(el, dy, scale) {
+  el._dy = dy; el._sc = scale;
+  el.style.transform = 'translate(-50%, calc(-50% - ' + (dy * viewScale) + 'px)) scale(' + (scale * viewScale) + ')';
+}
+
+function applyImgLayer(img, src, dy, scale) {
+  if (!src) { img.classList.remove('on'); img.removeAttribute('src'); return; }
+  img.src = src;
+  applyTransform(img, dy, scale);
+  img.classList.add('on');
+}
+
+async function showDragon(dr) {
+  layerDragonImg.classList.remove('on');
+  layerDragon.classList.remove('on');
+  const dy = dr.dy || 0;
+  const sc = dr.scale || 1;
+  try {
+    const base = ANIM_BASE(dr.id);
+    const ok = await player.load(i => base + FRAME_FILE(i));
+    if (!ok) return;
+    applyTransform(layerDragon, dy, sc);
+    layerDragon.classList.add('on');
+    stageMsg.style.display = 'none';
+    stageMsg.textContent = DEFAULT_MSG;
+  } catch (e) {
+    player.stop();
+    stageMsg.textContent = 'Animation for "' + dr.name + '" is not ready yet (gif/' + dr.id + '/' + FRAME_FILE(0) + ')';
+    stageMsg.style.display = 'flex';
+  }
+}
+
+function render() {
+  if (curEffect) {
+    applyImgLayer(layerBack, curEffect.back, curEffect.dy || 0, (curEffect.scale || 1) * FX_BASE_SCALE);
+    applyImgLayer(layerFront, curEffect.front, curEffect.dy || 0, (curEffect.scale || 1) * FX_BASE_SCALE);
+  } else {
+    applyImgLayer(layerBack, null); applyImgLayer(layerFront, null);
+  }
+  if (curDragon) {
+    showDragon(curDragon);
+  } else {
+    player.stop();
+    layerDragon.classList.remove('on');
+    layerDragonImg.classList.remove('on');
+  }
+  if (!curEffect && !curDragon) {
+    stageMsg.textContent = DEFAULT_MSG;
+    stageMsg.style.display = 'flex';
+  } else if (curEffect && !curDragon) {
+    stageMsg.style.display = 'none';
+  }
+}
+
+// ── 이펙트 버튼 ──
+const effectBtns = document.getElementById('effectBtns');
+const noneBtn = document.createElement('button');
+noneBtn.textContent = 'None';
+noneBtn.className = 'on';
+noneBtn.addEventListener('click', () => { curEffect = null; markEffect(noneBtn); render(); });
+effectBtns.appendChild(noneBtn);
+EFFECTS.forEach(fx => {
+  const b = document.createElement('button');
+  b.textContent = fx.name;
+  b.addEventListener('click', () => { curEffect = fx; markEffect(b); render(); });
+  effectBtns.appendChild(b);
+});
+function markEffect(btn) {
+  [...effectBtns.children].forEach(b => b.classList.toggle('on', b === btn));
+}
+
+// ── 속성 필터 + 드래곤 아이콘 그리드 ──
+const dragonGrid = document.getElementById('dragonGrid');
+const elemBtns = document.getElementById('elemBtns');
+const ELEMS = ['전체', '땅', '물', '불', '바람', '빛', '어둠', '황혼', '여명', '악몽'];  // internal values (match dragon data)
+const ELEM_EN = { '전체':'All', '땅':'Earth', '물':'Water', '불':'Fire', '바람':'Wind', '빛':'Light', '어둠':'Dark', '황혼':'Twilight', '여명':'Dawn', '악몽':'Nightmare' };
+let curElem = '전체';
+
+ELEMS.forEach(el => {
+  const b = document.createElement('button');
+  b.textContent = ELEM_EN[el] || el;
+  if (el === curElem) b.classList.add('on');
+  b.addEventListener('click', () => {
+    curElem = el;
+    [...elemBtns.children].forEach(c => c.classList.toggle('on', c === b));
+    renderDragonGrid();
+  });
+  elemBtns.appendChild(b);
+});
+
+function renderDragonGrid() {
+  dragonGrid.innerHTML = '';
+  const list = curElem === '전체' ? DRAGONS : DRAGONS.filter(dr => dr.elem === curElem);
+  list.forEach(dr => {
+    const d = document.createElement('div');
+    d.className = 'dragon-icon';
+    if (curDragon && curDragon.id === dr.id) d.classList.add('on');
+    d.innerHTML = '<img src="' + dr.icon + '" alt="' + dr.name + '" loading="lazy"><span class="nm">' + dr.name + '</span>';
+    d.querySelector('img').addEventListener('error', function () { this.style.display = 'none'; });
+    d.addEventListener('click', () => {
+      curDragon = dr;
+      [...dragonGrid.children].forEach(c => c.classList.toggle('on', c === d));
+      render();
+    });
+    dragonGrid.appendChild(d);
+  });
+}
+renderDragonGrid();
+
+
+// ── 동굴 스킨 아이콘 ──
+const skinBtns = document.getElementById('skinBtns');
+const layerSkin = document.getElementById('layerSkin');
+const skinNone = document.createElement('button');
+skinNone.textContent = 'None';
+skinNone.className = 'on';
+skinNone.addEventListener('click', () => {
+  layerSkin.classList.remove('on');
+  layerSkin.removeAttribute('src');
+  markSkin(skinNone);
+});
+skinBtns.appendChild(skinNone);
+for (let n = 1; n <= SKIN_COUNT; n++) {
+  const b = document.createElement('button');
+  b.innerHTML = '<img src="' + SKIN_ICON(n) + '" alt="Cave skin ' + n + '">';
+  b.addEventListener('click', () => {
+    layerSkin.src = SKIN_SRC(n);
+    layerSkin.classList.add('on');
+    markSkin(b);
+  });
+  skinBtns.appendChild(b);
+}
+function markSkin(btn) {
+  [...skinBtns.children].forEach(b => b.classList.toggle('on', b === btn));
+}
+
+// ── 배경 전환 ──
+document.getElementById('bgToggle').addEventListener('click', () => {
+  document.getElementById('stage').classList.toggle('checker');
+});
+
+// ── 전체 미리 받기 (Cache Storage) ──
+const preloadBtn = document.getElementById('preloadBtn');
+const preloadStat = document.getElementById('preloadStat');
+const PRELOAD_IDLE_LABEL = preloadBtn.textContent;
+let preState = 'idle';   // idle | armed | running | done
+let preStop = false;
+let armTimer = 0;
+
+function fmtMB(b) { return (b / 1048576).toFixed(0) + 'MB'; }
+
+preloadBtn.addEventListener('click', async () => {
+  if (preState === 'idle') {
+    // 1차 클릭 → 와이파이 경고 + 재확인
+    preState = 'armed';
+    preloadBtn.classList.add('armed');
+    preloadBtn.textContent = '⚠️ Tap once more to start';
+    preloadStat.textContent = '⚠️ This downloads about 3.4GB. Make sure you are on Wi-Fi before continuing!\nDownloading over mobile data may result in very high charges.';
+    clearTimeout(armTimer);
+    armTimer = setTimeout(() => {   // 8초 안에 재클릭 없으면 원상복구
+      if (preState === 'armed') {
+        preState = 'idle';
+        preloadBtn.classList.remove('armed');
+        preloadBtn.textContent = PRELOAD_IDLE_LABEL;
+        preloadStat.textContent = '';
+      }
+    }, 8000);
+    return;
+  }
+  if (preState === 'armed') {
+    // 2차 클릭 → 시작
+    clearTimeout(armTimer);
+    preState = 'running';
+    preStop = false;
+    preloadBtn.classList.remove('armed');
+    preloadBtn.classList.add('running');
+    preloadBtn.textContent = '⏸ Stop';
+    if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+    await runPreload();
+    return;
+  }
+  if (preState === 'running') { preStop = true; preloadBtn.textContent = 'Stopping…'; }
+});
+
+async function runPreload() {
+  let cache;
+  try { cache = await caches.open(CACHE_NAME); }
+  catch (e) {
+    preloadStat.textContent = 'This browser does not support pre-downloading.';
+    resetPreloadBtn(); return;
+  }
+  let bytes = 0, doneCnt = 0;
+  try {
+    for (const dr of DRAGONS) {
+      if (preStop) break;
+      const base = ANIM_BASE(dr.id);
+      let i = 0, miss = false;
+      while (!miss && i < 1000) {
+        const jobs = [];
+        for (let b = 0; b < 8; b++) {
+          const url = base + FRAME_FILE(i + b);
+          jobs.push((async () => {
+            if (await cache.match(url)) return 'hit';
+            const r = await fetch(url).catch(() => null);
+            if (!r || !r.ok) return 'miss';
+            const size = +r.headers.get('content-length') || 0;
+            await cache.put(url, r);
+            return size;
+          })());
+        }
+        const results = await Promise.all(jobs);
+        for (const r of results) {
+          if (r === 'miss') { miss = true; break; }
+          if (typeof r === 'number') bytes += r;
+        }
+        i += 8;
+        preloadStat.textContent = 'Downloading… ' + doneCnt + '/' + DRAGONS.length + ' dragons · ' + fmtMB(bytes) + '\nCurrent: ' + dr.name;
+        if (preStop) break;
+      }
+      doneCnt++;
+    }
+  } catch (e) {
+    preloadStat.textContent = 'Stopped: not enough storage space (' + doneCnt + '/' + DRAGONS.length + ' dragons · ' + fmtMB(bytes) + ').\nFree up some space on your device and tap again. Everything downloaded so far is saved.';
+    resetPreloadBtn(); return;
+  }
+  if (preStop) {
+    preloadStat.textContent = 'Stopped — saved up to ' + doneCnt + '/' + DRAGONS.length + ' dragons (' + fmtMB(bytes) + ').\nTap again to resume.';
+    resetPreloadBtn();
+  } else {
+    preState = 'done';
+    preloadBtn.classList.remove('running');
+    preloadBtn.classList.add('done');
+    preloadBtn.textContent = '✓ All downloaded';
+    preloadStat.textContent = 'Done! All dragons now play instantly with no loading.' + (bytes ? ' (downloaded this session: ' + fmtMB(bytes) + ')' : '');
+  }
+}
+
+function resetPreloadBtn() {
+  preState = 'idle';
+  preloadBtn.classList.remove('armed', 'running');
+  preloadBtn.textContent = PRELOAD_IDLE_LABEL;
+}
+
+
+
+render();
+</script>
+</body>
+</html>

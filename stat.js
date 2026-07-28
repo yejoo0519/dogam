@@ -526,6 +526,8 @@ const dexStatMap = {
 707: { hp:[277,12], atk:[42,4], def:[26,3] }, // 크로마 운디네 / Chroma Undine
 708: { hp:[347,12], atk:[22,3], def:[22,3] }, // 세라핌 / Seraphim
 709: { hp:[238,10], atk:[33,5], def:[39,3] }, // 누베스텔라 / Nubestella
+710: { hp:[229,13], atk:[38,4], def:[21,3] }, // 오파님 / Ophanim
+711: { hp:[229,13], atk:[38,4], def:[21,3] }, // 크로마 오파님 / Chroma Ophanim
 };
 
 if (typeof module !== "undefined" && module.exports) module.exports = dexStatMap;

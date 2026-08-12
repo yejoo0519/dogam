@@ -528,6 +528,7 @@ const dexStatMap = {
 709: { hp:[238,10], atk:[33,5], def:[39,3] }, // 누베스텔라 / Nubestella
 710: { hp:[229,13], atk:[38,4], def:[21,3] }, // 오파님 / Ophanim
 711: { hp:[229,13], atk:[38,4], def:[21,3] }, // 크로마 오파님 / Chroma Ophanim
+712: { hp:[218,9], atk:[25,5], def:[24,3] }, // 카스티그 / Castigue
 };
 
 if (typeof module !== "undefined" && module.exports) module.exports = dexStatMap;

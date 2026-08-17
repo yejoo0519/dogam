@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aura Preview</title>
+<title>Advent Preview (Spine)</title>
 <style>
   :root {
     --bg: #14121c;
@@ -20,11 +20,12 @@
     background: var(--bg);
     color: var(--text);
     font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-    padding: 20px;
+    padding: 34px 20px 40px;
     max-width: 860px;
     margin: 0 auto;
   }
-  h1 { font-size: 20px; margin-bottom: 4px; }
+
+  /* 기존 오라 미리보기와 같은 형태 */
   #backBtn {
     display: inline-flex; align-items: center; gap: 4px;
     border: 1px solid var(--line); background: var(--panel);
@@ -32,7 +33,33 @@
     border-radius: 999px; text-decoration: none; margin-bottom: 12px;
   }
   #backBtn:hover { border-color: var(--accent); color: var(--text); }
-  .desc { font-size: 13px; color: var(--sub); margin-bottom: 16px; }
+  /* 무대와 오른쪽 목록의 윗선을 맞추기 위한 여백 */
+  #backBtn { margin-bottom: 16px; }
+
+  .layout { display: block; }
+  .col-main, .col-side { min-width: 0; }
+
+  /* 넓은 화면: 왼쪽 무대 · 오른쪽 드래곤 목록.
+     목록이 화면에 고정돼 스크롤 없이 고르고 바로 확인할 수 있습니다. */
+  @media (min-width: 1000px) {
+    body { max-width: 1200px; }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 330px;
+      gap: 20px;
+      align-items: start;
+    }
+    .col-side { position: sticky; top: 34px; }
+    .col-side .section { margin-bottom: 0; }
+    #dragonGrid { max-height: calc(100vh - 250px); }
+  }
+
+  /* 좁은 화면: 무대를 위에 붙여 목록을 훑는 동안에도 보이게 */
+  @media (max-width: 999px) {
+    body { padding-top: 24px; }
+    #stage { position: sticky; top: 8px; z-index: 10; }
+    #backBtn { margin-bottom: 12px; }
+  }
 
   #stage {
     position: relative;
@@ -41,7 +68,7 @@
     border: 1px solid var(--line);
     border-radius: 14px;
     overflow: hidden;
-    margin-bottom: 14px;
+    margin-bottom: 18px;
   }
   #stage.checker {
     background-image:
@@ -54,66 +81,56 @@
   @media (max-width: 700px) {
     #stage { height: 340px; }
   }
-  .layer {
-    position: absolute;
-    left: 50%;
-    top: 48.4%;  /* 500px 기준 242px — 기존 440px×55%와 동일한 절대 위치 (아래 여유만 늘림) */
-    transform-origin: center center;
-    pointer-events: none;
-    display: none;
-  }
-  .layer.on { display: block; }
-  #layerBack   { z-index: 1; }
-  #layerDragon, #layerDragonImg { z-index: 2; }
-  #layerFront  { z-index: 3; }
-  #stageMsg {
-    position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    color: var(--sub); font-size: 14px; text-align: center; line-height: 1.6;
-    padding: 0 30px;
-  }
-  #bgToggle {
-    position: absolute; top: 10px; right: 10px; z-index: 5;
-    background: rgba(0,0,0,.35); border: 1px solid var(--line); color: var(--sub);
-    font-size: 11px; padding: 4px 10px; border-radius: 6px; cursor: pointer;
-  }
   #layerSkin {
     position: absolute; inset: 0; width: 100%; height: 100%;
     object-fit: cover; z-index: 0; display: none;
   }
   #layerSkin.on { display: block; }
-  .skin-btns { display: flex; gap: 8px; flex-wrap: wrap; }
-  .skin-btns button {
-    background: var(--panel-2);
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    cursor: pointer;
-    padding: 4px;
-    width: 58px; height: 55px;
+  #layerBack, #layerFront {
+    position: absolute; left: 50%; top: 48.4%;
+    transform-origin: center center;
+    pointer-events: none; display: none;
+    image-rendering: auto;
+  }
+  #layerBack { z-index: 1; }
+  #layerFront { z-index: 3; }
+  #layerBack.on, #layerFront.on { display: block; }
+  #layerDragon {
+    position: absolute;
+    left: 50%;
+    top: 48.4%;
+    transform-origin: center center;
+    pointer-events: none;
+    z-index: 2;
+    display: none;
+  }
+  #layerDragon.on { display: block; }
+  #stageMsg {
+    position: absolute; inset: 0; z-index: 5;
+    white-space: pre-line;
     display: flex; align-items: center; justify-content: center;
-    color: var(--text); font-size: 13px;
-    transition: border-color .15s;
+    color: var(--sub); font-size: 14px; text-align: center; line-height: 1.6;
+    padding: 0 30px;
   }
-  .skin-btns button img { width: 100%; height: 100%; object-fit: contain; }
-  .skin-btns button:hover { border-color: var(--sub); }
-  .skin-btns button.on { border-color: var(--accent); }
-
-  .preload-desc { font-size: 12px; color: var(--sub); line-height: 1.6; margin-bottom: 8px; }
-  #preloadBtn {
-    background: var(--panel-2); border: 1px solid var(--line); color: var(--text);
-    font-size: 13px; padding: 9px 16px; border-radius: 8px; cursor: pointer;
-    transition: border-color .15s, color .15s;
-  }
-  #preloadBtn:hover { border-color: var(--sub); }
-  #preloadBtn.armed { border-color: #e6a23a; color: #e6a23a; font-weight: 700; }
-  #preloadBtn.running { border-color: var(--accent-2); color: var(--accent-2); }
-  #preloadBtn.done { border-color: var(--accent); color: var(--accent); cursor: default; }
-  #preloadStat { font-size: 12px; color: var(--sub); margin-top: 8px; line-height: 1.6; white-space: pre-line; }
 
   .section { margin-bottom: 14px; }
   .section h2 { font-size: 13px; color: var(--sub); margin-bottom: 8px; font-weight: 600; }
-  .effect-btns { display: flex; gap: 8px; flex-wrap: wrap; }
-  .effect-btns button {
+
+  .ctrl-row { display: flex; gap: 18px 20px; flex-wrap: wrap; align-items: flex-start; }
+  .ctrl-row + .ctrl-row { margin-top: -4px; }
+  .ctrl h2 { font-size: 13px; color: var(--sub); margin-bottom: 8px; font-weight: 600; }
+  #secSet { min-width: 300px; }
+  #secDeco { min-width: 186px; }
+  #secMotion { min-width: 100px; }
+  .ctrl .btn-row button { padding: 6px 11px; font-size: 12px; }
+  .ctrl-skin { min-width: 200px; flex: 0 1 230px; }
+  @media (max-width: 700px) {
+    .ctrl-row { gap: 14px; }
+    .ctrl-skin { flex: 1 1 100%; }
+  }
+
+  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn-row button {
     background: var(--panel-2);
     border: 1px solid var(--line);
     color: var(--text);
@@ -123,481 +140,2481 @@
     cursor: pointer;
     transition: border-color .15s;
   }
-  .effect-btns button:hover { border-color: var(--sub); }
-  .effect-btns button.on { border-color: var(--accent); color: var(--accent); font-weight: 700; }
+  .btn-row button:hover { border-color: var(--sub); }
+  .btn-row button.on { border-color: var(--accent); color: var(--accent); font-weight: 700; }
+  .btn-row button:disabled { opacity: .35; cursor: not-allowed; }
+  .btn-row button:disabled:hover { border-color: var(--line); }
+
+  .icon-select { position: relative; }
+  .icon-select > button {
+    width: 100%;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 13px;
+    padding: 7px 10px;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 10px;
+    transition: border-color .15s;
+  }
+  .icon-select > button:hover { border-color: var(--sub); }
+  .icon-select > button:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; }
+  .icon-select.open > button { border-color: var(--accent); }
+  .icon-thumb {
+    width: 40px; height: 38px; flex: 0 0 auto;
+    border-radius: 5px; background: var(--panel);
+    background-size: cover; background-position: center;
+    border: 1px solid var(--line);
+  }
+  .icon-name { flex: 1; text-align: left; }
+  .icon-caret { color: var(--sub); font-size: 11px; transition: transform .15s; }
+  .icon-select.open .icon-caret { transform: rotate(180deg); }
+
+  .icon-menu {
+    display: none;
+    position: absolute; z-index: 20; top: calc(100% + 6px); left: 0; right: 0;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 6px;
+    max-height: 300px; overflow-y: auto;
+    box-shadow: 0 12px 28px rgba(0,0,0,.5);
+  }
+  .icon-select.open .icon-menu { display: block; }
+  .icon-opt {
+    width: 100%;
+    display: flex; align-items: center; gap: 10px;
+    background: none; border: 1px solid transparent; border-radius: 7px;
+    color: var(--text); font-family: inherit; font-size: 13px;
+    padding: 5px 7px; cursor: pointer; text-align: left;
+  }
+  .icon-opt:hover, .icon-opt:focus-visible { background: var(--panel-2); outline: none; }
+  .icon-opt.on { border-color: var(--accent); color: var(--accent); font-weight: 700; }
+  .icon-opt .icon-thumb { width: 46px; height: 40px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .icon-caret, .icon-select > button { transition: none; }
+  }
+
+  .picker {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px;
+  }
+  .picker-bar {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 10px; flex-wrap: wrap;
+  }
+  .picker-bar:last-of-type { margin-bottom: 12px; }
+  .picker .icon-select { flex: 0 0 168px; }
+
+  #searchInput {
+    flex: 1 1 180px; min-width: 0;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: inherit; font-size: 13px;
+    padding: 8px 12px;
+  }
+  #searchInput::placeholder { color: var(--sub); }
+  #searchInput:focus { outline: none; border-color: var(--accent); }
+
+  .seg { display: inline-flex; background: var(--panel-2);
+         border: 1px solid var(--line); border-radius: 8px; padding: 2px; }
+  .seg button {
+    background: none; border: none; border-radius: 6px;
+    color: var(--sub); font-family: inherit; font-size: 12px;
+    padding: 5px 12px; cursor: pointer;
+  }
+  .seg button:hover { color: var(--text); }
+  .seg button.on { background: var(--line); color: var(--text); font-weight: 700; }
+
+  .picker-count { margin-left: auto; font-size: 12px; color: var(--sub); }
 
   #dragonGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
-    gap: 8px;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1px 10px;
+    max-height: 320px;
+    overflow-y: auto;
+    padding: 2px;
+    scrollbar-width: thin;
   }
-  .dragon-icon {
-    background: var(--panel-2);
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    aspect-ratio: 1;
+  #dragonGrid::-webkit-scrollbar { width: 8px; }
+  #dragonGrid::-webkit-scrollbar-thumb { background: var(--line); border-radius: 4px; }
+  #dragonGrid.empty { display: block; color: var(--sub); font-size: 13px;
+                      text-align: center; padding: 40px 0; }
+
+  .dragon-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 4px 8px;
+    border: 1px solid transparent;
+    border-radius: 6px;
     cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 2px;
-    overflow: hidden;
-    transition: border-color .15s;
-    padding: 4px;
+    min-width: 0;
+    transition: background .12s, border-color .12s, opacity .15s;
   }
-  .dragon-icon:hover { border-color: var(--sub); }
-  .dragon-icon.on { border-color: var(--accent); }
-  .dragon-icon img { width: 100%; height: 100%; object-fit: contain; }
-  .dragon-icon .nm {
-    font-size: 10px; color: var(--sub);
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+  .dragon-row:hover { background: var(--panel-2); }
+  .dragon-row.on { background: var(--panel-2); border-color: var(--accent); }
+  .dragon-row.missing { opacity: .32; }
+  .dragon-row img {
+    flex: 0 0 30px; width: 30px; height: 30px; object-fit: contain;
   }
+  .dragon-row .nm {
+    flex: 1 1 auto; min-width: 0;
+    display: flex; flex-direction: column; justify-content: center;
+    font-size: 12px; color: var(--text);
+  }
+  .dragon-row .nm-en, .dragon-row .nm-kr {
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    line-height: 1.35;
+  }
+  .dragon-row .nm-kr { font-size: 11px; color: var(--sub); }
+  .dragon-row.on .nm { color: var(--accent); font-weight: 700; }
+  .dragon-row.on .nm-kr { color: var(--accent); }
+  @media (prefers-reduced-motion: reduce) { .dragon-row { transition: none; } }
 
 </style>
 </head>
 <body>
 
 <a href="index.html?tab=convenience" id="backBtn">← Back to Main</a>
-<h1>Aura Preview</h1>
-<p class="desc">Pick an aura effect and a dragon to preview how they look together. Auras can't be removed once equipped in-game, so check here first!</p>
+
+<div class="layout">
+<div class="col-main">
 
 <div id="stage" class="checker">
-  <button id="bgToggle">Toggle BG</button>
   <img id="layerSkin" alt="">
-  <img class="layer" id="layerBack" alt="">
-  <canvas class="layer" id="layerDragon"></canvas>
-  <img class="layer" id="layerDragonImg" alt="">
-  <img class="layer" id="layerFront" alt="">
-  <div id="stageMsg">Select an effect and a dragon below</div>
+  <canvas id="layerBack"></canvas>
+  <canvas id="layerDragon"></canvas>
+  <canvas id="layerFront"></canvas>
+  <div id="stageMsg">Pick a dragon from the list to start</div>
+</div>
+
+<div class="section ctrl-row">
+
+  <div class="ctrl" id="secSet">
+    <h2>Stage</h2>
+    <div class="btn-row" id="setBtns"></div>
+  </div>
+
+  <div class="ctrl" id="secDeco">
+    <h2>Decoration</h2>
+    <div class="btn-row" id="decoBtns"></div>
+  </div>
+
+  <div class="ctrl" id="secMotion">
+    <h2>Motion</h2>
+    <div class="btn-row" id="motionBtns"></div>
+  </div>
+
+  <div class="ctrl ctrl-skin">
+    <h2>Cave Background</h2>
+    <div class="icon-select" id="skinSelect">
+    <button type="button" id="skinTrigger" aria-haspopup="listbox" aria-expanded="false">
+      <span class="icon-thumb" id="skinThumb"></span>
+      <span class="icon-name" id="skinName">None</span>
+      <span class="icon-caret" aria-hidden="true">▾</span>
+    </button>
+      <div class="icon-menu" id="skinMenu" role="listbox" aria-label="Cave background"></div>
+    </div>
+  </div>
+
 </div>
 
 <div class="section">
-  <h2>Effect</h2>
-  <div class="effect-btns" id="effectBtns"></div>
+  <h2>Aura</h2>
+  <div class="btn-row" id="auraBtns"></div>
 </div>
 
-<div class="section">
-  <h2>Cave Skin</h2>
-  <div class="skin-btns" id="skinBtns"></div>
-</div>
+</div><div class="col-side">
 
 <div class="section">
-  <h2>Dragon</h2>
-  <div class="effect-btns" id="elemBtns" style="margin-bottom:8px;"></div>
-  <div id="dragonGrid"></div>
+  <h2>Dragons</h2>
+  <div class="picker">
+
+    <div class="picker-bar">
+      <input type="search" id="searchInput" placeholder="Search by name" autocomplete="off">
+      <div class="icon-select" id="elemSelect">
+        <button type="button" id="elemTrigger" aria-haspopup="listbox" aria-expanded="false">
+          <span class="icon-thumb" id="elemThumb"></span>
+          <span class="icon-name" id="elemName">All elements</span>
+          <span class="icon-caret" aria-hidden="true">▾</span>
+        </button>
+        <div class="icon-menu" id="elemMenu" role="listbox" aria-label="Element"></div>
+      </div>
+    </div>
+
+    <div class="picker-bar">
+      <div class="seg" id="kindSeg" role="group" aria-label="Category"></div>
+      <span class="picker-count" id="pickerCount"></span>
+    </div>
+
+    <div id="dragonGrid"></div>
+  </div>
 </div>
 
-<div class="section">
-  <h2>Download All</h2>
-  <p class="preload-desc">Downloads every dragon animation (about 3.4GB) into your browser. Once downloaded, all dragons play instantly with no loading. You can stop anytime and resume later.</p>
-  <button id="preloadBtn">Download all dragons at once (about 3.4GB)</button>
-  <div id="preloadStat"></div>
+</div>
 </div>
 
 
 <script>
-/* ═══════════════ CONFIG — 여기만 수정하면 됨 ═══════════════ */
+/* ============================================================
+   최소 Spine 3.x 런타임 (region attachment 전용)
+   지원: bone rotate/translate/scale, slot attachment/color(alpha),
+        drawOrder, bezier/stepped 커브, 아틀라스 rotate 리전
+   미지원: mesh, IK/transform constraint, RGB 틴트, additive blend
+   ============================================================ */
 
-// 이펙트 전역 배율: 오라 에셋(1x)과 드래곤 렌더(2x)의 해상도 차이 보정 — 인게임 비율 기준
-const FX_BASE_SCALE = 2;
+/* ---------- 아틀라스 파서 ---------- */
+function parseAtlas(text){
+  const lines = text.split(/\r?\n/);
+  const regions = {};
+  let i = 0, page = null, cur = null;
 
-// 배경 동굴 스킨: cave_skin/ 폴더에 cave_skin1.jpg ~ cave_skin14.jpg (배경), cave_1.png ~ cave_14.png (아이콘)
-const SKIN_COUNT = 14;
-const SKIN_SRC = n => '../cave_skin/cave_skin' + n + '.jpg';
-const SKIN_ICON = n => '../cave_skin/cave_' + n + '.png';
+  while(i < lines.length){
+    const line = lines[i];
+    if(line.trim() === ''){ cur = null; i++; continue; }
 
-// 이펙트 목록: 파일은 effects/ 폴더에. dy = 위로 이동 px (음수면 아래), scale = 배율
-// front/back은 캔버스 중심이 같은 점에 놓이도록 자동 정렬됨 (게임과 동일)
-// scale 값은 FX_BASE_SCALE과 곱해짐 (조정 슬라이더에 표시되는 값 그대로 복사하면 됨)
-const EFFECTS = [
-  { id: 'aura1', name: 'Earth Aura',   front: '../effects/aura1_front.webp', back: '../effects/aura1_back.webp', dy: 0, scale: 1 },
-  { id: 'aura2', name: 'Water Aura',   front: '../effects/aura2_front.webp', back: '../effects/aura2_back.webp', dy: 0, scale: 1 },
-  { id: 'aura3', name: 'Fire Aura',   front: '../effects/aura3_front.webp', back: '../effects/aura3_back.webp', dy: 0, scale: 1 },
-  { id: 'aura4', name: 'Wind Aura', front: '../effects/aura4_front.webp', back: '../effects/aura4_back.webp', dy: 0, scale: 1 },
-];
-
-// 드래곤 애니메이션: 프레임 PNG는 별도 저장소(dogam-frames1~)에 분산 호스팅
-//   각 저장소의 gif/{id}/ 안에 advent-wait_000.png ... (3자리, 0부터)
-//   max = 해당 저장소의 마지막 드래곤 ID. 신규 드래곤(709~)은 dogam-frames5에 올리면 됨
-const FRAME_REPOS = [
-  { max: 301,  base: 'https://yejoo0519.github.io/dogam-frames1/gif/' },
-  { max: 517,  base: 'https://yejoo0519.github.io/dogam-frames2/gif/' },
-  { max: 650,  base: 'https://yejoo0519.github.io/dogam-frames3/gif/' },
-  { max: 708,  base: 'https://yejoo0519.github.io/dogam-frames4/gif/' },
-  { max: 9999, base: 'https://yejoo0519.github.io/dogam-frames5/gif/' },
-];
-const ANIM_BASE = id => FRAME_REPOS.find(r => +id <= r.max).base + id + '/';
-const CACHE_NAME = 'dv1-aura-frames-v1';  // 프레임 브라우저 캐시 이름
-const FRAME_FILE = i => 'advent-wait_' + String(i).padStart(3, '0') + '.png';
-const DRAGON_FPS = 20;  // 재생 속도 — 스파인 내보내기 fps에 맞춰 조정
-
-// 강림(프로필 8) 있는 드래곤 — dex.html 데이터에서 자동 생성 (257마리, [id, 이름, 속성])
-const ADVENT_DRAGONS = [[1,"고대신룡","빛"],[2,"윈드 드래곤","바람"],[3,"식스 레그 혼 드래곤","바람"],[4,"청룡","바람"],[5,"파이어 드래곤","불"],[6,"번개고룡","불"],[8,"피닉스","불"],[9,"빙하고룡","물"],[12,"수룡","물"],[13,"히드라곤","땅"],[14,"파워 드래곤","땅"],[16,"지하땅굴 드래곤","땅"],[17,"페어리 드래곤","물"],[19,"에그 드래곤","땅"],[21,"엔젤 드래곤","빛"],[24,"스왐프 드래곤","물"],[34,"흑룡","어둠"],[53,"다크닉스","어둠"],[54,"백룡","빛"],[58,"샤크곤","물"],[64,"고대 주니어","빛"],[70,"샴 드래곤","빛"],[72,"베네지","어둠"],[73,"머스타 드해머","땅"],[74,"레드와이번","불"],[76,"스콜피온 드래곤","땅"],[77,"나이트 드래곤","빛"],[78,"스파이시","빛"],[79,"라파엘","빛"],[80,"바알","어둠"],[92,"파이썬","땅"],[93,"아이언 드래곤","불"],[95,"자룡","불"],[102,"시그마 드래곤","어둠"],[104,"아르고 드래곤","빛"],[130,"다크폴","어둠"],[134,"루미네스","물"],[135,"번네스","불"],[147,"므네이아","불"],[158,"모리카 드래곤","빛"],[160,"태엽 드래곤","바람"],[162,"블랙티어 드래곤","어둠"],[163,"블랙아머 드래곤","어둠"],[166,"쿠로이 드래곤","어둠"],[186,"카오스","바람"],[191,"타임머신","어둠"],[192,"시타엘","빛"],[196,"콜로서스","땅"],[197,"원더 드래곤","어둠"],[198,"아이스 드레이크","물"],[202,"바르라아","빛"],[206,"아실리","빛"],[207,"블랙찡또","어둠"],[209,"로루스","빛"],[213,"문라이트","어둠"],[218,"위드미","물"],[219,"헤이즈","빛"],[224,"스트라이커","바람"],[225,"가루다","불"],[229,"오르도","빛"],[230,"세크레타","물"],[231,"푸투룸","불"],[232,"할리벨","여명"],[233,"타아비레","여명"],[234,"발라크","황혼"],[235,"베팔","황혼"],[236,"단탈리온","악몽"],[237,"자간","악몽"],[241,"마르바스","어둠"],[244,"와일드 드래곤","불"],[246,"레이어스","땅"],[248,"베놈 드래곤","물"],[250,"루가르 드래곤","불"],[252,"유니버스","어둠"],[255,"아스티","바람"],[259,"베히모스","어둠"],[260,"스틸윙","바람"],[266,"그레이탄","바람"],[268,"다로스","땅"],[271,"스타에이스","빛"],[272,"말로단","어둠"],[274,"포포모","불"],[275,"테디 드래곤","빛"],[287,"합라","여명"],[290,"아라카","바람"],[296,"셀마사","여명"],[298,"카라선","황혼"],[301,"렉스톤","황혼"],[302,"포메쿨","황혼"],[303,"카르나","어둠"],[305,"마룡","불"],[309,"아르테미스 드래곤","빛"],[319,"엠파이어","바람"],[322,"지진","땅"],[334,"보상이용","여명"],[337,"포이즌리버","땅"],[342,"베르나","빛"],[344,"혼","바람"],[345,"나트론","물"],[348,"솔라","빛"],[349,"포폰","땅"],[350,"제피로스","바람"],[351,"드래곤 슬레이어","어둠"],[355,"디멘션 드래곤","악몽"],[358,"킨더 드래곤","여명"],[365,"틸키","황혼"],[366,"이그나","불"],[367,"블리자드","물"],[368,"다크나이트","어둠"],[370,"거스트 드래곤","바람"],[372,"화이트썬더 드래곤","빛"],[373,"카루라","빛"],[378,"미나스 드래곤","빛"],[380,"쿠베라","어둠"],[385,"렉몰 리버스","황혼"],[387,"센투라","바람"],[389,"에트왈 드래곤","바람"],[392,"즈믄","땅"],[393,"리베티","땅"],[394,"브리트라","물"],[397,"키갈","바람"],[400,"칸타카","땅"],[408,"아톤","빛"],[409,"탈릿사","빛"],[411,"하리카","황혼"],[415,"애플칙","땅"],[416,"트로페우스","물"],[426,"아스타테","땅"],[429,"수라 드래곤","불"],[432,"엔젤주니어","빛"],[438,"엔투라스","불"],[447,"데스락","황혼"],[448,"애니마라","악몽"],[452,"아자크","어둠"],[453,"프로즌","물"],[457,"루드오어","악몽"],[458,"스워드","빛"],[463,"베리스","여명"],[467,"마카라","어둠"],[469,"이클립스","황혼"],[470,"벨레드","악몽"],[473,"엘리고스","여명"],[476,"미미르","여명"],[481,"암두시아스","여명"],[483,"레오벡터","땅"],[484,"네비아","여명"],[486,"보레아스","바람"],[489,"화귀 드래곤","불"],[496,"마소티스","물"],[497,"리치몬드","어둠"],[498,"크로마 리치몬드","어둠"],[501,"개틀링곤","빛"],[502,"베른하르트","물"],[508,"티르","바람"],[509,"아만타","빛"],[513,"샤흐","빛"],[516,"네뷸라","황혼"],[517,"레굴루스","물"],[518,"크로마 레굴루스","물"],[519,"알데바란","땅"],[523,"롱기누스","악몽"],[526,"미스핏","악몽"],[527,"염화룡","불"],[529,"폴투누스","물"],[530,"세에레","황혼"],[531,"바르그","빛"],[532,"마스테마","악몽"],[535,"타나토스","불"],[538,"프라이드","황혼"],[540,"라스","여명"],[544,"토트","불"],[547,"네무스","악몽"],[554,"크레바스","악몽"],[555,"라센티","불"],[557,"고트","어둠"],[559,"파키","땅"],[563,"피타야","바람"],[566,"아말테아","여명"],[568,"케찰코아틀","땅"],[569,"조화룡","여명"],[573,"마그나스","어둠"],[574,"크로마 벨레드","악몽"],[575,"포르타","어둠"],[579,"루드라","물"],[583,"차차웅","황혼"],[587,"코르투스","여명"],[590,"에피트","황혼"],[593,"에그마용","땅"],[594,"블루썬더","바람"],[595,"크로마 블루썬더","바람"],[597,"솔루카니스","빛"],[600,"루살카","물"],[601,"베타라","어둠"],[602,"크로마 베타라","어둠"],[603,"루크바트","여명"],[604,"카스룩스","어둠"],[606,"알투스","빛"],[611,"피데스","어둠"],[613,"불나래","불"],[614,"크로마 불나래","불"],[615,"유르카","물"],[617,"쉴로시","악몽"],[620,"옥타","물"],[621,"크로마 옥타","물"],[622,"커스리퍼","악몽"],[623,"울르","여명"],[625,"아프로디테","여명"],[629,"블레이즈 드래곤","불"],[633,"프로텍트 드래곤","빛"],[634,"크로마 프로텍트 드래곤","빛"],[635,"템피오스","황혼"],[637,"진","악몽"],[641,"인베르소","황혼"],[644,"리티오","바람"],[645,"크로마 리티오","바람"],[647,"스카트","물"],[648,"알레샤","물"],[649,"크로마 알레샤","물"],[650,"야누스","여명"],[651,"파이거","불"],[652,"크로마 파이거","불"],[653,"스카투스","불"],[654,"크로마 스카투스","불"],[655,"로키","물"],[659,"헤임달","땅"],[660,"볼바","물"],[661,"토르","바람"],[662,"요르문간드","어둠"],[663,"마누스","황혼"],[664,"잠식된 요르문간드","악몽"],[665,"야즈니르","빛"],[667,"논","땅"],[671,"레무레스","악몽"],[672,"아카이아","땅"],[673,"크로마 아카이아","땅"],[674,"티아매트","어둠"],[676,"오벡스","어둠"],[677,"흐레스벨그","황혼"],[681,"하트샤","어둠"],[684,"발레포르","악몽"],[685,"크로마 발레포르","악몽"],[686,"메라크","빛"],[687,"레긴레이프","황혼"],[688,"크로마 레긴레이프","황혼"],[689,"적마룡","불"],[691,"피싱테일 드래곤","물"],[694,"루루","바람"],[695,"크로마 루루","바람"],[696,"바스카","땅"],[697,"블라드","악몽"],[698,"프레이야","여명"],[703,"크툴루","어둠"],[704,"크로마 크툴루","어둠"],[705,"망태곤","악몽"],[706,"운디네","물"],[707,"크로마 운디네","물"],[708,"세라핌","빛"],[710,"오파님","바람"],[711,"크로마 오파님","바람"]];
-const DRAGONS = ADVENT_DRAGONS.map(([id, name, elem]) => ({
-  id: String(id), name, elem,
-  icon: '../dragon/' + id + '/profile/8.png',
-  dy: 0, scale: 1
-}));
-
-/* ═══════════════════════════════════════════════════════════ */
-
-const layerBack = document.getElementById('layerBack');
-const layerDragon = document.getElementById('layerDragon');      // 캔버스 (구운 애니메이션)
-const layerDragonImg = document.getElementById('layerDragonImg'); // 이미지 (GIF/WebP 폴백)
-const layerFront = document.getElementById('layerFront');
-const stageMsg = document.getElementById('stageMsg');
-const DEFAULT_MSG = stageMsg.textContent;
-
-let curEffect = null;
-let curDragon = null;
-
-/* ── 프레임 PNG 시퀀스 플레이어 ── */
-const player = {
-  ctx: layerDragon.getContext('2d'),
-  frames: null, t0: 0, raf: 0, token: 0,
-
-  async _img(url) {
-    // 캐시 우선 → 없으면 네트워크에서 받아 캐시에 저장 (미리 받기와 공유)
-    try {
-      const cache = await caches.open(CACHE_NAME);
-      let res = await cache.match(url);
-      if (!res) {
-        res = await fetch(url);
-        if (!res.ok) return null;
-        try { await cache.put(url, res.clone()); } catch (e) { /* 저장공간 부족 시 그냥 재생만 */ }
-      }
-      const blob = await res.blob();
-      return await new Promise(resolve => {
-        const im = new Image();
-        im.onload = () => { URL.revokeObjectURL(im.src); resolve(im); };
-        im.onerror = () => { URL.revokeObjectURL(im.src); resolve(null); };
-        im.src = URL.createObjectURL(blob);
-      });
-    } catch (e) {
-      // Cache API 미지원 환경 폴백
-      return new Promise(res => {
-        const im = new Image();
-        im.onload = () => res(im);
-        im.onerror = () => res(null);
-        im.src = url;
-      });
+    if(!page){ page = line.trim(); i++;
+      // 페이지 헤더(size/format/filter/repeat) 건너뛰기
+      while(i < lines.length && lines[i].indexOf(':') !== -1){ i++; }
+      continue;
     }
-  },
-
-  async load(urlFor) {
-    const my = ++this.token;
-    this.stop();
-    const frames = [];
-    let i = 0, done = false;
-    while (!done && i < 1000) {
-      // 12장씩 병렬 로드 (없는 번호가 나오면 거기서 끝)
-      const batch = [];
-      for (let b = 0; b < 12; b++) batch.push(this._img(urlFor(i + b)));
-      const results = await Promise.all(batch);
-      if (my !== this.token) return false;
-      for (const r of results) {
-        if (r) frames.push(r);
-        else { done = true; break; }
-      }
-      i += 12;
-      if (!done) {
-        stageMsg.textContent = 'Loading dragon… ' + frames.length + ' frames';
-        stageMsg.style.display = 'flex';
-      }
+    if(line.indexOf(':') === -1){
+      cur = line.trim();
+      regions[cur] = { name: cur, rotate:false, x:0,y:0,w:0,h:0,
+                       ow:0,oh:0, ox:0,oy:0 };
+      i++; continue;
     }
-    if (my !== this.token) return false;
-    if (!frames.length) throw new Error('no frames');
-    this.frames = frames;
-    layerDragon.width = frames[0].naturalWidth;
-    layerDragon.height = frames[0].naturalHeight;
-    this.t0 = performance.now();
-    this.play();
-    return true;
-  },
-
-
-  play() {
-    cancelAnimationFrame(this.raf);
-    const step = () => {
-      this.raf = requestAnimationFrame(step);
-      const fr = this.frames;
-      if (!fr) return;
-      const fi = Math.floor((performance.now() - this.t0) / 1000 * DRAGON_FPS) % fr.length;
-      const ctx = this.ctx;
-      ctx.clearRect(0, 0, layerDragon.width, layerDragon.height);
-      ctx.drawImage(fr[fi], 0, 0);
-    };
-    step();
-  },
-
-  stop() {
-    cancelAnimationFrame(this.raf);
-    this.frames = null;
+    const idx = line.indexOf(':');
+    const key = line.slice(0, idx).trim();
+    const val = line.slice(idx+1).trim();
+    const nums = val.split(',').map(s => parseFloat(s));
+    const r = regions[cur];
+    if(r){
+      if(key === 'rotate')      r.rotate = (val === 'true');
+      else if(key === 'xy')     { r.x = nums[0]; r.y = nums[1]; }
+      else if(key === 'size')   { r.w = nums[0]; r.h = nums[1]; }
+      else if(key === 'orig')   { r.ow = nums[0]; r.oh = nums[1]; }
+      else if(key === 'offset') { r.ox = nums[0]; r.oy = nums[1]; }
+    }
+    i++;
   }
+  // 짧은 이름(마지막 경로 조각)으로도 찾을 수 있게 별칭 추가
+  const alias = {};
+  for(const k in regions){
+    alias[k] = regions[k];
+    const short = k.split('/').pop();
+    if(!(short in alias)) alias[short] = regions[k];
+  }
+  return { page, regions: alias };
+}
+
+/* ---------- 커브 보간 ---------- */
+function bezierAt(p1, p2, t){
+  const u = 1 - t;
+  return 3*u*u*t*p1 + 3*u*t*t*p2 + t*t*t;
+}
+function curvePercent(curve, percent){
+  if(curve === undefined || curve === null) return percent;       // 선형
+  if(curve === 'stepped') return 0;                                // 계단
+  const c1 = curve[0], c2 = curve[1], c3 = curve[2], c4 = curve[3];
+  let lo = 0, hi = 1, t = percent;
+  for(let i = 0; i < 14; i++){
+    const x = bezierAt(c1, c3, t);
+    if(x < percent) lo = t; else hi = t;
+    t = (lo + hi) / 2;
+  }
+  return bezierAt(c2, c4, t);
+}
+/* 각도를 -180~180으로 감기 (최단 경로) */
+function wrapDeg(a){
+  a = a % 360;
+  if(a > 180) a -= 360;
+  else if(a < -180) a += 360;
+  return a;
+}
+const DEG = Math.PI / 180;
+
+/* ---------- 스켈레톤 ---------- */
+class Skeleton{
+  constructor(json, atlas, image){
+    this.json = json;
+    this.atlas = atlas;
+    this.image = image;
+
+    // 본
+    this.bones = [];
+    this.boneMap = {};
+    for(const bd of json.bones){
+      const b = {
+        name: bd.name,
+        parent: bd.parent ? this.boneMap[bd.parent] : null,
+        len: bd.length || 0,
+        // 셋업 포즈
+        sx: bd.x || 0, sy: bd.y || 0,
+        srot: bd.rotation || 0,
+        sscx: bd.scaleX === undefined ? 1 : bd.scaleX,
+        sscy: bd.scaleY === undefined ? 1 : bd.scaleY,
+        // 현재 포즈
+        x:0, y:0, rot:0, scx:1, scy:1,
+        // 월드 행렬
+        a:1, b:0, c:0, d:1, wx:0, wy:0
+      };
+      this.bones.push(b);
+      this.boneMap[b.name] = b;
+    }
+
+    // 슬롯
+    this.slots = [];
+    this.slotMap = {};
+    json.slots.forEach((sd, i) => {
+      const s = {
+        name: sd.name,
+        bone: this.boneMap[sd.bone],
+        setupAttachment: sd.attachment || null,
+        setupAlpha: sd.color ? parseInt(sd.color.slice(6,8),16)/255 : 1,
+        attachment: null,
+        alpha: 1,
+        order: i
+      };
+      this.slots.push(s);
+      this.slotMap[s.name] = s;
+    });
+    this.drawOrder = this.slots.slice();
+
+    // 스킨(어태치먼트) — region 전용
+    this.skins = {};
+    for(const skinName in json.skins){
+      const skin = json.skins[skinName];
+      const built = {};
+      for(const slotName in skin){
+        built[slotName] = {};
+        for(const attName in skin[slotName]){
+          const ad = skin[slotName][attName];
+          const regionName = ad.name || attName;
+          const reg = atlas.regions[regionName] ||
+                      atlas.regions[regionName.split('/').pop()];
+          if(!reg){ console.warn('아틀라스 리전 없음:', regionName); continue; }
+          built[slotName][attName] = this.buildAttachment(ad, reg);
+        }
+      }
+      this.skins[skinName] = built;
+    }
+    // 'default'를 맨 앞에 두고 순서 고정
+    this.skinNames = Object.keys(this.skins)
+      .sort((a,b) => (a==='default'?-1:0) - (b==='default'?-1:0));
+    this.curSkin = this.skinNames[0];
+    this.attachments = this.skins[this.curSkin];
+
+    // 애니메이션 길이 계산
+    this.animations = {};
+    for(const name in json.animations){
+      this.animations[name] = {
+        data: json.animations[name],
+        duration: animDuration(json.animations[name])
+      };
+    }
+  }
+
+  /* region attachment의 로컬 변환 행렬 미리 계산
+     이미지 픽셀(u,v) → 본 로컬 좌표(y-up) 매핑을 2x3 행렬로 */
+  buildAttachment(ad, reg){
+    const w  = ad.width, h = ad.height;
+    const scX = ad.scaleX === undefined ? 1 : ad.scaleX;
+    const scY = ad.scaleY === undefined ? 1 : ad.scaleY;
+    const rot = ad.rotation || 0;
+    const ax  = ad.x || 0, ay = ad.y || 0;
+
+    // 아틀라스에 90도 회전 저장된 리전은 그린 폭/높이가 뒤바뀜
+    const rw = reg.rotate ? reg.h : reg.w;
+    const rh = reg.rotate ? reg.w : reg.h;
+
+    const rsx = (w / reg.ow) * scX;
+    const rsy = (h / reg.oh) * scY;
+
+    const localX  = -w/2 * scX + reg.ox * rsx;
+    const localY  = -h/2 * scY + reg.oy * rsy;
+    const localY2 = localY + rh * rsy;
+
+    // P: 이미지픽셀 → 회전 전 로컬 (canvas 행렬 표기 [a,b,c,d,e,f])
+    let P = [ rsx, 0, 0, -rsy, localX, localY2 ];
+
+    // 아틀라스 회전 리전이면 이미지 좌표계를 한 번 더 돌려줌
+    if(reg.rotate){
+      // 소스에서는 (w,h)가 (rh,rw)로 저장돼 있으므로 -90도 회전 후 보정
+      P = mul(P, [0, -1, 1, 0, 0, 0]);
+      P = mul(P, [1, 0, 0, 1, 0, -reg.h]);
+    }
+
+    const cos = Math.cos(rot * DEG), sin = Math.sin(rot * DEG);
+    const R = [ cos, sin, -sin, cos, 0, 0 ];
+    const T = [ 1, 0, 0, 1, ax, ay ];
+
+    return {
+      region: reg,
+      // srcW/srcH: drawImage로 잘라낼 원본 크기
+      srcW: reg.w, srcH: reg.h,
+      m: mul(mul(T, R), P)
+    };
+  }
+
+  setSkin(name){
+    if(!this.skins[name]) return;
+    this.curSkin = name;
+    this.attachments = this.skins[name];
+  }
+
+  /* 현재 스킨 → 없으면 default 스킨에서 찾기 */
+  findAttachment(slotName, attName){
+    const a = this.attachments[slotName];
+    if(a && a[attName]) return a[attName];
+    const d = this.skins.default;
+    if(d && d[slotName] && d[slotName][attName]) return d[slotName][attName];
+    return null;
+  }
+
+  /* 셋업 포즈로 리셋 */
+  setToSetupPose(){
+    for(const b of this.bones){
+      b.x = b.sx; b.y = b.sy; b.rot = b.srot;
+      b.scx = b.sscx; b.scy = b.sscy;
+    }
+    for(const s of this.slots){
+      s.attachment = s.setupAttachment;
+      s.alpha = s.setupAlpha;
+    }
+    this.drawOrder = this.slots.slice();
+  }
+
+  /* 애니메이션 적용 */
+  apply(animName, time){
+    this.setToSetupPose();
+    const anim = this.animations[animName];
+    if(!anim) return;
+    const A = anim.data;
+
+    // 본 타임라인
+    if(A.bones) for(const bn in A.bones){
+      const bone = this.boneMap[bn];
+      if(!bone) continue;
+      const tl = A.bones[bn];
+
+      if(tl.rotate){
+        const f = tl.rotate;
+        let angle;
+        if(time <= f[0].time) angle = f[0].angle;
+        else if(time >= f[f.length-1].time) angle = f[f.length-1].angle;
+        else{
+          const i = findFrame(f, time);
+          const f0 = f[i], f1 = f[i+1];
+          const p = curvePercent(f0.curve,
+                    (time - f0.time) / (f1.time - f0.time));
+          // 최단 경로로 감아서 보간 (350도 회전 방지)
+          angle = f0.angle + wrapDeg(f1.angle - f0.angle) * p;
+        }
+        bone.rot = bone.srot + angle;
+      }
+      if(tl.translate){
+        const v = interp2(tl.translate, time, 'x', 'y');
+        bone.x = bone.sx + v[0];
+        bone.y = bone.sy + v[1];
+      }
+      if(tl.scale){
+        const v = interp2(tl.scale, time, 'x', 'y', 1);
+        bone.scx = bone.sscx * v[0];
+        bone.scy = bone.sscy * v[1];
+      }
+    }
+
+    // 슬롯 타임라인
+    if(A.slots) for(const sn in A.slots){
+      const slot = this.slotMap[sn];
+      if(!slot) continue;
+      const tl = A.slots[sn];
+
+      if(tl.attachment){
+        const f = tl.attachment;
+        let name = f[0].name;
+        for(let i = 0; i < f.length; i++){
+          if(f[i].time <= time) name = f[i].name; else break;
+        }
+        slot.attachment = name;
+      }
+      if(tl.color){
+        const f = tl.color;
+        let alpha;
+        const av = c => parseInt(c.slice(6,8),16)/255;
+        if(time <= f[0].time) alpha = av(f[0].color);
+        else if(time >= f[f.length-1].time) alpha = av(f[f.length-1].color);
+        else{
+          const i = findFrame(f, time);
+          const f0 = f[i], f1 = f[i+1];
+          const p = curvePercent(f0.curve,
+                    (time - f0.time) / (f1.time - f0.time));
+          alpha = av(f0.color) + (av(f1.color) - av(f0.color)) * p;
+        }
+        slot.alpha = alpha;
+      }
+    }
+
+    // 드로우 오더
+    if(A.drawOrder && A.drawOrder.length){
+      let key = null;
+      for(const k of A.drawOrder){ if(k.time <= time) key = k; else break; }
+      const order = this.slots.slice();
+      if(key && key.offsets){
+        const unchanged = [];
+        const result = new Array(this.slots.length).fill(null);
+        const moved = {};
+        for(const off of key.offsets){
+          const s = this.slotMap[off.slot];
+          if(s) moved[s.order] = off.offset;
+        }
+        // 원본 인덱스 + offset 위치로 이동
+        for(let i = 0; i < this.slots.length; i++){
+          if(!(i in moved)) unchanged.push(this.slots[i]);
+        }
+        for(const idxStr in moved){
+          const i = parseInt(idxStr);
+          result[i + moved[idxStr]] = this.slots[i];
+        }
+        let u = 0;
+        for(let i = 0; i < result.length; i++){
+          if(result[i] === null) result[i] = unchanged[u++];
+        }
+        this.drawOrder = result;
+      } else {
+        this.drawOrder = order;
+      }
+    }
+
+    this.updateWorld();
+  }
+
+  /* 본 월드 변환 (부모 → 자식 순) */
+  updateWorld(){
+    for(const b of this.bones){
+      const cos = Math.cos(b.rot * DEG), sin = Math.sin(b.rot * DEG);
+      const la =  cos * b.scx, lb = -sin * b.scy;
+      const lc =  sin * b.scx, ld =  cos * b.scy;
+      const p = b.parent;
+      if(!p){
+        b.a = la; b.b = lb; b.c = lc; b.d = ld;
+        b.wx = b.x; b.wy = b.y;
+      } else {
+        b.wx = p.a * b.x + p.b * b.y + p.wx;
+        b.wy = p.c * b.x + p.d * b.y + p.wy;
+        b.a = p.a * la + p.b * lc;
+        b.b = p.a * lb + p.b * ld;
+        b.c = p.c * la + p.d * lc;
+        b.d = p.c * lb + p.d * ld;
+      }
+    }
+  }
+
+  /* 그리기. base는 월드(y-up) → 화면(y-down) 변환 행렬 */
+  draw(ctx, base){
+    for(const slot of this.drawOrder){
+      if(!slot.attachment) continue;
+      const att = this.findAttachment(slot.name, slot.attachment);
+      if(!att) continue;
+      if(slot.alpha <= 0.002) continue;
+
+      const bone = slot.bone;
+      const B = [ bone.a, bone.c, bone.b, bone.d, bone.wx, bone.wy ];
+      const M = mul(mul(base, B), att.m);
+
+      ctx.globalAlpha = slot.alpha;
+      ctx.setTransform(M[0], M[1], M[2], M[3], M[4], M[5]);
+      const r = att.region;
+      ctx.drawImage(this.image, r.x, r.y, r.w, r.h, 0, 0, att.srcW, att.srcH);
+    }
+    ctx.setTransform(1,0,0,1,0,0);
+    ctx.globalAlpha = 1;
+  }
+
+  /* 본 뼈대 오버레이 (디버그) */
+  drawBones(ctx, base){
+    ctx.setTransform(1,0,0,1,0,0);
+    ctx.lineWidth = 1.5;
+    for(const b of this.bones){
+      const p0 = applyM(base, b.wx, b.wy);
+      const len = b.len || 12;
+      const ex = b.wx + b.a * len, ey = b.wy + b.c * len;
+      const p1 = applyM(base, ex, ey);
+      ctx.strokeStyle = 'rgba(122,162,247,.8)';
+      ctx.beginPath(); ctx.moveTo(p0[0], p0[1]); ctx.lineTo(p1[0], p1[1]); ctx.stroke();
+      ctx.fillStyle = '#d9b45a';
+      ctx.beginPath(); ctx.arc(p0[0], p0[1], 2.2, 0, 6.284); ctx.fill();
+    }
+  }
+
+  /* 현재 포즈의 화면 바운딩 박스 (월드 y-up 기준) */
+  bounds(){
+    let x0=1e9, y0=1e9, x1=-1e9, y1=-1e9;
+    const I = [1,0,0,1,0,0];
+    for(const slot of this.drawOrder){
+      if(!slot.attachment) continue;
+      const att = this.findAttachment(slot.name, slot.attachment);
+      if(!att) continue;
+      const bone = slot.bone;
+      const B = [ bone.a, bone.c, bone.b, bone.d, bone.wx, bone.wy ];
+      const M = mul(B, att.m);
+      const pts = [[0,0],[att.srcW,0],[0,att.srcH],[att.srcW,att.srcH]];
+      for(const p of pts){
+        const q = applyM(M, p[0], p[1]);
+        if(q[0]<x0)x0=q[0]; if(q[0]>x1)x1=q[0];
+        if(q[1]<y0)y0=q[1]; if(q[1]>y1)y1=q[1];
+      }
+    }
+    return {x0,y0,x1,y1};
+  }
+}
+
+/* ---------- 행렬 유틸 (canvas 표기 [a,b,c,d,e,f]) ---------- */
+function mul(m, n){
+  return [
+    m[0]*n[0] + m[2]*n[1],
+    m[1]*n[0] + m[3]*n[1],
+    m[0]*n[2] + m[2]*n[3],
+    m[1]*n[2] + m[3]*n[3],
+    m[0]*n[4] + m[2]*n[5] + m[4],
+    m[1]*n[4] + m[3]*n[5] + m[5]
+  ];
+}
+function applyM(m, x, y){
+  return [ m[0]*x + m[2]*y + m[4], m[1]*x + m[3]*y + m[5] ];
+}
+
+/* ---------- 타임라인 헬퍼 ---------- */
+function findFrame(frames, time){
+  for(let i = frames.length - 2; i >= 0; i--){
+    if(frames[i].time <= time) return i;
+  }
+  return 0;
+}
+function interp2(frames, time, kx, ky, def){
+  const d = def === undefined ? 0 : def;
+  const gx = f => f[kx] === undefined ? d : f[kx];
+  const gy = f => f[ky] === undefined ? d : f[ky];
+  if(time <= frames[0].time) return [gx(frames[0]), gy(frames[0])];
+  const last = frames[frames.length-1];
+  if(time >= last.time) return [gx(last), gy(last)];
+  const i = findFrame(frames, time);
+  const f0 = frames[i], f1 = frames[i+1];
+  const p = curvePercent(f0.curve, (time - f0.time) / (f1.time - f0.time));
+  return [ gx(f0) + (gx(f1) - gx(f0)) * p,
+           gy(f0) + (gy(f1) - gy(f0)) * p ];
+}
+function animDuration(A){
+  let max = 0;
+  const scan = tl => { for(const f of tl) if(f.time > max) max = f.time; };
+  if(A.bones) for(const b in A.bones) for(const k in A.bones[b]) scan(A.bones[b][k]);
+  if(A.slots) for(const s in A.slots) for(const k in A.slots[s]) scan(A.slots[s][k]);
+  if(A.drawOrder) scan(A.drawOrder);
+  return max;
+}
+
+
+
+/* ═══════════════ CONFIG ═══════════════ */
+
+// 스파인 에셋 저장소. 앞에서부터 순서대로 시도하고 먼저 되는 쪽을 씁니다.
+// Pages 가 아직 안 켜졌거나 빌드 중이면 자동으로 raw 로 넘어갑니다.
+// 구조가 다르면 (예: assets/Images/dragon 통째로 올린 경우) 이 주소들만 고치면 됩니다.
+const ASSET_BASES = [
+  'https://yejoo0519.github.io/img/dragon/',
+  'https://raw.githubusercontent.com/yejoo0519/img/main/dragon/',
+];
+let ASSET_BASE = ASSET_BASES[0];   // 매니페스트를 받은 주소로 확정됩니다
+
+// 아이콘·동굴 배경·오라는 기존 사이트에서 그대로 가져옵니다
+const SITE_BASE = 'https://yejoo0519.github.io/dogam/';
+
+// 월드 좌표 1단위 = 1px. 기존 프레임(390x302)과 wait 바운딩 박스(389.5x301.1)가 일치해 검증된 값.
+const WORLD_SCALE = 1;
+const CANVAS_PAD = 8;
+const REF_MOTION = 'wait';
+
+// 성장 단계 세트
+const SET_LABEL = {
+  child1: 'Hatch', child2: 'Hatchling', adult: 'Adult', capsule: 'Capsule',
+  capsule2: 'Awakened', transcended: 'Transcended', advent: 'Advent',
+};
+const SET_ORDER = ['advent', 'transcended', 'capsule2', 'capsule', 'adult', 'child2', 'child1'];
+
+// 같은 그림이 옛 이름으로 한 번 더 들어있는 세트. 단계 줄에서 숨깁니다.
+// baby=child1, child=child2 (선인장 드래곤), evolution=transcended (포이즌리버·드래곤 슬레이어)
+const HIDDEN_SETS = ['baby', 'child', 'evolution'];
+
+// 선택지 줄은 항상 같은 자리에 있도록 가능한 항목을 모두 그려두고,
+// 그 드래곤에 없는 것만 비활성으로 표시합니다.
+const ALL_DECOS = ['', 'acc', 'acc2', 'acc3'];
+const ALL_MOTIONS = ['wait', 'att'];
+const defaultSet = d => (d.advent ? 'advent' : 'adult');
+
+// 장식 이펙트는 별도 스켈레톤(acc2 / acc2b / acc3 ...)이고 드래곤 앞에 그립니다.
+// 근거: 본체의 내장 이펙트 슬롯이 그리기 순서 맨 끝(57~62 / 62)에 있습니다.
+const isFxSet = n => /^acc\d*[a-z]?$/.test(n);
+
+// 드래곤 앞이 아니라 뒤에 그려야 하는 장식 이펙트.
+// 어느 쪽인지는 에셋에 안 적혀 있어(게임 코드에 있는 듯) 확인된 것만 적습니다.
+// 형식: '게임ID': ['세트이름', ...]
+const FX_BEHIND = {
+  '3': ["acc3b"],
+  '8': ["acc2b"],
+  '12': ["acc3", "acc3b"],
+  '19': ["acc2b"],
+  '24': ["acc2b"],
+  '25': ["acc2b"],
+  '36': ["acc3b"],
+  '58': ["acc3b"],
+  '64': ["acc2b"],
+  '85': ["acc3b"],
+  '372': ["acc2", "acc2b"],
+  '441': ["acc3b"],
+  '501': ["acc2b"],
+  '502': ["acc2b"],
+  '505': ["acc3", "acc3b"],
+  '524': ["acc3b"],
+  '735': ["acc3b"],
+};
+const isBehind = (gameId, setName) =>
+  (FX_BEHIND[gameId] || []).indexOf(setName) !== -1;
+const fxSetsFor = deco => new RegExp('^' + deco + '[a-z]?$');
+// 이펙트 스켈레톤의 모션 이름은 성장 단계명입니다. 초월만 이름이 다릅니다.
+const FX_ANIM = { transcended: 'evolution' };
+
+// 동굴 배경
+const SKIN_COUNT = 15;
+const SKIN_SRC  = n => SITE_BASE + 'cave_skin/cave_skin' + n + '.jpg';
+const SKIN_ICON = n => SITE_BASE + 'cave_skin/cave_' + n + '.png';
+
+// 오라 — 저장소의 cocos2d 스프라이트시트(plist+png)를 back/front 로 나눠 겹칩니다.
+// 기존 webp 와 동일하게 40ms/프레임(25fps), 2배 확대해서 그립니다.
+const FX_BASE_SCALE = 2;
+const AURA_FPS = 25;
+// 오라 세로 위치 미세조정(px). 오라 전체를 함께 내리려면 +, 올리려면 -.
+const AURA_Y_ADJUST = 0;
+
+const AURAS = [
+  { id: 'item_aura1', name: 'Earth' },
+  { id: 'item_aura2', name: 'Water' },
+  { id: 'item_aura3', name: 'Fire' },
+  { id: 'item_aura4', name: 'Wind' },
+];
+
+// 도감 아이콘 단계: 강림 8, 초월 7, 그 외 성체 4
+const ICON_SRC  = (id, stage) => SITE_BASE + 'dragon/' + id + '/profile/' + stage + '.png';
+// 속성 표기 (내부 키는 한글 그대로, 화면에만 영어를 씁니다)
+const ELEM_EN = {
+  '땅': 'Earth', '물': 'Water', '불': 'Fire',
+  '바람': 'Wind', '빛': 'Light', '어둠': 'Dark',
+  '황혼': 'Dusk', '여명': 'Dawn', '악몽': 'Nightmare',
+};
+const ELEM_ICON = {
+  '땅': 'icon/11.png',  '물': 'icon/12.png',  '불': 'icon/13.png',
+  '바람': 'icon/14.png', '빛': 'icon/84.png',  '어둠': 'icon/87.png',
+  '황혼': 'icon/487.png', '여명': 'icon/486.png', '악몽': 'icon/488.png',
 };
 
-// ── 화면 크기 대응: 스테이지 폭에 맞춰 전체 비율 축소 (PC 820px 기준) ──
+// 도감ID → 게임(에셋 폴더) ID
+const ASSET_ID = {
+  1:1, 2:2, 3:3, 4:4, 5:5, 6:6, 7:7, 8:8, 9:9, 10:10,
+  11:11, 12:12, 13:13, 14:14, 15:15, 16:16, 17:17, 18:18, 19:19, 20:20,
+  21:21, 22:22, 23:23, 24:24, 25:25, 26:26, 27:27, 28:28, 29:29, 30:30,
+  31:31, 32:32, 33:33, 34:34, 35:35, 36:36, 37:37, 38:38, 39:39, 40:40,
+  41:41, 42:42, 43:43, 44:44, 45:45, 46:46, 47:47, 48:48, 49:49, 50:50,
+  51:51, 52:52, 53:53, 54:54, 55:55, 56:56, 57:57, 58:58, 59:59, 60:60,
+  61:61, 62:62, 63:63, 64:64, 65:65, 66:66, 67:67, 68:68, 69:69, 70:70,
+  71:71, 72:72, 73:73, 74:74, 75:75, 76:76, 77:77, 78:78, 79:79, 80:80,
+  81:81, 82:82, 83:83, 84:84, 85:85, 86:86, 87:87, 88:88, 89:89, 90:90,
+  91:91, 92:92, 93:93, 94:94, 95:95, 96:96, 97:100, 98:101, 99:102, 100:103,
+  101:104, 102:105, 103:106, 104:107, 105:108, 106:115, 107:116, 108:117, 109:118, 110:119,
+  111:120, 112:121, 113:122, 114:123, 115:124, 116:125, 117:129, 119:137, 120:141, 121:145,
+  122:167, 123:168, 124:169, 125:170, 126:171, 127:172, 128:173, 129:174, 130:175, 131:176,
+  132:177, 133:178, 134:179, 135:180, 136:181, 137:182, 138:183, 139:184, 140:185, 141:186,
+  142:187, 143:188, 144:189, 145:190, 146:191, 147:192, 148:193, 149:194, 150:197, 151:198,
+  152:199, 153:200, 154:201, 155:202, 156:203, 157:204, 158:205, 159:206, 160:207, 161:208,
+  162:209, 163:210, 164:211, 165:212, 166:213, 167:214, 168:215, 169:216, 170:217, 171:218,
+  172:219, 173:220, 174:221, 175:222, 176:223, 177:224, 178:225, 179:226, 180:227, 181:228,
+  182:229, 183:230, 184:283, 185:284, 186:285, 187:286, 188:287, 189:288, 190:289, 191:290,
+  192:299, 193:300, 194:301, 195:302, 196:303, 197:304, 198:305, 199:306, 200:307, 201:308,
+  202:309, 203:310, 204:311, 205:316, 206:317, 207:318, 208:319, 209:320, 210:321, 211:322,
+  212:323, 213:324, 214:337, 215:338, 216:339, 217:340, 218:341, 219:342, 220:343, 221:344,
+  222:345, 223:354, 224:359, 225:360, 226:361, 227:362, 228:363, 229:364, 230:365, 231:366,
+  232:367, 233:368, 234:369, 235:370, 236:371, 237:372, 238:373, 239:374, 240:379, 241:380,
+  242:381, 243:382, 244:387, 245:388, 246:389, 247:390, 248:391, 249:392, 250:393, 251:394,
+  252:399, 253:400, 254:401, 255:402, 256:403, 257:404, 258:405, 259:406, 260:407, 261:408,
+  262:413, 263:418, 265:428, 266:429, 267:430, 268:431, 269:432, 270:433, 271:438, 272:439,
+  273:440, 274:441, 275:442, 276:443, 277:444, 278:445, 279:446, 280:447, 281:448, 282:449,
+  283:450, 284:451, 285:452, 286:457, 287:462, 288:463, 289:468, 290:469, 291:470, 292:475,
+  293:480, 294:481, 295:482, 296:487, 297:488, 298:489, 299:491, 300:496, 301:501, 302:502,
+  303:503, 304:504, 305:505, 306:506, 307:507, 308:512, 309:517, 310:518, 311:519, 312:524,
+  313:529, 314:530, 315:531, 316:532, 317:533, 318:534, 319:535, 320:536, 321:541, 322:542,
+  323:543, 324:544, 325:545, 326:546, 327:547, 328:548, 329:549, 330:551, 331:552, 332:553,
+  333:554, 334:559, 337:617, 338:618, 340:630, 341:634, 342:640, 343:641, 344:642, 345:643,
+  346:644, 347:645, 348:646, 349:647, 350:648, 351:649, 352:650, 353:656, 355:668, 356:669,
+  357:670, 358:676, 359:677, 360:683, 361:684, 362:685, 363:686, 364:692, 365:693, 366:694,
+  367:695, 368:696, 369:697, 370:703, 371:704, 372:705, 373:706, 374:707, 375:708, 376:709,
+  377:710, 378:716, 379:717, 380:718, 381:719, 382:720, 383:721, 384:727, 385:733, 386:734,
+  387:735, 388:736, 389:737, 390:738, 391:744, 392:750, 393:751, 394:752, 395:753, 396:754,
+  397:755, 398:756, 399:762, 400:768, 401:769, 402:770, 403:776, 404:782, 405:788, 406:794,
+  407:800, 408:801, 409:802, 410:803, 411:804, 412:805, 413:806, 414:807, 415:808, 416:809,
+  417:810, 418:811, 419:812, 420:813, 421:814, 422:815, 423:816, 424:817, 425:818, 426:819,
+  427:820, 428:821, 429:822, 430:823, 431:829, 432:835, 433:836, 434:842, 435:848, 436:854,
+  437:855, 438:856, 439:857, 440:858, 442:870, 443:871, 444:872, 445:878, 446:884, 447:890,
+  448:891, 449:892, 450:898, 451:899, 452:900, 453:901, 454:902, 455:908, 456:914, 457:915,
+  458:916, 459:917, 460:923, 461:924, 462:925, 463:926, 464:927, 465:933, 466:939, 467:940,
+  468:941, 469:947, 470:948, 472:955, 473:961, 474:962, 475:963, 476:964, 477:965, 478:971,
+  479:977, 480:978, 481:979, 482:980, 483:981, 484:982, 485:983, 486:984, 487:985, 488:3001,
+  489:3002, 490:3003, 491:3009, 492:3015, 493:3016, 494:3017, 495:3018, 496:3019, 497:3020, 498:3021,
+  499:3022, 501:3029, 502:3030, 503:3031, 504:3037, 505:3043, 506:3049, 507:3050, 508:3056, 509:3057,
+  511:3064, 512:3070, 513:3071, 514:3072, 515:3078, 516:3079, 517:3080, 518:3081, 519:3082, 520:3084,
+  521:3085, 522:3091, 523:3097, 524:3098, 525:3104, 526:3110, 527:3111, 528:3113, 529:3114, 530:3115,
+  531:3116, 532:3118, 533:3119, 534:3120, 535:3126, 537:3133, 538:3140, 539:3141, 540:3147, 542:3148,
+  543:3164, 544:3166, 546:3173, 547:3179, 549:3190, 550:3196, 553:3210, 554:3216, 555:3219, 556:3218,
+  557:3217, 558:3233, 559:3232, 561:3226, 562:3239, 563:3245, 564:3246, 565:3252, 566:3258, 567:3260,
+  568:3259, 569:3261, 570:3262, 571:3268, 572:3274, 573:3280, 574:3281, 575:3282, 576:3283, 577:3289,
+  578:3295, 579:3296, 580:3310, 581:3297, 582:3303, 583:3309, 584:3329, 585:3317, 587:3316, 588:3335,
+  589:3349, 590:3336, 593:3381, 594:3357, 595:3358, 596:3372, 597:3359, 598:3360, 599:3366, 600:3382,
+  601:3383, 602:3384, 603:3355, 604:3356, 605:3398, 606:3385, 607:3392, 608:3386, 609:3432, 610:3438,
+  611:3405, 612:3404, 613:3379, 614:3380, 615:3461, 616:3420, 617:3407, 619:3414, 620:3426, 621:3427,
+  622:3462, 623:3441, 624:3440, 625:3442, 626:3449, 627:3443, 628:3455, 629:3463, 630:3470, 631:3464,
+  632:3476, 633:3482, 634:3483, 635:3524, 636:3528, 637:3488, 639:3495, 640:3501, 641:3511, 643:3512,
+  644:3507, 645:3508, 646:3510, 647:3509, 648:3486, 649:3487, 650:3600, 651:3624, 652:3625, 653:3626,
+  654:3627, 655:3607, 656:3601, 657:3608, 658:3614, 659:3622, 660:3621, 661:3620, 662:3623, 663:3672,
+  664:3674, 665:3673, 666:3579, 667:3628, 669:3635, 670:3676, 671:3675, 672:3648, 673:3649, 674:3671,
+  675:3670, 676:3647, 677:3682, 678:3683, 679:3689, 680:3663, 681:3650, 682:3651, 683:3657, 684:3696,
+  685:3697, 686:3695, 687:3718, 688:3719, 689:3698, 690:3585, 691:3699, 692:3700, 693:3706, 694:3720,
+  695:3721, 696:3722, 697:3723, 698:3724, 699:3725, 700:3731, 701:3737, 702:3743, 703:3749, 704:3750,
+  705:3751, 706:3752, 707:3753, 708:3755, 709:3754, 710:3756, 711:3757, 712:3758
+};
+
+// 등급 드래곤 184마리 — 패밀리의 첫 게임ID. ASSET_ID보다 우선합니다.
+const GRADE_ASSET = {
+  116:125, 117:129, 118:133, 119:137, 120:141, 121:145, 170:217, 171:218, 172:219, 173:220,
+  174:221, 175:222, 176:223, 177:224, 178:225, 179:226, 181:228, 182:229, 183:230, 188:287,
+  189:288, 193:300, 194:301, 195:302, 204:311, 221:344, 222:345, 223:354, 239:374, 243:382,
+  251:394, 261:408, 262:413, 263:418, 264:423, 270:433, 285:452, 286:457, 288:463, 292:475,
+  295:482, 299:491, 307:507, 308:512, 311:519, 312:524, 320:536, 333:554, 335:605, 336:611,
+  338:618, 339:624, 341:634, 352:650, 353:656, 354:662, 357:670, 359:677, 363:686, 369:697,
+  377:710, 383:721, 384:727, 390:738, 391:744, 398:756, 399:762, 402:770, 403:776, 404:782,
+  405:788, 406:794, 430:823, 431:829, 433:836, 434:842, 435:848, 440:858, 441:864, 444:872,
+  445:878, 446:884, 449:892, 454:902, 455:908, 459:917, 464:927, 465:933, 468:941, 471:949,
+  472:955, 477:965, 478:971, 487:985, 490:3003, 491:3009, 500:3023, 503:3031, 504:3037, 505:3043,
+  507:3050, 510:3058, 511:3064, 514:3072, 521:3085, 522:3091, 524:3098, 525:3104, 534:3120, 536:3127,
+  537:3133, 539:3141, 541:3148, 542:3154, 543:3160, 545:3167, 546:3173, 548:3180, 549:3186, 550:3192,
+  551:3198, 552:3204, 553:3210, 558:3233, 560:3220, 561:3226, 562:3239, 564:3246, 565:3252, 570:3262,
+  571:3268, 572:3274, 576:3283, 577:3289, 580:3310, 581:3297, 582:3303, 584:3329, 585:3317, 586:3323,
+  589:3349, 591:3337, 592:3343, 596:3372, 598:3360, 599:3366, 605:3398, 607:3392, 608:3386, 609:3428,
+  610:3434, 616:3420, 618:3408, 619:3414, 626:3449, 627:3443, 628:3455, 630:3470, 631:3464, 632:3476,
+  636:3528, 638:3489, 639:3495, 640:3501, 642:3518, 643:3512, 656:3601, 657:3608, 658:3614, 666:3579,
+  668:3629, 669:3635, 670:3676, 678:3683, 679:3689, 680:3663, 682:3651, 683:3657, 692:3700, 693:3707,
+  699:3725, 700:3731, 701:3737, 702:3743
+};
+
+// 등급 드래곤의 패밀리 멤버(등급별 게임ID). 외형이 같아 아무거나 써도 되지만,
+// 게임은 패밀리당 에셋을 보통 하나만 배포하고 그게 첫 번호가 아닐 때가 있습니다.
+// 그래서 manifest 를 받은 뒤 실제로 있는 멤버로 자동 교체합니다.
+const FAMILY_MEMBERS = {
+  116:[125, 126, 127, 128, 149, 560], 117:[129, 130, 131, 132, 150, 561], 118:[133, 134, 135, 136, 151, 562], 119:[137, 138, 139, 140, 152, 563],
+  120:[141, 142, 143, 144, 153, 564], 121:[145, 146, 147, 148, 154, 565], 170:[217, 231, 232, 233, 234, 566], 171:[218, 235, 236, 237, 238, 567],
+  172:[219, 239, 240, 241, 242, 568], 173:[220, 243, 244, 245, 246, 569], 174:[221, 247, 248, 249, 250, 570], 175:[222, 251, 252, 253, 254, 571],
+  176:[223, 255, 256, 257, 258, 572], 177:[224, 259, 260, 261, 262, 573], 178:[225, 263, 264, 265, 266, 574], 179:[226, 267, 268, 269, 270, 575],
+  181:[228, 271, 272, 273, 274, 576], 182:[229, 275, 276, 277, 278, 577], 183:[230, 279, 280, 281, 282, 578], 188:[287, 291, 292, 293, 294, 631],
+  189:[288, 295, 296, 297, 298, 632], 193:[300, 325, 326, 327, 328, 579], 194:[301, 329, 330, 331, 332, 580], 195:[302, 333, 334, 335, 336, 581],
+  204:[311, 312, 313, 314, 315, 633], 221:[344, 350, 351, 352, 353, 583], 222:[345, 346, 347, 348, 349, 582], 223:[354, 355, 356, 357, 358, 584],
+  239:[374, 375, 376, 377, 378, 585], 243:[382, 383, 384, 385, 386, 586], 251:[394, 395, 396, 397, 398, 587], 261:[408, 409, 410, 411, 412, 588],
+  262:[413, 414, 415, 416, 417, 589], 263:[418, 419, 420, 421, 422, 590], 264:[423, 424, 425, 426, 427, 591], 270:[433, 434, 435, 436, 437, 592],
+  285:[452, 453, 454, 455, 456, 593], 286:[457, 458, 459, 460, 461, 594], 288:[463, 464, 465, 466, 467, 595], 292:[475, 476, 477, 478, 479, 596],
+  295:[482, 483, 484, 485, 486, 597], 299:[491, 492, 493, 494, 495, 598], 307:[507, 508, 509, 510, 511, 599], 308:[512, 513, 514, 515, 516, 600],
+  311:[519, 520, 521, 522, 523, 601], 312:[524, 525, 526, 527, 528, 602], 320:[536, 537, 538, 539, 540, 603], 333:[554, 555, 556, 557, 558, 604],
+  335:[605, 606, 607, 608, 609, 610], 336:[611, 612, 613, 614, 615, 616], 338:[618, 619, 620, 621, 622, 623], 339:[624, 625, 626, 627, 628, 629],
+  341:[634, 635, 636, 637, 638, 639], 352:[650, 651, 652, 653, 654, 655], 353:[656, 657, 658, 659, 660, 661], 354:[662, 663, 664, 665, 666, 667],
+  357:[670, 671, 672, 673, 674, 675], 359:[677, 678, 679, 680, 681, 682], 363:[686, 687, 688, 689, 690, 691], 369:[697, 698, 699, 700, 701, 702],
+  377:[710, 711, 712, 713, 714, 715], 383:[721, 722, 723, 724, 725, 726], 384:[727, 728, 729, 730, 731, 732], 390:[738, 739, 740, 741, 742, 743],
+  391:[744, 745, 746, 747, 748, 749], 398:[756, 757, 758, 759, 760, 761], 399:[762, 763, 764, 765, 766, 767], 402:[770, 771, 772, 773, 774, 775],
+  403:[776, 777, 778, 779, 780, 781], 404:[782, 783, 784, 785, 786, 787], 405:[788, 789, 790, 791, 792, 793], 406:[794, 795, 796, 797, 798, 799],
+  430:[823, 824, 825, 826, 827, 828], 431:[829, 830, 831, 832, 833, 834], 433:[836, 837, 838, 839, 840, 841], 434:[842, 843, 844, 845, 846, 847],
+  435:[848, 849, 850, 851, 852, 853], 440:[858, 859, 860, 861, 862, 863], 441:[864, 865, 866, 867, 868, 869], 444:[872, 873, 874, 875, 876, 877],
+  445:[878, 879, 880, 881, 882, 883], 446:[884, 885, 886, 887, 888, 889], 449:[892, 893, 894, 895, 896, 897], 454:[902, 903, 904, 905, 906, 907],
+  455:[908, 909, 910, 911, 912, 913], 459:[917, 918, 919, 920, 921, 922], 464:[927, 928, 929, 930, 931, 932], 465:[933, 934, 935, 936, 937, 938],
+  468:[941, 942, 943, 944, 945, 946], 471:[949, 950, 951, 952, 953, 954], 472:[955, 956, 957, 958, 959, 960], 477:[965, 966, 967, 968, 969, 970],
+  478:[971, 972, 973, 974, 975, 976], 487:[985, 986, 987, 988, 989, 990], 490:[3003, 3004, 3005, 3006, 3007, 3008], 491:[3009, 3010, 3011, 3012, 3013, 3014],
+  500:[3023, 3024, 3025, 3026, 3027, 3028], 503:[3031, 3032, 3033, 3034, 3035, 3036], 504:[3037, 3038, 3039, 3040, 3041, 3042], 505:[3043, 3044, 3045, 3046, 3047, 3048],
+  507:[3050, 3051, 3052, 3053, 3054, 3055], 510:[3058, 3059, 3060, 3061, 3062, 3063], 511:[3064, 3065, 3066, 3067, 3068, 3069], 514:[3072, 3073, 3074, 3075, 3076, 3077],
+  521:[3085, 3086, 3087, 3088, 3089, 3090], 522:[3091, 3092, 3093, 3094, 3095, 3096], 524:[3098, 3099, 3100, 3101, 3102, 3103], 525:[3104, 3105, 3106, 3107, 3108, 3109],
+  534:[3120, 3121, 3122, 3123, 3124, 3125], 536:[3127, 3128, 3129, 3130, 3131, 3132], 537:[3133, 3134, 3135, 3136, 3137, 3138], 539:[3141, 3142, 3143, 3144, 3145, 3146],
+  541:[3148, 3149, 3150, 3151, 3152, 3153], 542:[3154, 3155, 3156, 3157, 3158, 3159], 543:[3160, 3161, 3162, 3163, 3164, 3165], 545:[3167, 3168, 3169, 3170, 3171, 3172],
+  546:[3173, 3174, 3175, 3176, 3177, 3178], 548:[3180, 3181, 3182, 3183, 3184, 3185], 549:[3186, 3187, 3188, 3189, 3190, 3191], 550:[3192, 3193, 3194, 3195, 3196, 3197],
+  551:[3198, 3199, 3200, 3201, 3202, 3203], 552:[3204, 3205, 3206, 3207, 3208, 3209], 553:[3210, 3211, 3212, 3213, 3214, 3215], 558:[3233, 3234, 3235, 3236, 3237, 3238],
+  560:[3220, 3221, 3222, 3223, 3224, 3225], 561:[3226, 3227, 3228, 3229, 3230, 3231], 562:[3239, 3240, 3241, 3242, 3243, 3244], 564:[3246, 3247, 3248, 3249, 3250, 3251],
+  565:[3252, 3253, 3254, 3255, 3256, 3257], 570:[3262, 3263, 3264, 3265, 3266, 3267], 571:[3268, 3269, 3270, 3271, 3272, 3273], 572:[3274, 3275, 3276, 3277, 3278, 3279],
+  576:[3283, 3284, 3285, 3286, 3287, 3288], 577:[3289, 3290, 3291, 3292, 3293, 3294], 580:[3310, 3311, 3312, 3313, 3314, 3315], 581:[3297, 3298, 3299, 3300, 3301, 3302],
+  582:[3303, 3304, 3305, 3306, 3307, 3308], 584:[3329, 3330, 3331, 3332, 3333, 3334], 585:[3317, 3318, 3319, 3320, 3321, 3322], 586:[3323, 3324, 3325, 3326, 3327, 3328],
+  589:[3349, 3350, 3351, 3352, 3353, 3354], 591:[3337, 3338, 3339, 3340, 3341, 3342], 592:[3343, 3344, 3345, 3346, 3347, 3348], 596:[3372, 3373, 3374, 3375, 3376, 3377],
+  598:[3360, 3361, 3362, 3363, 3364, 3365], 599:[3366, 3367, 3368, 3369, 3370, 3371], 605:[3398, 3399, 3400, 3401, 3402, 3403], 607:[3392, 3393, 3394, 3395, 3396, 3397],
+  608:[3386, 3387, 3388, 3389, 3390, 3391], 609:[3428, 3429, 3430, 3431, 3432, 3433], 610:[3434, 3435, 3436, 3437, 3438, 3439], 616:[3420, 3421, 3422, 3423, 3424, 3425],
+  618:[3408, 3409, 3410, 3411, 3412, 3413], 619:[3414, 3415, 3416, 3417, 3418, 3419], 626:[3449, 3450, 3451, 3452, 3453, 3454], 627:[3443, 3444, 3445, 3446, 3447, 3448],
+  628:[3455, 3456, 3457, 3458, 3459, 3460], 630:[3470, 3471, 3472, 3473, 3474, 3475], 631:[3464, 3465, 3466, 3467, 3468, 3469], 632:[3476, 3477, 3478, 3479, 3480, 3481],
+  636:[3528, 3529, 3530, 3531, 3532, 3533], 638:[3489, 3490, 3491, 3492, 3493, 3494], 639:[3495, 3496, 3497, 3498, 3499, 3500], 640:[3501, 3502, 3503, 3504, 3505, 3506],
+  642:[3518, 3519, 3520, 3521, 3522, 3523], 643:[3512, 3513, 3514, 3515, 3516, 3517], 656:[3601, 3602, 3603, 3604, 3605, 3606], 657:[3608, 3609, 3610, 3611, 3612, 3613],
+  658:[3614, 3615, 3616, 3617, 3618, 3619], 666:[3579, 3580, 3582, 3583, 3584, 3591], 668:[3629, 3630, 3631, 3632, 3633, 3634], 669:[3635, 3636, 3637, 3638, 3639, 3640],
+  670:[3676, 3677, 3678, 3679, 3680, 3681], 678:[3683, 3684, 3685, 3686, 3687, 3688], 679:[3689, 3690, 3691, 3692, 3693, 3694], 680:[3663, 3664, 3665, 3666, 3667, 3668],
+  682:[3651, 3652, 3653, 3654, 3655, 3656], 683:[3657, 3658, 3659, 3660, 3661, 3662], 692:[3700, 3701, 3702, 3703, 3704, 3705], 693:[3706, 3707, 3708, 3709, 3710, 3711],
+  699:[3725, 3726, 3727, 3728, 3729, 3730], 700:[3731, 3732, 3733, 3734, 3735, 3736], 701:[3737, 3738, 3739, 3740, 3741, 3742], 702:[3743, 3744, 3745, 3746, 3747, 3748]
+};
+
+// 도감 전체 711마리 — [도감ID, 이름, 속성, 강림여부, 아이콘단계]
+const DEX_DRAGONS = [
+[1, "고대신룡", "빛", 1, 8],
+[2, "윈드 드래곤", "바람", 1, 8],
+[3, "식스 레그 혼 드래곤", "바람", 1, 8],
+[4, "청룡", "바람", 1, 8],
+[5, "파이어 드래곤", "불", 1, 8],
+[6, "번개고룡", "불", 1, 8],
+[7, "라바 드래곤", "불", 0, 4],
+[8, "피닉스", "불", 1, 8],
+[9, "빙하고룡", "물", 1, 8],
+[10, "네시", "물", 0, 7],
+[11, "테일 드래곤", "물", 0, 4],
+[12, "수룡", "물", 1, 8],
+[13, "히드라곤", "땅", 1, 8],
+[14, "파워 드래곤", "땅", 1, 8],
+[15, "바위 드래곤", "땅", 0, 4],
+[16, "지하땅굴 드래곤", "땅", 1, 8],
+[17, "페어리 드래곤", "물", 1, 8],
+[18, "레이디 드래곤", "바람", 0, 4],
+[19, "에그 드래곤", "땅", 1, 8],
+[20, "헬 드래곤", "불", 0, 4],
+[21, "엔젤 드래곤", "빛", 1, 8],
+[22, "에일리언 드래곤", "바람", 0, 4],
+[23, "미니 드래곤", "물", 0, 4],
+[24, "스왐프 드래곤", "물", 1, 8],
+[25, "패트 드래곤", "땅", 0, 7],
+[26, "스파이크 드래곤", "불", 0, 7],
+[27, "인섹트 드래곤", "불", 0, 7],
+[28, "리프 드래곤", "땅", 0, 4],
+[29, "프로그 드래곤", "물", 0, 4],
+[30, "윙스 드래곤", "바람", 0, 7],
+[31, "샌드 드래곤", "불", 0, 7],
+[32, "스마트 드래곤", "땅", 0, 7],
+[33, "뮤직 드래곤", "바람", 0, 4],
+[34, "흑룡", "어둠", 1, 8],
+[35, "에메랄드 드래곤", "빛", 0, 7],
+[36, "라이곤", "빛", 0, 7],
+[37, "카멜레용", "빛", 0, 4],
+[38, "치킨헤드 드래곤", "빛", 0, 4],
+[39, "캥거레빗 드래곤", "빛", 0, 4],
+[40, "큐피트용", "빛", 0, 7],
+[41, "골드 드래곤", "빛", 0, 4],
+[42, "슬라임 드래곤", "물", 0, 7],
+[43, "블레이드 드래곤", "어둠", 0, 7],
+[44, "메탈 드래곤", "어둠", 0, 7],
+[45, "미이라곤", "어둠", 0, 7],
+[46, "뱃도치 드래곤", "어둠", 0, 7],
+[47, "스켈레곤", "어둠", 0, 7],
+[48, "서펀트 드래곤", "어둠", 0, 4],
+[49, "G네 드래곤", "어둠", 0, 7],
+[50, "타이거 드래곤", "땅", 0, 7],
+[51, "금오 드래곤", "불", 0, 4],
+[52, "메탈 마그넷 드래곤", "바람", 0, 7],
+[53, "다크닉스", "어둠", 1, 8],
+[54, "백룡", "빛", 1, 8],
+[55, "히에나곤", "어둠", 0, 7],
+[56, "유니 드래곤", "어둠", 0, 7],
+[57, "골든혼", "땅", 0, 7],
+[58, "샤크곤", "물", 1, 8],
+[59, "가디언", "바람", 0, 7],
+[60, "크레센트", "어둠", 0, 7],
+[61, "레인보우", "빛", 0, 7],
+[62, "타투", "땅", 0, 4],
+[63, "스파인", "땅", 0, 7],
+[64, "고대 주니어", "빛", 1, 8],
+[65, "프로스티", "바람", 0, 7],
+[66, "다크프로스티", "어둠", 0, 7],
+[67, "현무 드래곤", "물", 0, 7],
+[68, "크리마용", "빛", 0, 4],
+[69, "데몽과가고일", "어둠", 0, 7],
+[70, "샴 드래곤", "빛", 1, 8],
+[71, "본헤드", "불", 0, 4],
+[72, "베네지", "어둠", 1, 8],
+[73, "머스타 드해머", "땅", 1, 8],
+[74, "레드와이번", "불", 1, 8],
+[75, "해태드래곤", "바람", 0, 4],
+[76, "스콜피온 드래곤", "땅", 1, 8],
+[77, "나이트 드래곤", "빛", 1, 8],
+[78, "스파이시", "빛", 1, 8],
+[79, "라파엘", "빛", 1, 8],
+[80, "바알", "어둠", 1, 8],
+[81, "삐에로 드래곤", "빛", 0, 7],
+[82, "파라오곤", "빛", 0, 4],
+[83, "쉐도우 드래곤", "어둠", 0, 4],
+[84, "순둥곤", "빛", 0, 4],
+[85, "프랑켄슈타곤", "어둠", 0, 7],
+[86, "닌자 드래곤", "어둠", 0, 4],
+[87, "드라고노이드", "어둠", 0, 7],
+[88, "볼케이노", "불", 0, 4],
+[89, "블루라이트닝", "물", 0, 4],
+[90, "윗치 드래곤", "어둠", 0, 7],
+[91, "퍼플립스 드래곤", "물", 0, 7],
+[92, "파이썬", "땅", 1, 8],
+[93, "아이언 드래곤", "불", 1, 8],
+[94, "오로", "바람", 0, 4],
+[95, "자룡", "불", 1, 8],
+[96, "배틀 드래곤", "불", 0, 4],
+[97, "데빌곤", "땅", 0, 7],
+[98, "바이올렛 드래곤", "물", 0, 7],
+[99, "네온 드래곤", "빛", 0, 4],
+[100, "플레임 드래곤", "불", 0, 4],
+[101, "블랙퀸", "어둠", 0, 4],
+[102, "시그마 드래곤", "어둠", 1, 8],
+[103, "램곤", "땅", 0, 4],
+[104, "아르고 드래곤", "빛", 1, 8],
+[105, "헤라클레스곤", "땅", 0, 4],
+[106, "토템 드래곤", "바람", 0, 4],
+[107, "말소자 드래곤", "불", 0, 4],
+[108, "팀버 드래곤", "땅", 0, 4],
+[109, "코브라곤", "어둠", 0, 4],
+[110, "루피아 드래곤", "물", 0, 4],
+[111, "타이푼 드래곤", "바람", 0, 7],
+[112, "스터드 드래곤", "물", 0, 7],
+[113, "플라워 드래곤", "땅", 0, 7],
+[114, "해마곤", "물", 0, 4],
+[115, "클라우드 드래곤", "바람", 0, 4],
+[116, "돌풍의 라이오스", "바람", 0, 4],
+[117, "찬란한 바리안", "빛", 0, 4],
+[118, "물결의 파프리온", "물", 0, 4],
+[119, "열화의 발칸", "불", 0, 4],
+[120, "장벽의 에닉스", "땅", 0, 4],
+[121, "암흑의 발로드", "어둠", 0, 4],
+[122, "레드불 드래곤", "불", 0, 7],
+[123, "툰드라 드래곤", "물", 0, 4],
+[124, "메갈로돈", "물", 0, 4],
+[125, "오로라 드래곤", "빛", 0, 4],
+[126, "캣츠곤", "어둠", 0, 4],
+[127, "이그니스", "불", 0, 4],
+[128, "타르타로스", "어둠", 0, 4],
+[129, "슈팅스타", "빛", 0, 4],
+[130, "다크폴", "어둠", 1, 8],
+[131, "헝그리 드래곤", "땅", 0, 4],
+[132, "아쿠아 드래곤", "물", 0, 4],
+[133, "오르페우스", "땅", 0, 4],
+[134, "루미네스", "물", 1, 8],
+[135, "번네스", "불", 1, 8],
+[136, "깨비곤", "빛", 0, 4],
+[137, "제트 드래곤", "바람", 0, 4],
+[138, "마리노 드래곤", "물", 0, 4],
+[139, "투탕카", "어둠", 0, 4],
+[140, "머드 드래곤", "땅", 0, 4],
+[141, "붐버 드래곤", "불", 0, 4],
+[142, "사나래", "빛", 0, 4],
+[143, "타일런트", "물", 0, 4],
+[144, "청마룡", "물", 0, 4],
+[145, "너티빌런", "불", 0, 4],
+[146, "글래시어", "물", 0, 4],
+[147, "므네이아", "불", 1, 8],
+[148, "녹스O", "어둠", 0, 4],
+[149, "일리오스O", "빛", 0, 4],
+[150, "코너투스", "물", 0, 4],
+[151, "스왈로우", "바람", 0, 4],
+[152, "i곤", "바람", 0, 7],
+[153, "블러디네이트", "불", 0, 4],
+[154, "피스 드래곤", "바람", 0, 4],
+[155, "갤럭시", "빛", 0, 4],
+[156, "페이퍼 드래곤", "바람", 0, 4],
+[157, "하이페리곤", "빛", 0, 4],
+[158, "모리카 드래곤", "빛", 1, 8],
+[159, "베가본드 드래곤", "땅", 0, 4],
+[160, "태엽 드래곤", "바람", 1, 8],
+[161, "스플렌더 드래곤", "어둠", 0, 4],
+[162, "블랙티어 드래곤", "어둠", 1, 8],
+[163, "블랙아머 드래곤", "어둠", 1, 8],
+[164, "오렌지리프 드래곤", "땅", 0, 4],
+[165, "핑크벨 드래곤", "바람", 0, 4],
+[166, "쿠로이 드래곤", "어둠", 1, 8],
+[167, "포레스트 드래곤", "땅", 0, 4],
+[168, "기간티스", "땅", 0, 4],
+[169, "데모니오", "불", 0, 4],
+[170, "게스 드래곤", "물", 0, 4],
+[171, "베라 드래곤", "어둠", 0, 4],
+[172, "디요나", "빛", 0, 4],
+[173, "콘라드", "땅", 0, 4],
+[174, "파브레가스", "바람", 0, 4],
+[175, "파이어퓨리", "불", 0, 4],
+[176, "스테고 드래곤", "어둠", 0, 4],
+[177, "레텐토르", "땅", 0, 4],
+[178, "미스트 드래곤", "어둠", 0, 4],
+[179, "리쿠루 드래곤", "물", 0, 4],
+[180, "페트라 드래곤", "불", 0, 4],
+[181, "크룩커스", "어둠", 0, 4],
+[182, "밴시", "어둠", 0, 4],
+[183, "할로우", "불", 0, 4],
+[184, "루포", "어둠", 0, 4],
+[185, "데칼", "어둠", 0, 4],
+[186, "카오스", "바람", 1, 8],
+[187, "일레마", "불", 0, 4],
+[188, "블랙코어", "어둠", 0, 4],
+[189, "오딘", "빛", 0, 4],
+[190, "프리러너", "땅", 0, 4],
+[191, "타임머신", "어둠", 1, 8],
+[192, "시타엘", "빛", 1, 8],
+[193, "그라치아", "물", 0, 4],
+[194, "마가", "바람", 0, 4],
+[195, "스쿠룸", "불", 0, 4],
+[196, "콜로서스", "땅", 1, 8],
+[197, "원더 드래곤", "어둠", 1, 8],
+[198, "아이스 드레이크", "물", 1, 8],
+[199, "오미야콘", "물", 0, 4],
+[200, "니플하임", "어둠", 0, 4],
+[201, "루돌프 드래곤", "빛", 0, 4],
+[202, "바르라아", "빛", 1, 8],
+[203, "루틸루스", "불", 0, 4],
+[204, "청양 드래곤", "어둠", 0, 4],
+[205, "옵타툽", "어둠", 0, 4],
+[206, "아실리", "빛", 1, 8],
+[207, "블랙찡또", "어둠", 1, 8],
+[208, "아폴로누스", "불", 0, 4],
+[209, "로루스", "빛", 1, 8],
+[210, "러스트", "땅", 0, 4],
+[211, "슬레이어", "불", 0, 4],
+[212, "파이어리 블랜드", "불", 0, 4],
+[213, "문라이트", "어둠", 1, 8],
+[214, "코랄", "물", 0, 4],
+[215, "아브밸리", "바람", 0, 4],
+[216, "가이안", "땅", 0, 4],
+[217, "오쿠러스", "물", 0, 4],
+[218, "위드미", "물", 1, 8],
+[219, "헤이즈", "빛", 1, 8],
+[220, "라우아", "물", 0, 4],
+[221, "듀펜", "땅", 0, 4],
+[222, "메이플 드래곤", "땅", 0, 4],
+[223, "딜랑", "빛", 0, 4],
+[224, "스트라이커", "바람", 1, 8],
+[225, "가루다", "불", 1, 8],
+[226, "리베라", "바람", 0, 4],
+[227, "티라노 드래곤", "땅", 0, 4],
+[228, "파티 드래곤", "빛", 0, 4],
+[229, "오르도", "빛", 1, 8],
+[230, "세크레타", "물", 1, 8],
+[231, "푸투룸", "불", 1, 8],
+[232, "할리벨", "여명", 1, 8],
+[233, "타아비레", "여명", 1, 8],
+[234, "발라크", "황혼", 1, 8],
+[235, "베팔", "황혼", 1, 8],
+[236, "단탈리온", "악몽", 1, 8],
+[237, "자간", "악몽", 1, 8],
+[238, "어비스 엣지", "물", 0, 4],
+[239, "적오드래곤", "불", 0, 4],
+[240, "헬가스트", "어둠", 0, 4],
+[241, "마르바스", "어둠", 1, 8],
+[242, "칸", "빛", 0, 4],
+[243, "위그드라실", "땅", 0, 4],
+[244, "와일드 드래곤", "불", 1, 8],
+[245, "좀비 드래곤", "어둠", 0, 4],
+[246, "레이어스", "땅", 1, 8],
+[247, "웨일 드래곤", "물", 0, 4],
+[248, "베놈 드래곤", "물", 1, 8],
+[249, "발라 드래곤", "땅", 0, 4],
+[250, "루가르 드래곤", "불", 1, 8],
+[251, "아틀란티스", "물", 0, 4],
+[252, "유니버스", "어둠", 1, 8],
+[253, "빙설룡", "물", 0, 4],
+[254, "점프 드래곤", "바람", 0, 4],
+[255, "아스티", "바람", 1, 8],
+[256, "지마", "물", 0, 4],
+[257, "갤러스", "물", 0, 4],
+[258, "퓨미스", "불", 0, 4],
+[259, "베히모스", "어둠", 1, 8],
+[260, "스틸윙", "바람", 1, 8],
+[261, "소울", "빛", 0, 4],
+[262, "이슬룡", "물", 0, 4],
+[263, "데르", "어둠", 0, 4],
+[264, "렉몰", "여명", 0, 4],
+[265, "화랑", "불", 0, 4],
+[266, "그레이탄", "바람", 1, 8],
+[267, "미스틱티니", "바람", 0, 4],
+[268, "다로스", "땅", 1, 8],
+[269, "자루카", "불", 0, 4],
+[270, "다크혼", "황혼", 0, 4],
+[271, "스타에이스", "빛", 1, 8],
+[272, "말로단", "어둠", 1, 8],
+[273, "아이가스", "빛", 0, 4],
+[274, "포포모", "불", 1, 8],
+[275, "테디 드래곤", "빛", 1, 8],
+[276, "나기", "바람", 0, 4],
+[277, "그리핀", "불", 0, 4],
+[278, "블랙쇼커", "어둠", 0, 4],
+[279, "트리페어윙", "빛", 0, 4],
+[280, "리바이어던", "물", 0, 4],
+[281, "스케어", "어둠", 0, 4],
+[282, "블루벨", "바람", 0, 4],
+[283, "화이트스톰", "물", 0, 4],
+[284, "네펜데스", "땅", 0, 4],
+[285, "아그나드", "불", 0, 4],
+[286, "버블 드래곤", "물", 0, 4],
+[287, "합라", "여명", 1, 8],
+[288, "레블롭틴", "빛", 0, 4],
+[289, "레인보우배트곤", "바람", 0, 4],
+[290, "아라카", "바람", 1, 8],
+[291, "라지카스", "물", 0, 4],
+[292, "미스틸테인", "땅", 0, 4],
+[293, "시소르", "어둠", 0, 4],
+[294, "루", "어둠", 0, 4],
+[295, "플래그너", "어둠", 0, 4],
+[296, "셀마사", "여명", 1, 8],
+[297, "청화풍", "불", 0, 4],
+[298, "카라선", "황혼", 1, 8],
+[299, "아쿠아리움", "물", 0, 4],
+[300, "일로스", "물", 0, 4],
+[301, "렉스톤", "황혼", 1, 8],
+[302, "포메쿨", "황혼", 1, 8],
+[303, "카르나", "어둠", 1, 8],
+[304, "아르주나", "불", 0, 4],
+[305, "마룡", "불", 1, 8],
+[306, "블랙혼", "어둠", 0, 4],
+[307, "얼티밋 드래곤", "어둠", 0, 4],
+[308, "매직스타 드래곤", "악몽", 0, 4],
+[309, "아르테미스 드래곤", "빛", 1, 8],
+[310, "할루시", "바람", 0, 4],
+[311, "페르마타", "악몽", 0, 4],
+[312, "앙그라", "바람", 0, 4],
+[313, "옴므니아", "악몽", 0, 4],
+[314, "코므니아", "황혼", 0, 4],
+[315, "다므니아", "불", 0, 4],
+[316, "드므니아", "바람", 0, 4],
+[317, "맘므니아", "물", 0, 4],
+[318, "흐므니아", "땅", 0, 4],
+[319, "엠파이어", "바람", 1, 8],
+[320, "루시페르", "불", 0, 4],
+[321, "네크로멘서", "어둠", 0, 4],
+[322, "지진", "땅", 1, 8],
+[323, "니케", "빛", 0, 4],
+[324, "아스트라이나", "빛", 0, 4],
+[325, "하레스", "어둠", 0, 4],
+[326, "나이트메어", "악몽", 0, 4],
+[327, "스윗클라우드", "불", 0, 4],
+[328, "데네브", "빛", 0, 4],
+[329, "박쥐곤", "어둠", 0, 4],
+[330, "우파룸", "불", 0, 4],
+[331, "부두룡", "어둠", 0, 4],
+[332, "화주사", "불", 0, 4],
+[333, "미트라", "빛", 0, 4],
+[334, "보상이용", "여명", 1, 8],
+[335, "다크베인", "불", 0, 4],
+[336, "블러디터스크", "악몽", 0, 4],
+[337, "포이즌리버", "땅", 1, 8],
+[338, "유리온", "황혼", 0, 4],
+[339, "터들톰톰", "여명", 0, 4],
+[340, "타이게타", "바람", 0, 4],
+[341, "선인장 드래곤", "악몽", 0, 4],
+[342, "베르나", "빛", 1, 8],
+[343, "룩소린", "빛", 0, 4],
+[344, "혼", "바람", 1, 8],
+[345, "나트론", "물", 1, 8],
+[346, "살라", "황혼", 0, 4],
+[347, "움브라", "악몽", 0, 4],
+[348, "솔라", "빛", 1, 8],
+[349, "포폰", "땅", 1, 8],
+[350, "제피로스", "바람", 1, 8],
+[351, "드래곤 슬레이어", "어둠", 1, 8],
+[352, "헬카이저", "황혼", 0, 4],
+[353, "레버넌트", "악몽", 0, 4],
+[354, "이블 던", "여명", 0, 4],
+[355, "디멘션 드래곤", "악몽", 1, 8],
+[356, "픽셀 드래곤", "빛", 0, 4],
+[357, "그랑 세이버", "바람", 0, 4],
+[358, "킨더 드래곤", "여명", 1, 8],
+[359, "푸딩곤", "땅", 0, 4],
+[360, "엔틱 드래곤", "땅", 0, 4],
+[361, "트와일라잇", "황혼", 0, 4],
+[362, "플로리안", "땅", 0, 4],
+[363, "라루스", "빛", 0, 4],
+[364, "프로딘", "악몽", 0, 4],
+[365, "틸키", "황혼", 1, 8],
+[366, "이그나", "불", 1, 8],
+[367, "블리자드", "물", 1, 8],
+[368, "다크나이트", "어둠", 1, 8],
+[369, "엔더 드래곤", "땅", 0, 4],
+[370, "거스트 드래곤", "바람", 1, 8],
+[371, "샤프테일 드래곤", "땅", 0, 4],
+[372, "화이트썬더 드래곤", "빛", 1, 8],
+[373, "카루라", "빛", 1, 8],
+[374, "간다르바", "어둠", 0, 4],
+[375, "호크아이", "땅", 0, 4],
+[376, "루아셰아 드래곤", "악몽", 0, 4],
+[377, "루네라 드래곤", "어둠", 0, 4],
+[378, "미나스 드래곤", "빛", 1, 8],
+[379, "헬스페로우", "어둠", 0, 4],
+[380, "쿠베라", "어둠", 1, 8],
+[381, "칼라빈카", "불", 0, 4],
+[382, "직소 드래곤", "땅", 0, 4],
+[383, "카이저번", "어둠", 0, 4],
+[384, "골락", "땅", 0, 4],
+[385, "렉몰 리버스", "황혼", 1, 8],
+[386, "앳지버", "악몽", 0, 4],
+[387, "센투라", "바람", 1, 8],
+[388, "아프리트", "불", 0, 4],
+[389, "에트왈 드래곤", "바람", 1, 8],
+[390, "넬로 드래곤", "물", 0, 4],
+[391, "썬더레인 드래곤", "빛", 0, 4],
+[392, "즈믄", "땅", 1, 8],
+[393, "리베티", "땅", 1, 8],
+[394, "브리트라", "물", 1, 8],
+[395, "타크샤카", "물", 0, 4],
+[396, "슈넬 드래곤", "어둠", 0, 4],
+[397, "키갈", "바람", 1, 8],
+[398, "아델라", "땅", 0, 4],
+[399, "슬리즈 드래곤", "어둠", 0, 4],
+[400, "칸타카", "땅", 1, 8],
+[401, "지타쿨라", "물", 0, 4],
+[402, "파고스 드래곤", "물", 0, 4],
+[403, "본샤스 드래곤", "바람", 0, 4],
+[404, "갤럭시아 드래곤", "어둠", 0, 4],
+[405, "알리스 드래곤", "불", 0, 4],
+[406, "마브리카 드래곤", "빛", 0, 4],
+[407, "소서러 드래곤", "땅", 0, 4],
+[408, "아톤", "빛", 1, 8],
+[409, "탈릿사", "빛", 1, 8],
+[410, "쿠즈마라", "어둠", 0, 4],
+[411, "하리카", "황혼", 1, 8],
+[412, "톤톤", "땅", 0, 4],
+[413, "아쿠아펄", "물", 0, 4],
+[414, "키리온", "불", 0, 4],
+[415, "애플칙", "땅", 1, 8],
+[416, "트로페우스", "물", 1, 8],
+[417, "니케이", "빛", 0, 4],
+[418, "니케다", "어둠", 0, 4],
+[419, "니케라이", "불", 0, 4],
+[420, "니케플로", "물", 0, 4],
+[421, "니케벤토", "바람", 0, 4],
+[422, "니케테라", "땅", 0, 4],
+[423, "판므니아", "여명", 0, 4],
+[424, "라므니아", "황혼", 0, 4],
+[425, "닌므니아", "악몽", 0, 4],
+[426, "아스타테", "땅", 1, 8],
+[427, "시리스", "바람", 0, 4],
+[428, "엘더 드래곤", "빛", 0, 4],
+[429, "수라 드래곤", "불", 1, 8],
+[430, "타로스", "불", 0, 4],
+[431, "익시아", "바람", 0, 4],
+[432, "엔젤주니어", "빛", 1, 8],
+[433, "허리케인", "바람", 0, 4],
+[434, "하데스", "어둠", 0, 4],
+[435, "프레데터", "땅", 0, 4],
+[436, "엔퓨", "여명", 0, 4],
+[437, "가스트", "바람", 0, 4],
+[438, "엔투라스", "불", 1, 8],
+[439, "액스칼리버", "빛", 0, 4],
+[440, "일란", "바람", 0, 4],
+[441, "코스모", "여명", 0, 4],
+[442, "파베르", "악몽", 0, 4],
+[443, "앵커", "물", 0, 4],
+[444, "말덱", "땅", 0, 4],
+[445, "스트라", "바람", 0, 4],
+[446, "헤네스", "빛", 0, 4],
+[447, "데스락", "황혼", 1, 8],
+[448, "애니마라", "악몽", 1, 8],
+[449, "설리반", "빛", 0, 4],
+[450, "파프닐", "악몽", 0, 4],
+[451, "아비온", "바람", 0, 4],
+[452, "아자크", "어둠", 1, 8],
+[453, "프로즌", "물", 1, 8],
+[454, "아비스", "바람", 0, 4],
+[455, "차콜플레임", "불", 0, 4],
+[456, "궁니르", "물", 0, 4],
+[457, "루드오어", "악몽", 1, 8],
+[458, "스워드", "빛", 1, 8],
+[459, "케이나인", "악몽", 0, 4],
+[460, "에이라", "여명", 0, 4],
+[461, "스칼렛", "황혼", 0, 4],
+[462, "쉔", "바람", 0, 4],
+[463, "베리스", "여명", 1, 8],
+[464, "템페스트", "물", 0, 4],
+[465, "선셋 드래곤", "불", 0, 4],
+[466, "포말하우트", "물", 0, 4],
+[467, "마카라", "어둠", 1, 8],
+[468, "아누라다", "어둠", 0, 4],
+[469, "이클립스", "황혼", 1, 8],
+[470, "벨레드", "악몽", 1, 8],
+[471, "미티어", "여명", 0, 4],
+[472, "카모플라쥬", "황혼", 0, 4],
+[473, "엘리고스", "여명", 1, 8],
+[474, "범", "불", 0, 4],
+[475, "이모션", "바람", 0, 4],
+[476, "미미르", "여명", 1, 8],
+[477, "샬롯", "땅", 0, 4],
+[478, "이지스", "빛", 0, 4],
+[479, "레이징", "불", 0, 4],
+[480, "페이몬", "불", 0, 4],
+[481, "암두시아스", "여명", 1, 8],
+[482, "백택곤", "여명", 0, 4],
+[483, "레오벡터", "땅", 1, 8],
+[484, "네비아", "여명", 1, 8],
+[485, "썬더버드", "바람", 0, 4],
+[486, "보레아스", "바람", 1, 8],
+[487, "쿠알레", "물", 0, 4],
+[488, "코즈메키온", "황혼", 0, 4],
+[489, "화귀 드래곤", "불", 1, 8],
+[490, "헤카테", "어둠", 0, 4],
+[491, "밀라", "바람", 0, 4],
+[492, "라울", "바람", 0, 4],
+[493, "스탑튠", "빛", 0, 4],
+[494, "다크스퀘어", "어둠", 0, 4],
+[495, "고귀한 헬카이저", "황혼", 0, 4],
+[496, "마소티스", "물", 1, 8],
+[497, "리치몬드", "어둠", 1, 8],
+[498, "크로마 리치몬드", "어둠", 1, 8],
+[499, "톡시닉", "땅", 0, 4],
+[500, "이터널", "여명", 0, 4],
+[501, "개틀링곤", "빛", 1, 8],
+[502, "베른하르트", "물", 1, 8],
+[503, "로티스", "물", 0, 4],
+[504, "스노우볼", "황혼", 0, 4],
+[505, "고귀한 블러디터스크", "악몽", 0, 4],
+[506, "젤리피쉬", "물", 0, 4],
+[507, "펜리르", "땅", 0, 4],
+[508, "티르", "바람", 1, 8],
+[509, "아만타", "빛", 1, 8],
+[510, "코멧", "여명", 0, 4],
+[511, "화이트 디스트로이어", "빛", 0, 4],
+[512, "피미루", "악몽", 0, 4],
+[513, "샤흐", "빛", 1, 8],
+[514, "고귀한 다크베인", "불", 0, 4],
+[515, "에오스", "여명", 0, 4],
+[516, "네뷸라", "황혼", 1, 8],
+[517, "레굴루스", "물", 1, 8],
+[518, "크로마 레굴루스", "물", 1, 8],
+[519, "알데바란", "땅", 1, 8],
+[520, "강림 강화곤", "빛", 0, 4],
+[521, "다르누스", "황혼", 0, 4],
+[522, "페트로아", "불", 0, 4],
+[523, "롱기누스", "악몽", 1, 8],
+[524, "고귀한 엔더 드래곤", "땅", 0, 4],
+[525, "지바타르", "바람", 0, 4],
+[526, "미스핏", "악몽", 1, 8],
+[527, "염화룡", "불", 1, 8],
+[528, "마니메칼라", "물", 0, 4],
+[529, "폴투누스", "물", 1, 8],
+[530, "세에레", "황혼", 1, 8],
+[531, "바르그", "빛", 1, 8],
+[532, "마스테마", "악몽", 1, 8],
+[533, "카스티타스", "바람", 0, 4],
+[534, "고귀한 이지스", "빛", 0, 4],
+[535, "타나토스", "불", 1, 8],
+[536, "칼리시", "물", 0, 4],
+[537, "크로마 칼리시", "어둠", 0, 4],
+[538, "프라이드", "황혼", 1, 8],
+[539, "고귀한 아델라", "땅", 0, 4],
+[540, "라스", "여명", 1, 8],
+[541, "밀라타스", "빛", 0, 4],
+[542, "크로마 밀라타스", "여명", 0, 4],
+[543, "고귀한 넬로 드래곤", "물", 0, 4],
+[544, "토트", "불", 1, 8],
+[545, "인스트리아", "빛", 0, 4],
+[546, "크로마 인스트리아", "물", 0, 4],
+[547, "네무스", "악몽", 1, 8],
+[548, "베네보렌티아", "불", 0, 4],
+[549, "크로마 베네보렌티아", "물", 0, 4],
+[550, "고귀한 갤러헤드", "땅", 0, 4],
+[551, "고귀한 이블던", "여명", 0, 4],
+[552, "뇌신", "땅", 0, 4],
+[553, "크로마 뇌신", "불", 0, 4],
+[554, "크레바스", "악몽", 1, 8],
+[555, "라센티", "불", 1, 8],
+[556, "마문드", "빛", 0, 4],
+[557, "고트", "어둠", 1, 8],
+[558, "고귀한 레버넌트", "악몽", 0, 4],
+[559, "파키", "땅", 1, 8],
+[560, "호저리", "여명", 0, 4],
+[561, "타라", "불", 0, 4],
+[562, "고귀한 카이저번", "어둠", 0, 4],
+[563, "피타야", "바람", 1, 8],
+[564, "구미호", "악몽", 0, 4],
+[565, "루송", "불", 0, 4],
+[566, "아말테아", "여명", 1, 8],
+[567, "니티", "황혼", 0, 4],
+[568, "케찰코아틀", "땅", 1, 8],
+[569, "조화룡", "여명", 1, 8],
+[570, "아바돈", "불", 0, 4],
+[571, "큐아네드", "물", 0, 4],
+[572, "고귀한 스트라", "바람", 0, 4],
+[573, "마그나스", "어둠", 1, 8],
+[574, "크로마 벨레드", "악몽", 1, 8],
+[575, "포르타", "어둠", 1, 8],
+[576, "페로스", "바람", 0, 4],
+[577, "디아누", "땅", 0, 4],
+[578, "초림", "바람", 0, 4],
+[579, "루드라", "물", 1, 8],
+[580, "고귀한 말덱", "땅", 0, 4],
+[581, "강강", "빛", 0, 4],
+[582, "술래", "어둠", 0, 4],
+[583, "차차웅", "황혼", 1, 8],
+[584, "데바", "땅", 0, 4],
+[585, "그라노스", "빛", 0, 4],
+[586, "스텔스", "여명", 0, 4],
+[587, "코르투스", "여명", 1, 8],
+[588, "레오파드", "물", 0, 4],
+[589, "고귀한 헤네스", "빛", 0, 4],
+[590, "에피트", "황혼", 1, 8],
+[591, "스킨크 드래곤", "땅", 0, 4],
+[592, "크레스티드 드래곤", "바람", 0, 4],
+[593, "에그마용", "땅", 1, 8],
+[594, "블루썬더", "바람", 1, 8],
+[595, "크로마 블루썬더", "바람", 1, 8],
+[596, "고귀한 페로스", "바람", 0, 4],
+[597, "솔루카니스", "빛", 1, 8],
+[598, "주작", "불", 0, 4],
+[599, "백호", "땅", 0, 4],
+[600, "루살카", "물", 1, 8],
+[601, "베타라", "어둠", 1, 8],
+[602, "크로마 베타라", "어둠", 1, 8],
+[603, "루크바트", "여명", 1, 8],
+[604, "카스룩스", "어둠", 1, 8],
+[605, "고귀한 디아누", "땅", 0, 4],
+[606, "알투스", "빛", 1, 8],
+[607, "에슈", "황혼", 0, 4],
+[608, "기린", "바람", 0, 4],
+[609, "락샤사", "물", 0, 4],
+[610, "루민디스", "빛", 0, 4],
+[611, "피데스", "어둠", 1, 8],
+[612, "비어디 드래곤", "악몽", 0, 4],
+[613, "불나래", "불", 1, 8],
+[614, "크로마 불나래", "불", 1, 8],
+[615, "유르카", "물", 1, 8],
+[616, "고귀한 아누라다", "어둠", 0, 4],
+[617, "쉴로시", "악몽", 1, 8],
+[618, "골디", "여명", 0, 4],
+[619, "라키온", "땅", 0, 4],
+[620, "옥타", "물", 1, 8],
+[621, "크로마 옥타", "물", 1, 8],
+[622, "커스리퍼", "악몽", 1, 8],
+[623, "울르", "여명", 1, 8],
+[624, "엔젤캣", "빛", 0, 4],
+[625, "아프로디테", "여명", 1, 8],
+[626, "그리파르", "불", 0, 4],
+[627, "글라오네", "땅", 0, 4],
+[628, "고귀한 루네라 드래곤", "어둠", 0, 4],
+[629, "블레이즈 드래곤", "불", 1, 8],
+[630, "애버네일", "빛", 0, 4],
+[631, "토네스", "악몽", 0, 4],
+[632, "고귀한 익시아", "바람", 0, 4],
+[633, "프로텍트 드래곤", "빛", 1, 8],
+[634, "크로마 프로텍트 드래곤", "빛", 1, 8],
+[635, "템피오스", "황혼", 1, 8],
+[636, "거들테일 드래곤", "땅", 0, 4],
+[637, "진", "악몽", 1, 8],
+[638, "마카롱", "여명", 0, 4],
+[639, "아르켈론", "물", 0, 4],
+[640, "고귀한 다크혼", "황혼", 0, 4],
+[641, "인베르소", "황혼", 1, 8],
+[642, "티키톡", "여명", 0, 4],
+[643, "레베리", "악몽", 0, 4],
+[644, "리티오", "바람", 1, 8],
+[645, "크로마 리티오", "바람", 1, 8],
+[646, "페이렉스", "바람", 0, 4],
+[647, "스카트", "물", 1, 8],
+[648, "알레샤", "물", 1, 8],
+[649, "크로마 알레샤", "물", 1, 8],
+[650, "야누스", "여명", 1, 8],
+[651, "파이거", "불", 1, 8],
+[652, "크로마 파이거", "불", 1, 8],
+[653, "스카투스", "불", 1, 8],
+[654, "크로마 스카투스", "불", 1, 8],
+[655, "로키", "물", 1, 8],
+[656, "파프니르", "불", 0, 4],
+[657, "후긴", "빛", 0, 4],
+[658, "무닌", "어둠", 0, 4],
+[659, "헤임달", "땅", 1, 8],
+[660, "볼바", "물", 1, 8],
+[661, "토르", "바람", 1, 8],
+[662, "요르문간드", "어둠", 1, 8],
+[663, "마누스", "황혼", 1, 8],
+[664, "잠식된 요르문간드", "악몽", 1, 8],
+[665, "야즈니르", "빛", 1, 8],
+[666, "고귀한 설리반", "빛", 0, 4],
+[667, "논", "땅", 1, 8],
+[668, "플로레", "여명", 0, 4],
+[669, "루시오", "어둠", 0, 4],
+[670, "장고", "땅", 0, 4],
+[671, "레무레스", "악몽", 1, 8],
+[672, "아카이아", "땅", 1, 8],
+[673, "크로마 아카이아", "땅", 1, 8],
+[674, "티아매트", "어둠", 1, 8],
+[675, "리브로", "땅", 0, 4],
+[676, "오벡스", "어둠", 1, 8],
+[677, "흐레스벨그", "황혼", 1, 8],
+[678, "호드", "물", 0, 4],
+[679, "슬레이프니르", "땅", 0, 4],
+[680, "고귀한 펜리르", "땅", 0, 4],
+[681, "하트샤", "어둠", 1, 8],
+[682, "꽁꽁이", "빛", 0, 4],
+[683, "파루파루", "불", 0, 4],
+[684, "발레포르", "악몽", 1, 8],
+[685, "크로마 발레포르", "악몽", 1, 8],
+[686, "메라크", "빛", 1, 8],
+[687, "레긴레이프", "황혼", 1, 8],
+[688, "크로마 레긴레이프", "황혼", 1, 8],
+[689, "적마룡", "불", 1, 8],
+[690, "고귀한 허리케인", "바람", 0, 4],
+[691, "피싱테일 드래곤", "물", 1, 8],
+[692, "까마귀 드래곤", "악몽", 0, 4],
+[693, "까치 드래곤", "어둠", 0, 4],
+[694, "루루", "바람", 1, 8],
+[695, "크로마 루루", "바람", 1, 8],
+[696, "바스카", "땅", 1, 8],
+[697, "블라드", "악몽", 1, 8],
+[698, "프레이야", "여명", 1, 8],
+[699, "팡팡", "바람", 0, 4],
+[700, "미스틱아츠", "땅", 0, 4],
+[701, "고귀한 앙그라", "바람", 0, 4],
+[702, "스쿨드", "불", 0, 4],
+[703, "크툴루", "어둠", 1, 8],
+[704, "크로마 크툴루", "어둠", 1, 8],
+[705, "망태곤", "악몽", 1, 8],
+[706, "운디네", "물", 1, 8],
+[707, "크로마 운디네", "물", 1, 8],
+[708, "세라핌", "빛", 1, 8],
+[709, "누베스텔라", "황혼", 0, 4],
+[710, "오파님", "바람", 1, 8],
+[711, "크로마 오파님", "바람", 1, 8],
+[712, "카스티그", "황혼", 1, 8]
+];
+
+/* ═══════════════════════════════════════ */
+
+const stage      = document.getElementById('stage');
+const stageMsg   = document.getElementById('stageMsg');
+const layerSkin  = document.getElementById('layerSkin');
+const layerBack  = document.getElementById('layerBack');
+const layerFront = document.getElementById('layerFront');
+const cv         = document.getElementById('layerDragon');
+const ctx        = cv.getContext('2d');
+
+// 도감ID → 영어 이름 (en/dex.html 의 dexData 와 동일한 표기)
+const NAME_EN = {
+  1:"God Dragon", 2:"Wind Dragon", 3:"Six Legged Dragon", 4:"Blue Dragon", 5:"Fire Dragon", 6:"Lightning Dragon",
+  7:"Lava Dragon", 8:"Phoenix", 9:"Frost Dragon", 10:"Ness", 11:"Tail Dragon", 12:"Water Dragon",
+  13:"Hydra Dragon", 14:"Power Dragon", 15:"Rock Dragon", 16:"Underground Dragon", 17:"Fairy Dragon", 18:"Lady Dragon",
+  19:"Egg Dragon", 20:"Hell Dragon", 21:"Angel Dragon", 22:"Alien Dragon", 23:"Mini Dragon", 24:"Swamp Dragon",
+  25:"Fat Dragon", 26:"Spike Dragon", 27:"Insect Dragon", 28:"Leaf Dragon", 29:"Frog Dragon", 30:"Wing Dragon",
+  31:"Sand Dragon", 32:"Smart Dragon", 33:"Music Dragon", 34:"Black Dragon", 35:"Emerald Dragon", 36:"Ligon",
+  37:"Cameleon Dragon", 38:"Chickenhead Dragon", 39:"Kanggarabbit Dragon", 40:"Cupid Dragon", 41:"Gold Dragon", 42:"Slime Dragon",
+  43:"Blade Dragon", 44:"Metal Dragon", 45:"Mummy Dragon", 46:"Hedgebat Dragon", 47:"Skelegon", 48:"Serpent Dragon",
+  49:"Contipede Dragon", 50:"Tiger Dragon", 51:"Goldenfly Dragon", 52:"Metal Magnet Dragon", 53:"Dark Nix", 54:"White Dragon",
+  55:"Hyena Dragon", 56:"Ghost Dragon", 57:"Golden Horn Dragon", 58:"Shark Dragon", 59:"Guardian", 60:"Crescent",
+  61:"Rainbow", 62:"Tattoo", 63:"Spine", 64:"God Jr.", 65:"Frosty", 66:"Dark Frosty",
+  67:"Snake Dragon", 68:"Xmas Dragon", 69:"Demong&Gargoyle", 70:"Siamese Dragon", 71:"Bone Head", 72:"Venezie",
+  73:"Mustard Hammer", 74:"Red Wybern", 75:"Haetai", 76:"Scorpion Dragon", 77:"Knight Dragon", 78:"Spicy",
+  79:"Rafael", 80:"Baal", 81:"Pierrot Dragon", 82:"Pharaogon", 83:"Shadow", 84:"Marshmallow Dragon",
+  85:"Franken Dragon", 86:"Ninja Dragon", 87:"Dragonoid", 88:"Volcano Dragon", 89:"Blue Lightning", 90:"Witch Dragon",
+  91:"Purple Lips", 92:"Python", 93:"Iron", 94:"Oro", 95:"Jaryong", 96:"Battle Dragon",
+  97:"Devilgon", 98:"Violet Dragon", 99:"Neon Dragon", 100:"Flame Dragon", 101:"Black Queen", 102:"Sigma Dragon",
+  103:"Lambgon", 104:"Argo Dragon", 105:"Hercules Dragon", 106:"Totem", 107:"Malsoja", 108:"Timber",
+  109:"Cobra", 110:"Rupia", 111:"Tyfoon", 112:"Stud", 113:"Flower", 114:"Haema",
+  115:"Cloud", 116:"Lios", 117:"Barian", 118:"Paprion", 119:"Valcan", 120:"Enix",
+  121:"Balod", 122:"Redbull Dragon", 123:"Tundra Dragon", 124:"Megalodon", 125:"Aurora Dragon", 126:"Catsgon",
+  127:"Ignis", 128:"Tartaros", 129:"Shooting Star", 130:"Dark Fal", 131:"Hungry Dragon", 132:"Aqua Dragon",
+  133:"Orpheus", 134:"Luminesce", 135:"Burnesce", 136:"Goblin Dragon", 137:"Jet Dragon", 138:"Marino Dragon",
+  139:"Tutankha", 140:"Mud Dragon", 141:"Bomber Dragon", 142:"Sanare Dragon", 143:"Tyrant", 144:"Blue Horse Dragon",
+  145:"Naughty Villan", 146:"Glacier", 147:"Mneia", 148:"Knox", 149:"Illias", 150:"Cornatus",
+  151:"Swallow", 152:"iGon", 153:"Bloody Nate", 154:"Peace Dragon", 155:"Galaxy", 156:"Paper Dragon",
+  157:"High Fairygon", 158:"Morika Dragon", 159:"Vegabond Dragon", 160:"Spring Dragon", 161:"Splender Dragon", 162:"Black Tear Dragon",
+  163:"Black Armor Dragon", 164:"Orange Leaf Dragon", 165:"Pink Bell Dragon", 166:"Kuroy Dragon", 167:"Forest Dragon", 168:"Gigantis",
+  169:"Demonio", 170:"Ges Dragon", 171:"Vera Dragon", 172:"Diyona", 173:"Conrad", 174:"Fabregas",
+  175:"Firefury", 176:"Stego Dragon", 177:"Retentor", 178:"Mist Dragon", 179:"Rekuru Dragon", 180:"Petra Dragon",
+  181:"Crookers", 182:"Banshee", 183:"Hollow", 184:"Rupo", 185:"Decal", 186:"Chaos",
+  187:"Ilema", 188:"Blackcore", 189:"Odin", 190:"Freerunner", 191:"Time Machine", 192:"Citael",
+  193:"Gracia", 194:"Maga", 195:"Skoorum", 196:"Collosus", 197:"Wonder Dragon", 198:"IceDrake",
+  199:"Omiyakon", 200:"Niplehayim", 201:"Rudolf Dragon", 202:"Bar'rah", 203:"Rutilus", 204:"Lunar Blue Dragon",
+  205:"Optatum", 206:"Asili", 207:"Black Jindo", 208:"Apollonus", 209:"Roloce", 210:"Rust",
+  211:"Slayer", 212:"Fiery Blend", 213:"Moon Light", 214:"Coral Dragon", 215:"Abvalle", 216:"Gaian",
+  217:"Oculus", 218:"Withme", 219:"Haze", 220:"Lauha", 221:"Dupen", 222:"Maple Dragon",
+  223:"Dilrang", 224:"Striker", 225:"Garuda", 226:"Libera", 227:"T.Rex", 228:"Party Dragon",
+  229:"Ordo", 230:"Secreta", 231:"Futurum", 232:"Harleybell", 233:"Taabire", 234:"Ballack",
+  235:"Vefal", 236:"Dantalion", 237:"Jagan", 238:"Abyss edge", 239:"Red Raven", 240:"Hell Ghast",
+  241:"Marbas", 242:"Khan", 243:"Yggdrasil", 244:"Wild Dragon", 245:"Zombie Dragon", 246:"Layers",
+  247:"Whale Dragon", 248:"Venom Dragon", 249:"Valla Dragon", 250:"Rugar Dragon", 251:"Atlantis", 252:"Universe",
+  253:"Arctica", 254:"Jump Dragon", 255:"Asti Dragon", 256:"Jima Dragon", 257:"Gallus", 258:"Pumice",
+  259:"Behemoth", 260:"Steelwing", 261:"Soul", 262:"Waterdrop Dragon", 263:"Derr", 264:"Rekmall",
+  265:"Hwarang", 266:"Graytan", 267:"Mystictiny", 268:"Daros", 269:"Jarukah", 270:"Dark Horn",
+  271:"Star Ace", 272:"Maloden", 273:"Igas", 274:"Popomo", 275:"Teddy Dragon", 276:"Nagi",
+  277:"Griffin", 278:"Blackshocker", 279:"Treefairwing", 280:"Leviathan", 281:"Scare", 282:"Bluebell",
+  283:"Whitestorm", 284:"Nepenthes", 285:"Agnad", 286:"Bubble Dragon", 287:"Hapla", 288:"Revelloptin",
+  289:"Rainbowbatgon", 290:"Araca", 291:"Razikas", 292:"Mistilteinn", 293:"Scissor", 294:"Luu",
+  295:"Flagner", 296:"Selmasa", 297:"Bluefirewind", 298:"Characen", 299:"Aquarium", 300:"Eelos",
+  301:"Rexton", 302:"Pomekle", 303:"Karna", 304:"Arjuna", 305:"Evil Dragon", 306:"Blackhorn",
+  307:"Ultimate", 308:"Magic Star", 309:"Artemis Dragon", 310:"Hallucy", 311:"Perumata", 312:"Angra",
+  313:"Ohmunia", 314:"Kohmunia", 315:"Dahmunia", 316:"Doohmunia", 317:"Mamunia", 318:"Humunia",
+  319:"Empire", 320:"Lucifer", 321:"Necromancer", 322:"Earthquake", 323:"Nike", 324:"Astraina",
+  325:"Hailes", 326:"Nightmare", 327:"Sweetcloud", 328:"Deneb", 329:"Batdragon", 330:"Wooperum",
+  331:"Voodoogon", 332:"Hwajusa", 333:"Mithra", 334:"Reward Dragon", 335:"Dark Vein", 336:"Bloody Tusk",
+  337:"Poison River", 338:"Retrieegon", 339:"Toddletomtom", 340:"Taygeta", 341:"Cactus Dragon", 342:"Berna",
+  343:"Luxorin", 344:"Spirit", 345:"Natron", 346:"Sala", 347:"Umbra", 348:"Sola",
+  349:"Popon", 350:"Zephyros", 351:"Dragon Slayer", 352:"Hell Kaiser", 353:"Revenant", 354:"Evil Dawn",
+  355:"Dimension Dragon", 356:"Pixel Dragon", 357:"Grand Savior", 358:"Kinder Dragon", 359:"Puddinggon", 360:"Antique Dragon",
+  361:"Twilight", 362:"Florian", 363:"Lalux", 364:"Frodin", 365:"Tilki", 366:"Igna",
+  367:"Blizzard", 368:"Dark Knight", 369:"Ender Dragon", 370:"Gust", 371:"Sharptale", 372:"Whitethunder",
+  373:"Karura", 374:"Gandharba", 375:"Hawk Eye", 376:"Lua Cheia Dragon", 377:"Lunera Dragon", 378:"Minas Dragon",
+  379:"Hell Sparrow", 380:"Kubera", 381:"Kalavinka", 382:"Jigsaw Dragon", 383:"Kaiserburn", 384:"Golrock",
+  385:"Rekmall Reverse", 386:"Edgever", 387:"Centura", 388:"Afrit", 389:"Etoile Dragon", 390:"Nello Dragon",
+  391:"Thunderrain Dragon", 392:"Zimon", 393:"Liberte", 394:"Vritra", 395:"Takchaka", 396:"Schnell Dragon",
+  397:"Kigal", 398:"Adela", 399:"Sleez Dragon", 400:"Kanthaka", 401:"Zithakula", 402:"Phagos Dragon",
+  403:"Voncias Dragon", 404:"Galaxia Dragon", 405:"Alis Dragon", 406:"Mavrika Dragon", 407:"Sorcerer Dragon", 408:"Aton",
+  409:"Talissah", 410:"Kuzmara", 411:"Harika", 412:"Tonton", 413:"Aqua Pearl", 414:"Kirion",
+  415:"Appleche Dragon", 416:"Tropheus", 417:"Nikei", 418:"Nikeda", 419:"Nikelie", 420:"Nikeflow",
+  421:"Nikevento", 422:"Niketerra", 423:"Panmunia", 424:"Ranmunia", 425:"Ninmunia", 426:"Astarte",
+  427:"Siris", 428:"Elderly Dragon", 429:"Sura Dragon", 430:"Taros", 431:"Excir", 432:"Angel Jr.",
+  433:"Hurricane", 434:"Hades", 435:"Predator", 436:"Enfew", 437:"Ghast", 438:"Enturath",
+  439:"Axcalibur", 440:"Illan", 441:"Cosmos", 442:"Pabereu", 443:"Anchor", 444:"Maldek",
+  445:"Stra", 446:"Henes", 447:"Deathlock", 448:"Animala", 449:"Sullivan", 450:"Fafnir",
+  451:"Abion", 452:"Azak", 453:"Frozen", 454:"Abies", 455:"Charcoal Flame", 456:"Gungnir",
+  457:"Rude Ore", 458:"Sword", 459:"Canine", 460:"Aila", 461:"Scarlet", 462:"Shen",
+  463:"Berith", 464:"Tempest", 465:"Sunset", 466:"Fomalhaut", 467:"Makara", 468:"Anurhada",
+  469:"Eclipse", 470:"Beleth", 471:"Meteor", 472:"Camouflage", 473:"Eligos", 474:"Beom",
+  475:"Emotion", 476:"Mimir", 477:"Charlotte", 478:"Aegis", 479:"Razing", 480:"Paimon",
+  481:"Amdusias", 482:"Baektaekgon", 483:"Leo Vector", 484:"Nebia", 485:"Thunderbird", 486:"Boreas",
+  487:"Qualle", 488:"Kojeumkion", 489:"Hwa gui Dragon", 490:"Hekate", 491:"Milla", 492:"Laul",
+  493:"Stoptune", 494:"Dark Square", 495:"Noble Hell Kaiser", 496:"Myosotis", 497:"Lichmond", 498:"Chroma Lichmond",
+  499:"Toxinic", 500:"Eternal", 501:"Gautling-gon", 502:"Bernhard", 503:"Rotis", 504:"Snowball",
+  505:"Noble Bloody Tusk", 506:"Jellyfish", 507:"Fenrir", 508:"Tyr", 509:"Amanta", 510:"Comet",
+  511:"White Destroyer", 512:"Pimiru", 513:"Shah", 514:"Noble Dark Vein", 515:"Eos", 516:"Nebula",
+  517:"Regulus", 518:"Chroma Regulus", 519:"Aldebaran", 520:"Advent Evolgon", 521:"Darnus", 522:"Patroa",
+  523:"Longinus", 524:"Noble Ender Dragon", 525:"Zivatar", 526:"Mysfit", 527:"Yeomhwa Dragon", 528:"Manimekalai",
+  529:"Portunus", 530:"Seere", 531:"Vargr", 532:"Mastema", 533:"Castitas", 534:"Noble Aegis",
+  535:"Tanatos", 536:"Calici", 537:"Chroma Calici", 538:"Pride", 539:"Noble Adela", 540:"Wrath",
+  541:"Milatas", 542:"Chroma Milatas", 543:"Noble Nello Dragon", 544:"Thoth", 545:"Instria", 546:"Chroma Instria",
+  547:"Nemus", 548:"Benevolentia", 549:"Chroma Benevolentia", 550:"Noble Galahad", 551:"Noble Evil Dawn", 552:"Thundergod",
+  553:"Chroma Thundergod", 554:"Crevasse", 555:"Lancenti", 556:"Mamoond", 557:"Goat", 558:"Noble Revenant",
+  559:"Pachy", 560:"Hosiery", 561:"Tara", 562:"Noble Kaiserburn", 563:"Pitaya", 564:"Ninetales",
+  565:"Lusong", 566:"Amaltheia", 567:"Knitty", 568:"Quetzalcoatl", 569:"Harmonious Dragon", 570:"Abaddon",
+  571:"Cuanade", 572:"Noble Stra", 573:"Magnas", 574:"Chroma Beleth", 575:"Porta", 576:"Feros",
+  577:"Dianu", 578:"Chorim", 579:"Rudra", 580:"Noble Maldek", 581:"Kangkang", 582:"Sullae",
+  583:"Chachawung", 584:"Deva", 585:"Granos", 586:"Stealth", 587:"Cortus", 588:"Leopard",
+  589:"Noble Henes", 590:"Epit", 591:"Skink Dragon", 592:"Crested Dragon", 593:"Eggmayong", 594:"Blue Thunder",
+  595:"Chroma Blue Thunder", 596:"Noble Feros", 597:"Solucanis", 598:"Jujag", 599:"Baekho", 600:"Rusalka",
+  601:"Vetala", 602:"Chroma Vetala", 603:"Rukbat", 604:"Caslux", 605:"Noble Dianu", 606:"Atlus",
+  607:"Eshu", 608:"Kirin", 609:"Rakshasa", 610:"Lumindis", 611:"Fides", 612:"Bearded",
+  613:"Firetail", 614:"Chroma Firetail", 615:"Yurqa", 616:"Noble Anurhada", 617:"Slosi", 618:"Goldie",
+  619:"Lakion", 620:"Octa", 621:"Chroma Octa", 622:"Curse Reaper", 623:"Ullr", 624:"Angel Cat",
+  625:"Aphrodite", 626:"Griffar", 627:"Glaone", 628:"Noble Lunera Dragon", 629:"Blaze Dragon", 630:"Avernale",
+  631:"Toarnesce", 632:"Noble Excir", 633:"Protect Dragon", 634:"Chroma Protect Dragon", 635:"Tempios", 636:"Girdletail Dragon",
+  637:"Jin", 638:"Macaron Dragon", 639:"Archelon", 640:"Noble Dark Horn", 641:"Inverso", 642:"Tititok",
+  643:"Reverie", 644:"Litio", 645:"Chroma Litio", 646:"Feyrex", 647:"Skat", 648:"Alresch",
+  649:"Chroma Alresch", 650:"Janus", 651:"Figar", 652:"Chroma Figar", 653:"Scartooth", 654:"Chroma Scartooth",
+  655:"Loki", 656:"Fafnir", 657:"Huginn", 658:"Muninn", 659:"Heimdallr", 660:"Volva",
+  661:"Thor", 662:"Jormungandr", 663:"Manus", 664:"Corrupted Jormungandr", 665:"Yajnir", 666:"Noble Sullivan",
+  667:"Non", 668:"Florea", 669:"Lucio", 670:"Jango", 671:"Lemures", 672:"Acaia",
+  673:"Chroma Acaia", 674:"Tiamat", 675:"Libro", 676:"Obex", 677:"Hresvelgr", 678:"Hod",
+  679:"Sleipnir", 680:"Noble Fenrir", 681:"Hatshya", 682:"Brry", 683:"Paruparu", 684:"Valefor",
+  685:"Chroma Valefor", 686:"Merak", 687:"Reginleif", 688:"Chroma Reginleif", 689:"Red Horse Dragon", 690:"Noble Hurricane",
+  691:"Fishing Tail Dragon", 692:"Raven Dragon", 693:"Magpie Dragon", 694:"Lulu", 695:"Chroma Lulu", 696:"Vaska",
+  697:"Vlad", 698:"Freyja", 699:"Pangpang", 700:"Mystic Arts", 701:"Noble Angra", 702:"Skuld",
+  703:"Cthulhu", 704:"Chroma Cthulhu", 705:"Mangtaegon", 706:"Undine", 707:"Chroma Undine", 708:"Seraphim",
+  709:"Nubestella", 710:"Ophanim", 711:"Chroma Ophanim", 712:"Castigue",
+};
+
+const DRAGONS = DEX_DRAGONS.map(([id, name, elem, ad, stage]) => ({
+  id: String(id), name, elem, advent: ad === 1, stage,
+  nameEn: NAME_EN[id] || '',
+  // 목록·메시지에 쓰는 표기. 영어 이름이 없으면 한글만 씁니다.
+  label: NAME_EN[id] ? NAME_EN[id] + ' / ' + name : name,
+  asset: String(GRADE_ASSET[id] || ASSET_ID[id] || id),
+  family: !!GRADE_ASSET[id],
+  // 검색은 영어·한글 어느 쪽으로 쳐도 걸립니다
+  key: ((NAME_EN[id] || '') + name).replace(/\s+/g, '').toLowerCase()
+}));
+
+let manifest = null;     // { 게임ID: [세트 이름들] }
+let skel = null;         // 본체 스켈레톤
+let fxBack = [], fxFront = [];  // 장식 이펙트 (드래곤 뒤 / 앞)
+let curAnim = null, t = 0, lastMs = 0, baseDPR = 1, drawBase = [1,0,0,-1,0,0];
+let curDragon = null, curSets = null, setName = null, userSet = null;
+let animIndex = {}, decoKeys = [], motionKeys = [];
+let curDeco = '', curMotion = 'wait';
+let auraT = 0;
+let reqToken = 0;
+
+function hasAsset(d){ return !manifest || !!manifest[d.asset]; }
+
+/* 지정된 게임ID가 저장소에 없으면 같은 패밀리의 다른 등급으로 대체합니다 */
+function resolveAssets(){
+  let fixed = 0;
+  for(const d of DRAGONS){
+    if(manifest[d.asset]) continue;
+    const mem = FAMILY_MEMBERS[d.id];
+    if(!mem) continue;
+    const alt = mem.find(g => manifest[String(g)]);
+    if(alt){ d.asset = String(alt); fixed++; }
+  }
+  return fixed;
+}
+
+/* ── 애니메이션 이름을 장식 × 모션으로 분해 ── */
+function splitAnim(name){
+  const m = name.match(/^(acc\d*)(?:_(.+))?$/i);
+  if(m) return { deco: m[1].toLowerCase(), motion: m[2] ? m[2].toLowerCase() : 'wait' };
+  return { deco: '', motion: name };
+}
+function decoLabel(d){
+  if(d === '') return 'None';
+  const m = d.match(/^acc(\d*)$/);
+  return m ? 'Deco ' + (m[1] || '1') : d;
+}
+const MOTION_LABEL = { wait: 'Idle', att: 'Attack' };
+const motionLabel = m => MOTION_LABEL[m] || m;
+
+function buildAxes(){
+  animIndex = {};
+  const ds = [], ms = [];
+  for(const name in skel.animations){
+    const { deco, motion } = splitAnim(name);
+    if(!animIndex[deco]){ animIndex[deco] = {}; ds.push(deco); }
+    animIndex[deco][motion] = name;
+    if(ms.indexOf(motion) === -1) ms.push(motion);
+  }
+  decoKeys = ds.sort((a, b) => {
+    if(a === '') return -1;
+    if(b === '') return 1;
+    return parseInt((a.match(/\d+/) || [1])[0]) - parseInt((b.match(/\d+/) || [1])[0]);
+  });
+  const pref = ['wait', 'att'];
+  motionKeys = ms.sort((a, b) => {
+    const ia = pref.indexOf(a), ib = pref.indexOf(b);
+    if(ia !== -1 || ib !== -1) return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
+    return a.localeCompare(b);
+  });
+  if(decoKeys.indexOf(curDeco) === -1) curDeco = decoKeys[0];
+  if(!animIndex[curDeco][curMotion]) curMotion = animIndex[curDeco].wait ? 'wait' : Object.keys(animIndex[curDeco])[0];
+  renderAxisButtons();
+}
+
+function renderAxisButtons(){
+  // 장식 - 가능한 목록을 항상 같은 순서로 그립니다
+  const decos = ALL_DECOS.concat(decoKeys.filter(d => ALL_DECOS.indexOf(d) === -1));
+  document.getElementById('decoBtns').innerHTML = decos.map(d => {
+    const has = !!animIndex[d];
+    return '<button data-deco="' + d + '" class="' + (d === curDeco ? 'on' : '') + '"'
+         + (has ? '' : ' disabled') + '>' + decoLabel(d) + '</button>';
+  }).join('');
+  document.querySelectorAll('[data-deco]').forEach(b => {
+    b.onclick = () => {
+      curDeco = b.dataset.deco;
+      if(!animIndex[curDeco][curMotion]) curMotion = Object.keys(animIndex[curDeco])[0];
+      renderAxisButtons();
+      applyFxForDeco();
+    };
+  });
+
+  // 모션
+  const motions = ALL_MOTIONS.concat(motionKeys.filter(m => ALL_MOTIONS.indexOf(m) === -1));
+  document.getElementById('motionBtns').innerHTML = motions.map(m => {
+    const has = !!(animIndex[curDeco] && animIndex[curDeco][m]);
+    return '<button data-motion="' + m + '" class="' + (m === curMotion ? 'on' : '') + '"'
+         + (has ? '' : ' disabled') + '>' + motionLabel(m) + '</button>';
+  }).join('');
+  document.querySelectorAll('[data-motion]').forEach(b => {
+    b.onclick = () => { curMotion = b.dataset.motion; t = 0; renderAxisButtons(); };
+  });
+
+  curAnim = animIndex[curDeco] && animIndex[curDeco][curMotion];
+}
+
+function renderSetButtons(){
+  const have = curSets || [];
+  const list = SET_ORDER.concat(have.filter(n => SET_ORDER.indexOf(n) === -1));
+  document.getElementById('setBtns').innerHTML = list.map(n =>
+    '<button data-set="' + n + '" title="' + n + '"'
+    + ' class="' + (n === setName ? 'on' : '') + '"'
+    + (have.indexOf(n) === -1 ? ' disabled' : '') + '>'
+    + (SET_LABEL[n] || n) + '</button>').join('');
+  document.querySelectorAll('[data-set]').forEach(b => {
+    b.onclick = () => { userSet = b.dataset.set; if(curDragon) loadDragon(curDragon); };
+  });
+}
+
+/* ── 원격 로딩 ── */
+async function fetchSet(gameId, name){
+  const base = ASSET_BASE + gameId + '/' + name;
+  const [jsonRes, atlasRes] = await Promise.all([fetch(base + '.json'), fetch(base + '.atlas')]);
+  if(!jsonRes.ok || !atlasRes.ok) throw new Error(name + ' files not found');
+  const [json, atlasText] = await Promise.all([jsonRes.json(), atlasRes.text()]);
+  const img = await new Promise((res, rej) => {
+    const im = new Image();
+    im.crossOrigin = 'anonymous';
+    im.onload = () => res(im);
+    im.onerror = () => rej(new Error(name + '.png failed to load'));
+    im.src = base + '.png';
+  });
+  return new Skeleton(json, parseAtlas(atlasText), img);
+}
+
+async function loadDragon(dr){
+  const token = ++reqToken;
+  curDragon = dr;
+  cv.classList.remove('on');
+  msg('Loading ' + dr.label + '…');
+
+  if(!manifest){
+    msg('The asset list has not loaded yet.\nPlease refresh the page.');
+    return;
+  }
+  const sets = manifest[dr.asset];
+  if(!sets){
+    msg('"' + dr.label + '" has no assets in the repository\n(dragon/' + dr.asset + '/)');
+    curSets = []; skel = null; fxBack = []; fxFront = []; renderSetButtons();
+    return;
+  }
+  const rank = n => { const i = SET_ORDER.indexOf(n); return i === -1 ? 99 : i; };
+  curSets = sets.filter(n => !isFxSet(n) && HIDDEN_SETS.indexOf(n) === -1)
+                .sort((a, b) => rank(a) - rank(b) || a.localeCompare(b));
+  if(!curSets.length){ msg('"' + dr.label + '" has no stages to show'); return; }
+  setName = (userSet && curSets.indexOf(userSet) !== -1) ? userSet
+          : (curSets.indexOf(defaultSet(dr)) !== -1 ? defaultSet(dr) : curSets[0]);
+  renderSetButtons();
+
+  try{
+    const main = await fetchSet(dr.asset, setName);
+    if(token !== reqToken) return;
+    skel = main;
+    buildAxes();
+
+    // 이 드래곤이 가진 장식 이펙트 세트를 미리 받아 둡니다
+    allFx = {};
+    const fxNames = sets.filter(isFxSet);
+    for(const n of fxNames){
+      try{
+        const sk = await fetchSet(dr.asset, n);
+        if(token !== reqToken) return;
+        allFx[n] = sk;
+      }catch(e){ /* 이펙트는 없어도 본체는 보여줍니다 */ }
+    }
+    applyFxForDeco();
+    setupCanvas();
+    t = 0;
+    cv.classList.add('on');
+    msg(null);
+  }catch(err){
+    if(token === reqToken) msg('Failed to load "' + dr.label + '"\n' + err.message);
+  }
+}
+
+let allFx = {};
+function applyFxForDeco(){
+  // 장식이 '없음'이면 이펙트도 없습니다
+  fxBack = []; fxFront = [];
+  if(!curDeco) return;
+  const re = fxSetsFor(curDeco);
+  const gid = curDragon ? curDragon.asset : '';
+  Object.keys(allFx).filter(n => re.test(n)).sort().forEach(n => {
+    (isBehind(gid, n) ? fxBack : fxFront).push(allFx[n]);
+  });
+}
+/* 이펙트 스켈레톤의 모션 이름은 성장 단계명 (초월만 evolution) */
+function fxAnimName(sk){
+  const want = FX_ANIM[setName] || setName;
+  if(sk.animations[want]) return want;
+  return Object.keys(sk.animations)[0];
+}
+
+/* ── 캔버스 ── */
+function boundsOf(sk, names){
+  let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+  for(const n of names){
+    const dur = sk.animations[n].duration || 0.001;
+    for(let i = 0; i <= 16; i++){
+      sk.apply(n, dur * i / 16);
+      const b = sk.bounds();
+      if(b.x0 < x0) x0 = b.x0;  if(b.x1 > x1) x1 = b.x1;
+      if(b.y0 < y0) y0 = b.y0;  if(b.y1 > y1) y1 = b.y1;
+    }
+  }
+  return { x0, y0, x1, y1 };
+}
+
+function setupCanvas(){
+  baseDPR = Math.min(window.devicePixelRatio || 1, 2);
+  const all = Object.keys(skel.animations);
+  const ref = all.indexOf(REF_MOTION) !== -1 ? [REF_MOTION] : [all[0]];
+  const rb = boundsOf(skel, ref);          // 기준 모션 - 중심 결정
+  const gb = boundsOf(skel, all);          // 전체 모션 - 크기 결정
+  for(const n in allFx){                   // 이펙트도 잘리지 않게 포함
+    const sk = allFx[n];
+    const b = boundsOf(sk, Object.keys(sk.animations));
+    if(b.x0 < gb.x0) gb.x0 = b.x0;  if(b.x1 > gb.x1) gb.x1 = b.x1;
+    if(b.y0 < gb.y0) gb.y0 = b.y0;  if(b.y1 > gb.y1) gb.y1 = b.y1;
+  }
+  const cx = (rb.x0 + rb.x1) / 2, cy = (rb.y0 + rb.y1) / 2;
+  const halfW = Math.max(cx - gb.x0, gb.x1 - cx) * WORLD_SCALE + CANVAS_PAD;
+  const halfH = Math.max(cy - gb.y0, gb.y1 - cy) * WORLD_SCALE + CANVAS_PAD;
+  const CW = Math.ceil(halfW * 2), CH = Math.ceil(halfH * 2);
+
+  cv.style.width = CW + 'px';  cv.style.height = CH + 'px';
+  cv.width = Math.round(CW * baseDPR);  cv.height = Math.round(CH * baseDPR);
+  const S = WORLD_SCALE * baseDPR;
+  drawBase = [ S, 0, 0, -S, cv.width / 2 - cx * S, cv.height / 2 + cy * S ];
+  updateViewScale();
+}
+
 const STAGE_REF_WIDTH = 820;
 let viewScale = 1;
-function calcViewScale() {
-  const w = document.getElementById('stage').clientWidth || STAGE_REF_WIDTH;
+function updateViewScale(){
+  const w = stage.clientWidth || STAGE_REF_WIDTH;
   viewScale = Math.min(1, w / STAGE_REF_WIDTH);
-}
-calcViewScale();
-window.addEventListener('resize', () => {
-  calcViewScale();
-  [layerBack, layerDragon, layerDragonImg, layerFront].forEach(el => {
-    if (el._dy !== undefined) applyTransform(el, el._dy, el._sc);
-  });
-});
-
-function applyTransform(el, dy, scale) {
-  el._dy = dy; el._sc = scale;
-  el.style.transform = 'translate(-50%, calc(-50% - ' + (dy * viewScale) + 'px)) scale(' + (scale * viewScale) + ')';
-}
-
-function applyImgLayer(img, src, dy, scale) {
-  if (!src) { img.classList.remove('on'); img.removeAttribute('src'); return; }
-  img.src = src;
-  applyTransform(img, dy, scale);
-  img.classList.add('on');
-}
-
-async function showDragon(dr) {
-  layerDragonImg.classList.remove('on');
-  layerDragon.classList.remove('on');
-  const dy = dr.dy || 0;
-  const sc = dr.scale || 1;
-  try {
-    const base = ANIM_BASE(dr.id);
-    const ok = await player.load(i => base + FRAME_FILE(i));
-    if (!ok) return;
-    applyTransform(layerDragon, dy, sc);
-    layerDragon.classList.add('on');
-    stageMsg.style.display = 'none';
-    stageMsg.textContent = DEFAULT_MSG;
-  } catch (e) {
-    player.stop();
-    stageMsg.textContent = 'Animation for "' + dr.name + '" is not ready yet (gif/' + dr.id + '/' + FRAME_FILE(0) + ')';
-    stageMsg.style.display = 'flex';
+  cv.style.transform = 'translate(-50%, -50%) scale(' + viewScale + ')';
+  // 오라는 드래곤과 무관하게 무대의 같은 자리에 고정됩니다 (기존 오라 미리보기와 동일)
+  const drop = AURA_Y_ADJUST * viewScale;
+  for(const el of [layerBack, layerFront]){
+    el.style.top = 'calc(48.4% + ' + drop.toFixed(1) + 'px)';
+    el.style.transform = 'translate(-50%, -50%) scale(' + viewScale + ')';
   }
 }
+window.addEventListener('resize', updateViewScale);
 
-function render() {
-  if (curEffect) {
-    applyImgLayer(layerBack, curEffect.back, curEffect.dy || 0, (curEffect.scale || 1) * FX_BASE_SCALE);
-    applyImgLayer(layerFront, curEffect.front, curEffect.dy || 0, (curEffect.scale || 1) * FX_BASE_SCALE);
-  } else {
-    applyImgLayer(layerBack, null); applyImgLayer(layerFront, null);
+function frame(ms){
+  requestAnimationFrame(frame);
+  const dt = lastMs ? Math.min((ms - lastMs) / 1000, 0.1) : 0;
+  lastMs = ms;
+
+  if(auraData){
+    const idx = Math.floor(auraT * AURA_FPS);
+    auraT += dt;
+    drawAuraFrame(auraBackCtx, auraData.back, idx);
+    drawAuraFrame(auraFrontCtx, auraData.front, idx);
   }
-  if (curDragon) {
-    showDragon(curDragon);
-  } else {
-    player.stop();
-    layerDragon.classList.remove('on');
-    layerDragonImg.classList.remove('on');
-  }
-  if (!curEffect && !curDragon) {
-    stageMsg.textContent = DEFAULT_MSG;
-    stageMsg.style.display = 'flex';
-  } else if (curEffect && !curDragon) {
-    stageMsg.style.display = 'none';
-  }
+
+  if(!skel || !curAnim) return;
+  t += dt;
+
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.clearRect(0, 0, cv.width, cv.height);
+
+  // 이펙트는 길이가 서로 달라 각자 루프를 돕니다.
+  const drawFx = list => {
+    for(const sk of list){
+      const an = fxAnimName(sk);
+      const d = sk.animations[an].duration;
+      sk.apply(an, d > 0 ? (t % d) : 0);
+      sk.draw(ctx, drawBase);
+    }
+  };
+
+  drawFx(fxBack);                       // 뒤 이펙트
+  const dur = skel.animations[curAnim].duration;
+  skel.apply(curAnim, dur > 0 ? (t % dur) : 0);
+  skel.draw(ctx, drawBase);             // 드래곤
+  drawFx(fxFront);                      // 앞 이펙트
 }
 
-// ── 이펙트 버튼 ──
-const effectBtns = document.getElementById('effectBtns');
-const noneBtn = document.createElement('button');
-noneBtn.textContent = 'None';
-noneBtn.className = 'on';
-noneBtn.addEventListener('click', () => { curEffect = null; markEffect(noneBtn); render(); });
-effectBtns.appendChild(noneBtn);
-EFFECTS.forEach(fx => {
-  const b = document.createElement('button');
-  b.textContent = fx.name;
-  b.addEventListener('click', () => { curEffect = fx; markEffect(b); render(); });
-  effectBtns.appendChild(b);
-});
-function markEffect(btn) {
-  [...effectBtns.children].forEach(b => b.classList.toggle('on', b === btn));
+function msg(text){
+  if(text){ stageMsg.textContent = text; stageMsg.style.display = 'flex'; }
+  else stageMsg.style.display = 'none';
 }
 
-// ── 속성 필터 + 드래곤 아이콘 그리드 ──
-const dragonGrid = document.getElementById('dragonGrid');
-const elemBtns = document.getElementById('elemBtns');
-const ELEMS = ['전체', '땅', '물', '불', '바람', '빛', '어둠', '황혼', '여명', '악몽'];  // internal values (match dragon data)
-const ELEM_EN = { '전체':'All', '땅':'Earth', '물':'Water', '불':'Fire', '바람':'Wind', '빛':'Light', '어둠':'Dark', '황혼':'Twilight', '여명':'Dawn', '악몽':'Nightmare' };
-let curElem = '전체';
+/* ── 오라 ──
+   cocos2d plist 스프라이트시트를 back/front 두 캔버스로 재생합니다.
+   plist 는 프리멀티플라이드 알파라 불러올 때 한 번 되돌립니다.
+   (안 되돌리면 뿌옇게 뜹니다) */
+const auraBackCtx  = layerBack.getContext('2d');
+const auraFrontCtx = layerFront.getContext('2d');
+const auraCache = {};
+let curAura = null, auraData = null, auraToken = 0;
 
-ELEMS.forEach(el => {
-  const b = document.createElement('button');
-  b.textContent = ELEM_EN[el] || el;
-  if (el === curElem) b.classList.add('on');
-  b.addEventListener('click', () => {
-    curElem = el;
-    [...elemBtns.children].forEach(c => c.classList.toggle('on', c === b));
-    renderDragonGrid();
-  });
-  elemBtns.appendChild(b);
-});
-
-function renderDragonGrid() {
-  dragonGrid.innerHTML = '';
-  const list = curElem === '전체' ? DRAGONS : DRAGONS.filter(dr => dr.elem === curElem);
-  list.forEach(dr => {
-    const d = document.createElement('div');
-    d.className = 'dragon-icon';
-    if (curDragon && curDragon.id === dr.id) d.classList.add('on');
-    d.innerHTML = '<img src="' + dr.icon + '" alt="' + dr.name + '" loading="lazy"><span class="nm">' + dr.name + '</span>';
-    d.querySelector('img').addEventListener('error', function () { this.style.display = 'none'; });
-    d.addEventListener('click', () => {
-      curDragon = dr;
-      [...dragonGrid.children].forEach(c => c.classList.toggle('on', c === d));
-      render();
+function plistFrames(xmlText){
+  const doc = new DOMParser().parseFromString(xmlText, 'application/xml');
+  const root = doc.querySelector('plist > dict');
+  if(!root) throw new Error('not a plist file');
+  const kids = el => Array.from(el.children);
+  const valueFor = (dict, key) => {
+    const ch = kids(dict);
+    for(let i = 0; i < ch.length; i++){
+      if(ch[i].tagName === 'key' && ch[i].textContent === key) return ch[i + 1];
+    }
+    return null;
+  };
+  const nums = s => (s.match(/-?\d+(?:\.\d+)?/g) || []).map(Number);
+  const framesDict = valueFor(root, 'frames');
+  const ch = kids(framesDict);
+  const out = [];
+  for(let i = 0; i < ch.length; i += 2){
+    const name = ch[i].textContent, d = ch[i + 1];
+    const rect = nums(valueFor(d, 'textureRect').textContent);      // x, y, w, h
+    const src  = nums(valueFor(d, 'spriteSourceSize').textContent); // 원본 w, h
+    const off  = nums(valueFor(d, 'spriteOffset').textContent);     // 중심 기준 이동량
+    const rotEl = valueFor(d, 'textureRotated');
+    out.push({
+      name,
+      x: rect[0], y: rect[1], w: rect[2], h: rect[3],
+      ow: src[0], oh: src[1], ox: off[0], oy: off[1],
+      rot: rotEl && rotEl.tagName === 'true'
     });
-    dragonGrid.appendChild(d);
+  }
+  out.sort((a, b) => a.name.localeCompare(b.name));
+  return out;
+}
+
+/* 프리멀티플라이드 알파면 되돌립니다.
+   plist 에는 premultiplyAlpha=true 로 적혀 있지만 실제 PNG 는 스트레이트인 경우가 있어
+   (오라 에셋 전부가 그렇습니다) 표기를 믿지 않고 픽셀로 직접 판별합니다.
+   프리멀티플라이드면 RGB <= alpha 가 성립하므로, 그 규칙을 깨는 픽셀이 많으면 스트레이트입니다. */
+function unpremultiply(img){
+  const c = document.createElement('canvas');
+  c.width = img.width; c.height = img.height;
+  const g = c.getContext('2d');
+  g.drawImage(img, 0, 0);
+  try{
+    const d = g.getImageData(0, 0, c.width, c.height);
+    const p = d.data;
+    let semi = 0, over = 0;
+    for(let i = 0; i < p.length; i += 4){
+      const a = p[i + 3];
+      if(a <= 4 || a >= 250) continue;
+      semi++;
+      if(Math.max(p[i], p[i + 1], p[i + 2]) > a + 6) over++;
+    }
+    if(semi === 0 || over / semi > 0.4) return c;   // 스트레이트 - 손대지 않음
+    for(let i = 0; i < p.length; i += 4){
+      const a = p[i + 3];
+      if(a === 0 || a === 255) continue;
+      const f = 255 / a;
+      p[i]     = Math.min(255, p[i]     * f);
+      p[i + 1] = Math.min(255, p[i + 1] * f);
+      p[i + 2] = Math.min(255, p[i + 2] * f);
+    }
+    g.putImageData(d, 0, 0);
+  }catch(e){ /* 픽셀을 못 읽으면 원본 그대로 씁니다 */ }
+  return c;
+}
+
+function loadImg(src){
+  return new Promise((res, rej) => {
+    const im = new Image();
+    im.crossOrigin = 'anonymous';
+    im.onload = () => res(im);
+    im.onerror = () => rej(new Error(src + ' failed to load'));
+    im.src = src;
   });
 }
-renderDragonGrid();
 
+async function loadAuraSide(id, side){
+  const base = ASSET_BASE + id + '/' + side;
+  const res = await fetch(base + '.plist');
+  if(!res.ok) throw new Error('없음');
+  const [xml, img] = await Promise.all([res.text(), loadImg(base + '.png')]);
+  return { frames: plistFrames(xml), tex: unpremultiply(img) };
+}
 
-// ── 동굴 스킨 아이콘 ──
-const skinBtns = document.getElementById('skinBtns');
-const layerSkin = document.getElementById('layerSkin');
-const skinNone = document.createElement('button');
-skinNone.textContent = 'None';
-skinNone.className = 'on';
-skinNone.addEventListener('click', () => {
-  layerSkin.classList.remove('on');
-  layerSkin.removeAttribute('src');
-  markSkin(skinNone);
+function loadImg(src){
+  return new Promise((res, rej) => {
+    const im = new Image();
+    im.crossOrigin = 'anonymous';
+    im.onload = () => res(im);
+    im.onerror = () => rej(new Error(src + ' failed to load'));
+    im.src = src;
+  });
+}
+
+async function loadAuraSide(id, side){
+  const base = ASSET_BASE + id + '/' + side;
+  const res = await fetch(base + '.plist');
+  if(!res.ok) throw new Error('없음');
+  const [xml, img] = await Promise.all([res.text(), loadImg(base + '.png')]);
+  return { frames: plistFrames(xml), tex: unpremultiply(img) };
+}
+
+async function loadAura(id){
+  if(auraCache[id]) return auraCache[id];
+  const out = {};
+  for(const side of ['back', 'front']){
+    // 한쪽 면만 있는 오라가 있을 수 있어 back/front 를 각각 따로 시도합니다
+    try{ out[side] = await loadAuraSide(id, side); }catch(e){ out[side] = null; }
+  }
+  auraCache[id] = out;
+  return out;
+}
+
+/* 캔버스 픽셀 수를 실제로 보이는 크기(2배 확대 × 화면 배율)에 맞춥니다.
+   이전에는 원본 크기 그대로 그린 뒤 CSS 로 2배 늘려서 한 번 더 확대되며 뭉개졌습니다. */
+function sizeAuraCanvas(cv, data){
+  if(!data){ cv.classList.remove('on'); return; }
+  const f = data.frames[0];
+  const k = FX_BASE_SCALE * baseDPR;
+  cv.style.width  = (f.ow * FX_BASE_SCALE) + 'px';
+  cv.style.height = (f.oh * FX_BASE_SCALE) + 'px';
+  cv.width  = Math.round(f.ow * k);
+  cv.height = Math.round(f.oh * k);
+  cv.classList.add('on');
+}
+
+function drawAuraFrame(ctx2, data, idx){
+  if(!data) return;
+  const f = data.frames[idx % data.frames.length];
+  const k = FX_BASE_SCALE * baseDPR;
+  ctx2.setTransform(1, 0, 0, 1, 0, 0);
+  ctx2.clearRect(0, 0, ctx2.canvas.width, ctx2.canvas.height);
+  ctx2.imageSmoothingEnabled = true;
+  ctx2.imageSmoothingQuality = 'high';
+  ctx2.setTransform(k, 0, 0, k, 0, 0);
+
+  // textureRect 의 w,h 는 "눕히기 전" 크기입니다.
+  // 회전 저장된 조각은 아틀라스에서 (h,w) 를 차지하므로 잘라낼 크기를 바꿔야 합니다.
+  const sw = f.rot ? f.h : f.w;
+  const sh = f.rot ? f.w : f.h;
+  const dw = f.w, dh = f.h;
+  // 트림된 조각을 원본 크기 안의 제자리로 되돌립니다 (spriteOffset 은 y 가 위쪽 기준)
+  const dx = (f.ow - dw) / 2 + f.ox;
+  const dy = (f.oh - dh) / 2 - f.oy;
+
+  if(f.rot){
+    // 반시계 90도로 되돌립니다
+    ctx2.translate(dx, dy + dh);
+    ctx2.rotate(-Math.PI / 2);
+    ctx2.drawImage(data.tex, f.x, f.y, sw, sh, 0, 0, sw, sh);
+  } else {
+    ctx2.drawImage(data.tex, f.x, f.y, sw, sh, dx, dy, dw, dh);
+  }
+}
+
+async function pickAura(id){
+  const token = ++auraToken;
+  curAura = id || null;
+  if(!curAura){
+    auraData = null;
+    layerBack.classList.remove('on');
+    layerFront.classList.remove('on');
+    return;
+  }
+  const data = await loadAura(curAura);
+  if(token !== auraToken) return;
+  auraData = data;
+  sizeAuraCanvas(layerBack, data.back);
+  sizeAuraCanvas(layerFront, data.front);
+  updateViewScale();
+}
+
+const auraBtns = document.getElementById('auraBtns');
+function auraLabel(a){ return a.group === 'SSS' ? a.name : a.name; }
+auraBtns.innerHTML = '<button data-aura="" class="on">None</button>'
+  + AURAS.map(a => '<button data-aura="' + a.id + '" title="' + a.id + '">'
+                 + a.name + '</button>').join('');
+
+function markAura(id){
+  auraBtns.querySelectorAll('[data-aura]').forEach(c =>
+    c.classList.toggle('on', c.dataset.aura === (id || '')));
+}
+auraBtns.querySelectorAll('[data-aura]').forEach(b => {
+  b.onclick = () => { markAura(b.dataset.aura); pickAura(b.dataset.aura); };
 });
-skinBtns.appendChild(skinNone);
-for (let n = 1; n <= SKIN_COUNT; n++) {
-  const b = document.createElement('button');
-  b.innerHTML = '<img src="' + SKIN_ICON(n) + '" alt="Cave skin ' + n + '">';
-  b.addEventListener('click', () => {
+
+/* ── 드래곤 고르기: 검색 · 속성 · 분류 · 에셋 유무 ── */
+const dragonGrid  = document.getElementById('dragonGrid');
+const searchInput = document.getElementById('searchInput');
+const pickerCount = document.getElementById('pickerCount');
+
+const ELEMS = ['땅', '물', '불', '바람', '빛', '어둠', '황혼', '여명', '악몽'];
+const KINDS = [['all', 'All'], ['advent', 'Advent'], ['grade', 'Grade'], ['normal', 'Normal']];
+let curElem = '', curKind = 'all', curQuery = '';
+
+/* 속성 드롭다운 (동굴 배경과 같은 아이콘 선택 방식) */
+const elemSelect  = document.getElementById('elemSelect');
+const elemTrigger = document.getElementById('elemTrigger');
+const elemMenu    = document.getElementById('elemMenu');
+const elemThumb   = document.getElementById('elemThumb');
+const elemName    = document.getElementById('elemName');
+
+elemMenu.innerHTML = [['', 'All elements']].concat(ELEMS.map(e => [e, ELEM_EN[e]]))
+  .map(([v, label]) =>
+    '<button type="button" class="icon-opt' + (v === curElem ? ' on' : '') + '"'
+    + ' role="option" aria-selected="' + (v === curElem) + '" data-elem="' + v + '">'
+    + '<span class="icon-thumb"' + (v ? ' style="background-image:url(' + SITE_BASE + ELEM_ICON[v] + ')"' : '') + '></span>'
+    + '<span>' + label + '</span></button>').join('');
+
+function pickElem(v){
+  curElem = v;
+  elemName.textContent = ELEM_EN[v] || 'All elements';
+  elemThumb.style.backgroundImage = v ? 'url(' + SITE_BASE + ELEM_ICON[v] + ')' : '';
+  elemMenu.querySelectorAll('.icon-opt').forEach(b => {
+    const on = b.dataset.elem === v;
+    b.classList.toggle('on', on);
+    b.setAttribute('aria-selected', on);
+  });
+  closeElemMenu();
+  renderDragonGrid();
+}
+function closeElemMenu(){
+  elemSelect.classList.remove('open');
+  elemTrigger.setAttribute('aria-expanded', 'false');
+}
+elemTrigger.onclick = e => {
+  e.stopPropagation();
+  const open = elemSelect.classList.toggle('open');
+  elemTrigger.setAttribute('aria-expanded', String(open));
+};
+elemMenu.querySelectorAll('.icon-opt').forEach(b => { b.onclick = () => pickElem(b.dataset.elem); });
+
+/* 분류 세그먼트 */
+const kindSeg = document.getElementById('kindSeg');
+kindSeg.innerHTML = KINDS.map(([v, label]) =>
+  '<button type="button" data-kind="' + v + '" class="' + (v === curKind ? 'on' : '') + '"'
+  + ' aria-pressed="' + (v === curKind) + '">' + label + '</button>').join('');
+kindSeg.querySelectorAll('[data-kind]').forEach(b => {
+  b.onclick = () => {
+    curKind = b.dataset.kind;
+    kindSeg.querySelectorAll('button').forEach(c => {
+      const on = c === b;
+      c.classList.toggle('on', on);
+      c.setAttribute('aria-pressed', String(on));
+    });
+    renderDragonGrid();
+  };
+});
+
+let searchTimer = 0;
+searchInput.oninput = () => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    curQuery = searchInput.value.replace(/\s+/g, '').toLowerCase();
+    renderDragonGrid();
+  }, 120);
+};
+
+function filtered(){
+  return DRAGONS.filter(d => {
+    if(curElem && d.elem !== curElem) return false;
+    if(curKind === 'advent' && !d.advent) return false;
+    if(curKind === 'grade' && !d.family) return false;
+    if(curKind === 'normal' && (d.advent || d.family)) return false;
+    if(curQuery && d.key.indexOf(curQuery) === -1) return false;
+    return true;
+  });
+}
+
+function renderDragonGrid(){
+  const list = filtered();
+  dragonGrid.classList.toggle('empty', list.length === 0);
+  if(!list.length){
+    dragonGrid.textContent = 'No dragons match these filters';
+  } else {
+    const frag = document.createDocumentFragment();
+    for(const dr of list){
+      const el = document.createElement('div');
+      el.className = 'dragon-row';
+      if(curDragon && curDragon.id === dr.id) el.classList.add('on');
+      if(manifest && !hasAsset(dr)) el.classList.add('missing');
+      el.innerHTML = '<img src="' + ICON_SRC(dr.id, dr.stage) + '" alt="" loading="lazy">'
+                   + '<span class="nm"><span class="nm-en">' + (dr.nameEn || dr.name) + '</span>'
+                   + (dr.nameEn ? '<span class="nm-kr">' + dr.name + '</span>' : '') + '</span>';
+      el.title = dr.label;
+      el.querySelector('img').addEventListener('error', function(){ this.style.display = 'none'; });
+      el.onclick = () => {
+        dragonGrid.querySelectorAll('.dragon-row').forEach(c => c.classList.toggle('on', c === el));
+        loadDragon(dr);
+      };
+      frag.appendChild(el);
+    }
+    dragonGrid.replaceChildren(frag);
+  }
+  const withAsset = manifest ? list.filter(hasAsset).length : null;
+  pickerCount.textContent = list.length + ' dragons'
+    + (withAsset === null ? '' : ' · assets ' + withAsset);
+}
+
+/* ── 동굴 배경 (아이콘 드롭다운) ── */
+const skinSelect  = document.getElementById('skinSelect');
+const skinTrigger = document.getElementById('skinTrigger');
+const skinMenu    = document.getElementById('skinMenu');
+const skinThumb   = document.getElementById('skinThumb');
+const skinName    = document.getElementById('skinName');
+
+const SKINS = [{ n: 0, label: 'None' }];
+for(let i = 1; i <= SKIN_COUNT; i++) SKINS.push({ n: i, label: 'Cave ' + i });
+let curSkin = 0;
+
+skinMenu.innerHTML = SKINS.map(s =>
+  '<button type="button" class="icon-opt' + (s.n === curSkin ? ' on' : '') + '"'
+  + ' role="option" aria-selected="' + (s.n === curSkin) + '" data-skin="' + s.n + '">'
+  + '<span class="icon-thumb"' + (s.n ? ' style="background-image:url(' + SKIN_ICON(s.n) + ')"' : '') + '></span>'
+  + '<span>' + s.label + '</span></button>').join('');
+
+function pickSkin(n){
+  curSkin = n;
+  if(n){
     layerSkin.src = SKIN_SRC(n);
     layerSkin.classList.add('on');
-    markSkin(b);
-  });
-  skinBtns.appendChild(b);
-}
-function markSkin(btn) {
-  [...skinBtns.children].forEach(b => b.classList.toggle('on', b === btn));
-}
-
-// ── 배경 전환 ──
-document.getElementById('bgToggle').addEventListener('click', () => {
-  document.getElementById('stage').classList.toggle('checker');
-});
-
-// ── 전체 미리 받기 (Cache Storage) ──
-const preloadBtn = document.getElementById('preloadBtn');
-const preloadStat = document.getElementById('preloadStat');
-const PRELOAD_IDLE_LABEL = preloadBtn.textContent;
-let preState = 'idle';   // idle | armed | running | done
-let preStop = false;
-let armTimer = 0;
-
-function fmtMB(b) { return (b / 1048576).toFixed(0) + 'MB'; }
-
-preloadBtn.addEventListener('click', async () => {
-  if (preState === 'idle') {
-    // 1차 클릭 → 와이파이 경고 + 재확인
-    preState = 'armed';
-    preloadBtn.classList.add('armed');
-    preloadBtn.textContent = '⚠️ Tap once more to start';
-    preloadStat.textContent = '⚠️ This downloads about 3.4GB. Make sure you are on Wi-Fi before continuing!\nDownloading over mobile data may result in very high charges.';
-    clearTimeout(armTimer);
-    armTimer = setTimeout(() => {   // 8초 안에 재클릭 없으면 원상복구
-      if (preState === 'armed') {
-        preState = 'idle';
-        preloadBtn.classList.remove('armed');
-        preloadBtn.textContent = PRELOAD_IDLE_LABEL;
-        preloadStat.textContent = '';
-      }
-    }, 8000);
-    return;
-  }
-  if (preState === 'armed') {
-    // 2차 클릭 → 시작
-    clearTimeout(armTimer);
-    preState = 'running';
-    preStop = false;
-    preloadBtn.classList.remove('armed');
-    preloadBtn.classList.add('running');
-    preloadBtn.textContent = '⏸ Stop';
-    if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
-    await runPreload();
-    return;
-  }
-  if (preState === 'running') { preStop = true; preloadBtn.textContent = 'Stopping…'; }
-});
-
-async function runPreload() {
-  let cache;
-  try { cache = await caches.open(CACHE_NAME); }
-  catch (e) {
-    preloadStat.textContent = 'This browser does not support pre-downloading.';
-    resetPreloadBtn(); return;
-  }
-  let bytes = 0, doneCnt = 0;
-  try {
-    for (const dr of DRAGONS) {
-      if (preStop) break;
-      const base = ANIM_BASE(dr.id);
-      let i = 0, miss = false;
-      while (!miss && i < 1000) {
-        const jobs = [];
-        for (let b = 0; b < 8; b++) {
-          const url = base + FRAME_FILE(i + b);
-          jobs.push((async () => {
-            if (await cache.match(url)) return 'hit';
-            const r = await fetch(url).catch(() => null);
-            if (!r || !r.ok) return 'miss';
-            const size = +r.headers.get('content-length') || 0;
-            await cache.put(url, r);
-            return size;
-          })());
-        }
-        const results = await Promise.all(jobs);
-        for (const r of results) {
-          if (r === 'miss') { miss = true; break; }
-          if (typeof r === 'number') bytes += r;
-        }
-        i += 8;
-        preloadStat.textContent = 'Downloading… ' + doneCnt + '/' + DRAGONS.length + ' dragons · ' + fmtMB(bytes) + '\nCurrent: ' + dr.name;
-        if (preStop) break;
-      }
-      doneCnt++;
-    }
-  } catch (e) {
-    preloadStat.textContent = 'Stopped: not enough storage space (' + doneCnt + '/' + DRAGONS.length + ' dragons · ' + fmtMB(bytes) + ').\nFree up some space on your device and tap again. Everything downloaded so far is saved.';
-    resetPreloadBtn(); return;
-  }
-  if (preStop) {
-    preloadStat.textContent = 'Stopped — saved up to ' + doneCnt + '/' + DRAGONS.length + ' dragons (' + fmtMB(bytes) + ').\nTap again to resume.';
-    resetPreloadBtn();
+    stage.classList.remove('checker');
+    skinThumb.style.backgroundImage = 'url(' + SKIN_ICON(n) + ')';
   } else {
-    preState = 'done';
-    preloadBtn.classList.remove('running');
-    preloadBtn.classList.add('done');
-    preloadBtn.textContent = '✓ All downloaded';
-    preloadStat.textContent = 'Done! All dragons now play instantly with no loading.' + (bytes ? ' (downloaded this session: ' + fmtMB(bytes) + ')' : '');
+    layerSkin.classList.remove('on');
+    layerSkin.removeAttribute('src');
+    stage.classList.add('checker');
+    skinThumb.style.backgroundImage = '';
   }
+  skinName.textContent = SKINS.find(s => s.n === n).label;
+  skinMenu.querySelectorAll('.icon-opt').forEach(b => {
+    const on = +b.dataset.skin === n;
+    b.classList.toggle('on', on);
+    b.setAttribute('aria-selected', on);
+  });
+  closeSkinMenu();
+}
+function openSkinMenu(){
+  skinSelect.classList.add('open');
+  skinTrigger.setAttribute('aria-expanded', 'true');
+}
+function closeSkinMenu(){
+  skinSelect.classList.remove('open');
+  skinTrigger.setAttribute('aria-expanded', 'false');
+}
+skinTrigger.onclick = e => {
+  e.stopPropagation();
+  skinSelect.classList.contains('open') ? closeSkinMenu() : openSkinMenu();
+};
+skinMenu.querySelectorAll('.icon-opt').forEach(b => {
+  b.onclick = () => pickSkin(+b.dataset.skin);
+});
+document.addEventListener('click', e => {
+  if(!skinSelect.contains(e.target)) closeSkinMenu();
+  if(!elemSelect.contains(e.target)) closeElemMenu();
+});
+document.addEventListener('keydown', e => {
+  if(e.key !== 'Escape') return;
+  if(skinSelect.classList.contains('open')){ closeSkinMenu(); skinTrigger.focus(); }
+  if(elemSelect.classList.contains('open')){ closeElemMenu(); elemTrigger.focus(); }
+});
+
+/* ── 에셋 목록 불러오기 ── */
+async function loadManifest(){
+  const tried = [];
+  for(const base of ASSET_BASES){
+    try{
+      const res = await fetch(base + 'manifest.json');
+      if(!res.ok) throw new Error('HTTP ' + res.status);
+      manifest = await res.json();
+      ASSET_BASE = base;
+      resolveAssets();
+        renderDragonGrid();
+      msg(null);
+      return;
+    }catch(err){
+      tried.push(base + 'manifest.json  →  ' + err.message);
+    }
+  }
+  msg('Could not load the asset list (manifest.json).\n\n' + tried.join('\n'));
 }
 
-function resetPreloadBtn() {
-  preState = 'idle';
-  preloadBtn.classList.remove('armed', 'running');
-  preloadBtn.textContent = PRELOAD_IDLE_LABEL;
-}
+/* ── 시작 ── */
+updateViewScale();
+renderDragonGrid();
+requestAnimationFrame(frame);
+loadManifest();
 
-
-
-render();
 </script>
 </body>
 </html>

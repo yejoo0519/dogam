@@ -474,11 +474,23 @@ class Skeleton{
     this.slots = [];
     this.slotMap = {};
     json.slots.forEach((sd, i) => {
+      // slot color: RRGGBBAA. read RGB tint too, not just alpha.
+      let setupTint = null;
+      if(sd.color){
+        const rr = parseInt(sd.color.slice(0,2),16);
+        const gg = parseInt(sd.color.slice(2,4),16);
+        const bb = parseInt(sd.color.slice(4,6),16);
+        if(rr !== 255 || gg !== 255 || bb !== 255){
+          setupTint = 'rgb(' + rr + ',' + gg + ',' + bb + ')';
+        }
+      }
       const s = {
         name: sd.name,
         bone: this.boneMap[sd.bone],
         setupAttachment: sd.attachment || null,
         setupAlpha: sd.color ? parseInt(sd.color.slice(6,8),16)/255 : 1,
+        setupTint: setupTint,
+        tint: null,
         attachment: null,
         alpha: 1,
         order: i
@@ -588,6 +600,7 @@ class Skeleton{
     for(const s of this.slots){
       s.attachment = s.setupAttachment;
       s.alpha = s.setupAlpha;
+      s.tint = s.setupTint;
     }
     this.drawOrder = this.slots.slice();
   }
@@ -648,18 +661,31 @@ class Skeleton{
       }
       if(tl.color){
         const f = tl.color;
-        let alpha;
         const av = c => parseInt(c.slice(6,8),16)/255;
-        if(time <= f[0].time) alpha = av(f[0].color);
-        else if(time >= f[f.length-1].time) alpha = av(f[f.length-1].color);
-        else{
+        const rv = c => parseInt(c.slice(0,2),16);
+        const gv = c => parseInt(c.slice(2,4),16);
+        const bv = c => parseInt(c.slice(4,6),16);
+        let alpha, R, G, B;
+        if(time <= f[0].time){
+          const c = f[0].color;
+          alpha = av(c); R = rv(c); G = gv(c); B = bv(c);
+        } else if(time >= f[f.length-1].time){
+          const c = f[f.length-1].color;
+          alpha = av(c); R = rv(c); G = gv(c); B = bv(c);
+        } else {
           const i = findFrame(f, time);
           const f0 = f[i], f1 = f[i+1];
           const p = curvePercent(f0.curve,
                     (time - f0.time) / (f1.time - f0.time));
-          alpha = av(f0.color) + (av(f1.color) - av(f0.color)) * p;
+          const c0 = f0.color, c1 = f1.color;
+          alpha = av(c0) + (av(c1) - av(c0)) * p;
+          R = Math.round(rv(c0) + (rv(c1) - rv(c0)) * p);
+          G = Math.round(gv(c0) + (gv(c1) - gv(c0)) * p);
+          B = Math.round(bv(c0) + (bv(c1) - bv(c0)) * p);
         }
         slot.alpha = alpha;
+        slot.tint = (R !== 255 || G !== 255 || B !== 255)
+          ? 'rgb(' + R + ',' + G + ',' + B + ')' : null;
       }
     }
 
@@ -733,10 +759,37 @@ class Skeleton{
       ctx.globalAlpha = slot.alpha;
       ctx.setTransform(M[0], M[1], M[2], M[3], M[4], M[5]);
       const r = att.region;
-      ctx.drawImage(this.image, r.x, r.y, r.w, r.h, 0, 0, att.srcW, att.srcH);
+      if(slot.tint){
+        const src = this._getTintedRegion(r, att.srcW, att.srcH, slot.tint);
+        ctx.drawImage(src, 0, 0, att.srcW, att.srcH);
+      } else {
+        ctx.drawImage(this.image, r.x, r.y, r.w, r.h, 0, 0, att.srcW, att.srcH);
+      }
     }
     ctx.setTransform(1,0,0,1,0,0);
     ctx.globalAlpha = 1;
+  }
+
+  /* return a canvas of the texture region with tint color multiplied in (cached) */
+  _getTintedRegion(r, sw, sh, tint){
+    if(!this._tintCache) this._tintCache = {};
+    const key = r.x + '_' + r.y + '_' + r.w + '_' + r.h + '_' + tint;
+    if(this._tintCache[key]) return this._tintCache[key];
+
+    const oc = document.createElement('canvas');
+    oc.width = sw; oc.height = sh;
+    const octx = oc.getContext('2d');
+
+    octx.drawImage(this.image, r.x, r.y, r.w, r.h, 0, 0, sw, sh);
+    octx.globalCompositeOperation = 'multiply';
+    octx.fillStyle = tint;
+    octx.fillRect(0, 0, sw, sh);
+    octx.globalCompositeOperation = 'destination-in';
+    octx.drawImage(this.image, r.x, r.y, r.w, r.h, 0, 0, sw, sh);
+    octx.globalCompositeOperation = 'source-over';
+
+    this._tintCache[key] = oc;
+    return oc;
   }
 
   /* 본 뼈대 오버레이 (디버그) */

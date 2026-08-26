@@ -1061,8 +1061,10 @@ function onFilter(){
 // 엔트리별 현재 선택 단계 저장
 const stageState = {};
 
-function getN(name){
-  const d = dexData.find(x => x.n === name);
+function getN(key){
+  if(typeof key === "number") return String(key);
+  if(typeof key === "string" && /^\d+$/.test(key)) return key;
+  const d = dexData.find(x => x.n === key);
   return d && d.id ? String(d.id) : null;
 }
 const BASE = "..";
@@ -1135,7 +1137,7 @@ function buildEntry(d, idx){
   wrap.className = "dragon-entry";
   wrap.dataset.idx = idx;
 
-  const initFull = fullUrl(d.n, 4);
+  const initFull = fullUrl(d.id, 4);
 
   wrap.innerHTML = `
     <div class="entry-body">
@@ -1193,8 +1195,8 @@ function buildEntry(d, idx){
   STAGES.forEach(s => {
     const avail = stageAvail(d, s.i);
     if(!avail) return; // 미보유 단계는 표시하지 않음
-    const pUrl = profileUrl(d.n, s.i);
-    const fallbackUrl = profileUrl(d.n, 4); // 성체 프로필 폴백
+    const pUrl = profileUrl(d.id, s.i);
+    const fallbackUrl = profileUrl(d.id, 4); // 성체 프로필 폴백
     const thumbWrap = document.createElement("div");
     thumbWrap.className = "pthumb" + (avail ? "" : " unavail");
     thumbWrap.dataset.si = s.i;
@@ -1239,7 +1241,7 @@ function selectStage(d, idx, si){
   // 큰 이미지 교체
   const mi = document.getElementById("mimg-" + idx);
   const mp = document.getElementById("mph-" + idx);
-  const fUrl = fullUrl(d.n, si);
+  const fUrl = fullUrl(d.id, si);
   if(fUrl){
     mi.src = fUrl; mi.style.display = "block"; mp.style.display = "none";
     mi.onerror = () => { mi.style.display = "none"; mp.style.display = "flex"; };
@@ -1371,7 +1373,7 @@ async function dlCurrent(){
   const idx=dlIdx; closeDlMenu(); if(idx==null)return;
   const d=dexData[idx]; const stage=stageState[idx]||4;
   const st=STAGES.find(s=>s.i===stage); const lbl=st?st.l:String(stage);
-  const url=fullUrl(d.n,stage); if(!url)return;
+  const url=fullUrl(d.id,stage); if(!url)return;
   await saveImage(url, `${sanitizeName(d.n)}_${lbl}.png`);
 }
 let _jszipLoading=null;
@@ -1396,7 +1398,7 @@ async function dlAllZip(){
     let added=0;
     for(const s of STAGES){
       if(!stageAvail(d,s.i))continue;
-      const url=fullUrl(d.n,s.i); if(!url)continue;
+      const url=fullUrl(d.id,s.i); if(!url)continue;
       try{ const r=await fetch(url); if(!r.ok)continue; const b=await r.blob(); zip.file(`${s.l}.png`,b); added++; }catch(e){}
     }
     if(!added){ window.alert("No images available to download."); return; }

@@ -106,6 +106,10 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
 .stat-table tbody tr:hover td{background:var(--bg3)}
 .stat-table .row-label{text-align:left;font-weight:500;color:var(--text2);width:80px}
 .stat-nil{color:var(--text4)}
+.grade-row{display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px;background:var(--bg2);border-bottom:1px solid var(--border)}
+.grade-btn{padding:4px 12px;border-radius:16px;font-size:11px;border:1px solid var(--border3);background:var(--bg3);color:var(--text2);cursor:pointer;transition:all 0.12s}
+.grade-btn:hover{border-color:var(--accent-border);color:var(--text)}
+.grade-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 
 /* 속성 배지 */
 .eb-Earth{background:#fff3e0;color:#e65100}.eb-Water{background:#e3f2fd;color:#1565c0}
@@ -1061,6 +1065,29 @@ function onFilter(){
 // 엔트리별 현재 선택 단계 저장
 const stageState = {};
 
+// Grade dragons - selected grade per entry
+const GRADES = ["C","B","A","S","SS","SSS"];
+const gradeState = {};
+
+function gradeSetOf(d){
+  return (typeof dexGradeStatMap !== "undefined" ? dexGradeStatMap[d.id] : null) || null;
+}
+
+function gradeRowHtml(d, idx){
+  if(!gradeSetOf(d)) return "";
+  const cur = gradeState[idx] || "C";
+  return `<div class="grade-row" id="grade-${idx}">` + GRADES.map(g =>
+    `<button class="grade-btn${g===cur?" active":""}" data-grade="${g}" onclick="selectGrade(${idx},'${g}')">${g}</button>`
+  ).join("") + `</div>`;
+}
+
+function selectGrade(idx, g){
+  gradeState[idx] = g;
+  const row = document.getElementById("grade-" + idx);
+  if(row) row.querySelectorAll(".grade-btn").forEach(b => b.classList.toggle("active", b.dataset.grade === g));
+  renderStat(dexData[idx], idx, stageState[idx] || 4);
+}
+
 function getN(key){
   if(typeof key === "number") return String(key);
   if(typeof key === "string" && /^\d+$/.test(key)) return key;
@@ -1177,6 +1204,7 @@ function buildEntry(d, idx){
       </div>
     </div>
     <div class="stat-section" id="stat-${idx}">
+      ${gradeRowHtml(d, idx)}
       <table class="stat-table">
         <thead>
           <tr>
@@ -1269,7 +1297,9 @@ function toggleStat(idx){
 
 function renderStat(d, idx, si){
   const tbody = document.getElementById("stbody-" + idx);
-  const ss = (typeof dexStatMap !== "undefined" ? dexStatMap[d.id] : null) || null;
+  const gset = gradeSetOf(d);
+  const ss = gset ? (gset[gradeState[idx] || "C"] || null)
+                  : ((typeof dexStatMap !== "undefined" ? dexStatMap[d.id] : null) || null);
   tbody.innerHTML = [
     {label:"HP",  key:"hp"},
     {label:"ATK", key:"atk"},

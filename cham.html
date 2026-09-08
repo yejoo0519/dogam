@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>등급 드래곤 랭킹</title>
+<link id="theme-css" rel="stylesheet" href="./theme-dark.css">
+<script src="./theme.js"></script>
+<style>
+/* ── 테마 팔레트 (index.html과 동일) ──────────────── */
+[data-theme="dark"]{
+  --bg:#0e1116;--bg2:#161a22;--bg3:#1c212c;
+  --border:#23293a;--border2:#1b1f2a;--border3:#2d3447;
+  --text:#eaecf2;--text2:#b3b9c7;--text3:#7d8597;--text4:#565d6e;
+  --accent:#7aa2f7;--accent-bg:rgba(122,162,247,0.12);--accent-border:rgba(122,162,247,0.30);
+  --hp:#6cc487;--atk:#ef6a63;--def:#5dcff5;--ev:#f5c842;--ev-bar:rgba(245,200,66,0.16);
+}
+[data-theme="light"]{
+  --bg:#f7f7f8;--bg2:#ffffff;--bg3:#f1f2f4;
+  --border:#e6e7ea;--border2:#eeeff2;--border3:#d4d6db;
+  --text:#15171c;--text2:#4a4d57;--text3:#71757f;--text4:#9aa0aa;
+  --accent:#2f6fed;--accent-bg:rgba(47,111,237,0.10);--accent-border:rgba(47,111,237,0.32);
+  --hp:#2e8b57;--atk:#c62828;--def:#1565c0;--ev:#a97400;--ev-bar:rgba(169,116,0,0.14);
+}
+[data-theme="beige"]{
+  --bg:#f3ecdd;--bg2:#faf3e2;--bg3:#ebe0c7;
+  --border:#d8caa8;--border2:#e1d4b3;--border3:#c0ad84;
+  --text:#2a2316;--text2:#5a4e34;--text3:#837553;--text4:#a99971;
+  --accent:#b06a1e;--accent-bg:rgba(176,106,30,0.10);--accent-border:rgba(176,106,30,0.32);
+  --hp:#3f7d4f;--atk:#b03a30;--def:#2a6496;--ev:#96650f;--ev-bar:rgba(150,101,15,0.16);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--text);padding:12px}
+
+/* ── 상단 탭바 (다른 페이지와 동일) ── */
+#tab-bar{display:flex;gap:0;margin-bottom:18px;border-bottom:2px solid var(--border);align-items:flex-end}
+#tab-bar a{text-decoration:none}
+#site-title{display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;margin-right:16px;margin-bottom:6px;border:1.5px solid var(--border3);border-radius:20px;padding:10px 18px;transition:border-color 0.15s;flex-shrink:0}
+#site-title:hover{border-color:var(--accent)}
+#site-title .title-main{font-size:16px;font-weight:700;color:var(--text2);line-height:1.4}
+
+/* ── 페이지 헤더 ── */
+#page-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+#page-head h1{font-size:22px;font-weight:700;color:var(--text);letter-spacing:-0.01em}
+#count{font-size:12px;color:var(--text3);font-variant-numeric:tabular-nums}
+
+/* ── 컨트롤 ── */
+#controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:10px}
+.seg{display:inline-flex;background:var(--bg3);border:1px solid var(--border3);border-radius:10px;padding:3px;gap:2px}
+.seg button{padding:6px 16px;border:none;border-radius:7px;background:none;color:var(--text3);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:color 0.12s,background 0.12s;letter-spacing:0.01em}
+.seg button:hover{color:var(--text2)}
+.seg button.active{background:var(--bg2);color:var(--accent);box-shadow:0 1px 2px rgba(0,0,0,0.10)}
+.seg button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+
+#elem-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px}
+.etag{display:inline-flex;align-items:center;gap:5px;padding:4px 11px 4px 6px;border-radius:20px;font-size:11px;font-weight:500;border:1px solid var(--border3);background:var(--bg3);color:var(--text2);cursor:pointer;font-family:inherit;transition:border-color 0.12s,color 0.12s}
+#e-all{padding:4px 12px}
+.etag:hover{border-color:var(--accent-border);color:var(--text)}
+.etag .eic{width:16px;height:16px;border-radius:4px;object-fit:cover;flex-shrink:0}
+.etag.active{background:var(--accent-bg);border-color:var(--accent-border);color:var(--text)}
+.etag:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+
+/* ── 표 ── */
+#tbl-wrap{border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--bg2)}
+#tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:12px;min-width:660px}
+thead th{background:var(--bg3);padding:9px 10px;font-size:11px;font-weight:600;color:var(--text3);text-align:center;white-space:nowrap;border-bottom:1px solid var(--border)}
+thead th.left{text-align:left}
+tbody td{padding:9px 10px;text-align:center;color:var(--text);border-bottom:1px solid var(--border2);vertical-align:middle;font-variant-numeric:tabular-nums}
+tbody tr:last-child td{border-bottom:none}
+tbody tr{border-left:3px solid var(--el,transparent)}
+tbody tr:hover td{background:var(--bg3)}
+td.left{text-align:left;white-space:nowrap}
+
+.rk{font-size:12px;font-weight:700;color:var(--text3)}
+.rk.top{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 5px;border-radius:11px;background:var(--accent-bg);color:var(--accent)}
+.dragon-img{width:34px;height:34px;border-radius:7px;object-fit:cover;display:block;margin:0 auto;background:var(--bg3)}
+.img-placeholder{width:34px;height:34px;border-radius:7px;background:var(--bg3);border:1px dashed var(--border3);margin:0 auto}
+.dname{font-size:12px;font-weight:600;color:var(--text)}
+.skill-ic{width:16px;height:16px;margin-left:5px;vertical-align:-3px}
+.elem-ic{width:22px;height:22px;border-radius:5px;object-fit:cover;display:block;margin:0 auto}
+.elem-ic-none{width:22px;height:22px;border-radius:5px;background:var(--bg3);margin:0 auto}
+.s-hp{color:var(--hp)}
+.s-atk{color:var(--atk)}
+.s-def{color:var(--def)}
+.lv{font-size:11px;color:var(--text3)}
+.raw{font-size:11px;color:var(--text3);white-space:nowrap}
+
+/* Eval — 이 표에서 유일하게 강조하는 열. 막대 길이 = 1위 대비 비율 */
+td.ev-cell{padding:0;width:118px}
+.ev{position:relative;display:flex;align-items:center;justify-content:flex-end;height:34px;padding:0 10px;margin:0 6px;border-radius:6px;overflow:hidden}
+.ev::before{content:"";position:absolute;left:0;top:0;bottom:0;width:var(--w,0%);background:var(--ev-bar);border-radius:6px}
+.ev span{position:relative;font-size:13px;font-weight:700;color:var(--ev)}
+
+#empty{padding:48px 16px;text-align:center;color:var(--text3);font-size:13px}
+
+/* ── 모바일 ── */
+.m-only{display:none}
+@media(max-width:640px){
+  body{padding:10px}
+  #page-head h1{font-size:19px}
+  table{min-width:0}
+  thead{display:none}
+  tbody tr{display:block;padding:9px 10px 10px;border-bottom:1px solid var(--border2)}
+  tbody td{display:none}
+  .m-only{display:block}
+  .m-top{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+  .m-top .dragon-img,.m-top .img-placeholder{margin:0;flex-shrink:0}
+  .m-name{flex:1;min-width:0;font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .m-rank{min-width:26px;font-size:12px;font-weight:700;color:var(--text3);font-variant-numeric:tabular-nums}
+  .m-rank.top{display:inline-flex;align-items:center;justify-content:center;height:22px;border-radius:11px;background:var(--accent-bg);color:var(--accent)}
+  .m-stats{display:flex;gap:0;background:var(--bg3);border-radius:8px;padding:6px 0}
+  .m-cell{flex:1;text-align:center;font-variant-numeric:tabular-nums}
+  .m-cell b{display:block;font-size:9px;font-weight:500;color:var(--text4);letter-spacing:0.02em}
+  .m-cell span{display:block;font-size:12px;font-weight:600;margin-top:1px}
+  .m-raw{margin-top:6px;font-size:10px;color:var(--text4);text-align:center;font-variant-numeric:tabular-nums}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div id="tab-bar">
+  <a href="./index.html" id="site-title"><span class="title-main">메인화면 이동</span></a>
+</div>
+
+<div id="page-head">
+  <h1>등급 드래곤 랭킹</h1>
+  <span id="count"></span>
+</div>
+
+<div id="controls">
+  <div class="seg" id="seg-grade">
+    <button class="active" data-grade="SSS" onclick="setGrade('SSS')">챔대</button>
+    <button data-grade="SS" onclick="setGrade('SS')">루키</button>
+  </div>
+  <div class="seg" id="seg-lv">
+    <button class="active" data-lv="45" onclick="setLv(45)">Lv.45</button>
+    <button data-lv="21" onclick="setLv(21)">Lv.21</button>
+  </div>
+</div>
+
+<div id="elem-row"></div>
+
+<div id="tbl-wrap">
+  <div id="tbl-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:44px">순위</th>
+          <th style="width:46px"></th>
+          <th class="left">드래곤</th>
+          <th style="width:38px">속성</th>
+          <th style="width:44px">레벨</th>
+          <th style="width:56px">HP</th>
+          <th style="width:56px">ATK</th>
+          <th style="width:56px">DEF</th>
+          <th style="width:118px">Eval</th>
+          <th style="width:150px">기본 / 성장</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+  <div id="empty" style="display:none">조건에 맞는 드래곤이 없습니다. 속성 필터를 풀어보세요.</div>
+</div>
+
+<script>
+const sssData=[
+{rank:1,did:441,kor:"코스모",hp:764,atk:198,def:260,eval:2596,base:"192/22/40",grow:"13/4/5",elem:"여명",lv:45},
+{rank:2,did:657,kor:"후긴",hp:784,atk:255,def:197,eval:2592,base:"212/35/21",grow:"13/5/4",elem:"빛",lv:45,skill:"boom"},
+{rank:2,did:658,kor:"무닌",hp:784,atk:197,def:255,eval:2592,base:"212/21/35",grow:"13/4/5",elem:"어둠",lv:45,skill:"def"},
+{rank:2,did:702,kor:"스쿨드",hp:584,atk:251,def:251,eval:2592,base:"188/31/31",grow:"9/5/5",elem:"불",lv:45,skill:"boom"},
+{rank:5,did:636,kor:"거들테일 드래곤",hp:739,atk:240,def:220,eval:2579,base:"211/20/44",grow:"12/5/4",elem:"땅",lv:45,skill:"boom"},
+{rank:6,did:699,kor:"팡팡",hp:541,atk:254,def:254,eval:2573,base:"145/34/34",grow:"9/5/5",elem:"바람",lv:45},
+{rank:7,did:525,kor:"지바타르",hp:1020,atk:198,def:190,eval:2572,base:"272/22/14",grow:"17/4/4",elem:"바람",lv:45,skill:"boom"},
+{rank:8,did:679,kor:"슬레이프니르",hp:915,atk:157,def:257,eval:2571,base:"211/25/37",grow:"16/3/5",elem:"땅",lv:45,skill:"def"},
+{rank:9,did:700,kor:"미스틱아츠",hp:1066,atk:156,def:220,eval:2570,base:"186/24/44",grow:"20/3/4",elem:"땅",lv:45},
+{rank:10,did:507,kor:"펜리르",hp:1161,atk:200,def:152,eval:2569,base:"281/24/20",grow:"20/4/3",elem:"땅",lv:45,skill:"boom"},
+{rank:10,did:680,kor:"고귀한 펜리르",hp:1161,atk:200,def:152,eval:2569,base:"281/24/20",grow:"20/4/3",elem:"땅",lv:45,skill:"boom"},
+{rank:12,did:561,kor:"타라",hp:773,atk:251,def:197,eval:2565,base:"201/31/21",grow:"13/5/4",elem:"불",lv:45},
+{rank:13,did:670,kor:"장고",hp:845,atk:258,def:167,eval:2545,base:"185/38/35",grow:"15/5/3",elem:"땅",lv:45},
+{rank:14,did:656,kor:"파프니르",hp:888,atk:207,def:207,eval:2544,base:"228/31/31",grow:"15/4/4",elem:"불",lv:45},
+{rank:15,did:522,kor:"페트로아",hp:838,atk:212,def:209,eval:2522,base:"222/36/33",grow:"14/4/4",elem:"불",lv:45},
+{rank:16,did:477,kor:"샬롯",hp:821,atk:261,def:164,eval:2521,base:"205/41/32",grow:"14/5/3",elem:"땅",lv:45},
+{rank:17,did:607,kor:"에슈",hp:839,atk:211,def:209,eval:2519,base:"223/35/33",grow:"14/4/4",elem:"황혼",lv:45},
+{rank:17,did:619,kor:"라키온",hp:851,atk:208,def:209,eval:2519,base:"235/32/33",grow:"14/4/4",elem:"땅",lv:45},
+{rank:19,did:478,kor:"이지스",hp:853,atk:206,def:210,eval:2517,base:"237/30/34",grow:"14/4/4",elem:"빛",lv:45},
+{rank:19,did:534,kor:"고귀한 이지스",hp:853,atk:206,def:210,eval:2517,base:"237/30/34",grow:"14/4/4",elem:"빛",lv:45},
+{rank:21,did:678,kor:"호드",hp:819,atk:212,def:212,eval:2515,base:"203/36/36",grow:"14/4/4",elem:"물",lv:45},
+{rank:22,did:391,kor:"썬더레인 드래곤",hp:628,atk:315,def:154,eval:2504,base:"188/51/22",grow:"10/6/3",elem:"빛",lv:45},
+{rank:23,did:434,kor:"하데스",hp:876,atk:204,def:202,eval:2500,base:"260/28/26",grow:"14/4/4",elem:"어둠",lv:45,skill:"boom"},
+{rank:24,did:352,kor:"헬카이저",hp:1203,atk:162,def:162,eval:2499,base:"279/30/30",grow:"21/3/3",elem:"황혼",lv:45,skill:"boom"},
+{rank:24,did:495,kor:"고귀한 헬카이저",hp:1203,atk:162,def:162,eval:2499,base:"279/30/30",grow:"21/3/3",elem:"황혼",lv:45,skill:"boom"},
+{rank:26,did:369,kor:"엔더 드래곤",hp:976,atk:156,def:224,eval:2496,base:"228/24/48",grow:"17/3/4",elem:"땅",lv:45,skill:"def"},
+{rank:26,did:524,kor:"고귀한 엔더 드래곤",hp:976,atk:156,def:224,eval:2496,base:"228/24/48",grow:"17/3/4",elem:"땅",lv:45,skill:"def"},
+{rank:26,did:642,kor:"티키톡",hp:808,atk:211,def:211,eval:2496,base:"236/35/35",grow:"13/4/4",elem:"여명",lv:45},
+{rank:26,did:643,kor:"레베리",hp:956,atk:223,def:162,eval:2496,base:"208/47/30",grow:"17/4/3",elem:"악몽",lv:45},
+{rank:30,did:491,kor:"밀라",hp:787,atk:162,def:265,eval:2495,base:"215/30/45",grow:"13/3/5",elem:"바람",lv:45},
+{rank:30,did:608,kor:"기린",hp:1003,atk:163,def:210,eval:2495,base:"255/31/34",grow:"17/3/4",elem:"바람",lv:45},
+{rank:32,did:455,kor:"차콜플레임",hp:784,atk:219,def:208,eval:2492,base:"212/43/32",grow:"13/4/4",elem:"불",lv:45},
+{rank:32,did:465,kor:"선셋 드래곤",hp:1016,atk:212,def:157,eval:2492,base:"268/36/25",grow:"17/4/3",elem:"불",lv:45},
+{rank:32,did:472,kor:"카모플라쥬",hp:1008,atk:157,def:214,eval:2492,base:"260/25/38",grow:"17/3/4",elem:"황혼",lv:45},
+{rank:35,did:521,kor:"다르누스",hp:1006,atk:161,def:210,eval:2490,base:"258/29/34",grow:"17/3/4",elem:"황혼",lv:45},
+{rank:36,did:399,kor:"슬리즈 드래곤",hp:901,atk:199,def:198,eval:2489,base:"329/23/22",grow:"13/4/4",elem:"어둠",lv:45,skill:"def"},
+{rank:37,did:430,kor:"타로스",hp:752,atk:218,def:216,eval:2488,base:"180/42/40",grow:"13/4/4",elem:"불",lv:45},
+{rank:37,did:445,kor:"스트라",hp:764,atk:162,def:269,eval:2488,base:"192/30/49",grow:"13/3/5",elem:"바람",lv:45,skill:"boom"},
+{rank:37,did:446,kor:"헤네스",hp:1040,atk:204,def:158,eval:2488,base:"292/28/26",grow:"17/4/3",elem:"빛",lv:45,skill:"boom"},
+{rank:37,did:572,kor:"고귀한 스트라",hp:764,atk:162,def:269,eval:2488,base:"192/30/49",grow:"13/3/5",elem:"바람",lv:45,skill:"boom"},
+{rank:37,did:589,kor:"고귀한 헤네스",hp:1040,atk:204,def:158,eval:2488,base:"292/28/26",grow:"17/4/3",elem:"빛",lv:45,skill:"boom"},
+{rank:42,did:308,kor:"매직스타 드래곤",hp:1004,atk:202,def:167,eval:2480,base:"256/26/35",grow:"17/4/3",elem:"악몽",lv:45},
+{rank:42,did:390,kor:"넬로 드래곤",hp:812,atk:157,def:260,eval:2480,base:"284/25/40",grow:"12/3/5",elem:"물",lv:45},
+{rank:42,did:543,kor:"고귀한 넬로 드래곤",hp:812,atk:157,def:260,eval:2480,base:"284/25/40",grow:"12/3/5",elem:"물",lv:45},
+{rank:45,did:536,kor:"칼리시",hp:851,atk:203,def:203,eval:2475,base:"279/27/27",grow:"13/4/4",elem:"물",lv:45},
+{rank:45,did:537,kor:"크로마 칼리시",hp:851,atk:203,def:203,eval:2475,base:"279/27/27",grow:"13/4/4",elem:"어둠",lv:45},
+{rank:47,did:312,kor:"앙그라",hp:1222,atk:145,def:168,eval:2474,base:"210/13/36",grow:"23/3/3",elem:"바람",lv:45},
+{rank:47,did:404,kor:"갤럭시아 드래곤",hp:890,atk:194,def:202,eval:2474,base:"274/18/26",grow:"14/4/4",elem:"어둠",lv:45},
+{rank:47,did:701,kor:"고귀한 앙그라",hp:1222,atk:145,def:168,eval:2474,base:"210/13/36",grow:"23/3/3",elem:"바람",lv:45},
+{rank:50,did:377,kor:"루네라 드래곤",hp:700,atk:217,def:226,eval:2472,base:"172/41/50",grow:"12/4/4",elem:"어둠",lv:45},
+{rank:50,did:431,kor:"익시아",hp:1004,atk:164,def:203,eval:2472,base:"300/32/27",grow:"16/3/4",elem:"바람",lv:45},
+{rank:50,did:440,kor:"일란",hp:732,atk:217,def:218,eval:2472,base:"204/41/42",grow:"12/4/4",elem:"바람",lv:45},
+{rank:50,did:464,kor:"템페스트",hp:792,atk:216,def:204,eval:2472,base:"264/40/28",grow:"12/4/4",elem:"물",lv:45},
+{rank:50,did:468,kor:"아누라다",hp:776,atk:265,def:159,eval:2472,base:"248/45/27",grow:"12/5/3",elem:"어둠",lv:45,skill:"boom"},
+{rank:50,did:471,kor:"미티어",hp:960,atk:223,def:155,eval:2472,base:"256/47/23",grow:"16/4/3",elem:"여명",lv:45},
+{rank:50,did:490,kor:"헤카테",hp:776,atk:208,def:216,eval:2472,base:"248/32/40",grow:"12/4/4",elem:"어둠",lv:45},
+{rank:50,did:500,kor:"이터널",hp:732,atk:218,def:217,eval:2472,base:"204/42/41",grow:"12/4/4",elem:"여명",lv:45},
+{rank:50,did:503,kor:"로티스",hp:960,atk:221,def:157,eval:2472,base:"256/45/25",grow:"16/4/3",elem:"물",lv:45},
+{rank:50,did:511,kor:"화이트 디스트로이어",hp:1004,atk:164,def:203,eval:2472,base:"300/32/27",grow:"16/3/4",elem:"빛",lv:45},
+{rank:50,did:541,kor:"밀라타스",hp:960,atk:222,def:156,eval:2472,base:"256/46/24",grow:"16/4/3",elem:"빛",lv:45},
+{rank:50,did:542,kor:"크로마 밀라타스",hp:960,atk:222,def:156,eval:2472,base:"256/46/24",grow:"16/4/3",elem:"여명",lv:45},
+{rank:50,did:576,kor:"페로스",hp:960,atk:222,def:156,eval:2472,base:"256/46/24",grow:"16/4/3",elem:"바람",lv:45,skill:"def"},
+{rank:50,did:577,kor:"디아누",hp:960,atk:222,def:156,eval:2472,base:"256/46/24",grow:"16/4/3",elem:"땅",lv:45,skill:"def"},
+{rank:50,did:584,kor:"데바",hp:760,atk:248,def:180,eval:2472,base:"232/28/48",grow:"12/5/3",elem:"땅",lv:45,skill:"boom"},
+{rank:50,did:585,kor:"그라노스",hp:760,atk:180,def:248,eval:2472,base:"232/48/28",grow:"12/3/5",elem:"빛",lv:45,skill:"boom"},
+{rank:50,did:586,kor:"스텔스",hp:760,atk:214,def:214,eval:2472,base:"232/38/38",grow:"12/4/4",elem:"여명",lv:45,skill:"boom"},
+{rank:50,did:591,kor:"스킨크 드래곤",hp:960,atk:223,def:155,eval:2472,base:"256/47/23",grow:"16/4/3",elem:"땅",lv:45},
+{rank:50,did:592,kor:"크레스티드 드래곤",hp:960,atk:155,def:223,eval:2472,base:"256/23/47",grow:"16/3/4",elem:"바람",lv:45},
+{rank:50,did:596,kor:"고귀한 페로스",hp:960,atk:222,def:156,eval:2472,base:"256/46/24",grow:"16/4/3",elem:"바람",lv:45,skill:"def"},
+{rank:50,did:598,kor:"주작",hp:760,atk:178,def:250,eval:2472,base:"232/46/30",grow:"12/3/5",elem:"불",lv:45},
+{rank:50,did:599,kor:"백호",hp:760,atk:213,def:215,eval:2472,base:"232/37/39",grow:"12/4/4",elem:"땅",lv:45},
+{rank:50,did:605,kor:"고귀한 디아누",hp:960,atk:222,def:156,eval:2472,base:"256/46/24",grow:"16/4/3",elem:"땅",lv:45,skill:"def"},
+{rank:50,did:616,kor:"고귀한 아누라다",hp:776,atk:265,def:159,eval:2472,base:"248/45/27",grow:"12/5/3",elem:"어둠",lv:45,skill:"boom"},
+{rank:50,did:628,kor:"고귀한 루네라 드래곤",hp:700,atk:217,def:226,eval:2472,base:"172/41/50",grow:"12/4/4",elem:"어둠",lv:45},
+{rank:50,did:632,kor:"고귀한 익시아",hp:1004,atk:164,def:203,eval:2472,base:"300/32/27",grow:"16/3/4",elem:"바람",lv:45},
+{rank:76,did:564,kor:"구미호",hp:787,atk:216,def:205,eval:2471,base:"259/40/29",grow:"12/4/4",elem:"악몽",lv:45},
+{rank:76,did:609,kor:"락샤사",hp:759,atk:213,def:215,eval:2471,base:"231/37/39",grow:"12/4/4",elem:"물",lv:45},
+{rank:76,did:626,kor:"그리파르",hp:807,atk:213,def:203,eval:2471,base:"279/37/27",grow:"12/4/4",elem:"불",lv:45},
+{rank:76,did:692,kor:"까마귀 드래곤",hp:855,atk:204,def:200,eval:2471,base:"283/28/24",grow:"13/4/4",elem:"악몽",lv:45},
+{rank:80,did:454,kor:"아비스",hp:978,atk:162,def:211,eval:2470,base:"274/30/35",grow:"16/3/4",elem:"바람",lv:45},
+{rank:80,did:459,kor:"케이나인",hp:774,atk:262,def:162,eval:2470,base:"246/42/30",grow:"12/5/3",elem:"악몽",lv:45},
+{rank:80,did:487,kor:"쿠알레",hp:770,atk:209,def:216,eval:2470,base:"242/33/40",grow:"12/4/4",elem:"물",lv:45},
+{rank:80,did:565,kor:"루송",hp:770,atk:208,def:217,eval:2470,base:"242/32/41",grow:"12/4/4",elem:"불",lv:45},
+{rank:80,did:669,kor:"루시오",hp:806,atk:255,def:161,eval:2470,base:"278/35/29",grow:"12/5/3",elem:"어둠",lv:45},
+{rank:85,did:668,kor:"플로레",hp:773,atk:159,def:265,eval:2469,base:"245/27/45",grow:"12/3/5",elem:"여명",lv:45},
+{rank:85,did:683,kor:"파루파루",hp:733,atk:217,def:217,eval:2469,base:"205/41/41",grow:"12/4/4",elem:"불",lv:45},
+{rank:87,did:444,kor:"말덱",hp:764,atk:270,def:156,eval:2468,base:"236/50/24",grow:"12/5/3",elem:"땅",lv:45,skill:"def"},
+{rank:87,did:580,kor:"고귀한 말덱",hp:764,atk:270,def:156,eval:2468,base:"236/50/24",grow:"12/5/3",elem:"땅",lv:45,skill:"def"},
+{rank:89,did:264,kor:"렉몰",hp:835,atk:204,def:204,eval:2467,base:"131/28/28",grow:"16/4/4",elem:"여명",lv:45},
+{rank:89,did:270,kor:"다크혼",hp:1099,atk:159,def:183,eval:2467,base:"395/27/7",grow:"16/3/4",elem:"황혼",lv:45},
+{rank:89,did:335,kor:"다크베인",hp:1051,atk:165,def:189,eval:2467,base:"347/33/13",grow:"16/3/4",elem:"불",lv:45,skill:"boom"},
+{rank:89,did:514,kor:"고귀한 다크베인",hp:1051,atk:165,def:189,eval:2467,base:"347/33/13",grow:"16/3/4",elem:"불",lv:45,skill:"boom"},
+{rank:89,did:640,kor:"고귀한 다크혼",hp:1099,atk:159,def:183,eval:2467,base:"395/27/7",grow:"16/3/4",elem:"황혼",lv:45},
+{rank:89,did:682,kor:"꽁꽁이",hp:875,atk:199,def:199,eval:2467,base:"259/23/23",grow:"14/4/4",elem:"빛",lv:45},
+{rank:95,did:627,kor:"글라오네",hp:784,atk:210,def:210,eval:2464,base:"256/34/34",grow:"12/4/4",elem:"땅",lv:45,skill:"boom"},
+{rank:96,did:433,kor:"허리케인",hp:920,atk:167,def:216,eval:2452,base:"260/35/40",grow:"15/3/4",elem:"바람",lv:45,skill:"def"},
+{rank:96,did:435,kor:"프레데터",hp:772,atk:212,def:208,eval:2452,base:"244/36/32",grow:"12/4/4",elem:"땅",lv:45},
+{rank:96,did:449,kor:"설리반",hp:908,atk:167,def:219,eval:2452,base:"248/35/43",grow:"15/3/4",elem:"빛",lv:45},
+{rank:96,did:666,kor:"고귀한 설리반",hp:908,atk:167,def:219,eval:2452,base:"248/35/43",grow:"15/3/4",elem:"빛",lv:45},
+{rank:96,did:690,kor:"고귀한 허리케인",hp:920,atk:167,def:216,eval:2452,base:"260/35/40",grow:"15/3/4",elem:"바람",lv:45,skill:"def"},
+{rank:101,did:320,kor:"루시페르",hp:1030,atk:209,def:146,eval:2450,base:"326/33/14",grow:"16/4/3",elem:"불",lv:45,skill:"boom"},
+{rank:102,did:545,kor:"인스트리아",hp:780,atk:260,def:157,eval:2448,base:"296/40/25",grow:"11/5/3",elem:"빛",lv:45},
+{rank:102,did:546,kor:"크로마 인스트리아",hp:780,atk:260,def:157,eval:2448,base:"296/40/25",grow:"11/5/3",elem:"물",lv:45},
+{rank:102,did:618,kor:"골디",hp:740,atk:168,def:259,eval:2448,base:"256/36/39",grow:"11/3/5",elem:"여명",lv:45},
+{rank:105,did:610,kor:"루민디스",hp:783,atk:208,def:208,eval:2447,base:"299/32/32",grow:"11/4/4",elem:"빛",lv:45},
+{rank:106,did:403,kor:"본샤스 드래곤",hp:792,atk:205,def:208,eval:2444,base:"264/29/32",grow:"12/4/4",elem:"바람",lv:45},
+{rank:106,did:560,kor:"호저리",hp:984,atk:163,def:202,eval:2444,base:"280/31/26",grow:"16/3/4",elem:"여명",lv:45},
+{rank:108,did:339,kor:"터들톰톰",hp:971,atk:219,def:149,eval:2443,base:"179/43/17",grow:"18/4/3",elem:"여명",lv:45},
+{rank:108,did:357,kor:"그랑 세이버",hp:1035,atk:176,def:176,eval:2443,base:"199/44/44",grow:"19/3/3",elem:"바람",lv:45,skill:"def"},
+{rank:108,did:631,kor:"토네스",hp:723,atk:215,def:215,eval:2443,base:"239/39/39",grow:"11/4/4",elem:"악몽",lv:45},
+{rank:111,did:398,kor:"아델라",hp:646,atk:224,def:225,eval:2442,base:"206/48/49",grow:"10/4/4",elem:"땅",lv:45,skill:"boom"},
+{rank:111,did:539,kor:"고귀한 아델라",hp:646,atk:224,def:225,eval:2442,base:"206/48/49",grow:"10/4/4",elem:"땅",lv:45,skill:"boom"},
+{rank:113,did:118,kor:"물결의 파프리온",hp:1013,atk:213,def:144,eval:2441,base:"133/37/12",grow:"20/4/3",elem:"물",lv:45},
+{rank:113,did:363,kor:"라루스",hp:1085,atk:156,def:183,eval:2441,base:"249/24/51",grow:"19/3/3",elem:"빛",lv:45},
+{rank:115,did:353,kor:"레버넌트",hp:1004,atk:202,def:157,eval:2440,base:"300/26/25",grow:"16/4/3",elem:"악몽",lv:45,skill:"def"},
+{rank:115,did:558,kor:"고귀한 레버넌트",hp:1004,atk:202,def:157,eval:2440,base:"300/26/25",grow:"16/4/3",elem:"악몽",lv:45,skill:"def"},
+{rank:117,did:693,kor:"까치 드래곤",hp:711,atk:266,def:166,eval:2439,base:"227/46/34",grow:"11/5/3",elem:"어둠",lv:45},
+{rank:118,did:292,kor:"미스틸테인",hp:1198,atk:146,def:164,eval:2438,base:"230/14/32",grow:"22/3/3",elem:"땅",lv:45},
+{rank:118,did:639,kor:"아르켈론",hp:710,atk:216,def:216,eval:2438,base:"226/40/40",grow:"11/4/4",elem:"물",lv:45},
+{rank:120,did:570,kor:"아바돈",hp:952,atk:167,def:204,eval:2436,base:"292/35/28",grow:"15/3/4",elem:"불",lv:45},
+{rank:120,did:571,kor:"큐아네드",hp:952,atk:163,def:208,eval:2436,base:"292/31/32",grow:"15/3/4",elem:"물",lv:45},
+{rank:120,did:582,kor:"술래",hp:952,atk:211,def:160,eval:2436,base:"292/35/28",grow:"15/4/3",elem:"어둠",lv:45},
+{rank:123,did:172,kor:"디요나",hp:826,atk:202,def:200,eval:2434,base:"122/26/24",grow:"16/4/4",elem:"빛",lv:45},
+{rank:124,did:181,kor:"크룩커스",hp:841,atk:198,def:200,eval:2433,base:"181/22/24",grow:"15/4/4",elem:"어둠",lv:45},
+{rank:124,did:383,kor:"카이저번",hp:705,atk:277,def:155,eval:2433,base:"221/57/23",grow:"11/5/3",elem:"어둠",lv:45},
+{rank:124,did:384,kor:"골락",hp:725,atk:161,def:266,eval:2433,base:"241/29/46",grow:"11/3/5",elem:"땅",lv:45},
+{rank:124,did:562,kor:"고귀한 카이저번",hp:705,atk:277,def:155,eval:2433,base:"221/57/23",grow:"11/5/3",elem:"어둠",lv:45},
+{rank:128,did:171,kor:"베라 드래곤",hp:1251,atk:151,def:144,eval:2431,base:"195/19/12",grow:"24/3/3",elem:"어둠",lv:45},
+{rank:129,did:251,kor:"아틀란티스",hp:1117,atk:168,def:160,eval:2429,base:"193/36/28",grow:"21/3/3",elem:"물",lv:45,skill:"def"},
+{rank:129,did:581,kor:"강강",hp:717,atk:166,def:262,eval:2429,base:"233/34/42",grow:"11/3/5",elem:"빛",lv:45},
+{rank:131,did:510,kor:"코멧",hp:717,atk:178,def:249,eval:2425,base:"233/46/29",grow:"11/3/5",elem:"여명",lv:45},
+{rank:131,did:638,kor:"마카롱",hp:777,atk:247,def:165,eval:2425,base:"293/27/33",grow:"11/5/3",elem:"여명",lv:45},
+{rank:133,did:402,kor:"파고스 드래곤",hp:726,atk:212,def:212,eval:2422,base:"286/36/36",grow:"10/4/4",elem:"물",lv:45},
+{rank:134,did:174,kor:"파브레가스",hp:1135,atk:175,def:146,eval:2419,base:"211/43/14",grow:"21/3/3",elem:"바람",lv:45},
+{rank:135,did:221,kor:"듀펜",hp:888,atk:241,def:141,eval:2416,base:"96/65/9",grow:"18/4/3",elem:"땅",lv:45,skill:"boom"},
+{rank:136,did:243,kor:"위그드라실",hp:1090,atk:126,def:205,eval:2414,base:"210/38/29",grow:"20/2/4",elem:"땅",lv:45,skill:"def"},
+{rank:137,did:548,kor:"베네보렌티아",hp:952,atk:163,def:202,eval:2412,base:"292/31/26",grow:"15/3/4",elem:"불",lv:45},
+{rank:137,did:549,kor:"크로마 베네보렌티아",hp:952,atk:163,def:202,eval:2412,base:"292/31/26",grow:"15/3/4",elem:"물",lv:45},
+{rank:137,did:552,kor:"뇌신",hp:952,atk:163,def:202,eval:2412,base:"292/31/26",grow:"15/3/4",elem:"땅",lv:45},
+{rank:137,did:553,kor:"크로마 뇌신",hp:952,atk:163,def:202,eval:2412,base:"292/31/26",grow:"15/3/4",elem:"불",lv:45},
+{rank:141,did:405,kor:"알리스 드래곤",hp:714,atk:157,def:267,eval:2410,base:"274/25/47",grow:"10/3/5",elem:"불",lv:45},
+{rank:142,did:119,kor:"열화의 발칸",hp:959,atk:200,def:162,eval:2407,base:"211/24/30",grow:"17/4/3",elem:"불",lv:45,skill:"boom"},
+{rank:143,did:182,kor:"밴시",hp:905,atk:206,def:169,eval:2405,base:"113/30/37",grow:"18/4/3",elem:"어둠",lv:45,skill:"boom"},
+{rank:143,did:307,kor:"얼티밋 드래곤",hp:933,atk:206,def:162,eval:2405,base:"229/30/30",grow:"16/4/3",elem:"어둠",lv:45},
+{rank:145,did:222,kor:"메이플 드래곤",hp:792,atk:201,def:201,eval:2400,base:"44/69/25",grow:"17/3/4",elem:"땅",lv:45},
+{rank:145,did:239,kor:"적오드래곤",hp:1008,atk:203,def:145,eval:2400,base:"216/27/13",grow:"18/4/3",elem:"불",lv:45},
+{rank:147,did:504,kor:"스노우볼",hp:1097,atk:147,def:178,eval:2397,base:"305/15/46",grow:"18/3/3",elem:"황혼",lv:45},
+{rank:148,did:406,kor:"마브리카 드래곤",hp:624,atk:216,def:227,eval:2396,base:"228/40/51",grow:"9/4/4",elem:"빛",lv:45},
+{rank:149,did:176,kor:"스테고 드래곤",hp:1012,atk:150,def:195,eval:2392,base:"352/18/19",grow:"15/3/4",elem:"어둠",lv:45,skill:"def"},
+{rank:149,did:179,kor:"리쿠루 드래곤",hp:1184,atk:144,def:158,eval:2392,base:"348/12/26",grow:"19/3/3",elem:"물",lv:45,skill:"def"},
+{rank:151,did:120,kor:"장벽의 에닉스",hp:1074,atk:143,def:186,eval:2390,base:"414/11/10",grow:"15/3/4",elem:"땅",lv:45,skill:"def"},
+{rank:152,did:338,kor:"유리온",hp:1091,atk:146,def:177,eval:2383,base:"299/14/45",grow:"18/3/3",elem:"황혼",lv:45,skill:"def"},
+{rank:153,did:121,kor:"암흑의 발로드",hp:1064,atk:164,def:164,eval:2376,base:"272/32/32",grow:"18/3/3",elem:"어둠",lv:45},
+{rank:153,did:170,kor:"게스 드래곤",hp:1044,atk:187,def:146,eval:2376,base:"252/55/14",grow:"18/3/3",elem:"물",lv:45},
+{rank:153,did:173,kor:"콘라드",hp:980,atk:149,def:200,eval:2376,base:"364/17/24",grow:"14/3/4",elem:"땅",lv:45},
+{rank:153,did:183,kor:"할로우",hp:952,atk:204,def:152,eval:2376,base:"336/28/20",grow:"14/4/3",elem:"불",lv:45},
+{rank:153,did:333,kor:"미트라",hp:952,atk:201,def:155,eval:2376,base:"380/25/23",grow:"13/4/3",elem:"빛",lv:45},
+{rank:153,did:336,kor:"블러디터스크",hp:1068,atk:182,def:145,eval:2376,base:"364/50/13",grow:"16/3/3",elem:"악몽",lv:45},
+{rank:153,did:505,kor:"고귀한 블러디터스크",hp:1068,atk:182,def:145,eval:2376,base:"364/50/13",grow:"16/3/3",elem:"악몽",lv:45},
+{rank:160,did:263,kor:"데르",hp:1063,atk:157,def:171,eval:2375,base:"271/25/39",grow:"18/3/3",elem:"어둠",lv:45},
+{rank:160,did:354,kor:"이블 던",hp:991,atk:163,def:183,eval:2375,base:"287/31/51",grow:"16/3/3",elem:"여명",lv:45},
+{rank:160,did:551,kor:"고귀한 이블던",hp:991,atk:163,def:183,eval:2375,base:"287/31/51",grow:"16/3/3",elem:"여명",lv:45},
+{rank:163,did:175,kor:"파이어퓨리",hp:1178,atk:148,def:151,eval:2374,base:"386/16/19",grow:"18/3/3",elem:"불",lv:45},
+{rank:164,did:550,kor:"고귀한 갤러헤드",hp:1125,atk:158,def:154,eval:2373,base:"377/26/22",grow:"17/3/3",elem:"땅",lv:45},
+{rank:165,did:341,kor:"선인장 드래곤",hp:1123,atk:163,def:149,eval:2371,base:"375/31/17",grow:"17/3/3",elem:"악몽",lv:45},
+{rank:166,did:286,kor:"버블 드래곤",hp:1210,atk:144,def:146,eval:2370,base:"418/12/14",grow:"18/3/3",elem:"물",lv:45},
+{rank:167,did:261,kor:"소울",hp:1137,atk:154,def:154,eval:2369,base:"345/22/22",grow:"18/3/3",elem:"빛",lv:45},
+{rank:167,did:262,kor:"이슬룡",hp:1101,atk:174,def:143,eval:2369,base:"309/42/11",grow:"18/3/3",elem:"물",lv:45},
+{rank:167,did:359,kor:"푸딩곤",hp:1029,atk:161,def:174,eval:2369,base:"237/29/42",grow:"18/3/3",elem:"땅",lv:45},
+{rank:170,did:177,kor:"레텐토르",hp:976,atk:203,def:145,eval:2368,base:"360/27/13",grow:"14/4/3",elem:"땅",lv:45,skill:"boom"},
+{rank:171,did:193,kor:"그라치아",hp:1119,atk:156,def:156,eval:2367,base:"327/24/24",grow:"18/3/3",elem:"물",lv:45},
+{rank:172,did:311,kor:"페르마타",hp:1130,atk:163,def:146,eval:2366,base:"338/31/14",grow:"18/3/3",elem:"악몽",lv:45,skill:"def"},
+{rank:173,did:116,kor:"돌풍의 라이오스",hp:1161,atk:152,def:149,eval:2365,base:"369/20/17",grow:"18/3/3",elem:"바람",lv:45},
+{rank:173,did:117,kor:"찬란한 바리안",hp:1005,atk:145,def:195,eval:2365,base:"389/13/19",grow:"14/3/4",elem:"빛",lv:45},
+{rank:173,did:178,kor:"미스트 드래곤",hp:1165,atk:150,def:150,eval:2365,base:"373/18/18",grow:"18/3/3",elem:"어둠",lv:45},
+{rank:173,did:194,kor:"마가",hp:933,atk:158,def:200,eval:2365,base:"317/26/24",grow:"14/3/4",elem:"바람",lv:45},
+{rank:173,did:195,kor:"스쿠룸",hp:1041,atk:184,def:147,eval:2365,base:"249/52/15",grow:"18/3/3",elem:"불",lv:45,skill:"boom"},
+{rank:173,did:223,kor:"딜랑",hp:1189,atk:147,def:147,eval:2365,base:"397/15/15",grow:"18/3/3",elem:"빛",lv:45},
+{rank:179,did:295,kor:"플래그너",hp:1076,atk:174,def:148,eval:2364,base:"328/42/16",grow:"17/3/3",elem:"어둠",lv:45,skill:"def"},
+{rank:179,did:299,kor:"아쿠아리움",hp:1080,atk:147,def:174,eval:2364,base:"376/15/42",grow:"16/3/3",elem:"물",lv:45},
+{rank:181,did:285,kor:"아그나드",hp:1104,atk:163,def:151,eval:2360,base:"400/31/19",grow:"16/3/3",elem:"불",lv:45,skill:"boom"},
+{rank:182,did:288,kor:"레블롭틴",hp:1073,atk:172,def:147,eval:2349,base:"325/40/15",grow:"17/3/3",elem:"빛",lv:45},
+{rank:183,did:630,kor:"애버네일",hp:872,atk:159,def:210,eval:2348,base:"388/27/34",grow:"11/3/4",elem:"빛",lv:45},
+{rank:184,did:188,kor:"블랙코어",hp:929,atk:185,def:169,eval:2345,base:"181/53/37",grow:"17/3/3",elem:"어둠",lv:45},
+{rank:184,did:189,kor:"오딘",hp:937,atk:176,def:176,eval:2345,base:"189/44/44",grow:"17/3/3",elem:"빛",lv:45},
+{rank:184,did:204,kor:"청양 드래곤",hp:953,atk:165,def:183,eval:2345,base:"205/33/51",grow:"17/3/3",elem:"어둠",lv:45},
+{rank:1,did:398,kor:"아델라",hp:406,atk:128,def:129,eval:1434,base:"206/48/49",grow:"10/4/4",elem:"땅",lv:21,skill:"boom"},
+{rank:1,did:539,kor:"고귀한 아델라",hp:406,atk:128,def:129,eval:1434,base:"206/48/49",grow:"10/4/4",elem:"땅",lv:21,skill:"boom"},
+{rank:3,did:636,kor:"거들테일 드래곤",hp:451,atk:120,def:124,eval:1427,base:"211/20/44",grow:"12/5/4",elem:"땅",lv:21,skill:"boom"},
+{rank:4,did:390,kor:"넬로 드래곤",hp:524,atk:85,def:140,eval:1424,base:"284/25/40",grow:"12/3/5",elem:"물",lv:21},
+{rank:4,did:543,kor:"고귀한 넬로 드래곤",hp:524,atk:85,def:140,eval:1424,base:"284/25/40",grow:"12/3/5",elem:"물",lv:21},
+{rank:6,did:433,kor:"허리케인",hp:560,atk:95,def:120,eval:1420,base:"260/35/40",grow:"15/3/4",elem:"바람",lv:21,skill:"def"},
+{rank:6,did:441,kor:"코스모",hp:452,atk:102,def:140,eval:1420,base:"192/22/40",grow:"13/4/5",elem:"여명",lv:21},
+{rank:6,did:449,kor:"설리반",hp:548,atk:95,def:123,eval:1420,base:"248/35/43",grow:"15/3/4",elem:"빛",lv:21},
+{rank:6,did:666,kor:"고귀한 설리반",hp:548,atk:95,def:123,eval:1420,base:"248/35/43",grow:"15/3/4",elem:"빛",lv:21},
+{rank:6,did:690,kor:"고귀한 허리케인",hp:560,atk:95,def:120,eval:1420,base:"260/35/40",grow:"15/3/4",elem:"바람",lv:21,skill:"def"},
+{rank:11,did:352,kor:"헬카이저",hp:699,atk:90,def:90,eval:1419,base:"279/30/30",grow:"21/3/3",elem:"황혼",lv:21,skill:"boom"},
+{rank:11,did:679,kor:"슬레이프니르",hp:531,atk:85,def:137,eval:1419,base:"211/25/37",grow:"16/3/5",elem:"땅",lv:21,skill:"def"},
+{rank:11,did:495,kor:"고귀한 헬카이저",hp:699,atk:90,def:90,eval:1419,base:"279/30/30",grow:"21/3/3",elem:"황혼",lv:21,skill:"boom"},
+{rank:14,did:522,kor:"페트로아",hp:502,atk:116,def:113,eval:1418,base:"222/36/33",grow:"14/4/4",elem:"불",lv:21},
+{rank:14,did:700,kor:"미스틱아츠",hp:586,atk:84,def:124,eval:1418,base:"186/24/44",grow:"20/3/4",elem:"땅",lv:21},
+{rank:16,did:477,kor:"샬롯",hp:485,atk:141,def:92,eval:1417,base:"205/41/32",grow:"14/5/3",elem:"땅",lv:21},
+{rank:16,did:507,kor:"펜리르",hp:681,atk:104,def:80,eval:1417,base:"281/24/20",grow:"20/4/3",elem:"땅",lv:21,skill:"boom"},
+{rank:16,did:670,kor:"장고",hp:485,atk:138,def:95,eval:1417,base:"185/38/35",grow:"15/5/3",elem:"땅",lv:21},
+{rank:16,did:680,kor:"고귀한 펜리르",hp:681,atk:104,def:80,eval:1417,base:"281/24/20",grow:"20/4/3",elem:"땅",lv:21,skill:"boom"},
+{rank:20,did:336,kor:"블러디터스크",hp:684,atk:110,def:73,eval:1416,base:"364/50/13",grow:"16/3/3",elem:"악몽",lv:21},
+{rank:20,did:369,kor:"엔더 드래곤",hp:568,atk:84,def:128,eval:1416,base:"228/24/48",grow:"17/3/4",elem:"땅",lv:21,skill:"def"},
+{rank:20,did:377,kor:"루네라 드래곤",hp:412,atk:121,def:130,eval:1416,base:"172/41/50",grow:"12/4/4",elem:"어둠",lv:21},
+{rank:20,did:431,kor:"익시아",hp:620,atk:92,def:107,eval:1416,base:"300/32/27",grow:"16/3/4",elem:"바람",lv:21},
+{rank:20,did:440,kor:"일란",hp:444,atk:121,def:122,eval:1416,base:"204/41/42",grow:"12/4/4",elem:"바람",lv:21},
+{rank:20,did:464,kor:"템페스트",hp:504,atk:120,def:108,eval:1416,base:"264/40/28",grow:"12/4/4",elem:"물",lv:21},
+{rank:20,did:468,kor:"아누라다",hp:488,atk:145,def:87,eval:1416,base:"248/45/27",grow:"12/5/3",elem:"어둠",lv:21,skill:"boom"},
+{rank:20,did:471,kor:"미티어",hp:576,atk:127,def:83,eval:1416,base:"256/47/23",grow:"16/4/3",elem:"여명",lv:21},
+{rank:20,did:490,kor:"헤카테",hp:488,atk:112,def:120,eval:1416,base:"248/32/40",grow:"12/4/4",elem:"어둠",lv:21},
+{rank:20,did:500,kor:"이터널",hp:444,atk:122,def:121,eval:1416,base:"204/42/41",grow:"12/4/4",elem:"여명",lv:21},
+{rank:20,did:503,kor:"로티스",hp:576,atk:125,def:85,eval:1416,base:"256/45/25",grow:"16/4/3",elem:"물",lv:21},
+{rank:20,did:505,kor:"고귀한 블러디터스크",hp:684,atk:110,def:73,eval:1416,base:"364/50/13",grow:"16/3/3",elem:"악몽",lv:21},
+{rank:20,did:511,kor:"화이트 디스트로이어",hp:620,atk:92,def:107,eval:1416,base:"300/32/27",grow:"16/3/4",elem:"빛",lv:21},
+{rank:20,did:524,kor:"고귀한 엔더 드래곤",hp:568,atk:84,def:128,eval:1416,base:"228/24/48",grow:"17/3/4",elem:"땅",lv:21,skill:"def"},
+{rank:20,did:541,kor:"밀라타스",hp:576,atk:126,def:84,eval:1416,base:"256/46/24",grow:"16/4/3",elem:"빛",lv:21},
+{rank:20,did:542,kor:"크로마 밀라타스",hp:576,atk:126,def:84,eval:1416,base:"256/46/24",grow:"16/4/3",elem:"여명",lv:21},
+{rank:20,did:545,kor:"인스트리아",hp:516,atk:140,def:85,eval:1416,base:"296/40/25",grow:"11/5/3",elem:"빛",lv:21},
+{rank:20,did:546,kor:"크로마 인스트리아",hp:516,atk:140,def:85,eval:1416,base:"296/40/25",grow:"11/5/3",elem:"물",lv:21},
+{rank:20,did:576,kor:"페로스",hp:576,atk:126,def:84,eval:1416,base:"256/46/24",grow:"16/4/3",elem:"바람",lv:21,skill:"def"},
+{rank:20,did:577,kor:"디아누",hp:576,atk:126,def:84,eval:1416,base:"256/46/24",grow:"16/4/3",elem:"땅",lv:21,skill:"def"},
+{rank:20,did:584,kor:"데바",hp:472,atk:128,def:108,eval:1416,base:"232/28/48",grow:"12/5/3",elem:"땅",lv:21,skill:"boom"},
+{rank:20,did:585,kor:"그라노스",hp:472,atk:108,def:128,eval:1416,base:"232/48/28",grow:"12/3/5",elem:"빛",lv:21,skill:"boom"},
+{rank:20,did:586,kor:"스텔스",hp:472,atk:118,def:118,eval:1416,base:"232/38/38",grow:"12/4/4",elem:"여명",lv:21,skill:"boom"},
+{rank:20,did:591,kor:"스킨크 드래곤",hp:576,atk:127,def:83,eval:1416,base:"256/47/23",grow:"16/4/3",elem:"땅",lv:21},
+{rank:20,did:592,kor:"크레스티드 드래곤",hp:576,atk:83,def:127,eval:1416,base:"256/23/47",grow:"16/3/4",elem:"바람",lv:21},
+{rank:20,did:596,kor:"고귀한 페로스",hp:576,atk:126,def:84,eval:1416,base:"256/46/24",grow:"16/4/3",elem:"바람",lv:21,skill:"def"},
+{rank:20,did:598,kor:"주작",hp:472,atk:106,def:130,eval:1416,base:"232/46/30",grow:"12/3/5",elem:"불",lv:21},
+{rank:20,did:599,kor:"백호",hp:472,atk:117,def:119,eval:1416,base:"232/37/39",grow:"12/4/4",elem:"땅",lv:21},
+{rank:20,did:605,kor:"고귀한 디아누",hp:576,atk:126,def:84,eval:1416,base:"256/46/24",grow:"16/4/3",elem:"땅",lv:21,skill:"def"},
+{rank:20,did:616,kor:"고귀한 아누라다",hp:488,atk:145,def:87,eval:1416,base:"248/45/27",grow:"12/5/3",elem:"어둠",lv:21,skill:"boom"},
+{rank:20,did:618,kor:"골디",hp:476,atk:96,def:139,eval:1416,base:"256/36/39",grow:"11/3/5",elem:"여명",lv:21},
+{rank:20,did:628,kor:"고귀한 루네라 드래곤",hp:412,atk:121,def:130,eval:1416,base:"172/41/50",grow:"12/4/4",elem:"어둠",lv:21},
+{rank:20,did:632,kor:"고귀한 익시아",hp:620,atk:92,def:107,eval:1416,base:"300/32/27",grow:"16/3/4",elem:"바람",lv:21},
+{rank:20,did:642,kor:"티키톡",hp:496,atk:115,def:115,eval:1416,base:"236/35/35",grow:"13/4/4",elem:"여명",lv:21},
+{rank:20,did:643,kor:"레베리",hp:548,atk:127,def:90,eval:1416,base:"208/47/30",grow:"17/4/3",elem:"악몽",lv:21},
+{rank:20,did:656,kor:"파프니르",hp:528,atk:111,def:111,eval:1416,base:"228/31/31",grow:"15/4/4",elem:"불",lv:21},
+{rank:20,did:657,kor:"후긴",hp:472,atk:135,def:101,eval:1416,base:"212/35/21",grow:"13/5/4",elem:"빛",lv:21,skill:"boom"},
+{rank:20,did:658,kor:"무닌",hp:472,atk:101,def:135,eval:1416,base:"212/21/35",grow:"13/4/5",elem:"어둠",lv:21,skill:"def"},
+{rank:20,did:702,kor:"스쿨드",hp:368,atk:131,def:131,eval:1416,base:"188/31/31",grow:"9/5/5",elem:"불",lv:21,skill:"boom"},
+{rank:59,did:354,kor:"이블 던",hp:607,atk:91,def:111,eval:1415,base:"287/31/51",grow:"16/3/3",elem:"여명",lv:21},
+{rank:59,did:491,kor:"밀라",hp:475,atk:90,def:145,eval:1415,base:"215/30/45",grow:"13/3/5",elem:"바람",lv:21},
+{rank:59,did:551,kor:"고귀한 이블던",hp:607,atk:91,def:111,eval:1415,base:"287/31/51",grow:"16/3/3",elem:"여명",lv:21},
+{rank:59,did:564,kor:"구미호",hp:499,atk:120,def:109,eval:1415,base:"259/40/29",grow:"12/4/4",elem:"악몽",lv:21},
+{rank:59,did:607,kor:"에슈",hp:503,atk:115,def:113,eval:1415,base:"223/35/33",grow:"14/4/4",elem:"황혼",lv:21},
+{rank:59,did:608,kor:"기린",hp:595,atk:91,def:114,eval:1415,base:"255/31/34",grow:"17/3/4",elem:"바람",lv:21},
+{rank:59,did:609,kor:"락샤사",hp:471,atk:117,def:119,eval:1415,base:"231/37/39",grow:"12/4/4",elem:"물",lv:21},
+{rank:59,did:610,kor:"루민디스",hp:519,atk:112,def:112,eval:1415,base:"299/32/32",grow:"11/4/4",elem:"빛",lv:21},
+{rank:59,did:619,kor:"라키온",hp:515,atk:112,def:113,eval:1415,base:"235/32/33",grow:"14/4/4",elem:"땅",lv:21},
+{rank:59,did:626,kor:"그리파르",hp:519,atk:117,def:107,eval:1415,base:"279/37/27",grow:"12/4/4",elem:"불",lv:21},
+{rank:69,did:402,kor:"파고스 드래곤",hp:486,atk:116,def:116,eval:1414,base:"286/36/36",grow:"10/4/4",elem:"물",lv:21},
+{rank:69,did:454,kor:"아비스",hp:594,atk:90,def:115,eval:1414,base:"274/30/35",grow:"16/3/4",elem:"바람",lv:21},
+{rank:69,did:459,kor:"케이나인",hp:486,atk:142,def:90,eval:1414,base:"246/42/30",grow:"12/5/3",elem:"악몽",lv:21},
+{rank:69,did:487,kor:"쿠알레",hp:482,atk:113,def:120,eval:1414,base:"242/33/40",grow:"12/4/4",elem:"물",lv:21},
+{rank:69,did:565,kor:"루송",hp:482,atk:112,def:121,eval:1414,base:"242/32/41",grow:"12/4/4",elem:"불",lv:21},
+{rank:69,did:669,kor:"루시오",hp:518,atk:135,def:89,eval:1414,base:"278/35/29",grow:"12/5/3",elem:"어둠",lv:21},
+{rank:75,did:478,kor:"이지스",hp:517,atk:110,def:114,eval:1413,base:"237/30/34",grow:"14/4/4",elem:"빛",lv:21},
+{rank:75,did:534,kor:"고귀한 이지스",hp:517,atk:110,def:114,eval:1413,base:"237/30/34",grow:"14/4/4",elem:"빛",lv:21},
+{rank:75,did:668,kor:"플로레",hp:485,atk:87,def:145,eval:1413,base:"245/27/45",grow:"12/3/5",elem:"여명",lv:21},
+{rank:75,did:683,kor:"파루파루",hp:445,atk:121,def:121,eval:1413,base:"205/41/41",grow:"12/4/4",elem:"불",lv:21},
+{rank:79,did:406,kor:"마브리카 드래곤",hp:408,atk:120,def:131,eval:1412,base:"228/40/51",grow:"9/4/4",elem:"빛",lv:21},
+{rank:79,did:444,kor:"말덱",hp:476,atk:150,def:84,eval:1412,base:"236/50/24",grow:"12/5/3",elem:"땅",lv:21,skill:"def"},
+{rank:79,did:455,kor:"차콜플레임",hp:472,atk:123,def:112,eval:1412,base:"212/43/32",grow:"13/4/4",elem:"불",lv:21},
+{rank:79,did:465,kor:"선셋 드래곤",hp:608,atk:116,def:85,eval:1412,base:"268/36/25",grow:"17/4/3",elem:"불",lv:21},
+{rank:79,did:472,kor:"카모플라쥬",hp:600,atk:85,def:118,eval:1412,base:"260/25/38",grow:"17/3/4",elem:"황혼",lv:21},
+{rank:79,did:580,kor:"고귀한 말덱",hp:476,atk:150,def:84,eval:1412,base:"236/50/24",grow:"12/5/3",elem:"땅",lv:21,skill:"def"},
+{rank:79,did:630,kor:"애버네일",hp:608,atk:87,def:114,eval:1412,base:"388/27/34",grow:"11/3/4",elem:"빛",lv:21},
+{rank:86,did:270,kor:"다크혼",hp:715,atk:87,def:87,eval:1411,base:"395/27/7",grow:"16/3/4",elem:"황혼",lv:21},
+{rank:86,did:335,kor:"다크베인",hp:667,atk:93,def:93,eval:1411,base:"347/33/13",grow:"16/3/4",elem:"불",lv:21,skill:"boom"},
+{rank:86,did:357,kor:"그랑 세이버",hp:579,atk:104,def:104,eval:1411,base:"199/44/44",grow:"19/3/3",elem:"바람",lv:21,skill:"def"},
+{rank:86,did:514,kor:"고귀한 다크베인",hp:667,atk:93,def:93,eval:1411,base:"347/33/13",grow:"16/3/4",elem:"불",lv:21,skill:"boom"},
+{rank:86,did:631,kor:"토네스",hp:459,atk:119,def:119,eval:1411,base:"239/39/39",grow:"11/4/4",elem:"악몽",lv:21},
+{rank:86,did:640,kor:"고귀한 다크혼",hp:715,atk:87,def:87,eval:1411,base:"395/27/7",grow:"16/3/4",elem:"황혼",lv:21},
+{rank:86,did:678,kor:"호드",hp:483,atk:116,def:116,eval:1411,base:"203/36/36",grow:"14/4/4",elem:"물",lv:21},
+{rank:93,did:521,kor:"다르누스",hp:598,atk:89,def:114,eval:1410,base:"258/29/34",grow:"17/3/4",elem:"황혼",lv:21},
+{rank:94,did:363,kor:"라루스",hp:629,atk:84,def:111,eval:1409,base:"249/24/51",grow:"19/3/3",elem:"빛",lv:21},
+{rank:94,did:399,kor:"슬리즈 드래곤",hp:589,atk:103,def:102,eval:1409,base:"329/23/22",grow:"13/4/4",elem:"어둠",lv:21,skill:"def"},
+{rank:96,did:430,kor:"타로스",hp:440,atk:122,def:120,eval:1408,base:"180/42/40",grow:"13/4/4",elem:"불",lv:21},
+{rank:96,did:445,kor:"스트라",hp:452,atk:90,def:149,eval:1408,base:"192/30/49",grow:"13/3/5",elem:"바람",lv:21,skill:"boom"},
+{rank:96,did:446,kor:"헤네스",hp:632,atk:108,def:86,eval:1408,base:"292/28/26",grow:"17/4/3",elem:"빛",lv:21,skill:"boom"},
+{rank:96,did:572,kor:"고귀한 스트라",hp:452,atk:90,def:149,eval:1408,base:"192/30/49",grow:"13/3/5",elem:"바람",lv:21,skill:"boom"},
+{rank:96,did:589,kor:"고귀한 헤네스",hp:632,atk:108,def:86,eval:1408,base:"292/28/26",grow:"17/4/3",elem:"빛",lv:21,skill:"boom"},
+{rank:96,did:627,kor:"글라오네",hp:496,atk:114,def:114,eval:1408,base:"256/34/34",grow:"12/4/4",elem:"땅",lv:21,skill:"boom"},
+{rank:102,did:693,kor:"까치 드래곤",hp:447,atk:146,def:94,eval:1407,base:"227/46/34",grow:"11/5/3",elem:"어둠",lv:21},
+{rank:103,did:639,kor:"아르켈론",hp:446,atk:120,def:120,eval:1406,base:"226/40/40",grow:"11/4/4",elem:"물",lv:21},
+{rank:104,did:299,kor:"아쿠아리움",hp:696,atk:75,def:102,eval:1404,base:"376/15/42",grow:"16/3/3",elem:"물",lv:21},
+{rank:104,did:570,kor:"아바돈",hp:592,atk:95,def:108,eval:1404,base:"292/35/28",grow:"15/3/4",elem:"불",lv:21},
+{rank:104,did:571,kor:"큐아네드",hp:592,atk:91,def:112,eval:1404,base:"292/31/32",grow:"15/3/4",elem:"물",lv:21},
+{rank:104,did:582,kor:"술래",hp:592,atk:115,def:88,eval:1404,base:"292/35/28",grow:"15/4/3",elem:"어둠",lv:21},
+{rank:108,did:405,kor:"알리스 드래곤",hp:474,atk:85,def:147,eval:1402,base:"274/25/47",grow:"10/3/5",elem:"불",lv:21},
+{rank:109,did:383,kor:"카이저번",hp:441,atk:157,def:83,eval:1401,base:"221/57/23",grow:"11/5/3",elem:"어둠",lv:21},
+{rank:109,did:384,kor:"골락",hp:461,atk:89,def:146,eval:1401,base:"241/29/46",grow:"11/3/5",elem:"땅",lv:21},
+{rank:109,did:562,kor:"고귀한 카이저번",hp:441,atk:157,def:83,eval:1401,base:"221/57/23",grow:"11/5/3",elem:"어둠",lv:21},
+{rank:112,did:285,kor:"아그나드",hp:720,atk:91,def:79,eval:1400,base:"400/31/19",grow:"16/3/3",elem:"불",lv:21,skill:"boom"},
+{rank:112,did:308,kor:"매직스타 드래곤",hp:596,atk:106,def:95,eval:1400,base:"256/26/35",grow:"17/4/3",elem:"악몽",lv:21},
+{rank:112,did:391,kor:"썬더레인 드래곤",hp:388,atk:171,def:82,eval:1400,base:"188/51/22",grow:"10/6/3",elem:"빛",lv:21},
+{rank:115,did:581,kor:"강강",hp:453,atk:94,def:142,eval:1397,base:"233/34/42",grow:"11/3/5",elem:"빛",lv:21},
+{rank:115,did:699,kor:"팡팡",hp:325,atk:134,def:134,eval:1397,base:"145/34/34",grow:"9/5/5",elem:"바람",lv:21},
+{rank:117,did:434,kor:"하데스",hp:540,atk:108,def:106,eval:1396,base:"260/28/26",grow:"14/4/4",elem:"어둠",lv:21,skill:"boom"},
+{rank:117,did:435,kor:"프레데터",hp:484,atk:116,def:112,eval:1396,base:"244/36/32",grow:"12/4/4",elem:"땅",lv:21},
+{rank:117,did:525,kor:"지바타르",hp:612,atk:102,def:94,eval:1396,base:"272/22/14",grow:"17/4/4",elem:"바람",lv:21,skill:"boom"},
+{rank:120,did:536,kor:"칼리시",hp:539,atk:107,def:107,eval:1395,base:"279/27/27",grow:"13/4/4",elem:"물",lv:21},
+{rank:120,did:537,kor:"크로마 칼리시",hp:539,atk:107,def:107,eval:1395,base:"279/27/27",grow:"13/4/4",elem:"어둠",lv:21},
+{rank:122,did:320,kor:"루시페르",hp:646,atk:113,def:74,eval:1394,base:"326/33/14",grow:"16/4/3",elem:"불",lv:21,skill:"boom"},
+{rank:123,did:510,kor:"코멧",hp:453,atk:106,def:129,eval:1393,base:"233/46/29",grow:"11/3/5",elem:"여명",lv:21},
+{rank:123,did:638,kor:"마카롱",hp:513,atk:127,def:93,eval:1393,base:"293/27/33",grow:"11/5/3",elem:"여명",lv:21},
+{rank:125,did:333,kor:"미트라",hp:640,atk:105,def:83,eval:1392,base:"380/25/23",grow:"13/4/3",elem:"빛",lv:21},
+{rank:126,did:692,kor:"까마귀 드래곤",hp:543,atk:108,def:104,eval:1391,base:"283/28/24",grow:"13/4/4",elem:"악몽",lv:21},
+{rank:127,did:504,kor:"스노우볼",hp:665,atk:75,def:106,eval:1389,base:"305/15/46",grow:"18/3/3",elem:"황혼",lv:21},
+{rank:127,did:550,kor:"고귀한 갤러헤드",hp:717,atk:86,def:82,eval:1389,base:"377/26/22",grow:"17/3/3",elem:"땅",lv:21},
+{rank:127,did:561,kor:"타라",hp:461,atk:131,def:101,eval:1389,base:"201/31/21",grow:"13/5/4",elem:"불",lv:21},
+{rank:130,did:403,kor:"본샤스 드래곤",hp:504,atk:109,def:112,eval:1388,base:"264/29/32",grow:"12/4/4",elem:"바람",lv:21},
+{rank:130,did:560,kor:"호저리",hp:600,atk:91,def:106,eval:1388,base:"280/31/26",grow:"16/3/4",elem:"여명",lv:21},
+{rank:132,did:341,kor:"선인장 드래곤",hp:715,atk:91,def:77,eval:1387,base:"375/31/17",grow:"17/3/3",elem:"악몽",lv:21},
+{rank:133,did:353,kor:"레버넌트",hp:620,atk:106,def:85,eval:1384,base:"300/26/25",grow:"16/4/3",elem:"악몽",lv:21,skill:"def"},
+{rank:133,did:558,kor:"고귀한 레버넌트",hp:620,atk:106,def:85,eval:1384,base:"300/26/25",grow:"16/4/3",elem:"악몽",lv:21,skill:"def"},
+{rank:135,did:295,kor:"플래그너",hp:668,atk:102,def:76,eval:1380,base:"328/42/16",grow:"17/3/3",elem:"어둠",lv:21,skill:"def"},
+{rank:135,did:548,kor:"베네보렌티아",hp:592,atk:91,def:106,eval:1380,base:"292/31/26",grow:"15/3/4",elem:"불",lv:21},
+{rank:135,did:549,kor:"크로마 베네보렌티아",hp:592,atk:91,def:106,eval:1380,base:"292/31/26",grow:"15/3/4",elem:"물",lv:21},
+{rank:135,did:552,kor:"뇌신",hp:592,atk:91,def:106,eval:1380,base:"292/31/26",grow:"15/3/4",elem:"땅",lv:21},
+{rank:135,did:553,kor:"크로마 뇌신",hp:592,atk:91,def:106,eval:1380,base:"292/31/26",grow:"15/3/4",elem:"불",lv:21},
+{rank:140,did:338,kor:"유리온",hp:659,atk:74,def:105,eval:1375,base:"299/14/45",grow:"18/3/3",elem:"황혼",lv:21,skill:"def"},
+{rank:141,did:404,kor:"갤럭시아 드래곤",hp:554,atk:98,def:106,eval:1370,base:"274/18/26",grow:"14/4/4",elem:"어둠",lv:21},
+{rank:142,did:121,kor:"암흑의 발로드",hp:632,atk:92,def:92,eval:1368,base:"272/32/32",grow:"18/3/3",elem:"어둠",lv:21},
+{rank:142,did:170,kor:"게스 드래곤",hp:612,atk:115,def:74,eval:1368,base:"252/55/14",grow:"18/3/3",elem:"물",lv:21},
+{rank:142,did:173,kor:"콘라드",hp:644,atk:77,def:104,eval:1368,base:"364/17/24",grow:"14/3/4",elem:"땅",lv:21},
+{rank:142,did:183,kor:"할로우",hp:616,atk:108,def:80,eval:1368,base:"336/28/20",grow:"14/4/3",elem:"불",lv:21},
+{rank:146,did:263,kor:"데르",hp:631,atk:85,def:99,eval:1367,base:"271/25/39",grow:"18/3/3",elem:"어둠",lv:21},
+{rank:147,did:175,kor:"파이어퓨리",hp:746,atk:76,def:79,eval:1366,base:"386/16/19",grow:"18/3/3",elem:"불",lv:21},
+{rank:148,did:288,kor:"레블롭틴",hp:665,atk:100,def:75,eval:1365,base:"325/40/15",grow:"17/3/3",elem:"빛",lv:21},
+{rank:149,did:682,kor:"꽁꽁이",hp:539,atk:103,def:103,eval:1363,base:"259/23/23",grow:"14/4/4",elem:"빛",lv:21},
+{rank:150,did:286,kor:"버블 드래곤",hp:778,atk:72,def:74,eval:1362,base:"418/12/14",grow:"18/3/3",elem:"물",lv:21},
+{rank:151,did:188,kor:"블랙코어",hp:521,atk:113,def:97,eval:1361,base:"181/53/37",grow:"17/3/3",elem:"어둠",lv:21},
+{rank:151,did:189,kor:"오딘",hp:529,atk:104,def:104,eval:1361,base:"189/44/44",grow:"17/3/3",elem:"빛",lv:21},
+{rank:151,did:204,kor:"청양 드래곤",hp:545,atk:93,def:111,eval:1361,base:"205/33/51",grow:"17/3/3",elem:"어둠",lv:21},
+{rank:151,did:261,kor:"소울",hp:705,atk:82,def:82,eval:1361,base:"345/22/22",grow:"18/3/3",elem:"빛",lv:21},
+{rank:151,did:262,kor:"이슬룡",hp:669,atk:102,def:71,eval:1361,base:"309/42/11",grow:"18/3/3",elem:"물",lv:21},
+{rank:151,did:359,kor:"푸딩곤",hp:597,atk:89,def:102,eval:1361,base:"237/29/42",grow:"18/3/3",elem:"땅",lv:21},
+{rank:157,did:176,kor:"스테고 드래곤",hp:652,atk:78,def:99,eval:1360,base:"352/18/19",grow:"15/3/4",elem:"어둠",lv:21,skill:"def"},
+{rank:157,did:177,kor:"레텐토르",hp:640,atk:107,def:73,eval:1360,base:"360/27/13",grow:"14/4/3",elem:"땅",lv:21,skill:"boom"},
+{rank:157,did:179,kor:"리쿠루 드래곤",hp:728,atk:72,def:86,eval:1360,base:"348/12/26",grow:"19/3/3",elem:"물",lv:21,skill:"def"},
+{rank:160,did:193,kor:"그라치아",hp:687,atk:84,def:84,eval:1359,base:"327/24/24",grow:"18/3/3",elem:"물",lv:21},
+{rank:161,did:120,kor:"장벽의 에닉스",hp:714,atk:71,def:90,eval:1358,base:"414/11/10",grow:"15/3/4",elem:"땅",lv:21,skill:"def"},
+{rank:161,did:243,kor:"위그드라실",hp:610,atk:78,def:109,eval:1358,base:"210/38/29",grow:"20/2/4",elem:"땅",lv:21,skill:"def"},
+{rank:161,did:311,kor:"페르마타",hp:698,atk:91,def:74,eval:1358,base:"338/31/14",grow:"18/3/3",elem:"악몽",lv:21,skill:"def"},
+{rank:164,did:116,kor:"돌풍의 라이오스",hp:729,atk:80,def:77,eval:1357,base:"369/20/17",grow:"18/3/3",elem:"바람",lv:21},
+{rank:164,did:117,kor:"찬란한 바리안",hp:669,atk:73,def:99,eval:1357,base:"389/13/19",grow:"14/3/4",elem:"빛",lv:21},
+{rank:164,did:178,kor:"미스트 드래곤",hp:733,atk:78,def:78,eval:1357,base:"373/18/18",grow:"18/3/3",elem:"어둠",lv:21},
+{rank:164,did:194,kor:"마가",hp:597,atk:86,def:104,eval:1357,base:"317/26/24",grow:"14/3/4",elem:"바람",lv:21},
+{rank:164,did:195,kor:"스쿠룸",hp:609,atk:112,def:75,eval:1357,base:"249/52/15",grow:"18/3/3",elem:"불",lv:21,skill:"boom"},
+{rank:164,did:223,kor:"딜랑",hp:757,atk:75,def:75,eval:1357,base:"397/15/15",grow:"18/3/3",elem:"빛",lv:21},
+{rank:170,did:251,kor:"아틀란티스",hp:613,atk:96,def:88,eval:1349,base:"193/36/28",grow:"21/3/3",elem:"물",lv:21,skill:"def"},
+{rank:170,did:307,kor:"얼티밋 드래곤",hp:549,atk:110,def:90,eval:1349,base:"229/30/30",grow:"16/4/3",elem:"어둠",lv:21},
+{rank:172,did:312,kor:"앙그라",hp:670,atk:73,def:96,eval:1346,base:"210/13/36",grow:"23/3/3",elem:"바람",lv:21},
+{rank:172,did:701,kor:"고귀한 앙그라",hp:670,atk:73,def:96,eval:1346,base:"210/13/36",grow:"23/3/3",elem:"바람",lv:21},
+{rank:174,did:174,kor:"파브레가스",hp:631,atk:103,def:74,eval:1339,base:"211/43/14",grow:"21/3/3",elem:"바람",lv:21},
+{rank:174,did:339,kor:"터들톰톰",hp:539,atk:123,def:77,eval:1339,base:"179/43/17",grow:"18/4/3",elem:"여명",lv:21},
+{rank:176,did:292,kor:"미스틸테인",hp:670,atk:74,def:92,eval:1334,base:"230/14/32",grow:"22/3/3",elem:"땅",lv:21},
+{rank:177,did:119,kor:"열화의 발칸",hp:551,atk:104,def:90,eval:1327,base:"211/24/30",grow:"17/4/3",elem:"불",lv:21,skill:"boom"},
+{rank:178,did:222,kor:"메이플 드래곤",hp:384,atk:129,def:105,eval:1320,base:"44/69/25",grow:"17/3/4",elem:"땅",lv:21},
+{rank:179,did:264,kor:"렉몰",hp:451,atk:108,def:108,eval:1315,base:"131/28/28",grow:"16/4/4",elem:"여명",lv:21},
+{rank:180,did:221,kor:"듀펜",hp:456,atk:145,def:69,eval:1312,base:"96/65/9",grow:"18/4/3",elem:"땅",lv:21,skill:"boom"},
+{rank:181,did:181,kor:"크룩커스",hp:481,atk:102,def:104,eval:1305,base:"181/22/24",grow:"15/4/4",elem:"어둠",lv:21},
+{rank:182,did:182,kor:"밴시",hp:473,atk:110,def:97,eval:1301,base:"113/30/37",grow:"18/4/3",elem:"어둠",lv:21,skill:"boom"},
+{rank:183,did:239,kor:"적오드래곤",hp:576,atk:107,def:73,eval:1296,base:"216/27/13",grow:"18/4/3",elem:"불",lv:21},
+{rank:184,did:118,kor:"물결의 파프리온",hp:533,atk:117,def:72,eval:1289,base:"133/37/12",grow:"20/4/3",elem:"물",lv:21},
+{rank:185,did:172,kor:"디요나",hp:442,atk:106,def:104,eval:1282,base:"122/26/24",grow:"16/4/4",elem:"빛",lv:21},
+{rank:186,did:171,kor:"베라 드래곤",hp:675,atk:79,def:72,eval:1279,base:"195/19/12",grow:"24/3/3",elem:"어둠",lv:21},
+];
+
+const ssData=[
+{rank:1,did:678,kor:"호드",hp:759,atk:209,def:209,eval:2431,base:"187/33/33",grow:"13/4/4",elem:"물",lv:45},
+{rank:2,did:521,kor:"다르누스",hp:944,atk:160,def:208,eval:2416,base:"240/28/32",grow:"16/3/4",elem:"황혼",lv:45},
+{rank:2,did:608,kor:"기린",hp:944,atk:160,def:208,eval:2416,base:"240/28/32",grow:"16/3/4",elem:"바람",lv:45},
+{rank:4,did:642,kor:"티키톡",hp:743,atk:209,def:209,eval:2415,base:"259/33/33",grow:"11/4/4",elem:"여명",lv:45},
+{rank:5,did:377,kor:"루네라 드래곤",hp:653,atk:215,def:223,eval:2405,base:"169/39/47",grow:"11/4/4",elem:"어둠",lv:45},
+{rank:5,did:628,kor:"고귀한 루네라 드래곤",hp:653,atk:215,def:223,eval:2405,base:"169/39/47",grow:"11/4/4",elem:"어둠",lv:45},
+{rank:7,did:490,kor:"헤카테",hp:704,atk:208,def:216,eval:2400,base:"220/32/40",grow:"11/4/4",elem:"어둠",lv:45},
+{rank:8,did:468,kor:"아누라다",hp:708,atk:263,def:158,eval:2392,base:"224/43/26",grow:"11/5/3",elem:"어둠",lv:45,skill:"boom"},
+{rank:8,did:616,kor:"고귀한 아누라다",hp:708,atk:263,def:158,eval:2392,base:"224/43/26",grow:"11/5/3",elem:"어둠",lv:45,skill:"boom"},
+{rank:8,did:639,kor:"아르켈론",hp:712,atk:210,def:210,eval:2392,base:"228/34/34",grow:"11/4/4",elem:"물",lv:45},
+{rank:11,did:465,kor:"선셋 드래곤",hp:914,atk:212,def:157,eval:2390,base:"210/36/25",grow:"16/4/3",elem:"불",lv:45},
+{rank:12,did:627,kor:"글라오네",hp:733,atk:207,def:207,eval:2389,base:"249/31/31",grow:"11/4/4",elem:"땅",lv:45,skill:"boom"},
+{rank:13,did:683,kor:"파루파루",hp:684,atk:213,def:213,eval:2388,base:"200/37/37",grow:"11/4/4",elem:"불",lv:45},
+{rank:14,did:369,kor:"엔더 드래곤",hp:915,atk:151,def:217,eval:2387,base:"211/19/41",grow:"16/3/4",elem:"땅",lv:45,skill:"def"},
+{rank:14,did:524,kor:"고귀한 엔더 드래곤",hp:915,atk:151,def:217,eval:2387,base:"211/19/41",grow:"16/3/4",elem:"땅",lv:45,skill:"def"},
+{rank:16,did:584,kor:"데바",hp:688,atk:245,def:177,eval:2376,base:"204/25/45",grow:"11/5/3",elem:"땅",lv:45,skill:"boom"},
+{rank:16,did:585,kor:"그라노스",hp:688,atk:177,def:245,eval:2376,base:"204/45/25",grow:"11/3/5",elem:"빛",lv:45,skill:"boom"},
+{rank:16,did:586,kor:"스텔스",hp:688,atk:211,def:211,eval:2376,base:"204/35/35",grow:"11/4/4",elem:"여명",lv:45,skill:"boom"},
+{rank:16,did:598,kor:"주작",hp:688,atk:176,def:246,eval:2376,base:"204/44/26",grow:"11/3/5",elem:"불",lv:45},
+{rank:16,did:599,kor:"백호",hp:688,atk:210,def:212,eval:2376,base:"204/34/36",grow:"11/4/4",elem:"땅",lv:45},
+{rank:21,did:643,kor:"레베리",hp:879,atk:217,def:157,eval:2375,base:"263/41/25",grow:"14/4/3",elem:"악몽",lv:45},
+{rank:22,did:477,kor:"샬롯",hp:690,atk:263,def:158,eval:2374,base:"206/43/26",grow:"11/5/3",elem:"땅",lv:45},
+{rank:23,did:700,kor:"미스틱아츠",hp:885,atk:154,def:218,eval:2373,base:"181/22/42",grow:"16/3/4",elem:"땅",lv:45},
+{rank:24,did:444,kor:"말덱",hp:688,atk:267,def:154,eval:2372,base:"204/47/22",grow:"11/5/3",elem:"땅",lv:45,skill:"def"},
+{rank:24,did:478,kor:"이지스",hp:864,atk:168,def:209,eval:2372,base:"204/36/33",grow:"15/3/4",elem:"빛",lv:45},
+{rank:24,did:534,kor:"고귀한 이지스",hp:864,atk:168,def:209,eval:2372,base:"204/36/33",grow:"15/3/4",elem:"빛",lv:45},
+{rank:24,did:580,kor:"고귀한 말덱",hp:688,atk:267,def:154,eval:2372,base:"204/47/22",grow:"11/5/3",elem:"땅",lv:45,skill:"def"},
+{rank:28,did:510,kor:"코멧",hp:707,atk:171,def:245,eval:2371,base:"223/39/25",grow:"11/3/5",elem:"여명",lv:45},
+{rank:29,did:445,kor:"스트라",hp:664,atk:160,def:266,eval:2368,base:"180/28/46",grow:"11/3/5",elem:"바람",lv:45,skill:"boom"},
+{rank:29,did:446,kor:"헤네스",hp:936,atk:202,def:156,eval:2368,base:"276/26/24",grow:"15/4/3",elem:"빛",lv:45,skill:"boom"},
+{rank:29,did:454,kor:"아비스",hp:916,atk:156,def:207,eval:2368,base:"256/24/31",grow:"15/3/4",elem:"바람",lv:45},
+{rank:29,did:455,kor:"차콜플레임",hp:860,atk:217,def:160,eval:2368,base:"200/41/28",grow:"15/4/3",elem:"불",lv:45},
+{rank:29,did:525,kor:"지바타르",hp:996,atk:198,def:145,eval:2368,base:"248/22/13",grow:"17/4/3",elem:"바람",lv:45,skill:"boom"},
+{rank:29,did:572,kor:"고귀한 스트라",hp:664,atk:160,def:266,eval:2368,base:"180/28/46",grow:"11/3/5",elem:"바람",lv:45,skill:"boom"},
+{rank:29,did:589,kor:"고귀한 헤네스",hp:936,atk:202,def:156,eval:2368,base:"276/26/24",grow:"15/4/3",elem:"빛",lv:45,skill:"boom"},
+{rank:36,did:464,kor:"템페스트",hp:902,atk:166,def:200,eval:2366,base:"242/34/24",grow:"15/3/4",elem:"물",lv:45},
+{rank:37,did:472,kor:"카모플라쥬",hp:900,atk:157,def:209,eval:2364,base:"240/25/33",grow:"15/3/4",elem:"황혼",lv:45},
+{rank:37,did:487,kor:"쿠알레",hp:860,atk:164,def:212,eval:2364,base:"200/32/36",grow:"15/3/4",elem:"물",lv:45},
+{rank:39,did:430,kor:"타로스",hp:690,atk:210,def:208,eval:2362,base:"162/34/32",grow:"12/4/4",elem:"불",lv:45},
+{rank:40,did:308,kor:"매직스타 드래곤",hp:1192,atk:145,def:147,eval:2360,base:"312/13/15",grow:"20/3/3",elem:"악몽",lv:45},
+{rank:41,did:352,kor:"헬카이저",hp:1085,atk:158,def:160,eval:2357,base:"249/26/28",grow:"19/3/3",elem:"황혼",lv:45,skill:"boom"},
+{rank:41,did:631,kor:"토네스",hp:661,atk:211,def:213,eval:2357,base:"221/35/37",grow:"10/4/4",elem:"악몽",lv:45},
+{rank:43,did:312,kor:"앙그라",hp:968,atk:200,def:146,eval:2352,base:"176/24/14",grow:"18/4/3",elem:"바람",lv:45},
+{rank:43,did:701,kor:"고귀한 앙그라",hp:968,atk:200,def:146,eval:2352,base:"176/24/14",grow:"18/4/3",elem:"바람",lv:45},
+{rank:45,did:679,kor:"슬레이프니르",hp:893,atk:155,def:209,eval:2349,base:"189/23/33",grow:"16/3/4",elem:"땅",lv:45,skill:"def"},
+{rank:46,did:449,kor:"설리반",hp:838,atk:163,def:214,eval:2346,base:"222/31/38",grow:"14/3/4",elem:"빛",lv:45},
+{rank:46,did:666,kor:"고귀한 설리반",hp:838,atk:163,def:214,eval:2346,base:"222/31/38",grow:"14/3/4",elem:"빛",lv:45},
+{rank:48,did:491,kor:"밀라",hp:824,atk:160,def:220,eval:2344,base:"208/28/44",grow:"14/3/4",elem:"바람",lv:45},
+{rank:49,did:399,kor:"슬리즈 드래곤",hp:763,atk:198,def:197,eval:2343,base:"279/22/21",grow:"11/4/4",elem:"어둠",lv:45,skill:"def"},
+{rank:49,did:503,kor:"로티스",hp:851,atk:216,def:157,eval:2343,base:"235/40/25",grow:"14/4/3",elem:"물",lv:45},
+{rank:51,did:471,kor:"미티어",hp:850,atk:218,def:155,eval:2342,base:"234/42/23",grow:"14/4/3",elem:"여명",lv:45},
+{rank:52,did:363,kor:"라루스",hp:1021,atk:151,def:179,eval:2341,base:"229/19/47",grow:"18/3/3",elem:"빛",lv:45},
+{rank:52,did:541,kor:"밀라타스",hp:849,atk:217,def:156,eval:2341,base:"233/41/24",grow:"14/4/3",elem:"빛",lv:45},
+{rank:52,did:542,kor:"크로마 밀라타스",hp:849,atk:217,def:156,eval:2341,base:"233/41/24",grow:"14/4/3",elem:"여명",lv:45},
+{rank:52,did:576,kor:"페로스",hp:849,atk:217,def:156,eval:2341,base:"233/41/24",grow:"14/4/3",elem:"바람",lv:45,skill:"def"},
+{rank:52,did:577,kor:"디아누",hp:849,atk:217,def:156,eval:2341,base:"233/41/24",grow:"14/4/3",elem:"땅",lv:45,skill:"def"},
+{rank:52,did:596,kor:"고귀한 페로스",hp:849,atk:217,def:156,eval:2341,base:"233/41/24",grow:"14/4/3",elem:"바람",lv:45,skill:"def"},
+{rank:52,did:605,kor:"고귀한 디아누",hp:849,atk:217,def:156,eval:2341,base:"233/41/24",grow:"14/4/3",elem:"땅",lv:45,skill:"def"},
+{rank:59,did:459,kor:"케이나인",hp:848,atk:215,def:158,eval:2340,base:"232/39/26",grow:"14/4/3",elem:"악몽",lv:45},
+{rank:60,did:693,kor:"까치 드래곤",hp:646,atk:261,def:161,eval:2334,base:"162/41/29",grow:"11/5/3",elem:"어둠",lv:45},
+{rank:61,did:383,kor:"카이저번",hp:645,atk:269,def:153,eval:2333,base:"161/49/21",grow:"11/5/3",elem:"어둠",lv:45},
+{rank:61,did:384,kor:"골락",hp:665,atk:157,def:260,eval:2333,base:"181/25/40",grow:"11/3/5",elem:"땅",lv:45},
+{rank:61,did:562,kor:"고귀한 카이저번",hp:645,atk:269,def:153,eval:2333,base:"161/49/21",grow:"11/5/3",elem:"어둠",lv:45},
+{rank:64,did:702,kor:"스쿨드",hp:625,atk:213,def:213,eval:2329,base:"229/37/37",grow:"9/4/4",elem:"불",lv:45,skill:"boom"},
+{rank:65,did:431,kor:"익시아",hp:876,atk:160,def:203,eval:2328,base:"260/28/27",grow:"14/3/4",elem:"바람",lv:45},
+{rank:65,did:511,kor:"화이트 디스트로이어",hp:876,atk:160,def:203,eval:2328,base:"260/28/27",grow:"14/3/4",elem:"빛",lv:45},
+{rank:65,did:632,kor:"고귀한 익시아",hp:876,atk:160,def:203,eval:2328,base:"260/28/27",grow:"14/3/4",elem:"바람",lv:45},
+{rank:68,did:591,kor:"스킨크 드래곤",hp:851,atk:216,def:153,eval:2327,base:"235/40/21",grow:"14/4/3",elem:"땅",lv:45},
+{rank:68,did:592,kor:"크레스티드 드래곤",hp:851,atk:153,def:216,eval:2327,base:"235/21/40",grow:"14/3/4",elem:"바람",lv:45},
+{rank:68,did:670,kor:"장고",hp:823,atk:211,def:165,eval:2327,base:"163/35/33",grow:"15/4/3",elem:"땅",lv:45},
+{rank:71,did:434,kor:"하데스",hp:876,atk:204,def:158,eval:2324,base:"260/28/26",grow:"14/4/3",elem:"어둠",lv:45,skill:"boom"},
+{rank:72,did:270,kor:"다크혼",hp:678,atk:267,def:144,eval:2322,base:"238/47/12",grow:"10/5/3",elem:"황혼",lv:45},
+{rank:72,did:398,kor:"아델라",hp:630,atk:209,def:214,eval:2322,base:"190/33/38",grow:"10/4/4",elem:"땅",lv:45,skill:"boom"},
+{rank:72,did:522,kor:"페트로아",hp:830,atk:210,def:163,eval:2322,base:"214/34/31",grow:"14/4/3",elem:"불",lv:45},
+{rank:72,did:539,kor:"고귀한 아델라",hp:630,atk:209,def:214,eval:2322,base:"190/33/38",grow:"10/4/4",elem:"땅",lv:45,skill:"boom"},
+{rank:72,did:607,kor:"에슈",hp:830,atk:210,def:163,eval:2322,base:"214/34/31",grow:"14/4/3",elem:"황혼",lv:45},
+{rank:77,did:657,kor:"후긴",hp:805,atk:220,def:159,eval:2321,base:"233/44/27",grow:"13/4/3",elem:"빛",lv:45,skill:"boom"},
+{rank:77,did:658,kor:"무닌",hp:805,atk:159,def:220,eval:2321,base:"233/27/44",grow:"13/3/4",elem:"어둠",lv:45,skill:"def"},
+{rank:79,did:441,kor:"코스모",hp:800,atk:157,def:223,eval:2320,base:"184/25/47",grow:"14/3/4",elem:"여명",lv:45},
+{rank:79,did:636,kor:"거들테일 드래곤",hp:800,atk:198,def:182,eval:2320,base:"228/22/50",grow:"13/4/3",elem:"땅",lv:45,skill:"boom"},
+{rank:81,did:619,kor:"라키온",hp:843,atk:162,def:207,eval:2319,base:"227/30/31",grow:"14/3/4",elem:"땅",lv:45},
+{rank:82,did:507,kor:"펜리르",hp:1086,atk:155,def:152,eval:2314,base:"250/23/20",grow:"19/3/3",elem:"땅",lv:45,skill:"boom"},
+{rank:82,did:680,kor:"고귀한 펜리르",hp:1086,atk:155,def:152,eval:2314,base:"250/23/20",grow:"19/3/3",elem:"땅",lv:45,skill:"boom"},
+{rank:84,did:561,kor:"타라",hp:761,atk:210,def:178,eval:2313,base:"189/34/46",grow:"13/4/3",elem:"불",lv:45},
+{rank:85,did:433,kor:"허리케인",hp:798,atk:165,def:213,eval:2310,base:"226/33/37",grow:"13/3/4",elem:"바람",lv:45,skill:"def"},
+{rank:85,did:690,kor:"고귀한 허리케인",hp:798,atk:165,def:213,eval:2310,base:"226/33/37",grow:"13/3/4",elem:"바람",lv:45,skill:"def"},
+{rank:87,did:391,kor:"썬더레인 드래곤",hp:624,atk:269,def:152,eval:2308,base:"184/49/20",grow:"10/5/3",elem:"빛",lv:45},
+{rank:87,did:560,kor:"호저리",hp:868,atk:159,def:201,eval:2308,base:"252/27/25",grow:"14/3/4",elem:"여명",lv:45},
+{rank:89,did:357,kor:"그랑 세이버",hp:947,atk:169,def:171,eval:2307,base:"199/37/39",grow:"17/3/3",elem:"바람",lv:45,skill:"def"},
+{rank:89,did:656,kor:"파프니르",hp:875,atk:201,def:157,eval:2307,base:"215/25/25",grow:"15/4/3",elem:"불",lv:45},
+{rank:91,did:435,kor:"프레데터",hp:802,atk:210,def:164,eval:2298,base:"230/34/32",grow:"13/4/3",elem:"땅",lv:45},
+{rank:92,did:440,kor:"일란",hp:754,atk:170,def:215,eval:2294,base:"182/38/39",grow:"13/3/4",elem:"바람",lv:45},
+{rank:93,did:500,kor:"이터널",hp:750,atk:171,def:214,eval:2290,base:"178/39/38",grow:"13/3/4",elem:"여명",lv:45},
+{rank:94,did:335,kor:"다크베인",hp:1053,atk:158,def:151,eval:2289,base:"261/26/19",grow:"18/3/3",elem:"불",lv:45,skill:"boom"},
+{rank:94,did:514,kor:"고귀한 다크베인",hp:1053,atk:158,def:151,eval:2289,base:"261/26/19",grow:"18/3/3",elem:"불",lv:45,skill:"boom"},
+{rank:94,did:536,kor:"칼리시",hp:845,atk:203,def:158,eval:2289,base:"273/27/26",grow:"13/4/3",elem:"물",lv:45},
+{rank:94,did:537,kor:"크로마 칼리시",hp:845,atk:203,def:158,eval:2289,base:"273/27/26",grow:"13/4/3",elem:"어둠",lv:45},
+{rank:94,did:682,kor:"꽁꽁이",hp:873,atk:199,def:155,eval:2289,base:"257/23/23",grow:"14/4/3",elem:"빛",lv:45},
+{rank:99,did:571,kor:"큐아네드",hp:824,atk:161,def:205,eval:2288,base:"252/29/29",grow:"13/3/4",elem:"물",lv:45},
+{rank:99,did:582,kor:"술래",hp:824,atk:208,def:158,eval:2288,base:"252/32/26",grow:"13/4/3",elem:"어둠",lv:45},
+{rank:101,did:390,kor:"넬로 드래곤",hp:806,atk:156,def:214,eval:2286,base:"278/24/38",grow:"12/3/4",elem:"물",lv:45},
+{rank:101,did:543,kor:"고귀한 넬로 드래곤",hp:806,atk:156,def:214,eval:2286,base:"278/24/38",grow:"12/3/4",elem:"물",lv:45},
+{rank:103,did:299,kor:"아쿠아리움",hp:629,atk:101,def:313,eval:2285,base:"233/13/49",grow:"9/2/6",elem:"물",lv:45},
+{rank:104,did:570,kor:"아바돈",hp:824,atk:163,def:202,eval:2284,base:"252/31/26",grow:"13/3/4",elem:"불",lv:45},
+{rank:105,did:320,kor:"루시페르",hp:1102,atk:150,def:145,eval:2282,base:"310/18/13",grow:"18/3/3",elem:"불",lv:45,skill:"boom"},
+{rank:106,did:640,kor:"고귀한 다크혼",hp:634,atk:267,def:144,eval:2278,base:"238/47/12",grow:"9/5/3",elem:"황혼",lv:45},
+{rank:107,did:307,kor:"얼티밋 드래곤",hp:674,atk:254,def:146,eval:2274,base:"234/34/14",grow:"10/5/3",elem:"어둠",lv:45},
+{rank:108,did:548,kor:"베네보렌티아",hp:824,atk:159,def:202,eval:2268,base:"252/27/26",grow:"13/3/4",elem:"불",lv:45},
+{rank:108,did:549,kor:"크로마 베네보렌티아",hp:824,atk:159,def:202,eval:2268,base:"252/27/26",grow:"13/3/4",elem:"물",lv:45},
+{rank:108,did:552,kor:"뇌신",hp:824,atk:159,def:202,eval:2268,base:"252/27/26",grow:"13/3/4",elem:"땅",lv:45},
+{rank:108,did:553,kor:"크로마 뇌신",hp:824,atk:159,def:202,eval:2268,base:"252/27/26",grow:"13/3/4",elem:"불",lv:45},
+{rank:112,did:336,kor:"블러디터스크",hp:874,atk:203,def:145,eval:2266,base:"302/27/13",grow:"13/4/3",elem:"악몽",lv:45},
+{rank:112,did:341,kor:"선인장 드래곤",hp:1066,atk:152,def:148,eval:2266,base:"362/20/16",grow:"16/3/3",elem:"악몽",lv:45},
+{rank:112,did:505,kor:"고귀한 블러디터스크",hp:874,atk:203,def:145,eval:2266,base:"302/27/13",grow:"13/4/3",elem:"악몽",lv:45},
+{rank:115,did:311,kor:"페르마타",hp:1009,atk:160,def:154,eval:2265,base:"217/28/22",grow:"18/3/3",elem:"악몽",lv:45,skill:"def"},
+{rank:116,did:333,kor:"미트라",hp:783,atk:225,def:145,eval:2263,base:"255/49/13",grow:"12/4/3",elem:"빛",lv:45},
+{rank:117,did:668,kor:"플로레",hp:757,atk:157,def:219,eval:2261,base:"229/25/43",grow:"12/3/4",elem:"여명",lv:45},
+{rank:118,did:692,kor:"까마귀 드래곤",hp:851,atk:156,def:196,eval:2259,base:"279/24/20",grow:"13/3/4",elem:"악몽",lv:45},
+{rank:119,did:264,kor:"렉몰",hp:697,atk:195,def:195,eval:2257,base:"213/19/19",grow:"11/4/4",elem:"여명",lv:45},
+{rank:120,did:545,kor:"인스트리아",hp:774,atk:214,def:156,eval:2254,base:"290/38/24",grow:"11/4/3",elem:"빛",lv:45},
+{rank:120,did:546,kor:"크로마 인스트리아",hp:774,atk:214,def:156,eval:2254,base:"290/38/24",grow:"11/4/3",elem:"물",lv:45},
+{rank:122,did:288,kor:"레블롭틴",hp:841,atk:205,def:148,eval:2253,base:"225/29/16",grow:"14/4/3",elem:"빛",lv:45},
+{rank:123,did:295,kor:"플래그너",hp:1064,atk:151,def:146,eval:2252,base:"360/19/14",grow:"16/3/3",elem:"어둠",lv:45,skill:"def"},
+{rank:124,did:354,kor:"이블 던",hp:939,atk:155,def:173,eval:2251,base:"279/23/41",grow:"15/3/3",elem:"여명",lv:45},
+{rank:124,did:551,kor:"고귀한 이블던",hp:939,atk:155,def:173,eval:2251,base:"279/23/41",grow:"15/3/3",elem:"여명",lv:45},
+{rank:126,did:221,kor:"듀펜",hp:826,atk:156,def:200,eval:2250,base:"210/24/24",grow:"14/3/4",elem:"땅",lv:45,skill:"boom"},
+{rank:126,did:223,kor:"딜랑",hp:826,atk:200,def:156,eval:2250,base:"210/24/24",grow:"14/4/3",elem:"빛",lv:45},
+{rank:126,did:261,kor:"소울",hp:690,atk:239,def:151,eval:2250,base:"206/19/19",grow:"11/5/3",elem:"빛",lv:45},
+{rank:129,did:239,kor:"적오드래곤",hp:687,atk:195,def:195,eval:2247,base:"159/19/19",grow:"12/4/4",elem:"불",lv:45},
+{rank:130,did:174,kor:"파브레가스",hp:817,atk:203,def:154,eval:2245,base:"201/27/22",grow:"14/4/3",elem:"바람",lv:45},
+{rank:130,did:262,kor:"이슬룡",hp:1037,atk:151,def:151,eval:2245,base:"245/19/19",grow:"18/3/3",elem:"물",lv:45},
+{rank:130,did:618,kor:"골디",hp:733,atk:165,def:213,eval:2245,base:"249/33/37",grow:"11/3/4",elem:"여명",lv:45},
+{rank:133,did:359,kor:"푸딩곤",hp:968,atk:153,def:166,eval:2244,base:"220/21/34",grow:"17/3/3",elem:"땅",lv:45},
+{rank:133,did:630,kor:"애버네일",hp:812,atk:154,def:204,eval:2244,base:"328/22/28",grow:"11/3/4",elem:"빛",lv:45},
+{rank:135,did:178,kor:"미스트 드래곤",hp:993,atk:156,def:156,eval:2241,base:"201/24/24",grow:"18/3/3",elem:"어둠",lv:45},
+{rank:135,did:188,kor:"블랙코어",hp:817,atk:200,def:156,eval:2241,base:"201/24/24",grow:"14/4/3",elem:"어둠",lv:45},
+{rank:135,did:189,kor:"오딘",hp:817,atk:200,def:156,eval:2241,base:"201/24/24",grow:"14/4/3",elem:"빛",lv:45},
+{rank:135,did:353,kor:"레버넌트",hp:993,atk:156,def:156,eval:2241,base:"289/24/24",grow:"16/3/3",elem:"악몽",lv:45,skill:"def"},
+{rank:135,did:558,kor:"고귀한 레버넌트",hp:993,atk:156,def:156,eval:2241,base:"289/24/24",grow:"16/3/3",elem:"악몽",lv:45,skill:"def"},
+{rank:140,did:669,kor:"루시오",hp:766,atk:211,def:157,eval:2238,base:"282/35/25",grow:"11/4/3",elem:"어둠",lv:45},
+{rank:141,did:292,kor:"미스틸테인",hp:625,atk:202,def:201,eval:2237,base:"229/26/25",grow:"9/4/4",elem:"땅",lv:45},
+{rank:141,did:504,kor:"스노우볼",hp:957,atk:146,def:174,eval:2237,base:"297/14/42",grow:"15/3/3",elem:"황혼",lv:45},
+{rank:143,did:243,kor:"위그드라실",hp:851,atk:195,def:151,eval:2235,base:"279/19/19",grow:"13/4/3",elem:"땅",lv:45,skill:"def"},
+{rank:143,did:263,kor:"데르",hp:771,atk:205,def:161,eval:2235,base:"199/29/29",grow:"13/4/3",elem:"어둠",lv:45},
+{rank:145,did:404,kor:"갤럭시아 드래곤",hp:841,atk:148,def:200,eval:2233,base:"269/16/24",grow:"13/3/4",elem:"어둠",lv:45},
+{rank:146,did:286,kor:"버블 드래곤",hp:876,atk:190,def:149,eval:2232,base:"304/14/17",grow:"13/4/3",elem:"물",lv:45},
+{rank:147,did:204,kor:"청양 드래곤",hp:815,atk:155,def:199,eval:2231,base:"199/23/23",grow:"14/3/4",elem:"어둠",lv:45},
+{rank:147,did:222,kor:"메이플 드래곤",hp:815,atk:199,def:155,eval:2231,base:"199/23/23",grow:"14/4/3",elem:"땅",lv:45},
+{rank:149,did:403,kor:"본샤스 드래곤",hp:782,atk:156,def:205,eval:2226,base:"254/24/29",grow:"12/3/4",elem:"바람",lv:45},
+{rank:150,did:177,kor:"레텐토르",hp:753,atk:152,def:216,eval:2225,base:"181/20/40",grow:"13/3/4",elem:"땅",lv:45,skill:"boom"},
+{rank:151,did:193,kor:"그라치아",hp:815,atk:109,def:241,eval:2215,base:"199/21/21",grow:"14/2/5",elem:"물",lv:45},
+{rank:151,did:194,kor:"마가",hp:639,atk:197,def:197,eval:2215,base:"199/21/21",grow:"10/4/4",elem:"바람",lv:45},
+{rank:151,did:195,kor:"스쿠룸",hp:639,atk:285,def:109,eval:2215,base:"199/21/21",grow:"10/6/2",elem:"불",lv:45,skill:"boom"},
+{rank:154,did:581,kor:"강강",hp:707,atk:161,def:215,eval:2211,base:"223/29/39",grow:"11/3/4",elem:"빛",lv:45},
+{rank:155,did:251,kor:"아틀란티스",hp:757,atk:161,def:202,eval:2209,base:"229/29/26",grow:"12/3/4",elem:"물",lv:45,skill:"def"},
+{rank:156,did:610,kor:"루민디스",hp:736,atk:206,def:162,eval:2208,base:"252/30/30",grow:"11/4/3",elem:"빛",lv:45},
+{rank:157,did:176,kor:"스테고 드래곤",hp:719,atk:159,def:213,eval:2207,base:"191/27/37",grow:"12/3/4",elem:"어둠",lv:45,skill:"def"},
+{rank:158,did:609,kor:"락샤사",hp:707,atk:161,def:213,eval:2203,base:"223/29/37",grow:"11/3/4",elem:"물",lv:45},
+{rank:158,did:699,kor:"팡팡",hp:539,atk:208,def:208,eval:2203,base:"143/32/32",grow:"9/4/4",elem:"바람",lv:45},
+{rank:160,did:339,kor:"터들톰톰",hp:833,atk:199,def:143,eval:2201,base:"261/23/11",grow:"13/4/3",elem:"여명",lv:45},
+{rank:161,did:171,kor:"베라 드래곤",hp:787,atk:198,def:154,eval:2195,base:"171/22/22",grow:"14/4/3",elem:"어둠",lv:45},
+{rank:161,did:626,kor:"그리파르",hp:731,atk:166,def:200,eval:2195,base:"247/34/24",grow:"11/3/4",elem:"불",lv:45},
+{rank:163,did:338,kor:"유리온",hp:921,atk:145,def:173,eval:2193,base:"305/13/41",grow:"14/3/3",elem:"황혼",lv:45,skill:"def"},
+{rank:164,did:182,kor:"밴시",hp:783,atk:198,def:154,eval:2191,base:"211/22/22",grow:"13/4/3",elem:"어둠",lv:45,skill:"boom"},
+{rank:164,did:402,kor:"파고스 드래곤",hp:707,atk:162,def:209,eval:2191,base:"267/30/33",grow:"10/3/4",elem:"물",lv:45},
+{rank:166,did:564,kor:"구미호",hp:726,atk:166,def:200,eval:2190,base:"242/34/24",grow:"11/3/4",elem:"악몽",lv:45},
+{rank:167,did:550,kor:"고귀한 갤러헤드",hp:959,atk:155,def:152,eval:2187,base:"299/23/20",grow:"15/3/3",elem:"땅",lv:45},
+{rank:168,did:638,kor:"마카롱",hp:917,atk:153,def:164,eval:2185,base:"213/21/32",grow:"16/3/3",elem:"여명",lv:45},
+{rank:169,did:565,kor:"루송",hp:684,atk:163,def:212,eval:2184,base:"200/31/36",grow:"11/3/4",elem:"불",lv:45},
+{rank:170,did:173,kor:"콘라드",hp:763,atk:198,def:154,eval:2171,base:"191/22/22",grow:"13/4/3",elem:"땅",lv:45},
+{rank:171,did:181,kor:"크룩커스",hp:719,atk:208,def:154,eval:2167,base:"191/32/22",grow:"12/4/3",elem:"어둠",lv:45},
+{rank:172,did:405,kor:"알리스 드래곤",hp:664,atk:154,def:220,eval:2160,base:"268/22/44",grow:"9/3/4",elem:"불",lv:45},
+{rank:173,did:172,kor:"디요나",hp:895,atk:162,def:154,eval:2159,base:"191/30/22",grow:"16/3/3",elem:"빛",lv:45},
+{rank:174,did:179,kor:"리쿠루 드래곤",hp:895,atk:156,def:158,eval:2151,base:"191/24/26",grow:"16/3/3",elem:"물",lv:45,skill:"def"},
+{rank:175,did:285,kor:"아그나드",hp:853,atk:158,def:166,eval:2149,base:"369/26/34",grow:"11/3/3",elem:"불",lv:45,skill:"boom"},
+{rank:176,did:175,kor:"파이어퓨리",hp:895,atk:159,def:154,eval:2147,base:"191/27/22",grow:"16/3/3",elem:"불",lv:45},
+{rank:177,did:183,kor:"할로우",hp:945,atk:170,def:126,eval:2129,base:"241/38/38",grow:"16/3/2",elem:"불",lv:45},
+{rank:178,did:406,kor:"마브리카 드래곤",hp:570,atk:166,def:222,eval:2122,base:"218/34/46",grow:"8/3/4",elem:"빛",lv:45},
+{rank:179,did:170,kor:"게스 드래곤",hp:969,atk:164,def:120,eval:2105,base:"221/32/32",grow:"17/3/2",elem:"물",lv:45},
+{rank:180,did:116,kor:"돌풍의 라이오스",hp:801,atk:153,def:153,eval:2025,base:"229/21/21",grow:"13/3/3",elem:"바람",lv:45},
+{rank:180,did:117,kor:"찬란한 바리안",hp:801,atk:153,def:153,eval:2025,base:"229/21/21",grow:"13/3/3",elem:"빛",lv:45},
+{rank:180,did:118,kor:"물결의 파프리온",hp:801,atk:153,def:153,eval:2025,base:"229/21/21",grow:"13/3/3",elem:"물",lv:45},
+{rank:180,did:119,kor:"열화의 발칸",hp:801,atk:153,def:153,eval:2025,base:"229/21/21",grow:"13/3/3",elem:"불",lv:45,skill:"boom"},
+{rank:180,did:120,kor:"장벽의 에닉스",hp:801,atk:153,def:153,eval:2025,base:"229/21/21",grow:"13/3/3",elem:"땅",lv:45,skill:"def"},
+{rank:180,did:121,kor:"암흑의 발로드",hp:801,atk:153,def:153,eval:2025,base:"229/21/21",grow:"13/3/3",elem:"어둠",lv:45},
+{rank:1,did:642,kor:"티키톡",hp:479,atk:113,def:113,eval:1383,base:"259/33/33",grow:"11/4/4",elem:"여명",lv:21},
+{rank:2,did:377,kor:"루네라 드래곤",hp:389,atk:119,def:127,eval:1373,base:"169/39/47",grow:"11/4/4",elem:"어둠",lv:21},
+{rank:2,did:628,kor:"고귀한 루네라 드래곤",hp:389,atk:119,def:127,eval:1373,base:"169/39/47",grow:"11/4/4",elem:"어둠",lv:21},
+{rank:4,did:490,kor:"헤카테",hp:440,atk:112,def:120,eval:1368,base:"220/32/40",grow:"11/4/4",elem:"어둠",lv:21},
+{rank:5,did:643,kor:"레베리",hp:543,atk:121,def:85,eval:1367,base:"263/41/25",grow:"14/4/3",elem:"악몽",lv:21},
+{rank:6,did:468,kor:"아누라다",hp:444,atk:143,def:86,eval:1360,base:"224/43/26",grow:"11/5/3",elem:"어둠",lv:21,skill:"boom"},
+{rank:6,did:521,kor:"다르누스",hp:560,atk:88,def:112,eval:1360,base:"240/28/32",grow:"16/3/4",elem:"황혼",lv:21},
+{rank:6,did:608,kor:"기린",hp:560,atk:88,def:112,eval:1360,base:"240/28/32",grow:"16/3/4",elem:"바람",lv:21},
+{rank:6,did:616,kor:"고귀한 아누라다",hp:444,atk:143,def:86,eval:1360,base:"224/43/26",grow:"11/5/3",elem:"어둠",lv:21,skill:"boom"},
+{rank:6,did:639,kor:"아르켈론",hp:448,atk:114,def:114,eval:1360,base:"228/34/34",grow:"11/4/4",elem:"물",lv:21},
+{rank:11,did:627,kor:"글라오네",hp:469,atk:111,def:111,eval:1357,base:"249/31/31",grow:"11/4/4",elem:"땅",lv:21,skill:"boom"},
+{rank:12,did:683,kor:"파루파루",hp:420,atk:117,def:117,eval:1356,base:"200/37/37",grow:"11/4/4",elem:"불",lv:21},
+{rank:13,did:678,kor:"호드",hp:447,atk:113,def:113,eval:1351,base:"187/33/33",grow:"13/4/4",elem:"물",lv:21},
+{rank:14,did:631,kor:"토네스",hp:421,atk:115,def:117,eval:1349,base:"221/35/37",grow:"10/4/4",elem:"악몽",lv:21},
+{rank:15,did:702,kor:"스쿨드",hp:409,atk:117,def:117,eval:1345,base:"229/37/37",grow:"9/4/4",elem:"불",lv:21,skill:"boom"},
+{rank:16,did:584,kor:"데바",hp:424,atk:125,def:105,eval:1344,base:"204/25/45",grow:"11/5/3",elem:"땅",lv:21,skill:"boom"},
+{rank:16,did:585,kor:"그라노스",hp:424,atk:105,def:125,eval:1344,base:"204/45/25",grow:"11/3/5",elem:"빛",lv:21,skill:"boom"},
+{rank:16,did:586,kor:"스텔스",hp:424,atk:115,def:115,eval:1344,base:"204/35/35",grow:"11/4/4",elem:"여명",lv:21,skill:"boom"},
+{rank:16,did:598,kor:"주작",hp:424,atk:104,def:126,eval:1344,base:"204/44/26",grow:"11/3/5",elem:"불",lv:21},
+{rank:16,did:599,kor:"백호",hp:424,atk:114,def:116,eval:1344,base:"204/34/36",grow:"11/4/4",elem:"땅",lv:21},
+{rank:21,did:477,kor:"샬롯",hp:426,atk:143,def:86,eval:1342,base:"206/43/26",grow:"11/5/3",elem:"땅",lv:21},
+{rank:22,did:444,kor:"말덱",hp:424,atk:147,def:82,eval:1340,base:"204/47/22",grow:"11/5/3",elem:"땅",lv:21,skill:"def"},
+{rank:22,did:478,kor:"이지스",hp:504,atk:96,def:113,eval:1340,base:"204/36/33",grow:"15/3/4",elem:"빛",lv:21},
+{rank:22,did:534,kor:"고귀한 이지스",hp:504,atk:96,def:113,eval:1340,base:"204/36/33",grow:"15/3/4",elem:"빛",lv:21},
+{rank:22,did:580,kor:"고귀한 말덱",hp:424,atk:147,def:82,eval:1340,base:"204/47/22",grow:"11/5/3",elem:"땅",lv:21,skill:"def"},
+{rank:26,did:510,kor:"코멧",hp:443,atk:99,def:125,eval:1339,base:"223/39/25",grow:"11/3/5",elem:"여명",lv:21},
+{rank:27,did:449,kor:"설리반",hp:502,atk:91,def:118,eval:1338,base:"222/31/38",grow:"14/3/4",elem:"빛",lv:21},
+{rank:27,did:666,kor:"고귀한 설리반",hp:502,atk:91,def:118,eval:1338,base:"222/31/38",grow:"14/3/4",elem:"빛",lv:21},
+{rank:29,did:657,kor:"후긴",hp:493,atk:124,def:87,eval:1337,base:"233/44/27",grow:"13/4/3",elem:"빛",lv:21,skill:"boom"},
+{rank:29,did:658,kor:"무닌",hp:493,atk:87,def:124,eval:1337,base:"233/27/44",grow:"13/3/4",elem:"어둠",lv:21,skill:"def"},
+{rank:31,did:445,kor:"스트라",hp:400,atk:88,def:146,eval:1336,base:"180/28/46",grow:"11/3/5",elem:"바람",lv:21,skill:"boom"},
+{rank:31,did:446,kor:"헤네스",hp:576,atk:106,def:84,eval:1336,base:"276/26/24",grow:"15/4/3",elem:"빛",lv:21,skill:"boom"},
+{rank:31,did:454,kor:"아비스",hp:556,atk:84,def:111,eval:1336,base:"256/24/31",grow:"15/3/4",elem:"바람",lv:21},
+{rank:31,did:455,kor:"차콜플레임",hp:500,atk:121,def:88,eval:1336,base:"200/41/28",grow:"15/4/3",elem:"불",lv:21},
+{rank:31,did:491,kor:"밀라",hp:488,atk:88,def:124,eval:1336,base:"208/28/44",grow:"14/3/4",elem:"바람",lv:21},
+{rank:31,did:572,kor:"고귀한 스트라",hp:400,atk:88,def:146,eval:1336,base:"180/28/46",grow:"11/3/5",elem:"바람",lv:21,skill:"boom"},
+{rank:31,did:589,kor:"고귀한 헤네스",hp:576,atk:106,def:84,eval:1336,base:"276/26/24",grow:"15/4/3",elem:"빛",lv:21,skill:"boom"},
+{rank:31,did:636,kor:"거들테일 드래곤",hp:488,atk:102,def:110,eval:1336,base:"228/22/50",grow:"13/4/3",elem:"땅",lv:21,skill:"boom"},
+{rank:39,did:503,kor:"로티스",hp:515,atk:120,def:85,eval:1335,base:"235/40/25",grow:"14/4/3",elem:"물",lv:21},
+{rank:40,did:464,kor:"템페스트",hp:542,atk:94,def:104,eval:1334,base:"242/34/24",grow:"15/3/4",elem:"물",lv:21},
+{rank:40,did:465,kor:"선셋 드래곤",hp:530,atk:116,def:85,eval:1334,base:"210/36/25",grow:"16/4/3",elem:"불",lv:21},
+{rank:40,did:471,kor:"미티어",hp:514,atk:122,def:83,eval:1334,base:"234/42/23",grow:"14/4/3",elem:"여명",lv:21},
+{rank:43,did:363,kor:"라루스",hp:589,atk:79,def:107,eval:1333,base:"229/19/47",grow:"18/3/3",elem:"빛",lv:21},
+{rank:43,did:541,kor:"밀라타스",hp:513,atk:121,def:84,eval:1333,base:"233/41/24",grow:"14/4/3",elem:"빛",lv:21},
+{rank:43,did:542,kor:"크로마 밀라타스",hp:513,atk:121,def:84,eval:1333,base:"233/41/24",grow:"14/4/3",elem:"여명",lv:21},
+{rank:43,did:576,kor:"페로스",hp:513,atk:121,def:84,eval:1333,base:"233/41/24",grow:"14/4/3",elem:"바람",lv:21,skill:"def"},
+{rank:43,did:577,kor:"디아누",hp:513,atk:121,def:84,eval:1333,base:"233/41/24",grow:"14/4/3",elem:"땅",lv:21,skill:"def"},
+{rank:43,did:596,kor:"고귀한 페로스",hp:513,atk:121,def:84,eval:1333,base:"233/41/24",grow:"14/4/3",elem:"바람",lv:21,skill:"def"},
+{rank:43,did:605,kor:"고귀한 디아누",hp:513,atk:121,def:84,eval:1333,base:"233/41/24",grow:"14/4/3",elem:"땅",lv:21,skill:"def"},
+{rank:50,did:459,kor:"케이나인",hp:512,atk:119,def:86,eval:1332,base:"232/39/26",grow:"14/4/3",elem:"악몽",lv:21},
+{rank:50,did:472,kor:"카모플라쥬",hp:540,atk:85,def:113,eval:1332,base:"240/25/33",grow:"15/3/4",elem:"황혼",lv:21},
+{rank:50,did:487,kor:"쿠알레",hp:500,atk:92,def:116,eval:1332,base:"200/32/36",grow:"15/3/4",elem:"물",lv:21},
+{rank:53,did:369,kor:"엔더 드래곤",hp:531,atk:79,def:121,eval:1331,base:"211/19/41",grow:"16/3/4",elem:"땅",lv:21,skill:"def"},
+{rank:53,did:524,kor:"고귀한 엔더 드래곤",hp:531,atk:79,def:121,eval:1331,base:"211/19/41",grow:"16/3/4",elem:"땅",lv:21,skill:"def"},
+{rank:55,did:561,kor:"타라",hp:449,atk:114,def:106,eval:1329,base:"189/34/46",grow:"13/4/3",elem:"불",lv:21},
+{rank:56,did:390,kor:"넬로 드래곤",hp:518,atk:84,def:118,eval:1326,base:"278/24/38",grow:"12/3/4",elem:"물",lv:21},
+{rank:56,did:433,kor:"허리케인",hp:486,atk:93,def:117,eval:1326,base:"226/33/37",grow:"13/3/4",elem:"바람",lv:21,skill:"def"},
+{rank:56,did:543,kor:"고귀한 넬로 드래곤",hp:518,atk:84,def:118,eval:1326,base:"278/24/38",grow:"12/3/4",elem:"물",lv:21},
+{rank:56,did:690,kor:"고귀한 허리케인",hp:486,atk:93,def:117,eval:1326,base:"226/33/37",grow:"13/3/4",elem:"바람",lv:21,skill:"def"},
+{rank:60,did:352,kor:"헬카이저",hp:629,atk:86,def:88,eval:1325,base:"249/26/28",grow:"19/3/3",elem:"황혼",lv:21,skill:"boom"},
+{rank:61,did:357,kor:"그랑 세이버",hp:539,atk:97,def:99,eval:1323,base:"199/37/39",grow:"17/3/3",elem:"바람",lv:21,skill:"def"},
+{rank:62,did:431,kor:"익시아",hp:540,atk:88,def:107,eval:1320,base:"260/28/27",grow:"14/3/4",elem:"바람",lv:21},
+{rank:62,did:511,kor:"화이트 디스트로이어",hp:540,atk:88,def:107,eval:1320,base:"260/28/27",grow:"14/3/4",elem:"빛",lv:21},
+{rank:62,did:632,kor:"고귀한 익시아",hp:540,atk:88,def:107,eval:1320,base:"260/28/27",grow:"14/3/4",elem:"바람",lv:21},
+{rank:65,did:591,kor:"스킨크 드래곤",hp:515,atk:120,def:81,eval:1319,base:"235/40/21",grow:"14/4/3",elem:"땅",lv:21},
+{rank:65,did:592,kor:"크레스티드 드래곤",hp:515,atk:81,def:120,eval:1319,base:"235/21/40",grow:"14/3/4",elem:"바람",lv:21},
+{rank:67,did:545,kor:"인스트리아",hp:510,atk:118,def:84,eval:1318,base:"290/38/24",grow:"11/4/3",elem:"빛",lv:21},
+{rank:67,did:546,kor:"크로마 인스트리아",hp:510,atk:118,def:84,eval:1318,base:"290/38/24",grow:"11/4/3",elem:"물",lv:21},
+{rank:69,did:700,kor:"미스틱아츠",hp:501,atk:82,def:122,eval:1317,base:"181/22/42",grow:"16/3/4",elem:"땅",lv:21},
+{rank:70,did:434,kor:"하데스",hp:540,atk:108,def:86,eval:1316,base:"260/28/26",grow:"14/4/3",elem:"어둠",lv:21,skill:"boom"},
+{rank:71,did:354,kor:"이블 던",hp:579,atk:83,def:101,eval:1315,base:"279/23/41",grow:"15/3/3",elem:"여명",lv:21},
+{rank:71,did:551,kor:"고귀한 이블던",hp:579,atk:83,def:101,eval:1315,base:"279/23/41",grow:"15/3/3",elem:"여명",lv:21},
+{rank:73,did:270,kor:"다크혼",hp:438,atk:147,def:72,eval:1314,base:"238/47/12",grow:"10/5/3",elem:"황혼",lv:21},
+{rank:73,did:398,kor:"아델라",hp:390,atk:113,def:118,eval:1314,base:"190/33/38",grow:"10/4/4",elem:"땅",lv:21,skill:"boom"},
+{rank:73,did:435,kor:"프레데터",hp:490,atk:114,def:92,eval:1314,base:"230/34/32",grow:"13/4/3",elem:"땅",lv:21},
+{rank:73,did:522,kor:"페트로아",hp:494,atk:114,def:91,eval:1314,base:"214/34/31",grow:"14/4/3",elem:"불",lv:21},
+{rank:73,did:539,kor:"고귀한 아델라",hp:390,atk:113,def:118,eval:1314,base:"190/33/38",grow:"10/4/4",elem:"땅",lv:21,skill:"boom"},
+{rank:73,did:607,kor:"에슈",hp:494,atk:114,def:91,eval:1314,base:"214/34/31",grow:"14/4/3",elem:"황혼",lv:21},
+{rank:79,did:441,kor:"코스모",hp:464,atk:85,def:127,eval:1312,base:"184/25/47",grow:"14/3/4",elem:"여명",lv:21},
+{rank:80,did:399,kor:"슬리즈 드래곤",hp:499,atk:102,def:101,eval:1311,base:"279/22/21",grow:"11/4/4",elem:"어둠",lv:21,skill:"def"},
+{rank:80,did:619,kor:"라키온",hp:507,atk:90,def:111,eval:1311,base:"227/30/31",grow:"14/3/4",elem:"땅",lv:21},
+{rank:82,did:440,kor:"일란",hp:442,atk:98,def:119,eval:1310,base:"182/38/39",grow:"13/3/4",elem:"바람",lv:21},
+{rank:83,did:285,kor:"아그나드",hp:589,atk:86,def:94,eval:1309,base:"369/26/34",grow:"11/3/3",elem:"불",lv:21,skill:"boom"},
+{rank:83,did:618,kor:"골디",hp:469,atk:93,def:117,eval:1309,base:"249/33/37",grow:"11/3/4",elem:"여명",lv:21},
+{rank:85,did:630,kor:"애버네일",hp:548,atk:82,def:108,eval:1308,base:"328/22/28",grow:"11/3/4",elem:"빛",lv:21},
+{rank:86,did:341,kor:"선인장 드래곤",hp:682,atk:80,def:76,eval:1306,base:"362/20/16",grow:"16/3/3",elem:"악몽",lv:21},
+{rank:86,did:430,kor:"타로스",hp:402,atk:114,def:112,eval:1306,base:"162/34/32",grow:"12/4/4",elem:"불",lv:21},
+{rank:86,did:500,kor:"이터널",hp:438,atk:99,def:118,eval:1306,base:"178/39/38",grow:"13/3/4",elem:"여명",lv:21},
+{rank:89,did:536,kor:"칼리시",hp:533,atk:107,def:86,eval:1305,base:"273/27/26",grow:"13/4/3",elem:"물",lv:21},
+{rank:89,did:537,kor:"크로마 칼리시",hp:533,atk:107,def:86,eval:1305,base:"273/27/26",grow:"13/4/3",elem:"어둠",lv:21},
+{rank:91,did:308,kor:"매직스타 드래곤",hp:712,atk:73,def:75,eval:1304,base:"312/13/15",grow:"20/3/3",elem:"악몽",lv:21},
+{rank:91,did:571,kor:"큐아네드",hp:512,atk:89,def:109,eval:1304,base:"252/29/29",grow:"13/3/4",elem:"물",lv:21},
+{rank:91,did:582,kor:"술래",hp:512,atk:112,def:86,eval:1304,base:"252/32/26",grow:"13/4/3",elem:"어둠",lv:21},
+{rank:94,did:333,kor:"미트라",hp:495,atk:129,def:73,eval:1303,base:"255/49/13",grow:"12/4/3",elem:"빛",lv:21},
+{rank:95,did:669,kor:"루시오",hp:502,atk:115,def:85,eval:1302,base:"282/35/25",grow:"11/4/3",elem:"어둠",lv:21},
+{rank:95,did:693,kor:"까치 드래곤",hp:382,atk:141,def:89,eval:1302,base:"162/41/29",grow:"11/5/3",elem:"어둠",lv:21},
+{rank:97,did:299,kor:"아쿠아리움",hp:413,atk:53,def:169,eval:1301,base:"233/13/49",grow:"9/2/6",elem:"물",lv:21},
+{rank:97,did:383,kor:"카이저번",hp:381,atk:149,def:81,eval:1301,base:"161/49/21",grow:"11/5/3",elem:"어둠",lv:21},
+{rank:97,did:384,kor:"골락",hp:401,atk:85,def:140,eval:1301,base:"181/25/40",grow:"11/3/5",elem:"땅",lv:21},
+{rank:97,did:504,kor:"스노우볼",hp:597,atk:74,def:102,eval:1301,base:"297/14/42",grow:"15/3/3",elem:"황혼",lv:21},
+{rank:97,did:562,kor:"고귀한 카이저번",hp:381,atk:149,def:81,eval:1301,base:"161/49/21",grow:"11/5/3",elem:"어둠",lv:21},
+{rank:97,did:668,kor:"플로레",hp:469,atk:85,def:123,eval:1301,base:"229/25/43",grow:"12/3/4",elem:"여명",lv:21},
+{rank:103,did:391,kor:"썬더레인 드래곤",hp:384,atk:149,def:80,eval:1300,base:"184/49/20",grow:"10/5/3",elem:"빛",lv:21},
+{rank:103,did:560,kor:"호저리",hp:532,atk:87,def:105,eval:1300,base:"252/27/25",grow:"14/3/4",elem:"여명",lv:21},
+{rank:103,did:570,kor:"아바돈",hp:512,atk:91,def:106,eval:1300,base:"252/31/26",grow:"13/3/4",elem:"불",lv:21},
+{rank:106,did:670,kor:"장고",hp:463,atk:115,def:93,eval:1295,base:"163/35/33",grow:"15/4/3",elem:"땅",lv:21},
+{rank:107,did:640,kor:"고귀한 다크혼",hp:418,atk:147,def:72,eval:1294,base:"238/47/12",grow:"9/5/3",elem:"황혼",lv:21},
+{rank:108,did:679,kor:"슬레이프니르",hp:509,atk:83,def:113,eval:1293,base:"189/23/33",grow:"16/3/4",elem:"땅",lv:21,skill:"def"},
+{rank:109,did:295,kor:"플래그너",hp:680,atk:79,def:74,eval:1292,base:"360/19/14",grow:"16/3/3",elem:"어둠",lv:21,skill:"def"},
+{rank:110,did:525,kor:"지바타르",hp:588,atk:102,def:73,eval:1288,base:"248/22/13",grow:"17/4/3",elem:"바람",lv:21,skill:"boom"},
+{rank:111,did:548,kor:"베네보렌티아",hp:512,atk:87,def:106,eval:1284,base:"252/27/26",grow:"13/3/4",elem:"불",lv:21},
+{rank:111,did:549,kor:"크로마 베네보렌티아",hp:512,atk:87,def:106,eval:1284,base:"252/27/26",grow:"13/3/4",elem:"물",lv:21},
+{rank:111,did:552,kor:"뇌신",hp:512,atk:87,def:106,eval:1284,base:"252/27/26",grow:"13/3/4",elem:"땅",lv:21},
+{rank:111,did:553,kor:"크로마 뇌신",hp:512,atk:87,def:106,eval:1284,base:"252/27/26",grow:"13/3/4",elem:"불",lv:21},
+{rank:115,did:336,kor:"블러디터스크",hp:562,atk:107,def:73,eval:1282,base:"302/27/13",grow:"13/4/3",elem:"악몽",lv:21},
+{rank:115,did:505,kor:"고귀한 블러디터스크",hp:562,atk:107,def:73,eval:1282,base:"302/27/13",grow:"13/4/3",elem:"악몽",lv:21},
+{rank:115,did:507,kor:"펜리르",hp:630,atk:83,def:80,eval:1282,base:"250/23/20",grow:"19/3/3",elem:"땅",lv:21,skill:"boom"},
+{rank:115,did:680,kor:"고귀한 펜리르",hp:630,atk:83,def:80,eval:1282,base:"250/23/20",grow:"19/3/3",elem:"땅",lv:21,skill:"boom"},
+{rank:119,did:335,kor:"다크베인",hp:621,atk:86,def:79,eval:1281,base:"261/26/19",grow:"18/3/3",elem:"불",lv:21,skill:"boom"},
+{rank:119,did:338,kor:"유리온",hp:585,atk:73,def:101,eval:1281,base:"305/13/41",grow:"14/3/3",elem:"황혼",lv:21,skill:"def"},
+{rank:119,did:353,kor:"레버넌트",hp:609,atk:84,def:84,eval:1281,base:"289/24/24",grow:"16/3/3",elem:"악몽",lv:21,skill:"def"},
+{rank:119,did:514,kor:"고귀한 다크베인",hp:621,atk:86,def:79,eval:1281,base:"261/26/19",grow:"18/3/3",elem:"불",lv:21,skill:"boom"},
+{rank:119,did:558,kor:"고귀한 레버넌트",hp:609,atk:84,def:84,eval:1281,base:"289/24/24",grow:"16/3/3",elem:"악몽",lv:21,skill:"def"},
+{rank:119,did:682,kor:"꽁꽁이",hp:537,atk:103,def:83,eval:1281,base:"257/23/23",grow:"14/4/3",elem:"빛",lv:21},
+{rank:125,did:402,kor:"파고스 드래곤",hp:467,atk:90,def:113,eval:1279,base:"267/30/33",grow:"10/3/4",elem:"물",lv:21},
+{rank:126,did:581,kor:"강강",hp:443,atk:89,def:119,eval:1275,base:"223/29/39",grow:"11/3/4",elem:"빛",lv:21},
+{rank:126,did:656,kor:"파프니르",hp:515,atk:105,def:85,eval:1275,base:"215/25/25",grow:"15/4/3",elem:"불",lv:21},
+{rank:126,did:692,kor:"까마귀 드래곤",hp:539,atk:84,def:100,eval:1275,base:"279/24/20",grow:"13/3/4",elem:"악몽",lv:21},
+{rank:129,did:320,kor:"루시페르",hp:670,atk:78,def:73,eval:1274,base:"310/18/13",grow:"18/3/3",elem:"불",lv:21,skill:"boom"},
+{rank:130,did:405,kor:"알리스 드래곤",hp:448,atk:82,def:124,eval:1272,base:"268/22/44",grow:"9/3/4",elem:"불",lv:21},
+{rank:130,did:610,kor:"루민디스",hp:472,atk:110,def:90,eval:1272,base:"252/30/30",grow:"11/4/3",elem:"빛",lv:21},
+{rank:132,did:609,kor:"락샤사",hp:443,atk:89,def:117,eval:1267,base:"223/29/37",grow:"11/3/4",elem:"물",lv:21},
+{rank:133,did:307,kor:"얼티밋 드래곤",hp:434,atk:134,def:74,eval:1266,base:"234/34/14",grow:"10/5/3",elem:"어둠",lv:21},
+{rank:133,did:403,kor:"본샤스 드래곤",hp:494,atk:84,def:109,eval:1266,base:"254/24/29",grow:"12/3/4",elem:"바람",lv:21},
+{rank:135,did:183,kor:"할로우",hp:561,atk:98,def:78,eval:1265,base:"241/38/38",grow:"16/3/2",elem:"불",lv:21},
+{rank:136,did:359,kor:"푸딩곤",hp:560,atk:81,def:94,eval:1260,base:"220/21/34",grow:"17/3/3",elem:"땅",lv:21},
+{rank:137,did:626,kor:"그리파르",hp:467,atk:94,def:104,eval:1259,base:"247/34/24",grow:"11/3/4",elem:"불",lv:21},
+{rank:138,did:406,kor:"마브리카 드래곤",hp:378,atk:94,def:126,eval:1258,base:"218/34/46",grow:"8/3/4",elem:"빛",lv:21},
+{rank:139,did:311,kor:"페르마타",hp:577,atk:88,def:82,eval:1257,base:"217/28/22",grow:"18/3/3",elem:"악몽",lv:21,skill:"def"},
+{rank:140,did:564,kor:"구미호",hp:462,atk:94,def:104,eval:1254,base:"242/34/24",grow:"11/3/4",elem:"악몽",lv:21},
+{rank:141,did:292,kor:"미스틸테인",hp:409,atk:106,def:105,eval:1253,base:"229/26/25",grow:"9/4/4",elem:"땅",lv:21},
+{rank:142,did:243,kor:"위그드라실",hp:539,atk:99,def:79,eval:1251,base:"279/19/19",grow:"13/4/3",elem:"땅",lv:21,skill:"def"},
+{rank:142,did:263,kor:"데르",hp:459,atk:109,def:89,eval:1251,base:"199/29/29",grow:"13/4/3",elem:"어둠",lv:21},
+{rank:142,did:550,kor:"고귀한 갤러헤드",hp:599,atk:83,def:80,eval:1251,base:"299/23/20",grow:"15/3/3",elem:"땅",lv:21},
+{rank:145,did:251,kor:"아틀란티스",hp:469,atk:89,def:106,eval:1249,base:"229/29/26",grow:"12/3/4",elem:"물",lv:21,skill:"def"},
+{rank:145,did:404,kor:"갤럭시아 드래곤",hp:529,atk:76,def:104,eval:1249,base:"269/16/24",grow:"13/3/4",elem:"어둠",lv:21},
+{rank:147,did:286,kor:"버블 드래곤",hp:564,atk:94,def:77,eval:1248,base:"304/14/17",grow:"13/4/3",elem:"물",lv:21},
+{rank:147,did:312,kor:"앙그라",hp:536,atk:104,def:74,eval:1248,base:"176/24/14",grow:"18/4/3",elem:"바람",lv:21},
+{rank:147,did:565,kor:"루송",hp:420,atk:91,def:116,eval:1248,base:"200/31/36",grow:"11/3/4",elem:"불",lv:21},
+{rank:147,did:701,kor:"고귀한 앙그라",hp:536,atk:104,def:74,eval:1248,base:"176/24/14",grow:"18/4/3",elem:"바람",lv:21},
+{rank:151,did:176,kor:"스테고 드래곤",hp:431,atk:87,def:117,eval:1247,base:"191/27/37",grow:"12/3/4",elem:"어둠",lv:21,skill:"def"},
+{rank:152,did:288,kor:"레블롭틴",hp:505,atk:109,def:76,eval:1245,base:"225/29/16",grow:"14/4/3",elem:"빛",lv:21},
+{rank:153,did:221,kor:"듀펜",hp:490,atk:84,def:104,eval:1242,base:"210/24/24",grow:"14/3/4",elem:"땅",lv:21,skill:"boom"},
+{rank:153,did:223,kor:"딜랑",hp:490,atk:104,def:84,eval:1242,base:"210/24/24",grow:"14/4/3",elem:"빛",lv:21},
+{rank:155,did:177,kor:"레텐토르",hp:441,atk:80,def:120,eval:1241,base:"181/20/40",grow:"13/3/4",elem:"땅",lv:21,skill:"boom"},
+{rank:156,did:174,kor:"파브레가스",hp:481,atk:107,def:82,eval:1237,base:"201/27/22",grow:"14/4/3",elem:"바람",lv:21},
+{rank:156,did:262,kor:"이슬룡",hp:605,atk:79,def:79,eval:1237,base:"245/19/19",grow:"18/3/3",elem:"물",lv:21},
+{rank:158,did:178,kor:"미스트 드래곤",hp:561,atk:84,def:84,eval:1233,base:"201/24/24",grow:"18/3/3",elem:"어둠",lv:21},
+{rank:158,did:188,kor:"블랙코어",hp:481,atk:104,def:84,eval:1233,base:"201/24/24",grow:"14/4/3",elem:"어둠",lv:21},
+{rank:158,did:189,kor:"오딘",hp:481,atk:104,def:84,eval:1233,base:"201/24/24",grow:"14/4/3",elem:"빛",lv:21},
+{rank:161,did:264,kor:"렉몰",hp:433,atk:99,def:99,eval:1225,base:"213/19/19",grow:"11/4/4",elem:"여명",lv:21},
+{rank:161,did:638,kor:"마카롱",hp:533,atk:81,def:92,eval:1225,base:"213/21/32",grow:"16/3/3",elem:"여명",lv:21},
+{rank:163,did:204,kor:"청양 드래곤",hp:479,atk:83,def:103,eval:1223,base:"199/23/23",grow:"14/3/4",elem:"어둠",lv:21},
+{rank:163,did:222,kor:"메이플 드래곤",hp:479,atk:103,def:83,eval:1223,base:"199/23/23",grow:"14/4/3",elem:"땅",lv:21},
+{rank:165,did:699,kor:"팡팡",hp:323,atk:112,def:112,eval:1219,base:"143/32/32",grow:"9/4/4",elem:"바람",lv:21},
+{rank:166,did:261,kor:"소울",hp:426,atk:119,def:79,eval:1218,base:"206/19/19",grow:"11/5/3",elem:"빛",lv:21},
+{rank:167,did:170,kor:"게스 드래곤",hp:561,atk:92,def:72,eval:1217,base:"221/32/32",grow:"17/3/2",elem:"물",lv:21},
+{rank:167,did:339,kor:"터들톰톰",hp:521,atk:103,def:71,eval:1217,base:"261/23/11",grow:"13/4/3",elem:"여명",lv:21},
+{rank:169,did:181,kor:"크룩커스",hp:431,atk:112,def:82,eval:1207,base:"191/32/22",grow:"12/4/3",elem:"어둠",lv:21},
+{rank:169,did:182,kor:"밴시",hp:471,atk:102,def:82,eval:1207,base:"211/22/22",grow:"13/4/3",elem:"어둠",lv:21,skill:"boom"},
+{rank:169,did:193,kor:"그라치아",hp:479,atk:61,def:121,eval:1207,base:"199/21/21",grow:"14/2/5",elem:"물",lv:21},
+{rank:169,did:194,kor:"마가",hp:399,atk:101,def:101,eval:1207,base:"199/21/21",grow:"10/4/4",elem:"바람",lv:21},
+{rank:169,did:195,kor:"스쿠룸",hp:399,atk:141,def:61,eval:1207,base:"199/21/21",grow:"10/6/2",elem:"불",lv:21,skill:"boom"},
+{rank:174,did:172,kor:"디요나",hp:511,atk:90,def:82,eval:1199,base:"191/30/22",grow:"16/3/3",elem:"빛",lv:21},
+{rank:175,did:179,kor:"리쿠루 드래곤",hp:511,atk:84,def:86,eval:1191,base:"191/24/26",grow:"16/3/3",elem:"물",lv:21,skill:"def"},
+{rank:175,did:239,kor:"적오드래곤",hp:399,atk:99,def:99,eval:1191,base:"159/19/19",grow:"12/4/4",elem:"불",lv:21},
+{rank:177,did:171,kor:"베라 드래곤",hp:451,atk:102,def:82,eval:1187,base:"171/22/22",grow:"14/4/3",elem:"어둠",lv:21},
+{rank:177,did:173,kor:"콘라드",hp:451,atk:102,def:82,eval:1187,base:"191/22/22",grow:"13/4/3",elem:"땅",lv:21},
+{rank:177,did:175,kor:"파이어퓨리",hp:511,atk:87,def:82,eval:1187,base:"191/27/22",grow:"16/3/3",elem:"불",lv:21},
+{rank:180,did:116,kor:"돌풍의 라이오스",hp:489,atk:81,def:81,eval:1137,base:"229/21/21",grow:"13/3/3",elem:"바람",lv:21},
+{rank:180,did:117,kor:"찬란한 바리안",hp:489,atk:81,def:81,eval:1137,base:"229/21/21",grow:"13/3/3",elem:"빛",lv:21},
+{rank:180,did:118,kor:"물결의 파프리온",hp:489,atk:81,def:81,eval:1137,base:"229/21/21",grow:"13/3/3",elem:"물",lv:21},
+{rank:180,did:119,kor:"열화의 발칸",hp:489,atk:81,def:81,eval:1137,base:"229/21/21",grow:"13/3/3",elem:"불",lv:21,skill:"boom"},
+{rank:180,did:120,kor:"장벽의 에닉스",hp:489,atk:81,def:81,eval:1137,base:"229/21/21",grow:"13/3/3",elem:"땅",lv:21,skill:"def"},
+{rank:180,did:121,kor:"암흑의 발로드",hp:489,atk:81,def:81,eval:1137,base:"229/21/21",grow:"13/3/3",elem:"어둠",lv:21},
+];
+
+const imgMap={
+  "돌풍의 라이오스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/116/profile/4.png",
+  "찬란한 바리안":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/117/profile/4.png",
+  "물결의 파프리온":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/118/profile/4.png",
+  "열화의 발칸":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/119/profile/4.png",
+  "장벽의 에닉스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/120/profile/4.png",
+  "암흑의 발로드":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/121/profile/4.png",
+  "게스 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/170/profile/4.png",
+  "베라 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/171/profile/4.png",
+  "디요나":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/172/profile/4.png",
+  "콘라드":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/173/profile/4.png",
+  "파브레가스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/174/profile/4.png",
+  "파이어퓨리":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/175/profile/4.png",
+  "스테고 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/176/profile/4.png",
+  "레텐토르":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/177/profile/4.png",
+  "미스트 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/178/profile/4.png",
+  "리쿠루 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/179/profile/4.png",
+  "크룩커스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/181/profile/4.png",
+  "밴시":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/182/profile/4.png",
+  "할로우":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/183/profile/4.png",
+  "블랙코어":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/188/profile/4.png",
+  "오딘":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/189/profile/4.png",
+  "그라치아":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/193/profile/4.png",
+  "마가":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/194/profile/4.png",
+  "스쿠룸":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/195/profile/4.png",
+  "청양 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/204/profile/4.png",
+  "듀펜":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/221/profile/4.png",
+  "메이플 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/222/profile/4.png",
+  "딜랑":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/223/profile/4.png",
+  "적오드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/239/profile/4.png",
+  "위그드라실":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/243/profile/4.png",
+  "아틀란티스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/251/profile/4.png",
+  "소울":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/261/profile/4.png",
+  "이슬룡":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/262/profile/4.png",
+  "데르":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/263/profile/4.png",
+  "렉몰":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/264/profile/4.png",
+  "다크혼":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/270/profile/4.png",
+  "아그나드":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/285/profile/4.png",
+  "버블 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/286/profile/4.png",
+  "레블롭틴":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/288/profile/4.png",
+  "미스틸테인":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/292/profile/4.png",
+  "플래그너":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/295/profile/4.png",
+  "아쿠아리움":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/299/profile/4.png",
+  "얼티밋 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/307/profile/4.png",
+  "매직스타 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/308/profile/4.png",
+  "페르마타":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/311/profile/4.png",
+  "앙그라":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/312/profile/4.png",
+  "루시페르":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/320/profile/4.png",
+  "미트라":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/333/profile/4.png",
+  "다크베인":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/335/profile/4.png",
+  "블러디터스크":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/336/profile/4.png",
+  "유리온":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/338/profile/4.png",
+  "터들톰톰":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/339/profile/4.png",
+  "선인장 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/341/profile/4.png",
+  "헬카이저":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/352/profile/4.png",
+  "레버넌트":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/353/profile/4.png",
+  "이블 던":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/354/profile/4.png",
+  "그랑 세이버":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/357/profile/4.png",
+  "푸딩곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/359/profile/4.png",
+  "라루스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/363/profile/4.png",
+  "엔더 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/369/profile/4.png",
+  "루네라 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/377/profile/4.png",
+  "카이저번":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/383/profile/4.png",
+  "골락":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/384/profile/4.png",
+  "넬로 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/390/profile/4.png",
+  "썬더레인 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/391/profile/4.png",
+  "아델라":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/398/profile/4.png",
+  "슬리즈 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/399/profile/4.png",
+  "파고스 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/402/profile/4.png",
+  "본샤스 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/403/profile/4.png",
+  "갤럭시아 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/404/profile/4.png",
+  "알리스 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/405/profile/4.png",
+  "마브리카 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/406/profile/4.png",
+  "타로스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/430/profile/4.png",
+  "익시아":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/431/profile/4.png",
+  "허리케인":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/433/profile/4.png",
+  "하데스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/434/profile/4.png",
+  "프레데터":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/435/profile/4.png",
+  "일란":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/440/profile/4.png",
+  "코스모":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/441/profile/4.png",
+  "말덱":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/444/profile/4.png",
+  "스트라":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/445/profile/4.png",
+  "헤네스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/446/profile/4.png",
+  "설리반":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/449/profile/4.png",
+  "아비스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/454/profile/4.png",
+  "차콜플레임":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/455/profile/4.png",
+  "케이나인":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/459/profile/4.png",
+  "템페스트":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/464/profile/4.png",
+  "선셋 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/465/profile/4.png",
+  "아누라다":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/468/profile/4.png",
+  "미티어":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/471/profile/4.png",
+  "카모플라쥬":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/472/profile/4.png",
+  "샬롯":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/477/profile/4.png",
+  "이지스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/478/profile/4.png",
+  "쿠알레":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/487/profile/4.png",
+  "헤카테":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/490/profile/4.png",
+  "밀라":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/491/profile/4.png",
+  "고귀한 헬카이저":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/495/profile/4.png",
+  "이터널":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/500/profile/4.png",
+  "로티스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/503/profile/4.png",
+  "스노우볼":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/504/profile/4.png",
+  "고귀한 블러디터스크":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/505/profile/4.png",
+  "펜리르":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/507/profile/4.png",
+  "코멧":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/510/profile/4.png",
+  "화이트 디스트로이어":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/511/profile/4.png",
+  "고귀한 다크베인":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/514/profile/4.png",
+  "다르누스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/521/profile/4.png",
+  "페트로아":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/522/profile/4.png",
+  "고귀한 엔더 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/524/profile/4.png",
+  "지바타르":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/525/profile/4.png",
+  "고귀한 이지스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/534/profile/4.png",
+  "칼리시":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/536/profile/4.png",
+  "크로마 칼리시":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/537/profile/4.png",
+  "고귀한 아델라":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/539/profile/4.png",
+  "밀라타스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/541/profile/4.png",
+  "크로마 밀라타스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/542/profile/4.png",
+  "고귀한 넬로 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/543/profile/4.png",
+  "인스트리아":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/545/profile/4.png",
+  "크로마 인스트리아":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/546/profile/4.png",
+  "베네보렌티아":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/548/profile/4.png",
+  "크로마 베네보렌티아":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/549/profile/4.png",
+  "고귀한 갤러헤드":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/550/profile/4.png",
+  "고귀한 이블던":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/551/profile/4.png",
+  "뇌신":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/552/profile/4.png",
+  "크로마 뇌신":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/553/profile/4.png",
+  "고귀한 레버넌트":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/558/profile/4.png",
+  "호저리":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/560/profile/4.png",
+  "타라":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/561/profile/4.png",
+  "고귀한 카이저번":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/562/profile/4.png",
+  "구미호":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/564/profile/4.png",
+  "루송":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/565/profile/4.png",
+  "아바돈":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/570/profile/4.png",
+  "큐아네드":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/571/profile/4.png",
+  "고귀한 스트라":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/572/profile/4.png",
+  "페로스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/576/profile/4.png",
+  "디아누":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/577/profile/4.png",
+  "고귀한 말덱":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/580/profile/4.png",
+  "강강":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/581/profile/4.png",
+  "술래":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/582/profile/4.png",
+  "데바":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/584/profile/4.png",
+  "그라노스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/585/profile/4.png",
+  "스텔스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/586/profile/4.png",
+  "고귀한 헤네스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/589/profile/4.png",
+  "스킨크 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/591/profile/4.png",
+  "크레스티드 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/592/profile/4.png",
+  "고귀한 페로스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/596/profile/4.png",
+  "주작":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/598/profile/4.png",
+  "백호":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/599/profile/4.png",
+  "고귀한 디아누":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/605/profile/4.png",
+  "에슈":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/607/profile/4.png",
+  "기린":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/608/profile/4.png",
+  "락샤사":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/609/profile/4.png",
+  "루민디스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/610/profile/4.png",
+  "고귀한 아누라다":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/616/profile/4.png",
+  "골디":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/618/profile/4.png",
+  "라키온":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/619/profile/4.png",
+  "그리파르":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/626/profile/4.png",
+  "글라오네":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/627/profile/4.png",
+  "고귀한 루네라 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/628/profile/4.png",
+  "애버네일":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/630/profile/4.png",
+  "토네스":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/631/profile/4.png",
+  "고귀한 익시아":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/632/profile/4.png",
+  "거들테일 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/636/profile/4.png",
+  "마카롱":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/638/profile/4.png",
+  "아르켈론":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/639/profile/4.png",
+  "고귀한 다크혼":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/640/profile/4.png",
+  "티키톡":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/642/profile/4.png",
+  "레베리":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/643/profile/4.png",
+  "파프니르":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/656/profile/4.png",
+  "후긴":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/657/profile/4.png",
+  "무닌":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/658/profile/4.png",
+  "고귀한 설리반":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/666/profile/4.png",
+  "플로레":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/668/profile/4.png",
+  "루시오":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/669/profile/4.png",
+  "장고":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/670/profile/4.png",
+  "호드":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/678/profile/4.png",
+  "슬레이프니르":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/679/profile/4.png",
+  "고귀한 펜리르":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/680/profile/4.png",
+  "꽁꽁이":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/682/profile/4.png",
+  "파루파루":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/683/profile/4.png",
+  "고귀한 허리케인":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/690/profile/4.png",
+  "까마귀 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/692/profile/4.png",
+  "까치 드래곤":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/693/profile/4.png",
+  "팡팡":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/699/profile/4.png",
+  "미스틱아츠":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/700/profile/4.png",
+  "고귀한 앙그라":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/701/profile/4.png",
+  "스쿨드":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/dragon/702/profile/4.png",
+};
+
+const ELEMS=["땅","물","불","바람","빛","어둠","황혼","여명","악몽"];
+
+// 속성 색 — 3개 테마 배경 모두에서 읽히는 중간 톤
+const elemColors={
+  "땅":"#d4863a","물":"#4a90d9","불":"#e05252","바람":"#4caf6d","빛":"#f0a92e",
+  "어둠":"#8b6ede","황혼":"#d1568f","여명":"#c08a6a","악몽":"#a05fd0"
+};
+
+const skillIcons={
+  boom:'https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/boom.png',
+  def:'https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/DEF.png'
+};
+const skillNames={boom:'폭스',def:'방확'};
+
+const elemIcons={
+  "땅":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/11.png",
+  "물":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/12.png",
+  "불":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/13.png",
+  "바람":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/14.png",
+  "빛":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/84.png",
+  "어둠":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/87.png",
+  "황혼":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/487.png",
+  "여명":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/486.png",
+  "악몽":"https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/488.png"
+};
+
+let grade='SSS', lvFilter=45;
+const elemFilters=new Set();
+
+/* 속성 필터 버튼 생성 */
+(function(){
+  const row=document.getElementById('elem-row');
+  const all=document.createElement('button');
+  all.className='etag active'; all.id='e-all'; all.textContent='전체';
+  all.onclick=()=>{elemFilters.clear();syncElem();render();};
+  row.appendChild(all);
+  ELEMS.forEach(e=>{
+    const b=document.createElement('button');
+    b.className='etag'; b.dataset.elem=e;
+    b.style.setProperty('--el',elemColors[e]);
+    b.innerHTML=`<img src="${elemIcons[e]}" class="eic" alt="" loading="lazy">${e}`;
+    b.onclick=()=>{elemFilters.has(e)?elemFilters.delete(e):elemFilters.add(e);syncElem();render();};
+    row.appendChild(b);
+  });
+})();
+
+function syncElem(){
+  document.getElementById('e-all').classList.toggle('active',elemFilters.size===0);
+  document.querySelectorAll('.etag[data-elem]').forEach(b=>{
+    b.classList.toggle('active',elemFilters.has(b.dataset.elem));
+  });
+}
+
+function setGrade(g){
+  grade=g;
+  document.querySelectorAll('#seg-grade button').forEach(b=>b.classList.toggle('active',b.dataset.grade===g));
+  render();
+}
+function setLv(lv){
+  lvFilter=lv;
+  document.querySelectorAll('#seg-lv button').forEach(b=>b.classList.toggle('active',Number(b.dataset.lv)===lv));
+  render();
+}
+
+function render(){
+  const src = grade==='SSS' ? sssData : ssData;
+  let list=src.filter(d=>d.lv===lvFilter);
+  if(elemFilters.size>0) list=list.filter(d=>elemFilters.has(d.elem));
+  list=list.slice().sort((a,b)=>b.eval-a.eval);
+
+  // eval 기준 순위 재계산 (동점 = 같은 순위)
+  let rank=1;
+  list.forEach((d,i)=>{ if(i>0 && d.eval<list[i-1].eval) rank=i+1; d._rank=rank; });
+
+  const modeLabel = grade==='SSS' ? '챔대(SSS)' : '루키(SS)';
+  document.getElementById('count').textContent=`${modeLabel} · Lv.${lvFilter} · ${list.length}마리`;
+  const tbody=document.getElementById('tbody');
+  const empty=document.getElementById('empty');
+  tbody.innerHTML='';
+  empty.style.display=list.length?'none':'block';
+  if(!list.length) return;
+
+  const top=list[0].eval;
+  const frag=document.createDocumentFragment();
+  list.forEach(d=>{
+    const col=elemColors[d.elem]||'transparent';
+    const img=imgMap[d.kor]
+      ? `<img src="${imgMap[d.kor]}" class="dragon-img" alt="${d.kor}" loading="lazy">`
+      : `<div class="img-placeholder"></div>`;
+    const eicon=elemIcons[d.elem]
+      ? `<img src="${elemIcons[d.elem]}" class="elem-ic" alt="${d.elem}" title="${d.elem}" loading="lazy">`
+      : `<div class="elem-ic-none"></div>`;
+    const skill=d.skill
+      ? `<img src="${skillIcons[d.skill]}" class="skill-ic" alt="${skillNames[d.skill]}" title="${skillNames[d.skill]}">`
+      : '';
+    const rkCls=d._rank<=3?'rk top':'rk';
+    const w=Math.round(d.eval/top*100);
+
+    const tr=document.createElement('tr');
+    tr.style.setProperty('--el',col);
+    tr.innerHTML=`
+      <td><span class="${rkCls}">${d._rank}</span></td>
+      <td>${img}</td>
+      <td class="left"><span class="dname">${d.kor} ${grade}</span>${skill}</td>
+      <td>${eicon}</td>
+      <td class="lv">Lv.${d.lv}</td>
+      <td class="s-hp">${d.hp}</td>
+      <td class="s-atk">${d.atk}</td>
+      <td class="s-def">${d.def}</td>
+      <td class="ev-cell"><div class="ev" style="--w:${w}%"><span>${d.eval}</span></div></td>
+      <td class="raw">${d.base} / ${d.grow}</td>
+      <td class="m-only">
+        <div class="m-top">
+          <span class="m-rank${d._rank<=3?' top':''}">${d._rank}</span>
+          ${img}
+          <span class="m-name">${d.kor} ${grade}${skill}</span>
+          ${eicon}
+        </div>
+        <div class="m-stats">
+          <div class="m-cell"><b>HP</b><span class="s-hp">${d.hp}</span></div>
+          <div class="m-cell"><b>ATK</b><span class="s-atk">${d.atk}</span></div>
+          <div class="m-cell"><b>DEF</b><span class="s-def">${d.def}</span></div>
+          <div class="m-cell"><b>Eval</b><span style="color:var(--ev)">${d.eval}</span></div>
+        </div>
+        <div class="m-raw">기본 ${d.base} · 성장 ${d.grow}</div>
+      </td>`;
+    frag.appendChild(tr);
+  });
+  tbody.appendChild(frag);
+}
+
+render();
+</script>
+<script>
+/* ── data-theme 동기화 (theme.js 연동) ── */
+(function(){
+  var link=document.getElementById("theme-css");
+  if(!link)return;
+  var sync=function(){
+    var c=document.getElementById("custom-theme-style");
+    if(c&&c.textContent&&c.textContent.length>0){document.documentElement.removeAttribute("data-theme");return;}
+    var m=String(link.href||"").match(/theme-(dark|light|beige)\.css/);
+    document.documentElement.setAttribute("data-theme",m?m[1]:"dark");
+  };
+  sync();
+  new MutationObserver(sync).observe(link,{attributes:true,attributeFilter:["href"]});
+  new MutationObserver(sync).observe(document.head,{childList:true,subtree:true,characterData:true});
+})();
+</script>
+</body>
+</html>

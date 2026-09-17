@@ -44,10 +44,16 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
 .msg.success{color:#66bb6a}
 .link{text-align:center;margin-top:14px;font-size:12px;color:var(--text4)}
 .link a{color:var(--accent);text-decoration:none}
+.rec-code{font-family:'Courier New',monospace;font-size:24px;font-weight:800;letter-spacing:3px;color:var(--accent);background:var(--bg3);border:1px solid var(--border3);border-radius:8px;padding:14px 10px;text-align:center;margin:14px 0 8px;user-select:all;word-break:break-all}
+.rec-desc{font-size:12px;color:var(--text2);text-align:center;line-height:1.7}
+.rec-warn{font-size:11px;color:#ef5350;background:rgba(239,83,80,.08);border:1px solid rgba(239,83,80,.25);border-radius:8px;padding:9px 11px;margin:10px 0 12px;line-height:1.6}
+.rec-copy{width:100%;padding:8px;background:none;border:1px solid var(--border3);border-radius:8px;color:var(--text);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
+.rec-check{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text);margin-bottom:6px;cursor:pointer}
+.btn:disabled{opacity:.45;cursor:not-allowed}
 </style>
 </head>
 <body>
-<div class="box">
+<div class="box" id="reg-box">
   <h2>회원가입</h2>
   <div class="field">
     <label>아이디</label>
@@ -57,11 +63,6 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
     <label>닉네임</label>
     <input id="nickname" type="text" placeholder="닉네임 입력" oninput="checkNickname()">
     <div class="field-hint" id="nickname-hint">게시판에 표시되는 이름입니다.</div>
-  </div>
-  <div class="field">
-    <label>친구코드 <span style="color:var(--text4);font-weight:400">(K + 6자리 영문/숫자)</span></label>
-    <input id="friend_code" type="text" placeholder="K000000 형식으로 입력" maxlength="7" oninput="handleFriendCodeInput(this)">
-    <div class="field-hint" id="friend-code-hint">K로 시작하는 7자리 코드를 입력해주세요. (예: K1a2b3c)</div>
   </div>
   <div class="field">
     <label>비밀번호</label>
@@ -77,9 +78,18 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
   <div class="link" style="margin-top:8px"><a href="./account.html">아이디 · 비밀번호 찾기 / 닉네임 변경</a></div>
 </div>
 
+<div class="box" id="rec-box" style="display:none">
+  <h2>🔐 복구 코드</h2>
+  <div class="rec-desc">비밀번호를 잊었을 때 <b>아이디 찾기 · 비밀번호 변경</b>에 쓰는 코드예요.<br>이 화면을 벗어나면 <b>다시 확인할 수 없어요.</b></div>
+  <div class="rec-code" id="rec-code">-</div>
+  <button type="button" class="rec-copy" id="rec-copy" onclick="copyRecovery()">📋 복사</button>
+  <div class="rec-warn">⚠ 캡처하거나 메모장에 꼭 저장해두세요. 이 코드가 없으면 계정을 되찾을 수 없어요.</div>
+  <label class="rec-check"><input type="checkbox" id="rec-ok" onchange="document.getElementById('rec-go').disabled=!this.checked"> 복구 코드를 저장했어요</label>
+  <button class="btn" id="rec-go" disabled onclick="goLogin()">로그인하러 가기</button>
+</div>
+
 <script src="./sb_config.js"></script>
 <script>
-let friendCodeValid = false;
 let nicknameValid = false;
 let nicknameTimer = null;
 
@@ -121,60 +131,33 @@ async function checkNickname() {
   }, 400);
 }
 
-function handleFriendCodeInput(el) {
-  const cursorPos = el.selectionStart;
-
-  const cleaned = el.value.replace(/[^a-zA-Z0-9]/g, '').toLowerCase().slice(0, 7);
-  el.value = cleaned;
-
-  const newPos = Math.min(cursorPos, el.value.length);
-  el.setSelectionRange(newPos, newPos);
-
-  checkFriendCode();
+// 복구 코드: 가입 시 1회 발급, 해시로만 저장
+const REC_CHARS='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+let recoveryPlain='';
+let recoverySaved=false;
+function genRecoveryCode(){
+  const buf=new Uint32Array(12);
+  crypto.getRandomValues(buf);
+  return Array.from(buf,n=>REC_CHARS[n%REC_CHARS.length]).join('');
 }
-
-async function checkFriendCode() {
-  const code = document.getElementById('friend_code').value.trim();
-  const hint = document.getElementById('friend-code-hint');
-
-  if(code.length === 0) {
-    hint.className = 'field-hint';
-    hint.textContent = 'K로 시작하는 7자리 코드를 입력해주세요. (예: K1a2b3c)';
-    friendCodeValid = false;
-    return;
-  }
-  if(code[0] !== 'k') {
-    hint.className = 'field-hint error';
-    hint.textContent = '친구코드는 K로 시작해야 합니다.';
-    friendCodeValid = false;
-    return;
-  }
-  if(!/^k[a-z0-9]{6}$/.test(code)) {
-    hint.className = 'field-hint error';
-    hint.textContent = 'K + 영문/숫자 6자리 형식이어야 합니다.';
-    friendCodeValid = false;
-    return;
-  }
-  try {
-    const rows = await supabase('GET', 'users', null, `?friend_code=eq.${encodeURIComponent(code)}&select=id`);
-    if(rows && rows.length > 0) {
-      hint.className = 'field-hint error';
-      hint.textContent = '이미 사용 중인 친구코드입니다.';
-      friendCodeValid = false;
-    } else {
-      hint.className = 'field-hint success';
-      hint.textContent = '사용 가능한 친구코드입니다.';
-      friendCodeValid = true;
-    }
-  } catch(e) {
-    friendCodeValid = true;
-  }
+function fmtRecovery(c){return c.replace(/(.{4})(?=.)/g,'$1-');}
+async function copyRecovery(){
+  const btn=document.getElementById('rec-copy');
+  try{await navigator.clipboard.writeText(fmtRecovery(recoveryPlain));btn.textContent='✓ 복사됨!';}
+  catch(e){const r=document.createRange();r.selectNodeContents(document.getElementById('rec-code'));const sel=getSelection();sel.removeAllRanges();sel.addRange(r);}
 }
+function goLogin(){
+  if(!document.getElementById('rec-ok').checked)return;
+  recoverySaved=true;
+  location.href='./login.html';
+}
+window.addEventListener('beforeunload',e=>{
+  if(recoveryPlain&&!recoverySaved){e.preventDefault();e.returnValue='';}
+});
 
 async function register() {
   const username = document.getElementById('username').value.trim();
   const nickname = document.getElementById('nickname').value.trim();
-  const friend_code = document.getElementById('friend_code').value.trim();
   const password = document.getElementById('password').value;
   const password2 = document.getElementById('password2').value;
   const msg = document.getElementById('msg');
@@ -182,20 +165,23 @@ async function register() {
   if(!username || !password) { msg.className='msg error'; msg.textContent='아이디와 비밀번호를 입력해주세요.'; return; }
   if(!nickname) { msg.className='msg error'; msg.textContent='닉네임을 입력해주세요.'; return; }
   if(!nicknameValid) { msg.className='msg error'; msg.textContent='닉네임을 확인해주세요.'; return; }
-  if(!friend_code) { msg.className='msg error'; msg.textContent='친구코드를 입력해주세요.'; return; }
-  if(!/^k[a-z0-9]{6}$/.test(friend_code)) { msg.className='msg error'; msg.textContent='친구코드는 K로 시작하는 7자리여야 합니다.'; return; }
-  if(!friendCodeValid) { msg.className='msg error'; msg.textContent='친구코드를 확인해주세요.'; return; }
   if(username.length < 2) { msg.className='msg error'; msg.textContent='아이디는 2자 이상이어야 합니다.'; return; }
   if(password.length < 4) { msg.className='msg error'; msg.textContent='비밀번호는 4자 이상이어야 합니다.'; return; }
   if(password !== password2) { msg.className='msg error'; msg.textContent='비밀번호가 일치하지 않습니다.'; return; }
 
   try {
     const hashed = await hashPassword(password);
-    await supabase('POST', 'users', { username, nickname, friend_code, password: hashed });
-    msg.className='msg success'; msg.textContent='가입 완료! 로그인 페이지로 이동합니다.';
-    setTimeout(() => location.href='./login.html', 1200);
+    const code = genRecoveryCode();
+    const recovery_code = await hashPassword(code);
+    // friend_code는 보내지 않음 (빈 문자열은 UNIQUE 충돌)
+    await supabase('POST', 'users', { username, nickname, password: hashed, recovery_code });
+    recoveryPlain = code;
+    msg.className='msg success'; msg.textContent='가입 완료!';
+    document.getElementById('rec-code').textContent = fmtRecovery(code);
+    document.getElementById('reg-box').style.display='none';
+    document.getElementById('rec-box').style.display='';
   } catch(e) {
-    if(e.message.includes('unique')) msg.textContent='이미 사용 중인 아이디 또는 친구코드입니다.';
+    if(e.message.includes('unique') || e.message.includes('duplicate')) msg.textContent='이미 사용 중인 아이디입니다.';
     else msg.textContent = '오류가 발생했습니다: ' + e.message;
     msg.className='msg error';
   }

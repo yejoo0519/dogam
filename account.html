@@ -56,6 +56,12 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
 .msg.error{display:block;background:rgba(239,83,80,.1);border:1px solid rgba(239,83,80,.3);color:#ef5350}
 .msg.success{display:block;background:rgba(102,187,106,.1);border:1px solid rgba(102,187,106,.3);color:#66bb6a}
 
+/* ── 본인 확인 방법 ── */
+.method-bar{display:flex;gap:6px;margin-bottom:14px}
+.method-btn{flex:1;padding:7px 4px;background:var(--bg3);border:1px solid var(--border3);border-radius:8px;color:var(--text3);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.method-btn.active{background:var(--accent-bg);border-color:var(--accent-border);color:var(--accent)}
+.method-note{font-size:11px;color:var(--text4);margin:-6px 0 12px;line-height:1.5}
+
 /* ── 결과 박스 ── */
 .result-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center;margin-top:14px;display:none}
 .result-box.show{display:block}
@@ -75,7 +81,7 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
 <body>
 <div class="box">
   <div class="box-title">🔑 계정 관리</div>
-  <div class="box-sub">친구코드로 본인 확인 후 정보를 변경할 수 있어요</div>
+  <div class="box-sub">복구 코드 또는 친구코드로 본인 확인 후 정보를 변경할 수 있어요</div>
 
   <!-- 탭 -->
   <div class="tab-bar">
@@ -86,14 +92,27 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
 
   <!-- ── 패널 1: 아이디 찾기 ── -->
   <div class="panel active" id="panel-find-id">
-    <div class="field">
-      <label>닉네임</label>
-      <input type="text" id="fi-nick" placeholder="가입 시 입력한 닉네임">
+    <div class="method-bar" data-method-group="fi">
+      <button type="button" class="method-btn active" data-method="rec" onclick="setMethod('fi','rec')">복구 코드</button>
+      <button type="button" class="method-btn" data-method="fc" onclick="setMethod('fi','fc')">친구코드</button>
     </div>
-    <div class="field">
-      <label>친구코드</label>
-      <input type="text" id="fi-code" placeholder="K로 시작하는 7자리 (예: K1a2b3c)" maxlength="7">
-      <div class="hint">회원가입 시 등록한 친구코드예요.</div>
+    <div class="method-note" id="fi-note">가입할 때 받은 복구 코드로 찾아요.</div>
+    <div data-method-pane="fi-rec">
+      <div class="field">
+        <label>복구 코드</label>
+        <input type="text" id="fi-rec" placeholder="XXXX-XXXX-XXXX" maxlength="14" autocomplete="off" oninput="fmtRecInput(this)">
+      </div>
+    </div>
+    <div data-method-pane="fi-fc" style="display:none">
+      <div class="field">
+        <label>닉네임</label>
+        <input type="text" id="fi-nick" placeholder="가입 시 입력한 닉네임">
+      </div>
+      <div class="field">
+        <label>친구코드</label>
+        <input type="text" id="fi-code" placeholder="K로 시작하는 7자리 (예: K1a2b3c)" maxlength="7">
+        <div class="hint">회원가입 시 등록한 친구코드예요.</div>
+      </div>
     </div>
     <button class="btn" id="fi-btn" onclick="findId()">아이디 찾기</button>
     <div class="msg" id="fi-msg"></div>
@@ -109,9 +128,22 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
       <label>아이디</label>
       <input type="text" id="fp-user" placeholder="내 아이디 입력">
     </div>
-    <div class="field">
-      <label>친구코드</label>
-      <input type="text" id="fp-code" placeholder="K로 시작하는 7자리" maxlength="7">
+    <div class="method-bar" data-method-group="fp">
+      <button type="button" class="method-btn active" data-method="rec" onclick="setMethod('fp','rec')">복구 코드</button>
+      <button type="button" class="method-btn" data-method="fc" onclick="setMethod('fp','fc')">친구코드</button>
+    </div>
+    <div class="method-note" id="fp-note">가입할 때 받은 복구 코드로 본인 확인해요.</div>
+    <div data-method-pane="fp-rec">
+      <div class="field">
+        <label>복구 코드</label>
+        <input type="text" id="fp-rec" placeholder="XXXX-XXXX-XXXX" maxlength="14" autocomplete="off" oninput="fmtRecInput(this)">
+      </div>
+    </div>
+    <div data-method-pane="fp-fc" style="display:none">
+      <div class="field">
+        <label>친구코드</label>
+        <input type="text" id="fp-code" placeholder="K로 시작하는 7자리" maxlength="7">
+      </div>
     </div>
     <div class="field">
       <label>새 비밀번호</label>
@@ -169,6 +201,26 @@ function switchTab(id, btn){
   document.getElementById('panel-'+id).classList.add('active');
 }
 
+// ── 본인 확인 방법 (복구 코드 / 친구코드) ─────────────────────
+const METHOD={fi:'rec',fp:'rec'};
+const METHOD_NOTE={
+  fi:{rec:'가입할 때 받은 복구 코드로 찾아요.',fc:'복구 코드가 없는 기존 회원은 닉네임 + 친구코드로 찾을 수 있어요.'},
+  fp:{rec:'가입할 때 받은 복구 코드로 본인 확인해요.',fc:'복구 코드가 없는 기존 회원은 친구코드로 본인 확인할 수 있어요.'}
+};
+function setMethod(group,m){
+  METHOD[group]=m;
+  document.querySelectorAll('[data-method-group="'+group+'"] .method-btn').forEach(b=>b.classList.toggle('active',b.dataset.method===m));
+  document.querySelector('[data-method-pane="'+group+'-rec"]').style.display=m==='rec'?'':'none';
+  document.querySelector('[data-method-pane="'+group+'-fc"]').style.display=m==='fc'?'':'none';
+  document.getElementById(group+'-note').textContent=METHOD_NOTE[group][m];
+  const msg=document.getElementById(group+'-msg'); if(msg) msg.className='msg';
+}
+function normRec(v){return String(v||'').toUpperCase().replace(/[^A-Z0-9]/g,'');}
+function fmtRecInput(el){
+  const c=normRec(el.value).slice(0,12);
+  el.value=c.replace(/(.{4})(?=.)/g,'$1-');
+}
+
 // ── 초기화 ───────────────────────────────────────────────────
 (function(){
   const user = getUser();
@@ -183,22 +235,38 @@ function switchTab(id, btn){
 async function findId(){
   const nick  = (document.getElementById('fi-nick').value||'').trim();
   const code  = (document.getElementById('fi-code').value||'').trim();
+  const rec   = normRec(document.getElementById('fi-rec').value);
   const msg   = document.getElementById('fi-msg');
   const res   = document.getElementById('fi-result');
   const btn   = document.getElementById('fi-btn');
   msg.className='msg'; res.classList.remove('show');
 
-  if(!nick){ showMsg(msg,'error','닉네임을 입력해주세요.'); return; }
-  if(!code){ showMsg(msg,'error','친구코드를 입력해주세요.'); return; }
-  if(code.length!==7){ showMsg(msg,'error','친구코드는 7자리예요. (K + 6자리)'); return; }
+  if(METHOD.fi==='rec'){
+    if(!rec){ showMsg(msg,'error','복구 코드를 입력해주세요.'); return; }
+    if(rec.length!==12){ showMsg(msg,'error','복구 코드는 12자리예요. (XXXX-XXXX-XXXX)'); return; }
+  }else{
+    if(!nick){ showMsg(msg,'error','닉네임을 입력해주세요.'); return; }
+    if(!code){ showMsg(msg,'error','친구코드를 입력해주세요.'); return; }
+    if(code.length!==7){ showMsg(msg,'error','친구코드는 7자리예요. (K + 6자리)'); return; }
+    if(!/^k[a-z0-9]{6}$/i.test(code)){ showMsg(msg,'error','친구코드는 K + 영문/숫자 6자리예요.'); return; }
+  }
 
   btn.disabled=true; btn.textContent='조회 중...';
   try{
-    // ilike: 대소문자 무관 비교
-    const rows = await supabase('GET','users',null,
-      `?nickname=eq.${encodeURIComponent(nick)}&friend_code=ilike.${encodeURIComponent(code)}&select=id,username&limit=1`);
+    let rows;
+    if(METHOD.fi==='rec'){
+      const hashed = await hashPassword(rec);
+      rows = await supabase('GET','users',null,
+        `?recovery_code=eq.${hashed}&select=id,username&limit=1`);
+    }else{
+      // ilike: 대소문자 무관 비교
+      rows = await supabase('GET','users',null,
+        `?nickname=eq.${encodeURIComponent(nick)}&friend_code=ilike.${encodeURIComponent(code)}&select=id,username&limit=1`);
+    }
     if(!rows||!rows.length){
-      showMsg(msg,'error','일치하는 계정을 찾을 수 없어요. 닉네임과 친구코드를 다시 확인해주세요.'); return;
+      showMsg(msg,'error', METHOD.fi==='rec'
+        ? '일치하는 계정을 찾을 수 없어요. 복구 코드를 다시 확인해주세요.'
+        : '일치하는 계정을 찾을 수 없어요. 닉네임과 친구코드를 다시 확인해주세요.'); return;
     }
     const username = rows[0].username;
     document.getElementById('fi-result-val').textContent = maskId(username);
@@ -216,6 +284,7 @@ async function findId(){
 async function changePw(){
   const username = (document.getElementById('fp-user').value||'').trim();
   const code     = (document.getElementById('fp-code').value||'').trim();
+  const rec      = normRec(document.getElementById('fp-rec').value);
   const pw1      = document.getElementById('fp-pw1').value;
   const pw2      = document.getElementById('fp-pw2').value;
   const msg      = document.getElementById('fp-msg');
@@ -223,8 +292,14 @@ async function changePw(){
   msg.className='msg';
 
   if(!username){ showMsg(msg,'error','아이디를 입력해주세요.'); return; }
-  if(!code){ showMsg(msg,'error','친구코드를 입력해주세요.'); return; }
-  if(code.length!==7){ showMsg(msg,'error','친구코드는 7자리예요. (K + 6자리)'); return; }
+  if(METHOD.fp==='rec'){
+    if(!rec){ showMsg(msg,'error','복구 코드를 입력해주세요.'); return; }
+    if(rec.length!==12){ showMsg(msg,'error','복구 코드는 12자리예요. (XXXX-XXXX-XXXX)'); return; }
+  }else{
+    if(!code){ showMsg(msg,'error','친구코드를 입력해주세요.'); return; }
+    if(code.length!==7){ showMsg(msg,'error','친구코드는 7자리예요. (K + 6자리)'); return; }
+    if(!/^k[a-z0-9]{6}$/i.test(code)){ showMsg(msg,'error','친구코드는 K + 영문/숫자 6자리예요.'); return; }
+  }
   if(!pw1){ showMsg(msg,'error','새 비밀번호를 입력해주세요.'); return; }
   if(pw1.length<4){ showMsg(msg,'error','비밀번호는 4자 이상이어야 해요.'); return; }
   if(pw1!==pw2){ showMsg(msg,'error','비밀번호가 일치하지 않아요.'); return; }
@@ -232,10 +307,13 @@ async function changePw(){
   btn.disabled=true; btn.textContent='변경 중...';
   try{
     // 계정 확인
+    const verify = METHOD.fp==='rec'
+      ? `recovery_code=eq.${await hashPassword(rec)}`
+      : `friend_code=ilike.${encodeURIComponent(code)}`;
     const rows = await supabase('GET','users',null,
-      `?username=eq.${encodeURIComponent(username)}&friend_code=ilike.${encodeURIComponent(code)}&select=id&limit=1`);
+      `?username=eq.${encodeURIComponent(username)}&${verify}&select=id&limit=1`);
     if(!rows||!rows.length){
-      showMsg(msg,'error','아이디 또는 친구코드가 일치하지 않아요.'); return;
+      showMsg(msg,'error', METHOD.fp==='rec' ? '아이디 또는 복구 코드가 일치하지 않아요.' : '아이디 또는 친구코드가 일치하지 않아요.'); return;
     }
     const userId = rows[0].id;
     const hashed = await hashPassword(pw1);

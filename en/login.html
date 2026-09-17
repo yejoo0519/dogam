@@ -57,10 +57,52 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
   <button class="btn" onclick="login()">Login</button>
   <div class="msg" id="msg"></div>
   <div class="link"><a href="./register.html">No account? → Sign up</a></div>
-  <div class="link" style="margin-top:8px"><a href="../account.html">Find ID/password / Change nickname</a></div>
+  <div class="link" style="margin-top:8px"><a href="./account.html">Find ID/password / Change nickname</a></div>
 </div>
 <script src="../sb_config.js"></script>
 <script>
+// 로그인 직후 클라우드 스펙(활성 프리셋)을 계산기 로컬 키에 바로 반영 — my.html localSave와 동일한 키 구조
+function syncSpecOnLogin(raw){
+  const PRE='dv1simEN';
+  try{
+    if(!raw)return;
+    const sd=typeof raw==='string'?JSON.parse(raw):raw;
+    if(!sd)return;
+    const PK=PRE+'_spec_presets';
+    const localPresetsRaw=localStorage.getItem(PK);
+    const isV2=!!(sd.v===2&&Array.isArray(sd.presets)&&sd.presets.length);
+    // 구버전 클라우드 + 로그아웃 상태에서 만든 로컬 프리셋 → 내 스펙 페이지에서 처리
+    if(!isV2&&localPresetsRaw)return;
+    const P=isV2?sd:{v:2,activeId:'p1',presets:[{id:'p1',name:'Default',data:sd}]};
+    const act=P.presets.find(x=>x.id===P.activeId)||P.presets[0];
+    P.activeId=act.id;
+    const d=act.data||{};
+    const hasDr=o=>!!o&&Object.values(o).some(a=>Array.isArray(a)&&a.some(x=>x&&x.name));
+    let localSpec={};
+    try{localSpec=JSON.parse(localStorage.getItem(PRE+'_spec')||'{}')||{};}catch(e){}
+    let localActive=null;
+    try{localActive=localPresetsRaw?JSON.parse(localPresetsRaw).activeId:null;}catch(e){}
+    const canMerge=isV2?(!!localPresetsRaw&&localActive===act.id):true;
+    let dragonCards=d.dragonCards||{};
+    if(!hasDr(dragonCards)&&canMerge&&hasDr(localSpec.dragonCards)){
+      dragonCards=localSpec.dragonCards;
+      localStorage.setItem(PRE+'_dragon_pending','1');
+    }else{
+      localStorage.removeItem(PRE+'_dragon_pending');
+    }
+    const spec={accCards:d.accCards||[],gems:d.gems||{},pendants:d.pendants||[],coll:d.coll||{},dragonCards};
+    act.data=spec;
+    localStorage.setItem(PRE+'_spec',JSON.stringify(spec));
+    localStorage.setItem(PK,JSON.stringify(P));
+    const specFields={accCards:spec.accCards,gems:spec.gems,pendants:spec.pendants,coll:spec.coll};
+    [PRE+'_pvp',PRE+'_noob',PRE+'_calculator'].forEach(key=>{
+      try{const r=localStorage.getItem(key);const ex=r?JSON.parse(r):{};localStorage.setItem(key,JSON.stringify({...ex,...specFields}));}catch(e){}
+    });
+    [PRE+'_pvp',PRE+'_noob'].forEach(key=>{
+      try{const r=localStorage.getItem(key);const ex=r?JSON.parse(r):{};localStorage.setItem(key,JSON.stringify({...ex,dragonCards}));}catch(e){}
+    });
+  }catch(e){console.warn('spec sync failed:',e);}
+}
 async function login() {
   const username = document.getElementById('username').value.trim();
   const password = document.getElementById('password').value;
@@ -79,6 +121,7 @@ async function login() {
       friend_code: user.friend_code || '',
       is_admin: user.is_admin
     });
+    syncSpecOnLogin(user.spec_data);
     msg.className='msg success'; msg.textContent='Login successful!';
     const params = new URLSearchParams(location.search);
     const redirectTo = params.get('from') || './index.html';

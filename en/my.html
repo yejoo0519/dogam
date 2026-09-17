@@ -22,6 +22,13 @@ select:disabled,input:disabled{opacity:.3;cursor:not-allowed}
 /* Calculators */
 .calc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
 @media(max-width:700px){.calc-grid{grid-template-columns:1fr}}
+@media(max-width:700px){
+  .calc-grid.calc-shortcut{grid-template-columns:repeat(3,1fr);gap:6px}
+  .calc-shortcut .calc-card{padding:10px 6px;text-align:center}
+  .calc-shortcut .calc-badge{font-size:9px;padding:1px 6px;margin-bottom:5px}
+  .calc-shortcut .calc-card-title{font-size:12px;margin-bottom:0;line-height:1.35;word-break:keep-all}
+  .calc-shortcut .calc-card-desc{display:none}
+}
 .calc-card{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:16px 20px;text-decoration:none;display:block;transition:border-color .15s,background .15s;position:relative}
 .calc-card:hover{border-color:var(--gold);background:var(--sf2)}
 .calc-card-title{font-size:15px;font-weight:800;color:var(--text);margin-bottom:4px}
@@ -112,6 +119,16 @@ input[type=number]{appearance:textfield;-moz-appearance:textfield}
 .acc-summary-item{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--bd);font-size:12px}
 .acc-summary-item:last-child{border-bottom:none}
 .toast.show{opacity:1}
+/* 프리셋 */
+.preset-bar{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:12px 16px;margin-bottom:20px}
+.preset-hd{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.preset-t{font-size:13px;font-weight:800;color:var(--gold)}
+.preset-d{font-size:11px;color:var(--dim);margin-top:2px}
+.preset-acts{display:flex;gap:6px;flex-wrap:wrap}
+.preset-list{display:flex;gap:6px;flex-wrap:wrap}
+.preset-chip{background:var(--sf2);border:1px solid var(--bd);color:var(--text);padding:7px 14px;border-radius:16px;cursor:pointer;font-family:'Malgun Gothic',sans-serif;font-size:13px;font-weight:700;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.preset-chip:hover{border-color:var(--gold)}
+.preset-chip.on{border-color:var(--gold);background:rgba(232,184,75,.15);color:var(--gold)}
 /* ── 테마 팔레트 ── */
 [data-theme="dark"]{
   --bg:#0e1116;--bg2:#161a22;--bg3:#1c212c;
@@ -156,8 +173,21 @@ input[type=number]{appearance:textfield;-moz-appearance:textfield}
 
 <div class="ti">
 
+  <!-- 계정 프리셋 -->
+  <div class="preset-bar">
+    <div class="preset-hd">
+      <div><div class="preset-t">👤 Account presets</div><div class="preset-d">Accessories · gems · pendants · collection · dragons are saved separately per account</div></div>
+      <div class="preset-acts">
+        <button class="btn-white" onclick="addPreset()">+ Add</button>
+        <button class="btn-white" onclick="renamePreset()">Rename</button>
+        <button class="btn-reset" onclick="deletePreset()">Delete</button>
+      </div>
+    </div>
+    <div class="preset-list" id="preset-list"></div>
+  </div>
+
   <!-- Calculators -->
-  <div class="calc-grid">
+  <div class="calc-grid calc-shortcut">
     <a href="./calculator.html?from=spec" class="calc-card">
       <div class="calc-badge badge-blue">Calculator</div>
       <div class="calc-card-title">Spirit Optimizer</div>
@@ -187,7 +217,7 @@ input[type=number]{appearance:textfield;-moz-appearance:textfield}
     <div class="io-box">
       <div class="io-box-title">📥 Import</div>
       <input class="code-input acc-search-input" id="import-code" placeholder="Paste code" maxlength="12">
-      <div style="font-size:11px;color:var(--dim);margin-bottom:8px">⚠ Your current spec will be overwritten</div>
+      <div style="font-size:11px;color:var(--dim);margin-bottom:8px">⚠ The current preset will be overwritten</div>
       <button class="btn-gold" onclick="doImport()">Import</button>
     </div>
   </div>
@@ -502,6 +532,95 @@ const mkSpec=()=>({
 
 let S=mkSpec();
 
+// ================================================================
+// 계정 프리셋 — spec_data = {v:2, activeId, presets:[{id,name,data}]}
+// 활성 프리셋 data = S (= dv1simEN_spec). 다른 페이지는 dv1simEN_spec만 읽음
+// ================================================================
+const PRESET_KEY='dv1simEN_spec_presets';
+const PRESET_MAX=10;
+let P=null;
+const newPresetId=()=>'p'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+function wrapSpec(raw){
+  if(raw&&raw.v===2&&Array.isArray(raw.presets)&&raw.presets.length){
+    if(!raw.presets.some(x=>x.id===raw.activeId))raw.activeId=raw.presets[0].id;
+    return raw;
+  }
+  return {v:2,activeId:'p1',presets:[{id:'p1',name:"Default",data:raw||mkSpec()}]};
+}
+function activePreset(){return P.presets.find(x=>x.id===P.activeId)||P.presets[0];}
+function specData(){return {accCards:S.accCards,gems:S.gems,pendants:S.pendants,coll:S.coll,dragonCards:S.dragonCards};}
+function syncActive(){if(P)activePreset().data=specData();}
+function savePresetsLocal(){if(!P)return;syncActive();try{localStorage.setItem(PRESET_KEY,JSON.stringify(P));}catch(e){}}
+function cloudBody(){syncActive();return JSON.stringify(P);}
+function loadPresetsLocal(){
+  try{const r=localStorage.getItem(PRESET_KEY);P=wrapSpec(r?JSON.parse(r):null);}catch(e){P=wrapSpec(null);}
+  syncActive();
+}
+function pullSpecDragons(){
+  try{
+    const specRaw=localStorage.getItem(SPEC_KEY);
+    if(specRaw){const spec=JSON.parse(specRaw);if(spec.dragonCards)S.dragonCards=spec.dragonCards;}
+  }catch(e){}
+}
+function escHtml(t){return String(t).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+function renderPresetBar(){
+  const el=document.getElementById('preset-list');
+  if(!el||!P)return;
+  el.innerHTML=P.presets.map(x=>`<button class="preset-chip${x.id===P.activeId?' on':''}" onclick="switchPreset('${x.id}')" title="${escHtml(x.name)}">${escHtml(x.name)}</button>`).join('');
+}
+function pushPresetsCloud(){
+  const u=getUser();
+  if(!u)return;
+  supabase('PATCH','users',{spec_data:cloudBody()},`?id=eq.${u.id}`)
+    .catch(e=>console.warn('cloud save failed:',e));
+}
+// 현재 프리셋 확정 저장 후 id로 전환
+function switchPreset(id,force){
+  if(!P||(!force&&id===P.activeId))return;
+  const target=P.presets.find(x=>x.id===id);
+  if(!target)return;
+  clearTimeout(saveT);
+  if(!force){pullSpecDragons();syncActive();}
+  P.activeId=id;
+  applySpec(target.data||mkSpec());
+  localStorage.removeItem('dv1simEN_dragon_pending');
+  localSave();
+  pushPresetsCloud();
+  renderAll();
+  showToast("Switched preset"+': '+target.name);
+}
+function addPreset(){
+  if(!P)return;
+  if(P.presets.length>=PRESET_MAX){alert("You can create up to 10 presets.");return;}
+  const name=prompt("Preset name","Preset "+(P.presets.length+1));
+  if(name===null)return;
+  const nm=name.trim().slice(0,20)||("Preset "+(P.presets.length+1));
+  pullSpecDragons();syncActive();
+  const id=newPresetId();
+  P.presets.push({id,name:nm,data:mkSpec()});
+  switchPreset(id,true);
+}
+function renamePreset(){
+  if(!P)return;
+  const cur=activePreset();
+  const name=prompt("Preset name",cur.name);
+  if(name===null)return;
+  const nm=name.trim().slice(0,20);
+  if(!nm)return;
+  cur.name=nm;
+  savePresetsLocal();
+  pushPresetsCloud();
+  renderPresetBar();
+}
+function deletePreset(){
+  if(!P)return;
+  if(P.presets.length<=1){alert("The last preset cannot be deleted.");return;}
+  const cur=activePreset();
+  if(!confirm(`[${cur.name}] `+"Delete this preset?\nAll saved accessory · gem · pendant · collection · dragon data will be lost."))return;
+  P.presets=P.presets.filter(x=>x.id!==cur.id);
+  switchPreset(P.presets[0].id,true);
+}
+
 function applySpec(p){
   S={...mkSpec(),...p,
     accCards:p.accCards||[],
@@ -537,12 +656,25 @@ async function doLoadCloud(){
   try{
     const rows=await supabase('GET','users',null,`?id=eq.${u.id}&select=spec_data`);
     if(rows&&rows[0]&&rows[0].spec_data){
-      const p=typeof rows[0].spec_data==='string'?JSON.parse(rows[0].spec_data):rows[0].spec_data;
+      const raw=typeof rows[0].spec_data==='string'?JSON.parse(rows[0].spec_data):rows[0].spec_data;
+      const localActive=P?P.activeId:null;
+      const hadLocal=!!localStorage.getItem(PRESET_KEY);
+      const isV2=!!(raw&&raw.v===2&&Array.isArray(raw.presets)&&raw.presets.length);
+      let canMerge=false,pushLocal=false;
+      if(hadLocal&&!isV2&&P){
+        // 로그아웃 상태에서 만든 프리셋 → 로컬 유지 후 클라우드로 올림
+        pushLocal=true;canMerge=true;
+      }else{
+        P=wrapSpec(raw);
+        if(hadLocal&&localActive&&P.presets.some(x=>x.id===localActive)){P.activeId=localActive;canMerge=true;}
+        else if(!isV2&&!hadLocal)canMerge=true; // 기존 단일 스펙 유저 (예전 동작 유지)
+      }
+      const p=pushLocal?specData():(activePreset().data||{});
 
       const hasCloudDragons=p.dragonCards&&Object.values(p.dragonCards).some(arr=>Array.isArray(arr)&&arr.some(d=>d&&d.name));
       const hasLocalDragons=S.dragonCards&&Object.values(S.dragonCards).some(arr=>Array.isArray(arr)&&arr.some(d=>d&&d.name));
       const dragonPending=localStorage.getItem('dv1simEN_dragon_pending');
-      if(dragonPending){
+      if(dragonPending&&canMerge){
         // Save 버튼 눌렀음 → dv1simEN_spec에서 최신 dragonCards 읽기 (my.html 메모리가 구버전일 수 있음)
         try{
           const specRaw=localStorage.getItem('dv1simEN_spec');
@@ -550,16 +682,18 @@ async function doLoadCloud(){
           p.dragonCards=spec.dragonCards||{};
         }catch(e){p.dragonCards=S.dragonCards;}
         localStorage.removeItem('dv1simEN_dragon_pending');
-      } else if(!hasCloudDragons&&hasLocalDragons){
+      } else if(canMerge&&!hasCloudDragons&&hasLocalDragons){
         p.dragonCards=S.dragonCards;
       }
+      if(dragonPending&&!canMerge)localStorage.removeItem('dv1simEN_dragon_pending');
 
       applySpec(p);
       localSave();
 
       // flag 있을 때만 Supabase 업데이트 (일반 로드 시 재Save 안 함 - 구버전 덮어쓰기 방지)
-      if(dragonPending||(!hasCloudDragons&&hasLocalDragons)){
-        supabase('PATCH','users',{spec_data:JSON.stringify(S)},`?id=eq.${u.id}`)
+      // 구버전(단일 스펙)이면 바로 프리셋 구조로 올려둠
+      if(pushLocal||!isV2||(canMerge&&(dragonPending||(!hasCloudDragons&&hasLocalDragons)))){
+        supabase('PATCH','users',{spec_data:cloudBody()},`?id=eq.${u.id}`)
           .catch(e=>console.warn('Cloud save failed:',e));
       }
 
@@ -583,6 +717,7 @@ function localSave(){
       try{const raw=localStorage.getItem(key);const existing=raw?JSON.parse(raw):{};localStorage.setItem(key,JSON.stringify({...existing,dragonCards:S.dragonCards}));}catch(e){}
     });
   }
+  savePresetsLocal();
   renderToggleSections();
 }
 
@@ -600,7 +735,7 @@ function doSave(saveCloud=true){
   if(saveCloud){
     const u=getUser();
     if(u){
-      supabase('PATCH','users',{spec_data:JSON.stringify(S)},`?id=eq.${u.id}`)
+      supabase('PATCH','users',{spec_data:cloudBody()},`?id=eq.${u.id}`)
         .catch(e=>console.warn('Cloud save failed:',e));
       localStorage.removeItem('dv1simEN_dragon_pending');
     }
@@ -611,7 +746,7 @@ function doSave(saveCloud=true){
 function qSave(saveCloud=true){clearTimeout(saveT);saveT=setTimeout(()=>doSave(saveCloud),1200);}
 
 function resetAll(){
-  if(!confirm('All accessory / gem / pendant / collection / dragon data will be reset.\nContinue?'))return;
+  if(!confirm(`All accessory / gem / pendant / collection / dragon data in [${activePreset().name}] will be reset.\nContinue?`))return;
   S=mkSpec();
   renderAll();
   // pvp / noob의 dragonCards도 Reset
@@ -630,7 +765,7 @@ function resetAll(){
   localSave();
   const u=getUser();
   if(u){
-    supabase('PATCH','users',{spec_data:JSON.stringify(S)},`?id=eq.${u.id}`)
+    supabase('PATCH','users',{spec_data:cloudBody()},`?id=eq.${u.id}`)
       .catch(e=>console.warn('Cloud reset failed:',e));
   }
 }
@@ -638,6 +773,7 @@ function resetAll(){
 function renderAll(){
   renderAcc();populateGems();renderPends();populateColl();
   renderToggleSections();
+  renderPresetBar();
 }
 
 // ================================================================
@@ -1044,6 +1180,7 @@ function onPOpt(pi,oi,field,val){
 // ================================================================
 function init(){
   doLoad();
+  loadPresetsLocal();
   renderAll();
   // 유저 헤더 UI
   const u=getUser();

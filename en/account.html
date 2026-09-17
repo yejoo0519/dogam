@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Account - Dragon Village 1</title>
+<link id="theme-css" rel="stylesheet" href="../theme-dark.css">
+<script src="../theme.js"></script>
+<script src="../sb_config.js"></script>
+<style>
+[data-theme="dark"]{
+  --bg:#0e1116;--bg2:#161a22;--bg3:#1c212c;
+  --border:#23293a;--border2:#1b1f2a;--border3:#2d3447;
+  --text:#eaecf2;--text2:#b3b9c7;--text3:#7d8597;--text4:#565d6e;
+  --accent:#7aa2f7;--accent-bg:rgba(122,162,247,0.12);--accent-border:rgba(122,162,247,0.30);
+}
+[data-theme="light"]{
+  --bg:#f7f7f8;--bg2:#ffffff;--bg3:#f1f2f4;
+  --border:#e6e7ea;--border2:#eeeff2;--border3:#d4d6db;
+  --text:#15171c;--text2:#4a4d57;--text3:#71757f;--text4:#9aa0aa;
+  --accent:#2f6fed;--accent-bg:rgba(47,111,237,0.10);--accent-border:rgba(47,111,237,0.32);
+}
+[data-theme="beige"]{
+  --bg:#f3ecdd;--bg2:#faf3e2;--bg3:#ebe0c7;
+  --border:#d8caa8;--border2:#e1d4b3;--border3:#c0ad84;
+  --text:#2a2316;--text2:#5a4e34;--text3:#837553;--text4:#a99971;
+  --accent:#b06a1e;--accent-bg:rgba(176,106,30,0.10);--accent-border:rgba(176,106,30,0.32);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px}
+
+/* ── 카드 ── */
+.box{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:28px;width:100%;max-width:400px}
+.box-title{font-size:17px;font-weight:800;text-align:center;margin-bottom:6px}
+.box-sub{font-size:12px;color:var(--text3);text-align:center;margin-bottom:22px}
+
+/* ── 탭 ── */
+.tab-bar{display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:24px}
+.tab-btn{flex:1;padding:9px 4px;background:none;border:none;color:var(--text3);font-family:'Malgun Gothic',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;border-right:1px solid var(--border)}
+.tab-btn:last-child{border-right:none}
+.tab-btn.active{background:var(--accent-bg);color:var(--accent)}
+
+/* ── 폼 ── */
+.panel{display:none}
+.panel.active{display:block}
+.field{margin-bottom:14px}
+.field label{font-size:12px;color:var(--text2);margin-bottom:5px;display:block;font-weight:700}
+.field input{width:100%;padding:9px 12px;background:var(--bg3);border:1px solid var(--border3);border-radius:8px;color:var(--text);font-size:13px;font-family:inherit}
+.field input:focus{outline:none;border-color:var(--accent)}
+.field input::placeholder{color:var(--text4)}
+.hint{font-size:11px;color:var(--text4);margin-top:3px}
+.btn{width:100%;padding:11px;background:linear-gradient(90deg,#4a90d9,#5dcff5);border:none;border-radius:8px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:4px;transition:opacity .15s}
+.btn:hover{opacity:.9}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.msg{font-size:12px;margin-top:12px;text-align:center;padding:9px 12px;border-radius:6px;display:none}
+.msg.error{display:block;background:rgba(239,83,80,.1);border:1px solid rgba(239,83,80,.3);color:#ef5350}
+.msg.success{display:block;background:rgba(102,187,106,.1);border:1px solid rgba(102,187,106,.3);color:#66bb6a}
+
+/* ── 본인 확인 방법 ── */
+.method-bar{display:flex;gap:6px;margin-bottom:14px}
+.method-btn{flex:1;padding:7px 4px;background:var(--bg3);border:1px solid var(--border3);border-radius:8px;color:var(--text3);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.method-btn.active{background:var(--accent-bg);border-color:var(--accent-border);color:var(--accent)}
+.method-note{font-size:11px;color:var(--text4);margin:-6px 0 12px;line-height:1.5}
+
+/* ── 결과 박스 ── */
+.result-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center;margin-top:14px;display:none}
+.result-box.show{display:block}
+.result-label{font-size:11px;color:var(--text3);margin-bottom:6px}
+.result-value{font-size:20px;font-weight:800;color:var(--accent);letter-spacing:2px;font-family:'Courier New',monospace}
+
+/* ── 구분선 + 링크 ── */
+.link{text-align:center;margin-top:16px;font-size:12px;color:var(--text4)}
+.link a{color:var(--accent);text-decoration:none}
+
+/* ── 로그인 필요 ── */
+.need-login{text-align:center;padding:24px 0}
+.need-login .icon{font-size:36px;margin-bottom:10px}
+.need-login p{font-size:13px;color:var(--text3);margin-bottom:14px}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="box-title">🔑 Account</div>
+  <div class="box-sub">Verify with your recovery code or friend code to update your account</div>
+
+  <!-- 탭 -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('find-id',this)">Find ID</button>
+    <button class="tab-btn" onclick="switchTab('find-pw',this)">Reset password</button>
+    <button class="tab-btn" onclick="switchTab('change-nick',this)">Change nickname</button>
+  </div>
+
+  <!-- ── 패널 1: 아이디 찾기 ── -->
+  <div class="panel active" id="panel-find-id">
+    <div class="method-bar" data-method-group="fi">
+      <button type="button" class="method-btn active" data-method="rec" onclick="setMethod('fi','rec')">Recovery code</button>
+      <button type="button" class="method-btn" data-method="fc" onclick="setMethod('fi','fc')">Friend code</button>
+    </div>
+    <div class="method-note" id="fi-note">Find your ID with the recovery code you got when signing up.</div>
+    <div data-method-pane="fi-rec">
+      <div class="field">
+        <label>Recovery code</label>
+        <input type="text" id="fi-rec" placeholder="XXXX-XXXX-XXXX" maxlength="14" autocomplete="off" oninput="fmtRecInput(this)">
+      </div>
+    </div>
+    <div data-method-pane="fi-fc" style="display:none">
+      <div class="field">
+        <label>Nickname</label>
+        <input type="text" id="fi-nick" placeholder="Nickname used at sign-up">
+      </div>
+      <div class="field">
+        <label>Friend code</label>
+        <input type="text" id="fi-code" placeholder="7 characters starting with K (e.g. K1a2b3c)" maxlength="7">
+        <div class="hint">The friend code you registered at sign-up.</div>
+      </div>
+    </div>
+    <button class="btn" id="fi-btn" onclick="findId()">Find ID</button>
+    <div class="msg" id="fi-msg"></div>
+    <div class="result-box" id="fi-result">
+      <div class="result-label">Your ID</div>
+      <div class="result-value" id="fi-result-val"></div>
+    </div>
+  </div>
+
+  <!-- ── 패널 2: 비밀번호 변경 ── -->
+  <div class="panel" id="panel-find-pw">
+    <div class="field">
+      <label>ID</label>
+      <input type="text" id="fp-user" placeholder="Enter your ID">
+    </div>
+    <div class="method-bar" data-method-group="fp">
+      <button type="button" class="method-btn active" data-method="rec" onclick="setMethod('fp','rec')">Recovery code</button>
+      <button type="button" class="method-btn" data-method="fc" onclick="setMethod('fp','fc')">Friend code</button>
+    </div>
+    <div class="method-note" id="fp-note">Verify with the recovery code you got when signing up.</div>
+    <div data-method-pane="fp-rec">
+      <div class="field">
+        <label>Recovery code</label>
+        <input type="text" id="fp-rec" placeholder="XXXX-XXXX-XXXX" maxlength="14" autocomplete="off" oninput="fmtRecInput(this)">
+      </div>
+    </div>
+    <div data-method-pane="fp-fc" style="display:none">
+      <div class="field">
+        <label>Friend code</label>
+        <input type="text" id="fp-code" placeholder="7 characters starting with K" maxlength="7">
+      </div>
+    </div>
+    <div class="field">
+      <label>New password</label>
+      <input type="password" id="fp-pw1" placeholder="Enter new password">
+    </div>
+    <div class="field">
+      <label>Confirm new password</label>
+      <input type="password" id="fp-pw2" placeholder="Re-enter new password">
+    </div>
+    <button class="btn" id="fp-btn" onclick="changePw()">Reset password</button>
+    <div class="msg" id="fp-msg"></div>
+  </div>
+
+  <!-- ── 패널 3: 닉네임 변경 ── -->
+  <div class="panel" id="panel-change-nick">
+    <!-- 로그인 필요 안내 -->
+    <div class="need-login" id="cn-need-login">
+      <div class="icon">🔒</div>
+      <p>Please log in to change your nickname.</p>
+      <a href="./index.html" style="color:var(--accent);font-size:13px;text-decoration:none">← Log in from the main page</a>
+    </div>
+    <!-- 로그인된 경우 -->
+    <div id="cn-form" style="display:none">
+      <div class="field">
+        <label>Current nickname</label>
+        <input type="text" id="cn-current" disabled style="opacity:.6">
+      </div>
+      <div class="field">
+        <label>New nickname</label>
+        <input type="text" id="cn-new" placeholder="Enter new nickname" maxlength="20" oninput="checkNewNick()">
+        <div class="hint" id="cn-nick-hint">Enter at least 2 characters.</div>
+      </div>
+      <div class="field">
+        <label>Current password</label>
+        <input type="password" id="cn-pw" placeholder="Enter current password">
+      </div>
+      <button class="btn" id="cn-btn" onclick="changeNick()">Change nickname</button>
+      <div class="msg" id="cn-msg"></div>
+    </div>
+  </div>
+
+  <div class="link">
+    <a href="./index.html">← Back to main</a>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+// ── 탭 전환 ──────────────────────────────────────────────────
+function switchTab(id, btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('panel-'+id).classList.add('active');
+}
+
+// ── 본인 확인 방법 (복구 코드 / 친구코드) ─────────────────────
+const METHOD={fi:'rec',fp:'rec'};
+const METHOD_NOTE={
+  fi:{rec:'Find your ID with the recovery code you got when signing up.',fc:'Existing members without a recovery code can use nickname + friend code.'},
+  fp:{rec:'Verify with the recovery code you got when signing up.',fc:'Existing members without a recovery code can verify with their friend code.'}
+};
+function setMethod(group,m){
+  METHOD[group]=m;
+  document.querySelectorAll('[data-method-group="'+group+'"] .method-btn').forEach(b=>b.classList.toggle('active',b.dataset.method===m));
+  document.querySelector('[data-method-pane="'+group+'-rec"]').style.display=m==='rec'?'':'none';
+  document.querySelector('[data-method-pane="'+group+'-fc"]').style.display=m==='fc'?'':'none';
+  document.getElementById(group+'-note').textContent=METHOD_NOTE[group][m];
+  const msg=document.getElementById(group+'-msg'); if(msg) msg.className='msg';
+}
+function normRec(v){return String(v||'').toUpperCase().replace(/[^A-Z0-9]/g,'');}
+function fmtRecInput(el){
+  const c=normRec(el.value).slice(0,12);
+  el.value=c.replace(/(.{4})(?=.)/g,'$1-');
+}
+
+// ── 초기화 ───────────────────────────────────────────────────
+(function(){
+  const user = getUser();
+  if(user){
+    document.getElementById('cn-need-login').style.display='none';
+    document.getElementById('cn-form').style.display='block';
+    document.getElementById('cn-current').value = user.nickname || user.username;
+  }
+})();
+
+// ── 아이디 찾기 ───────────────────────────────────────────────
+async function findId(){
+  const nick  = (document.getElementById('fi-nick').value||'').trim();
+  const code  = (document.getElementById('fi-code').value||'').trim();
+  const rec   = normRec(document.getElementById('fi-rec').value);
+  const msg   = document.getElementById('fi-msg');
+  const res   = document.getElementById('fi-result');
+  const btn   = document.getElementById('fi-btn');
+  msg.className='msg'; res.classList.remove('show');
+
+  if(METHOD.fi==='rec'){
+    if(!rec){ showMsg(msg,'error','Please enter your recovery code.'); return; }
+    if(rec.length!==12){ showMsg(msg,'error','Recovery code must be 12 characters. (XXXX-XXXX-XXXX)'); return; }
+  }else{
+    if(!nick){ showMsg(msg,'error','Please enter your nickname.'); return; }
+    if(!code){ showMsg(msg,'error','Please enter your friend code.'); return; }
+    if(code.length!==7){ showMsg(msg,'error','Friend code must be 7 characters. (K + 6)'); return; }
+    if(!/^k[a-z0-9]{6}$/i.test(code)){ showMsg(msg,'error','Friend code must be K + 6 letters/numbers.'); return; }
+  }
+
+  btn.disabled=true; btn.textContent='Searching...';
+  try{
+    let rows;
+    if(METHOD.fi==='rec'){
+      const hashed = await hashPassword(rec);
+      rows = await supabase('GET','users',null,
+        `?recovery_code=eq.${hashed}&select=id,username&limit=1`);
+    }else{
+      // ilike: 대소문자 무관 비교
+      rows = await supabase('GET','users',null,
+        `?nickname=eq.${encodeURIComponent(nick)}&friend_code=ilike.${encodeURIComponent(code)}&select=id,username&limit=1`);
+    }
+    if(!rows||!rows.length){
+      showMsg(msg,'error', METHOD.fi==='rec'
+        ? 'No matching account found. Please check your recovery code.'
+        : 'No matching account found. Please check your nickname and friend code.'); return;
+    }
+    const username = rows[0].username;
+    document.getElementById('fi-result-val').textContent = maskId(username);
+    res.classList.add('show');
+    showMsg(msg,'success','ID found!');
+  }catch(e){
+    console.error(e);
+    showMsg(msg,'error','Error: '+(e.message||'Please try again.'));
+  }finally{
+    btn.disabled=false; btn.textContent='Find ID';
+  }
+}
+
+// ── 비밀번호 변경 ─────────────────────────────────────────────
+async function changePw(){
+  const username = (document.getElementById('fp-user').value||'').trim();
+  const code     = (document.getElementById('fp-code').value||'').trim();
+  const rec      = normRec(document.getElementById('fp-rec').value);
+  const pw1      = document.getElementById('fp-pw1').value;
+  const pw2      = document.getElementById('fp-pw2').value;
+  const msg      = document.getElementById('fp-msg');
+  const btn      = document.getElementById('fp-btn');
+  msg.className='msg';
+
+  if(!username){ showMsg(msg,'error','Please enter your ID.'); return; }
+  if(METHOD.fp==='rec'){
+    if(!rec){ showMsg(msg,'error','Please enter your recovery code.'); return; }
+    if(rec.length!==12){ showMsg(msg,'error','Recovery code must be 12 characters. (XXXX-XXXX-XXXX)'); return; }
+  }else{
+    if(!code){ showMsg(msg,'error','Please enter your friend code.'); return; }
+    if(code.length!==7){ showMsg(msg,'error','Friend code must be 7 characters. (K + 6)'); return; }
+    if(!/^k[a-z0-9]{6}$/i.test(code)){ showMsg(msg,'error','Friend code must be K + 6 letters/numbers.'); return; }
+  }
+  if(!pw1){ showMsg(msg,'error','Please enter a new password.'); return; }
+  if(pw1.length<4){ showMsg(msg,'error','Password must be at least 4 characters.'); return; }
+  if(pw1!==pw2){ showMsg(msg,'error','Passwords do not match.'); return; }
+
+  btn.disabled=true; btn.textContent='Updating...';
+  try{
+    // 계정 확인
+    const verify = METHOD.fp==='rec'
+      ? `recovery_code=eq.${await hashPassword(rec)}`
+      : `friend_code=ilike.${encodeURIComponent(code)}`;
+    const rows = await supabase('GET','users',null,
+      `?username=eq.${encodeURIComponent(username)}&${verify}&select=id&limit=1`);
+    if(!rows||!rows.length){
+      showMsg(msg,'error', METHOD.fp==='rec' ? 'ID or recovery code does not match.' : 'ID or friend code does not match.'); return;
+    }
+    const userId = rows[0].id;
+    const hashed = await hashPassword(pw1);
+
+    // 비밀번호 업데이트
+    await supabase('PATCH','users',{password:hashed},`?id=eq.${userId}`);
+    showMsg(msg,'success','Password updated! Please log in with your new password.');
+    document.getElementById('fp-pw1').value='';
+    document.getElementById('fp-pw2').value='';
+  }catch(e){
+    console.error(e);
+    showMsg(msg,'error','Error: '+(e.message||'Please try again.'));
+  }finally{
+    btn.disabled=false; btn.textContent='Reset password';
+  }
+}
+
+// ── 닉네임 중복 확인 ──────────────────────────────────────────
+let _nickTimer=null, _nickOk=false;
+async function checkNewNick(){
+  const val=(document.getElementById('cn-new').value||'').trim();
+  const hint=document.getElementById('cn-nick-hint');
+  _nickOk=false;
+  clearTimeout(_nickTimer);
+  if(val.length<2){ hint.className='hint'; hint.textContent='Enter at least 2 characters.'; return; }
+  hint.className='hint'; hint.textContent='Checking...';
+  _nickTimer=setTimeout(async()=>{
+    try{
+      const rows=await supabase('GET','users',null,`?nickname=eq.${encodeURIComponent(val)}&select=id&limit=1`);
+      if(rows&&rows.length){
+        hint.className='hint'; hint.style.color='#ef5350';
+        hint.textContent='This nickname is already taken.';
+      }else{
+        hint.style.color='#66bb6a';
+        hint.textContent='✅ Nickname is available.';
+        _nickOk=true;
+      }
+    }catch(e){ hint.className='hint'; hint.textContent='An error occurred while checking.'; }
+  }, 500);
+}
+
+// ── 닉네임 변경 ───────────────────────────────────────────────
+async function changeNick(){
+  const newNick=(document.getElementById('cn-new').value||'').trim();
+  const pw=document.getElementById('cn-pw').value;
+  const msg=document.getElementById('cn-msg');
+  const btn=document.getElementById('cn-btn');
+  const user=getUser();
+  msg.className='msg';
+
+  if(!user){ showMsg(msg,'error','Login required.'); return; }
+  if(!newNick||newNick.length<2){ showMsg(msg,'error','Nickname must be at least 2 characters.'); return; }
+  if(!_nickOk){ showMsg(msg,'error','Please check nickname availability.'); return; }
+  if(!pw){ showMsg(msg,'error','Please enter your current password.'); return; }
+
+  btn.disabled=true; btn.textContent='Updating...';
+  try{
+    // 비밀번호 검증
+    const hashed=await hashPassword(pw);
+    const rows=await supabase('GET','users',null,
+      `?id=eq.${user.id}&password=eq.${hashed}&select=id&limit=1`);
+    if(!rows||!rows.length){
+      showMsg(msg,'error','Current password is incorrect.'); return;
+    }
+    // 닉네임 업데이트
+    await supabase('PATCH','users',{nickname:newNick},`?id=eq.${user.id}`);
+    // 로컬 유저 정보도 갱신
+    setUser({...user, nickname:newNick});
+    document.getElementById('cn-current').value=newNick;
+    document.getElementById('cn-new').value='';
+    document.getElementById('cn-pw').value='';
+    document.getElementById('cn-nick-hint').style.color='';
+    document.getElementById('cn-nick-hint').textContent='Enter at least 2 characters.';
+    _nickOk=false;
+    showMsg(msg,'success','Nickname updated! 🎉');
+  }catch(e){
+    showMsg(msg,'error','An error occurred. Please try again.');
+  }finally{
+    btn.disabled=false; btn.textContent='Change nickname';
+  }
+}
+
+// ── 유틸 ─────────────────────────────────────────────────────
+function showMsg(el, type, text){
+  el.className='msg '+type;
+  el.textContent=text;
+}
+
+// 아이디 마스킹: testuser → te***er
+function maskId(id){
+  if(!id) return '—';
+  if(id.length<=2) return id[0]+'*';
+  const show=Math.min(2, Math.floor(id.length/3));
+  return id.slice(0,show)+'*'.repeat(id.length-show*2)+id.slice(-show);
+}
+
+// Enter 키 지원
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Enter')return;
+  const active=document.querySelector('.panel.active')?.id;
+  if(active==='panel-find-id') findId();
+  else if(active==='panel-find-pw') changePw();
+  else if(active==='panel-change-nick') changeNick();
+});
+</script>
+
+<script>
+(function(){
+  var link=document.getElementById('theme-css');
+  if(!link)return;
+  var sync=function(){
+    var c=document.getElementById('custom-theme-style');
+    if(c&&c.textContent&&c.textContent.length>0){document.documentElement.removeAttribute('data-theme');return;}
+    var m=String(link.href||'').match(/theme-(dark|light|beige)\.css/);
+    document.documentElement.setAttribute('data-theme',m?m[1]:'dark');
+  };
+  sync();
+  new MutationObserver(sync).observe(link,{attributes:true,attributeFilter:['href']});
+  new MutationObserver(sync).observe(document.head,{childList:true,subtree:true,characterData:true});
+})();
+</script>
+</body>
+</html>

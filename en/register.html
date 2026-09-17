@@ -44,10 +44,16 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
 .msg.success{color:#66bb6a}
 .link{text-align:center;margin-top:14px;font-size:12px;color:var(--text4)}
 .link a{color:var(--accent);text-decoration:none}
+.rec-code{font-family:'Courier New',monospace;font-size:24px;font-weight:800;letter-spacing:3px;color:var(--accent);background:var(--bg3);border:1px solid var(--border3);border-radius:8px;padding:14px 10px;text-align:center;margin:14px 0 8px;user-select:all;word-break:break-all}
+.rec-desc{font-size:12px;color:var(--text2);text-align:center;line-height:1.7}
+.rec-warn{font-size:11px;color:#ef5350;background:rgba(239,83,80,.08);border:1px solid rgba(239,83,80,.25);border-radius:8px;padding:9px 11px;margin:10px 0 12px;line-height:1.6}
+.rec-copy{width:100%;padding:8px;background:none;border:1px solid var(--border3);border-radius:8px;color:var(--text);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
+.rec-check{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text);margin-bottom:6px;cursor:pointer}
+.btn:disabled{opacity:.45;cursor:not-allowed}
 </style>
 </head>
 <body>
-<div class="box">
+<div class="box" id="reg-box">
   <h2>Sign up</h2>
   <div class="field">
     <label>ID</label>
@@ -57,11 +63,6 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
     <label>Nickname</label>
     <input id="nickname" type="text" placeholder="Enter nickname" oninput="checkNickname()">
     <div class="field-hint" id="nickname-hint">Name shown on the board.</div>
-  </div>
-  <div class="field">
-    <label>Friend code <span style="color:var(--text4);font-weight:400">(K + 6 alphanumeric)</span></label>
-    <input id="friend_code" type="text" placeholder="Enter in K000000 format" maxlength="7" oninput="handleFriendCodeInput(this)">
-    <div class="field-hint" id="friend-code-hint">Enter a 7-character code starting with K. (e.g. K1a2b3c)</div>
   </div>
   <div class="field">
     <label>Password</label>
@@ -74,12 +75,21 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
   <button class="btn" onclick="register()">Sign up</button>
   <div class="msg" id="msg"></div>
   <div class="link"><a href="./login.html">Already have an account</a></div>
-  <div class="link" style="margin-top:8px"><a href="../account.html">Find ID/password / Change nickname</a></div>
+  <div class="link" style="margin-top:8px"><a href="./account.html">Find ID/password / Change nickname</a></div>
+</div>
+
+<div class="box" id="rec-box" style="display:none">
+  <h2>🔐 Recovery code</h2>
+  <div class="rec-desc">Use this code to <b>find your ID or reset your password</b>.<br>Once you leave this screen, <b>it can't be shown again.</b></div>
+  <div class="rec-code" id="rec-code">-</div>
+  <button type="button" class="rec-copy" id="rec-copy" onclick="copyRecovery()">📋 Copy</button>
+  <div class="rec-warn">⚠ Take a screenshot or save it somewhere safe. Without this code, your account cannot be recovered.</div>
+  <label class="rec-check"><input type="checkbox" id="rec-ok" onchange="document.getElementById('rec-go').disabled=!this.checked"> I saved my recovery code</label>
+  <button class="btn" id="rec-go" disabled onclick="goLogin()">Go to login</button>
 </div>
 
 <script src="../sb_config.js"></script>
 <script>
-let friendCodeValid = false;
 let nicknameValid = false;
 let nicknameTimer = null;
 
@@ -121,60 +131,33 @@ async function checkNickname() {
   }, 400);
 }
 
-function handleFriendCodeInput(el) {
-  const cursorPos = el.selectionStart;
-
-  const cleaned = el.value.replace(/[^a-zA-Z0-9]/g, '').toLowerCase().slice(0, 7);
-  el.value = cleaned;
-
-  const newPos = Math.min(cursorPos, el.value.length);
-  el.setSelectionRange(newPos, newPos);
-
-  checkFriendCode();
+// 복구 코드: 가입 시 1회 발급, 해시로만 저장
+const REC_CHARS='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+let recoveryPlain='';
+let recoverySaved=false;
+function genRecoveryCode(){
+  const buf=new Uint32Array(12);
+  crypto.getRandomValues(buf);
+  return Array.from(buf,n=>REC_CHARS[n%REC_CHARS.length]).join('');
 }
-
-async function checkFriendCode() {
-  const code = document.getElementById('friend_code').value.trim();
-  const hint = document.getElementById('friend-code-hint');
-
-  if(code.length === 0) {
-    hint.className = 'field-hint';
-    hint.textContent = 'Enter a 7-character code starting with K. (e.g. K1a2b3c)';
-    friendCodeValid = false;
-    return;
-  }
-  if(code[0] !== 'k') {
-    hint.className = 'field-hint error';
-    hint.textContent = 'Friend code must start with K.';
-    friendCodeValid = false;
-    return;
-  }
-  if(!/^k[a-z0-9]{6}$/.test(code)) {
-    hint.className = 'field-hint error';
-    hint.textContent = 'Must be K + 6 alphanumeric characters.';
-    friendCodeValid = false;
-    return;
-  }
-  try {
-    const rows = await supabase('GET', 'users', null, `?friend_code=eq.${encodeURIComponent(code)}&select=id`);
-    if(rows && rows.length > 0) {
-      hint.className = 'field-hint error';
-      hint.textContent = 'This friend code is already taken.';
-      friendCodeValid = false;
-    } else {
-      hint.className = 'field-hint success';
-      hint.textContent = 'Friend code is available.';
-      friendCodeValid = true;
-    }
-  } catch(e) {
-    friendCodeValid = true;
-  }
+function fmtRecovery(c){return c.replace(/(.{4})(?=.)/g,'$1-');}
+async function copyRecovery(){
+  const btn=document.getElementById('rec-copy');
+  try{await navigator.clipboard.writeText(fmtRecovery(recoveryPlain));btn.textContent='✓ Copied!';}
+  catch(e){const r=document.createRange();r.selectNodeContents(document.getElementById('rec-code'));const sel=getSelection();sel.removeAllRanges();sel.addRange(r);}
 }
+function goLogin(){
+  if(!document.getElementById('rec-ok').checked)return;
+  recoverySaved=true;
+  location.href='./login.html';
+}
+window.addEventListener('beforeunload',e=>{
+  if(recoveryPlain&&!recoverySaved){e.preventDefault();e.returnValue='';}
+});
 
 async function register() {
   const username = document.getElementById('username').value.trim();
   const nickname = document.getElementById('nickname').value.trim();
-  const friend_code = document.getElementById('friend_code').value.trim();
   const password = document.getElementById('password').value;
   const password2 = document.getElementById('password2').value;
   const msg = document.getElementById('msg');
@@ -182,20 +165,23 @@ async function register() {
   if(!username || !password) { msg.className='msg error'; msg.textContent='Please enter your ID and password.'; return; }
   if(!nickname) { msg.className='msg error'; msg.textContent='Please enter a nickname.'; return; }
   if(!nicknameValid) { msg.className='msg error'; msg.textContent='Please check your nickname.'; return; }
-  if(!friend_code) { msg.className='msg error'; msg.textContent='Please enter a friend code.'; return; }
-  if(!/^k[a-z0-9]{6}$/.test(friend_code)) { msg.className='msg error'; msg.textContent='Friend code must be 7 characters starting with K.'; return; }
-  if(!friendCodeValid) { msg.className='msg error'; msg.textContent='Please check your friend code.'; return; }
   if(username.length < 2) { msg.className='msg error'; msg.textContent='ID must be at least 2 characters.'; return; }
   if(password.length < 4) { msg.className='msg error'; msg.textContent='Password must be at least 4 characters.'; return; }
   if(password !== password2) { msg.className='msg error'; msg.textContent='Passwords do not match.'; return; }
 
   try {
     const hashed = await hashPassword(password);
-    await supabase('POST', 'users', { username, nickname, friend_code, password: hashed });
-    msg.className='msg success'; msg.textContent='Registered! Redirecting to the login page.';
-    setTimeout(() => location.href='./login.html', 1200);
+    const code = genRecoveryCode();
+    const recovery_code = await hashPassword(code);
+    // friend_code는 보내지 않음 (빈 문자열은 UNIQUE 충돌)
+    await supabase('POST', 'users', { username, nickname, password: hashed, recovery_code });
+    recoveryPlain = code;
+    msg.className='msg success'; msg.textContent='Registered!';
+    document.getElementById('rec-code').textContent = fmtRecovery(code);
+    document.getElementById('reg-box').style.display='none';
+    document.getElementById('rec-box').style.display='';
   } catch(e) {
-    if(e.message.includes('unique')) msg.textContent='This ID or friend code is already taken.';
+    if(e.message.includes('unique') || e.message.includes('duplicate')) msg.textContent='This ID is already taken.';
     else msg.textContent = 'An error occurred: ' + e.message;
     msg.className='msg error';
   }

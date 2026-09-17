@@ -330,7 +330,7 @@ input[type=number]{appearance:textfield;-moz-appearance:textfield}
     <div class="sec-hd">
       <span>My Dragons</span>
       <div style="display:flex;align-items:center;gap:8px;">
-        <button class="btn-gold" style="font-size:12px;padding:4px 12px" onclick="saveDragonToSpec()">💾 Save to My Spec</button>
+        <span id="dragon-sync-msg" style="font-size:11px;color:var(--dim);max-width:110px;line-height:1.3;text-align:right;word-break:keep-all"></span>
         <a href="./my.html" class="btn-white" style="font-size:12px;padding:4px 12px;text-decoration:none">My Spec →</a>
         <div class="dragon-view-toggle">
           <button class="dragon-view-btn active" id="btn-dragon-form" onclick="switchDragonView('form')">My Dragons</button>
@@ -3236,5 +3236,6 @@ async function sendToGuild(){
 }
 
 </script>
+<script src="../spec_sync.js"></script>
 </body>
 </html>

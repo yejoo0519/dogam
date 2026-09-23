@@ -90,7 +90,7 @@
     // Snapshot all inputs before yielding. No storage/network writes occur here.
     const grade=simGrade,sp=procSpirit(),coll={...S.coll},spiritSnapshot=JSON.parse(JSON.stringify(S.spirit));
     const pool=buildPool(),allocs=genAllocs(pool,5).map(a=>({alloc:a.map((k,i)=>({k,g:pool[i]})).filter(x=>x.k>0),h:a.reduce((s,k,i)=>s+k*pool[i].h,0),a:a.reduce((s,k,i)=>s+k*pool[i].a,0),d:a.reduce((s,k,i)=>s+k*pool[i].d,0)}));
-    const pends=JSON.parse(JSON.stringify(getPends(byId('exc-sun-pend').checked)));
+    const pends=JSON.parse(JSON.stringify(getPends(byId('exc-sun-pend')?.checked ?? false)));
     const rows=[];let tested=0,order=0;
     const total=DTYPES.length*buffs.length*accs.length*(encMode==='infinite'?3:1)*pends.length*allocs.length;
     let lastYield=performance.now();

@@ -50,6 +50,7 @@
       ['pkg',     EN ? 'Packages'     : '패키지 복각',  'pkg.html']
     ] },
     { g: T.g_calc, items: [
+      ['score-guide', EN ? 'BV & TAR guide' : '비밸·TAR 설명서', 'score-guide.html'],
       ['calculator',  EN ? 'Spirit sim'   : '정령 시뮬레이터', 'calculator.html'],
       ['spirit-peak', EN ? 'Spirit peak' : '정령 고점', 'spirit-peak.html'],
       ['pvp',         EN ? 'Guild war'    : '길드전', 'pvp.html'],
@@ -125,7 +126,7 @@
         list.appendChild(el('div', 'u-side-grp', esc(grp.g)));
         grp.items.forEach(function (it) {
           var a = el('a', 'u-nav-i' + (it[0] === opt.page ? ' on' : ''));
-          a.href = (EN && ['index.html','calculator.html','spirit-peak.html','pvp.html','noob.html','cham_auto.html','cham_manual.html','dex.html','tier.html','sss.html','cham.html','raid.html','raid_info.html','my.html','aura-preview.html','patchnote.html'].includes(it[2]) ? './' : UP) + it[2];
+          a.href = (EN && ['score-guide.html','index.html','calculator.html','spirit-peak.html','pvp.html','noob.html','cham_auto.html','cham_manual.html','dex.html','tier.html','sss.html','cham.html','raid.html','raid_info.html','my.html','aura-preview.html','patchnote.html'].includes(it[2]) ? './' : UP) + it[2];
           a.innerHTML = esc(it[1]) + (it[3] ? '<span class="n">' + esc(it[3]) + '</span>' : '');
           if (it[0] === opt.page) a.setAttribute('aria-current', 'page');
           list.appendChild(a);

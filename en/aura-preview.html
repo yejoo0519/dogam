@@ -1978,7 +1978,7 @@ const DRAGONS = DEX_DRAGONS.map(([id, name, elem, ad, stage]) => ({
   id: String(id), name, elem, advent: ad === 1, stage,
   nameEn: NAME_EN[id] || '',
   // 목록·메시지에 쓰는 표기. 영어 이름이 없으면 한글만 씁니다.
-  label: NAME_EN[id] ? NAME_EN[id] + ' / ' + name : name,
+  label: NAME_EN[id] || name,
   asset: String(GRADE_ASSET[id] || ASSET_ID[id] || id),
   family: !!GRADE_ASSET[id],
   // 검색은 영어·한글 어느 쪽으로 쳐도 걸립니다
@@ -2563,7 +2563,7 @@ function renderDragonGrid(){
       if(manifest && !hasAsset(dr)) el.classList.add('missing');
       el.innerHTML = '<img src="' + ICON_SRC(dr.id, dr.stage) + '" alt="" loading="lazy">'
                    + '<span class="nm"><span class="nm-en">' + (dr.nameEn || dr.name) + '</span>'
-                   + (dr.nameEn ? '<span class="nm-kr">' + dr.name + '</span>' : '') + '</span>';
+                   + '</span>';
       el.title = dr.label;
       el.querySelector('img').addEventListener('error', function(){ this.style.display = 'none'; });
       el.onclick = () => {

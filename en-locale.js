@@ -95,6 +95,10 @@
    let out=text.replace(/(\d+)옵/g,'Option $1').replace(/(\d+)단계/g,'Lv.$1').replace(/(\d+)개 후보 비교/g,'$1 candidates compared').replace(/(\d+)개 세팅 비교/g,'$1 setups compared').replace(/(\d+)개 메뉴/g,'$1 pages').replace(/(\d+)마리/g,'$1 dragons').replace(/(\d+)종/g,'$1 types').replace(/(\d+)버프/g,'$1 buffs');
    for(const [ko,en]of pairs){if(ko.length===1)continue;out=out.split(ko).join(en);}
    out=out.replace(/([체공방])(?=\s*[+×\d/·,]|$)/g,s=>exact[s]).replace(/(^|[+/(·,\s])([체공방])(?=[+/)·,\s])/g,(_,a,s)=>a+exact[s]);
+   const supplemental=w.EN_EXTRA_MESSAGES||{};
+   const key=out.trim();
+   if(supplemental[key])out=out.replace(key,supplemental[key]);
+   out=out.replace(/(\d+)개/g,"$1 items");
    return out;
  }
  function node(n){if(n.nodeType===3){if(n.parentElement?.closest('script,style,textarea,[contenteditable]'))return;const value=tr(n.nodeValue);if(value!==n.nodeValue){const p=n.parentElement;if(p?.tagName==='OPTION'&&!p.hasAttribute('value'))p.setAttribute('value',p.value);n.nodeValue=value;}return;}

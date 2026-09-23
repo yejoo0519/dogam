@@ -289,8 +289,8 @@ function calcSlot(ti,slot){
     const buffP=(S.buff[st]&&S.buff[st]===slot.attr)?(st==='def'?0.5:0.4):0;
     if(buffP)out.buffs.push(st);
     const s1=INT((statSum+potion)*(1+accP+encP));
-    const s2=s1*(1+SPIRIT_W*spP)+(SPIRIT_W*spF)*(1+SPIRIT_W*spP);
-    const s3=INT(s2*(1+pendP)+bonus+coll);
+    const s2=INT(s1*(1+SPIRIT_W*spP)+(SPIRIT_W*spF)*(1+SPIRIT_W*spP));
+    const s3=INT(s2*(1+pendP))+bonus+coll;
     out[st]=INT(s3*(1+buffP));
   });
   out.eval=out.hp+out.atk*4+out.def*4;

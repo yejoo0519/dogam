@@ -786,8 +786,8 @@ function calcPendPct(pend){
 }
 function chamStat(base,gem,pot,accP,spPct,spPlus,pendP,bonus,coll,buffP){
   const s1=INT((base+gem+pot)*(1+accP));
-  const s2=s1*(1+SPIRIT_W*spPct)+(SPIRIT_W*spPlus)*(1+SPIRIT_W*spPct);
-  const s3=INT(s2*(1+pendP)+bonus+coll);
+  const s2=INT(s1*(1+SPIRIT_W*spPct)+(SPIRIT_W*spPlus)*(1+SPIRIT_W*spPct));
+  const s3=INT(s2*(1+pendP))+bonus+coll;
   return INT(s3*(1+buffP));
 }
 function calcOption(cand,acc,pend,gemHAD){

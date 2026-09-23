@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<script src="../en-messages.js"></script>
-<script src="../en-locale.js"></script>
-<link rel="stylesheet" href="../en-locale.css">
+<script src="../en-messages.js?v=20260923b"></script>
+<script src="../en-extra-messages.js?v=20260923b"></script>
+<script src="../en-locale.js?v=20260923b"></script>
+<link rel="stylesheet" href="../en-locale.css?v=20260923b">
 <link rel="stylesheet" href="../cham-access.css">
 <script src="../sb_config.js"></script>
 <script src="../cham-access.js"></script>
@@ -25,7 +26,7 @@
 <meta name="ext-resource-dependency" content="../theme-light.css" data-resource-id="theme-light">
 <meta name="ext-resource-dependency" content="../theme-beige.css" data-resource-id="theme-beige">
 
-<script src="../theme.js"></script>
+<script src="./theme.js"></script>
 
 <!-- 번들된 단일 파일에서만 동작: theme.js 의 THEMES 객체 경로를 blob URL 로 치환 -->
 <script>
@@ -332,7 +333,7 @@
   <div class="mobile-sticky mobile-only">
     <div class="mobile-logo">
       <div class="mobile-logo-tile">N</div>
-      <span class="mobile-logo-text">종합 정보사이트</span>
+      <span class="mobile-logo-text">Dragon Village 1 Guide</span>
     </div>
     <div class="mobile-actions">
       <a href="../index.html" class="icon-btn">🌐</a>
@@ -344,7 +345,7 @@
   <!-- PC 헤더 액션 -->
   <div class="header-actions pc-only">
     <a href="../index.html" class="pill-btn">🌐 한국어</a>
-    <button class="pill-btn" onclick="openThemeModal()">🎨 테마</button>
+    <button class="pill-btn" onclick="openThemeModal()">🎨 Theme</button>
     <div id="pc-auth" style="display:flex;gap:6px;align-items:center;margin-left:4px"></div>
   </div>
 
@@ -352,24 +353,24 @@
   <header class="hero">
     <div class="hero-marker">
       <span class="line"></span>
-      <span class="h-section">made by 닉스</span>
+      <span class="h-section">made by Nyx</span>
     </div>
-    <h1 class="h-display">종합 정보사이트</h1>
-    <p class="hero-desc">드래곤빌리지 초월 등급표, 도감, 레이드, 공략, 길드, 자동 계산기까지 — 한 페이지에서.</p>
+    <h1 class="h-display">Dragon Village 1 Guide</h1>
+    <p class="hero-desc">Dragon Village tiers, dragon dex, raids, guides, guilds and calculators — all in one place.</p>
     <div class="stats-strip" id="stats-strip">
-      <span>오늘 <strong id="s-today">-</strong></span>
-      <span>누적 <strong id="s-total">-</strong></span>
-      <span>회원 <strong id="s-members">-</strong></span>
+      <span>Today <strong id="s-today">-</strong></span>
+      <span>Total <strong id="s-total">-</strong></span>
+      <span>Members <strong id="s-members">-</strong></span>
     </div>
   </header>
 
   <!-- 탭 바 -->
   <nav class="tab-bar" data-scroll-x>
-    <button class="tab active" onclick="switchTab('info', this)">정보</button>
-    <button class="tab" onclick="switchTab('guide', this)">공략 &amp; 가이드</button>
-    <button class="tab" onclick="switchTab('calculator', this)">계산기</button>
-    <button class="tab" onclick="switchTab('convenience', this)">편의성</button>
-    <button class="tab" id="tab-admin" onclick="switchTab('admin', this)" style="display:none">⚙️ 어드민</button>
+    <button class="tab active" onclick="switchTab('info', this)">Info</button>
+    <button class="tab" onclick="switchTab('guide', this)">Guides</button>
+    <button class="tab" onclick="switchTab('calculator', this)">Calculators</button>
+    <button class="tab" onclick="switchTab('convenience', this)">Tools</button>
+    <button class="tab" id="tab-admin" onclick="switchTab('admin', this)" style="display:none">⚙️ Admin</button>
   </nav>
 
   <!-- 본문 -->
@@ -377,68 +378,68 @@
     <main class="main-column">
 
       <section class="category active" id="cat-info">
-        <div class="cat-head"><h3>정보</h3><span class="meta">· 5개 메뉴</span></div>
+        <div class="cat-head"><h3>Info</h3><span class="meta">· 5 pages</span></div>
         <div class="cards">
           <a href="./tier.html" class="card">
-            <span class="icon-tile sky">초등</span>
+            <span class="icon-tile sky">Tiers</span>
             <div class="card-body">
-              <div class="card-title">초월 등급표</div>
-              <div class="card-desc">속성별 초월 드래곤 등급 정보 · 속성 · 타입 필터</div>
+              <div class="card-title">Transcendence tiers</div>
+              <div class="card-desc">Transcendence tiers by element · Element and type filters</div>
             </div>
           </a>
           <a href="./dex.html" class="card">
-            <span class="icon-tile violet">도감</span>
+            <span class="icon-tile violet">Dex</span>
             <div class="card-body">
-              <div class="card-title">드래곤 도감</div>
-              <div class="card-desc">전체 697마리 드래곤 정보 · 속성 · 타입 · 단계 필터</div>
+              <div class="card-title">Dragon Dex</div>
+              <div class="card-desc">697 dragons · Element, type and stage filters</div>
             </div>
           </a>
           <a href="./sss.html" class="card">
-            <span class="icon-tile amber">트스</span>
+            <span class="icon-tile amber">SSS</span>
             <div class="card-body">
-              <div class="card-title">SSS 랭킹</div>
-              <div class="card-desc">Lv.45 / Lv.21 SSS 드래곤 랭킹 · 속성 필터 지원</div>
+              <div class="card-title">SSS Rankings</div>
+              <div class="card-desc">Lv.45 / Lv.21 SSS rankings · Filter by element</div>
             </div>
           </a>
           <a href="./cham.html" class="card">
-            <span class="icon-tile amber">챔대</span>
+            <span class="icon-tile amber">Champ</span>
             <div class="card-body">
-              <div class="card-title">챔대 / 루키 랭킹</div>
-              <div class="card-desc">챔대(SSS) · 루키(SS) · Lv.45 / Lv.21 · 속성 필터 지원</div>
+              <div class="card-title">Champion / Rookie Rankings</div>
+              <div class="card-desc">Champion (SSS) and Rookie (SS) · Lv.45 / Lv.21 · Element filters</div>
             </div>
           </a>
           <a href="../pkg.html" class="card">
-            <span class="icon-tile emerald">패키</span>
+            <span class="icon-tile emerald">Packs</span>
             <div class="card-body">
-              <div class="card-title">패키지 복각 주기</div>
-              <div class="card-desc">패키지별 복각 주기 · 마지막 복각일 · 예상 복각일</div>
+              <div class="card-title">Package Returns</div>
+              <div class="card-desc">Return cycles · Last return · Expected return</div>
             </div>
           </a>
         </div>
       </section>
 
       <section class="category" id="cat-guide">
-        <div class="cat-head"><h3>공략 &amp; 가이드</h3><span class="meta">· 3개 메뉴</span></div>
+        <div class="cat-head"><h3>Guides</h3><span class="meta">· 3 pages</span></div>
         <div class="cards">
           <a href="../guide.html?from=guide" class="card">
-            <span class="icon-tile amber">팁게</span>
+            <span class="icon-tile amber">Tips</span>
             <div class="card-body">
-              <div class="card-title">공략 &amp; 가이드</div>
-              <div class="card-desc">드래곤 공략 및 레이드 가이드 · 글 목록</div>
+              <div class="card-title">Guides</div>
+              <div class="card-desc">Dragon and raid guides · Browse posts</div>
             </div>
           </a>
           <a href="./raid_info.html" class="card">
-            <span class="icon-tile emerald">조합</span>
+            <span class="icon-tile emerald">Raids</span>
             <div class="card-body">
-              <div class="card-title">레이드 정보</div>
-              <div class="card-desc">아르하필드 · 일반 레이드 · 레무리아 보스 상세</div>
+              <div class="card-title">Raid Info</div>
+              <div class="card-desc">Arha Field, regular raids and Lemuria boss details</div>
             </div>
           </a>
           <a href="./raid.html" class="card">
-            <span class="icon-tile rose">알하</span>
+            <span class="icon-tile rose">Arha</span>
             <div class="card-body">
-              <div class="card-title">아르하 입구</div>
-              <div class="card-desc">디데락 조합, 평르하 조합 · 자동 조합기능 제공</div>
+              <div class="card-title">Arha Gate</div>
+              <div class="card-desc">Diderak and regular Arha teams · Automatic team builder</div>
             </div>
           </a>
         </div>
@@ -448,60 +449,61 @@
 
       <section class="category" id="cat-calculator">
         <div class="cat-head cat-head-row">
-          <div class="cat-head-inner"><h3>계산기</h3><span class="meta">· 4개 메뉴</span></div>
-          <a href="./my.html" class="my-spec-btn">👤 내 스펙 →</a>
+          <div class="cat-head-inner"><h3>Calculators</h3><span class="meta">· 4 pages</span></div>
+          <a href="./my.html" class="my-spec-btn">👤 👤 My Spec →</a>
         </div>
         <div class="cards tri">
-          <a href="./calculator.html?from=calculator" class="card"><span class="icon-tile amber">정령</span><div class="card-body"><div class="card-title">정령 시뮬레이터</div><div class="card-desc">비밸·TAR 비교 · 버프 최적화 및 직접 지정</div></div></a>
-          <a href="./pvp.html?from=calculator" class="card"><span class="icon-tile amber">길드</span><div class="card-body"><div class="card-title">길드전 계산기</div><div class="card-desc">오리지널·뉴비 모드 전환 · 비밸·TAR 추천</div></div></a>
-          <a href="./spirit-peak.html" class="card"><span class="icon-tile violet">고점</span><div class="card-body"><div class="card-title">정령 고점 계산기</div><div class="card-desc">보유 제한 없이 정령의 이론상 최고점 탐색</div></div></a>
-          <a href="./cham_auto.html?from=calculator" class="card"><span class="icon-tile amber">챔대</span><div class="card-body"><div class="card-title">챔피언대전 계산기 (자동)</div><div class="card-desc">보유 드래곤과 장비로 세팅 계산</div></div></a>
+          <a href="./calculator.html?from=calculator" class="card"><span class="icon-tile amber">Spirit</span><div class="card-body"><div class="card-title">Spirit Simulator</div><div class="card-desc">Compare B-Val and TAR · Optimize or set buffs</div></div></a>
+          <a href="./pvp.html?from=calculator" class="card"><span class="icon-tile amber">Guild</span><div class="card-body"><div class="card-title">Guild War Calculator</div><div class="card-desc">Original and Beginner modes · B-Val and TAR rankings</div></div></a>
+          <a href="./score-guide.html" class="card"><span class="icon-tile violet">TAR</span><div class="card-body"><div class="card-title">BV &amp; TAR guide</div><div class="card-desc">Meaning, formulas and choosing a comparison metric</div></div></a>
+          <a href="./spirit-peak.html" class="card"><span class="icon-tile violet">Peak</span><div class="card-body"><div class="card-title">Spirit Peak Calculator</div><div class="card-desc">Find your spirit’s theoretical peak without inventory limits</div></div></a>
+          <a href="./cham_auto.html?from=calculator" class="card"><span class="icon-tile amber">Champ</span><div class="card-body"><div class="card-title">Champion League Calculator (Auto)</div><div class="card-desc">Optimize your dragons and equipment</div></div></a>
           <a href="./cham_manual.html?from=calculator" class="card">
-            <span class="icon-tile violet">챔대</span>
+            <span class="icon-tile violet">Champ</span>
             <div class="card-body">
-              <div class="card-title">챔피언대전 계산기<br>(수동)</div>
-              <div class="card-desc">3팀 × 3마리 · 최종 스탯 · EVAL · 비벨</div>
+              <div class="card-title">Champion League Calculators<br>(Manual)</div>
+              <div class="card-desc">3 teams × 3 dragons · Final stats · EVAL · B-Val</div>
             </div>
           </a>
         </div>
       </section>
 
       <section class="category" id="cat-convenience">
-        <div class="cat-head"><h3>편의성</h3><span class="meta">· 3개 메뉴</span></div>
-        <div class="cards"><a href="./my.html" class="card"><span class="icon-tile amber">스펙</span><div class="card-body"><div class="card-title">내 스펙 관리</div><div class="card-desc">장신구 · 펜던트 · 젬 · 컬렉션 · 드래곤</div></div></a><a href="../guild-home.html" class="card"><span class="icon-tile amber">길드</span><div class="card-body"><div class="card-title">길드</div><div class="card-desc">길드 연동 · 가입 요청 · 길드 관리</div></div></a>
+        <div class="cat-head"><h3>Tools</h3><span class="meta">· 3 pages</span></div>
+        <div class="cards"><a href="./my.html" class="card"><span class="icon-tile amber">Spec</span><div class="card-body"><div class="card-title">My Spec</div><div class="card-desc">Accessories · Pendants · Gems · Collection · Dragons</div></div></a><a href="../guild-home.html" class="card"><span class="icon-tile amber">Guild</span><div class="card-body"><div class="card-title">Guild</div><div class="card-desc">Guild linking, join requests and management</div></div></a>
           <a href="./aura-preview.html" class="card">
-            <span class="icon-tile sky">오라</span>
+            <span class="icon-tile sky">Aura</span>
             <div class="card-body">
-              <div class="card-title">오라 미리보기</div>
-              <div class="card-desc">현재 존재하는 4가지 오라 · 동굴 배경 지원</div>
+              <div class="card-title">Aura Preview</div>
+              <div class="card-desc">Four aura styles · Cave backgrounds</div>
             </div>
           </a>
         </div>
       </section>
 
       <section class="category" id="cat-admin">
-        <div class="cat-head"><h3>⚙️ 어드민</h3><span class="meta">· 관리자 전용</span></div>
+        <div class="cat-head"><h3>⚙️ Admin</h3><span class="meta">· Admin only</span></div>
         <div class="cards tri" style="margin-bottom:20px">
           <a href="../gdgm.html" class="card">
-            <span class="icon-tile violet">길드</span>
+            <span class="icon-tile violet">Guild</span>
             <div class="card-body">
-              <div class="card-title">전체 길드 관리</div>
-              <div class="card-desc">모든 길드 데이터 열람 · 순위 확인</div>
+              <div class="card-title">Manage Guilds</div>
+              <div class="card-desc">Browse guild data and rankings</div>
             </div>
           </a>
           <a href="./account.html" class="card">
-            <span class="icon-tile sky">계정</span>
+            <span class="icon-tile sky">Account</span>
             <div class="card-body">
-              <div class="card-title">계정 관리</div>
-              <div class="card-desc">아이디·비밀번호 찾기 · 닉네임 변경</div>
+              <div class="card-title">Account Management</div>
+              <div class="card-desc">Recover ID or password · Change nickname</div>
             </div>
           </a>
         </div>
           <a href="../admin_users.html" class="card">
-            <span class="icon-tile rose">회원</span>
+            <span class="icon-tile rose">Members</span>
             <div class="card-body">
-              <div class="card-title">회원 관리</div>
-              <div class="card-desc">전체 회원 목록 · 계정 정지 · 검색</div>
+              <div class="card-title">Member Management</div>
+              <div class="card-desc">Member list · Account suspension · Search</div>
             </div>
           </a>
       </section>
@@ -511,17 +513,17 @@
     <!-- 우측 사이드 (PC) -->
     <aside class="side-rail pc-only">
       <a href="../guild.html?from=index" class="guild-aside">
-        <span class="icon-tile emerald">길드</span>
-        <span class="guild-aside-text">길드 홍보 &amp; 모집</span>
+        <span class="icon-tile emerald">Guild</span>
+        <span class="guild-aside-text">Guild listings and recruitment</span>
         <span class="guild-aside-arrow">→</span>
       </a>
       <div class="patch-aside" onclick="openPatchModal()">
         <div class="patch-aside-head">
-          <span class="h-section">패치노트</span>
-          <span class="patch-aside-more">전체 →</span>
+          <span class="h-section">Patch notes</span>
+          <span class="patch-aside-more">All →</span>
         </div>
-<div class="patch-item"><div class="patch-item-head"><span class="patch-ver">v0.1.7</span><span class="patch-date">2026-09-21</span></div><ul class=""><li>신규 드래곤 추가: 넵튠, 아우로스, 노아</li><li>도감 설명·티어표 반영</li></ul></div>
-<div class="patch-item"><div class="patch-item-head"><span class="patch-ver">v0.1.6</span><span class="patch-date">2026-09-17</span></div><ul class=""><li>챔피언대전 수동 계산기 추가 (KR/EN)</li><li>내 스펙 프리셋 기능 추가 (최대 10개)</li><li>계산기 드래곤 자동저장 / 스펙 새로고침 / 기기 간 셋팅 충돌 시 선택 기능</li><li>복구 코드로 아이디·비밀번호 찾기 추가 (기존 친구코드 방식도 유지)</li></ul></div>
+<div class="patch-item"><div class="patch-item-head"><span class="patch-ver">v0.1.7</span><span class="patch-date">2026-09-21</span></div><ul class=""><li>New dragons: Neptune, Auros and Noah</li><li>Dex descriptions and tier list updated</li></ul></div>
+<div class="patch-item"><div class="patch-item-head"><span class="patch-ver">v0.1.6</span><span class="patch-date">2026-09-17</span></div><ul class=""><li>Champion manual calculator added (KR/EN)</li><li>My Spec presets added (up to 10)</li><li>Automatic dragon saving, spec refresh and cross-device setup conflict resolution</li><li>Account recovery by recovery code added; friend-code recovery remains available</li></ul></div>
       </div>
     </aside>
   </div>
@@ -530,36 +532,36 @@
   <footer class="page-footer">
     <div class="footer-links">
       <a href="https://open.kakao.com/o/sgNwijri" target="_blank" class="contact-pill">
-        <span class="contact-dot k">K</span> 카카오톡 문의
+        <span class="contact-dot k">K</span> Contact via KakaoTalk
       </a>
       <a href="https://discord.com/users/629966669875511296" target="_blank" class="contact-pill">
-        <span class="contact-dot d">D</span> 디스코드
+        <span class="contact-dot d">D</span> Discord
 
       <a href="https://docs.google.com/forms/d/e/1FAIpQLSdsQPhcdYw7hC3l-eDyjgDu9y8Jj_07px_tucgakNFPfTtPyQ/viewform?usp=publish-editor" target="_blank" class="contact-pill">
-        <span class="contact-dot G">G</span> 구글 설문 폼
+        <span class="contact-dot G">G</span> Google Form
       </a>
     </div>
     <div class="footer-meta">
-      <span>© 종합 정보사이트 · made by 닉스
-        <br>계산기 개발 · made by 리레프
+      <span>© Dragon Village 1 Guide · made by Nyx
+        <br>Calculator development · made by Lirelef
       </span>
-      <span>문의 후 답변까지 1~2일 소요될 수 있습니다.</span>
+      <span>Replies may take 1–2 days.</span>
     </div>
   </footer>
 
   <!-- 모바일 하단 액션 바 -->
   <nav class="mobile-bar mobile-only">
     <button class="active" onclick="window.scrollTo({top:0, behavior:'smooth'})">
-      <span class="glyph">⌂</span><span>홈</span>
+      <span class="glyph">⌂</span><span>Home</span>
     </button>
     <button onclick="openPatchModal()">
-      <span class="glyph">📋</span><span>패치노트</span>
+      <span class="glyph">📋</span><span>Patch notes</span>
     </button>
     <button onclick="location.href='../guild-home.html'">
-      <span class="glyph">🛡️</span><span>길드</span>
+      <span class="glyph">🛡️</span><span>Guild</span>
     </button>
     <button onclick="location.href='./my.html'">
-      <span class="glyph">👤</span><span>내 스펙</span>
+      <span class="glyph">👤</span><span>My Spec</span>
     </button>
   </nav>
 
@@ -569,16 +571,16 @@
 <div class="patch-modal-overlay" id="patch-modal-overlay" onclick="closePatchModal(event)">
   <div class="patch-modal" onclick="event.stopPropagation()">
     <button class="patch-modal-close" onclick="closePatchModal()">✕</button>
-    <div class="patch-modal-title">📋 패치노트</div>
+    <div class="patch-modal-title">📋 Patch notes</div>
     <div id="patch-modal-body">
-<div class="patch-item-modal"><div class="patch-item-head"><span class="patch-ver">v0.1.7</span><span class="patch-date">2026-09-21</span></div><ul class="patch-item-content"><li>신규 드래곤 추가: 넵튠, 아우로스, 노아</li><li>도감 설명·티어표 반영</li></ul></div>
-<div class="patch-item-modal"><div class="patch-item-head"><span class="patch-ver">v0.1.6</span><span class="patch-date">2026-09-17</span></div><ul class="patch-item-content"><li>챔피언대전 수동 계산기 추가 (KR/EN)</li><li>내 스펙 프리셋 기능 추가 (최대 10개)</li><li>계산기 드래곤 자동저장 / 스펙 새로고침 / 기기 간 셋팅 충돌 시 선택 기능</li><li>복구 코드로 아이디·비밀번호 찾기 추가 (기존 친구코드 방식도 유지)</li></ul></div>
-<div class="patch-item-modal"><div class="patch-item-head"><span class="patch-ver">v0.1.5</span><span class="patch-date">2026-09-09</span></div><ul class="patch-item-content"><li>챔대 / 루키 랭킹 페이지 추가 (KR/EN)</li><li>등급용(SSS) 순위 갱신</li></ul></div>
-<div class="patch-item-modal"><div class="patch-item-head"><span class="patch-ver">v0.1.4</span><span class="patch-date">2026-08-21</span></div><ul class="patch-item-content"><li>신규 드래곤 추가: 오파님, 크로마 오파님, 카스티그</li><li>도감·티어표·계산기·오라 미리보기에 신규 드래곤 반영 (KR/EN)</li></ul></div>
-<div class="patch-item-modal"><div class="patch-item-head"><span class="patch-ver">v0.1.3</span><span class="patch-date">2026-07-19</span></div><ul class="patch-item-content"><li>계산기 젬 데이터 업데이트 (KR/EN)</li><li>오라 미리보기 추가 (Spine 기반 강림 애니메이션 + 동굴 스킨 배경)</li><li>영어 버전 오라 미리보기 추가</li></ul></div>
-<div class="patch-item-modal"><div class="patch-item-head"><span class="patch-ver">v0.1.2</span><span class="patch-date">2026-07-08</span></div><ul class="patch-item-content"><li>도감 스탯 필터 추가 (체력/공격/방어·성장폭 이상/이하/정확값)</li><li>레이드 정보에 크툴루 보스 추가 (패턴·파훼법·추천 조합)</li><li>관리자 메뉴 추가 (길드·계정·회원 관리)</li><li>계산기 버그 수정: 드래곤 셋팅이 날아가던 문제, 저장 데이터 복구·백업 처리</li></ul></div>
-<div class="patch-item-modal"><div class="patch-item-head"><span class="patch-ver">v0.1.1</span><span class="patch-date">2026-06-30</span></div><ul class="patch-item-content"><li>🌐 영어 버전 오픈: 도감, 티어표, 등급용 순위, 레이드, 계산기(자동/비밸/PvP), 내 스펙, 로그인·회원가입</li><li>드래곤 기본 스탯 데이터 추가 (stat.js)</li><li>도감 개선: 드래곤별 스탯 표시</li><li>계산기 기본 스탯 오류 수정</li></ul></div>
-<div class="patch-item-modal"><div class="patch-item-head"><span class="patch-ver">v0.1.0</span><span class="patch-date">2026-06-18</span></div><ul class="patch-item-content"><li>패키지 복각 주기 페이지 추가</li><li>드래곤 도감에 드래곤 설명(세계관 텍스트) 추가</li><li>도감 드래곤 프로필 이미지 전체 추가 (6/9~6/28)</li><li>티어표 / 등급용 순위 / 레이드 / 주간 버프 데이터 갱신</li></ul></div>
+<div class="patch-item-modal"><div class="patch-item-head"><span class="patch-ver">v0.1.7</span><span class="patch-date">2026-09-21</span></div><ul class="patch-item-content"><li>New dragons: Neptune, Auros and Noah</li><li>Dex descriptions and tier list updated</li></ul></div>
+<div class="patch-item-modal"><div class="patch-item-head"><span class="patch-ver">v0.1.6</span><span class="patch-date">2026-09-17</span></div><ul class="patch-item-content"><li>Champion manual calculator added (KR/EN)</li><li>My Spec presets added (up to 10)</li><li>Automatic dragon saving, spec refresh and cross-device setup conflict resolution</li><li>Account recovery by recovery code added; friend-code recovery remains available</li></ul></div>
+<div class="patch-item-modal"><div class="patch-item-head"><span class="patch-ver">v0.1.5</span><span class="patch-date">2026-09-09</span></div><ul class="patch-item-content"><li>Champion / Rookie rankings added (KR/EN)</li><li>SSS rankings updated</li></ul></div>
+<div class="patch-item-modal"><div class="patch-item-head"><span class="patch-ver">v0.1.4</span><span class="patch-date">2026-08-21</span></div><ul class="patch-item-content"><li>New dragons: Ophanim, Chroma Ophanim and Castig</li><li>New dragons added to dex, tiers, calculators and aura preview (KR/EN)</li></ul></div>
+<div class="patch-item-modal"><div class="patch-item-head"><span class="patch-ver">v0.1.3</span><span class="patch-date">2026-07-19</span></div><ul class="patch-item-content"><li>Calculator gem data updated (KR/EN)</li><li>Aura preview added (Spine descended animations and cave backgrounds)</li><li>English aura preview added</li></ul></div>
+<div class="patch-item-modal"><div class="patch-item-head"><span class="patch-ver">v0.1.2</span><span class="patch-date">2026-07-08</span></div><ul class="patch-item-content"><li>Dex stat filters added (HP/ATK/DEF and growth thresholds)</li><li>Cthulhu boss added to Raid Info (patterns, counters and recommended teams)</li><li>Admin menus added (guilds, accounts and members)</li><li>Fixed lost dragon setups and improved saved-data recovery and backups</li></ul></div>
+<div class="patch-item-modal"><div class="patch-item-head"><span class="patch-ver">v0.1.1</span><span class="patch-date">2026-06-30</span></div><ul class="patch-item-content"><li>🌐 English site launched: dex, tiers, SSS rankings, raids, calculators, My Spec and accounts</li><li>Dragon base stats added (stat.js)</li><li>Dex improved with individual dragon stats</li><li>Calculator base stats corrected</li></ul></div>
+<div class="patch-item-modal"><div class="patch-item-head"><span class="patch-ver">v0.1.0</span><span class="patch-date">2026-06-18</span></div><ul class="patch-item-content"><li>Package return schedule page added</li><li>Dragon lore descriptions added to the dex</li><li>All dex profile images added (June 9–28)</li><li>Tier, SSS ranking, raid and weekly buff data updated</li></ul></div>
 
       <div class="patch-item-modal">
         <div class="patch-item-head">
@@ -587,13 +589,13 @@
           <span class="patch-badge badge-new">NEW</span>
         </div>
         <ul class="patch-item-content">
-          <ul><li>크툴루, 크크툴 두마리의 이미지가 업데이트</li></li></ul>
-          <ul><li>뉴비버전 계산기 너프 스텟 반영되게 수정</li></li></ul>
-          <li style="color:#666">오류 발생시 문의 부탁드립니다.</li>
+          <ul><li>Cthulhu and its variant images updated</li></li></ul>
+          <ul><li>Beginner calculator updated to reflect reduced stats</li></li></ul>
+          <li style="color:#666">Please contact us if you encounter an error.</li>
         </ul>
       </div>
     </div>
-    <a href="./patchnote.html" class="patch-more-btn">전체 패치노트 보기 →</a>
+    <a href="./patchnote.html" class="patch-more-btn">View all patch notes →</a>
   </div>
 </div>
 
@@ -706,7 +708,7 @@
           </div>
           <div class="admin-member-meta">@${u.username} · ${u.friend_code||'—'}</div>
         </div>
-        ${!u.is_admin?`<button class="admin-ban-btn ${u.is_banned?'ban-off':'ban-on'}" onclick="toggleBan(${u.id},${!!u.is_banned},'${u.nickname||u.username}')">${u.is_banned?'정지 해제':'계정 정지'}</button>`:'<span style="font-size:11px;color:var(--text4)">나</span>'}
+        ${!u.is_admin?`<button class="admin-ban-btn ${u.is_banned?'ban-off':'ban-on'}" onclick="toggleBan(${u.id},${!!u.is_banned},'${u.nickname||u.username}')">${u.is_banned?'Unsuspend':'Suspend account'}</button>`:'<span style="font-size:11px;color:var(--text4)">나</span>'}
       </div>`).join('');
     // 페이지네이션
     if(pages<=1){pg.innerHTML='';return;}
@@ -716,13 +718,13 @@
   }
 
   async function toggleBan(id,isBanned,name){
-    if(!confirm(`${name}님을 ${isBanned?'정지 해제':'계정 정지'}할까요?`))return;
+    if(!confirm(`${isBanned?'Unsuspend':'Suspend account'}: ${name}?`))return;
     try{
       await supabase('PATCH','users',{is_banned:!isBanned},`?id=eq.${id}`);
       const u=_adminMembers.find(m=>m.id===id);
       if(u)u.is_banned=!isBanned;
       renderAdminMembers();
-    }catch(e){alert('오류: '+(e.message||e));}
+    }catch(e){alert('Error: '+(e.message||e));}
   }
 
   // 초기화 실행

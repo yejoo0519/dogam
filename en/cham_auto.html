@@ -2,9 +2,10 @@
 <html data-cham-auto-page lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
-<script src="../en-messages.js"></script>
-<script src="../en-locale.js"></script>
-<link rel="stylesheet" href="../en-locale.css">
+<script src="../en-messages.js?v=20260923b"></script>
+<script src="../en-extra-messages.js?v=20260923b"></script>
+<script src="../en-locale.js?v=20260923b"></script>
+<link rel="stylesheet" href="../en-locale.css?v=20260923b">
 <link rel="stylesheet" href="../cham-access.css">
 <script src="../sb_config.js"></script>
 <script src="../cham-access.js"></script>
@@ -29,7 +30,7 @@ if (!globalThis.DV1_DRAGON_VIEWS) {
 <link id="theme-css" rel="stylesheet" href="../theme-dark.css">
 <link rel="stylesheet" href="../ui.css">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="../theme.js"></script>
+<script src="./theme.js"></script>
 <style>
 
 .hd-back{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;border:1px solid var(--bd);background:var(--sf2);color:var(--text2);text-decoration:none;font-size:16px;flex-shrink:0}
@@ -811,8 +812,8 @@ function calcPendPct(pend){
 }
 function chamStat(base,gem,pot,accP,spPct,spPlus,pendP,bonus,coll,buffP){
   const s1=INT((base+gem+pot)*(1+accP));
-  const s2=s1*(1+SPIRIT_W*spPct)+(SPIRIT_W*spPlus)*(1+SPIRIT_W*spPct);
-  const s3=INT(s2*(1+pendP)+bonus+coll);
+  const s2=INT(s1*(1+SPIRIT_W*spPct)+(SPIRIT_W*spPlus)*(1+SPIRIT_W*spPct));
+  const s3=INT(s2*(1+pendP))+bonus+coll;
   return INT(s3*(1+buffP));
 }
 function calcOption(cand,acc,pend,gemHAD){

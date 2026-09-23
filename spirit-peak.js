@@ -1,7 +1,8 @@
 (function(w,d){
  'use strict';
  const D=PeakData,$=id=>d.getElementById(id),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
- const icon=(src,label)=>`<img class="peak-item-image" src="${esc(src)}" alt="${esc(label)}" loading="lazy" onerror="this.onerror=null;this.src='./assets/peak-equipment.svg'">`;
+ const assetBase=new URL('.',document.currentScript.src).href;
+ const icon=(src,label)=>`<img class="peak-item-image" src="${esc(src)}" alt="${esc(label)}" loading="lazy" onerror="this.onerror=null;this.src='${assetBase}assets/peak-equipment.svg'">`;
  const gemIcon=s=>icon('https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/'+({hp:15,atk:16,def:17}[s])+'.png',D.SK[s]+' 젬');
  const freshSpirit=()=>({opts:Array.from({length:4},(_,i)=>({stat:'',type:i===3?'+':'%'})),bonus:''});
  const state={spirit:freshSpirit(),result:null,sort:'bv',type:'all',busy:false};

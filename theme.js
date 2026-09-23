@@ -7,10 +7,11 @@
 })();
 
 // 테마 관리
+const THEME_ASSET_BASE=new URL('.',document.currentScript.src).href;
 const THEMES = {
-  dark:  { name: '🌙 다크',   file: './theme-dark.css' },
-  light: { name: '☀️ 라이트', file: './theme-light.css' },
-  beige: { name: '🍂 베이지', file: './theme-beige.css' },
+  dark:  { name: '🌙 다크',   file: THEME_ASSET_BASE+'theme-dark.css' },
+  light: { name: '☀️ 라이트', file: THEME_ASSET_BASE+'theme-light.css' },
+  beige: { name: '🍂 베이지', file: THEME_ASSET_BASE+'theme-beige.css' },
   custom:{ name: '🎨 커스텀', file: null }
 };
 
@@ -18,7 +19,7 @@ function applyTheme(id, customVars) {
   const link = document.getElementById('theme-css');
   if(!link) return;
   if(id === 'custom' && customVars) {
-    link.href = './theme-dark.css'; // 베이스
+    link.href = THEME_ASSET_BASE+'theme-dark.css'; // 베이스
     let style = document.getElementById('custom-theme-style');
     if(!style) { style = document.createElement('style'); style.id = 'custom-theme-style'; document.head.appendChild(style); }
     style.textContent = `:root {
@@ -39,7 +40,7 @@ function applyTheme(id, customVars) {
   } else {
     const style = document.getElementById('custom-theme-style');
     if(style) style.textContent = '';
-    link.href = THEMES[id]?.file || './theme-dark.css';
+    link.href = THEMES[id]?.file || THEME_ASSET_BASE+'theme-dark.css';
   }
 }
 

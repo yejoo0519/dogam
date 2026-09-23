@@ -706,7 +706,7 @@ async function sendToGuild(){
 if (!globalThis.DV1_GUILD_READY) throw new Error("드래곤 데이터 로드 실패: 초기화 중단");
 
 document.getElementById('guild-mode').value=GUILD_MODE;
-UI.shell({page:'pvp',title:'길드전 · '+(GUILD_MODE==='noob'?'뉴비':'오리지널'),sub:'비벨 최적화 · 3vs3',foot:'<div style="font-size:11.5px;color:var(--text4)">Made by 리레프</div>',tasks:{
+UI.shell({page:'pvp',title:'길드전 · '+(GUILD_MODE==='noob'?'뉴비':'오리지널'),sub:'비벨 최적화 · 3vs3',foot:'<div style="font-size:11.5px;color:var(--text4)">noob</div>',tasks:{
   on:'spec', items:[['spec','내 스펙'],['dragon','내 용 정보'],['sim','3vs3 세팅']],
   go:function(k){ if(typeof switchTab==='function') switchTab(k); }
 }});

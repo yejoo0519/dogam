@@ -219,6 +219,11 @@ input::placeholder{color:var(--dimmer)}
  .req-card{flex-direction:column;align-items:flex-start}
  .member-card{flex-wrap:wrap}
 }
+/* Keep guild tabs above the shared mobile navigation. */
+@media(max-width:760px){
+ body.u.has-tabbar .mobile-bar{bottom:calc(var(--u-tabbar,66px) + env(safe-area-inset-bottom,0px));padding-bottom:6px}
+ body.u.has-tabbar{padding-bottom:calc(var(--u-tabbar,66px) + env(safe-area-inset-bottom,0px) + 80px)}
+}
 </style>
 </head>
 <body class="u">

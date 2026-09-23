@@ -1,6 +1,13 @@
 /* 정령 시뮬레이터: 저장 계층과 분리된 후보 탐색 및 결과 화면. */
 (function(){
   'use strict';
+  function resultSpirit(sp){
+    const names={hp:'체력',atk:'공격',def:'방어'},colors={hp:'#fbbf24',atk:'#f87171',def:'#60a5fa'};
+    const rows=Array.from({length:4},(_,i)=>{const o=sp?.opts?.[i];const valid=o&&names[o.stat]&&['%','+'].includes(o.type);return '<span style="color:'+(valid?colors[o.stat]:'var(--dim)')+'">'+(i+1)+'옵 · '+(valid?names[o.stat]+' '+fmtSpVal(i+1,o.stat,o.type):'없음')+'</span>';});
+    rows.push('<span style="color:'+(colors[sp?.bonus]||'var(--dim)')+'">부가옵 · '+(names[sp?.bonus]?names[sp.bonus]+' +'+SP_BONUS[sp.bonus]:'없음')+'</span>');
+    return '<div class="sp-result-spirit" style="grid-column:1/-1"><small>사용 정령</small><div style="display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:6px">'+rows.join('')+'</div></div>';
+  }
+
   if(!globalThis.DV1_DRAGON_VIEWS)return;
   const ui={priority:'bv',selected:new Set(),stage:2,results:null,type:'all',busy:false};
   const byId=id=>document.getElementById(id);
@@ -51,7 +58,7 @@
       <div class="sp-metrics"><div class="${ui.priority==='bv'?'is-primary':''}"><small>비밸 · 백만</small><b>${(r.bv/1e6).toFixed(1)}</b></div><div class="${ui.priority==='tar'?'is-primary':''}"><small>TAR</small><b>${r.tar===null?'—':r.tar.toFixed(1)}</b></div></div></header>
       <div class="sp-card-body"><div class="sp-equipment">${acc?.img?`<img src="${escape(acc.img)}" alt="">`:''}<div><small>장신구 / 인챈트</small><strong>${escape(r.accN)}</strong>${fmtAccEnc(r.enc)}</div></div>
       <div><small>젬 배분</small><div class="gem-tags">${fmtGem(r.alloc)}</div></div><div><small>펜던트</small>${fmtPend(r.pend)}</div>
-      <div class="sp-final-stats">${[['체력',r.fH,'hp'],['공격',r.fA,'atk'],['방어',r.fD,'def']].map(([label,n,k])=>`<div class="stat-${k}"><small>${label}</small><strong>${value(n)}</strong></div>`).join('')}</div></div>
+      ${resultSpirit(ui.results.spirit)}<div class="sp-final-stats">${[['체력',r.fH,'hp'],['공격',r.fA,'atk'],['방어',r.fD,'def']].map(([label,n,k])=>`<div class="stat-${k}"><small>${label}</small><strong>${value(n)}</strong></div>`).join('')}</div></div>
       <details class="sp-breakdown"><summary>버프 적용 전후</summary><div>${[['체력',r.fH,r.add.h],['공격',r.fA,r.add.a],['방어',r.fD,r.add.d]].map(([label,n,add])=>`<span>${label} ${value(n-add)} <b>+${value(add)}</b> → ${value(n)}</span>`).join('')}</div></details>
     </article>`;
   }
@@ -77,15 +84,14 @@
       if(!a)return false;const k=a.n+'|'+(encMode==='fixed'?a.enc:'any');if(seen.has(k))return false;seen.add(k);return true;
     });
     if(!accs.length){status.textContent='내 스펙에서 장신구를 1개 이상 등록해 주세요.';return;}
-    ui.busy=true;const button=byId('sim-btn');CalcProgress.start();let completed=false;
-    try{
+    ui.busy=true;const button=byId('sim-btn');button.disabled=true;button.textContent='세팅 비교 중…';
     status.textContent='보유 장비와 선택한 버프를 비교하고 있습니다.';
     // Snapshot all inputs before yielding. No storage/network writes occur here.
-    const grade=simGrade,sp=procSpirit(),coll={...S.coll};
+    const grade=simGrade,sp=procSpirit(),coll={...S.coll},spiritSnapshot=JSON.parse(JSON.stringify(S.spirit));
     const pool=buildPool(),allocs=genAllocs(pool,5).map(a=>({alloc:a.map((k,i)=>({k,g:pool[i]})).filter(x=>x.k>0),h:a.reduce((s,k,i)=>s+k*pool[i].h,0),a:a.reduce((s,k,i)=>s+k*pool[i].a,0),d:a.reduce((s,k,i)=>s+k*pool[i].d,0)}));
-    const pends=JSON.parse(JSON.stringify(getPends(false)));
-    const rows=[];let tested=0,order=0,lastYield=performance.now();
-    const total=DTYPES.length*buffs.length*accs.length*(encMode==='infinite'?3:1)*pends.length*allocs.length;
+    const pends=JSON.parse(JSON.stringify(getPends(byId('exc-sun-pend').checked)));
+    const rows=[];let tested=0,order=0;
+    try{
       await new Promise(r=>setTimeout(r,0));
       for(const dt of DTYPES){
         const base=BASE[grade][dt];
@@ -100,16 +106,16 @@
               const bv=fH*fA*fD;tested++;order++;
               // Within a fixed type/buff, TAR is monotonic in BV. Keeping 10 per group preserves both global top tens.
               if(group.length<10||bv>group[group.length-1].bv)topInsert(group,{dt,buf,accN:acc.n,enc,pend,alloc:a.alloc,fH,fA,fD,bv,add,order,tar:typeof tarPercent==='function'?tarPercent(bv,dt,{hp:buf.h,atk:buf.a,def:buf.d}):null});
-              if((tested&1023)===0&&performance.now()-lastYield>=100){CalcProgress.update(Math.min(99,100*tested/Math.max(1,total)),'장비 조합 계산');await CalcProgress.yield();lastYield=performance.now();}
+              if(tested%25000===0)await new Promise(r=>setTimeout(r,0));
             }
           }
           rows.push(...group);
         }
       }
-      ui.results={grade,labels:buffs.map(b=>b.label),rows,tested};ui.type='all';completed=true;
+      ui.results={grade,spirit:spiritSnapshot,labels:buffs.map(b=>b.label),rows,tested};ui.type='all';
       byId('res-sec').style.display='';byId('res-sec-empty').style.display='none';render();status.textContent='계산 완료. 우선순위와 타입을 바꿔 결과를 비교해 보세요.';
     }catch(e){status.textContent='계산하지 못했습니다: '+e.message;console.error(e);}
-    finally{ui.busy=false;CalcProgress.finish(completed);}
+    finally{ui.busy=false;button.disabled=false;button.textContent='내 세팅 비교하기';}
   }
   window.runSim=calculate;
   const oldGrade=setGrade,oldBuf=setBuf;
@@ -119,7 +125,7 @@
   document.addEventListener('DOMContentLoaded',()=>{
     showBuffs(true);refreshPriority();byId('sim-btn').disabled=false;byId('spirit-status').textContent='버프와 추천 기준을 선택한 뒤 내 세팅을 비교해 보세요.';
     document.querySelectorAll('[data-spirit-priority]').forEach(b=>b.onclick=()=>priority(b.dataset.spiritPriority));
-    document.querySelectorAll('input[name="enc-mode"]').forEach(el=>el.addEventListener('change',markDirty));
+    document.querySelectorAll('input[name="enc-mode"],#exc-sun-pend').forEach(el=>el.addEventListener('change',markDirty));
     byId('spirit-buff-mode').onchange=()=>{showBuffs();markDirty();};
     document.querySelectorAll('#spirit-manual-buffs select').forEach(el=>el.onchange=markDirty);
   });

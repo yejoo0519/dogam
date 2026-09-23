@@ -1,0 +1,5 @@
+/* Fail closed: links stay hidden until the database confirms permission. */
+html:not([data-cham-auto-allowed]) a[href*="cham_auto.html"] { display: none !important; }
+html[data-cham-auto-page]:not([data-cham-auto-allowed]) body > :not(#cham-access-message) { display: none !important; }
+#cham-access-message { max-width: 520px; margin: 12vh auto; padding: 32px; font: 16px/1.7 sans-serif; color: #e5e7eb; background: #202633; border-radius: 12px; }
+#cham-access-message a { color: #a5c8ff; margin-right: 20px; }

@@ -1,0 +1,33 @@
+<!DOCTYPE html><html lang="ko" data-theme="dark"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>길드</title><link id="theme-css" rel="stylesheet" href="./theme-dark.css"><link rel="stylesheet" href="./ui.css"><script src="./theme.js"></script><style>.guild-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:20px 0}.guild-links a{display:block;padding:24px;border:1px solid var(--bd);border-radius:12px;background:var(--sf);color:var(--text);text-decoration:none}.guild-links a:hover{border-color:var(--gold)}.calc-badge{font-size:12px;color:var(--gold);margin-bottom:10px}.calc-card-title{font-size:20px;font-weight:700;margin-bottom:10px}.calc-card-desc{font-size:13px;color:var(--dim);line-height:1.7}@media(max-width:640px){.guild-links{grid-template-columns:1fr}}</style></head><body class="u"><div class="u-app"><main class="u-wrap"><h1>길드</h1> <!-- 길드 바로가기 -->
+ <div style="margin-bottom:20px">
+ <div style="font-size:12.5px;font-weight:600;color:var(--dim);margin-bottom:10px">길드</div>
+ <div class="guild-links">
+ <a href="./gd.html" class="calc-card">
+ <div class="calc-badge badge-guild">길드원</div>
+ <div class="calc-card-title">길드 연동</div>
+ <div class="calc-card-desc">코드 입력 · 가입 요청 · 이번 주 셋팅 확인</div>
+ </a>
+ <a href="./gdgm.html" class="calc-card">
+ <div class="calc-badge badge-purple">관리진</div>
+ <div class="calc-card-title">길드 관리</div>
+ <div class="calc-card-desc">가입 수락 · 순위 확인 · 길드전 기록</div>
+ </a>
+ </div>
+ </div>
+
+</main></div><script>
+/* ── data-theme 동기화 ── */
+(function(){
+ var link=document.getElementById('theme-css');
+ if(!link)return;
+ var sync=function(){
+ var c=document.getElementById('custom-theme-style');
+ if(c&&c.textContent&&c.textContent.length>0){document.documentElement.removeAttribute('data-theme');return;}
+ var m=String(link.href||'').match(/theme-(dark|light|beige)\.css/);
+ document.documentElement.setAttribute('data-theme',m?m[1]:'dark');
+ };
+ sync();
+ new MutationObserver(sync).observe(link,{attributes:true,attributeFilter:['href']});
+ new MutationObserver(sync).observe(document.head,{childList:true,subtree:true,characterData:true});
+})();
+</script><script src="./ui.js"></script><script>UI.shell({page:'guild-home',title:'길드',sub:'길드 연동 · 관리'});</script></body></html>

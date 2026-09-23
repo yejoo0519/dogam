@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>정령 고점 계산기</title>
+<link id="theme-css" rel="stylesheet" href="./theme-dark.css"><link rel="stylesheet" href="./ui.css"><link rel="stylesheet" href="./spirit-input.css"><link rel="stylesheet" href="./spirit-peak.css">
+<script src="./theme.js"></script><script src="./spirit-input.js"></script><script src="./peak-data.js"></script><script src="./tar-db.js"></script><script src="./peak-engine.js"></script>
+</head><body class="u"><div class="u-app"><main class="u-wrap full peak-page">
+<header class="peak-hero"><span class="peak-kicker">SPIRIT PEAK</span><h1>정령 고점 계산기</h1><p>내 정령이 도달할 수 있는 가장 높은 세팅을 찾아보세요.</p></header>
+<div class="peak-notice"><strong>내 스펙과 분리된 계산기입니다.</strong><span>입력한 정령으로 보유 장비 제한 없이 이론상 고점을 계산합니다. ‘내 스펙’을 읽거나 변경하지 않으며, 정령 입력값은 새로고침하면 초기화됩니다.</span></div>
+<section class="peak-panel"><div class="peak-section-head"><h2>01 <span>정령 옵션</span></h2><button onclick="Peak.resetSpirit()">정령 초기화</button></div><div id="peak-presets" class="peak-presets"></div><div id="peak-spirit"></div></section>
+<div class="peak-workspace"><aside>
+<section class="peak-panel"><h2>02 <span>계산 조건</span></h2><label class="peak-field">드래곤 등급<select id="peak-grade" onchange="Peak.dirty()"><option>9.0</option><option>8.0</option><option>7.0</option></select></label><label class="peak-field">버프 단계<select id="peak-buff" onchange="Peak.dirty()"><option value="2">2버프 · 배분 최적화</option><option value="1">1버프 · 배분 최적화</option><option value="0">버프 없음</option></select></label>
+<p class="peak-help">정령 시뮬레이터와 같은 강림 타입별 기본 스탯·계산식을 사용합니다. 풀컬렉션(240/60/60), 물약(24/6/6)을 포함합니다. 개별 드래곤의 전투 스킬은 비교하지 않습니다.</p>
+<div id="peak-theory-info" class="peak-assumptions"><strong>이론상 고점의 장비 조건</strong><ul><li>44단계 체·공·방 젬, 5슬롯 최적 배분</li><li>사이트에 등록된 전체 장신구 비교 (최대 20레벨)</li><li>체·공·방 인첸트 21% 최적화</li><li>태양 펜던트 3옵 각 6%, 스탯 배분 최적화</li></ul></div>
+<button id="sim-btn" class="peak-run" onclick="Peak.run()">계산 실행</button><p id="peak-status" role="status" aria-live="polite">정령 옵션을 입력한 뒤 계산을 실행해 주세요.</p></section>
+</aside><div class="peak-main">
+<section id="peak-results" class="peak-panel"><div class="peak-section-head"><h2>결과 <span>최고점 세팅</span></h2><div class="peak-sort"><button data-sort="bv" aria-pressed="true" onclick="Peak.sort('bv')">비밸 우선</button><button data-sort="tar" aria-pressed="false" onclick="Peak.sort('tar')">TAR 우선</button></div></div><p class="peak-help">TAR은 같은 타입·버프 조건의 9.0 기준표 대비 점수입니다. 이론상 고점의 절대 백분율은 아니며 100을 넘을 수 있습니다.</p><p id="peak-result-caption"></p><div id="peak-type-filter"></div><div id="peak-result-list"><div class="peak-empty">정령과 조건을 입력하면<br>타입별 고점과 최적 장비 조합을 보여드립니다.</div></div></section>
+</div></div>
+</main></div><script src="./spirit-peak.js"></script><script src="./ui.js"></script><script>UI.shell({page:'spirit-peak',title:'정령 고점 계산기',sub:'이론상 고점'});</script></body></html>

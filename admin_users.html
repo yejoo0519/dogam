@@ -2,25 +2,21 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
+<link rel="stylesheet" href="./cham-access.css">
+<script src="./sb_config.js"></script>
+<script src="./cham-access.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>회원 관리 - 어드민</title>
 <link id="theme-css" rel="stylesheet" href="./theme-dark.css">
+<link rel="stylesheet" href="./ui.css">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="./theme.js"></script>
-<script src="./sb_config.js"></script>
-<style>
-[data-theme="dark"]{--bg:#0e1116;--bg2:#161a22;--bg3:#1c212c;--border:#23293a;--border2:#1b1f2a;--border3:#2d3447;--text:#eaecf2;--text2:#b3b9c7;--text3:#7d8597;--text4:#565d6e;--accent:#7aa2f7;--accent-bg:rgba(122,162,247,0.12);--accent-border:rgba(122,162,247,0.30);}
-[data-theme="light"]{--bg:#f7f7f8;--bg2:#ffffff;--bg3:#f1f2f4;--border:#e6e7ea;--border2:#eeeff2;--border3:#d4d6db;--text:#15171c;--text2:#4a4d57;--text3:#71757f;--text4:#9aa0aa;--accent:#2f6fed;--accent-bg:rgba(47,111,237,0.10);--accent-border:rgba(47,111,237,0.32);}
-[data-theme="beige"]{--bg:#f3ecdd;--bg2:#faf3e2;--bg3:#ebe0c7;--border:#d8caa8;--border2:#e1d4b3;--border3:#c0ad84;--text:#2a2316;--text2:#5a4e34;--text3:#837553;--text4:#a99971;--accent:#b06a1e;--accent-bg:rgba(176,106,30,0.10);--accent-border:rgba(176,106,30,0.32);}
-:root{--sf:var(--bg2);--sf2:var(--bg3);--bd:var(--border);--gold:var(--accent);--dim:var(--text3);--dimmer:var(--text4);--red:#f87171;--green:#4ade80;}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;padding-bottom:40px}
-
-/* ── 헤더 ── */
-.hd{display:flex;align-items:center;gap:14px;padding:12px 20px;background:var(--sf);border-bottom:2px solid var(--gold);position:sticky;top:0;z-index:100}
+<style>/* ── 헤더 ── */
+.hd{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-bottom:16px}
 .hd-back{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;border:1px solid var(--bd);background:var(--sf2);color:var(--dim);text-decoration:none;font-size:16px;flex-shrink:0;transition:all .15s}
 .hd-back:hover{border-color:var(--gold);color:var(--text)}
-.hd-t{font-size:15px;font-weight:800;color:var(--gold)}
-.hd-s{font-size:11px;color:var(--dim);margin-top:2px}
+
+
 .hd-right{margin-left:auto;font-size:12px;color:var(--dim)}
 
 /* ── 본문 ── */
@@ -70,185 +66,200 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
 @media(max-width:480px){.ti{padding:14px 12px}.stat-bar{gap:8px}.member-card{padding:10px 12px}}
 </style>
 </head>
-<body>
+<body class="u">
+<div class="u-app">
+<main class="u-wrap full">
 
 <div class="hd">
-  <a href="./index.html" class="hd-back">←</a>
-  <div>
-    <div class="hd-t">👥 회원 관리</div>
-    <div class="hd-s">전체 회원 목록 · 계정 정지 · 검색</div>
-  </div>
-  <div class="hd-right" id="hd-user"></div>
+
+ <div class="hd-right" id="hd-user"></div>
 </div>
 
 <div class="ti">
 
-  <!-- 접근 불가 -->
-  <div id="v-noaccess" style="display:none;text-align:center;padding:60px 20px">
-    <div style="font-size:48px;margin-bottom:16px">🔒</div>
-    <div style="font-size:15px;font-weight:800;margin-bottom:8px">관리자 전용 페이지예요</div>
-    <div style="font-size:13px;color:var(--dim);margin-bottom:20px">어드민 계정으로 로그인해주세요.</div>
-    <a href="./index.html" style="color:var(--gold);text-decoration:none;font-size:13px">← 메인으로</a>
-  </div>
+ <!-- 접근 불가 -->
+ <div id="v-noaccess" style="display:none;text-align:center;padding:60px 20px">
+ <div style="font-size:48px;margin-bottom:16px"></div>
+ <div style="font-size:15px;font-weight:800;margin-bottom:8px">관리자 전용 페이지예요</div>
+ <div style="font-size:13px;color:var(--dim);margin-bottom:20px">어드민 계정으로 로그인해주세요.</div>
+ <a href="./index.html" style="color:var(--gold);text-decoration:none;font-size:13px">← 메인으로</a>
+ </div>
 
-  <!-- 메인 컨텐츠 -->
-  <div id="v-main" style="display:none">
+ <!-- 메인 컨텐츠 -->
+ <div id="v-main" style="display:none">
 
-    <!-- 통계 -->
-    <div class="stat-bar">
-      <div class="stat-pill">전체 회원<span class="num" id="st-total">-</span></div>
-      <div class="stat-pill">정지 계정<span class="num" id="st-banned" style="color:var(--red)">-</span></div>
-      <div class="stat-pill">어드민<span class="num" id="st-admin" style="color:#a78bfa">-</span></div>
-    </div>
+ <!-- 통계 -->
+ <div class="stat-bar">
+ <div class="stat-pill">전체 회원<span class="num" id="st-total">-</span></div>
+ <div class="stat-pill">정지 계정<span class="num" id="st-banned" style="color:var(--red)">-</span></div>
+ <div class="stat-pill">어드민<span class="num" id="st-admin" style="color:#a78bfa">-</span></div>
+ </div>
 
-    <!-- 툴바 -->
-    <div class="toolbar">
-      <input class="search-inp" id="search-inp" type="text" placeholder="닉네임 또는 아이디 검색..." oninput="onSearch()">
-      <button class="filter-btn active" id="f-all" onclick="setFilter('all',this)">전체</button>
-      <button class="filter-btn" id="f-banned" onclick="setFilter('banned',this)">정지됨</button>
-      <button class="filter-btn" id="f-admin" onclick="setFilter('admin',this)">어드민</button>
-      <button class="btn-reload" onclick="loadMembers()">🔄</button>
-    </div>
+ <!-- 툴바 -->
+ <div class="toolbar">
+ <input class="search-inp" id="search-inp" type="text" placeholder="닉네임 또는 아이디 검색..." oninput="onSearch()">
+ <button class="filter-btn active" id="f-all" onclick="setFilter('all',this)">전체</button>
+ <button class="filter-btn" id="f-banned" onclick="setFilter('banned',this)">정지됨</button>
+ <button class="filter-btn" id="f-admin" onclick="setFilter('admin',this)">어드민</button>
+ <button class="btn-reload" onclick="loadMembers()"></button>
+ </div>
 
-    <!-- 목록 -->
-    <div class="member-list" id="member-list">
-      <div class="empty">로딩 중...</div>
-    </div>
+ <!-- 목록 -->
+ <div class="member-list" id="member-list">
+ <div class="empty">로딩 중...</div>
+ </div>
 
-    <!-- 페이지네이션 -->
-    <div class="pg" id="pg"></div>
+ <!-- 페이지네이션 -->
+ <div class="pg" id="pg"></div>
 
-  </div>
+ </div>
 </div>
 
-<script>
-'use strict';
+<script>'use strict';
 const PAGE=20;
 let allMembers=[], filtered=[], curPage=0, curFilter='all', curQ='';
 
 // ── 진입 ─────────────────────────────────────────────────────
 (async function(){
-  const user=getUser();
-  if(!user||!user.is_admin){
-    document.getElementById('v-noaccess').style.display='block'; return;
-  }
-  document.getElementById('hd-user').textContent='👤 '+( user.nickname||user.username);
-  document.getElementById('v-main').style.display='block';
-  await loadMembers();
+ const user=getUser();
+ if(!user||!await ChamAccess.isAdmin()){
+ document.getElementById('v-noaccess').style.display='block'; return;
+ }
+ document.getElementById('hd-user').textContent=' '+( user.nickname||user.username);
+ document.getElementById('v-main').style.display='block';
+ await loadMembers();
 })();
 
 // ── 회원 로드 ─────────────────────────────────────────────────
 async function loadMembers(){
-  const list=document.getElementById('member-list');
-  list.innerHTML='<div class="empty">불러오는 중...</div>';
-  try{
-    const rows=await supabase('GET','users',null,
-      '?order=id.desc&select=id,username,nickname,friend_code,is_banned,is_admin');
-    allMembers=rows||[];
-    // 통계
-    document.getElementById('st-total').textContent=allMembers.length.toLocaleString();
-    document.getElementById('st-banned').textContent=allMembers.filter(u=>u.is_banned).length;
-    document.getElementById('st-admin').textContent=allMembers.filter(u=>u.is_admin).length;
-    applyFilter();
-  }catch(e){
-    list.innerHTML=`<div class="empty" style="color:var(--red)">오류: ${e.message||'다시 시도해주세요.'}</div>`;
-  }
+ const list=document.getElementById('member-list');
+ list.innerHTML='<div class="empty">불러오는 중...</div>';
+ try{
+ const rows=await supabase('GET','users',null,
+ '?order=id.desc&select=id,username,nickname,friend_code,is_banned,is_admin,can_cham_auto');
+ allMembers=rows||[];
+ // 통계
+ document.getElementById('st-total').textContent=allMembers.length.toLocaleString();
+ document.getElementById('st-banned').textContent=allMembers.filter(u=>u.is_banned).length;
+ document.getElementById('st-admin').textContent=allMembers.filter(u=>u.is_admin).length;
+ applyFilter();
+ }catch(e){
+ list.innerHTML=`<div class="empty" style="color:var(--red)">오류: ${e.message||'다시 시도해주세요.'}</div>`;
+ }
 }
 
 // ── 필터 / 검색 ───────────────────────────────────────────────
 function setFilter(f,btn){
-  curFilter=f; curPage=0;
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  applyFilter();
+ curFilter=f; curPage=0;
+ document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+ btn.classList.add('active');
+ applyFilter();
 }
 function onSearch(){
-  curQ=(document.getElementById('search-inp').value||'').trim().toLowerCase();
-  curPage=0;
-  applyFilter();
+ curQ=(document.getElementById('search-inp').value||'').trim().toLowerCase();
+ curPage=0;
+ applyFilter();
 }
 function applyFilter(){
-  filtered=allMembers.filter(u=>{
-    if(curFilter==='banned'&&!u.is_banned)return false;
-    if(curFilter==='admin'&&!u.is_admin)return false;
-    if(curQ){
-      const nick=(u.nickname||'').toLowerCase();
-      const uname=(u.username||'').toLowerCase();
-      if(!nick.includes(curQ)&&!uname.includes(curQ))return false;
-    }
-    return true;
-  });
-  render();
+ filtered=allMembers.filter(u=>{
+ if(curFilter==='banned'&&!u.is_banned)return false;
+ if(curFilter==='admin'&&!u.is_admin)return false;
+ if(curQ){
+ const nick=(u.nickname||'').toLowerCase();
+ const uname=(u.username||'').toLowerCase();
+ if(!nick.includes(curQ)&&!uname.includes(curQ))return false;
+ }
+ return true;
+ });
+ render();
 }
 
 // ── 렌더 ─────────────────────────────────────────────────────
 function render(){
-  const list=document.getElementById('member-list');
-  const pg=document.getElementById('pg');
-  if(!filtered.length){
-    list.innerHTML='<div class="empty">해당하는 회원이 없습니다.</div>';
-    pg.innerHTML=''; return;
-  }
-  const pages=Math.ceil(filtered.length/PAGE);
-  curPage=Math.min(curPage,pages-1);
-  const slice=filtered.slice(curPage*PAGE,(curPage+1)*PAGE);
-  const me=getUser();
+ const list=document.getElementById('member-list');
+ const pg=document.getElementById('pg');
+ if(!filtered.length){
+ list.innerHTML='<div class="empty">해당하는 회원이 없습니다.</div>';
+ pg.innerHTML=''; return;
+ }
+ const pages=Math.ceil(filtered.length/PAGE);
+ curPage=Math.min(curPage,pages-1);
+ const slice=filtered.slice(curPage*PAGE,(curPage+1)*PAGE);
+ const me=getUser();
 
-  list.innerHTML=slice.map(u=>{
-    const isMe=me&&me.id==u.id;
-    const cardCls=u.is_admin?'admin-card':u.is_banned?'banned':'';
-    const initial=(u.nickname||u.username||'?')[0];
-    return `<div class="member-card ${cardCls}">
-      <div class="member-avatar">${x(initial)}</div>
-      <div class="member-info">
-        <div class="member-name">
-          ${x(u.nickname||u.username)}
-          ${u.is_admin?'<span class="badge badge-admin">어드민</span>':''}
-          ${u.is_banned?'<span class="badge badge-ban">정지</span>':''}
-          ${isMe?'<span style="font-size:10px;color:var(--dim)">(나)</span>':''}
-        </div>
-        <div class="member-meta">@${x(u.username)} · 친구코드: ${x(u.friend_code||'—')} · ID: ${u.id}</div>
-      </div>
-      <div class="member-actions">
-        ${!u.is_admin&&!isMe
-          ? u.is_banned
-            ? `<button class="btn-sm btn-unban" onclick="toggleBan(${u.id},true,'${x(u.nickname||u.username)}')">정지 해제</button>`
-            : `<button class="btn-sm btn-ban" onclick="toggleBan(${u.id},false,'${x(u.nickname||u.username)}')">계정 정지</button>`
-          : ''}
-      </div>
-    </div>`;
-  }).join('');
+ list.innerHTML=slice.map(u=>{
+ const isMe=me&&me.id==u.id;
+ const cardCls=u.is_admin?'admin-card':u.is_banned?'banned':'';
+ const initial=(u.nickname||u.username||'?')[0];
+ return `<div class="member-card ${cardCls}">
+ <div class="member-avatar">${x(initial)}</div>
+ <div class="member-info">
+ <div class="member-name">${x(u.nickname||u.username)}
+ ${u.is_admin?'<span class="badge badge-admin">어드민</span>':''}
+ ${u.is_banned?'<span class="badge badge-ban">정지</span>':''}
+ ${isMe?'<span style="font-size:10px;color:var(--dim)">(나)</span>':''}
+ </div>
+ <div class="member-meta">@${x(u.username)} · 친구코드: ${x(u.friend_code||'—')} · ID: ${u.id}</div>
+ </div>
+ <div class="member-actions"><button class="btn-sm ${u.can_cham_auto?'btn-ban':'btn-unban'}" data-cham-id="${x(u.id)}" onclick="toggleChamAccess(this)">${u.can_cham_auto?'자동계산기 권한 회수':'자동계산기 권한 부여'}</button>${!u.is_admin&&!isMe
+ ? u.is_banned
+ ? `<button class="btn-sm btn-unban" onclick="toggleBan(${u.id},true,'${x(u.nickname||u.username)}')">정지 해제</button>`
+ : `<button class="btn-sm btn-ban" onclick="toggleBan(${u.id},false,'${x(u.nickname||u.username)}')">계정 정지</button>`
+ : ''}
+ </div>
+ </div>`;
+ }).join('');
 
-  // 페이지네이션
-  if(pages<=1){pg.innerHTML='';return;}
-  let html='';
-  const start=Math.max(0,curPage-3), end=Math.min(pages,curPage+4);
-  if(start>0) html+=`<button class="pg-btn" onclick="goPage(0)">1</button><span style="color:var(--dim);padding:0 4px">…</span>`;
-  for(let i=start;i<end;i++) html+=`<button class="pg-btn${i===curPage?' active':''}" onclick="goPage(${i})">${i+1}</button>`;
-  if(end<pages) html+=`<span style="color:var(--dim);padding:0 4px">…</span><button class="pg-btn" onclick="goPage(${pages-1})">${pages}</button>`;
-  pg.innerHTML=html;
+ // 페이지네이션
+ if(pages<=1){pg.innerHTML='';return;}
+ let html='';
+ const start=Math.max(0,curPage-3), end=Math.min(pages,curPage+4);
+ if(start>0) html+=`<button class="pg-btn" onclick="goPage(0)">1</button><span style="color:var(--dim);padding:0 4px">…</span>`;
+ for(let i=start;i<end;i++) html+=`<button class="pg-btn${i===curPage?' active':''}" onclick="goPage(${i})">${i+1}</button>`;
+ if(end<pages) html+=`<span style="color:var(--dim);padding:0 4px">…</span><button class="pg-btn" onclick="goPage(${pages-1})">${pages}</button>`;
+ pg.innerHTML=html;
 }
 
 function goPage(p){curPage=p;render();window.scrollTo({top:0,behavior:'smooth'});}
 
 // ── 정지/해제 ─────────────────────────────────────────────────
 async function toggleBan(id,isBanned,name){
-  const action=isBanned?'정지 해제':'계정 정지';
-  if(!confirm(`${name}님을 ${action}할까요?`))return;
-  try{
-    await supabase('PATCH','users',{is_banned:!isBanned},`?id=eq.${id}`);
-    const u=allMembers.find(m=>m.id==id);
-    if(u)u.is_banned=!isBanned;
-    // 통계 업데이트
-    document.getElementById('st-banned').textContent=allMembers.filter(u=>u.is_banned).length;
-    applyFilter();
-  }catch(e){alert('오류: '+(e.message||'다시 시도해주세요.'));}
+ const action=isBanned?'정지 해제':'계정 정지';
+ if(!confirm(`${name}님을 ${action}할까요?`))return;
+ try{
+ await supabase('PATCH','users',{is_banned:!isBanned},`?id=eq.${id}`);
+ const u=allMembers.find(m=>m.id==id);
+ if(u)u.is_banned=!isBanned;
+ // 통계 업데이트
+ document.getElementById('st-banned').textContent=allMembers.filter(u=>u.is_banned).length;
+ applyFilter();
+ }catch(e){alert('오류: '+(e.message||'다시 시도해주세요.'));}
+}
+
+async function toggleChamAccess(button){
+ const id=button.dataset.chamId;
+ const member=allMembers.find(u=>String(u.id)===id);
+ if(!member)return;
+ const enabled=!member.can_cham_auto;
+ if(!confirm((member.nickname||member.username)+'님의 자동계산기 권한을 '+(enabled?'부여':'회수')+'할까요?'))return;
+ button.disabled=true;
+ try{
+   if(!await ChamAccess.isAdmin())throw new Error('관리자 권한을 확인할 수 없습니다. 다시 로그인해 주세요.');
+   const rows=await supabase('PATCH','users',{can_cham_auto:enabled},'?id=eq.'+encodeURIComponent(id));
+   if(!Array.isArray(rows)||rows.length!==1||rows[0].can_cham_auto!==enabled)throw new Error('권한 변경이 저장되지 않았습니다. 데이터베이스 설정을 확인해 주세요.');
+   member.can_cham_auto=enabled;
+   applyFilter();
+   await ChamAccess.refresh();
+ }catch(e){alert('권한 변경 실패: '+e.message);button.disabled=false;}
 }
 
 function x(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 </script>
-<script>
-(function(){var link=document.getElementById('theme-css');if(!link)return;var sync=function(){var c=document.getElementById('custom-theme-style');if(c&&c.textContent&&c.textContent.length>0){document.documentElement.removeAttribute('data-theme');return;}var m=String(link.href||'').match(/theme-(dark|light|beige)\.css/);document.documentElement.setAttribute('data-theme',m?m[1]:'dark');};sync();new MutationObserver(sync).observe(link,{attributes:true,attributeFilter:['href']});new MutationObserver(sync).observe(document.head,{childList:true,subtree:true,characterData:true});})();
+<script>(function(){var link=document.getElementById('theme-css');if(!link)return;var sync=function(){var c=document.getElementById('custom-theme-style');if(c&&c.textContent&&c.textContent.length>0){document.documentElement.removeAttribute('data-theme');return;}var m=String(link.href||'').match(/theme-(dark|light|beige)\.css/);document.documentElement.setAttribute('data-theme',m?m[1]:'dark');};sync();new MutationObserver(sync).observe(link,{attributes:true,attributeFilter:['href']});new MutationObserver(sync).observe(document.head,{childList:true,subtree:true,characterData:true});})();
 </script>
+</main>
+</div>
+<script src="./ui.js"></script>
+<script>UI.shell({page:'admin_users',title:'회원 관리',sub:'가입자 목록 · 권한'});</script>
 </body>
 </html>

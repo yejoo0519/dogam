@@ -2,16 +2,30 @@
 <html lang="ko" data-theme="dark">
 <head>
 <meta charset="UTF-8">
+<script src="./dragons.js"></script>
+<script src="./cham-rules.js"></script>
+<script src="./dragon-views.js"></script>
+<script>
+if (!globalThis.DV1_DRAGON_VIEWS) {
+  document.addEventListener('DOMContentLoaded', function () {
+    var warning = document.createElement('div');
+    warning.setAttribute('role', 'alert');
+    warning.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:#171b25;color:#fff;padding:48px;font:18px/1.8 sans-serif';
+    warning.textContent = '드래곤 데이터를 불러오지 못해 페이지를 시작하지 않았습니다. 새로고침하거나 사이트 관리자에게 문의해 주세요.';
+    document.body.appendChild(warning);
+  });
+}
+</script>
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>드래곤빌리지1 비밸 시뮬레이터</title>
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
 <link id="theme-css" rel="stylesheet" href="./theme-dark.css">
+<link rel="stylesheet" href="./ui.css">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="./theme.js"></script>
 <style>
 
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Nanum Gothic',-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
-.hd{display:flex;align-items:center;gap:14px;padding:12px 20px;background:var(--sf);border-bottom:2px solid var(--gold);position:sticky;top:0;z-index:100}
 .hd-icon{font-size:26px}.hd-t{font-size:15px;font-weight:800;color:var(--gold)}.hd-s{font-size:11px;color:var(--dim);margin-top:2px}
 .tabs{display:flex;background:var(--sf);border-bottom:1px solid var(--bd);position:sticky;top:50px;z-index:99}
 .tab-btn{flex:1;padding:12px 20px;background:none;border:none;border-bottom:3px solid transparent;color:var(--dim);font-family:'Nanum Gothic',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s}
@@ -19,7 +33,7 @@ body{font-family:'Nanum Gothic',-apple-system,sans-serif;background:var(--bg);co
 .tc{display:none}.tc.active{display:block}
 .ti{max-width:100%;padding:14px 24px}.ti-sim{max-width:1200px;margin:0 auto;padding:14px 24px}
 .sec{background:var(--sf);border:1px solid var(--bd);border-radius:8px;margin-bottom:14px;overflow:hidden}
-.sec-hd{display:flex;align-items:center;justify-content:space-between;padding:9px 16px;background:var(--sf2);border-bottom:1px solid var(--bd);font-size:11px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.5px}
+.sec-hd{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 15px;background:transparent;border-bottom:1px solid var(--bd);font-size:13.5px;font-weight:600;color:var(--text)}
 .sec-bd{padding:14px 16px}
 select,input[type=number],input[type=text]{background:var(--sf2);border:1px solid var(--bd);color:var(--text);padding:5px 9px;border-radius:5px;font-family:'Nanum Gothic',sans-serif;font-size:13px}
 select:focus,input:focus{outline:none;border-color:var(--gold)}
@@ -92,17 +106,17 @@ select:disabled,input:disabled{opacity:.3;cursor:not-allowed}
 .btn-grp button.active{background:rgba(232,184,75,.12);border-color:var(--gold);color:var(--gold)}
 .radio-opts label{display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;margin-bottom:5px}
 .radio-opts input[type=radio]{accent-color:var(--gold)}
-.btn-sim{width:100%;padding:14px;background:linear-gradient(135deg,var(--gold2),var(--gold));border:none;border-radius:8px;color:#0a0c18;font-family:'Nanum Gothic',sans-serif;font-size:16px;font-weight:800;cursor:pointer;margin:12px 0;letter-spacing:-.5px;transition:opacity .15s,transform .1s}
+.btn-sim{width:100%;padding:14px;background:var(--gold);border:none;border-radius:8px;color:#12151c;font-family:'Nanum Gothic',sans-serif;font-size:16px;font-weight:800;cursor:pointer;margin:12px 0;letter-spacing:-.5px;transition:opacity .15s,transform .1s}
 .btn-sim:hover{opacity:.92}.btn-sim:active{transform:scale(.99)}.btn-sim:disabled{opacity:.5;cursor:not-allowed}
 .res-wrap{overflow-x:auto}
-table.rtbl{width:100%;border-collapse:collapse;min-width:640px}
+table.rtbl{width:100%;border-collapse:collapse;min-width:840px}
 .rtbl th{background:var(--sf2);padding:9px 11px;text-align:left;font-size:11px;color:var(--dim);border-bottom:1px solid var(--bd);white-space:nowrap}
 .rtbl td{padding:10px 11px;border-bottom:1px solid var(--bd);font-size:13px;vertical-align:middle}
 .rtbl tr:last-child td{border-bottom:none}
 .rtbl tbody tr:hover td{background:rgba(255,255,255,.015)}
 .td-pc{display:table-cell}.td-mob{display:none}
 .mob-only{display:none}
-.acc-name-short{display:none}.pend-name-short{display:none}
+.acc-name-short{display:none}.pend-name-full{display:none}.pend-name-short{display:inline}
 @media(max-width:600px){
   .res-wrap{overflow-x:hidden}
   table.rtbl{display:block;width:100%!important;min-width:0!important;box-sizing:border-box}
@@ -154,33 +168,7 @@ input[type=number]{-moz-appearance:textfield}
 .res-tab-btn{padding:9px 18px;background:none;border:none;border-bottom:3px solid transparent;color:var(--dim);font-family:'Nanum Gothic',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s}
 .res-tab-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
 
-[data-theme="dark"]{
-  --bg:#0e1116;--bg2:#161a22;--bg3:#1c212c;
-  --border:#23293a;--border2:#1b1f2a;--border3:#2d3447;
-  --text:#eaecf2;--text2:#b3b9c7;--text3:#7d8597;--text4:#565d6e;
-  --accent:#7aa2f7;--accent-bg:rgba(122,162,247,0.12);--accent-border:rgba(122,162,247,0.30);
-}
-[data-theme="light"]{
-  --bg:#f7f7f8;--bg2:#ffffff;--bg3:#f1f2f4;
-  --border:#e6e7ea;--border2:#eeeff2;--border3:#d4d6db;
-  --text:#15171c;--text2:#4a4d57;--text3:#71757f;--text4:#9aa0aa;
-  --accent:#2f6fed;--accent-bg:rgba(47,111,237,0.10);--accent-border:rgba(47,111,237,0.32);
-}
-[data-theme="beige"]{
-  --bg:#f3ecdd;--bg2:#faf3e2;--bg3:#ebe0c7;
-  --border:#d8caa8;--border2:#e1d4b3;--border3:#c0ad84;
-  --text:#2a2316;--text2:#5a4e34;--text3:#837553;--text4:#a99971;
-  --accent:#b06a1e;--accent-bg:rgba(176,106,30,0.10);--accent-border:rgba(176,106,30,0.32);
-}
 /* spec 커스텀 변수 → 테마 변수로 매핑 */
-:root{
-  --sf:var(--bg2);--sf2:var(--bg3);--bd:var(--border);
-  --gold:var(--accent);--gold2:var(--accent);
-  --dim:var(--text3);--dimmer:var(--text4);
-  --red:#f87171;--green:#4ade80;--blue:#60a5fa;
-  --hpc:#fbbf24;--atc:#f87171;--dfc:#60a5fa;
-}
-
 /* ── 스펙 보기 전용 ── */
 .sv-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
 .sv-badge{font-size:11px;padding:3px 10px;border-radius:20px;background:rgba(100,200,100,.12);color:#4ade80;border:1px solid rgba(74,222,128,.25);font-weight:800}
@@ -214,42 +202,54 @@ input[type=number]{-moz-appearance:textfield}
 .ss-edit-btn{background:none;border:1px solid var(--gold);color:var(--gold);padding:4px 12px;border-radius:5px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:700;white-space:nowrap;transition:background .15s}
 .ss-edit-btn:hover{background:var(--accent-bg)}
 @media(max-width:700px){.sv-grid{grid-template-columns:1fr}}
+
+/* ── 콘솔 레이아웃 보정 ── */
+.u-setpane .sec{background:none;border:0;border-radius:0;margin-bottom:18px;overflow:visible}
+.u-setpane .sec-hd{padding:0 0 10px;border-bottom:1px solid var(--bd);margin-bottom:12px}
+.u-setpane .sec-bd{padding:0}
+.u-setpane .sim-cfg{display:flex;flex-direction:column;gap:16px}
+/* 설정 패널: 버프 한 줄, 그 아래 디버프 한 줄 — 속성 아이콘 · 속성 · 타입 · 스탯 · 스탯 */
+.u-setpane .buff-setting-grid{grid-template-columns:1fr;gap:10px}
+.u-setpane .buff-setting-title{padding:7px 10px;text-align:left;font-size:12.5px}
+.u-setpane .buff-setting-body{display:grid;grid-template-columns:26px repeat(4,minmax(0,1fr));gap:5px;align-items:center;padding:9px}
+.u-setpane .buff-setting-cell{display:contents}
+.u-setpane .buff-setting-lbl{display:none}
+.u-setpane .buff-attr-icon{grid-column:1;grid-row:1;width:26px;height:26px;object-fit:contain}
+.u-setpane .buff-setting-cell select{width:100%;max-width:none;min-width:0;padding:7px 15px 7px 4px;font-size:12.5px;text-align:center;text-align-last:center;-webkit-appearance:none;appearance:none;background:var(--sf2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M1 1l3 3 3-3' fill='none' stroke='%238a93a6' stroke-width='1.3'/%3E%3C/svg%3E") no-repeat right 5px center}
+/* 기본 셀렉트 화살표는 패딩과 별개로 20px 가량을 먹어 '어둠'·'ATK' 가 잘렸습니다 — 8px 짜리로 교체 */
+@media(max-width:760px){.u-setpane .buff-setting-cell select{font-size:16px;padding:9px 15px 9px 4px}}
+/* 아직 돌리지 않았을 때 오른쪽이 비어 보이지 않게 */
+.u-main #res-sec-empty{padding:80px 20px;text-align:center;font-size:13.5px;color:var(--text4);line-height:1.9}
+/* 결과 표 '용' 칸 — 정령 네 옵션을 줄글로 이으면 좁은 칸에서 서로 뭉칩니다.
+   2×2 칩으로 세워 칸이 제 폭을 주장하게 하고, 색으로 체/공/방을 구분합니다. */
+.rtbl .sp-chips{display:grid;grid-template-columns:repeat(2,auto);justify-content:start;gap:3px;margin-top:5px}
+.rtbl .sp-chip{display:inline-block;padding:2px 5px;border-radius:4px;font-size:10.5px;font-weight:600;line-height:1.35;white-space:nowrap;text-align:center}
+.rtbl .sp-chip b{font-weight:700}
+.rtbl .sp-hp{background:rgba(251,191,36,.13);color:var(--hpc)}
+.rtbl .sp-atk{background:rgba(248,113,113,.13);color:var(--atc)}
+.rtbl .sp-def{background:rgba(96,165,250,.13);color:var(--dfc)}
+.rtbl .sp-bonus{grid-column:1/-1;background:rgba(224,177,91,.12);color:var(--gold)}
+.rtbl .sp-none{font-size:10.5px;color:var(--dimmer);margin-top:5px}
+.rtbl .dname{font-weight:800;white-space:nowrap}
+/* 칸마다 최소 폭을 못 박아 둡니다 — 표가 좁아져도 이 아래로는 안 줄어듭니다 */
+.rtbl th:nth-child(2),.rtbl td.td-pc:nth-child(2){min-width:106px}
+.rtbl th:nth-child(6),.rtbl td.td-pc:nth-child(6){min-width:94px}
+.rk1{color:var(--gold)}.rk2{color:#c3c9d6}.rk3{color:#c08552}
+.u-setpane .radio-opts label{display:flex;align-items:flex-start;gap:7px;word-break:keep-all}
+.u-setpane .btn-sim{width:100%;margin:0}
+.u-main .ti,.u-main .ti-sim,.u-main .ti-dragon{max-width:none;margin:0;padding:0}
+.u-main #res-sec{margin-top:0}
 </style>
+<link rel="stylesheet" href="./spirit-simulator.css">
+<link rel="stylesheet" href="./spirit-input.css">
+<script src="./spirit-input.js"></script>
 </head>
-<body>
-
-<div class="hd">
-  <a href="./index.html?tab=calculator" style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;border:1px solid var(--bd);background:var(--sf2);color:var(--text2);text-decoration:none;font-size:16px;flex-shrink:0;transition:all 0.15s" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--bd)';this.style.color='var(--text2)'">←</a>
-  <div class="hd-icon">🐉</div>
-  <div><div class="hd-t">드래곤빌리지1 정령 시뮬레이터</div><div class="hd-s">비밸(체력 × 공격 × 방어) 최적화</div></div>
-  <div style="margin-left:auto;font-size:12px;color:var(--text);text-align:right">Made by 리레프<br>
-</div>
-</div>
-
-<div class="tabs">
-  <button class="tab-btn active" id="tab-btn-spec" onclick="switchTab('spec')">내 스펙</button>
-  <button class="tab-btn" id="tab-btn-sim" onclick="switchTab('sim')">시뮬레이터</button>
-</div>
-
-<!-- ■ 내 스펙 탭 (보기 전용) -->
-<div id="tab-spec" class="tc active"><div class="ti">
-  <div class="spec-spirit" id="spec-spirit-wrap">
-    <div class="sec">
-      <div class="sec-hd">
-        <span>✨ 정령</span>
-        <button class="btn-reset" onclick="resetSpirit()">↺</button>
-      </div>
-      <div class="sec-bd" id="sp-bd"></div>
-    </div>
-  </div>
-  <div id="spec-view-wrap"><!-- renderSpecView()로 채워짐 --></div>
-</div></div>
-
-<!-- ■ 시뮬레이터 탭 -->
-<div id="tab-sim" class="tc"><div class="ti ti-sim">
-
-  <div class="sec">
-    <div class="sec-hd">⚙ 시뮬레이션 설정</div>
+<body class="u">
+<div class="u-app">
+<div class="u-content">
+<aside class="u-setpane" id="setpane">
+<div class="sec">
+    <div class="sec-hd">시뮬레이션 설정</div>
     <div class="sec-bd">
       <div class="sim-cfg">
         <div>
@@ -261,44 +261,52 @@ input[type=number]{-moz-appearance:textfield}
           </div>
         </div>
         <div>
-          <div class="cfg-lbl">버프 단계</div>
+          <div class="cfg-lbl">버프 설정</div><select id="spirit-buff-mode" aria-label="버프 설정 방식"><option value="auto">버프 최적화</option><option value="manual">버프 직접 지정</option></select><div id="spirit-auto-buffs">
           <div class="btn-grp" id="buf-grp">
             <button onclick="setBuf(0)">0버프</button>
             <button onclick="setBuf(1)">1버프</button>
             <button class="active" onclick="setBuf(2)">2버프</button>
-          </div>
+          </div></div><div id="spirit-manual-buffs" class="sp-buff-choices" hidden><label>HP<select id="spirit-manual-hp"><option value="0">없음</option><option value="1">20%</option><option value="2">40%</option></select></label><label>ATK<select id="spirit-manual-atk"><option value="0">없음</option><option value="1">20%</option><option value="2">40%</option></select></label><label>DEF<select id="spirit-manual-def"><option value="0">없음</option><option value="1">20%</option><option value="2">40%</option></select></label></div><p id="spirit-buff-help" class="sp-help"></p>
         </div>
         <div>
-          <div class="cfg-lbl">인챈트 옵션</div>
+          <div class="cfg-lbl">추천 기준</div><div class="sp-priority"><button type="button" data-spirit-priority="bv">비밸 우선</button><button type="button" data-spirit-priority="tar">TAR 우선</button></div><p id="spirit-tar-note" class="sp-help"></p></div><div><div class="cfg-lbl">인챈트 옵션</div>
           <div class="radio-opts">
-            <label><input type="radio" name="enc-mode" value="fixed"> 내 장신구+인챈트 사용</label>
-            <label><input type="radio" name="enc-mode" value="infinite" checked> 내 장신구만 사용(승계가 가능한 경우)</label>
+            <label><input type="radio" name="enc-mode" value="fixed"> 보유중인 인챈트 사용</label>
+            <label><input type="radio" name="enc-mode" value="infinite" checked> 인챈트 상관X 승계 가능</label>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <div style="display:flex;align-items:center;gap:8px;padding:8px 16px 0">
-  <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px">
-    <input type="checkbox" id="exc-sun-pend" style="accent-color:var(--gold)"> 태펜 제외
-  </label>
+  
+<button class="btn-sim" id="sim-btn" onclick="runSim()" disabled>계산 실행</button><div id="spirit-status" role="status" aria-live="polite">계산기 준비 중…</div>
+</aside>
+<main class="u-main" id="mainpane">
+<!-- ■ 내 스펙 탭 (보기 전용) -->
+<div id="tab-spec" class="tc active"><div class="ti">
+  <div class="spec-spirit" id="spec-spirit-wrap">
+    <div class="sec">
+      <div class="sec-hd">
+        <span>정령</span>
+        <button class="btn-reset" onclick="resetSpirit()">초기화</button>
+      </div>
+      <div class="sec-bd" id="sp-bd"></div>
+    </div>
   </div>
-  <button class="btn-sim" id="sim-btn" onclick="runSim()">🐉 시뮬레이션 실행</button>
+  <div id="spec-view-wrap"><!-- renderSpecView()로 채워짐 --></div>
+</div></div>
 
-  <div class="sec" id="res-sec" style="display:none">
-  <div class="sec-hd">🏆 시뮬레이션 결과 — TOP 10</div>
-  <div style="display:flex;border-bottom:1px solid var(--bd)">
-    <button class="res-tab-btn" id="res-tab-btn-avg" onclick="switchResTab('avg')">최종 점수</button>
-    <button class="res-tab-btn" id="res-tab-btn-top" onclick="switchResTab('top')">최고 B-Val</button>
-  </div>
-  <div id="res-top" style="display:none"><div class="res-wrap"><div id="res-body-top"></div></div></div>
-  <div id="res-avg"><div class="res-wrap"><div id="res-body-avg"></div></div></div>
-</div>
+<!-- ■ 시뮬레이터 탭 -->
+<div id="tab-sim" class="tc"><div class="ti ti-sim">
+<div id="res-sec-empty">왼쪽에서 설정을 마치고 [계산 실행]을 눌러주세요.</div>
+  <section id="res-sec" class="sp-workspace" style="display:none"><header class="sp-workspace-head"><div><h2>시뮬레이션 결과</h2><p id="spirit-run-caption"></p></div><div class="sp-priority"><button data-spirit-priority="bv">비밸 우선</button><button data-spirit-priority="tar">TAR 우선</button></div></header><div id="spirit-type-summary" class="sp-type-grid"></div><h3 class="sp-list-title" id="spirit-ranking-label"></h3><div id="spirit-result-list"></div></section>
 
 </div></div>
 
 <script>
+if (!globalThis.DV1_DRAGON_VIEWS) throw new Error("드래곤 데이터 로드 실패: 초기화 중단");
+
 // ================================================================
 // 게임 데이터
 // ================================================================
@@ -488,7 +496,7 @@ SAVE_KEY='dv1sim_'+location.pathname.split('/').pop().replace(/\.[^.]+$/,'');
 (function(){
   try{
     var MIG_ACC={'Horn of light +18 (Crit/HP)':'빛뿔 (크/체) 18','Horn of light +18 (Crit/ATK)':'빛뿔 (크/공) 18','Horn of light +18 (Crit/DEF)':'빛뿔 (크/방) 18','Horn of light +20 (Crit/HP)':'빛뿔 (크/체) 20','Horn of light +20 (Crit/ATK)':'빛뿔 (크/공) 20','Horn of light +20 (Crit/DEF)':'빛뿔 (크/방) 20','Nightmare Orb +16 (HP)':'악몽 수호자의 보주 (악보) 16','Dusk Orb +16 (ATK)':'황혼 수호자의 보주 (황보) 16','Dawn Orb +16 (DEF)':'여명 수호자의 보주 (여보) 16','Horn of water +16 (HP/ATK)':'물뿔 (체/공) 16','Horn of water +16 (HP/DEF)':'물뿔 (체/방) 16','Horn of fire +16 (ATK/HP)':'불뿔 (공/체) 16','Horn of fire +16 (ATK/DEF)':'불뿔 (공/방) 16','Horn of earth +16 (DEF/HP)':'대뿔 (방/체) 16','Horn of earth +16 (DEF/ATK)':'대뿔 (방/공) 16','Horn of wind +16 (HP/DEF)':'바뿔 (체/방) 16','Horn of wind +16 (ATK/HP)':'바뿔 (공/체) 16','Horn of wind +16 (ATK/DEF)':'바뿔 (공/방) 16','Nightmare Orb +17 (HP)':'악몽 수호자의 보주 (악보) 17','Dusk Orb +17 (ATK)':'황혼 수호자의 보주 (황보) 17','Dawn Orb +17 (DEF)':'여명 수호자의 보주 (여보) 17','Horn of water +17 (HP/ATK)':'물뿔 (체/공) 17','Horn of water +17 (HP/DEF)':'물뿔 (체/방) 17','Horn of fire +17 (ATK/HP)':'불뿔 (공/체) 17','Horn of fire +17 (ATK/DEF)':'불뿔 (공/방) 17','Horn of earth +17 (DEF/HP)':'대뿔 (방/체) 17','Horn of earth +17 (DEF/ATK)':'대뿔 (방/공) 17','Horn of wind +17 (HP/DEF)':'바뿔 (체/방) 17','Horn of wind +17 (ATK/HP)':'바뿔 (공/체) 17','Horn of wind +17 (ATK/DEF)':'바뿔 (공/방) 17','Nightmare Orb +18 (HP)':'악몽 수호자의 보주 (악보) 18','Dusk Orb +18 (ATK)':'황혼 수호자의 보주 (황보) 18','Dawn Orb +18 (DEF)':'여명 수호자의 보주 (여보) 18','Horn of water +18 (HP/ATK)':'물뿔 (체/공) 18','Horn of water +18 (HP/DEF)':'물뿔 (체/방) 18','Horn of fire +18 (ATK/HP)':'불뿔 (공/체) 18','Horn of fire +18 (ATK/DEF)':'불뿔 (공/방) 18','Horn of earth +18 (DEF/HP)':'대뿔 (방/체) 18','Horn of earth +18 (DEF/ATK)':'대뿔 (방/공) 18','Horn of wind +18 (HP/DEF)':'바뿔 (체/방) 18','Horn of wind +18 (ATK/HP)':'바뿔 (공/체) 18','Horn of wind +18 (ATK/DEF)':'바뿔 (공/방) 18','Nightmare Orb +19 (HP)':'악몽 수호자의 보주 (악보) 19','Dusk Orb +19 (ATK)':'황혼 수호자의 보주 (황보) 19','Dawn Orb +19 (DEF)':'여명 수호자의 보주 (여보) 19','Horn of water +19 (HP/ATK)':'물뿔 (체/공) 19','Horn of water +19 (HP/DEF)':'물뿔 (체/방) 19','Horn of fire +19 (ATK/HP)':'불뿔 (공/체) 19','Horn of fire +19 (ATK/DEF)':'불뿔 (공/방) 19','Horn of earth +19 (DEF/HP)':'대뿔 (방/체) 19','Horn of earth +19 (DEF/ATK)':'대뿔 (방/공) 19','Horn of wind +19 (HP/DEF)':'바뿔 (체/방) 19','Horn of wind +19 (ATK/HP)':'바뿔 (공/체) 19','Horn of wind +19 (ATK/DEF)':'바뿔 (공/방) 19','Nightmare Orb +20 (HP)':'악몽 수호자의 보주 (악보) 20','Dusk Orb +20 (ATK)':'황혼 수호자의 보주 (황보) 20','Dawn Orb +20 (DEF)':'여명 수호자의 보주 (여보) 20','Horn of water +20 (HP/ATK)':'물뿔 (체/공) 20','Horn of water +20 (HP/DEF)':'물뿔 (체/방) 20','Horn of fire +20 (ATK/HP)':'불뿔 (공/체) 20','Horn of fire +20 (ATK/DEF)':'불뿔 (공/방) 20','Horn of earth +20 (DEF/HP)':'대뿔 (방/체) 20','Horn of earth +20 (DEF/ATK)':'대뿔 (방/공) 20','Horn of wind +20 (HP/DEF)':'바뿔 (체/방) 20','Horn of wind +20 (ATK/HP)':'바뿔 (공/체) 20','Horn of wind +20 (ATK/DEF)':'바뿔 (공/방) 20'};
-    var MIG_DRG={'Hydra Dragon':'히드라곤','Power Dragon':'파워 드래곤','Underground Dragon':'지하땅굴 드래곤','Egg Dragon':'에그 드래곤','Mustard Hammer':'머스타드해머','Scorpion Dragon':'스콜피온 드래곤','Python':'파이썬','Collosus':'콜로서스','Layers':'레이어스','Daros':'다로스','Earthquake':'지진','Zimon':'즈믄','Liberte':'리베티','Kanthaka':'칸타카','Appleche Dragon':'애플칙','Astarte':'아스타테','Leo Vector':'레오벡터','Aldebaran':'알데바란','Pachy':'파키','Quetzalcoatl':'케찰코아틀','Eggmayong':'에그마용','Heimdallr':'헤임달','Non':'논','Acaia':'아카이아','Chroma Acaia':'크로마 아카이아','Vaska':'바스카','Popon':'포폰','Poison River':'포이즌리버','Frost Dragon':'빙하고룡','Water Dragon':'수룡','Fairy Dragon':'페어리 드래곤','Shark Dragon':'샤크곤','IceDrake':'아이스 드레이크','Withme':'위드미','Secreta':'세크레타','Venom Dragon':'베놈 드래곤','Luminesce':'루미네스','Blizzard':'블리자드','Vritra':'브리트라','Tropheus':'트로페우스','Frozen':'프로즌','Myosotis':'마소티스','Bernhard':'베른하르트','Regulus':'레굴루스','Chroma Regulus':'크로마 레굴루스','Portunus':'폴투누스','Rudra':'루드라','Rusalka':'루살카','Yurqa':'유르카','Octa':'옥타','Chroma Octa':'크로마 옥타','Skat':'스카트','Alresch':'알레샤','Chroma Alresch':'크로마 알레샤','Loki':'로키','Volva':'볼바','Fishing Tail Dragon':'피싱테일 드래곤','Natron':'나트론','Swamp Dragon':'스왐프 드래곤','Undine':'운디네','Chroma Undine':'크로마 운디네','Fire Dragon':'파이어 드래곤','Lightning Dragon':'번개고룡','Phoenix':'피닉스','Red Wybern':'레드와이번','Iron':'아이언 드래곤','Jaryong':'자룡','Garuda':'가루다','Futurum':'푸투룸','Wild Dragon':'와일드 드래곤','Rugar Dragon':'루가르 드래곤','Popomo':'포포모','Evil Dragon':'마룡','Mneia':'므네이아','Burnesce':'번네스','Igna':'이그나','Sura Dragon':'수라 드래곤','Enturath':'엔투라스','Hwa gui Dragon':'화귀 드래곤','Yeomhwa Dragon':'염화룡','Tanatos':'타나토스','Thoth':'토트','Lancenti':'라센티','Firetail':'불나래','Chroma Firetail':'크로마 불나래','Blaze Dragon':'블레이즈 드래곤','Figar':'파이거','Chroma Figar':'크로마 파이거','Scartooth':'스카투스','Chroma Scartooth':'크로마 스카투스','Red Horse Dragon':'적마룡','Wind Dragon':'윈드 드래곤','Six Legged Dragon':'식스 레그 혼 드래곤','Blue Dragon':'청룡','Spring Dragon':'태엽 드래곤','Chaos':'카오스','Striker':'스트라이커','Asti Dragon':'아스티','Steelwing':'스틸윙','Graytan':'그레이탄','Araca':'아라카','Empire':'엠파이어','Gust':'거스트 드래곤','Centura':'센투라','Etoile Dragon':'에트왈 드래곤','Kigal':'키갈','Boreas':'보레아스','Tyr':'티르','Pitaya':'피타야','Blue Thunder':'블루썬더','Chroma Blue Thunder':'크로마 블루썬더','Litio':'리티오','Chroma Litio':'크로마 리티오','Thor':'토르','Lulu':'루루','Chroma Lulu':'크로마 루루','Zephyros':'제피로스','Spirit':'혼','God Dragon':'고대신룡','Angel Dragon':'엔젤 드래곤','Morika Dragon':'모리카 드래곤','Siamese Dragon':'샴 드래곤','Knight Dragon':'나이트 드래곤','Spicy':'스파이시','Rafael':'라파엘','White Dragon':'백룡','God Jr.':'고대 주니어','Argo Dragon':'아르고 드래곤','Citael':'시타엘','Bar\'rah':'바르라아','Asili':'아실리','Roloce':'로루스','Haze':'헤이즈','Ordo':'오르도','Star Ace':'스타에이스','Teddy Dragon':'테디 드래곤','Artemis Dragon':'아르테미스 드래곤','Whitethunder':'화이트썬더 드래곤','Karura':'카루라','Minas Dragon':'미나스 드래곤','Aton':'아톤','Talissah':'탈릿사','Angel Jr.':'엔젤주니어','Sword':'스워드','Gautling-gon':'개틀링곤','Amanta':'아만타','Shah':'샤흐','Vargr':'바르그','Solucanis':'솔루카니스','Atlus':'알투스','Protect Dragon':'프로텍트 드래곤','Chroma Protect Dragon':'크로마 프로텍트 드래곤','Yajnir':'야즈니르','Merak':'메라크','Sola':'솔라','Berna':'베르나','Seraphim':'세라핌','Venezie':'베네지','Baal':'바알','Dark Nix':'다크닉스','Sigma Dragon':'시그마 드래곤','Black Tear Dragon':'블랙티어 드래곤','Black Armor Dragon':'블랙아머 드래곤','Kuroy Dragon':'쿠로이 드래곤','Time Machine':'타임머신','Wonder Dragon':'원더 드래곤','Black Jindo':'블랙찡또','Moon Light':'문라이트','Marbas':'마르바스','Universe':'유니버스','Behemoth':'베히모스','Maloden':'말로단','Karna':'카르나','Dark Fal':'다크폴','Dark Knight':'다크나이트','Kubera':'쿠베라','Azak':'아자크','Makara':'마카라','Lichmond':'리치몬드','Chroma Lichmond':'크로마 리치몬드','Goat':'고트','Magnas':'마그나스','Porta':'포르타','Vetala':'베타라','Chroma Vetala':'크로마 베타라','Caslux':'카스룩스','Fides':'피데스','Jormungandr':'요르문간드','Tiamat':'티아매트','Obex':'오벡스','Cthulhu':'크툴루','Chroma Cthulhu':'크로마 크툴루','Hatshya':'하트샤','Dragon Slayer':'드래곤 슬레이어','Black Dragon':'흑룡','Harleybell':'할리벨','Taabire':'타아비레','Hapla':'합라','Selmasa':'셀마사','Berith':'베리스','Eligos':'엘리고스','Mimir':'미미르','Amdusias':'암두시아스','Nebia':'네비아','Wrath':'라스','Amaltheia':'아말테아','Harmonious Dragon':'조화룡','Cortus':'코르투스','Rukbat':'루크바트','Ullr':'울르','Aphrodite':'아프로디테','Janus':'야누스','Freyja':'프레이야','Kinder Dragon':'킨더 드래곤','Reward Dragon':'보상이용','Ballack':'발라크','Vefal':'베팔','Characen':'카라선','Rexton':'렉스톤','Pomekle':'포메쿨','Tilki':'틸키','Rekmall Reverse':'렉몰 리버스','Harika':'하리카','Deathlock':'데스락','Eclipse':'이클립스','Nebula':'네뷸라','Seere':'세에레','Pride':'프라이드','Chachawung':'차차웅','Epit':'에피트','Tempios':'템피오스','Inverso':'인베르소','Manus':'마누스','Hresvelgr':'흐레스벨그','Reginleif':'레긴레이프','Chroma Reginleif':'크로마 레긴레이프','Dantalion':'단탈리온','Jagan':'자간','Animala':'애니마라','Rude Ore':'루드오어','Beleth':'벨레드','Longinus':'롱기누스','Mysfit':'미스핏','Mastema':'마스테마','Nemus':'네무스','Crevasse':'크레바스','Chroma Beleth':'크로마 벨레드','Slosi':'쉴로시','Curse Reaper':'커스리퍼','Jin':'진','Corrupted Jormungandr':'잠식된 요르문간드','Lemures':'레무레스','Valefor':'발레포르','Chroma Valefor':'크로마 발레포르','Vlad':'블라드','Dimension Dragon':'디멘션 드래곤','Mangtaegon':'망태곤'};
+    var MIG_DRG=DV1_DRAGON_VIEWS.savedNameMap('calculator');
     var MIG_PAGE_HAS_DRAGONS=false;
     function migName(map,n){return (n&&map[n])?map[n]:n;}
     function migState(p){
@@ -602,7 +610,7 @@ function doSave(){
   clearTimeout(saveT);
   localStorage.setItem(SAVE_KEY,JSON.stringify(S));
   const el=document.getElementById('save-msg');
-  if(el){el.textContent='✓ 저장됨';setTimeout(()=>el.textContent='',2000);}
+  if(el){el.textContent='저장됨';setTimeout(()=>el.textContent='',2000);}
 }
 function qSave(){clearTimeout(saveT);saveT=setTimeout(doSave,1200);}
 function resetAll(){
@@ -998,38 +1006,7 @@ function renderSpirit(){
     </button>`;
   }).join('');
 
-  let opts='';
-  for(let i=1;i<=4;i++){
-    const o=sp.opts[i-1]||{stat:'',type:''};
-    const v=(o.stat&&o.type)?fmtSpVal(i,o.stat,o.type):'';
-    opts+=`<div class="sp-ocard">
-      <span class="sp-onum">${i}옵</span>
-      <select onchange="onSpOpt(${i-1},'stat',this.value)">
-        <option value=""    ${!o.stat?'selected':''}>-</option>
-        <option value="hp"  ${o.stat==='hp'?'selected':''}>체력</option>
-        <option value="atk" ${o.stat==='atk'?'selected':''}>공격</option>
-        <option value="def" ${o.stat==='def'?'selected':''}>방어</option>
-      </select>
-      <select onchange="onSpOpt(${i-1},'type',this.value)">
-        <option value=""  ${!o.type?'selected':''}>-</option>
-        <option value="+" ${o.type==='+'?'selected':''}>+스탯</option>
-        <option value="%" ${o.type==='%'?'selected':''}>%스탯</option>
-      </select>
-      <span class="sp-oval">${v}</span>
-    </div>`;
-  }
-
-  el.innerHTML=`
-    <div class="sp-preset-grid">${presets}</div>
-    <div class="sp-opts">${opts}</div>
-    <div class="fg"><label>부가옵</label>
-      <select onchange="onSpBonus(this.value)">
-        <option value=""    ${!sp.bonus?'selected':''}>없음</option>
-        <option value="hp"  ${sp.bonus==='hp'?'selected':''}>체력 (+40)</option>
-        <option value="atk" ${sp.bonus==='atk'?'selected':''}>공격 (+10)</option>
-        <option value="def" ${sp.bonus==='def'?'selected':''}>방어 (+10)</option>
-      </select>
-    </div>`;
+  el.innerHTML=`<div class="sp-preset-grid">${presets}</div>${SpiritInput.options(sp,'onSpOpt',[],fmtSpVal)}${SpiritInput.bonus(sp,'onSpBonus',[])}`;
 }
 
 function resetSpirit(){
@@ -1125,15 +1102,15 @@ function renderSpecView(){
   if(col.def)colP.push(`<span class="sv-gem-def">방 +${col.def}</span>`);
   const colH=colP.length?colP.join('<span style="color:var(--dim)"> · </span>'):`<span class="sv-empty">0</span>`;
 
-  el.innerHTML=`<div class="sv-header"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:15px;font-weight:800">📋 내 스펙</span><span class="sv-badge">보기 전용</span></div><a href="./my.html" class="sv-edit-btn">✏️ my.html에서 수정 →</a></div>
+  el.innerHTML=`<div class="sv-header"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:15px;font-weight:800">내 스펙</span><span class="sv-badge">보기 전용</span></div><a href="./my.html" class="sv-edit-btn">my.html에서 수정 →</a></div>
   <div class="sv-grid">
     <div>
-      <div class="sv-sec"><div class="sv-sec-hd">💎 젬 보유량</div><div class="sv-sec-bd">${gemH}</div></div>
-      <div class="sv-sec"><div class="sv-sec-hd">📚 콜렉션</div><div class="sv-sec-bd"><div class="sv-coll-row">${colH}</div></div></div>
+      <div class="sv-sec"><div class="sv-sec-hd">젬 보유량</div><div class="sv-sec-bd">${gemH}</div></div>
+      <div class="sv-sec"><div class="sv-sec-hd">콜렉션</div><div class="sv-sec-bd"><div class="sv-coll-row">${colH}</div></div></div>
     </div>
     <div>
-      <div class="sv-sec"><div class="sv-sec-hd">💍 장신구 (${accs.length}개)</div><div class="sv-sec-bd" style="max-height:260px;overflow-y:auto">${accH}</div></div>
-      <div class="sv-sec"><div class="sv-sec-hd">🌙 펜던트 (${pends.length}개)</div><div class="sv-sec-bd" style="max-height:220px;overflow-y:auto">${pendH}</div></div>
+      <div class="sv-sec"><div class="sv-sec-hd">장신구 (${accs.length}개)</div><div class="sv-sec-bd" style="max-height:260px;overflow-y:auto">${accH}</div></div>
+      <div class="sv-sec"><div class="sv-sec-hd">펜던트 (${pends.length}개)</div><div class="sv-sec-bd" style="max-height:220px;overflow-y:auto">${pendH}</div></div>
     </div>
   </div>`;
 }
@@ -1171,15 +1148,18 @@ function renderSpecSummary(targetId){
   if(col.hp)colP2.push(`<span class="ss-gem-hp">체+${col.hp}</span>`);
   if(col.atk)colP2.push(`<span class="ss-gem-atk">공+${col.atk}</span>`);
   if(col.def)colP2.push(`<span class="ss-gem-def">방+${col.def}</span>`);
-  el.innerHTML=`<div class="spec-summary"><div class="spec-summary-hd"><span>📋 현재 스펙</span><button class="ss-edit-btn" onclick="switchTab('spec')">✏️ 스펙 수정</button></div><div class="spec-summary-bd"><div class="ss-row"><span class="ss-lbl">💎 젬</span><span class="ss-val">${gemP.length?gemP.join(' '):'<span class="ss-empty">없음</span>'}</span></div><div class="ss-row"><span class="ss-lbl">💍 장신구</span><span class="ss-val">${accP.length?accP.join('<br>'):'<span class="ss-empty">없음</span>'}</span></div><div class="ss-row"><span class="ss-lbl">🌙 펜던트</span><span class="ss-val">${pendP.length?pendP.join('<br>'):'<span class="ss-empty">없음</span>'}</span></div><div class="ss-row"><span class="ss-lbl">📚 콜렉션</span><span class="ss-val">${colP2.length?colP2.join(' · '):'<span class="ss-empty">0</span>'}</span></div></div></div>`;
+  el.innerHTML=`<div class="spec-summary"><div class="spec-summary-hd"><span>현재 스펙</span><button class="ss-edit-btn" onclick="switchTab('spec')">스펙 수정</button></div><div class="spec-summary-bd"><div class="ss-row"><span class="ss-lbl">젬</span><span class="ss-val">${gemP.length?gemP.join(' '):'<span class="ss-empty">없음</span>'}</span></div><div class="ss-row"><span class="ss-lbl">장신구</span><span class="ss-val">${accP.length?accP.join('<br>'):'<span class="ss-empty">없음</span>'}</span></div><div class="ss-row"><span class="ss-lbl">펜던트</span><span class="ss-val">${pendP.length?pendP.join('<br>'):'<span class="ss-empty">없음</span>'}</span></div><div class="ss-row"><span class="ss-lbl">콜렉션</span><span class="ss-val">${colP2.length?colP2.join(' · '):'<span class="ss-empty">0</span>'}</span></div></div></div>`;
 }
 
 function switchTab(t){
-  if(t==='spec'){renderSpecView();}
-  ['spec','sim'].forEach(x=>{
-    document.getElementById(`tab-${x}`).classList.toggle('active',x===t);
-    document.getElementById(`tab-btn-${x}`).classList.toggle('active',x===t);
+  if(t==='spec'){try{renderSpecView();}catch(e){}}
+  ['spec','dragon','sim'].forEach(x=>{
+    const c=document.getElementById('tab-'+x); if(c)c.classList.toggle('active',x===t);
+    const bt=document.getElementById('tab-btn-'+x); if(bt)bt.classList.toggle('active',x===t);
   });
+  const pane=document.getElementById('setpane');
+  if(pane)pane.style.display=(t==='sim')?'':'none';
+  if(window.UI&&UI.task&&!switchTab._q){switchTab._q=1;UI.task(t);switchTab._q=0;}
 }
 
 function setGrade(g){
@@ -1226,23 +1206,20 @@ function genAllocs(pool,slots){
 }
 
 /*
- * 최종스탯 계산 공식 (게임 수식 그대로 INT = Math.floor):
+ * 최종스탯 계산 공식 (게임 수식 그대로 INT = 버림):
  *   A = base + gem + potion
  *   B = INT(A * (1 + acc% + enc%))
- *   C = INT(B * (1 + spirit%))
+ *   C = INT(B * (1 + spirit%) + spiritPlus * (1 + spirit%))   ← 본체와 정령 고정값을 합쳐 한 번만 버림
  *   D = INT(C * (1 + pendant%))
- *   E = INT(INT(spiritPlus * (1 + spirit%)) * (1 + pendant%))
- *   F = INT(spiritBonus * (1 + pendant%))
  *   buf = INT(bufLevel * base * 0.20)
- *   finalStat = D + E + F + collection + buf
+ *   finalStat = D + spiritBonus + collection + buf            ← 부가옵은 펜던트를 곱하지 않습니다
  */
+const INT=x=>Math.floor(x+1e-9);
 function calcStat(B,G,P,AP,SP,PP,SL,SB,C,BU){
-  const a=Math.floor((B+G+P)*(1+AP));
-  const b=Math.floor(a*(1+SP));
-  const c=Math.floor(b*(1+PP));
-  const d=Math.floor(Math.floor(SL*(1+SP))*(1+PP));
-  const e=Math.floor(SB*(1+PP));
-  return c+d+e+C+BU;
+  const a=INT((B+G+P)*(1+AP));
+  const b=INT(a*(1+SP)+SL*(1+SP));
+  const c=INT(b*(1+PP));
+  return c+SB+C+BU;
 }
 
 // 정령 상태를 스탯별 + / % / 부가옵 기여로 변환
@@ -1278,43 +1255,6 @@ function getBufCombos(bufLv){
   ];
 }
 
-function switchResTab(t){
-  ['top','avg'].forEach(x=>{
-    document.getElementById('res-'+x).style.display=x===t?'':'none';
-    document.getElementById('res-tab-btn-'+x).classList.toggle('active',x===t);
-  });
-}
-
-function runSim(){
-  const encMode=document.querySelector('input[name="enc-mode"]:checked')?.value||'fixed';
-  const accSeen=new Set();
-  const ownedAcc=S.accCards
-    .filter(c=>c.name)
-    .map(c=>({...ACC_DB.find(a=>a.n===c.name),_enc:encMode==='infinite'?'none':c.enchant}))
-    .filter(a=>{
-      if(!a.n)return false;
-      const key=encMode==='fixed'?`${a.n}|${a._enc||'none'}`:a.n;
-      if(accSeen.has(key))return false;
-      accSeen.add(key);return true;
-    });
-  if(!ownedAcc.length){alert('내 스펙 탭에서 장신구를 1개 이상 추가하세요.');return;}
-  const btn=document.getElementById('sim-btn');
-  btn.disabled=true;btn.textContent='⏳ 계산 중...';
-  setTimeout(()=>{
-    try{
-      const bufCombos=getBufCombos(simBuf);
-      const excSun=document.getElementById('exc-sun-pend').checked;
-      renderResTop(doSimTop(ownedAcc,bufCombos,excSun));
-      renderResAvg(doSimAvg(ownedAcc,bufCombos,excSun));
-      const rs=document.getElementById('res-sec');
-      rs.style.display='';
-      switchResTab('avg');
-      rs.scrollIntoView({behavior:'smooth',block:'start'});
-    }catch(e){console.error(e);alert('오류: '+e.message);}
-    btn.disabled=false;btn.textContent='🐉 시뮬레이션 실행';
-  },20);
-}
-
 function getPends(excSun){
   const raw=S.pendants.length?S.pendants:[null];
   const filtered=excSun?raw.filter(p=>!p||p.type!=='태양'):raw;
@@ -1345,117 +1285,6 @@ function calcPendPct(pend){
     });
   }
   return{pH,pA,pD};
-}
-
-function doSimTop(ownedAcc,bufCombos,excSun){
-  const {plus:sP,pct:sPct,bonus:sB}=procSpirit();
-  const pool=buildPool();
-  const allocs=genAllocs(pool,5);
-  const pends=getPends(excSun);
-  const coll=S.coll;
-  const encMode=document.querySelector('input[name="enc-mode"]:checked')?.value||'fixed';
-  const top10=[];
-  let minBV=-Infinity;
-
-  for(const dt of DTYPES){
-    const bs=BASE[simGrade][dt];
-    const bh=bs.hp,ba=bs.atk,bd=bs.def;
-    for(const acc of ownedAcc){
-      const encs=encMode==='infinite'?['hp','atk','def']:[acc._enc||'none'];
-      for(const enc of encs){
-        const aH=acc.hp+(enc==='hp'?.21:0);
-        const aA=acc.atk+(enc==='atk'?.21:0);
-        const aD=acc.def+(enc==='def'?.21:0);
-        for(const pend of pends){
-          const{pH,pA,pD}=calcPendPct(pend);
-          for(const alloc of allocs){
-            let gH=0,gA=0,gD=0;
-            for(let i=0;i<alloc.length;i++){gH+=alloc[i]*pool[i].h;gA+=alloc[i]*pool[i].a;gD+=alloc[i]*pool[i].d;}
-            for(const buf of bufCombos){
-              const bufH=Math.floor(buf.h*bh*.2);
-              const bufA=Math.floor(buf.a*ba*.2);
-              const bufD=Math.floor(buf.d*bd*.2);
-              const fH=calcStat(bh,gH,24,aH,sPct.hp,pH,sP.hp,sB.hp,coll.hp,bufH);
-              const fA=calcStat(ba,gA,6,aA,sPct.atk,pA,sP.atk,sB.atk,coll.atk,bufA);
-              const fD=calcStat(bd,gD,6,aD,sPct.def,pD,sP.def,sB.def,coll.def,bufD);
-              const bv=fH*fA*fD;
-              if(bv>minBV||top10.length<10){
-                let lo=0,hi=top10.length;
-                while(lo<hi){const m=(lo+hi)>>1;if(top10[m].bv>=bv)lo=m+1;else hi=m;}
-                top10.splice(lo,0,{bv,dt,accN:acc.n,enc,pend,buf,alloc:alloc.map((k,i)=>({k,g:pool[i]})).filter(x=>x.k>0),fH,fA,fD});
-                if(top10.length>10)top10.pop();
-                minBV=top10.length===10?top10[9].bv:-Infinity;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  return top10;
-}
-
-//시뮬레이션 실행 관련
-function doSimAvg(ownedAcc,bufCombos,excSun){
-  const {plus:sP,pct:sPct,bonus:sB}=procSpirit();
-  const pool=buildPool();
-  const allocs=genAllocs(pool,5);
-  const pends=getPends(excSun);
-  const coll=S.coll;
-  const encMode=document.querySelector('input[name="enc-mode"]:checked')?.value||'fixed';
-  const results=[];
-
-  for(const dt of DTYPES){
-    const bs=BASE[simGrade][dt];
-    const bh=bs.hp,ba=bs.atk,bd=bs.def;
-    const bufResults=[];
-
-    for(const buf of bufCombos){
-      const bufH=Math.floor(buf.h*bh*.2);
-      const bufA=Math.floor(buf.a*ba*.2);
-      const bufD=Math.floor(buf.d*bd*.2);
-      const top5=[];
-      let minBV=-Infinity;
-
-      for(const acc of ownedAcc){
-        const encs=encMode==='infinite'?['hp','atk','def']:[acc._enc||'none'];
-        for(const enc of encs){
-          const aH=acc.hp+(enc==='hp'?.21:0);
-          const aA=acc.atk+(enc==='atk'?.21:0);
-          const aD=acc.def+(enc==='def'?.21:0);
-          for(const pend of pends){
-            const{pH,pA,pD}=calcPendPct(pend);
-            for(const alloc of allocs){
-              let gH=0,gA=0,gD=0;
-              for(let i=0;i<alloc.length;i++){gH+=alloc[i]*pool[i].h;gA+=alloc[i]*pool[i].a;gD+=alloc[i]*pool[i].d;}
-              const fH=calcStat(bh,gH,24,aH,sPct.hp,pH,sP.hp,sB.hp,coll.hp,bufH);
-              const fA=calcStat(ba,gA,6,aA,sPct.atk,pA,sP.atk,sB.atk,coll.atk,bufA);
-              const fD=calcStat(bd,gD,6,aD,sPct.def,pD,sP.def,sB.def,coll.def,bufD);
-              const bv=fH*fA*fD;
-              if(bv>minBV||top5.length<5){
-                let lo=0,hi=top5.length;
-                while(lo<hi){const m=(lo+hi)>>1;if(top5[m].bv>=bv)lo=m+1;else hi=m;}
-                top5.splice(lo,0,{bv,accN:acc.n,enc,pend,alloc:alloc.map((k,i)=>({k,g:pool[i]})).filter(x=>x.k>0),fH,fA,fD});
-                if(top5.length>5)top5.pop();
-                minBV=top5.length===5?top5[4].bv:-Infinity;
-              }
-            }
-          }
-        }
-      }
-      bufResults.push({label:buf.label,w:buf.w,top5,bestBV:top5.length?top5[0].bv:0});
-    }
-
-    bufResults.sort((a,b)=>b.bestBV-a.bestBV);
-    const avgBV=bufResults.reduce((s,b)=>s+b.w*b.bestBV,0);
-    const peakBV=bufResults[0].bestBV;
-    const bottomBV=bufResults[bufResults.length-1].bestBV;
-    const score=avgBV*0.5+bottomBV*0.3+peakBV*0.2;
-    results.push({dt,avgBV,peakBV,bottomBV,score,bufResults});
-  }
-
-  results.sort((a,b)=>b.score-a.score);
-  return results;
 }
 
 const STAT_COL={체:'#fbbf24',공:'#f87171',방:'#60a5fa'};
@@ -1524,148 +1353,6 @@ function fmtPendMob(pend){
   return`<div style="display:flex;align-items:center;gap:6px;flex:1;min-width:0">${pimg}<span style="font-size:11px;color:var(--dim)">${shortTypeMap[pend.type]||pend.type} <small>(${opts})</small></span></div>`;
 }
 
-function renderResTop(top10){
-  const el=document.getElementById('res-body-top');
-  if(!top10.length){el.innerHTML='<div style="padding:30px;text-align:center;color:var(--dim)">결과 없음</div>';return;}
-  const medals=['🥇','🥈','🥉'];
-  // 모바일용 카드
-  let mobHtml='<div class="mob-only">';
-  // PC용 테이블
-  let pcHtml=`<table class="rtbl pc-only"><thead><tr>
-    <th>순위</th><th>타입</th><th>장신구 / 인챈트</th>
-    <th>젬 배분</th><th>펜던트</th><th>버프</th><th>체 / 공 / 방</th><th>비밸</th>
-  </tr></thead><tbody>`;
-  top10.forEach((r,i)=>{
-    const rank=i<3?medals[i]:`<span class="rank-n">${i+1}</span>`;
-    const dc=DCOLORS[r.dt];
-    const a=ACC_DB.find(x=>x.n===r.accN);
-    const aImg=a&&a.img?`<img src="${a.img}" style="width:38px;height:38px;object-fit:contain;border-radius:5px">`:'';
-    mobHtml+=mkMobCard(rank,dc,r.dt,aImg,fmtAccName(r.accN),fmtAccEnc(r.enc),
-      fmtGem(r.alloc),fmtPendMob(r.pend),fmtBufLabel(r.buf.label),
-      r.fH.toLocaleString('ko-KR'),r.fA.toLocaleString('ko-KR'),r.fD.toLocaleString('ko-KR'),
-      (r.bv/1e6).toFixed(1));
-    pcHtml+=`<tr>
-      <td>${rank}</td>
-      <td><span class="dtype-b" style="color:${dc};border-color:${dc}">${r.dt}</span></td>
-      <td>
-        <div style="display:flex;align-items:center;gap:8px">
-          ${a&&a.img?`<img src="${a.img}" style="width:36px;height:36px;object-fit:contain;border-radius:4px">`:''}
-          <div><div style="font-weight:800;margin-bottom:3px">${fmtAccName(r.accN)}</div>${fmtAccEnc(r.enc)}</div>
-        </div>
-      </td>
-      <td><div class="gem-tags">${fmtGem(r.alloc)}</div></td>
-      <td style="font-size:12px;color:var(--dim)">${fmtPend(r.pend)}</td>
-      <td style="font-size:12px">${fmtBufLabel(r.buf.label)}</td>
-      <td class="st-cell">
-        <span style="color:var(--hpc)">${r.fH.toLocaleString('ko-KR')}</span> /
-        <span style="color:var(--atc)">${r.fA.toLocaleString('ko-KR')}</span> /
-        <span style="color:var(--dfc)">${r.fD.toLocaleString('ko-KR')}</span>
-      </td>
-      <td class="bv-cell">${(r.bv/1e6).toFixed(1)}</td>
-    </tr>`;
-  });
-  el.innerHTML=mobHtml+'</div>'+pcHtml+'</tbody></table>';
-}
-
-//평균 비밸 결과 출력
-function renderResAvg(results){
-  const el=document.getElementById('res-body-avg');
-  if(!results.length){el.innerHTML='<div style="padding:30px;text-align:center;color:var(--dim)">결과 없음</div>';return;}
-  let html=`<table class="rtbl"><thead><tr>
-    <th class="pc-only">타입</th><th class="pc-only">고점</th><th class="pc-only">저점</th><th class="pc-only">평균 비밸</th>
-    <th class="pc-only" style="color:var(--text)">최종 점수
-      <span style="display:inline-block;width:16px;height:16px;background:#fff;color:#000;border-radius:50%;font-size:11px;font-weight:800;text-align:center;line-height:16px;cursor:help;margin-left:4px;position:relative"
-        onmouseenter="document.getElementById('score-tip').style.display='block'"
-        onmouseleave="document.getElementById('score-tip').style.display='none'">?</span>
-      <div id="score-tip" style="display:none;position:absolute;background:var(--sf2);color:var(--text);font-size:12px;font-weight:400;padding:7px 11px;border-radius:6px;border:1px solid var(--bd);white-space:nowrap;z-index:999;margin-top:4px">
-        가중평균, 고점, 저점을 모두 고려한 종합 수치입니다.<br><br>계산식: 가중평균비밸×0.5 + 저점×0.3 + 고점×0.2
-      </div>
-    </th>
-  </tr></thead><tbody>`;
-  results.forEach((r,i)=>{
-    const dc=DCOLORS[r.dt];
-    const peak=r.bufResults[0];
-    const bottom=r.bufResults[r.bufResults.length-1];
-    html+=`<tr style="cursor:pointer" onclick="toggleAvgDetail(${i})">
-      <td class="pc-only">
-        <span class="dtype-b" style="color:${dc};border-color:${dc}">${r.dt}</span>
-        <span class="avg-arrow" id="avg-arrow-${i}" style="color:var(--text);font-size:10px;margin-left:6px">▼</span>
-      </td>
-      <td class="pc-only"><span class="bv-cell">${(peak.bestBV/1e6).toFixed(1)}</span> (${fmtBufLabel(peak.label)})</td>
-      <td class="pc-only"><span class="bv-cell">${(bottom.bestBV/1e6).toFixed(1)}</span> (${fmtBufLabel(bottom.label)})</td>
-      <td class="pc-only bv-cell">${(r.avgBV/1e6).toFixed(1)}</td>
-      <td class="pc-only bv-cell" style="color:var(--gold)">${(r.score/1e6).toFixed(1)}</td>
-      <td class="mob-only" style="padding:10px 14px">
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">
-          <div>
-            <span class="dtype-b" style="color:${dc};border-color:${dc}">${r.dt}</span>
-            <span class="avg-arrow" id="avg-arrow-${i}" style="color:var(--text);font-size:10px;margin-left:6px">▼</span>
-          </div>
-          <div style="display:flex;gap:12px;flex-wrap:wrap;font-size:12px">
-            <span><span style="color:var(--dim);font-size:10px">고점 </span><span class="bv-cell">${(peak.bestBV/1e6).toFixed(1)}</span></span>
-            <span><span style="color:var(--dim);font-size:10px">저점 </span><span class="bv-cell">${(bottom.bestBV/1e6).toFixed(1)}</span></span>
-            <span><span style="color:var(--dim);font-size:10px">평균 </span><span class="bv-cell">${(r.avgBV/1e6).toFixed(1)}</span></span>
-            <span><span style="color:var(--dim);font-size:10px">점수 </span><span class="bv-cell" style="color:var(--gold)">${(r.score/1e6).toFixed(1)}</span></span>
-          </div>
-        </div>
-      </td>
-    </tr>
-    <tr id="avg-detail-${i}" style="display:none">
-      <td colspan="6" style="padding:0">${renderAvgDetail(r)}</td>
-    </tr>`;
-  });
-  el.innerHTML=html+'</tbody></table>';
-}
-
-function toggleAvgDetail(i){
-  const el=document.getElementById(`avg-detail-${i}`);
-  const arrow=document.getElementById('avg-arrow-'+i);
-  if(!el)return;
-  const open=el.style.display==='none';
-  el.style.display=open?'':'none';
-  if(arrow)arrow.textContent=open?'▲':'▼';
-}
-
-function renderAvgDetail(r){
-  const medals=['🥇','🥈','🥉'];
-  let mobHtml='<div class="mob-only" style="padding:10px 0;background:var(--sf2)">';
-  let pcHtml='<div class="pc-only" style="padding:10px 16px;background:var(--sf2)">';
-  r.bufResults.forEach(buf=>{
-    const label=`<span class="bv-cell">${(buf.bestBV/1e6).toFixed(1)}</span> (${fmtBufLabel(buf.label)})`;
-    mobHtml+=`<div style="margin-bottom:10px"><div style="font-size:12px;font-weight:800;margin:0 14px 6px">${label}</div>`;
-    pcHtml+=`<div style="margin-bottom:14px"><div style="font-size:12px;font-weight:800;margin-bottom:6px">${label}</div>
-      <table class="rtbl" style="min-width:0"><thead><tr>
-        <th>순위</th><th>장신구 / 인챈트</th><th>젬 배분</th><th>펜던트</th><th>체 / 공 / 방</th><th>비밸</th>
-      </tr></thead><tbody>`;
-    buf.top5.forEach((item,j)=>{
-      const rank=j<3?medals[j]:`<span class="rank-n">${j+1}</span>`;
-      const a=ACC_DB.find(x=>x.n===item.accN);
-      const aImg=a&&a.img?`<img src="${a.img}" style="width:36px;height:36px;object-fit:contain;border-radius:4px">`:'';
-      mobHtml+=mkMobCard(rank,'#aaa','',aImg,fmtAccName(item.accN),fmtAccEnc(item.enc),
-        fmtGem(item.alloc),fmtPendMob(item.pend),'',
-        item.fH.toLocaleString('ko-KR'),item.fA.toLocaleString('ko-KR'),item.fD.toLocaleString('ko-KR'),
-        (item.bv/1e6).toFixed(1));
-      const pcImg=a&&a.img?`<img src="${a.img}" style="width:28px;height:28px;object-fit:contain;border-radius:3px">`:'';
-      pcHtml+=`<tr>
-        <td>${rank}</td>
-        <td><div style="display:flex;align-items:center;gap:6px">${pcImg}<div><div style="font-weight:800;font-size:12px">${fmtAccName(item.accN)}</div>${fmtAccEnc(item.enc)}</div></div></td>
-        <td><div class="gem-tags">${fmtGem(item.alloc)}</div></td>
-        <td style="font-size:12px">${fmtPend(item.pend)}</td>
-        <td class="st-cell">
-          <span style="color:var(--hpc)">${item.fH.toLocaleString('ko-KR')}</span> /
-          <span style="color:var(--atc)">${item.fA.toLocaleString('ko-KR')}</span> /
-          <span style="color:var(--dfc)">${item.fD.toLocaleString('ko-KR')}</span>
-        </td>
-        <td class="bv-cell">${(item.bv/1e6).toFixed(1)}</td>
-      </tr>`;
-    });
-    mobHtml+='</div>';
-    pcHtml+='</tbody></table></div>';
-  });
-  return mobHtml+'</div>'+pcHtml+'</div>';
-}
-
-// 젬 배분을 "체2(40,40) 공1(39) 방2(40,38)" 형식으로 포맷
 function fmtGem(alloc){
   if(!alloc||!alloc.length)return'<span style="color:var(--dimmer)">없음</span>';
   const bySt={hp:[],atk:[],def:[]};
@@ -1686,11 +1373,11 @@ function fmtPend(p){
   const opts=p.options.slice(0,mo).filter(o=>o&&o.stat).map(o=>{
     const col=o.stat==='hp'?'#fbbf24':o.stat==='atk'?'#f87171':'#60a5fa';
     return`<span style="color:${col}">${SK[o.stat]}</span><span style="color:var(--text)">${o.val||0}%</span>`;
-  }).join('<span style="color:var(--dim)">/</span>');
-  const img=IMG_PEND[p.type]?`<img src="${IMG_PEND[p.type]}" style="width:36px;height:36px;object-fit:contain;border-radius:4px">`:'';
+  }).join('<span style="color:var(--dim)"> / </span>');
+  const img=IMG_PEND[p.type]?`<img src="${IMG_PEND[p.type]}" style="width:28px;height:28px;object-fit:contain;border-radius:4px">`:'';
   const shortTypeMap={'달':'달펜','태양':'태양펜','별':'별펜'};
   const shortType=shortTypeMap[p.type]||p.type;
-  return`<div style="display:flex;align-items:center;gap:8px">${img}<div style="color:var(--text)"><span class="pend-name-full">${p.type}의 펜던트</span><span class="pend-name-short">${shortType}</span><br><small>(${opts})</small></div></div>`;
+  return`<div style="display:flex;align-items:center;gap:8px">${img}<div style="color:var(--text)"><span class="pend-name-full">${p.type}의 펜던트</span><span class="pend-name-short">${shortType}</span><br><small style="font-size:10.5px">(${opts})</small></div></div>`;
 }
 
 // ================================================================
@@ -1707,6 +1394,8 @@ function init(){
 document.addEventListener('DOMContentLoaded',function(){init();try{renderSpecView();}catch(e){console.error('renderSpecView',e);}});
 </script>
 <script>
+if (!globalThis.DV1_DRAGON_VIEWS) throw new Error("드래곤 데이터 로드 실패: 초기화 중단");
+
 (function(){
   var link=document.getElementById('theme-css');
   if(!link)return;
@@ -1722,6 +1411,21 @@ document.addEventListener('DOMContentLoaded',function(){init();try{renderSpecVie
 })();
 </script>
 <script src="./sb_config.js"></script>
-<script src="./spec_sync.js"></script>
+<script>if (globalThis.DV1_DRAGON_VIEWS) document.write('<script src="./spec_sync.js"><\/script>');</script>
+</main>
+</div>
+</div>
+<script src="./tar-db.js"></script>
+<script src="./spirit-simulator.js"></script>
+<script src="./ui.js"></script>
+<script>
+if (!globalThis.DV1_DRAGON_VIEWS) throw new Error("드래곤 데이터 로드 실패: 초기화 중단");
+
+UI.shell({page:'calculator',title:'정령 시뮬레이터',sub:'비벨(체력 × 공격 × 방어) 최적화',foot:'<div style="font-size:11.5px;color:var(--text4)">Made by 리레프</div>',tasks:{
+  on:'spec', items:[['spec','내 스펙'],['sim','시뮬레이터']],
+  go:function(k){ if(typeof switchTab==='function') switchTab(k); }
+}});
+if(typeof switchTab==='function') switchTab('spec');
+</script>
 </body>
 </html>

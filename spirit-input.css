@@ -1,0 +1,31 @@
+.champ-sp-row,.legacy-sp-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0;min-width:0;padding:12px;box-sizing:border-box;font-size:12px;border:1px solid var(--text4,#697386);border-radius:9px;background:var(--sf2);box-shadow:inset 0 1px 0 #ffffff08}
+.champ-sp-row>span:first-child,.legacy-sp-row>span:first-child{flex:0 0 100%;box-sizing:border-box;padding-bottom:8px;margin-bottom:2px;border-bottom:1px solid var(--bd);font-size:13px;font-weight:800;color:var(--text)}
+.champ-chip{min-width:36px;min-height:32px;padding:4px 8px;border:1px solid var(--bd);border-radius:6px;background:var(--sf2);color:var(--text);cursor:pointer;font:inherit}
+.champ-chip.on-hp{color:#fbbf24;border-color:#fbbf24;background:#fbbf241a}
+.champ-chip.on-atk{color:#f87171;border-color:#f87171;background:#f871711a}
+.champ-chip.on-def{color:#60a5fa;border-color:#60a5fa;background:#60a5fa1a}
+.champ-chip:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.champ-value{margin-left:auto;white-space:nowrap;color:var(--gold)}
+.dragon-spirit-grid:has(.champ-sp-row){display:block}
+.spirit-option-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));gap:12px;margin:10px 0 14px}
+.spirit-mode{display:flex;gap:4px;margin:10px 0 6px}
+.spirit-mode button{padding:6px 12px;border:1px solid var(--bd);border-radius:6px;color:var(--dim);background:var(--sf2);cursor:pointer}
+.spirit-mode button[aria-pressed="true"]{color:var(--gold);border-color:var(--gold)}
+.u .legacy-sp-row select{min-width:0;flex:1;max-width:130px;height:36px;padding:4px 6px;font-size:13px;line-height:1.35}
+html:not([data-spirit-input="legacy"]) .spirit-legacy{display:none!important}
+html[data-spirit-input="legacy"] .spirit-buttons{display:none!important}
+.spirit-bonus{border-left:3px solid var(--gold);margin-top:14px}
+.spirit-bonus>span:first-child{color:var(--gold)}
+@media(max-width:580px){.spirit-option-grid{grid-template-columns:1fr}.dragon-preset-row .sp-preset-btn{flex:1 1 60px}.u .legacy-sp-row select{height:40px;font-size:16px}}
+.dragon-preset-row{flex-wrap:wrap;gap:6px}
+.dragon-preset-row .sp-preset-btn{flex:0 1 auto;min-width:62px}
+.dragon-preset-row .sp-preset-name,.dragon-preset-row .sp-preset-desc{display:block}
+#calc-progress{display:flex;flex-direction:column;gap:6px;margin:10px 0;color:var(--gold);font-size:12px}
+#calc-progress[hidden]{display:none}
+#calc-progress progress{width:100%;height:10px;accent-color:#d6ab5b}
+[data-stat="hp"]{--sp-color:#fbbf24;--sp-tint:#fbbf241a}
+[data-stat="atk"]{--sp-color:#f87171;--sp-tint:#f871711a}
+[data-stat="def"]{--sp-color:#60a5fa;--sp-tint:#60a5fa1a}
+.u .champ-sp-row[data-stat]:not([data-stat=""]),.u .legacy-sp-row[data-stat]:not([data-stat=""]){border-color:var(--sp-color);background:linear-gradient(var(--sp-tint),var(--sp-tint)),var(--sf2)}
+.u [data-stat]:not([data-stat=""])>.champ-value,.u .champ-sp-row[data-stat]:not([data-stat=""])>span:first-child,.u .legacy-sp-row[data-stat]:not([data-stat=""])>span:first-child,.u .legacy-sp-row[data-stat]:not([data-stat=""]) select{color:var(--sp-color)}
+.u .champ-sp-row[data-stat]:not([data-stat=""]) .champ-chip[aria-pressed="true"],.u .champ-sp-row[data-stat]:not([data-stat=""]) .champ-type{color:var(--sp-color);border-color:var(--sp-color);background:var(--sp-tint)}

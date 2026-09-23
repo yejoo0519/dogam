@@ -5,32 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>묻고답하기</title>
 <link id="theme-css" rel="stylesheet" href="./theme-dark.css">
+<link rel="stylesheet" href="./ui.css">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="./theme.js"></script>
 <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
-<style>
-/* ── 테마 팔레트 (index.html과 동일) ── */
-[data-theme="dark"]{
-  --bg:#0e1116;--bg2:#161a22;--bg3:#1c212c;
-  --border:#23293a;--border2:#1b1f2a;--border3:#2d3447;
-  --text:#eaecf2;--text2:#b3b9c7;--text3:#7d8597;--text4:#565d6e;
-  --accent:#7aa2f7;--accent-bg:rgba(122,162,247,0.12);--accent-border:rgba(122,162,247,0.30);
-}
-[data-theme="light"]{
-  --bg:#f7f7f8;--bg2:#ffffff;--bg3:#f1f2f4;
-  --border:#e6e7ea;--border2:#eeeff2;--border3:#d4d6db;
-  --text:#15171c;--text2:#4a4d57;--text3:#71757f;--text4:#9aa0aa;
-  --accent:#2f6fed;--accent-bg:rgba(47,111,237,0.10);--accent-border:rgba(47,111,237,0.32);
-}
-[data-theme="beige"]{
-  --bg:#f3ecdd;--bg2:#faf3e2;--bg3:#ebe0c7;
-  --border:#d8caa8;--border2:#e1d4b3;--border3:#c0ad84;
-  --text:#2a2316;--text2:#5a4e34;--text3:#837553;--text4:#a99971;
-  --accent:#b06a1e;--accent-bg:rgba(176,106,30,0.10);--accent-border:rgba(176,106,30,0.32);
-}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--text);padding:12px}
-.back-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;text-decoration:none;margin-bottom:16px;transition:all 0.15s}
+<style>.back-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;text-decoration:none;margin-bottom:16px;transition:all 0.15s}
 .back-btn:hover{border-color:var(--accent);color:var(--text)}
 .post-box{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:16px;max-width:780px}
 .post-box.pinned{border-color:rgba(255,167,38,0.4);background:rgba(255,167,38,0.03)}
@@ -99,15 +79,16 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
 .tag-상관X{background:rgba(255,255,255,0.08);color:var(--text2);border:1px solid var(--border)}
 </style>
 </head>
-<body>
+<body class="u">
+<div class="u-app">
+<main class="u-wrap narrow">
 
 <a id="back-link" href="./community.html" class="back-btn">← 목록으로</a>
 <div class="post-box" id="post-box">로딩 중...</div>
 <div id="comments-section"></div>
 
 <script src="./sb_config.js"></script>
-<script>
-const user = getUser();
+<script>const user = getUser();
 const params = new URLSearchParams(location.search);
 const postId = params.get('id');
 const backBoard = params.get('back');
@@ -118,10 +99,10 @@ let adminIds = [];
 function getBlockList() { try { return JSON.parse(localStorage.getItem('block_list') || '[]'); } catch { return []; } }
 function saveBlockList(list) { localStorage.setItem('block_list', JSON.stringify(list)); }
 function blockUser(userId, nickname) {
-  if(!confirm(`"${nickname}"님을 차단할까요? 목록에서 이 유저의 글이 숨겨집니다.`)) return;
-  const list = getBlockList();
-  if(!list.includes(userId)) { list.push(userId); saveBlockList(list); }
-  alert('차단됐어요.');
+ if(!confirm(`"${nickname}"님을 차단할까요? 목록에서 이 유저의 글이 숨겨집니다.`)) return;
+ const list = getBlockList();
+ if(!list.includes(userId)) { list.push(userId); saveBlockList(list); }
+ alert('차단됐어요.');
 }
 
 if(backBoard === 'guild') document.getElementById('back-link').href = './guild.html';
@@ -129,247 +110,232 @@ else if(backBoard === 'guide') document.getElementById('back-link').href = './gu
 else if(backBoard === 'friend') document.getElementById('back-link').href = './friend.html';
 
 async function loadAdmins() {
-  try {
-    const rows = await supabase('GET', 'users', null, '?is_admin=eq.true&select=id');
-    adminIds = rows ? rows.map(r => r.id) : [];
-  } catch(e) {}
+ try {
+ const rows = await supabase('GET', 'users', null, '?is_admin=eq.true&select=id');
+ adminIds = rows ? rows.map(r =>r.id) : [];
+ } catch(e) {}
 }
 
 function isAdmin(userId) { return adminIds.includes(userId); }
 
 async function loadPost() {
-  await loadAdmins();
-  try {
-    const rows = await supabase('GET', 'posts', null, `?id=eq.${postId}`);
-    if(!rows || rows.length === 0) { document.getElementById('post-box').innerHTML = '<div style="color:var(--text4);text-align:center;padding:40px">글을 찾을 수 없습니다.</div>'; return; }
-    currentPost = rows[0];
-    document.title = currentPost.title + ' - ' + (currentPost.board === 'guild' ? '길드' : '묻고답하기');
+ await loadAdmins();
+ try {
+ const rows = await supabase('GET', 'posts', null, `?id=eq.${postId}`);
+ if(!rows || rows.length === 0) { document.getElementById('post-box').innerHTML = '<div style="color:var(--text4);text-align:center;padding:40px">글을 찾을 수 없습니다.</div>'; return; }
+ currentPost = rows[0];
+ document.title = currentPost.title + ' - ' + (currentPost.board === 'guild' ? '길드' : '묻고답하기');
 
-    if(user) {
-      const likeRows = await supabase('GET', 'post_likes', null, `?post_id=eq.${postId}&user_id=eq.${user.id}`);
-      isLiked = likeRows && likeRows.length > 0;
-    }
+ if(user) {
+ const likeRows = await supabase('GET', 'post_likes', null, `?post_id=eq.${postId}&user_id=eq.${user.id}`);
+ isLiked = likeRows && likeRows.length >0;
+ }
 
-    const postBox = document.getElementById('post-box');
-    if(currentPost.is_pinned) postBox.classList.add('pinned');
+ const postBox = document.getElementById('post-box');
+ if(currentPost.is_pinned) postBox.classList.add('pinned');
 
-    const isOwner = user && user.id === currentPost.user_id;
-    const canDelete = user && (isOwner || user.is_admin);
-    const isGuild = currentPost.board === 'guild';
-    const authorIsAdmin = isAdmin(currentPost.user_id);
+ const isOwner = user && user.id === currentPost.user_id;
+ const canDelete = user && (isOwner || user.is_admin);
+ const isGuild = currentPost.board === 'guild';
+ const authorIsAdmin = isAdmin(currentPost.user_id);
 
-    postBox.innerHTML = `
-      ${currentPost.is_pinned ? '<div class="pin-label">📌 공지 / 고정글</div>' : ''}
-      ${isGuild && (currentPost.guild_icon || currentPost.guild_interview) ? `
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
-          ${currentPost.guild_icon ? `<img src="${currentPost.guild_icon}" style="width:56px;height:56px;border-radius:10px;object-fit:cover;border:1px solid var(--border);background:var(--bg3)">` : ''}
-        </div>
-      ` : ''}
-      <div class="post-title">${currentPost.title}</div>
-      ${(() => { let tags=[]; try{tags=JSON.parse(currentPost.tags||'[]')}catch{}; return tags.length ? `<div style="margin-bottom:8px">${tags.map(t=>`<span class="tag-badge tag-${t.replace(/\s/g,'')}">${t}</span>`).join('')}</div>` : ''; })()}
-      <div class="post-meta">
-        <span class="post-author">${currentPost.nickname || currentPost.username}</span>
-        ${authorIsAdmin ? '<span class="admin-badge">관리자</span>' : ''}
-        <span>${currentPost.created_at.slice(0,10).replace(/-/g,'.')}</span>
-      </div>
-      ${currentPost.board === 'friend' && currentPost.friend_code ? `<div class="friend-code-box"><span class="friend-code-label">친구코드</span><span class="friend-code-value">${currentPost.friend_code}</span></div>` : ''}
-      <div class="post-content">${currentPost.content}</div>
+ postBox.innerHTML = `
+ ${currentPost.is_pinned ? '<div class="pin-label">공지 / 고정글</div>' : ''}
+ ${isGuild && (currentPost.guild_icon || currentPost.guild_interview) ? `
+ <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">${currentPost.guild_icon ? `<img src="${currentPost.guild_icon}" style="width:56px;height:56px;border-radius:10px;object-fit:cover;border:1px solid var(--border);background:var(--bg3)">` : ''}
+ </div>` : ''}
+ <div class="post-title">${currentPost.title}</div>${(() =>{ let tags=[]; try{tags=JSON.parse(currentPost.tags||'[]')}catch{}; return tags.length ? `<div style="margin-bottom:8px">${tags.map(t=>`<span class="tag-badge tag-${t.replace(/\s/g,'')}">${t}</span>`).join('')}</div>` : ''; })()}
+ <div class="post-meta">
+ <span class="post-author">${currentPost.nickname || currentPost.username}</span>${authorIsAdmin ? '<span class="admin-badge">관리자</span>' : ''}
+ <span>${currentPost.created_at.slice(0,10).replace(/-/g,'.')}</span>
+ </div>${currentPost.board === 'friend' && currentPost.friend_code ? `<div class="friend-code-box"><span class="friend-code-label">친구코드</span><span class="friend-code-value">${currentPost.friend_code}</span></div>` : ''}
+ <div class="post-content">${currentPost.content}</div>${isGuild && isOwner ? `
+ <div class="edit-form" id="edit-form" style="display:none">
+ <label>제목</label>
+ <input id="edit-title" type="text" value="${currentPost.title.replace(/"/g,'&quot;')}">
+ <label>길드 아이콘 URL <span style="color:var(--text4);font-weight:400">(선택)</span></label>
+ <input id="edit-guild-icon" type="text" placeholder="이미지 URL 입력 (없으면 기본 이미지 사용)" value="${(currentPost.guild_icon||'').replace(/"/g,'&quot;')}">
+ <label>면접방 링크 <span style="color:var(--text4);font-weight:400">(선택)</span></label>
+ <input id="edit-guild-interview" type="text" placeholder="카카오 오픈채팅 등 링크 입력" value="${(currentPost.guild_interview||'').replace(/"/g,'&quot;')}">
+ <label>내용</label>
+ <div id="edit-quill"></div>
+ <div class="edit-form-btns">
+ <button class="btn-gray" onclick="toggleEdit()">취소</button>
+ <button class="btn-primary" onclick="saveEdit()">저장</button>
+ </div>
+ </div>` : ''}
 
-      ${isGuild && isOwner ? `
-        <div class="edit-form" id="edit-form" style="display:none">
-          <label>제목</label>
-          <input id="edit-title" type="text" value="${currentPost.title.replace(/"/g,'&quot;')}">
-          <label>길드 아이콘 URL <span style="color:var(--text4);font-weight:400">(선택)</span></label>
-          <input id="edit-guild-icon" type="text" placeholder="이미지 URL 입력 (없으면 기본 이미지 사용)" value="${(currentPost.guild_icon||'').replace(/"/g,'&quot;')}">
-          <label>면접방 링크 <span style="color:var(--text4);font-weight:400">(선택)</span></label>
-          <input id="edit-guild-interview" type="text" placeholder="카카오 오픈채팅 등 링크 입력" value="${(currentPost.guild_interview||'').replace(/"/g,'&quot;')}">
-          <label>내용</label>
-          <div id="edit-quill"></div>
-          <div class="edit-form-btns">
-            <button class="btn-gray" onclick="toggleEdit()">취소</button>
-            <button class="btn-primary" onclick="saveEdit()">저장</button>
-          </div>
-        </div>
-      ` : ''}
-
-      <div class="post-actions">
-        <button class="btn-like ${isLiked ? 'liked' : ''}" id="like-btn" onclick="toggleLike()">
-          ❤ 추천 <span id="like-count">${currentPost.likes || 0}</span>
-        </button>
-        <div class="post-actions-right">
-          ${isGuild && isOwner ? `
-            <button class="btn btn-bump" onclick="bumpPost()">⬆ 끌어올리기</button>
-            <button class="btn btn-edit" onclick="toggleEdit()">수정</button>
-          ` : ''}
-          ${canDelete ? `<button class="btn btn-danger" onclick="deletePost(${currentPost.id})">삭제</button>` : ''}
-        </div>
-      </div>
-      ${isGuild && currentPost.guild_interview ? `
-        <a href="${currentPost.guild_interview}" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:14px;padding:13px;background:#FEE500;border:none;border-radius:10px;color:#3C1E1E;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none">
-          K&nbsp; 길드 면접방 입장하기
-        </a>
-      ` : ''}
-    `;
-  } catch(e) { document.getElementById('post-box').innerHTML = '오류: ' + e.message; }
+ <div class="post-actions">
+ <button class="btn-like ${isLiked ? 'liked' : ''}" id="like-btn" onclick="toggleLike()">추천 <span id="like-count">${currentPost.likes || 0}</span>
+ </button>
+ <div class="post-actions-right">${isGuild && isOwner ? `
+ <button class="btn btn-bump" onclick="bumpPost()">⬆ 끌어올리기</button>
+ <button class="btn btn-edit" onclick="toggleEdit()">수정</button>` : ''}
+ ${canDelete ? `<button class="btn btn-danger" onclick="deletePost(${currentPost.id})">삭제</button>` : ''}
+ </div>
+ </div>${isGuild && currentPost.guild_interview ? `
+ <a href="${currentPost.guild_interview}" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:14px;padding:13px;background:#FEE500;border:none;border-radius:10px;color:#3C1E1E;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none">K&nbsp; 길드 면접방 입장하기
+ </a>` : ''}
+ `;
+ } catch(e) { document.getElementById('post-box').innerHTML = '오류: ' + e.message; }
 }
 
 let editQuill = null;
 
 function toggleEdit() {
-  const form = document.getElementById('edit-form');
-  const isHidden = form.style.display === 'none';
-  form.style.display = isHidden ? '' : 'none';
-  if(isHidden && !editQuill) {
-    editQuill = new Quill('#edit-quill', {
-      theme: 'snow',
-      modules: {
-        toolbar: [
-          ['bold','italic','underline','strike'],
-          [{'color':[]},{'background':[]}],
-          [{'size':['small',false,'large','huge']}],
-          ['link','image'],
-          [{'list':'ordered'},{'list':'bullet'}],
-          ['clean']
-        ]
-      }
-    });
-    editQuill.root.innerHTML = currentPost.content || '';
-  }
+ const form = document.getElementById('edit-form');
+ const isHidden = form.style.display === 'none';
+ form.style.display = isHidden ? '' : 'none';
+ if(isHidden && !editQuill) {
+ editQuill = new Quill('#edit-quill', {
+ theme: 'snow',
+ modules: {
+ toolbar: [
+ ['bold','italic','underline','strike'],
+ [{'color':[]},{'background':[]}],
+ [{'size':['small',false,'large','huge']}],
+ ['link','image'],
+ [{'list':'ordered'},{'list':'bullet'}],
+ ['clean']
+ ]
+ }
+ });
+ editQuill.root.innerHTML = currentPost.content || '';
+ }
 }
 
 async function saveEdit() {
-  const title = document.getElementById('edit-title').value.trim();
-  const guildIcon = document.getElementById('edit-guild-icon').value.trim();
-  const guildInterview = document.getElementById('edit-guild-interview').value.trim();
-  const content = editQuill ? editQuill.root.innerHTML : '';
-  const textOnly = editQuill ? editQuill.getText().trim() : '';
-  if(!title || !textOnly) { alert('제목과 내용을 입력해주세요.'); return; }
-  try {
-    await supabase('PATCH', 'posts', {
-      title,
-      content,
-      guild_icon: guildIcon || null,
-      guild_interview: guildInterview || null,
-      updated_at: new Date().toISOString()
-    }, `?id=eq.${postId}`);
-    alert('수정됐어요!');
-    location.reload();
-  } catch(e) { alert('오류: ' + e.message); }
+ const title = document.getElementById('edit-title').value.trim();
+ const guildIcon = document.getElementById('edit-guild-icon').value.trim();
+ const guildInterview = document.getElementById('edit-guild-interview').value.trim();
+ const content = editQuill ? editQuill.root.innerHTML : '';
+ const textOnly = editQuill ? editQuill.getText().trim() : '';
+ if(!title || !textOnly) { alert('제목과 내용을 입력해주세요.'); return; }
+ try {
+ await supabase('PATCH', 'posts', {
+ title,
+ content,
+ guild_icon: guildIcon || null,
+ guild_interview: guildInterview || null,
+ updated_at: new Date().toISOString()
+ }, `?id=eq.${postId}`);
+ alert('수정됐어요!');
+ location.reload();
+ } catch(e) { alert('오류: ' + e.message); }
 }
 
 async function bumpPost() {
-  if(!confirm('글을 끌어올릴까요?')) return;
-  try {
-    await supabase('PATCH', 'posts', { updated_at: new Date().toISOString() }, `?id=eq.${postId}`);
-    alert('끌어올렸어요!');
-  } catch(e) { alert('오류: ' + e.message); }
+ if(!confirm('글을 끌어올릴까요?')) return;
+ try {
+ await supabase('PATCH', 'posts', { updated_at: new Date().toISOString() }, `?id=eq.${postId}`);
+ alert('끌어올렸어요!');
+ } catch(e) { alert('오류: ' + e.message); }
 }
 
 async function toggleLike() {
-  if(!user) { alert('로그인 후 추천할 수 있어요.'); return; }
-  try {
-    if(isLiked) {
-      await supabase('DELETE', 'post_likes', null, `?post_id=eq.${postId}&user_id=eq.${user.id}`);
-      await supabase('PATCH', 'posts', { likes: parseInt(document.getElementById('like-count').textContent) - 1 }, `?id=eq.${postId}`);
-      isLiked = false;
-    } else {
-      await supabase('POST', 'post_likes', { post_id: parseInt(postId), user_id: user.id });
-      await supabase('PATCH', 'posts', { likes: parseInt(document.getElementById('like-count').textContent) + 1 }, `?id=eq.${postId}`);
-      isLiked = true;
-    }
-    const rows = await supabase('GET', 'posts', null, `?id=eq.${postId}&select=likes`);
-    document.getElementById('like-count').textContent = rows[0].likes;
-    document.getElementById('like-btn').className = `btn-like ${isLiked ? 'liked' : ''}`;
-  } catch(e) { alert('오류: ' + e.message); }
+ if(!user) { alert('로그인 후 추천할 수 있어요.'); return; }
+ try {
+ if(isLiked) {
+ await supabase('DELETE', 'post_likes', null, `?post_id=eq.${postId}&user_id=eq.${user.id}`);
+ await supabase('PATCH', 'posts', { likes: parseInt(document.getElementById('like-count').textContent) - 1 }, `?id=eq.${postId}`);
+ isLiked = false;
+ } else {
+ await supabase('POST', 'post_likes', { post_id: parseInt(postId), user_id: user.id });
+ await supabase('PATCH', 'posts', { likes: parseInt(document.getElementById('like-count').textContent) + 1 }, `?id=eq.${postId}`);
+ isLiked = true;
+ }
+ const rows = await supabase('GET', 'posts', null, `?id=eq.${postId}&select=likes`);
+ document.getElementById('like-count').textContent = rows[0].likes;
+ document.getElementById('like-btn').className = `btn-like ${isLiked ? 'liked' : ''}`;
+ } catch(e) { alert('오류: ' + e.message); }
 }
 
 async function deletePost(id) {
-  if(!confirm('글을 삭제할까요?')) return;
-  await supabase('DELETE', 'posts', null, `?id=eq.${id}`);
-  const back = backBoard === 'guild' ? './guild.html' : backBoard === 'guide' ? './guide.html' : backBoard === 'friend' ? './friend.html' : './community.html';
-  location.href = back;
+ if(!confirm('글을 삭제할까요?')) return;
+ await supabase('DELETE', 'posts', null, `?id=eq.${id}`);
+ const back = backBoard === 'guild' ? './guild.html' : backBoard === 'guide' ? './guide.html' : backBoard === 'friend' ? './friend.html' : './community.html';
+ location.href = back;
 }
 
 async function loadComments() {
-  try {
-    const comments = await supabase('GET', 'comments', null, `?post_id=eq.${postId}&order=created_at.asc`);
-    const section = document.getElementById('comments-section');
-    let html = `<div class="comments-title">댓글 ${comments ? comments.length : 0}개</div>`;
-    if(comments && comments.length > 0) {
-      html += `<div class="comment-box">` + comments.map(c => {
-        const canDel = user && (user.id === c.user_id || user.is_admin);
-        const commentIsAdmin = isAdmin(c.user_id);
-        return `
-          <div class="comment-item">
-            <div class="comment-meta">
-              <span class="comment-author">${c.nickname || c.username}</span>
-              ${commentIsAdmin ? '<span class="admin-badge">관리자</span>' : ''}
-              <span>${c.created_at.slice(0,10).replace(/-/g,'.')}</span>
-              ${user && user.id !== c.user_id && !commentIsAdmin ? `<button class="block-btn" onclick="blockUser('${c.user_id}','${c.nickname||c.username}')">차단</button>` : ''}
-              ${canDel ? `<button class="comment-del" onclick="deleteComment(${c.id})">삭제</button>` : ''}
-            </div>
-            <div class="comment-content">${c.content}</div>
-          </div>
-        `;
-      }).join('') + `</div>`;
-    }
-    if(user && currentPost.board !== 'guild') {
-      html += `
-      <div class="write-comment">
-          <textarea id="comment-content" placeholder="답변을 입력하세요"></textarea>
-          <div class="write-comment-btns">
-            <button class="btn-primary" onclick="submitComment()">답변 등록</button>
-          </div>
-        </div>
-      `;
-    } else if(currentPost.board !== 'guild') {
-      html += `<div class="login-notice"><a href="./login.html">로그인</a> 후 답변을 남길 수 있어요.</div>`;
-    }
-    section.innerHTML = html;
-  } catch(e) { console.error(e); }
+ try {
+ const comments = await supabase('GET', 'comments', null, `?post_id=eq.${postId}&order=created_at.asc`);
+ const section = document.getElementById('comments-section');
+ let html = `<div class="comments-title">댓글 ${comments ? comments.length : 0}개</div>`;
+ if(comments && comments.length >0) {
+ html += `<div class="comment-box">` + comments.map(c =>{
+ const canDel = user && (user.id === c.user_id || user.is_admin);
+ const commentIsAdmin = isAdmin(c.user_id);
+ return `
+ <div class="comment-item">
+ <div class="comment-meta">
+ <span class="comment-author">${c.nickname || c.username}</span>${commentIsAdmin ? '<span class="admin-badge">관리자</span>' : ''}
+ <span>${c.created_at.slice(0,10).replace(/-/g,'.')}</span>${user && user.id !== c.user_id && !commentIsAdmin ? `<button class="block-btn" onclick="blockUser('${c.user_id}','${c.nickname||c.username}')">차단</button>` : ''}
+ ${canDel ? `<button class="comment-del" onclick="deleteComment(${c.id})">삭제</button>` : ''}
+ </div>
+ <div class="comment-content">${c.content}</div>
+ </div>`;
+ }).join('') + `</div>`;
+ }
+ if(user && currentPost.board !== 'guild') {
+ html += `
+ <div class="write-comment">
+ <textarea id="comment-content" placeholder="답변을 입력하세요"></textarea>
+ <div class="write-comment-btns">
+ <button class="btn-primary" onclick="submitComment()">답변 등록</button>
+ </div>
+ </div>`;
+ } else if(currentPost.board !== 'guild') {
+ html += `<div class="login-notice"><a href="./login.html">로그인</a>후 답변을 남길 수 있어요.</div>`;
+ }
+ section.innerHTML = html;
+ } catch(e) { console.error(e); }
 }
 
 async function submitComment() {
-  const content = document.getElementById('comment-content').value.trim();
-  if(!content) { alert('내용을 입력해주세요.'); return; }
-  try {
-    await supabase('POST', 'comments', {
-      post_id: parseInt(postId),
-      user_id: user.id,
-      username: user.username,
-      nickname: user.nickname || user.username,
-      content
-    });
-    loadComments();
-  } catch(e) { alert('오류: ' + e.message); }
+ const content = document.getElementById('comment-content').value.trim();
+ if(!content) { alert('내용을 입력해주세요.'); return; }
+ try {
+ await supabase('POST', 'comments', {
+ post_id: parseInt(postId),
+ user_id: user.id,
+ username: user.username,
+ nickname: user.nickname || user.username,
+ content
+ });
+ loadComments();
+ } catch(e) { alert('오류: ' + e.message); }
 }
 
 async function deleteComment(id) {
-  if(!confirm('댓글을 삭제할까요?')) return;
-  await supabase('DELETE', 'comments', null, `?id=eq.${id}`);
-  loadComments();
+ if(!confirm('댓글을 삭제할까요?')) return;
+ await supabase('DELETE', 'comments', null, `?id=eq.${id}`);
+ loadComments();
 }
 
-(async () => {
-  await loadPost();
-  loadComments();
+(async () =>{
+ await loadPost();
+ loadComments();
 })();
 </script>
-<script>
-/* ── data-theme 동기화 (theme.js 연동) ── */
+<script>/* ── data-theme 동기화 (theme.js 연동) ── */
 (function(){
-  var link=document.getElementById('theme-css');
-  if(!link)return;
-  var sync=function(){
-    var c=document.getElementById('custom-theme-style');
-    if(c&&c.textContent&&c.textContent.length>0){document.documentElement.removeAttribute('data-theme');return;}
-    var m=String(link.href||'').match(/theme-(dark|light|beige)\.css/);
-    document.documentElement.setAttribute('data-theme',m?m[1]:'dark');
-  };
-  sync();
-  new MutationObserver(sync).observe(link,{attributes:true,attributeFilter:['href']});
-  new MutationObserver(sync).observe(document.head,{childList:true,subtree:true,characterData:true});
+ var link=document.getElementById('theme-css');
+ if(!link)return;
+ var sync=function(){
+ var c=document.getElementById('custom-theme-style');
+ if(c&&c.textContent&&c.textContent.length>0){document.documentElement.removeAttribute('data-theme');return;}
+ var m=String(link.href||'').match(/theme-(dark|light|beige)\.css/);
+ document.documentElement.setAttribute('data-theme',m?m[1]:'dark');
+ };
+ sync();
+ new MutationObserver(sync).observe(link,{attributes:true,attributeFilter:['href']});
+ new MutationObserver(sync).observe(document.head,{childList:true,subtree:true,characterData:true});
 })();
 </script>
+</main>
+</div>
+<script src="./ui.js"></script>
+<script>UI.shell({page:'community_view',title:'게시글',sub:''});</script>
 </body>
 </html>

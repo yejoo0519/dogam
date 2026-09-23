@@ -1,0 +1,2598 @@
+<!DOCTYPE html>
+<html data-cham-auto-page lang="ko" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="./cham-access.css">
+<script src="./sb_config.js"></script>
+<script src="./cham-access.js"></script>
+<script src="./dragons.js"></script>
+<script src="./cham-rules.js"></script>
+<script src="./dragon-views.js"></script>
+<script>
+if (!globalThis.DV1_DRAGON_VIEWS) {
+  document.addEventListener('DOMContentLoaded', function () {
+    var warning = document.createElement('div');
+    warning.setAttribute('role', 'alert');
+    warning.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:#171b25;color:#fff;padding:48px;font:18px/1.8 sans-serif';
+    warning.textContent = '드래곤 데이터를 불러오지 못해 페이지를 시작하지 않았습니다. 새로고침하거나 사이트 관리자에게 문의해 주세요.';
+    document.body.appendChild(warning);
+  });
+}
+</script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>챔피언대전 자동 계산기</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+<link id="theme-css" rel="stylesheet" href="./theme-dark.css">
+<link rel="stylesheet" href="./ui.css">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="./theme.js"></script>
+<style>
+
+.hd-back{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;border:1px solid var(--bd);background:var(--sf2);color:var(--text2);text-decoration:none;font-size:16px;flex-shrink:0}
+.hd-icon{font-size:26px}.hd-t{font-size:15px;font-weight:800;color:var(--gold)}.hd-s{font-size:11px;color:var(--dim);margin-top:2px}
+.wrap{max-width:none;margin:0;padding:0}
+.sec{background:var(--sf);border:1px solid var(--bd);border-radius:8px;margin-bottom:14px;overflow:hidden}
+.sec-hd{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 15px;background:transparent;border-bottom:1px solid var(--bd);font-size:13.5px;font-weight:600;color:var(--text)}
+.sec-bd{padding:12px 16px}
+select,input[type=number]{background:var(--sf2);border:1px solid var(--bd);color:var(--text);padding:5px 7px;border-radius:5px;font-family:inherit;font-size:13px;min-width:0}
+select:focus,input:focus{outline:none;border-color:var(--gold)}
+input[type=number]{width:100%}
+.btn{background:none;border:1px solid var(--gold);color:var(--gold);padding:5px 12px;border-radius:5px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:700}
+.btn-red{background:none;border:1px solid var(--red);color:var(--red);padding:5px 12px;border-radius:5px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:700}
+.common-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:760px){.common-grid{grid-template-columns:1fr}}
+.lbl{font-size:11px;color:var(--dim);margin-bottom:5px;font-weight:700}
+.row3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.row3 label{display:flex;flex-direction:column;gap:3px;font-size:11px;font-weight:800}
+.c-hp{color:var(--hpc)}.c-atk{color:var(--atc)}.c-def{color:var(--dfc)}
+
+.team-tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.team-tab{flex:1;min-width:90px;padding:10px 8px;background:var(--sf);border:1px solid var(--bd);border-radius:8px;color:var(--dim);font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;text-align:center;line-height:1.35}
+.team-tab small{display:block;font-size:10px;font-weight:700;opacity:.8}
+.team-tab.on{border-color:var(--gold);color:var(--gold);background:var(--accent-bg)}
+
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media(max-width:1000px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:680px){.cards{grid-template-columns:1fr}}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+.card-hd{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--sf2);border-bottom:1px solid var(--bd)}
+.card-img{width:44px;height:44px;object-fit:contain;border-radius:8px;background:var(--sf);flex-shrink:0}
+.card-name{font-size:14px;font-weight:800;line-height:1.3;word-break:keep-all}
+.card-sub{font-size:11px;color:var(--dim);margin-top:2px}
+.card-slot{margin-left:auto;font-size:11px;color:var(--dim);font-weight:800;white-space:nowrap}
+.card-bd{padding:10px 12px;display:flex;flex-direction:column;gap:10px}
+.grp{border-top:1px dashed var(--bd);padding-top:9px}
+.grp:first-child{border-top:none;padding-top:0}
+.grp-t{font-size:11px;font-weight:800;color:var(--gold);margin-bottom:6px;display:flex;justify-content:space-between;gap:6px}
+.grp-t span{color:var(--dim);font-weight:700}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.f1{display:grid;grid-template-columns:1fr;gap:6px}
+.gem-row,.sp-row{display:grid;grid-template-columns:40px 1fr 1fr;gap:6px;align-items:center;margin-bottom:5px}
+.sp-row{grid-template-columns:40px 1fr 1fr 58px}
+.gem-row .k,.sp-row .k{font-size:11px;color:var(--dim);font-weight:700}
+.sp-row .v{font-size:11px;color:var(--text2);text-align:right;font-weight:700}
+.ds-wrap{position:relative}
+.ds-in{width:100%;background:var(--sf2);border:1px solid var(--bd);color:var(--text);padding:5px 7px;border-radius:5px;font-family:inherit;font-size:13px}
+.ds-in:focus{outline:none;border-color:var(--gold)}
+.ds-drop{display:none;position:absolute;left:0;right:0;top:100%;margin-top:2px;max-height:240px;overflow:auto;background:var(--sf2);border:1px solid var(--gold);border-radius:6px;z-index:50;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.ds-drop.open{display:block}
+.ds-item{display:flex;align-items:center;gap:8px;padding:6px 8px;cursor:pointer;font-size:12px;border-bottom:1px solid var(--bd)}
+.ds-item:last-child{border-bottom:none}
+.ds-item:hover{background:var(--accent-bg)}
+.ds-item img{width:26px;height:26px;object-fit:contain;border-radius:5px;flex-shrink:0}
+.ds-item .m{margin-left:auto;font-size:10px;color:var(--dim);white-space:nowrap}
+.ds-empty{padding:8px;font-size:12px;color:var(--dim);text-align:center}
+.base-line{display:flex;gap:10px;font-size:12px;font-weight:800;flex-wrap:wrap}
+.skill{font-size:10px;padding:1px 6px;border-radius:8px;border:1px solid var(--bd);color:var(--dim);margin-left:4px;font-weight:700}
+.result{margin-top:auto;border-top:1px solid var(--bd);background:var(--sf2);padding:10px 12px}
+.res-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:center}
+.res-stats div{background:var(--sf);border:1px solid var(--bd);border-radius:6px;padding:6px 2px}
+.res-stats b{display:block;font-size:16px}
+.res-stats small{font-size:10px;color:var(--dim);font-weight:800}
+.res-sum{display:flex;justify-content:space-between;gap:8px;margin-top:8px;font-size:12px;color:var(--dim);flex-wrap:wrap}
+.res-sum b{color:var(--text)}
+.buff-badge{display:inline-block;font-size:10px;font-weight:800;padding:1px 6px;border-radius:8px;border:1px solid var(--gold);color:var(--gold);margin-left:3px}
+.empty-note{font-size:12px;color:var(--dim);text-align:center;padding:4px 0}
+
+.sum-table{width:100%;border-collapse:collapse;font-size:12px}
+.sum-table th{font-size:11px;color:var(--dim);padding:6px;border-bottom:1px solid var(--bd);text-align:center;white-space:nowrap}
+.sum-table td{padding:6px;border-bottom:1px solid var(--bd);text-align:center}
+.sum-table td.nm{text-align:left;font-weight:700}
+.sum-table tr.team-sep td{background:var(--sf2);color:var(--gold);font-weight:800;text-align:left;font-size:11px}
+.sum-scroll{overflow-x:auto}
+.save-msg{font-size:11px;color:var(--green);margin-left:auto;white-space:nowrap}
+
+/* ── 자동 계산기 전용 ───────────────────────── */
+
+.page-tab{flex:1;padding:11px 8px;background:var(--sf);border:1px solid var(--bd);border-radius:8px;color:var(--dim);font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;text-align:center}
+.page-tab.on{border-color:var(--gold);color:var(--gold);background:var(--accent-bg)}
+@media(max-width:680px){.page-tab{font-size:12px;padding:10px 4px;word-break:keep-all}}
+.panel{background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:12px 16px}
+.note{font-size:12px;color:var(--dim);line-height:1.7}
+.hr{height:1px;background:var(--bd);margin:12px 0}
+.metric-bar{display:flex;gap:6px}
+.metric-btn{padding:7px 16px;background:var(--sf2);border:1px solid var(--bd);border-radius:8px;color:var(--dim);font-family:inherit;font-size:12px;font-weight:800;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}
+.metric-btn.on{border-color:var(--gold);color:var(--gold);background:var(--accent-bg)}
+.goto-my{display:inline-flex;align-items:center;gap:4px;padding:6px 14px;border:1px solid var(--gold);border-radius:16px;background:var(--accent-bg);color:var(--gold);font-size:12px;font-weight:800;text-decoration:none;white-space:nowrap;flex-shrink:0}
+.goto-my:hover{background:var(--gold);color:var(--bg)}
+.spec-line{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--text2)}
+.spec-line b{color:var(--text)}
+.spec-warn{font-size:12px;color:var(--red);margin-top:8px;line-height:1.6}
+.run-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px}
+.btn-run{background:var(--accent-bg);border:1px solid var(--gold);color:var(--gold);padding:10px 26px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:800}
+.btn-run:disabled{opacity:.5;cursor:not-allowed}
+.min-box{display:flex;flex-direction:column;gap:14px;margin-top:7px;padding:12px;border:1px solid var(--bd);border-radius:8px;background:var(--sf2)}
+.min-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px 8px;align-items:center}
+.min-row .k{grid-column:1/3;font-size:12.5px;font-weight:600;color:var(--text2)}
+.min-row .tg{grid-column:3/4;justify-self:end;font-size:11px;font-weight:600;padding:4px 10px;border-radius:5px;border:1px solid var(--bd);background:var(--sf);color:var(--dim);cursor:pointer;font-family:inherit}
+.min-row .tg.on{border-color:var(--gold);background:var(--accent-bg);color:var(--gold)}
+.min-row .f{display:flex;flex-direction:column;align-items:stretch;gap:3px;min-width:0}
+.min-row .f span{font-size:11px;font-weight:500;color:var(--dim);white-space:nowrap}
+.min-row input{width:100%;padding:6px 8px;border:1px solid var(--bd);border-radius:5px;background:var(--sf);color:var(--text);font-family:inherit;font-size:12px;text-align:right}
+.min-row input:focus{outline:none;border-color:var(--gold)}
+.min-row.off .f{opacity:.4}
+.min-row.off input{pointer-events:none}
+.prog{width:100%;height:6px;border-radius:99px;background:var(--bd);overflow:hidden;margin-top:2px}
+.prog i{display:block;height:100%;width:0;background:var(--gold);transition:width .1s linear}
+.own-bar{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin:7px 0 8px}
+.own-q{flex:1;min-width:130px;padding:6px 10px;border:1px solid var(--bd);border-radius:6px;background:var(--sf);color:var(--text);font-family:inherit;font-size:12px}
+.own-q:focus{outline:none;border-color:var(--gold)}
+.own-body{max-height:330px;overflow-y:auto;border:1px solid var(--bd);border-radius:7px;background:var(--sf2);padding:9px 11px}
+.own-grp+.own-grp{margin-top:11px}
+.own-grp-t{font-size:11px;font-weight:800;color:var(--gold);margin-bottom:5px}
+.own-grp-t span{color:var(--dim);font-weight:700;margin-left:3px}
+.own-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(62px,1fr));gap:6px}
+.own-it{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 3px 4px;border:1px solid var(--bd);border-radius:7px;background:var(--sf);cursor:pointer;font-family:inherit;opacity:.4;filter:grayscale(1)}
+.own-it:hover{opacity:.75}
+.own-it.on,.own-it.on:hover{opacity:1;filter:none;border-color:var(--gold);background:var(--accent-bg)}
+.own-it img{width:38px;height:38px;object-fit:contain}
+.own-it em{font-style:normal;font-size:9.5px;line-height:1.2;color:var(--dim);text-align:center;word-break:keep-all;max-height:23px;overflow:hidden}
+.own-it.on em{color:var(--text)}
+.own-n{position:absolute;top:2px;right:4px;font-size:10px;font-weight:800;color:var(--gold)}
+.own-empty{font-size:12px;color:var(--dim);padding:16px 4px;text-align:center}
+.run-note{font-size:11px;color:var(--dim);line-height:1.6}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg .chip{padding:6px 12px;font-size:12px}
+.chip{padding:4px 0;min-width:0;background:var(--sf2);border:1px solid var(--bd);border-radius:6px;color:var(--dim);font-family:inherit;font-size:12px;font-weight:800;cursor:pointer;text-align:center}
+.chip.on-hp{border-color:var(--hpc);color:var(--hpc);background:rgba(251,191,36,.12)}
+.chip.on-atk{border-color:var(--atc);color:var(--atc);background:rgba(248,113,113,.12)}
+.chip.on-def{border-color:var(--dfc);color:var(--dfc);background:rgba(96,165,250,.12)}
+.chip.on{border-color:var(--gold);color:var(--gold);background:var(--accent-bg)}
+.preset-row{display:flex;gap:4px;flex-wrap:wrap;margin-top:2px}
+.preset-row .chip{padding:3px 9px;font-size:11px}
+.preset-row .chip.pat{font-family:'Courier New',monospace;letter-spacing:1px;font-size:12px}
+.preset-row .sep{width:1px;background:var(--bd);margin:0 2px}
+.sp2-row{display:grid;grid-template-columns:30px repeat(3,1fr) 44px 50px;gap:4px;align-items:center;margin-top:4px}
+.sp2-row .k{font-size:11px;color:var(--dim);font-weight:700}
+.sp2-row .v{font-size:11px;color:var(--text2);text-align:right;font-weight:700;white-space:nowrap}
+.sp2-bonus{grid-template-columns:30px repeat(3,1fr) 98px}
+.icon-btn{background:none;border:1px solid var(--bd);color:var(--dim);width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:12px;font-family:inherit;display:flex;align-items:center;justify-content:center;padding:0}
+.icon-btn:hover{border-color:var(--gold);color:var(--gold)}
+.icon-btn.red:hover{border-color:var(--red);color:var(--red)}
+
+/* 드래곤 등록 */
+.team-tabs{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.team-tab{flex:1;min-width:90px;padding:9px 8px;background:var(--sf);border:1px solid var(--bd);border-radius:8px;color:var(--dim);font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;text-align:center;line-height:1.35}
+.team-tab small{display:block;font-size:10px;font-weight:700;opacity:.8}
+.team-tab.on{border-color:var(--gold);color:var(--gold);background:var(--accent-bg)}
+.team-head{display:flex;align-items:center;gap:10px;margin:2px 0 8px 2px}
+.team-head small{font-size:11px;color:var(--dim);font-weight:700}
+.attr-grp{background:var(--sf);border:1px solid var(--bd);border-radius:8px;margin-bottom:8px;overflow:hidden}
+.attr-grp>summary{list-style:none;display:flex;align-items:center;gap:8px;padding:9px 14px;cursor:pointer;font-size:13px;font-weight:800;user-select:none}
+.attr-grp>summary::-webkit-details-marker{display:none}
+.attr-grp>summary::before{content:'▸';color:var(--dim);font-size:11px;transition:transform .15s}
+.attr-grp[open]>summary::before{transform:rotate(90deg)}
+.attr-grp>summary .n{font-size:11px;color:var(--dim);font-weight:700}
+.attr-grp>summary .n b{color:var(--gold)}
+.attr-grp>summary .btn{margin-left:auto;padding:3px 10px;font-size:11px}
+.attr-body{padding:10px 12px;border-top:1px solid var(--bd)}
+.attr-body .dr-grid{margin-bottom:0}
+.attr-empty{font-size:12px;color:var(--dim);text-align:center;padding:8px 0}
+.grp-tools{display:flex;justify-content:flex-end;gap:6px;margin:-2px 0 8px}
+.grp-tools .btn{padding:3px 10px;font-size:11px}
+.dr-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:16px}
+@media(max-width:1000px){.dr-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:680px){.dr-grid{grid-template-columns:1fr}}
+.dr-card{background:var(--sf);border:1px solid var(--bd);border-radius:10px;overflow:hidden}
+.dr-hd{display:flex;align-items:center;gap:9px;padding:8px 10px;background:var(--sf2);border-bottom:1px solid var(--bd);cursor:pointer}
+.dr-img{width:38px;height:38px;object-fit:contain;border-radius:7px;background:var(--sf);flex-shrink:0}
+.dr-name{font-size:13px;font-weight:800;line-height:1.3;word-break:keep-all}
+.dr-sub{font-size:10px;color:var(--dim);margin-top:1px}
+.dr-acts{margin-left:auto;display:flex;gap:4px;flex-shrink:0}
+.dr-bd{padding:9px 10px;display:flex;flex-direction:column;gap:8px}
+.dr-card.closed .dr-bd{display:none}
+.dr-sum{padding:7px 10px;font-size:11px;color:var(--text2);line-height:1.5;border-top:1px solid var(--bd);display:none}
+.dr-card.closed .dr-sum{display:block}
+.dr-sum b{color:var(--text)}
+.dr-sum .warn{color:var(--red)}
+.empty-team{border:1px dashed var(--bd);border-radius:10px;padding:18px;text-align:center;color:var(--dim);font-size:12px;margin-bottom:16px}
+
+/* 보유 정령 */
+.spx-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media(max-width:1000px){.spx-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:680px){.spx-grid{grid-template-columns:1fr}}
+.spx-card{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:9px 10px}
+.spx-hd{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.spx-no{font-size:11px;font-weight:800;color:var(--gold);white-space:nowrap}
+.spx-memo{flex:1;min-width:0;font-size:12px!important;padding:4px 7px!important}
+.spx-empty{border:1px dashed var(--bd);border-radius:10px;padding:18px;text-align:center;color:var(--dim);font-size:12px}
+
+/* 결과 카드 */
+.team-block{margin-bottom:16px}
+.team-title{display:flex;align-items:baseline;gap:8px;font-size:13px;font-weight:800;color:var(--gold);margin:0 0 8px 2px}
+.team-title small{font-size:11px;color:var(--dim);font-weight:700}
+.card-bd{padding:10px 12px;display:flex;flex-direction:column;gap:8px;flex:1}
+.kv{display:flex;justify-content:space-between;gap:10px;font-size:12px}
+.kv .k{color:var(--dim);font-weight:700;flex-shrink:0}
+.kv .v{color:var(--text);font-weight:700;text-align:right;word-break:keep-all}
+.total-line{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;font-weight:800}
+.total-line span{color:var(--dim);font-weight:700;font-size:12px}
+.empty-note{color:var(--dim);text-align:center;padding:20px 0;font-size:13px;background:var(--sf);border:1px solid var(--bd);border-radius:8px}
+
+/* 정령·버프 순위표 */
+.sim-grid{display:block}
+@media(max-width:860px){.sim-grid{grid-template-columns:1fr}}
+.rank-tbl{width:100%;border-collapse:collapse;font-size:12px}
+.rank-tbl th{font-size:11px;color:var(--dim);padding:7px 6px;border-bottom:1px solid var(--bd);text-align:right;white-space:nowrap;position:sticky;top:0;background:var(--sf)}
+.rank-tbl th.l,.rank-tbl td.l{text-align:left}
+.rank-tbl td{padding:6px;border-bottom:1px solid var(--bd);text-align:right;white-space:nowrap}
+.rank-tbl td.rk{color:var(--dim);font-weight:800;width:28px;text-align:center}
+.rank-tbl .nmc{display:flex;align-items:center;gap:7px;text-align:left;white-space:normal;min-width:130px}
+.rank-tbl .nmc img{width:28px;height:28px;object-fit:contain;border-radius:5px;flex-shrink:0}
+.rank-tbl .nmc b{display:block;font-size:12px;word-break:keep-all}
+.rank-tbl .nmc small{display:block;font-size:10px;color:var(--dim);font-weight:700}
+.rank-tbl tr.buffed td.m{color:var(--gold);font-weight:800}
+.rank-wrap{max-height:640px;overflow:auto;-webkit-overflow-scrolling:touch}
+.tbl-note{font-size:11px;color:var(--dim);margin-top:8px;line-height:1.6}
+.sk-ic{width:16px;height:16px;margin-left:5px;vertical-align:-3px;object-fit:contain}
+.det-box .sk-ic{margin-left:0}
+.det-box .sk-ic-t{margin-left:0}
+.sk-ic-t{display:inline-block;margin-left:5px;font-size:10px;font-weight:800;color:var(--dim);border:1px solid var(--bd);border-radius:7px;padding:1px 5px;vertical-align:middle}
+.rank-tbl tr.rw{cursor:pointer}
+.rank-tbl tr.rw.on td{background:var(--accent-bg)}
+.rank-tbl tr.det td{background:var(--sf2);padding:0}
+.det-box{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px 16px;padding:12px 14px;text-align:left;align-items:start}
+.det-box>div{min-width:0}
+.det-box .wide{grid-column:1/-1}
+.det-box .dl{font-size:10px;color:var(--dim);font-weight:700;margin-bottom:2px}
+.det-box .dv{font-size:12px;color:var(--text);font-weight:700;line-height:1.55;word-break:keep-all;overflow-wrap:anywhere;white-space:normal}
+.save-msg{font-size:11px;color:var(--green);margin-left:auto;white-space:nowrap}
+
+/* ── 내 드래곤: 레일 + 속성 그룹 표 ───────────────────────── */
+.dr-split{display:flex;gap:0;border:1px solid var(--bd);border-radius:10px;background:var(--sf);overflow:hidden}
+.dr-rail{width:186px;flex-shrink:0;border-right:1px solid var(--bd);padding:14px 10px;display:flex;flex-direction:column;gap:2px}
+.dr-rail-t{font-size:11px;letter-spacing:.1em;color:var(--dimmer);font-weight:600;padding:0 8px 7px}
+.dr-rail-i{display:flex;align-items:center;gap:8px;padding:7px 9px;border:0;border-radius:7px;background:transparent;
+  color:var(--text);font-family:inherit;font-size:13px;cursor:pointer;text-align:left;width:100%}
+.dr-rail-i img{width:17px;height:17px;object-fit:contain;flex-shrink:0;max-width:none}
+.dr-rail-i .n{margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--dim)}
+.dr-rail-i:hover{background:var(--sf2)}
+.dr-rail-i.off{color:var(--text4)}
+.dr-rail-i.off .n{color:var(--text4)}
+.dr-rail-i.on{background:var(--accent-bg);color:var(--gold);font-weight:600}
+.dr-main{flex-grow:1;min-width:0}
+.dr-empty{padding:40px 16px;text-align:center;color:var(--dim);font-size:13px}
+
+.dr-tbl{width:100%;border-collapse:collapse}
+.dr-tbl td{padding:9px 12px;border-bottom:1px solid var(--border2);vertical-align:middle;font-size:13.5px}
+.dr-tbl tr:last-child td{border-bottom:0}
+.dr-tbl .c-bar{width:5px;padding:0}
+.dr-tbl .grp-row td{padding:0;border-bottom:1px solid var(--bd)}
+.dr-tbl .grp-row:first-child .grp-bar{border-top:0}
+.grp-bar{display:flex;align-items:center;gap:9px;padding:8px 12px;background:var(--sf2);border-top:1px solid var(--bd)}
+.grp-bar .bar{width:3px;height:17px;border-radius:2px;flex-shrink:0}
+.grp-bar img{width:20px;height:20px;object-fit:contain;flex-shrink:0;max-width:none}
+.grp-bar .nm{font-size:13px;font-weight:600;color:var(--text)}
+.grp-bar .cnt{font-size:11.5px;color:var(--dim)}
+.grp-bar .cnt b{color:var(--gold)}
+.grp-bar .btn{margin-left:auto;padding:3px 10px;font-size:11.5px}
+.dr-tbl .dr-row{cursor:pointer}
+.dr-tbl .dr-row:hover td{background:var(--sf2)}
+.dr-tbl .dr-row.on td{background:var(--accent-bg)}
+.dr-tbl .c-name{min-width:0}
+.dr-tbl .c-name .nw{display:flex;align-items:center;gap:10px;min-width:0}
+.dr-tbl .c-name .dr-img{width:34px;height:34px;object-fit:contain;flex-shrink:0;max-width:none;display:block}
+.dr-tbl .c-name .t{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dr-tbl .c-sub{width:190px;color:var(--text2);font-size:12.5px;white-space:nowrap}
+.dr-tbl .c-sp{white-space:nowrap}
+.dr-tbl .c-act{width:70px;white-space:nowrap}
+.dr-tbl .c-act .icon-btn{display:inline-flex;vertical-align:middle}
+.dr-tbl .c-act .icon-btn{width:24px;height:24px;font-size:11px}
+.dr-tbl .c-caret{width:26px;color:var(--dimmer);font-size:11px;text-align:center}
+.dr-tbl .dim{color:var(--text4)}
+.dr-tbl .warn-i{margin-left:8px;font-size:11.5px;color:var(--red)}
+.dr-tbl .dr-editrow>td{background:var(--bg);padding:0}
+.dr-edit{padding:14px 14px 16px;display:flex;flex-direction:column;gap:10px}
+.dr-edit .f1{display:flex;gap:8px}
+.dr-edit .f2{display:flex;gap:8px;margin-top:8px}
+
+.sp-chips{display:inline-flex;gap:3px;align-items:center}
+.sp-chip{min-width:26px;height:22px;padding:0 5px;display:inline-flex;align-items:center;justify-content:center;
+  border-radius:5px;font-size:11px;font-weight:600}
+.sp-chip.hp{background:rgba(251,191,36,.14);color:var(--hpc)}
+.sp-chip.atk{background:rgba(248,113,113,.14);color:var(--atc)}
+.sp-chip.def{background:rgba(96,165,250,.14);color:var(--dfc)}
+.sp-chip.none{border:1px dashed var(--border3);color:var(--text4)}
+.sp-chip.bn{border:1px solid currentColor;background:none}
+
+.dr-hint{padding:13px 14px;color:var(--text4);font-size:12.5px;border-bottom:1px solid var(--bd)}
+
+/* 모바일 목록 + 편집 시트 */
+.dr-mo{display:none}
+.mo-grp{display:flex;align-items:center;gap:8px;padding:8px 11px;margin:12px 0 7px;border-radius:8px;background:var(--sf2)}
+.mo-grp .bar{width:3px;height:16px;border-radius:2px;flex-shrink:0}
+.mo-grp img{width:19px;height:19px;object-fit:contain;flex-shrink:0;max-width:none}
+.mo-grp .nm{font-size:13px;font-weight:600}
+.mo-grp .cnt{font-size:11.5px;color:var(--dim)}
+.mo-grp .btn{margin-left:auto;padding:4px 12px;font-size:13px}
+.mo-list{display:flex;flex-direction:column;gap:6px}
+.mo-row{display:flex;align-items:center;gap:9px;width:100%;padding:11px 12px 11px 0;border:1px solid var(--bd);
+  border-radius:10px;background:var(--sf);color:var(--text);font-family:inherit;text-align:left;cursor:pointer;overflow:hidden}
+.mo-row .bar{width:4px;align-self:stretch;flex-shrink:0}
+.mo-row .dr-img{width:34px;height:34px;object-fit:contain;flex-shrink:0;max-width:none}
+.mo-row .tx{flex-grow:1;min-width:0}
+.mo-row .tx .t{display:block;font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mo-row .tx .s{display:block;font-size:11.5px;color:var(--dim);margin-top:2px}
+.dr-scrim{display:none;position:fixed;inset:0;background:rgba(6,8,11,.62);z-index:90}
+.dr-sheet{display:none;position:fixed;left:0;right:0;bottom:0;max-height:88vh;z-index:91;flex-direction:column;
+  background:var(--sf);border-top:1px solid var(--border3);border-radius:18px 18px 0 0}
+.dr-sheet-grab{align-self:center;width:38px;height:4px;border-radius:99px;background:var(--border3);margin:9px 0 4px}
+.dr-sheet-hd{display:flex;align-items:center;gap:10px;padding:8px 16px 13px;border-bottom:1px solid var(--bd)}
+.dr-sheet-hd .dr-img{width:38px;height:38px;object-fit:contain;flex-shrink:0;max-width:none}
+.dr-sheet-hd .t{font-size:15.5px;font-weight:600}
+.dr-sheet-hd .s{font-size:11.5px;color:var(--dim);margin-top:1px}
+.dr-sheet-hd .icon-btn{margin-left:auto}
+.dr-sheet-bd{flex-grow:1;min-height:0;overflow-y:auto}
+.dr-sheet-bd .dr-edit{padding:14px 16px}
+.dr-sheet-ft{padding:11px 16px calc(14px + env(safe-area-inset-bottom));border-top:1px solid var(--bd)}
+.dr-sheet-ft .btn-run{width:100%}
+
+@media(max-width:900px){
+  .dr-tbl .c-sub{width:auto}
+}
+@media(max-width:760px){
+  .dr-split{display:none}
+  .dr-mo{display:block}
+  .dr-scrim{display:block}
+  .dr-sheet{display:flex}
+  /* 시트 안에서는 정령 버튼을 손가락 크기로 */
+  .dr-sheet .sp2-row{grid-template-columns:32px repeat(3,1fr) 44px;gap:5px}
+  .dr-sheet .sp2-row .chip{padding:11px 2px;font-size:13px}
+  .dr-sheet .sp2-row .v{display:none}
+  .dr-sheet .preset-row .chip{padding:9px 11px}
+}
+
+/* ── 콘솔 레이아웃 보정 ── */
+.pane-top{display:flex;align-items:center;gap:8px;justify-content:flex-end;min-height:20px;margin-bottom:6px}
+.pane-top .save-msg{margin-left:0}
+.u-setpane .sec{background:none;border:0;border-radius:0;margin-bottom:20px;overflow:visible}
+.u-setpane .sec-hd{padding:0 0 10px;border-bottom:1px solid var(--bd);margin-bottom:12px}
+.u-setpane .sec-bd{padding:0}
+.u-setpane .set-blk>.sec:last-child{margin-bottom:0}
+.u-setpane .btn-run,.u-setpane .btn{width:100%}
+.u-setpane .row3{max-width:none}
+/* 수동 계산기: 공통 설정을 본문 위에 가로로 */
+.m-top{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;padding:14px 16px;margin-bottom:14px;
+  border:1px solid var(--bd);border-radius:10px;background:var(--sf)}
+.m-top .sec{background:none;border:0;border-radius:0;margin:0;overflow:visible;flex-grow:1;min-width:0}
+.m-top .sec-hd{padding:0 0 9px;border-bottom:1px solid var(--bd);margin-bottom:11px}
+.m-top .sec-bd{padding:0}
+.m-top .row3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;max-width:640px}
+.m-top>.btn{flex-shrink:0;padding:9px 16px}
+@media(max-width:760px){
+  .m-top{flex-direction:column;align-items:stretch;gap:12px}
+  .m-top .row3{grid-template-columns:1fr;max-width:none}
+  .m-top>.btn{width:100%}
+}
+.u-main #result:empty::after,.u-main #spx-result:empty::after{
+  content:attr(data-empty);display:block;padding:70px 20px;text-align:center;
+  font-size:13.5px;color:var(--text4);line-height:1.9}
+/* 좁은 화면에서 정령 옵션 줄이 눌리지 않도록 */
+@media(max-width:1180px){
+  .u-setpane .sp2-row{grid-template-columns:26px repeat(3,1fr) 36px 44px;gap:3px}
+  .u-setpane .sp2-row .chip{padding:5px 4px}
+}
+@media(max-width:980px){.u-setpane .sec{margin-bottom:16px}}
+</style>
+</head>
+<body class="u">
+<div class="u-app">
+<div class="u-content">
+<aside class="u-setpane" id="setpane">
+<div class="set-blk" id="set-calc" style="display:none">
+<div class="sec">
+      <div class="sec-hd"><span id="t-setting"></span><a href="./my.html" class="goto-my" id="t-goto-my"></a></div>
+      <div class="sec-bd">
+        <div class="lbl" id="t-spec"></div>
+        <div class="spec-line" id="spec-line"></div>
+        <div class="spec-warn" id="spec-warn" style="display:none"></div>
+        <div style="height:12px"></div>
+        <div class="lbl" id="t-buff"></div>
+        <div id="round-bar"></div>
+        <div class="row3" id="buff-row"></div>
+        <div style="height:12px"></div>
+        <div class="lbl" id="t-min"></div>
+        <div class="min-box" id="min-box"></div>
+        <div class="run-note" id="t-min-note" style="margin-top:6px"></div>
+        <div style="height:12px"></div>
+        <div class="lbl" id="t-metric"></div>
+        <div class="metric-bar" id="metric-bar"></div>
+        <div class="run-row">
+          <button class="btn-run" id="run-btn" onclick="run()"></button>
+          <div class="run-note" id="t-note"></div>
+        </div>
+      </div>
+</div>
+</div>
+<div class="set-blk" id="set-sim" style="display:none">
+<div class="sec">
+          <div class="sec-hd"><span id="t-sim-in"></span></div>
+          <div class="sec-bd" id="sim-input"></div>
+        </div>
+</div>
+<div class="set-blk" id="set-spx" style="display:none">
+<div class="sec">
+      <div class="sec-hd"><span id="t-spx-set"></span></div>
+      <div class="sec-bd" id="spx-setting"></div>
+    </div>
+</div>
+</aside>
+<main class="u-main" id="mainpane">
+<div class="pane-top">
+  <button class="btn" id="cloud-refresh" style="display:none" onclick="cloudRefresh(this)"></button>
+  <span class="save-msg" id="save-msg"></span>
+</div>
+  <div id="page-dragon">
+    <div class="sec"><div class="sec-bd" style="font-size:12px;color:var(--dim);line-height:1.7" id="t-dragon-note"></div></div>
+    <div id="dragon-teams"></div>
+  </div>
+
+  <div id="page-calc" style="display:none">
+    <div id="result" data-empty="왼쪽에서 설정을 마치고 [자동 계산 실행]을 눌러주세요."></div>
+    <div id="advice"></div>
+    <div id="compare"></div>
+  </div>
+
+  <div id="page-spx" style="display:none">
+
+    <div class="sec">
+      <div class="sec-hd" id="spx-hd" style="cursor:pointer" onclick="spxFold()"><span id="spx-title"></span><span style="display:flex;gap:6px;align-items:center"><button class="btn" id="spx-fold" onclick="event.stopPropagation();spxFold()"></button><button class="btn" onclick="event.stopPropagation();spxAdd()" id="t-spx-add"></button></span></div>
+      <div class="sec-bd" id="spx-body">
+        <div style="font-size:12px;color:var(--dim);line-height:1.7;margin-bottom:10px" id="t-spx-note"></div>
+        <div id="spx-list"></div>
+      </div>
+    </div>
+<div id="spx-result" data-empty="왼쪽에서 보유 정령과 대상 드래곤을 고른 뒤 [정령 배분 미리보기]를 눌러주세요."></div>
+  </div>
+
+  <div id="page-sim" style="display:none">
+    <div class="sim-grid one">
+<div class="sec">
+        <div class="sec-hd"><span id="sim-title"></span><span style="color:var(--dim);font-weight:700" id="sim-count"></span></div>
+        <div class="sec-bd">
+          <div class="seg" id="sim-filter"></div>
+          <div style="height:10px"></div>
+          <div class="rank-wrap"><table class="rank-tbl" id="sim-table"></table></div>
+          <div class="tbl-note" id="t-sim-note"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+</div>
+
+<script>
+'use strict';
+if (!globalThis.DV1_DRAGON_VIEWS) throw new Error("드래곤 데이터 로드 실패: 초기화 중단");
+
+const L={lang:'ko',
+ saved:'저장됨',data_missing_t:'데이터 파일을 불러오지 못했어요',data_missing_d:'계산기에 필요한 cham-data.js 파일이 없어요. 사이트 루트에 이 파일이 있는지 확인해주세요.',cloud_saving:'클라우드 저장 중…',cloud_saved:'클라우드 저장됨',cloud_fail:'클라우드 저장 실패',cloud_loading:'클라우드에서 불러오는 중…',cloud_loaded:'클라우드에서 불러옴',cloud_none:'클라우드에 저장된 챔대 셋팅이 없어요.',cloud_refresh:'새로고침',cloud_refresh_confirm:'아직 올라가는 중인 수정사항이 있어요. 그래도 새로고침할까요?',round_names:['32강','16강','8강','4강','결승'],round_rename:'라운드 이름',send_manual:'수동 계산기로 보내기',export_img:'이미지로 저장',snap_save:'비교용으로 담기',advise:'다음 투자처 분석',img_title:'챔피언대전 셋팅',img_footer:'드래곤빌리지1 도감 · 챔피언대전 자동 계산기',img_fail:'이미지를 만들지 못했어요.',cmp_item:'항목',cmp_diff:'차이',cmp_title:n=>'결과 비교 ('+n+'개)',cmp_clear:'비우기',cmp_note1:'다른 설정으로 다시 계산한 뒤 [비교용으로 담기]를 한 번 더 누르면 두 결과를 비교해요.',cmp_note2:'왼쪽이 먼저 담은 결과예요. 새로 담으면 오래된 것부터 밀려나요.',adv_running_p:(i,n)=>'분석 중… ('+i+'/'+n+')',adv_running:'분석 중… (여러 번 다시 계산하느라 몇 초 걸려요)',adv_title:m=>'다음 투자처 ('+m+' 기준)',adv_item:'추가했을 때',adv_gain:'증가량',adv_gem:(st,lv)=>st+' 젬 '+lv+'단계 1개',adv_acc:n=>'장신구 1개 ('+n+')',adv_pend:'태양 펜던트 1개 (9/9/9)',adv_note:'지금 셋팅에 하나씩 더 넣어보고 전체 합계가 얼마나 오르는지 계산한 값이에요. 실제 획득 난이도는 고려하지 않아요.',send_manual_confirm:'수동 계산기의 현재 입력값을 이 결과로 덮어쓸까요?',import_manual:'수동 계산기에서 가져오기',import_none:'수동 계산기에 저장된 드래곤이 없어요.',import_none2:'가져올 새 드래곤이 없어요. (이미 등록됐거나 비어 있어요)',import_done:n=>n+'마리를 가져왔어요.',tab_dragon:'내 드래곤',tab_calc:'자동 계산',tab_sim:'정령·버프',tab_spx:'정령 배분',spx_fold:'접기',spx_unfold:'펼치기',spx_add:'정령 추가',spx_set:'배분 설정',spx_title:(ok,n)=>'보유 정령 '+ok+'개'+(n>ok?' (미입력 '+(n-ok)+')':''),spx_note:'가지고 있는 정령을 전부 입력하면 어느 드래곤에 넣는 게 좋은지 장비와 함께 자동으로 배분해서 보여줘요. 결과는 미리보기라 내 드래곤 탭에는 저장되지 않아요. (입력한 정령 목록은 저장돼요)',spx_memo_ph:'메모 (구분용, 선택)',spx_empty:'등록된 정령이 없어요. [＋ 정령 추가]로 보유 정령을 입력해주세요.',spx_no:n=>'정령 '+n,spx_target:'배분 대상 드래곤',spx_mine:'내 드래곤',spx_all:'전체 드래곤',spx_mine_note:dn=>'내 드래곤 탭에 등록한 드래곤 ('+dn.join(' / ')+'마리)에 넣어봐요. 카드에 입력한 정령은 무시하고 보유 정령으로 대체해요.',spx_all_note2:(a,b,c)=>'보유 드래곤으로 고른 1팀 '+a+'종 · 2팀 '+b+'종 · 3팀 '+c+'종 중에서 골라요. (0종인 구역은 전체에서 골라요)',spx_all_note:'1팀은 강림 드래곤 전체, 2·3팀은 SSS Lv.21 / 45 전체에서 골라요. 버프·정령 기준 상위 드래곤만 추려서 계산해요.',own_t:'보유 드래곤',own_gang:'강림',own_pick:'모아보기',own_clear:'모두 해제',own_q:'드래곤 이름 검색',own_cnt:n=>n+'종',own_unit:n=>n+'마리',own_note:'가지고 있는 드래곤을 눌러서 골라주세요. 누를 때마다 1 → 2 → 3마리 → 해제 순서로 바뀌고, 고른 수만큼 한 팀에 중복 편성돼요.',own_note2:'한 마리도 안 고른 구역은 예전처럼 전체 드래곤을 후보로 써요.',own_none:'고른 드래곤이 없어요. 강림 · Lv.21 · Lv.45 탭에서 보유한 드래곤을 눌러주세요.',own_empty:'조건에 맞는 드래곤이 없어요.',own_sum:(a,b,c)=>'강림 '+a+' · Lv.21 '+b+' · Lv.45 '+c,spx_grade:'1팀 강림 등급',spx_run:'정령 배분 미리보기',spx_run_note:'각 정령은 한 드래곤에만 들어가요. 장신구·젬·펜던트는 내 스펙 값을 겹치지 않게 배분하고, 인첸트는 무한 인첸트 기준이에요.',spx_w_sp:'입력된 정령이 없어요. 옵션을 하나 이상 고른 정령이 있어야 해요.',spx_nosp:'정령 없음',spx_left:n=>'남은 정령 '+n+'개',spx_apply:'이대로 내 드래곤에 적용',spx_apply_confirm:'배분된 정령을 [내 드래곤] 탭에 적용할까요? 해당 드래곤의 기존 정령 입력은 덮어써져요.',spx_apply_done:(a,b2)=>'정령 '+a+'마리 적용, 새 드래곤 '+b2+'마리 추가했어요.',spx_undo:'적용 되돌리기',spx_undo_done:'적용 전 상태로 되돌렸어요.',spx_left_none:'모든 정령이 배분됐어요.',sim_in:'정령 · 버프 입력',sim_run:'계산',sim_run_done:'계산됨',sim_idle:'정령과 버프를 고른 뒤 왼쪽 [계산]을 눌러주세요.',sim_lv:'대상 드래곤',sim_sort:'정렬 기준',sim_gear:'장비 적용',det_base:'기본 스탯',det_final:'최종 스탯',det_potion:'크리•회피',det_potion_lbl:'물약',det_buff:'속성 버프',det_coll:'컬렉션',det_skill:'스킬',sim_gear_on:'내 스펙 장비 적용',sim_gear_off:'정령만 (장비 없이)',sim_gear_none:'내 스펙에 장신구가 없어서 장비 없이 계산해요.',all:'전체',dragon:'드래곤',sim_title:lv=>'SSS Lv.'+lv+' 장착 결과',sim_count:n=>n+'마리',sim_more:n=>'▾ '+n+'마리 더 보기',sim_all:'전체 보기',sim_note:'드래곤마다 내 스펙에서 가장 좋은 장신구·인첸트·젬·펜던트를 끼웠을 때의 값이에요 (드래곤별로 따로 계산해서 자원이 겹칠 수 있어요). 물약 크리•회피(24/6/6)와 풀컬(240/60/60) 포함, 버프 받는 드래곤은 강조 표시돼요.',
+ dragon_note:'챔피언대전에 쓸 드래곤을 팀별로 등록해두는 곳이에요. 길드전 계산기와는 <b>별도로 저장</b>되고, 정령 옵션과 부가옵까지 입력해두면 자동 계산에 그대로 반영돼요.',
+ t_setting:'자동 계산 설정',t_goto_my:'내 스펙 →',t_spec:'보유 현황 (장신구·젬·펜던트는 내 스펙 페이지 값을 사용해요)',
+ t_buff:'속성 버프 (해당 속성 드래곤에 적용)',t_min:'최소 스탯',min_off:'사용 안 함',min_on:'사용',min_team:(n,s)=>n+'팀 · '+s,min_note:'각 팀에서 이 값보다 낮은 스탯이 나오는 셋팅은 후보에서 빼요. 켜지 않으면 제한 없이 계산해요.',team_min:'최소 스탯 조건을 만족하는 셋팅이 3마리만큼 안 나와요. 값을 낮추거나 꺼주세요.',t_metric:'최적화 기준',
+ t_note:'물약은 크리•회피(24/6/6), 인첸트는 무한 인첸트(스탯 자동 선택) 21%, 컬렉션은 풀컬(240/60/60) 고정이에요.\n각 팀에 등록한 드래곤 중 3마리씩 골라 장신구·젬·펜던트를 겹치지 않게 배분해요.',
+ run:'자동 계산 실행',running_p:p=>'⏳ 계산 중... '+p+'%',running:'⏳ 계산 중...',err:'오류: ',
+ none:'없음',team:n=>n+'팀',kind_gang:'강림 드래곤 (7.0~9.0)',kind_grade:lv=>'등급용 '+lv+'레벨',
+ count:n=>'계산 가능 '+n+'마리',add:'추가',del:'삭제',attr_count:(ok,n)=>'<b>'+ok+'</b> / '+n+'마리',attr_empty:'이 속성에 등록된 드래곤이 없어요.',attr_t:'속성',sheet_done:'확인',sp_none:'미입력',sp_pat_title:'1~4옵 타입을 이 순서로 지정',sp_clear:'초기화',sp_type_title:'눌러서 % ↔ + 전환',bonus_s:'부가',need_type:'타입을 선택해야 계산돼요',collapse:'접기',expand:'편집',dup:'복제',collapse_all:'모두 접기',expand_all:'모두 펼치기',team_hint:'속성을 펼쳐서 드래곤을 등록하세요. 팀당 계산 가능한 드래곤이 3마리 이상이어야 해요.',
+ no_dragon:'드래곤 미선택',pick_attr:'속성 선택',pick_type:'타입 선택',type_fixed:'드래곤에 따라 자동 설정',
+ search_ph:'드래곤 이름 검색',no_result_s:'검색 결과 없음',
+ empty_team:'등록된 드래곤이 없어요. [추가]로 후보를 등록해주세요. (팀당 3마리 이상)',
+ acc:'장신구',gems:'젬',pendant:'펜던트',spirit:'정령',spirit_note:'챔대 50% 적용',opt:n=>n+'옵',bonus:'부가옵',enc:'인첸트',
+ bv:'비벨',bv_full:'비벨 최대',total:'전체 합계',
+ s_dragon:'등록 드래곤 (1/2/3팀)',s_acc:'장신구',s_gem:'젬',s_pend:'펜던트',
+ w_acc:'장신구가 없어요. 내 스펙에서 장신구를 추가하면 계산할 수 있어요.',
+ w_dragon:'계산 가능한 드래곤이 부족해요. 드래곤 탭에서 팀당 3마리 이상 등록해주세요.',
+ no_result:'조건에 맞는 조합을 찾지 못했어요.',team_fail:'이 팀은 자원(장신구 등)이 부족해서 채우지 못했어요.',
+ team_need3:'이 팀은 등록된 드래곤이 3마리 미만이에요. 드래곤 탭에서 추가해주세요.',
+ pend_t:{'태양':'태양','달':'달','별':'별'},
+ stat:{hp:'체력',atk:'공격',def:'방어'},skill:{boom:'폭스',def:'방확'},attr:{},dtype:{}};
+const D=window.CHAM_DATA;
+if(!D){
+  // cham-data.js를 못 불러온 경우 (파일 누락/경로 오류)
+  document.addEventListener('DOMContentLoaded',()=>{
+    document.body.innerHTML='<div style="max-width:560px;margin:80px auto;padding:24px;font-family:sans-serif;line-height:1.8;color:#eaecf2;background:#161a22;border:1px solid #2d3447;border-radius:12px">'
+      +'<div style="font-size:16px;font-weight:800;color:#f87171;margin-bottom:10px">'+L.data_missing_t+'</div>'
+      +'<div style="font-size:13px;color:#b3b9c7">'+L.data_missing_d+'</div>'
+      +'<div style="font-size:12px;color:#7d8597;margin-top:14px">cham-data.js</div></div>';
+  });
+  throw new Error('cham-data.js not loaded');
+}
+const IS_EN=L.lang==='en';
+const ASSET='./';
+const PRE=IS_EN?'dv1simEN':'dv1sim';
+const SPEC_KEY=PRE+'_spec';
+const SAVE_KEY=PRE+'_cham_auto';
+const ATTRS=['땅','물','불','바람','빛','어둠','황혼','여명','악몽'];
+const STATS=['hp','atk','def'];
+const DTYPES=['체력형','공격형','방어형','체공형','체방형','공방형'];
+const GRADES=['7.0','8.0','9.0'];
+const GEM={36:{hp:144,atk:36,def:36},37:{hp:152,atk:38,def:38},38:{hp:160,atk:40,def:40},39:{hp:168,atk:42,def:42},40:{hp:176,atk:44,def:44}};
+const GEM_NAME={36:36,37:38,38:40,39:42,40:44};
+const SP_PLUS={hp:{1:216,2:240,3:264,4:480},atk:{1:54,2:60,3:66,4:120},def:{1:54,2:60,3:66,4:120}};
+const SP_PCT={1:0.24,2:0.28,3:0.32,4:0.40};
+const SP_BONUS={hp:40,atk:10,def:10};
+const SPIRIT_W=0.5;
+const POTION={hp:24,atk:6,def:6};
+const ENC_PCT=0.21;
+const COLL={hp:240,atk:60,def:60};
+const BUFF_PCT={hp:0.4,atk:0.4,def:0.5};
+const TEAMS=[{kind:'gang'},{kind:'grade',lv:21},{kind:'grade',lv:45}];
+const OPT_LIMIT=60;
+
+const ELEM_ALIAS={'Earth':'땅','Water':'물','Fire':'불','Wind':'바람','Light':'빛','Dark':'어둠','Dusk':'황혼','Dawn':'여명','Nightmare':'악몽'};
+D.GRADE.forEach(g=>{g.elem=ELEM_ALIAS[g.elem]||g.elem;});
+// '고귀한 ~'은 원본과 스탯이 같은 중복 항목이라 목록에서 제외
+D.GRADE=D.GRADE.filter(g=>!/^고귀한\s/.test(g.ko));
+
+const nm=o=>o?(IS_EN?o.en:o.ko):'';
+// 스킬 아이콘 (sss.html과 동일한 icon/ 경로 사용)
+const SKILL_ICON={boom:ASSET+'icon/boom.png',def:ASSET+'icon/DEF.png'};
+function skillIcon(sk){
+  if(!sk)return '';
+  const t=L.skill[sk]||sk;
+  const src=SKILL_ICON[sk];
+  if(!src)return `<span class="sk-ic-t" title="${esc(t)}">${esc(t)}</span>`;
+  return `<img class="sk-ic" src="${esc(src)}" alt="${esc(t)}" title="${esc(t)}" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'sk-ic-t',title:'${esc(t)}',textContent:'${esc(t)}'}))">`;
+}
+function curBuff(){return (S.rounds[S.round]||S.rounds[0]).buff;}
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=n=>Number(n).toLocaleString();
+const attrLbl=a=>IS_EN?(L.attr[a]||a):a;
+const typeLbl=t=>IS_EN?(L.dtype[t]||t):t;
+const statLbl=s=>L.stat[s];
+const INT=x=>Math.floor(x+1e-9);
+function imgUrl(n,stage){return n?`${ASSET}dragon/${n}/profile/${stage||8}.png`:'';}
+function rd(k){try{const r=localStorage.getItem(k);return r?JSON.parse(r):null;}catch(e){return null;}}
+function normName(n){return String(n||'').replace(/ 드래곤$/,'').replace(/\s+/g,'').toLowerCase();}
+function findType(name){
+  const DB=window.DRAGON_TYPE_DB||{};const key=normName(name);if(!key)return'';
+  for(const [t,list] of Object.entries(DB)){
+    if(!Array.isArray(list)||!DTYPES.includes(t))continue;
+    for(const e of list){
+      const names=typeof e==='string'?[e]:[e&&e.name,...((e&&e.aliases)||[])];
+      if(names.some(x=>x&&normName(x)===key))return t;
+    }
+  }
+  return'';
+}
+function gangDb(attr){return D.GANG[attr]||[];}
+function gangRow(en){return gangDb(en.attr).find(d=>d.ko===en.name)||null;}
+function gradeRow(en,lv){return D.GRADE.find(g=>g.ko===en.name&&g.lv===lv&&g.elem===en.attr)||null;}
+
+// ── 상태: 팀별 드래곤 등록 (이 페이지 전용 저장) ──────────────
+let _uidN=0;const newUid=()=>'d'+Date.now().toString(36)+(_uidN++).toString(36)+Math.random().toString(36).slice(2,5);
+const SP_DEF_TYPE=k=>k===3?'+':'%';
+const mkEntry=()=>({uid:newUid(),attr:'',name:'',dtype:'',grade:'9.0',sp:Array.from({length:4},(_,k)=>({stat:'',type:SP_DEF_TYPE(k)})),bonus:''});
+const mkSim=()=>({sp:Array.from({length:4},(_,k)=>({stat:'',type:SP_DEF_TYPE(k)})),bonus:'',lv:45,attr:'',gear:1});
+const dupClamp=n=>Math.max(1,Math.min(3,parseInt(n)||1));
+function normOwn(raw){
+  const out={gang:{},21:{},45:{}};
+  if(raw&&typeof raw==='object')Object.keys(out).forEach(k=>{
+    const m=raw[k];if(!m||typeof m!=='object')return;
+    Object.keys(m).slice(0,400).forEach(key=>{const v=parseInt(m[key]);if(v>0)out[k][String(key).slice(0,60)]=Math.min(3,v);});
+  });
+  return out;
+}
+// 팀별 최소 스탯 (기본 꺼짐)
+const mkMin=()=>[0,1,2].map(()=>({on:0,hp:0,atk:0,def:0}));
+const minClamp=v=>Math.max(0,Math.min(9999999,parseInt(v)||0));
+function minOf(ti){const m=(S.minst||[])[ti];return m&&m.on?m:null;}
+function minOk(ti,r){const m=minOf(ti);return !m||(r.hp>=m.hp&&r.atk>=m.atk&&r.def>=m.def);}
+function normMin(raw){const out=mkMin();(Array.isArray(raw)?raw:[]).forEach((q,i)=>{if(i>2||!q)return;
+  out[i].on=q.on?1:0;STATS.forEach(st=>{out[i][st]=minClamp(q[st]);});});return out;}
+function setMinOn(ti){S.minst[ti].on=S.minst[ti].on?0:1;renderSetting();save();}
+function setMinVal(ti,st,v){S.minst[ti][st]=minClamp(v);save();}
+const mkSpx=()=>({list:[],target:'mine',grade:'9.0',fold:false,osec:'21',oattr:'',own:{gang:{},21:{},45:{}}});
+const ROUND_N=5;
+const mkRounds=()=>L.round_names.map(n=>({name:n,buff:{hp:'',atk:'',def:''}}));
+const mkSpirit=()=>({uid:newUid(),memo:'',sp:Array.from({length:4},(_,k)=>({stat:'',type:SP_DEF_TYPE(k)})),bonus:''});
+const mkState=()=>({minst:mkMin(),page:'dragon',dteam:0,round:0,rounds:mkRounds(),metric:'bv',teams:[[],[],[]],sim:mkSim(),spx:mkSpx()});
+let S=mkState();
+(function(){
+  const p=rd(SAVE_KEY);if(!p)return;
+  const base=mkState();
+  S={...base,...p};
+  // 라운드 이관: 예전 단일 버프 → 첫 라운드
+  S.rounds=mkRounds().map((r,i)=>{
+    const q=(p.rounds||[])[i]||{};
+    return {name:String(q.name||r.name).slice(0,12),buff:{...r.buff,...(q.buff||{})}};
+  });
+  if(p.buff&&!p.rounds)S.rounds[0].buff={...S.rounds[0].buff,...p.buff};
+  if(!(S.round>=0&&S.round<ROUND_N))S.round=0;
+  delete S.buff;
+  S.minst=normMin(p.minst);
+  if(S.metric!=='eval')S.metric='bv';
+  if(!['calc','sim','spx'].includes(S.page))S.page='dragon';
+  {const q=p.spx||{};
+   S.spx={...mkSpx(),...q,list:(q.list||[]).map(x=>{const d=mkSpirit();return {...d,...x,uid:x.uid||d.uid,memo:String(x.memo||'').slice(0,30),
+     sp:d.sp.map((o,k)=>{const r={...o,...((x.sp||[])[k]||{})};if(r.type!=='%'&&r.type!=='+')r.type=SP_DEF_TYPE(k);if(!STATS.includes(r.stat))r.stat='';return r;})};})};
+   if(S.spx.target!=='all')S.spx.target='mine';
+   if(!GRADES.includes(S.spx.grade))S.spx.grade='9.0';
+   S.spx.fold=!!S.spx.fold;
+   S.spx.own=normOwn(q.own);
+   if(!['gang','21','45','all'].includes(S.spx.osec))S.spx.osec='21';
+   if(S.spx.oattr&&!ATTRS.includes(S.spx.oattr))S.spx.oattr='';}
+  {const d=mkSim();const q=p.sim||{};
+   S.sim={...d,...q,sp:d.sp.map((o,k)=>{const r={...o,...((q.sp||[])[k]||{})};if(r.type!=='%'&&r.type!=='+')r.type=SP_DEF_TYPE(k);return r;})};
+   if(S.sim.lv!==21)S.sim.lv=45;
+   S.sim.gear=S.sim.gear===0?0:1;
+   if(S.sim.attr&&!ATTRS.includes(S.sim.attr))S.sim.attr='';}
+  if(!(S.dteam>=0&&S.dteam<3))S.dteam=0;
+  S.teams=[0,1,2].map(ti=>((p.teams&&p.teams[ti])||[]).filter(q=>q&&ATTRS.includes(q.attr)).map(q=>{
+    const e=mkEntry();
+    return {...e,...q,uid:q.uid||e.uid,sp:e.sp.map((o,i)=>{const r={...o,...((q.sp||[])[i]||{})};if(r.type!=='%'&&r.type!=='+')r.type=SP_DEF_TYPE(i);return r;})};
+  }));
+})();
+// ── 클라우드 저장 (계정 프리셋별) ──────────────────────────
+const PRESET_KEY=PRE+'_spec_presets';
+function user(){try{return (typeof getUser==='function')?getUser():null;}catch(e){return null;}}
+function canCloud(){return !!user()&&typeof supabase==='function';}
+function chamData(){return {minst:S.minst,teams:S.teams,spx:{list:S.spx.list,target:S.spx.target,grade:S.spx.grade,own:S.spx.own},rounds:S.rounds,round:S.round,metric:S.metric,sim:S.sim};}
+function applyCham(d){
+  if(!d)return false;
+  const base=mkState();
+  if(Array.isArray(d.teams))S.teams=[0,1,2].map(ti=>((d.teams[ti])||[]).filter(q=>q&&ATTRS.includes(q.attr)).map(q=>{
+    const e=mkEntry();
+    return {...e,...q,uid:q.uid||e.uid,sp:e.sp.map((o,k)=>{const r={...o,...((q.sp||[])[k]||{})};if(r.type!=='%'&&r.type!=='+')r.type=SP_DEF_TYPE(k);return r;})};
+  }));
+  if(d.spx){
+    S.spx.list=(d.spx.list||[]).map(x=>{const q=mkSpirit();return {...q,...x,uid:x.uid||q.uid,memo:String(x.memo||'').slice(0,30),
+      sp:q.sp.map((o,k)=>{const r={...o,...((x.sp||[])[k]||{})};if(r.type!=='%'&&r.type!=='+')r.type=SP_DEF_TYPE(k);if(!STATS.includes(r.stat))r.stat='';return r;})};});
+    S.spx.target=d.spx.target==='all'?'all':'mine';
+    S.spx.grade=GRADES.includes(d.spx.grade)?d.spx.grade:'9.0';
+    S.spx.own=normOwn(d.spx.own);
+  }
+  if(d.minst!==undefined){S.minst=normMin(d.minst);
+  }
+  if(Array.isArray(d.rounds))S.rounds=base.rounds.map((r,i)=>{
+    const q=d.rounds[i]||{};return {name:String(q.name||r.name).slice(0,12),buff:{...r.buff,...(q.buff||{})}};
+  });
+  if(d.round>=0&&d.round<ROUND_N)S.round=d.round;
+  if(d.metric==='eval'||d.metric==='bv')S.metric=d.metric;
+  if(d.sim)S.sim={...base.sim,...d.sim,sp:base.sim.sp.map((o,k)=>{const r={...o,...((d.sim.sp||[])[k]||{})};if(r.type!=='%'&&r.type!=='+')r.type=SP_DEF_TYPE(k);return r;})};
+  return true;
+}
+function rdLS(k){try{const r=localStorage.getItem(k);return r?JSON.parse(r):null;}catch(e){return null;}}
+function activePresetId(){
+  const P=rdLS(PRESET_KEY);
+  if(P&&P.v===2&&Array.isArray(P.presets)&&P.presets.length)return P.activeId||P.presets[0].id;
+  return 'p1';
+}
+function setCloudStatus(t,c){
+  const el=document.getElementById('save-msg');if(!el)return;
+  el.textContent=t;el.style.color=c||'var(--green)';
+  if(t===L.saved||t===L.cloud_saved){clearTimeout(el._t);el._t=setTimeout(()=>el.textContent='',1800);}
+}
+let cloudT=null,cloudBusy=false,cloudAgain=false,BOOTING=true;
+function cloudQueue(){
+  if(!canCloud()||BOOTING)return;
+  clearTimeout(cloudT);
+  setCloudStatus(L.cloud_saving,'var(--dim)');
+  cloudT=setTimeout(cloudPush,2500);
+}
+async function cloudPush(){
+  if (!await ChamAccess.requireAccess()) return;
+  cloudT=null;
+  if(!canCloud())return;
+  if(cloudBusy){cloudAgain=true;return;}
+  cloudBusy=true;
+  try{
+    const u=user();
+    const rows=await supabase('GET','users',null,`?id=eq.${u.id}&select=spec_data`);
+    let raw=rows&&rows[0]&&rows[0].spec_data;
+    if(typeof raw==='string')raw=JSON.parse(raw);
+    const P=(raw&&raw.v===2&&Array.isArray(raw.presets)&&raw.presets.length)?raw:{v:2,activeId:'p1',presets:[{id:'p1',name:IS_EN?'Default':'기본',data:raw||{}}]};
+    P.cham=P.cham||{};
+    P.cham[P.activeId||activePresetId()]=chamData();
+    await supabase('PATCH','users',{spec_data:JSON.stringify(P)},`?id=eq.${u.id}`);
+    try{localStorage.setItem(PRESET_KEY,JSON.stringify(P));}catch(e){}
+    setCloudStatus(L.cloud_saved);
+  }catch(e){
+    console.warn('[cham] cloud save failed',e);
+    setCloudStatus(L.cloud_fail,'var(--red)');
+  }
+  cloudBusy=false;
+  if(cloudAgain){cloudAgain=false;cloudPush();}
+}
+async function cloudPull(){
+  if (!await ChamAccess.requireAccess()) return;
+  if(!canCloud())return false;
+  try{
+    const u=user();
+    const rows=await supabase('GET','users',null,`?id=eq.${u.id}&select=spec_data`);
+    let raw=rows&&rows[0]&&rows[0].spec_data;
+    if(typeof raw==='string')raw=JSON.parse(raw);
+    if(!raw||!raw.cham)return false;
+    const id=raw.activeId||activePresetId();
+    if(!raw.cham[id])return false;
+    applyCham(raw.cham[id]);
+    try{localStorage.setItem(SAVE_KEY,JSON.stringify(S));}catch(e){}
+    return true;
+  }catch(e){console.warn('[cham] cloud load failed',e);return false;}
+}
+
+let saveT=null;
+function save(){
+  clearTimeout(saveT);
+  saveT=setTimeout(()=>{
+    try{localStorage.setItem(SAVE_KEY,JSON.stringify(S));if(!BOOTING)setCloudStatus(canCloud()?L.cloud_saving:L.saved,canCloud()?'var(--dim)':'var(--green)');}catch(e){}
+    cloudQueue();
+  },500);
+}
+
+// ── 스펙(장비) 로드 ──────────────────────────────────────────
+let SPEC=null;
+// 무한 인첸트: 장신구마다 체/공/방 인첸트를 모두 후보로 둠 (자원 id는 동일)
+function accVariants(){
+  const out=[];
+  SPEC.accCards.forEach(a=>{STATS.forEach(st=>out.push({...a,enc:st}));});
+  return out;
+}
+function loadSpec(){
+  const p=rd(SPEC_KEY)||{};
+  SPEC={
+    accCards:(p.accCards||[]).map((c,i)=>{
+      const db=D.ACC.find(a=>a.ko===c.name||a.en===c.name);
+      return db?{...db,_id:i,enc:['hp','atk','def'].includes(c.enchant)?c.enchant:null}:null;
+    }).filter(Boolean),
+    gems:p.gems||{},
+    pendants:(p.pendants||[]).map((pd,i)=>({...pd,_id:i}))
+  };
+}
+
+// ── 계산 (엑셀 챔대용 공식) ───────────────────────────────────
+function procSpirit(en){
+  const plus={hp:0,atk:0,def:0},pct={hp:0,atk:0,def:0},bonus={hp:0,atk:0,def:0};
+  (en&&en.sp||[]).slice(0,4).forEach((o,i)=>{
+    if(!o||!o.stat||!o.type||!SP_PLUS[o.stat])return;
+    if(o.type==='+')plus[o.stat]+=SP_PLUS[o.stat][i+1];
+    else if(o.type==='%')pct[o.stat]+=SP_PCT[i+1];
+  });
+  if(en&&en.bonus&&SP_BONUS[en.bonus])bonus[en.bonus]=SP_BONUS[en.bonus];
+  return{plus,pct,bonus};
+}
+function calcPendPct(pend){
+  let pH=0,pA=0,pD=0;
+  if(pend){
+    const mo=pend.type==='태양'?3:pend.type==='달'?2:1;
+    (pend.options||[]).slice(0,mo).forEach(o=>{
+      if(!o||!o.stat)return;
+      const v=(o.val||0)/100;
+      if(o.stat==='hp')pH+=v;else if(o.stat==='atk')pA+=v;else pD+=v;
+    });
+  }
+  return{pH,pA,pD};
+}
+function chamStat(base,gem,pot,accP,spPct,spPlus,pendP,bonus,coll,buffP){
+  const s1=INT((base+gem+pot)*(1+accP));
+  const s2=s1*(1+SPIRIT_W*spPct)+(SPIRIT_W*spPlus)*(1+SPIRIT_W*spPct);
+  const s3=INT(s2*(1+pendP)+bonus+coll);
+  return INT(s3*(1+buffP));
+}
+function calcOption(cand,acc,pend,gemHAD){
+  const {pH,pA,pD}=pend?pend._pct:{pH:0,pA:0,pD:0};
+  const sp=cand.sp;
+  const out={};
+  const buffs=[];
+  STATS.forEach(st=>{
+    const accP=acc[st]+(acc.enc===st?ENC_PCT:0);
+    const pendP=st==='hp'?pH:st==='atk'?pA:pD;
+    const buffP=(curBuff()[st]&&curBuff()[st]===cand.attr)?BUFF_PCT[st]:0;
+    if(buffP)buffs.push(st);
+    out[st]=chamStat(cand.base[st],gemHAD[st],POTION[st],accP,sp.pct[st],sp.plus[st],pendP,sp.bonus[st],COLL[st],buffP);
+  });
+  out.eval=out.hp+out.atk*4+out.def*4;
+  out.bv=out.hp*out.atk*out.def;
+  out.m=S.metric==='eval'?out.eval:out.bv;
+  out.buffs=buffs;
+  return out;
+}
+
+// ── 젬 재고 ──────────────────────────────────────────────────
+let INV=null;
+function buildInv(){
+  INV={tot:{}};
+  STATS.forEach(s=>{
+    INV[s]=[40,39,38,37,36].map(lv=>({lv,val:GEM[lv]?GEM[lv][s]:0,cnt:Number((SPEC.gems[s]||{})[lv])||0})).filter(x=>x.cnt>0&&x.val>0);
+    INV.tot[s]=INV[s].reduce((a,x)=>a+x.cnt,0);
+  });
+}
+function topGemSum(st,k){
+  let s=0,left=k;
+  for(const g of INV[st]){const t=Math.min(g.cnt,left);s+=t*g.val;left-=t;if(!left)break;}
+  return s;
+}
+function genShapes(){
+  const res=[];
+  for(let h=0;h<=5;h++)for(let a=0;a<=5-h;a++)for(let d=0;d<=5-h-a;d++){
+    if(h>INV.tot.hp||a>INV.tot.atk||d>INV.tot.def)continue;
+    res.push({h,a,d});
+  }
+  return res;
+}
+
+// ── 등록 드래곤 → 계산 후보 ───────────────────────────────────
+function entryValid(ti,en){
+  if(!en.attr||!en.name)return false;
+  if(TEAMS[ti].kind==='gang')return !!(en.dtype&&D.BASE[en.grade]&&D.BASE[en.grade][en.dtype]&&gangRow(en));
+  return !!gradeRow(en,TEAMS[ti].lv);
+}
+function teamCandidates(ti){
+  const t=TEAMS[ti];
+  return S.teams[ti].map((en,i)=>{
+    if(!entryValid(ti,en))return null;
+    if(t.kind==='gang'){
+      const g=gangRow(en);
+      return {id:'e'+ti+'-'+i,attr:en.attr,name:en.name,en:g.en,img:g.img,imgStage:8,
+        sub:attrLbl(en.attr)+' · '+typeLbl(en.dtype)+' · '+en.grade,
+        base:D.BASE[en.grade][en.dtype],sp:procSpirit(en),entry:en};
+    }
+    const g=gradeRow(en,t.lv);
+    return {id:'e'+ti+'-'+i,attr:en.attr,name:en.name,en:g.en,did:g.did,img:g.did,imgStage:4,
+      sub:attrLbl(en.attr)+' · Lv.'+t.lv,base:{hp:g.hp,atk:g.atk,def:g.def},sp:procSpirit(en),sk:g.sk,entry:en};
+  }).filter(Boolean);
+}
+
+// ── 드래곤별 셋팅 후보 ────────────────────────────────────────
+let ACCV=[];
+function buildOptions(cand,shapes,pends){
+  const bestBy=new Map();
+  const opts=[];let minM=-Infinity;
+  for(const acc of ACCV){
+    for(const pend of pends){
+      for(const sh of shapes){
+        const r=calcOption(cand,acc,pend,{hp:topGemSum('hp',sh.h),atk:topGemSum('atk',sh.a),def:topGemSum('def',sh.d)});
+        const opt={cand,acc,pend,sh,r,m:r.m};
+        const sig=sh.h+','+sh.a+','+sh.d;
+        const pid=pend?pend._id:'x';
+        const gc=sh.h+sh.a+sh.d;
+        if(!pend){const k='n'+acc._id+'|'+sig;if(!bestBy.has(k)||opt.m>bestBy.get(k).m)bestBy.set(k,opt);}
+        for(const k of ['a'+acc._id,'p'+pid,'pg'+pid+'|'+gc,'pa'+pid+'|'+acc._id,'pag'+pid+'|'+acc._id+'|'+gc]){
+          if(!bestBy.has(k)||opt.m>bestBy.get(k).m)bestBy.set(k,opt);
+        }
+        if(opt.m>minM||opts.length<OPT_LIMIT){
+          let lo=0,hi=opts.length;
+          while(lo<hi){const md=(lo+hi)>>1;if(opts[md].m>=opt.m)lo=md+1;else hi=md;}
+          opts.splice(lo,0,opt);
+          if(opts.length>OPT_LIMIT)opts.pop();
+          minM=opts.length===OPT_LIMIT?opts[opts.length-1].m:-Infinity;
+        }
+      }
+    }
+  }
+  const seen=new Set(),merged=[];
+  [...opts,...bestBy.values()].sort((a,b)=>b.m-a.m).forEach(o=>{
+    const k=o.acc._id+'|'+(o.pend?o.pend._id:'x')+'|'+o.sh.h+','+o.sh.a+','+o.sh.d;
+    if(seen.has(k))return;seen.add(k);merged.push(o);
+  });
+  return merged;
+}
+
+// ── 자원 체크 ────────────────────────────────────────────────
+function fits(opt,used){
+  if(used.acc.has(opt.acc._id))return false;
+  if(opt.cand.spId!=null&&used.sp&&used.sp.has(opt.cand.spId))return false;
+  if(opt.pend&&used.pend.has(opt.pend._id))return false;
+  if(used.gem.hp+opt.sh.h>INV.tot.hp)return false;
+  if(used.gem.atk+opt.sh.a>INV.tot.atk)return false;
+  if(used.gem.def+opt.sh.d>INV.tot.def)return false;
+  return true;
+}
+function consume(opt,used){
+  used.acc.add(opt.acc._id);
+  if(opt.cand.spId!=null&&used.sp)used.sp.add(opt.cand.spId);
+  if(opt.pend)used.pend.add(opt.pend._id);
+  used.gem.hp+=opt.sh.h;used.gem.atk+=opt.sh.a;used.gem.def+=opt.sh.d;
+  used.slot.add(opt.cand.id);
+}
+function release(opt,used){
+  used.acc.delete(opt.acc._id);
+  if(opt.cand.spId!=null&&used.sp)used.sp.delete(opt.cand.spId);
+  if(opt.pend)used.pend.delete(opt.pend._id);
+  used.gem.hp-=opt.sh.h;used.gem.atk-=opt.sh.a;used.gem.def-=opt.sh.d;
+  used.slot.delete(opt.cand.id);
+}
+
+// 상위 N개 + 장신구별/펜던트별/장신구별(펜던트 없음) 최고를 남겨 자원 충돌 시 대안 확보
+function diversifyOpts(opts,n){
+  const keep=new Set(),out=[];
+  const add=o=>{if(!keep.has(o)){keep.add(o);out.push(o);}};
+  opts.slice(0,n).forEach(add);
+  const seenA=new Set(),seenAE=new Set(),seenP=new Set(),seenPG=new Set(),seenPA=new Set(),seenPAG=new Set(),seenAN=new Set(),seenS=new Set(),seenSp=new Set(),seenASp=new Set(),seenG=new Set(),seenAG=new Set();
+  for(const o of opts){
+    const a=o.acc._id,p=o.pend?o.pend._id:'x',sh=o.sh.h+','+o.sh.a+','+o.sh.d;
+    if(!seenA.has(a)){seenA.add(a);add(o);}
+    const ae=a+'|'+(o.acc.enc||'x');
+    if(!seenAE.has(ae)){seenAE.add(ae);add(o);}
+    if(!seenP.has(p)){seenP.add(p);add(o);}
+    if(p==='x'&&!seenAN.has(a)){seenAN.add(a);add(o);}
+    if(!seenS.has(sh)&&seenS.size<12){seenS.add(sh);add(o);}
+    // 젬이 모자랄 때를 대비해 사용 젬 개수(0~5)별 최고도 확보
+    const gc=o.sh.h+o.sh.a+o.sh.d;
+    if(!seenG.has(gc)){seenG.add(gc);add(o);}
+    const pid=o.pend?o.pend._id:'x';
+    if(!seenPG.has(pid+'|'+gc)){seenPG.add(pid+'|'+gc);add(o);}
+    if(!seenPA.has(pid+'|'+a)){seenPA.add(pid+'|'+a);add(o);}
+    if(!seenPAG.has(pid+'|'+a+'|'+gc)&&seenPAG.size<220){seenPAG.add(pid+'|'+a+'|'+gc);add(o);}
+    const ag=a+'|'+gc;
+    if(gc<=2&&!seenAG.has(ag)&&seenAG.size<40){seenAG.add(ag);add(o);}
+    const sp=o.cand.spId==null?'x':o.cand.spId;
+    if(!seenSp.has(sp)){seenSp.add(sp);add(o);}
+    const ap=a+'|'+sp;
+    if(!seenASp.has(ap)&&seenASp.size<80){seenASp.add(ap);add(o);}
+  }
+  return out;
+}
+
+// ── 팀 3마리 최적 조합 ────────────────────────────────────────
+function bestTeamDeck(sets,used,optCap,mTi){
+  const gemLeft={hp:INV.tot.hp-used.gem.hp,atk:INV.tot.atk-used.gem.atk,def:INV.tot.def-used.gem.def};
+  const S3=sets
+    .filter(s=>!used.slot.has(s.cand.id))
+    .map(s=>({cand:s.cand,opts:diversifyOpts(s.opts.filter(o=>fits(o,used)),optCap||60).sort((a,b)=>b.m-a.m)}))
+    .filter(s=>s.opts.length)
+    .map(s=>({...s,best:s.opts[0].m}))
+    .sort((a,b)=>b.best-a.best)
+    .slice(0,14);
+  let bestDeck=null,bestScore=-Infinity;
+  const compat=(a,b)=>{
+    if(a.acc._id===b.acc._id)return false;
+    if(a.cand.spId!=null&&a.cand.spId===b.cand.spId)return false;
+    if(a.cand.id===b.cand.id)return false;
+    if(a.pend&&b.pend&&a.pend._id===b.pend._id)return false;
+    return true;
+  };
+  const gemOk=(a,b,c)=>
+    (a.sh.h+b.sh.h+(c?c.sh.h:0)<=gemLeft.hp)&&
+    (a.sh.a+b.sh.a+(c?c.sh.a:0)<=gemLeft.atk)&&
+    (a.sh.d+b.sh.d+(c?c.sh.d:0)<=gemLeft.def);
+  for(let i=0;i<S3.length-2;i++)for(let j=i+1;j<S3.length-1;j++)for(let k=j+1;k<S3.length;k++){
+    const A=S3[i],B=S3[j],C=S3[k];
+    if(A.best+B.best+C.best<=bestScore)continue;
+    for(const a of A.opts){
+      if(a.m+B.best+C.best<=bestScore)break;
+      for(const b of B.opts){
+        if(a.m+b.m+C.best<=bestScore)break;
+        if(!compat(a,b)||!gemOk(a,b,null))continue;
+        for(const c of C.opts){
+          if(a.m+b.m+c.m<=bestScore)break;
+          if(!compat(a,c)||!compat(b,c)||!gemOk(a,b,c))continue;
+          bestScore=a.m+b.m+c.m;
+          bestDeck=[a,b,c];
+        }
+      }
+    }
+  }
+  if(bestDeck)return bestDeck;
+  // 조합 탐색이 실패하면(자원이 빠듯할 때) 남은 자원으로 한 마리씩 그리디로 채움
+  const tmp={acc:new Set(used.acc),pend:new Set(used.pend),gem:{...used.gem},slot:new Set(used.slot),sp:new Set(used.sp)};
+  const pool=sets.filter(s=>!used.slot.has(s.cand.id));
+  const picked=[];
+  for(const s of pool){
+    if(picked.length>=3)break;
+    const o=(s.opts||[]).find(x=>fits(x,tmp)&&minOk(mTi,x.r))||bestFeasibleOption(s.cand,tmp,mTi);
+    if(!o)continue;
+    picked.push(o);consume(o,tmp);
+  }
+  return picked.length===3?picked:null;
+}
+// 남은 자원만으로 그 드래곤의 최적 셋팅을 그 자리에서 계산 (폴백용)
+function bestFeasibleOption(cand,used,mTi){
+  const left={hp:INV.tot.hp-used.gem.hp,atk:INV.tot.atk-used.gem.atk,def:INV.tot.def-used.gem.def};
+  const pends=[null,...SPEC.pendants.map(p=>({...p,_pct:calcPendPct(p)}))].filter(p=>!p||!used.pend.has(p._id));
+  const accs=ACCV.filter(a=>!used.acc.has(a._id));
+  let best=null;
+  for(const acc of accs)for(const pend of pends){
+    for(let h=0;h<=Math.min(5,left.hp);h++)for(let a=0;a<=Math.min(5-h,left.atk);a++){
+      const dMax=Math.min(5-h-a,left.def);
+      for(let d=0;d<=dMax;d++){
+        const r=calcOption(cand,acc,pend,{hp:topGemSum('hp',h),atk:topGemSum('atk',a),def:topGemSum('def',d)});
+        if(!minOk(mTi,r))continue;
+        if(!best||r.m>best.m)best={cand,acc,pend,sh:{h,a,d},r,m:r.m};
+      }
+    }
+  }
+  return best;
+}
+
+// ── 남은 펜던트 채우기 (보유 펜던트가 드래곤 수보다 많을 때) ──
+function assignLeftoverPendants(decks){
+  const all=[];
+  decks.forEach(d=>{if(d)d.forEach(o=>all.push(o));});
+  if(!all.length)return;
+  const used=new Set(all.filter(o=>o.pend).map(o=>o.pend._id));
+  let left=SPEC.pendants.filter(p=>!used.has(p._id)).map(p=>({...p,_pct:calcPendPct(p)}));
+  if(!left.length)return;
+  // 펜던트가 없는 드래곤부터, 남은 것 중 가장 이득이 큰 걸 배정
+  let empties=all.filter(o=>!o.pend);
+  while(left.length&&empties.length){
+    let pick=null;
+    empties.forEach(o=>{
+      const g={hp:topGemSum('hp',o.sh.h),atk:topGemSum('atk',o.sh.a),def:topGemSum('def',o.sh.d)};
+      left.forEach(p=>{
+        const r=calcOption(o.cand,o.acc,p,g);
+        const gain=r.m-o.m;
+        if(!pick||gain>pick.gain)pick={o,p,r,gain};
+      });
+    });
+    if(!pick||pick.gain<=0)break;
+    pick.o.pend=pick.p;pick.o.r=pick.r;pick.o.m=pick.r.m;
+    left=left.filter(p=>p._id!==pick.p._id);
+    empties=empties.filter(o=>o!==pick.o);
+  }
+  // 남은 게 더 좋으면 이미 낀 것과 교체
+  let changed=true,guard=0;
+  while(left.length&&changed&&guard++<20){
+    changed=false;
+    let best=null;
+    all.forEach(o=>{
+      if(!o.pend)return;
+      const g={hp:topGemSum('hp',o.sh.h),atk:topGemSum('atk',o.sh.a),def:topGemSum('def',o.sh.d)};
+      left.forEach(p=>{
+        const r=calcOption(o.cand,o.acc,p,g);
+        const gain=r.m-o.m;
+        if(gain>0&&(!best||gain>best.gain))best={o,p,r,gain,old:o.pend};
+      });
+    });
+    if(best){
+      left=left.filter(p=>p._id!==best.p._id).concat([{...best.old,_pct:calcPendPct(best.old)}]);
+      best.o.pend=best.p;best.o.r=best.r;best.o.m=best.r.m;
+      changed=true;
+    }
+  }
+}
+
+// ── 최종 젬 단계 배정 ────────────────────────────────────────
+function finalizeGems(decks){
+  const left={};STATS.forEach(s=>{left[s]=INV[s].map(g=>({...g}));});
+  const take=(st,k)=>{
+    const items=[];let sum=0;
+    for(const g of left[st]){
+      while(g.cnt>0&&items.length<k){g.cnt--;items.push({lv:g.lv,val:g.val});sum+=g.val;}
+      if(items.length>=k)break;
+    }
+    return{items,sum};
+  };
+  const all=[];
+  decks.forEach(d=>{if(d)d.forEach(o=>all.push(o));});
+  all.sort((a,b)=>b.m-a.m);
+  all.forEach(o=>{
+    const gh=take('hp',o.sh.h),ga=take('atk',o.sh.a),gd=take('def',o.sh.d);
+    o.gems={hp:gh.items,atk:ga.items,def:gd.items};
+    o.r=calcOption(o.cand,o.acc,o.pend,{hp:gh.sum,atk:ga.sum,def:gd.sum});
+    o.m=o.r.m;
+  });
+}
+
+const tick=()=>new Promise(r=>setTimeout(r,0));
+function progBar(btn,p){
+  if(!btn||!btn.parentNode)return;
+  let el=btn.parentNode.querySelector('.prog');
+  if(p==null){if(el)el.remove();return;}
+  if(!el){el=document.createElement('div');el.className='prog';el.innerHTML='<i></i>';btn.insertAdjacentElement('afterend',el);}
+  el.firstChild.style.width=Math.max(0,Math.min(100,p))+'%';
+}
+// ── 정령 배분: 보유 드래곤 (드래곤별 마리 수) ──────────────
+const OWN_SECS=['gang','21','45'];
+function spxSecOf(ti){return ti===0?'gang':String(TEAMS[ti].lv);}
+function ownMap(sec){const o=S.spx.own||(S.spx.own={});return o[sec]||(o[sec]={});}
+function ownKey(d){return d.attr+'|'+d.ko;}
+function ownN(sec,key){const v=parseInt(ownMap(sec)[key]);return v>0?Math.min(3,v):0;}
+function ownHas(sec){return Object.keys(ownMap(sec)).length>0;}
+function ownKinds(sec){return Object.keys(ownMap(sec)).length;}
+const OWN_POOL={};
+function ownPool(sec){
+  if(OWN_POOL[sec])return OWN_POOL[sec];
+  let out=[];
+  if(sec==='gang'){
+    ATTRS.forEach(attr=>gangDb(attr).forEach(g=>{
+      if(!findType(g.ko))return;
+      out.push({attr,ko:g.ko,en:g.en,img:g.img,stage:8});
+    }));
+  }else{
+    const lv=+sec,seen=new Set();
+    D.GRADE.filter(g=>g.lv===lv&&/ SSS$/.test(g.ko)).forEach(g=>{
+      const k=g.ko+'|'+g.elem;if(seen.has(k))return;seen.add(k);
+      out.push({attr:g.elem,ko:g.ko,en:g.en,img:g.did,stage:4});
+    });
+  }
+  out.sort((a,b)=>ATTRS.indexOf(a.attr)-ATTRS.indexOf(b.attr)||nm(a).localeCompare(nm(b)));
+  return OWN_POOL[sec]=out;
+}
+// 배분 결과를 드래곤별 보유 수만큼 복제
+function spxOwnExpand(sets){
+  const out=[];
+  sets.forEach(s=>{
+    const n=dupClamp(s.cand.own||1);
+    if(n<=1){out.push(s);return;}
+    for(let k=0;k<n;k++){
+      const sfx=' \u00b7 #'+(k+1);
+      const mk=c=>({...c,id:k?c.id+'~'+k:c.id,sub:(c.sub||'')+sfx});
+      out.push({cand:mk(s.cand),opts:s.opts.map(o=>({...o,cand:mk(o.cand)}))});
+    }
+  });
+  return out;
+}
+// ── 보유 드래곤 UI ────────────────────────────────────────
+let OWN_Q='';
+function ownSegsHtml(){
+  const cur=S.spx.osec;
+  const picked=OWN_SECS.reduce((s,k)=>s+ownKinds(k),0);
+  const tabs=[['gang',L.own_gang+' '+ownKinds('gang')],['21','Lv.21 '+ownKinds('21')],
+              ['45','Lv.45 '+ownKinds('45')],['all',L.own_pick+' '+picked]];
+  return tabs.map(([k,lb])=>`<button type="button" class="chip${cur===k?' on':''}" onclick="ownSec('${k}')">${esc(lb)}</button>`).join('');
+}
+function ownItemHtml(sec,d){
+  const n=ownN(sec,ownKey(d));
+  return `<button type="button" class="own-it${n?' on':''}" data-ok="${esc(sec+'\u00a7'+ownKey(d))}" onclick="ownTick(this)" title="${esc(nm(d))}">`+
+    `<img loading="lazy" src="${esc(imgUrl(d.img,d.stage))}" onerror="this.style.visibility='hidden'" alt="">`+
+    `<span class="own-n">${n>1?'\u00d7'+n:''}</span><em>${esc(nm(d))}</em></button>`;
+}
+function ownGroupHtml(title,cnt,items){
+  return `<div class="own-grp"><div class="own-grp-t">${esc(title)}<span>${L.own_cnt(cnt)}</span></div><div class="own-grid">${items}</div></div>`;
+}
+function ownGridHtml(){
+  const sec=S.spx.osec;
+  if(sec==='all'){
+    const parts=OWN_SECS.map(k=>{
+      const pool=ownPool(k).filter(d=>ownN(k,ownKey(d)));
+      if(!pool.length)return '';
+      return ownGroupHtml(k==='gang'?L.own_gang:'Lv.'+k,pool.length,pool.map(d=>ownItemHtml(k,d)).join(''));
+    }).filter(Boolean);
+    return parts.length?parts.join(''):`<div class="own-empty">${L.own_none}</div>`;
+  }
+  const q=OWN_Q.trim().toLowerCase(),fa=S.spx.oattr||'';
+  const pool=ownPool(sec).filter(d=>(!fa||d.attr===fa)&&(!q||d.ko.toLowerCase().includes(q)||String(d.en||'').toLowerCase().includes(q)));
+  if(!pool.length)return `<div class="own-empty">${L.own_empty}</div>`;
+  const by={};pool.forEach(d=>{(by[d.attr]=by[d.attr]||[]).push(d);});
+  return ATTRS.filter(a=>by[a]).map(a=>ownGroupHtml(attrLbl(a),by[a].length,by[a].map(d=>ownItemHtml(sec,d)).join(''))).join('');
+}
+function ownRedraw(){
+  const g=document.getElementById('own-grid');if(g)g.innerHTML=ownGridHtml();
+  const s=document.getElementById('own-segs');if(s)s.innerHTML=ownSegsHtml();
+}
+function ownSec(k){S.spx.osec=k;OWN_Q='';renderSpxSetting();save();}
+function ownAttr(a){S.spx.oattr=a;ownRedraw();save();}
+function ownSearch(v){OWN_Q=v||'';const g=document.getElementById('own-grid');if(g)g.innerHTML=ownGridHtml();}
+function ownClear(){
+  const sec=S.spx.osec;
+  if(sec==='all')OWN_SECS.forEach(k=>{S.spx.own[k]={};});
+  else S.spx.own[sec]={};
+  ownRedraw();save();
+}
+function ownTick(el){
+  const parts=String(el.dataset.ok||'').split('\u00a7');
+  const sec=parts[0],key=parts[1]||'';
+  if(!key)return;
+  const cur=ownN(sec,key),nx=cur>=3?0:cur+1;
+  const m=ownMap(sec);
+  if(nx)m[key]=nx;else delete m[key];
+  el.classList.toggle('on',!!nx);
+  const b=el.querySelector('.own-n');if(b)b.textContent=nx>1?'\u00d7'+nx:'';
+  const s=document.getElementById('own-segs');if(s)s.innerHTML=ownSegsHtml();
+  if(S.spx.osec==='all'&&!nx){const g=document.getElementById('own-grid');if(g)g.innerHTML=ownGridHtml();}
+  save();
+}
+async function solve(makeSets,optCap,onProg){
+  const P=typeof onProg==='function'?onProg:()=>{};
+  buildInv();
+  ACCV=accVariants();
+  const shapes=genShapes();
+  const pends=[null,...SPEC.pendants.map(p=>({...p,_pct:calcPendPct(p)}))];
+  P(1);await tick();
+  let setsByTeam;
+  if(makeSets){
+    setsByTeam=await makeSets(shapes,pends,f=>P(1+f*62));
+  }else{
+    setsByTeam=[];
+    for(let ti=0;ti<3;ti++){
+      const cands=teamCandidates(ti);const arr=[];
+      for(let i=0;i<cands.length;i++){
+        const opts=buildOptions(cands[i],shapes,pends);
+        if(opts.length)arr.push({cand:cands[i],opts});
+        P(1+((ti+(i+1)/Math.max(1,cands.length))/3)*62);
+        await tick();
+      }
+      setsByTeam.push(arr);
+    }
+  }
+  // 자동 계산에서만 팀별 최소 스탯을 적용한다 (정령 배분은 제외)
+  const useMin=!makeSets;
+  if(useMin)setsByTeam=setsByTeam.map((arr,ti)=>{
+    if(!minOf(ti))return arr;
+    return arr.map(s=>({...s,opts:s.opts.filter(o=>minOk(ti,o.r))})).filter(s=>s.opts.length);
+  });
+  const mti=ti=>useMin?ti:-1;
+  P(63);await tick();
+  const orders=[[0,1,2],[2,1,0]];
+  let best=null;
+  const STEPS=orders.length*9;let step=0;
+  const bump=async()=>{step++;P(63+step/STEPS*35);await tick();};
+  for(const order of orders){
+    const used={acc:new Set(),pend:new Set(),gem:{hp:0,atk:0,def:0},slot:new Set(),sp:new Set()};
+    let decks=[null,null,null];
+    for(const ti of order){
+      const deck=bestTeamDeck(setsByTeam[ti],used,optCap,mti(ti));
+      decks[ti]=deck;
+      if(deck)deck.forEach(o=>consume(o,used));
+      await bump();
+    }
+    for(let r=0;r<2;r++){
+      for(let ti=0;ti<3;ti++){
+        if(decks[ti])decks[ti].forEach(o=>release(o,used));
+        const deck=bestTeamDeck(setsByTeam[ti],used,optCap,mti(ti));
+        const oldM=decks[ti]?decks[ti].reduce((s,o)=>s+o.m,0):-1;
+        const newM=deck?deck.reduce((s,o)=>s+o.m,0):-1;
+        decks[ti]=newM>=oldM?deck:decks[ti];
+        if(decks[ti])decks[ti].forEach(o=>consume(o,used));
+        await bump();
+      }
+    }
+    decks=decks.map(d=>d?d.map(o=>({...o})):null);
+    const total=decks.reduce((s,d)=>s+(d?d.reduce((x,o)=>x+o.m,0):0),0);
+    const filled=decks.reduce((s,d)=>s+(d?d.length:0),0);
+    if(!best||filled>best.filled||(filled===best.filled&&total>best.total))best={decks,total,filled};
+  }
+  assignLeftoverPendants(best.decks);
+  finalizeGems(best.decks);
+  P(100);
+  return best;
+}
+
+async function run(){
+  if (!await ChamAccess.requireAccess()) return;
+  const btn=document.getElementById('run-btn');
+  btn.disabled=true;btn.textContent=L.running_p(0);progBar(btn,0);
+  save();
+  await tick();
+  try{
+    const t0=performance.now();
+    let last=-1;
+    const best=await solve(null,null,p=>{
+      const v=Math.max(0,Math.min(99,Math.round(p)));
+      if(v!==last){last=v;btn.textContent=L.running_p(v);progBar(btn,v);}
+    });
+    renderResult(best,performance.now()-t0);
+    document.getElementById('advice').innerHTML='';
+  }catch(e){console.error(e);alert(L.err+e.message);}
+  progBar(btn,null);
+  btn.disabled=false;btn.textContent=L.run;
+  updateRunState();
+}
+
+// ── 결과 렌더 ────────────────────────────────────────────────
+function gemText(opt){
+  const parts=[];
+  STATS.forEach(st=>{
+    const cnt={};
+    (opt.gems&&opt.gems[st]||[]).forEach(g=>{cnt[g.lv]=(cnt[g.lv]||0)+1;});
+    Object.keys(cnt).sort((a,b)=>b-a).forEach(lv=>parts.push(`${statLbl(st)} ${GEM_NAME[lv]} ×${cnt[lv]}`));
+  });
+  return parts.length?parts.join(', '):L.none;
+}
+function spiritText(en){
+  const parts=(en.sp||[]).slice(0,4).map((o,i)=>{
+    if(!o||!o.stat||!o.type)return null;
+    return statLbl(o.stat)+(o.type==='%'?'%':'+');
+  }).filter(Boolean);
+  const b=en.bonus?(' · '+L.bonus+' '+statLbl(en.bonus)):'';
+  return parts.length||b?(parts.join('/')||'—')+b:null;
+}
+function cardHtml(opt){
+  const c=opt.cand,r=opt.r;
+  const badge=st=>r.buffs.includes(st)?`<span class="buff-badge">${st==='def'?'+50%':'+40%'}</span>`:'';
+  const acc=opt.acc;
+  const accName=nm(acc)+(acc.enc?` (${L.enc} ${statLbl(acc.enc)} 21%)`:'');
+  const pend=opt.pend?`${L.pend_t[opt.pend.type]||opt.pend.type} ${(opt.pend.options||[]).slice(0,opt.pend.type==='태양'?3:opt.pend.type==='달'?2:1).map(o=>statLbl(o.stat)+o.val+'%').join('/')}`:L.none;
+  const sp=c.spLabel!=null?c.spLabel:spiritText(c.entry);
+  const kv=(k,v)=>`<div class="kv"><span class="k">${k}</span><span class="v">${esc(v)}</span></div>`;
+  return `<div class="card">
+    <div class="card-hd">
+      ${c.img?`<img class="card-img" src="${esc(imgUrl(c.img,c.imgStage))}" onerror="this.style.visibility='hidden'" alt="">`:`<div class="card-img"></div>`}
+      <div><div class="card-name">${esc(nm({ko:c.name,en:c.en||c.name}))}${skillIcon(c.sk)}</div>
+      <div class="card-sub">${esc(c.sub)}</div></div>
+    </div>
+    <div class="card-bd">
+      ${kv(L.acc,accName)}
+      ${kv(L.gems,gemText(opt))}
+      ${kv(L.pendant,pend)}
+      ${sp?kv(L.spirit,sp):''}
+    </div>
+    <div class="result">
+      <div class="res-stats">${STATS.map(st=>`<div><small class="c-${st}">${statLbl(st)}${badge(st)}</small><b class="c-${st}">${fmt(r[st])}</b></div>`).join('')}</div>
+      <div class="res-sum"><span>EVAL <b>${fmt(r.eval)}</b></span><span>${L.bv} <b>${fmt(r.bv)}</b></span></div>
+    </div>
+  </div>`;
+}
+let LAST_BEST=null;
+function renderResult(best,ms,elId,reasonFn){
+  if(elId!=='spx-result')LAST_BEST=best;
+  const el=document.getElementById(elId||'result');
+  if(!best||!best.filled){el.innerHTML=`<div class="sec"><div class="sec-bd empty-note">${L.no_result}</div></div>`;return;}
+  let html='';
+  let tE=0,tB=0;
+  TEAMS.forEach((t,ti)=>{
+    const deck=best.decks[ti];
+    html+=`<div class="team-block"><div class="team-title">${esc(L.team(ti+1))}<small>${esc(t.kind==='gang'?L.kind_gang:L.kind_grade(t.lv))}</small></div>`;
+    if(!deck){
+      const reason=reasonFn?reasonFn(ti):(teamCandidates(ti).length<3?L.team_need3:(minOf(ti)?L.team_min:L.team_fail));
+      html+=`<div class="sec"><div class="sec-bd empty-note">${reason}</div></div></div>`;return;
+    }
+    deck.sort((a,b)=>b.m-a.m);
+    deck.forEach(o=>{tE+=o.r.eval;tB+=o.r.bv;});
+    html+=`<div class="cards">${deck.map(o=>cardHtml(o)).join('')}</div></div>`;
+  });
+  html+=`<div class="sec"><div class="sec-hd"><span>${L.total}</span><span style="color:var(--dim);font-weight:700">${(ms/1000).toFixed(1)}s</span></div>
+    <div class="sec-bd total-line"><span>EVAL</span> ${fmt(tE)} <span>${L.bv}</span> ${fmt(tB)}</div>
+    <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
+      ${elId==='spx-result'
+        ?`<button class="btn" onclick="spxApply()">${L.spx_apply}</button>
+           ${SPX_UNDO?`<button class="btn" onclick="spxUndo()">${L.spx_undo}</button>`:''}
+           <button class="btn" onclick="sendToManual(SPX_LAST)">${L.send_manual}</button>
+           <button class="btn" onclick="exportImage(SPX_LAST)">${L.export_img}</button>`
+        :`<button class="btn" onclick="sendToManual(LAST_BEST)">${L.send_manual}</button>
+           <button class="btn" onclick="exportImage(LAST_BEST)">${L.export_img}</button>
+           <button class="btn" onclick="snapSave()">${L.snap_save}</button>
+           <button class="btn" onclick="advise()">${L.advise}</button>`}
+    </div></div>`;
+  el.innerHTML=html;
+  el.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+// ── 드래곤 등록 탭 렌더 ───────────────────────────────────────
+function attrOpts(cur){return `<option value="">${L.pick_attr}</option>`+ATTRS.map(a=>`<option value="${a}"${cur===a?' selected':''}>${attrLbl(a)}</option>`).join('');}
+const OPEN_CARD=new Set(); // 펼친(편집 중) 카드 uid
+const SP_PRESETS=['%%%+','%%%%','+%%%','+%%+'].map(p=>[p,p.split('')]);
+function entryDragon(ti,en){return TEAMS[ti].kind==='gang'?gangRow(en):gradeRow(en,TEAMS[ti].lv);}
+function spSummary(en){
+  const parts=en.sp.map((o,k)=>{
+    if(!o.stat||!o.type)return null;
+    return `<span class="c-${o.stat}">${statLbl(o.stat)}${o.type==='%'?'%':'+'}</span>`;
+  });
+  const filled=parts.filter(Boolean).length;
+  const body=filled?parts.map(x=>x||'—').join(' / '):`<span style="color:var(--dim)">${L.sp_none}</span>`;
+  const bonus=en.bonus?` · ${L.bonus} <span class="c-${en.bonus}">${statLbl(en.bonus)}</span>`:'';
+  return `${L.spirit} ${body}${bonus}`;
+}
+function drCardHtml(ti,i){
+  const en=S.teams[ti][i];const t=TEAMS[ti];
+  const d=entryDragon(ti,en);
+  const valid=entryValid(ti,en);
+  const open=!d||!valid||OPEN_CARD.has(en.uid);
+  let img='',title=L.no_dragon,sub='',skill='';
+  if(t.kind==='gang'){
+    if(d){img=imgUrl(d.img,8);title=nm(d);sub=[en.dtype?typeLbl(en.dtype):'',en.grade].filter(Boolean).join(' · ');}
+  }else if(d){
+    img=imgUrl(d.did,4);title=nm(d);sub='Lv.'+t.lv+' · EVAL '+d.ev;
+    if(d.sk)skill=skillIcon(d.sk);
+  }
+  const P=`S.teams[${ti}][${i}]`;
+  const pick=t.kind==='gang'
+    ?`<div class="f1">${searchBox(ti,i,d?title:'')}</div>
+      <div class="f2">
+        ${d&&en.dtype
+          ?`<select disabled title="${esc(L.type_fixed)}"><option>${esc(typeLbl(en.dtype))}</option></select>`
+          :`<select onchange="${P}.dtype=this.value;onEdit(${ti})" ${d?'':'disabled'}><option value="">${L.pick_type}</option>${DTYPES.map(x=>`<option value="${x}"${en.dtype===x?' selected':''}>${typeLbl(x)}</option>`).join('')}</select>`}
+        <select onchange="${P}.grade=this.value;onEdit(${ti})">${GRADES.map(x=>`<option${en.grade===x?' selected':''}>${x}</option>`).join('')}</select>
+      </div>`
+    :`<div class="f1">${searchBox(ti,i,d?title:'')}</div>`;
+  const statChips=(cur,fn)=>STATS.map(x=>`<button type="button" class="chip${cur===x?' on-'+x:''}" onclick="${fn}('${x}')">${statLbl(x)}</button>`).join('');
+  const presets=`<div class="preset-row">
+      ${SP_PRESETS.map(([id,types])=>`<button type="button" class="chip pat${en.sp.every((o,k)=>o.type===types[k])?' on':''}" title="${esc(L.sp_pat_title)}" onclick="spPreset(${ti},${i},'${id}')">${id}</button>`).join('')}
+      <span class="sep"></span>
+      <button type="button" class="chip" onclick="spClear(${ti},${i})">${L.sp_clear}</button>
+    </div>`;
+  const rows=en.sp.map((o,k)=>{
+    const v=o.stat&&o.type?(o.type==='%'?'+'+Math.round(SP_PCT[k+1]*100)+'%':'+'+SP_PLUS[o.stat][k+1]):'';
+    return `<div class="sp2-row"><span class="k">${L.opt(k+1)}</span>
+      ${STATS.map(x=>`<button type="button" class="chip${o.stat===x?' on-'+x:''}" onclick="spStat(${ti},${i},${k},'${x}')">${statLbl(x)}</button>`).join('')}
+      <button type="button" class="chip on" onclick="spType(${ti},${i},${k})" title="${esc(L.sp_type_title)}">${o.type==='+'?'+':'%'}</button>
+      <span class="v">${v}</span></div>`;
+  }).join('');
+  const bonus=`<div class="sp2-row sp2-bonus"><span class="k">${L.bonus_s}</span>
+      ${STATS.map(x=>`<button type="button" class="chip${en.bonus===x?' on-'+x:''}" onclick="spBonus(${ti},${i},'${x}')">${statLbl(x)}</button>`).join('')}
+      <span class="v">${en.bonus?'+'+SP_BONUS[en.bonus]:''}</span></div>`;
+  const sumWarn=!valid&&d?`<div class="warn">${L.need_type}</div>`:'';
+  return `<div class="dr-card${open?'':' closed'}" data-uid="${en.uid}">
+    <div class="dr-hd" onclick="toggleCard('${en.uid}',event)">
+      ${img?`<img class="dr-img" src="${esc(img)}" onerror="this.style.visibility='hidden'" alt="">`:`<div class="dr-img"></div>`}
+      <div><div class="dr-name">${esc(title)}${skill}</div><div class="dr-sub">${esc(sub)}</div></div>
+      <div class="dr-acts">
+        ${d&&valid?`<button class="icon-btn" title="${esc(open?L.collapse:L.expand)}" onclick="event.stopPropagation();toggleCard('${en.uid}')">${open?'▴':'▾'}</button>`:''}
+        <button class="icon-btn" title="${esc(L.dup)}" onclick="event.stopPropagation();dupEntry(${ti},${i})">⧉</button>
+        <button class="icon-btn red" title="${esc(L.del)}" onclick="event.stopPropagation();delEntry(${ti},${i})">✕</button>
+      </div>
+    </div>
+    <div class="dr-sum">${spSummary(en)}${sumWarn}</div>
+    <div class="dr-bd">
+      ${pick}
+      <div class="grp-t">${L.spirit}<span>${L.spirit_note}</span></div>
+      ${presets}
+      <div>${rows}${bonus}</div>
+    </div>
+  </div>`;
+}
+function toggleCard(uid,ev){
+  if(ev&&ev.target.closest('input,select,button'))return;
+  if(OPEN_CARD.has(uid))OPEN_CARD.delete(uid);else OPEN_CARD.add(uid);
+  const el=document.querySelector(`.dr-card[data-uid="${uid}"]`);
+  const ti=S.dteam;const i=S.teams[ti].findIndex(e=>e.uid===uid);
+  if(el&&i>=0){el.outerHTML=drCardHtml(ti,i);}
+}
+function spEdit(ti,i,fn){
+  const en=S.teams[ti][i];fn(en);
+  const bd=document.querySelector('.dr-sheet-bd');const y=bd?bd.scrollTop:0;
+  renderDragonTeams();
+  const bd2=document.querySelector('.dr-sheet-bd');if(bd2)bd2.scrollTop=y;
+  refreshTeamCounts();save();
+}
+function spStat(ti,i,k,x){spEdit(ti,i,en=>{const o=en.sp[k];o.stat=o.stat===x?'':x;if(o.type!=='%'&&o.type!=='+')o.type=SP_DEF_TYPE(k);});}
+function spType(ti,i,k){spEdit(ti,i,en=>{const o=en.sp[k];o.type=o.type==='%'?'+':'%';});}
+function spBonus(ti,i,x){spEdit(ti,i,en=>{en.bonus=en.bonus===x?'':x;});}
+function spPreset(ti,i,id){const types=(SP_PRESETS.find(p=>p[0]===id)||[])[1];if(!types)return;spEdit(ti,i,en=>{en.sp.forEach((o,k)=>{o.type=types[k];});});}
+function spClear(ti,i){spEdit(ti,i,en=>{en.sp.forEach((o,k)=>{o.stat='';o.type=SP_DEF_TYPE(k);});en.bonus='';});}
+function dupEntry(ti,i){
+  const src=S.teams[ti][i];
+  const cp=JSON.parse(JSON.stringify(src));cp.uid=newUid();
+  S.teams[ti].splice(i+1,0,cp);
+  OPEN_CARD.add(cp.uid);
+  renderDragonTeams();save();
+}
+function setAllCards(ti,attr,open){
+  S.teams[ti].forEach(en=>{if(attr&&en.attr!==attr)return;if(open)OPEN_CARD.add(en.uid);else OPEN_CARD.delete(en.uid);});
+  renderDragonTeams();
+}
+function refreshTeamCounts(){
+  // 팀 탭 숫자와 속성 그룹 카운트만 갱신 (전체 재렌더 없이)
+  const ti=S.dteam;
+  document.querySelectorAll('.team-tab').forEach((b,k)=>{const sp=b.querySelector('span');if(sp)sp.textContent='('+teamCandidates(k).length+')';});
+  const valid=new Set(teamCandidates(ti).map(c=>c.id));
+  document.querySelectorAll('.attr-grp').forEach(g=>{
+    const attr=g.dataset.attr;
+    const idxs=S.teams[ti].map((en,i)=>({en,i})).filter(x=>x.en.attr===attr).map(x=>x.i);
+    const ok=idxs.filter(i=>valid.has('e'+ti+'-'+i)).length;
+    const n=g.querySelector('summary .n');if(n)n.innerHTML=L.attr_count(ok,idxs.length);
+  });
+}
+const OPEN_ATTR=[new Set(),new Set(),new Set()];
+// ── 내 드래곤 탭: 속성 레일 + 그룹 표 ───────────────────────
+const EL_ICON={'땅':11,'물':12,'불':13,'바람':14,'빛':84,'어둠':87,'황혼':487,'여명':486,'악몽':488};
+const EL_DOT={'땅':'#a3956b','물':'#5b9bd5','불':'#e0776f','바람':'#6fbf8e','빛':'#e8d07a',
+              '어둠':'#9b8bc4','황혼':'#c9836b','여명':'#7fb3d5','악몽':'#8f7ab0'};
+function elIcon(attr){return `${ASSET}icon/${EL_ICON[attr]||11}.png`;}
+let D_ATTR='';      // 레일에서 고른 속성 ('' = 전체)
+let EDIT_UID=null;  // 편집 중인 드래곤
+function setDAttr(a){D_ATTR=(D_ATTR===a)?'':a;renderDragonTeams();}
+function openEdit(uid){EDIT_UID=(EDIT_UID===uid)?null:uid;renderDragonTeams();}
+function closeEdit(){EDIT_UID=null;renderDragonTeams();}
+// 편집 칸은 PC 표 안 / 모바일 시트 안 — 한 번에 한 곳에만 그립니다.
+// 두 곳에 동시에 그리면 검색창 id 가 겹쳐서, 모바일에서 드롭다운이
+// 숨겨진 PC 표 쪽에 열리고 드래곤을 고를 수 없었습니다.
+const _drMQ=window.matchMedia('(max-width:760px)');
+const DR_MOBILE=()=>_drMQ.matches;
+if(_drMQ.addEventListener)_drMQ.addEventListener('change',()=>{if(EDIT_UID)renderDragonTeams();});
+
+// 드래곤 한 마리의 표시용 정보
+function drInfo(ti,i){
+  const en=S.teams[ti][i],t=TEAMS[ti];
+  const d=entryDragon(ti,en),valid=entryValid(ti,en);
+  let img='',title=L.no_dragon,sub='',skill='';
+  if(t.kind==='gang'){
+    if(d){img=imgUrl(d.img,8);title=nm(d);sub=[en.dtype?typeLbl(en.dtype):'',en.grade].filter(Boolean).join(' · ');}
+  }else if(d){
+    img=imgUrl(d.did,4);title=nm(d);sub='Lv.'+t.lv+' · EVAL '+d.ev;
+    if(d.sk)skill=skillIcon(d.sk);
+  }
+  return {en,d,valid,img,title,sub,skill};
+}
+// 정령 옵션을 작은 칩으로
+function spChips(en){
+  const out=en.sp.map(o=>{
+    if(!o.stat)return `<span class="sp-chip none">·</span>`;
+    return `<span class="sp-chip ${o.stat}">${statLbl(o.stat).slice(0,1)}${o.type==='+'?'+':'%'}</span>`;
+  });
+  if(en.bonus)out.push(`<span class="sp-chip ${en.bonus} bn">${L.bonus_s}</span>`);
+  return `<span class="sp-chips">${out.join('')}</span>`;
+}
+// 펼쳤을 때의 편집 본문 (표 · 시트 공용)
+function drEditHtml(ti,i){
+  const en=S.teams[ti][i],t=TEAMS[ti];
+  const d=entryDragon(ti,en);
+  const info=drInfo(ti,i);
+  const P=`S.teams[${ti}][${i}]`;
+  const pick=t.kind==='gang'
+    ?`<div class="f1">${searchBox(ti,i,d?info.title:'')}</div>
+      <div class="f2">
+        ${d&&en.dtype
+          ?`<select disabled title="${esc(L.type_fixed)}"><option>${esc(typeLbl(en.dtype))}</option></select>`
+          :`<select onchange="${P}.dtype=this.value;onEdit(${ti})" ${d?'':'disabled'}><option value="">${L.pick_type}</option>${DTYPES.map(x=>`<option value="${x}"${en.dtype===x?' selected':''}>${esc(typeLbl(x))}</option>`).join('')}</select>`}
+        <select onchange="${P}.grade=this.value;onEdit(${ti})">${GRADES.map(x=>`<option${en.grade===x?' selected':''}>${x}</option>`).join('')}</select>
+      </div>`
+    :`<div class="f1">${searchBox(ti,i,d?info.title:'')}</div>`;
+  const presets=`<div class="preset-row">
+      ${SP_PRESETS.map(([id,types])=>`<button type="button" class="chip pat${en.sp.every((o,k)=>o.type===types[k])?' on':''}" title="${esc(L.sp_pat_title)}" onclick="spPreset(${ti},${i},'${id}')">${id}</button>`).join('')}
+      <span class="sep"></span>
+      <button type="button" class="chip" onclick="spClear(${ti},${i})">${L.sp_clear}</button>
+    </div>`;
+  const rows=en.sp.map((o,k)=>{
+    const v=o.stat&&o.type?(o.type==='%'?'+'+Math.round(SP_PCT[k+1]*100)+'%':'+'+SP_PLUS[o.stat][k+1]):'';
+    return `<div class="sp2-row"><span class="k">${L.opt(k+1)}</span>
+      ${STATS.map(x=>`<button type="button" class="chip${o.stat===x?' on-'+x:''}" onclick="spStat(${ti},${i},${k},'${x}')">${statLbl(x)}</button>`).join('')}
+      <button type="button" class="chip on" onclick="spType(${ti},${i},${k})" title="${esc(L.sp_type_title)}">${o.type==='+'?'+':'%'}</button>
+      <span class="v">${v}</span></div>`;
+  }).join('');
+  const bonus=`<div class="sp2-row sp2-bonus"><span class="k">${L.bonus_s}</span>
+      ${STATS.map(x=>`<button type="button" class="chip${en.bonus===x?' on-'+x:''}" onclick="spBonus(${ti},${i},'${x}')">${statLbl(x)}</button>`).join('')}
+      <span class="v">${en.bonus?'+'+SP_BONUS[en.bonus]:''}</span></div>`;
+  return `<div class="dr-edit">
+    ${pick}
+    <div class="grp-t">${L.spirit}<span>${L.spirit_note}</span></div>
+    ${presets}
+    <div>${rows}${bonus}</div>
+  </div>`;
+}
+
+function renderDragonTeams(){
+  const el=document.getElementById('dragon-teams');
+  const ti=S.dteam,t=TEAMS[ti];
+  const list=S.teams[ti];
+  const valid=new Set(teamCandidates(ti).map(c=>c.id));
+
+  // 팀 고르기
+  const tabs=`<div class="team-tabs">${TEAMS.map((tt,k)=>{
+    const n=teamCandidates(k).length;
+    return `<button class="team-tab${k===ti?' on':''}" onclick="setDTeam(${k})">${esc(L.team(k+1))} <span style="font-weight:700">(${n})</span><small>${esc(tt.kind==='gang'?L.kind_gang:L.kind_grade(tt.lv))}</small></button>`;
+  }).join('')}</div>`;
+
+  // 속성별 색인
+  const byAttr={};
+  ATTRS.forEach(a=>byAttr[a]=[]);
+  list.forEach((en,i)=>{if(byAttr[en.attr])byAttr[en.attr].push(i);});
+  const shown=D_ATTR?[D_ATTR]:ATTRS.slice();
+
+  // 왼쪽 레일
+  const rail=`<div class="dr-rail">
+    <div class="dr-rail-t">${L.attr_t||'속성'}</div>
+    <button class="dr-rail-i${D_ATTR?'':' on'}" onclick="setDAttr('')">${L.all}<span class="n">${list.length}</span></button>
+    ${ATTRS.map(a=>{
+      const n=byAttr[a].length;
+      return `<button class="dr-rail-i${D_ATTR===a?' on':''}${n?'':' off'}" onclick="setDAttr('${a}')">
+        <img src="${esc(elIcon(a))}" onerror="this.style.visibility='hidden'" alt="">${esc(attrLbl(a))}
+        <span class="n">${n||'—'}</span></button>`;
+    }).join('')}
+  </div>`;
+
+  // 오른쪽: 속성 그룹 표 (PC)
+  let body='';
+  {
+    let rows='';
+    shown.forEach(attr=>{
+      const idxs=byAttr[attr];
+      const ok=idxs.filter(i=>valid.has('e'+ti+'-'+i)).length;
+      rows+=`<tr class="grp-row"><td colspan="6"><div class="grp-bar">
+        <span class="bar" style="background:${EL_DOT[attr]}"></span>
+        <img src="${esc(elIcon(attr))}" onerror="this.style.visibility='hidden'" alt="">
+        <span class="nm">${esc(attrLbl(attr))}</span>
+        <span class="cnt">${L.attr_count(ok,idxs.length)}</span>
+        <button class="btn" onclick="addEntry(${ti},'${attr}')">＋ ${L.add}</button>
+      </div></td></tr>`;
+      idxs.forEach(i=>{
+        const f=drInfo(ti,i);
+        const open=EDIT_UID===f.en.uid;
+        rows+=`<tr class="dr-row${open?' on':''}" onclick="openEdit('${f.en.uid}')">
+          <td class="c-bar" style="background:${EL_DOT[attr]}"></td>
+          <td class="c-name"><span class="nw">
+            ${f.img?`<img class="dr-img" src="${esc(f.img)}" onerror="this.style.visibility='hidden'" alt="">`:`<span class="dr-img"></span>`}
+            <span class="t">${esc(f.title)}${f.skill}</span>
+          </span></td>
+          <td class="c-sub">${esc(f.sub)||'<span class="dim">—</span>'}</td>
+          <td class="c-sp">${f.d?spChips(f.en):'<span class="dim">—</span>'}${!f.valid&&f.d?`<span class="warn-i">${L.need_type}</span>`:''}</td>
+          <td class="c-act">
+            <button class="icon-btn" title="${esc(L.dup)}" onclick="event.stopPropagation();dupEntry(${ti},${i})">⧉</button>
+            <button class="icon-btn red" title="${esc(L.del)}" onclick="event.stopPropagation();delEntry(${ti},${i})">✕</button>
+          </td>
+          <td class="c-caret">${open?'▴':'▾'}</td>
+        </tr>`;
+        if(open&&!DR_MOBILE())rows+=`<tr class="dr-editrow"><td class="c-bar" style="background:${EL_DOT[attr]}"></td><td colspan="5">${drEditHtml(ti,i)}</td></tr>`;
+      });
+    });
+    const hint=list.length?'':`<div class="dr-hint">${esc(L.empty_team)}</div>`;
+    body=hint+`<table class="dr-tbl"><tbody>${rows}</tbody></table>`;
+  }
+
+  // 모바일 목록
+  let mo='';
+  {
+    shown.forEach(attr=>{
+      const idxs=byAttr[attr];
+      const ok=idxs.filter(i=>valid.has('e'+ti+'-'+i)).length;
+      mo+=`<div class="mo-grp"><span class="bar" style="background:${EL_DOT[attr]}"></span>
+        <img src="${esc(elIcon(attr))}" onerror="this.style.visibility='hidden'" alt="">
+        <span class="nm">${esc(attrLbl(attr))}</span><span class="cnt">${L.attr_count(ok,idxs.length)}</span>
+        <button class="btn" onclick="addEntry(${ti},'${attr}')">＋</button></div>`;
+      mo+=`<div class="mo-list">`+idxs.map(i=>{
+        const f=drInfo(ti,i);
+        return `<button type="button" class="mo-row" onclick="openEdit('${f.en.uid}')">
+          <span class="bar" style="background:${EL_DOT[attr]}"></span>
+          ${f.img?`<img class="dr-img" src="${esc(f.img)}" onerror="this.style.visibility='hidden'" alt="">`:`<span class="dr-img"></span>`}
+          <span class="tx"><span class="t">${esc(f.title)}${f.skill}</span>
+            <span class="s">${esc(f.sub)||(f.valid?'':L.need_type)}</span></span>
+          ${f.d?spChips(f.en):''}
+        </button>`;
+      }).join('')+`</div>`;
+    });
+  }
+
+  if(!list.length)mo=`<div class="dr-hint">${esc(L.empty_team)}</div>`+mo;
+
+  // 모바일 편집 시트
+  let sheet='';
+  if(EDIT_UID&&DR_MOBILE()){
+    const i=list.findIndex(en=>en.uid===EDIT_UID);
+    if(i>=0){
+      const f=drInfo(ti,i);
+      sheet=`<div class="dr-scrim" onclick="closeEdit()"></div>
+        <div class="dr-sheet">
+          <div class="dr-sheet-grab"></div>
+          <div class="dr-sheet-hd">
+            ${f.img?`<img class="dr-img" src="${esc(f.img)}" onerror="this.style.visibility='hidden'" alt="">`:`<span class="dr-img"></span>`}
+            <div><div class="t">${esc(f.title)}${f.skill}</div><div class="s">${esc(L.team(ti+1))} · ${esc(attrLbl(f.en.attr))}</div></div>
+            <button class="icon-btn red" title="${esc(L.del)}" onclick="delEntry(${ti},${i});closeEdit()">✕</button>
+          </div>
+          <div class="dr-sheet-bd">${drEditHtml(ti,i)}</div>
+          <div class="dr-sheet-ft"><button class="btn-run" onclick="closeEdit()">${L.sheet_done||'확인'}</button></div>
+        </div>`;
+    }
+  }
+
+  el.innerHTML=tabs
+    +`<div class="team-head"><small>${esc(L.team_hint)}</small><button class="btn" style="margin-left:auto" onclick="importFromManual()">${L.import_manual}</button></div>`
+    +`<div class="dr-split">${rail}<div class="dr-main">${body}</div></div>`
+    +`<div class="dr-mo">${mo}</div>`
+    +sheet;
+}
+function setDTeam(k){S.dteam=k;EDIT_UID=null;D_ATTR='';renderDragonTeams();save();}
+function onAttrToggle(ti,attr,open){if(open)OPEN_ATTR[ti].add(attr);else OPEN_ATTR[ti].delete(attr);}
+function addEntry(ti,attr){
+  if(!ATTRS.includes(attr))return;
+  const en=mkEntry();en.attr=attr;
+  S.teams[ti].push(en);
+  OPEN_CARD.add(en.uid);
+  EDIT_UID=en.uid;
+  OPEN_ATTR[ti].add(attr);
+  renderDragonTeams();save();
+  const i=S.teams[ti].length-1;
+  const inp=document.getElementById(`ds-in-${ti}-${i}`);
+  if(inp)setTimeout(()=>inp.focus(),30);
+}
+function delEntry(ti,i){const u=(S.teams[ti][i]||{}).uid;S.teams[ti].splice(i,1);if(EDIT_UID===u)EDIT_UID=null;renderDragonTeams();save();}
+function onEdit(ti){renderDragonTeams();save();}
+
+// ── 드래곤 검색 ───────────────────────────────────────────────
+function searchBox(ti,i,val){
+  return `<div class="ds-wrap"><input class="ds-in" id="ds-in-${ti}-${i}" value="${esc(val)}" placeholder="${esc(L.search_ph)}" autocomplete="off"
+      onfocus="this.dataset.d='';this.select();dsFilter(${ti},${i},this.value)" oninput="this.dataset.d='1';dsFilter(${ti},${i},this.value)" onblur="dsBlur(${ti},${i},this)" onkeydown="if(event.key==='Escape')this.blur()">
+    <div class="ds-drop" id="ds-${ti}-${i}"></div></div>`;
+}
+function dsCandidates(ti,i,q){
+  const t=TEAMS[ti];const en=S.teams[ti][i];const key=normName(q);
+  const attrs=[en.attr];
+  const hit=(d,extra)=>{if(!key)return true;const names=[d.ko,d.en,...(extra||[])];return names.some(n=>n&&normName(n).includes(key));};
+  let list=[];
+  if(t.kind==='gang'){
+    const DB=window.DRAGON_TYPE_DB||{};
+    const aliasOf=name=>{for(const l of Object.values(DB)){if(!Array.isArray(l))continue;for(const e of l){if(e&&typeof e==='object'&&normName(e.name)===normName(name))return e.aliases||[];}}return[];};
+    attrs.forEach(a=>gangDb(a).forEach(d=>{if(hit(d,aliasOf(d.ko)))list.push({d,attr:a,img:imgUrl(d.img,8),meta:attrLbl(a)});}));
+  }else{
+    attrs.forEach(a=>D.GRADE.filter(g=>g.elem===a&&g.lv===t.lv).sort((x,y)=>y.ev-x.ev).forEach(d=>{if(hit(d))list.push({d,attr:a,img:imgUrl(d.did,4),meta:attrLbl(a)+' · '+d.ev});}));
+  }
+  return list.slice(0,40);
+}
+function dsFilter(ti,i,q){
+  const drop=document.getElementById(`ds-${ti}-${i}`);if(!drop)return;
+  const list=dsCandidates(ti,i,q);
+  drop.innerHTML=list.length?list.map(x=>`<div class="ds-item" onmousedown="event.preventDefault();dsPick(${ti},${i},'${esc(x.attr)}','${esc(x.d.ko).replace(/'/g,"\\'")}')">
+      <img src="${esc(x.img)}" onerror="this.style.visibility='hidden'" alt=""><span>${esc(nm(x.d))}</span><span class="m">${esc(x.meta)}</span></div>`).join('')
+    :`<div class="ds-empty">${L.no_result_s}</div>`;
+  drop.classList.add('open');
+}
+let _dsLock=false;
+function dsBlur(ti,i,el){
+  const drop=document.getElementById(`ds-${ti}-${i}`);if(drop)drop.classList.remove('open');
+  if(_dsLock)return;
+  const en=S.teams[ti]&&S.teams[ti][i];if(!en)return;
+  const inp=el||document.getElementById(`ds-in-${ti}-${i}`);
+  const d=TEAMS[ti].kind==='gang'?gangRow(en):gradeRow(en,TEAMS[ti].lv);
+  if(inp){
+    if(inp.dataset.d&&inp.value.trim()===''&&en.name){en.name='';en.dtype='';onEdit(ti);return;}
+    inp.value=d?nm(d):'';
+    inp.dataset.d='';
+  }
+}
+function dsPick(ti,i,attr,name){
+  _dsLock=true;
+  const en=S.teams[ti][i];
+  en.attr=attr;en.name=name;
+  en.dtype=TEAMS[ti].kind==='gang'?findType(name):'';
+  OPEN_CARD.add(en.uid);
+  const swallow=e=>{e.stopPropagation();e.preventDefault();};
+  ['click','mouseup'].forEach(t=>document.addEventListener(t,swallow,{capture:true,once:true}));
+  setTimeout(()=>{['click','mouseup'].forEach(t=>document.removeEventListener(t,swallow,{capture:true}));_dsLock=false;},250);
+  onEdit(ti);
+}
+
+// ── 계산 탭 렌더 ─────────────────────────────────────────────
+function renderSetting(){
+  document.getElementById('round-bar').innerHTML=roundBarHtml();
+  document.getElementById('buff-row').innerHTML=STATS.map(st=>`<label class="c-${st}">${statLbl(st)} ${st==='def'?'50%':'40%'}
+    <select onchange="setBuff('${st}',this.value)"><option value="">${L.none}</option>${ATTRS.map(a=>`<option value="${a}"${curBuff()[st]===a?' selected':''}>${attrLbl(a)}</option>`).join('')}</select></label>`).join('');
+  document.getElementById('min-box').innerHTML=TEAMS.map((t,ti)=>{
+    const m=S.minst[ti]||{},on=!!m.on;
+    return `<div class="min-row${on?'':' off'}"><span class="k">${esc(L.min_team(ti+1,t.kind==='gang'?L.kind_gang:'Lv.'+t.lv))}</span>
+      <button type="button" class="tg${on?' on':''}" onclick="setMinOn(${ti})">${on?L.min_on:L.min_off}</button>
+      ${STATS.map(st=>`<label class="f"><span class="c-${st}">${statLbl(st)}</span>
+        <input type="number" min="0" step="1" value="${minClamp(m[st])||''}" placeholder="0"
+          oninput="setMinVal(${ti},'${st}',this.value)"></label>`).join('')}</div>`;}).join('');
+  document.getElementById('metric-bar').innerHTML=[['bv',L.bv_full],['eval','EVAL']].map(([m,lb])=>
+    `<button class="metric-btn${S.metric===m?' on':''}" onclick="S.metric='${m}';save();renderSetting()">${lb}</button>`).join('');
+}
+function renderSpecLine(){
+  const gems=STATS.reduce((s,st)=>s+[36,37,38,39,40].reduce((x,l)=>x+(Number((SPEC.gems[st]||{})[l])||0),0),0);
+  const dn=[0,1,2].map(ti=>teamCandidates(ti).length);
+  document.getElementById('spec-line').innerHTML=
+    `<span>${L.s_dragon} <b>${dn[0]} / ${dn[1]} / ${dn[2]}</b></span>`+
+    `<span>${L.s_acc} <b>${SPEC.accCards.length}</b></span>`+
+    `<span>${L.s_gem} <b>${gems}</b></span><span>${L.s_pend} <b>${SPEC.pendants.length}</b></span>`;
+  const warns=[];
+  if(!SPEC.accCards.length)warns.push(L.w_acc);
+  if(dn.every(n=>n<3))warns.push(L.w_dragon);
+  const w=document.getElementById('spec-warn');
+  if(warns.length){w.style.display='';w.innerHTML=warns.map(x=>''+x).join('<br>');}
+  else w.style.display='none';
+  updateRunState();
+}
+function updateRunState(){
+  const dn=[0,1,2].map(ti=>teamCandidates(ti).length);
+  document.getElementById('run-btn').disabled=!SPEC.accCards.length||dn.every(n=>n<3);
+}
+function setPage(p){
+  S.page=['calc','sim','spx'].includes(p)?p:'dragon';
+  ['dragon','calc','sim','spx'].forEach(k=>{
+    const pg=document.getElementById('page-'+k);
+    if(pg)pg.style.display=S.page===k?'':'none';
+    const st=document.getElementById('set-'+k);
+    if(st)st.style.display=S.page===k?'':'none';
+  });
+  const pane=document.getElementById('setpane');
+  if(pane)pane.style.display=(S.page==='dragon')?'none':'';
+  if(window.UI&&UI.task&&!setPage._q){setPage._q=1;UI.task(S.page);setPage._q=0;}
+  if(S.page==='sim')renderSim();
+  if(S.page==='spx'){loadSpec();renderSpx();}
+  if(S.page==='calc'){loadSpec();renderSpecLine();}
+  save();
+}
+
+// ── 정령·버프 시뮬 (등급용 SSS에 정령만 장착) ─────────────────
+const NO_ACC={hp:0,atk:0,def:0,enc:null,_id:-1};
+// 결과는 입력이 그대로면 재사용한다 (SSS 162마리 x 장비 조합이라 매번 돌리면 0.6초쯤 걸림)
+let SIM_CACHE=null,SIM_CKEY='';
+function simCacheKey(){
+  const sp=SPEC||{};
+  return JSON.stringify([S.sim.lv,S.sim.gear,S.metric,S.sim.sp,S.sim.bonus,curBuff(),
+    (sp.accCards||[]).map(a=>a.name+'|'+a.enc),sp.gems,(sp.pendants||[]).map(p=>p.type+'|'+JSON.stringify(p.options))]);
+}
+function simCached(){return !!SIM_CACHE&&SIM_CKEY===simCacheKey();}
+function simRows(){
+  const a=S.sim.attr;
+  const all=simRowsAll();
+  return a?all.filter(x=>x.g.elem===a):all;
+}
+function simRowsAll(){
+  const key=simCacheKey();
+  if(SIM_CACHE&&SIM_CKEY===key)return SIM_CACHE;
+  const rows=simRowsCalc();
+  SIM_CKEY=key;SIM_CACHE=rows;
+  return rows;
+}
+function simRowsCalc(){
+  const lv=S.sim.lv;
+  const sp=procSpirit(S.sim);
+  const seen=new Set();
+  const list=D.GRADE.filter(g=>g.lv===lv&&/ SSS$/.test(g.ko)).filter(g=>{
+    const k=g.ko+'|'+g.elem;if(seen.has(k))return false;seen.add(k);return true;
+  });
+  const useGear=S.sim.gear===1&&SPEC&&SPEC.accCards.length;
+  if(!useGear){
+    return list.map(g=>({g,r:calcOption({attr:g.elem,base:{hp:g.hp,atk:g.atk,def:g.def},sp},NO_ACC,null,{hp:0,atk:0,def:0}),gear:null}))
+      .sort((a,b)=>b.r.m-a.r.m);
+  }
+  // 내 스펙에서 그 드래곤에게 가장 좋은 장신구·인첸트·젬·펜던트 조합을 찾아 적용 (드래곤별 독립)
+  buildInv();
+  ACCV=accVariants();
+  const shapes=genShapes();
+  const gemSum=shapes.map(sh=>({sh,g:{hp:topGemSum('hp',sh.h),atk:topGemSum('atk',sh.a),def:topGemSum('def',sh.d)}}));
+  const pends=[null,...SPEC.pendants.map(p=>({...p,_pct:calcPendPct(p)}))];
+  return list.map(g=>{
+    const cand={attr:g.elem,base:{hp:g.hp,atk:g.atk,def:g.def},sp};
+    let best=null;
+    for(const acc of ACCV)for(const pend of pends)for(const gs of gemSum){
+      const r=calcOption(cand,acc,pend,gs.g);
+      if(!best||r.m>best.r.m)best={r,acc,pend,sh:gs.sh};
+    }
+    return {g,r:best.r,gear:best};
+  }).sort((a,b)=>b.r.m-a.r.m);
+}
+function simGearText(gear){
+  if(!gear)return '';
+  const parts=[nm(gear.acc)+(gear.acc.enc?`+${statLbl(gear.acc.enc)}`:'')];
+  const gs=[];
+  if(gear.sh.h)gs.push(statLbl('hp')+'×'+gear.sh.h);
+  if(gear.sh.a)gs.push(statLbl('atk')+'×'+gear.sh.a);
+  if(gear.sh.d)gs.push(statLbl('def')+'×'+gear.sh.d);
+  if(gs.length)parts.push(L.gems+' '+gs.join(' '));
+  if(gear.pend)parts.push(L.pend_t[gear.pend.type]||gear.pend.type);
+  return parts.join(' · ');
+}
+let SIM_DIRTY=false;
+// 정령 옵션처럼 다시 계산해야 하는 값이 바뀌면 표는 그대로 두고 [계산] 버튼만 켠다.
+// 속성 필터처럼 이미 계산된 결과를 다시 쓰는 값이면 바로 반영한다.
+function simEdit(fn){
+  fn(S.sim);SIM_OPEN=null;SIM_LIMIT=SIM_PAGE;
+  if(simCached()){SIM_DIRTY=false;renderSimInput();renderSimTable();}
+  else{SIM_DIRTY=true;renderSimInput();}
+  save();
+}
+function simTouch(){
+  if(simCached()){SIM_DIRTY=false;renderSimInput();renderSimTable();}
+  else{SIM_DIRTY=true;renderSimInput();}
+}
+function simRun(){SIM_DIRTY=false;renderSimInput();renderSimTable();}
+function simIdle(){
+  const el=document.getElementById('sim-table');
+  if(el)el.innerHTML=`<tr><td colspan="7" class="empty-note">${L.sim_idle}</td></tr>`;
+  const c=document.getElementById('sim-count');if(c)c.textContent='';
+  const t=document.getElementById('sim-title');if(t)t.textContent=L.sim_title(S.sim.lv);
+}
+function simStat(k,x){simEdit(sm=>{const o=sm.sp[k];o.stat=o.stat===x?'':x;});}
+function simType(k){simEdit(sm=>{const o=sm.sp[k];o.type=o.type==='%'?'+':'%';});}
+function simBonus(x){simEdit(sm=>{sm.bonus=sm.bonus===x?'':x;});}
+function simPreset(id){const types=(SP_PRESETS.find(p=>p[0]===id)||[])[1];if(!types)return;simEdit(sm=>{sm.sp.forEach((o,k)=>{o.type=types[k];});});}
+function simClear(){simEdit(sm=>{sm.sp.forEach((o,k)=>{o.stat='';o.type=SP_DEF_TYPE(k);});sm.bonus='';});}
+function setBuff(st,v){curBuff()[st]=v;cloudQueue();save();renderBuffAll();}
+function renderBuffAll(){
+  if(document.getElementById('buff-row')&&document.getElementById('page-calc').style.display!=='none')renderSetting();
+  if(document.getElementById('page-sim').style.display!=='none')renderSim();
+  if(document.getElementById('page-spx').style.display!=='none')renderSpxSetting();
+}
+// 라운드 탭 (챔대 단계별 버프 저장)
+function roundBarHtml(){
+  return `<div class="seg" style="margin-bottom:8px">${S.rounds.map((r,i)=>
+    `<button type="button" class="chip${S.round===i?' on':''}" style="padding:6px 12px" onclick="setRound(${i})">${esc(r.name)}</button>`).join('')}
+    <button type="button" class="chip" style="padding:6px 10px" title="${esc(L.round_rename)}" onclick="renameRound()">이름</button></div>`;
+}
+function setRound(i){S.round=i;cloudQueue();save();renderBuffAll();}
+function renameRound(){
+  const r=S.rounds[S.round];
+  const v=prompt(L.round_rename,r.name);
+  if(v===null)return;
+  r.name=String(v).trim().slice(0,12)||L.round_names[S.round];
+  cloudQueue();save();renderBuffAll();
+}
+function renderSimInput(){
+  const sm=S.sim;
+  const presets=`<div class="preset-row">
+      ${SP_PRESETS.map(([id,types])=>`<button type="button" class="chip pat${sm.sp.every((o,k)=>o.type===types[k])?' on':''}" onclick="simPreset('${id}')">${id}</button>`).join('')}
+      <span class="sep"></span><button type="button" class="chip" onclick="simClear()">${L.sp_clear}</button></div>`;
+  const rows=sm.sp.map((o,k)=>{
+    const v=o.stat?(o.type==='%'?'+'+Math.round(SP_PCT[k+1]*100)+'%':'+'+SP_PLUS[o.stat][k+1]):'';
+    return `<div class="sp2-row"><span class="k">${L.opt(k+1)}</span>
+      ${STATS.map(x=>`<button type="button" class="chip${o.stat===x?' on-'+x:''}" onclick="simStat(${k},'${x}')">${statLbl(x)}</button>`).join('')}
+      <button type="button" class="chip on" onclick="simType(${k})" title="${esc(L.sp_type_title)}">${o.type==='+'?'+':'%'}</button>
+      <span class="v">${v}</span></div>`;
+  }).join('');
+  const bonus=`<div class="sp2-row sp2-bonus"><span class="k">${L.bonus_s}</span>
+      ${STATS.map(x=>`<button type="button" class="chip${sm.bonus===x?' on-'+x:''}" onclick="simBonus('${x}')">${statLbl(x)}</button>`).join('')}
+      <span class="v">${sm.bonus?'+'+SP_BONUS[sm.bonus]:''}</span></div>`;
+  const buff=`<div class="row3" style="max-width:none">${STATS.map(st=>`<label class="c-${st}">${statLbl(st)} ${st==='def'?'50%':'40%'}
+      <select onchange="setBuff('${st}',this.value);simTouch()"><option value="">${L.none}</option>${ATTRS.map(a=>`<option value="${a}"${curBuff()[st]===a?' selected':''}>${attrLbl(a)}</option>`).join('')}</select></label>`).join('')}</div>`;
+  const lvSeg=`<div class="seg">${[45,21].map(lv=>`<button type="button" class="chip${sm.lv===lv?' on':''}" onclick="simEdit(s=>{s.lv=${lv};})">SSS Lv.${lv}</button>`).join('')}</div>`;
+  const gearSeg=`<div class="seg">${[[1,L.sim_gear_on],[0,L.sim_gear_off]].map(([v,lb])=>`<button type="button" class="chip${sm.gear===v?' on':''}" onclick="simEdit(s=>{s.gear=${v};})">${esc(lb)}</button>`).join('')}</div>`;
+  const metric=`<div class="seg">${[['bv',L.bv],['eval','EVAL']].map(([m,lb])=>`<button type="button" class="chip${S.metric===m?' on':''}" onclick="S.metric='${m}';renderSetting();save();simTouch()">${lb}</button>`).join('')}</div>`;
+  document.getElementById('sim-input').innerHTML=`
+    <div class="lbl">${L.sim_lv}</div>${lvSeg}
+    <div style="height:12px"></div>
+    <div class="lbl">${L.sim_gear}</div>${gearSeg}
+    ${SPEC&&SPEC.accCards.length?'':`<div class="run-note" style="margin-top:6px">${L.sim_gear_none}</div>`}
+    <div style="height:12px"></div>
+    <div class="grp-t" style="margin-bottom:4px">${L.spirit}<span>${L.spirit_note}</span></div>
+    ${presets}<div>${rows}${bonus}</div>
+    <div style="height:12px"></div>
+    <div class="lbl">${L.t_buff}</div>${roundBarHtml()}${buff}
+    <div style="height:12px"></div>
+    <div class="lbl">${L.sim_sort}</div>${metric}
+    <div class="run-row" style="margin-top:14px">
+      <button class="btn-run${SIM_DIRTY?'':' done'}" id="sim-run-btn" onclick="simRun()">${SIM_DIRTY?L.sim_run:L.sim_run_done}</button>
+    </div>`;
+}
+// 무거운 계산이 필요할 때는 표만 다음 프레임으로 미뤄서 화면이 멈추지 않게 한다
+let SIM_T=null;
+function renderSimTable(){
+  if(simCached()){renderSimTableNow();return;}
+  const el=document.getElementById('sim-table');
+  if(el)el.innerHTML=`<tr><td colspan="7" class="empty-note">${L.running}</td></tr>`;
+  clearTimeout(SIM_T);
+  SIM_T=setTimeout(()=>requestAnimationFrame(()=>{try{renderSimTableNow();}catch(e){console.error(e);}}),60);
+}
+let SIM_HTML_KEY='';
+function renderSimTableNow(){
+  const sm=S.sim;
+  // 결과도 필터도 그대로면 표를 다시 그리지 않는다 (162행 + 이미지라 다시 그리면 0.2초)
+  if(SIM_OPEN!=null&&SIM_OPEN>=SIM_LIMIT)SIM_LIMIT=Infinity;
+  const hk=simCacheKey()+'|'+(sm.attr||'')+'|'+SIM_OPEN+'|'+SIM_LIMIT;
+  const tbl0=document.getElementById('sim-table');
+  if(hk===SIM_HTML_KEY&&tbl0&&tbl0.querySelector('tr.rw'))return;
+  SIM_HTML_KEY=hk;
+  document.getElementById('sim-filter').innerHTML=[['',L.all],...ATTRS.map(a=>[a,attrLbl(a)])].map(([a,lb])=>
+    `<button type="button" class="chip${sm.attr===a?' on':''}" onclick="simEdit(s=>{s.attr='${a}';})">${esc(lb)}</button>`).join('');
+  const rows=simRows();
+  document.getElementById('sim-title').textContent=L.sim_title(sm.lv);
+  document.getElementById('sim-count').textContent=L.sim_count(rows.length);
+  const mCls=m=>S.metric===m?' m':'';
+  const head=`<tr><th>#</th><th class="l">${L.dragon}</th><th class="c-hp">${statLbl('hp')}</th><th class="c-atk">${statLbl('atk')}</th><th class="c-def">${statLbl('def')}</th><th>EVAL</th><th>${L.bv}</th></tr>`;
+  // 한 번에 다 그리면 162행 레이아웃에 0.13초쯤 걸려서 처음엔 60행만 그린다
+  const body=rows.slice(0,SIM_LIMIT).map(({g,r,gear},k)=>{
+    const badge=st=>r.buffs.includes(st)?`<span class="buff-badge">${st==='def'?'+50%':'+40%'}</span>`:'';
+    const gearTxt=simGearText(gear);
+    return `<tr class="rw ${r.buffs.length?'buffed':''}${SIM_OPEN===k?' on':''}" data-row="${k}" onclick="simToggle(${k})">
+      <td class="rk">${k+1}</td>
+      <td class="l"><div class="nmc" style="display:flex;align-items:center;gap:7px"><img src="${esc(imgUrl(g.did,4))}" onerror="this.style.visibility='hidden'" alt="">
+        <div><b>${esc(nm(g))}${skillIcon(g.sk)}</b><small>${esc(attrLbl(g.elem))}</small>${gearTxt?`<small style="color:var(--dimmer)">${esc(gearTxt)}</small>`:''}</div></div></td>
+      <td class="c-hp">${fmt(r.hp)}${badge('hp')}</td><td class="c-atk">${fmt(r.atk)}${badge('atk')}</td><td class="c-def">${fmt(r.def)}${badge('def')}</td>
+      <td class="${mCls('eval')}">${fmt(r.eval)}</td><td class="${mCls('bv')}">${fmt(r.bv)}</td></tr>
+      ${SIM_OPEN===k?`<tr class="det"><td colspan="7">${simDetailHtml(g,r,gear)}</td></tr>`:''}`;
+  }).join('');
+  const more=rows.length>SIM_LIMIT
+    ?`<tr><td colspan="7" style="text-align:center;padding:10px 6px"><button type="button" class="btn" onclick="simMore()">${L.sim_more(rows.length-SIM_LIMIT)}</button></td></tr>`:'';
+  document.getElementById('sim-table').innerHTML=head+(body?body+more:`<tr><td colspan="7" class="empty-note">${L.no_result_s}</td></tr>`);
+}
+let SIM_OPEN=null;
+const SIM_PAGE=60;let SIM_LIMIT=SIM_PAGE;
+function simMore(){SIM_LIMIT=Infinity;renderSimTableNow();}
+function simToggle(k){
+  SIM_OPEN=SIM_OPEN===k?null:k;
+  renderSimTable();
+  const el=document.querySelector(`.rank-tbl tr.rw[data-row="${k}"]`);
+  if(el&&SIM_OPEN===k)el.scrollIntoView({block:'nearest'});
+}
+function simDetailHtml(g,r,gear){
+  const d=(lab,val)=>`<div><div class="dl">${lab}</div><div class="dv">${esc(val)}</div></div>`;
+  const acc=gear?gear.acc:null;
+  const accTxt=acc?`${nm(acc)} (${STATS.filter(st=>acc[st]).map(st=>statLbl(st)+' '+Math.round(acc[st]*100)+'%').join(' · ')})`:L.none;
+  const encTxt=acc&&acc.enc?`${statLbl(acc.enc)} 21%`:L.none;
+  let gemTxt=L.none;
+  if(gear){
+    const parts=[];
+    [['h','hp'],['a','atk'],['d','def']].forEach(([k2,st])=>{
+      const n=gear.sh[k2];if(!n)return;
+      const items=[];let left=n;
+      for(const gg of (INV&&INV[st]||[])){const t=Math.min(gg.cnt,left);if(t>0)items.push(`${GEM_NAME[gg.lv]}×${t}`);left-=t;if(!left)break;}
+      parts.push(`${statLbl(st)} ${items.join(', ')}`);
+    });
+    gemTxt=parts.join(' / ')||L.none;
+  }
+  const pendTxt=gear&&gear.pend?`${L.pend_t[gear.pend.type]||gear.pend.type} · ${(gear.pend.options||[]).slice(0,gear.pend.type==='태양'?3:gear.pend.type==='달'?2:1).map(o=>statLbl(o.stat)+' '+o.val+'%').join(' / ')}`:L.none;
+  const buffTxt=STATS.filter(st=>r.buffs.includes(st)).map(st=>`${statLbl(st)} +${st==='def'?50:40}%`).join(' / ')||L.none;
+  return `<div class="det-box">
+    ${d(L.det_base,`${statLbl('hp')} ${fmt(g.hp)} · ${statLbl('atk')} ${fmt(g.atk)} · ${statLbl('def')} ${fmt(g.def)}`)}
+    ${d(L.det_final,`${statLbl('hp')} ${fmt(r.hp)} · ${statLbl('atk')} ${fmt(r.atk)} · ${statLbl('def')} ${fmt(r.def)}`)}
+    ${d(L.acc,accTxt)}
+    ${d(L.enc,encTxt)}
+    ${d(L.gems,gemTxt)}
+    ${d(L.pendant,pendTxt)}
+    ${d(L.det_buff,buffTxt)}
+    ${d('EVAL',fmt(r.eval))}
+    ${d(L.bv,fmt(r.bv))}
+    ${g.sk?`<div><div class="dl">${L.det_skill}</div><div class="dv">${skillIcon(g.sk)} ${esc(L.skill[g.sk]||g.sk)}</div></div>`:''}
+  </div>`;
+}
+function renderSim(){loadSpec();renderSimInput();if(simCached()){renderSimTable();}else{SIM_DIRTY=true;renderSimInput();simIdle();}}
+
+// ── 결과 이미지 저장 ───────────────────────────────────────
+function bestSummary(best){
+  const rows=[];
+  (best&&best.decks||[]).forEach((deck,ti)=>{
+    if(!deck)return;
+    deck.slice().sort((a,b)=>b.m-a.m).forEach(o=>rows.push({
+      ti,name:nm({ko:o.cand.name,en:o.cand.en||o.cand.name}),img:o.cand.img,stage:o.cand.imgStage,
+      sub:o.cand.sub,acc:nm(o.acc)+(o.acc.enc?` (${L.enc} ${statLbl(o.acc.enc)})`:''),
+      gems:gemText(o),pend:o.pend?`${L.pend_t[o.pend.type]||o.pend.type} ${(o.pend.options||[]).slice(0,o.pend.type==='태양'?3:o.pend.type==='달'?2:1).map(x=>statLbl(x.stat)+x.val+'%').join('/')}`:L.none,
+      sp:(o.cand.spLabel!=null?o.cand.spLabel:(o.cand.entry?spiritText(o.cand.entry):''))||L.none,
+      hp:o.r.hp,atk:o.r.atk,def:o.r.def,eval:o.r.eval,bv:o.r.bv,buffs:o.r.buffs
+    }));
+  });
+  const tot=rows.reduce((a,r)=>({eval:a.eval+r.eval,bv:a.bv+r.bv}),{eval:0,bv:0});
+  return {rows,tot};
+}
+function loadImg(src){
+  return new Promise(res=>{
+    if(!src)return res(null);
+    const im=new Image();
+    im.onload=()=>res(im);im.onerror=()=>res(null);
+    im.src=src;
+  });
+}
+async function exportImage(best){
+  if(!best||!best.filled)return;
+  const S1=bestSummary(best);
+  const cssv=getComputedStyle(document.documentElement);
+  const col=k=>cssv.getPropertyValue(k).trim()||'#fff';
+  const BG=col('--bg'),SF=col('--sf'),BD=col('--bd'),TX=col('--text'),DIM=col('--dim'),GOLD=col('--gold');
+  const CH=[col('--hpc'),col('--atc'),col('--dfc')];
+  const W=1080,CARD_H=176,PAD=24;
+  const H=PAD*2+64+3*(26+3*(CARD_H+10))+60;
+  const cv=document.createElement('canvas');cv.width=W;cv.height=H;
+  const x=cv.getContext('2d');
+  x.fillStyle=BG;x.fillRect(0,0,W,H);
+  x.textBaseline='top';
+  const F=(w,s)=>`${w} ${s}px 'Nanum Gothic',sans-serif`;
+  x.fillStyle=GOLD;x.font=F(800,26);x.fillText(L.img_title,PAD,PAD);
+  const rd=S.rounds[S.round];
+  const buffTxt=STATS.filter(st=>curBuff()[st]).map(st=>`${statLbl(st)} ${attrLbl(curBuff()[st])}`).join('  ')||L.none;
+  x.fillStyle=DIM;x.font=F(700,14);
+  x.fillText(`${rd.name} · ${L.t_buff}: ${buffTxt} · ${L.total} EVAL ${fmt(S1.tot.eval)} / ${L.bv} ${fmt(S1.tot.bv)}`,PAD,PAD+34);
+  const imgs=await Promise.all(S1.rows.map(r=>loadImg(imgUrl(r.img,r.stage))));
+  let y=PAD+70;
+  const rr=(px,py,w,h,r)=>{x.beginPath();x.moveTo(px+r,py);x.arcTo(px+w,py,px+w,py+h,r);x.arcTo(px+w,py+h,px,py+h,r);x.arcTo(px,py+h,px,py,r);x.arcTo(px,py,px+w,py,r);x.closePath();};
+  let idx=0;
+  TEAMS.forEach((t,ti)=>{
+    const rows=S1.rows.filter(r=>r.ti===ti);
+    if(!rows.length)return;
+    x.fillStyle=GOLD;x.font=F(800,16);
+    x.fillText(`${L.team(ti+1)}  `,PAD,y);
+    const tw=x.measureText(`${L.team(ti+1)}  `).width;
+    x.fillStyle=DIM;x.font=F(700,13);
+    x.fillText(t.kind==='gang'?L.kind_gang:L.kind_grade(t.lv),PAD+tw,y+3);
+    y+=26;
+    rows.forEach(r=>{
+      const im=imgs[S1.rows.indexOf(r)];
+      x.fillStyle=SF;rr(PAD,y,W-PAD*2,CARD_H,12);x.fill();
+      x.strokeStyle=BD;x.lineWidth=1;rr(PAD,y,W-PAD*2,CARD_H,12);x.stroke();
+      if(im)x.drawImage(im,PAD+14,y+14,52,52);
+      x.fillStyle=TX;x.font=F(800,17);x.fillText(r.name,PAD+78,y+16);
+      x.fillStyle=DIM;x.font=F(700,12);x.fillText(r.sub,PAD+78,y+40);
+      // 셋팅 4줄
+      const lines=[[L.acc,r.acc],[L.gems,r.gems],[L.pendant,r.pend],[L.spirit,r.sp]];
+      lines.forEach((ln,i)=>{
+        const ly=y+66+i*22;
+        x.fillStyle=DIM;x.font=F(700,12);x.fillText(ln[0],PAD+16,ly);
+        x.fillStyle=TX;x.font=F(700,13);
+        let txt=String(ln[1]);
+        while(x.measureText(txt).width>470&&txt.length>4)txt=txt.slice(0,-2);
+        x.fillText(txt,PAD+92,ly-1);
+      });
+      // 스탯
+      const sx=W-PAD-380;
+      STATS.forEach((st,i)=>{
+        const cx=sx+i*124;
+        x.fillStyle=col('--sf2');rr(cx,y+22,112,60,10);x.fill();
+        x.fillStyle=DIM;x.font=F(800,11);
+        const lab=statLbl(st)+(r.buffs.includes(st)?(st==='def'?' +50%':' +40%'):'');
+        x.fillText(lab,cx+12,y+32);
+        x.fillStyle=CH[i];x.font=F(800,22);x.fillText(fmt(r[st]),cx+12,y+50);
+      });
+      x.fillStyle=DIM;x.font=F(700,12);
+      x.fillText(`EVAL ${fmt(r.eval)}    ${L.bv} ${fmt(r.bv)}`,sx,y+CARD_H-32);
+      y+=CARD_H+10;
+    });
+  });
+  x.fillStyle=DIM;x.font=F(700,12);
+  x.fillText(L.img_footer,PAD,H-PAD-6);
+  cv.toBlob(bl=>{
+    if(!bl){alert(L.img_fail);return;}
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(bl);
+    a.download=`cham_${new Date().toISOString().slice(0,10)}.png`;
+    a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href),3000);
+  },'image/png');
+}
+
+// ── 결과 비교 (최대 2개 저장) ───────────────────────────────
+let SNAPS=[];
+function snapLabel(){
+  const rd=S.rounds[S.round];
+  const bf=STATS.filter(st=>curBuff()[st]).map(st=>statLbl(st)[0]+attrLbl(curBuff()[st])).join('/')||L.none;
+  return `${rd.name} · ${bf} · ${S.metric==='eval'?'EVAL':L.bv}`;
+}
+function snapSave(){
+  if(!LAST_BEST||!LAST_BEST.filled)return;
+  const s1=bestSummary(LAST_BEST);
+  SNAPS.push({label:snapLabel(),at:Date.now(),...s1});
+  if(SNAPS.length>2)SNAPS.shift();
+  renderCompare();
+  const el=document.getElementById('compare');if(el)el.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function snapClear(){SNAPS=[];renderCompare();}
+function renderCompare(){
+  const el=document.getElementById('compare');if(!el)return;
+  if(!SNAPS.length){el.innerHTML='';return;}
+  const A=SNAPS[0],B=SNAPS[1];
+  const diff=(a,b)=>{
+    if(b==null)return '';
+    const d=b-a;const pc=a?(d/a*100):0;
+    const c=d>0?'var(--green)':d<0?'var(--red)':'var(--dim)';
+    return `<span style="color:${c}">${d>0?'+':''}${fmt(d)} (${d>0?'+':''}${pc.toFixed(1)}%)</span>`;
+  };
+  const head=`<tr><th class="l">${L.cmp_item}</th><th>${esc(A.label)}</th>${B?`<th>${esc(B.label)}</th><th>${L.cmp_diff}</th>`:''}</tr>`;
+  let body=`<tr><td class="l"><b>${L.total} EVAL</b></td><td>${fmt(A.tot.eval)}</td>${B?`<td>${fmt(B.tot.eval)}</td><td>${diff(A.tot.eval,B.tot.eval)}</td>`:''}</tr>
+    <tr><td class="l"><b>${L.total} ${L.bv}</b></td><td>${fmt(A.tot.bv)}</td>${B?`<td>${fmt(B.tot.bv)}</td><td>${diff(A.tot.bv,B.tot.bv)}</td>`:''}</tr>`;
+  const key=S.metric==='eval'?'eval':'bv';
+  const n=Math.max(A.rows.length,B?B.rows.length:0);
+  for(let i=0;i<n;i++){
+    const a=A.rows[i],b=B?B.rows[i]:null;
+    body+=`<tr><td class="l" style="color:var(--dim)">${esc((a?a.name:b.name))}${b&&a&&b.name!==a.name?' → '+esc(b.name):''}</td>
+      <td>${a?fmt(a[key]):'—'}</td>${B?`<td>${b?fmt(b[key]):'—'}</td><td>${a&&b?diff(a[key],b[key]):''}</td>`:''}</tr>`;
+  }
+  el.innerHTML=`<div class="sec"><div class="sec-hd"><span>${L.cmp_title(SNAPS.length)}</span>
+      <button class="btn" onclick="snapClear()">${L.cmp_clear}</button></div>
+    <div class="sec-bd" style="overflow-x:auto"><table class="rank-tbl">${head}${body}</table>
+      <div class="tbl-note">${B?L.cmp_note2:L.cmp_note1}</div></div></div>`;
+}
+
+// ── 다음 투자처 분석 ───────────────────────────────────────
+function bestAccNotOwned(){
+  const owned=new Set(SPEC.accCards.map(a=>a.ko));
+  let best=null,bv=-1;
+  D.ACC.forEach(a=>{
+    const v=a.hp+a.atk+a.def;
+    if(v>bv){bv=v;best=a;}
+  });
+  return best;
+}
+async function advise(){
+  if (!await ChamAccess.requireAccess()) return;
+  if(!LAST_BEST||!LAST_BEST.filled)return;
+  const el=document.getElementById('advice');
+  el.innerHTML=`<div class="sec"><div class="sec-bd empty-note">${L.adv_running}</div></div>`;
+  const baseTot=bestSummary(LAST_BEST).tot;
+  const cands=[];
+  STATS.forEach(st=>{
+    const top=[40,39,38,37,36].find(lv=>Number((SPEC.gems[st]||{})[lv])>0)||40;
+    cands.push({key:'gem-'+st,label:L.adv_gem(statLbl(st),GEM_NAME[top]),apply:()=>{
+      const g=JSON.parse(JSON.stringify(SPEC.gems));g[st]=g[st]||{};g[st][top]=(Number(g[st][top])||0)+1;SPEC.gems=g;}});
+  });
+  const acc=bestAccNotOwned();
+  if(acc)cands.push({key:'acc',label:L.adv_acc(nm(acc)),apply:()=>{SPEC.accCards=[...SPEC.accCards,{...acc,_id:1000,enc:'atk'}];}});
+  cands.push({key:'pend',label:L.adv_pend,apply:()=>{SPEC.pendants=[...SPEC.pendants,{type:'태양',options:[{stat:'hp',val:9},{stat:'atk',val:9},{stat:'def',val:9}],_id:2000}];}});
+  const results=[];
+  for(const c of cands){
+    const backup={accCards:SPEC.accCards,gems:SPEC.gems,pendants:SPEC.pendants};
+    c.apply();
+    let tot=null;
+    el.innerHTML=`<div class="sec"><div class="sec-bd empty-note">${L.adv_running_p(results.length+1,cands.length)}</div></div>`;
+    try{tot=bestSummary(await solve()).tot;}catch(e){console.warn(e);}
+    SPEC.accCards=backup.accCards;SPEC.gems=backup.gems;SPEC.pendants=backup.pendants;
+    if(tot)results.push({label:c.label,eval:tot.eval-baseTot.eval,bv:tot.bv-baseTot.bv});
+    await new Promise(r=>setTimeout(r,10));
+  }
+  const key=S.metric==='eval'?'eval':'bv';
+  results.sort((a,b)=>b[key]-a[key]);
+  const baseV=baseTot[key];
+  const rows=results.map((r,i)=>{
+    const pc=baseV?(r[key]/baseV*100):0;
+    return `<tr><td class="rk">${i+1}</td><td class="l">${esc(r.label)}</td>
+      <td style="color:${r[key]>0?'var(--green)':'var(--dim)'}">${r[key]>0?'+':''}${fmt(r[key])}</td>
+      <td style="color:${r[key]>0?'var(--green)':'var(--dim)'}">${r[key]>0?'+':''}${pc.toFixed(2)}%</td></tr>`;
+  }).join('');
+  el.innerHTML=`<div class="sec"><div class="sec-hd"><span>${L.adv_title(S.metric==='eval'?'EVAL':L.bv)}</span></div>
+    <div class="sec-bd" style="overflow-x:auto"><table class="rank-tbl">
+      <tr><th>#</th><th class="l">${L.adv_item}</th><th>${L.adv_gain}</th><th>%</th></tr>${rows}</table>
+      <div class="tbl-note">${L.adv_note}</div></div></div>`;
+  el.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+// ── 수동 계산기와 주고받기 ─────────────────────────────────
+const MANUAL_KEY=PRE+'_cham_manual';
+const MANUAL_URL=(IS_EN?'./':'./')+'cham_manual.html';
+function mkManualSlot(){
+  return {attr:'',name:'',dtype:'',grade:'9.0',gems:Array.from({length:5},()=>({stat:'',lv:44})),
+    pend:{hp:0,atk:0,def:0},acc:'',potion:'',enc:{stat:'',val:21},
+    sp:Array.from({length:4},()=>({stat:'',type:''})),bonus:''};
+}
+const GEM_DISP={36:36,37:38,38:40,39:42,40:44};
+// 자동 결과 → 수동 계산기로 보내기
+function sendToManual(best){
+  if(!best||!best.filled)return;
+  if(!confirm(L.send_manual_confirm))return;
+  const st={buff:{...curBuff()},tab:0,teams:[0,1,2].map(ti=>[0,1,2].map(()=>mkManualSlot()))};
+  best.decks.forEach((deck,ti)=>{
+    if(!deck)return;
+    deck.slice(0,3).forEach((o,si)=>{
+      const sl=st.teams[ti][si];const c=o.cand;
+      sl.attr=c.attr;sl.name=c.name;
+      if(TEAMS[ti].kind==='gang'){sl.dtype=c.entry?c.entry.dtype:findType(c.name);sl.grade=c.entry?c.entry.grade:(S.spx.target==='all'?S.spx.grade:'9.0');}
+      sl.acc=o.acc.ko;
+      sl.potion='크리•회피';
+      if(o.acc.enc){sl.enc={stat:o.acc.enc,val:21};}
+      const gems=[];
+      STATS.forEach(x=>{(o.gems&&o.gems[x]||[]).forEach(g=>gems.push({stat:x,lv:GEM_DISP[g.lv]||44}));});
+      for(let i=0;i<5;i++)sl.gems[i]=gems[i]?{stat:gems[i].stat,lv:gems[i].lv}:{stat:'',lv:44};
+      if(o.pend){
+        const mo=o.pend.type==='태양'?3:o.pend.type==='달'?2:1;
+        (o.pend.options||[]).slice(0,mo).forEach(op=>{if(op&&sl.pend[op.stat]!==undefined)sl.pend[op.stat]+=Number(op.val)||0;});
+      }
+      const src=c.entry||(c.spId!=null?S.spx.list[c.spId]:null);
+      if(src){sl.sp=(src.sp||[]).slice(0,4).map(o2=>({stat:o2.stat||'',type:o2.type||''}));sl.bonus=src.bonus||'';}
+    });
+  });
+  try{localStorage.setItem(MANUAL_KEY,JSON.stringify(st));}catch(e){alert(L.err+e.message);return;}
+  location.href=MANUAL_URL;
+}
+// 수동 계산기 드래곤 → 내 드래곤 탭으로 가져오기
+function importFromManual(){
+  const m=rdLS(MANUAL_KEY);
+  if(!m||!Array.isArray(m.teams)){alert(L.import_none);return;}
+  let added=0;
+  m.teams.forEach((team,ti)=>{
+    if(ti>2||!Array.isArray(team))return;
+    team.forEach(sl=>{
+      if(!sl||!sl.name||!ATTRS.includes(sl.attr))return;
+      const dup=S.teams[ti].some(en=>en.attr===sl.attr&&en.name===sl.name);
+      if(dup)return;
+      const en=mkEntry();
+      en.attr=sl.attr;en.name=sl.name;
+      if(TEAMS[ti].kind==='gang'){en.dtype=sl.dtype||findType(sl.name);en.grade=GRADES.includes(sl.grade)?sl.grade:'9.0';}
+      en.sp=en.sp.map((o,k)=>{
+        const q=(sl.sp||[])[k]||{};
+        return {stat:STATS.includes(q.stat)?q.stat:'',type:(q.type==='+'||q.type==='%')?q.type:SP_DEF_TYPE(k)};
+      });
+      en.bonus=STATS.includes(sl.bonus)?sl.bonus:'';
+      if(!entryValid(ti,en))return;
+      S.teams[ti].push(en);OPEN_ATTR[ti].add(en.attr);added++;
+    });
+  });
+  if(!added){alert(L.import_none2);return;}
+  renderDragonTeams();renderSpecLine();save();
+  alert(L.import_done(added));
+}
+
+// ── 보유 정령 배분 (미리보기, 드래곤 탭에 반영 안 함) ─────────
+const SPX_TOP=18;
+const SPX_TOP_OWN=24;   // 보유 드래곤을 지정했을 때의 상한      // 전체 모드: 팀별 사전 선별 드래곤 수
+const SPX_PER_SP=10;   // 드래곤×정령 조합당 남길 상위 셋팅 수
+function spxLabel(x,j){return '#'+(j+1)+(x.memo?' '+x.memo:'');}
+function spxOptText(x){
+  const parts=x.sp.map(o=>o.stat?statLbl(o.stat)+(o.type==='%'?'%':'+'):null).filter(Boolean);
+  const b=x.bonus?(' · '+L.bonus+' '+statLbl(x.bonus)):'';
+  return (parts.length?parts.join('/'):'—')+b;
+}
+function spxValid(x){return x.sp.some(o=>o.stat)||!!x.bonus;}
+function spxCardHtml(j){
+  const x=S.spx.list[j];
+  const presets=`<div class="preset-row">
+      ${SP_PRESETS.map(([id,types])=>`<button type="button" class="chip pat${x.sp.every((o,k)=>o.type===types[k])?' on':''}" onclick="spxEdit(${j},e=>{e.sp.forEach((o,k)=>{o.type='${id}'[k];});})">${id}</button>`).join('')}
+    </div>`;
+  const rows=x.sp.map((o,k)=>{
+    const v=o.stat?(o.type==='%'?'+'+Math.round(SP_PCT[k+1]*100)+'%':'+'+SP_PLUS[o.stat][k+1]):'';
+    return `<div class="sp2-row"><span class="k">${L.opt(k+1)}</span>
+      ${STATS.map(st=>`<button type="button" class="chip${o.stat===st?' on-'+st:''}" onclick="spxEdit(${j},e=>{const o=e.sp[${k}];o.stat=o.stat==='${st}'?'':'${st}';})">${statLbl(st)}</button>`).join('')}
+      <button type="button" class="chip on" onclick="spxEdit(${j},e=>{const o=e.sp[${k}];o.type=o.type==='%'?'+':'%';})">${o.type==='+'?'+':'%'}</button>
+      <span class="v">${v}</span></div>`;
+  }).join('');
+  const bonus=`<div class="sp2-row sp2-bonus"><span class="k">${L.bonus_s}</span>
+      ${STATS.map(st=>`<button type="button" class="chip${x.bonus===st?' on-'+st:''}" onclick="spxEdit(${j},e=>{e.bonus=e.bonus==='${st}'?'':'${st}';})">${statLbl(st)}</button>`).join('')}
+      <span class="v">${x.bonus?'+'+SP_BONUS[x.bonus]:''}</span></div>`;
+  return `<div class="spx-card" data-spx="${x.uid}">
+    <div class="spx-hd">
+      <span class="spx-no">#${j+1}</span>
+      <input type="text" class="spx-memo" maxlength="30" placeholder="${esc(L.spx_memo_ph)}" value="${esc(x.memo)}" oninput="S.spx.list[${j}].memo=this.value.slice(0,30);save()">
+      <button class="icon-btn" title="${esc(L.dup)}" onclick="spxDup(${j})">⧉</button>
+      <button class="icon-btn red" title="${esc(L.del)}" onclick="spxDel(${j})">✕</button>
+    </div>
+    ${presets}<div>${rows}${bonus}</div>
+  </div>`;
+}
+function spxFold(v){
+  S.spx.fold=(v===undefined||v===null)?!S.spx.fold:!!v;
+  applySpxFold();save();
+}
+function applySpxFold(){
+  const f=!!S.spx.fold;
+  const b=document.getElementById('spx-body');if(b)b.style.display=f?'none':'';
+  const t=document.getElementById('spx-fold');if(t)t.textContent=(f?'\u25b8 '+L.spx_unfold:'\u25be '+L.spx_fold);
+}
+function renderSpxList(){
+  const list=S.spx.list;
+  document.getElementById('spx-title').textContent=L.spx_title(list.filter(spxValid).length,list.length);
+  document.getElementById('spx-list').innerHTML=list.length
+    ?`<div class="spx-grid">${list.map((_,j)=>spxCardHtml(j)).join('')}</div>`
+    :`<div class="spx-empty">${L.spx_empty}</div>`;
+  applySpxFold();
+}
+function spxEdit(j,fn){
+  const x=S.spx.list[j];if(!x)return;fn(x);
+  const el=document.querySelector(`.spx-card[data-spx="${x.uid}"]`);
+  if(el)el.outerHTML=spxCardHtml(j);
+  document.getElementById('spx-title').textContent=L.spx_title(S.spx.list.filter(spxValid).length,S.spx.list.length);
+  save();
+}
+function spxAdd(){S.spx.fold=false;S.spx.list.push(mkSpirit());renderSpxList();save();
+  const cards=document.querySelectorAll('.spx-card');const last=cards[cards.length-1];if(last)last.scrollIntoView({behavior:'smooth',block:'nearest'});}
+function spxDup(j){const cp=JSON.parse(JSON.stringify(S.spx.list[j]));cp.uid=newUid();S.spx.list.splice(j+1,0,cp);renderSpxList();save();}
+function spxDel(j){S.spx.list.splice(j,1);renderSpxList();save();}
+function renderSpxSetting(){
+  const sx=S.spx;
+  const target=`<div class="seg">${[['mine',L.spx_mine],['all',L.spx_all]].map(([k,lb])=>`<button type="button" class="chip${sx.target===k?' on':''}" onclick="S.spx.target='${k}';renderSpxSetting();save()">${esc(lb)}</button>`).join('')}</div>`;
+  const grade=sx.target==='all'?`<div style="height:10px"></div><div class="lbl">${L.spx_grade}</div><div class="seg">${GRADES.map(g=>`<button type="button" class="chip${sx.grade===g?' on':''}" onclick="S.spx.grade='${g}';renderSpxSetting();save()">${g}</button>`).join('')}</div>`:'';
+  const ownBar=sx.osec==='all'?'':`<div class="own-bar">
+      <input class="own-q" id="own-q" placeholder="${esc(L.own_q)}" value="${esc(OWN_Q)}" oninput="ownSearch(this.value)">
+      <div class="seg"><button type="button" class="chip${sx.oattr?'':' on'}" onclick="ownAttr('')">${L.all}</button>${ATTRS.map(a=>`<button type="button" class="chip${sx.oattr===a?' on':''}" onclick="ownAttr('${a}')">${attrLbl(a)}</button>`).join('')}</div>
+      <button type="button" class="btn" onclick="ownClear()">${L.own_clear}</button></div>`;
+  const dup=sx.target==='all'?`<div style="height:12px"></div><div class="lbl">${L.own_t}</div>`+
+    `<div class="seg" id="own-segs">${ownSegsHtml()}</div>${ownBar}`+
+    `<div class="own-body" id="own-grid">${ownGridHtml()}</div>`+
+    `<div class="run-note" style="margin-top:6px">${L.own_note}<br>${L.own_note2}</div>`:'';
+  const buff=`<div class="row3">${STATS.map(st=>`<label class="c-${st}">${statLbl(st)} ${st==='def'?'50%':'40%'}
+      <select onchange="setBuff('${st}',this.value)"><option value="">${L.none}</option>${ATTRS.map(a=>`<option value="${a}"${curBuff()[st]===a?' selected':''}>${attrLbl(a)}</option>`).join('')}</select></label>`).join('')}</div>`;
+  const metric=`<div class="seg">${[['bv',L.bv_full],['eval','EVAL']].map(([m,lb])=>`<button type="button" class="chip${S.metric===m?' on':''}" onclick="S.metric='${m}';renderSpxSetting();renderSetting();save()">${lb}</button>`).join('')}</div>`;
+  const dn=[0,1,2].map(ti=>teamCandidates(ti).length);
+  const warns=[];
+  if(!SPEC.accCards.length)warns.push(L.w_acc);
+  if(!S.spx.list.some(spxValid))warns.push(L.spx_w_sp);
+  if(sx.target==='mine'&&dn.every(n=>n<3))warns.push(L.w_dragon);
+  document.getElementById('spx-setting').innerHTML=`
+    <div class="lbl">${L.spx_target}</div>${target}
+    <div class="run-note" style="margin-top:6px">${sx.target==='mine'?L.spx_mine_note(dn):(OWN_SECS.some(ownHas)?L.spx_all_note2(ownKinds('gang'),ownKinds('21'),ownKinds('45')):L.spx_all_note)}</div>
+    ${grade}
+    ${dup}
+    <div style="height:12px"></div><div class="lbl">${L.t_buff}</div>${roundBarHtml()}${buff}
+    <div style="height:12px"></div><div class="lbl">${L.t_metric}</div>${metric}
+    ${warns.length?`<div class="spec-warn">${warns.map(w=>''+w).join('<br>')}</div>`:''}
+    <div class="run-row">
+      <button class="btn-run" id="spx-run" onclick="spxRun()" ${warns.length&&(!SPEC.accCards.length||!S.spx.list.some(spxValid)||(sx.target==='mine'&&dn.every(n=>n<3)))?'disabled':''}>${L.spx_run}</button>
+      <div class="run-note">${L.spx_run_note}</div>
+    </div>`;
+}
+function renderSpx(){renderSpxList();renderSpxSetting();}
+
+// 대상 드래곤 (정령은 비워둔 기본 후보)
+function spxBaseDragons(ti){
+  const t=TEAMS[ti];
+  if(S.spx.target==='mine'){
+    return teamCandidates(ti).map(c=>({...c}));
+  }
+  if(t.kind==='gang'){
+    const out=[];const useOwn=ownHas('gang');
+    ATTRS.forEach(attr=>gangDb(attr).forEach(g=>{
+      const dt=findType(g.ko);if(!dt||!D.BASE[S.spx.grade][dt])return;
+      const own=useOwn?ownN('gang',attr+'|'+g.ko):1;if(!own)return;
+      out.push({id:'F0-'+attr+'-'+g.ko,attr,name:g.ko,en:g.en,img:g.img,imgStage:8,own,
+        sub:attrLbl(attr)+' · '+typeLbl(dt)+' · '+S.spx.grade,base:D.BASE[S.spx.grade][dt]});
+    }));
+    return out;
+  }
+  const seen=new Set(),out=[];const useOwn2=ownHas(String(t.lv));
+  D.GRADE.filter(g=>g.lv===t.lv&&/ SSS$/.test(g.ko)).forEach(g=>{
+    const k=g.ko+'|'+g.elem;if(seen.has(k))return;seen.add(k);
+    const own=useOwn2?ownN(String(t.lv),g.elem+'|'+g.ko):1;if(!own)return;
+    out.push({id:'F'+ti+'-'+g.did+'-'+g.ko,attr:g.elem,name:g.ko,en:g.en,did:g.did,img:g.did,imgStage:4,own,
+      sub:attrLbl(g.elem)+' · Lv.'+t.lv,base:{hp:g.hp,atk:g.atk,def:g.def},sk:g.sk});
+  });
+  return out;
+}
+async function spxMakeSets(shapes,pends,onProg){
+  const P=typeof onProg==='function'?onProg:()=>{};
+  const spirits=S.spx.list.map((x,j)=>({j,x,sp:procSpirit(x),label:spxLabel(x,j)+' \u00b7 '+spxOptText(x)})).filter(o=>spxValid(o.x));
+  const variants=[...spirits,{j:null,x:null,sp:procSpirit(null),label:L.spx_nosp}];
+  const isAll=S.spx.target==='all';
+  // 1단계: 팀별 대상 드래곤 추리기 (장비 없이 가장 좋은 정령 기준)
+  const plans=[];
+  for(let ti=0;ti<3;ti++){
+    let dragons=spxBaseDragons(ti);
+    if(isAll){
+      const scored=[];
+      for(let i=0;i<dragons.length;i++){
+        const d=dragons[i];let bs=-Infinity;
+        variants.forEach(v=>{const r=calcOption({...d,sp:v.sp},NO_ACC,null,{hp:0,atk:0,def:0});if(r.m>bs)bs=r.m;});
+        scored.push({d,best:bs});
+        if((i&127)===127){P(((ti+(i+1)/dragons.length)/3)*0.3);await tick();}
+      }
+      const cap=ownHas(spxSecOf(ti))?SPX_TOP_OWN:SPX_TOP;
+      dragons=scored.sort((a,b)=>b.best-a.best).slice(0,cap).map(x=>x.d);
+    }
+    plans.push(dragons);
+    P(((ti+1)/3)*0.3);await tick();
+  }
+  // 2단계: 드래곤×정령 셋팅 후보 만들기
+  const totalD=plans.reduce((s,d)=>s+d.length,0)||1;let done=0;
+  const res=[];
+  for(let ti=0;ti<3;ti++){
+    let sets=[];
+    for(const d of plans[ti]){
+      let all=[];
+      variants.forEach(v=>{
+        const cand={...d,sp:v.sp,spId:v.j,spLabel:v.label,entry:null};
+        all=all.concat(diversifyOpts(buildOptions(cand,shapes,pends),SPX_PER_SP));
+      });
+      all.sort((a,b)=>b.m-a.m);
+      if(all.length)sets.push({cand:all[0].cand,opts:all});
+      done++;P(0.3+done/totalD*0.7);await tick();
+    }
+    if(isAll)sets=spxOwnExpand(sets);
+    res.push(sets);
+  }
+  return res;
+}
+// ── 배분 결과를 내 드래곤 탭에 적용 ────────────────────────
+let SPX_UNDO=null,SPX_LAST=null,SPX_MS=0;
+function spxRerender(){
+  if(!SPX_LAST)return;
+  renderResult(SPX_LAST,SPX_MS,'spx-result',ti=>S.spx.target==='mine'&&teamCandidates(ti).length<3?L.team_need3:L.team_fail);
+}
+function spxApply(){
+  if(!SPX_LAST||!SPX_LAST.filled)return;
+  if(!confirm(L.spx_apply_confirm))return;
+  SPX_UNDO=JSON.parse(JSON.stringify(S.teams));
+  let set=0,add=0;
+  const taken=new Set(); // 같은 드래곤이 여러 마리 배분되면 카드도 그만큼 만든다
+  SPX_LAST.decks.forEach((deck,ti)=>{
+    if(!deck)return;
+    deck.forEach(o=>{
+      const src=o.cand.spId!=null?S.spx.list[o.cand.spId]:null;
+      const spOf=()=>src
+        ?src.sp.map((x,k)=>({stat:STATS.includes(x.stat)?x.stat:'',type:(x.type==='+'||x.type==='%')?x.type:SP_DEF_TYPE(k)}))
+        :mkEntry().sp;
+      let en=S.teams[ti].find(x=>x.attr===o.cand.attr&&x.name===o.cand.name&&!taken.has(x));
+      if(!en){
+        en=mkEntry();en.attr=o.cand.attr;en.name=o.cand.name;
+        if(TEAMS[ti].kind==='gang'){en.dtype=findType(o.cand.name);en.grade=S.spx.target==='all'?S.spx.grade:'9.0';}
+        S.teams[ti].push(en);OPEN_ATTR[ti].add(en.attr);add++;
+      }else set++;
+      taken.add(en);
+      en.sp=spOf();
+      en.bonus=src?(src.bonus||''):'';
+    });
+  });
+  OPEN_CARD.clear();
+  renderDragonTeams();renderSpecLine();renderSpxSetting();spxRerender();save();
+  alert(L.spx_apply_done(set,add));
+  setPage('dragon');
+}
+function spxUndo(){
+  if(!SPX_UNDO)return;
+  S.teams=SPX_UNDO;SPX_UNDO=null;
+  OPEN_CARD.clear();
+  renderDragonTeams();renderSpecLine();renderSpx();spxRerender();save();
+  alert(L.spx_undo_done);
+}
+async function spxRun(){
+  if (!await ChamAccess.requireAccess()) return;
+  const btn=document.getElementById('spx-run');
+  btn.disabled=true;btn.textContent=L.running_p(0);progBar(btn,0);
+  save();
+  await tick();
+  try{
+    loadSpec();
+    const t0=performance.now();
+    let last=-1;
+    const best=await solve(spxMakeSets,30,p=>{
+      const v=Math.max(0,Math.min(99,Math.round(p)));
+      if(v!==last){last=v;btn.textContent=L.running_p(v);progBar(btn,v);}
+    });
+    SPX_LAST=best;SPX_MS=performance.now()-t0;SPX_UNDO=null;
+    renderResult(best,SPX_MS,'spx-result',ti=>S.spx.target==='mine'&&teamCandidates(ti).length<3?L.team_need3:L.team_fail);
+    const el=document.getElementById('spx-result');
+    if(best&&best.filled){
+      const used=new Set();best.decks.forEach(d=>d&&d.forEach(o=>{if(o.cand.spId!=null)used.add(o.cand.spId);}));
+      const left=S.spx.list.map((x,j)=>({x,j})).filter(o=>spxValid(o.x)&&!used.has(o.j));
+      el.insertAdjacentHTML('beforeend',`<div class="sec"><div class="sec-hd"><span>${L.spx_left(left.length)}</span></div>
+        <div class="sec-bd" style="font-size:12px;line-height:1.8;color:var(--text2)">${left.length?left.map(o=>`${esc(spxLabel(o.x,o.j))} <span style="color:var(--dim)">(${esc(spxOptText(o.x))})</span>`).join('<br>'):L.spx_left_none}</div></div>`);
+    }
+  }catch(e){console.error(e);alert(L.err+e.message);}
+  renderSpxSetting();
+}
+async function boot(){
+  if(!canCloud()){BOOTING=false;return;}
+  {
+    setCloudStatus(L.cloud_loading,'var(--dim)');
+    const ok=await cloudPull();
+    setCloudStatus(ok?L.cloud_loaded:'','var(--dim)');
+    OPEN_CARD.clear();
+    [0,1,2].forEach(ti=>S.teams[ti].forEach(en=>OPEN_ATTR[ti].add(en.attr)));
+    renderDragonTeams();renderSetting();renderSpecLine();
+    if(S.page==='sim')renderSim();
+    if(S.page==='spx')renderSpx();
+  }
+  BOOTING=false;
+  const rb=document.getElementById('cloud-refresh');
+  if(rb&&canCloud()){rb.textContent=L.cloud_refresh;rb.style.display='';}
+}
+async function cloudRefresh(btn){
+  if(!canCloud())return;
+  if(cloudT||cloudBusy){if(!confirm(L.cloud_refresh_confirm))return;}
+  btn.disabled=true;
+  clearTimeout(cloudT);cloudT=null;
+  BOOTING=true;
+  setCloudStatus(L.cloud_loading,'var(--dim)');
+  const ok=await cloudPull();
+  OPEN_CARD.clear();
+  [0,1,2].forEach(ti=>S.teams[ti].forEach(en=>OPEN_ATTR[ti].add(en.attr)));
+  loadSpec();renderDragonTeams();renderSetting();renderSpecLine();
+  if(S.page==='sim')renderSim();
+  if(S.page==='spx')renderSpx();
+  setCloudStatus(ok?L.cloud_loaded:L.cloud_none,ok?'var(--green)':'var(--dim)');
+  BOOTING=false;btn.disabled=false;
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('t-spx-add').textContent='＋ '+L.spx_add;
+  document.getElementById('t-spx-note').textContent=L.spx_note;
+  document.getElementById('t-spx-set').textContent=L.spx_set;
+  document.getElementById('t-sim-in').textContent=L.sim_in;
+  document.getElementById('t-sim-note').textContent=L.sim_note;
+  document.getElementById('t-dragon-note').innerHTML=L.dragon_note;
+  document.getElementById('t-min-note').textContent=L.min_note;
+  ['t-setting','t-spec','t-buff','t-min','t-metric','t-note','t-goto-my'].forEach(id=>{
+    document.getElementById(id).textContent=L[id.replace(/-/g,'_')];
+  });
+  document.getElementById('run-btn').textContent=L.run;
+  loadSpec();
+  [0,1,2].forEach(ti=>S.teams[ti].forEach(en=>OPEN_ATTR[ti].add(en.attr)));
+  renderDragonTeams();
+  renderSetting();
+  renderSpecLine();
+  setPage(S.page);
+  boot();
+});
+</script>
+<script>
+if (!globalThis.DV1_DRAGON_VIEWS) throw new Error("드래곤 데이터 로드 실패: 초기화 중단");
+
+(function(){
+  var link=document.getElementById('theme-css');
+  if(!link)return;
+  var sync=function(){
+    var c=document.getElementById('custom-theme-style');
+    if(c&&c.textContent&&c.textContent.length>0){document.documentElement.removeAttribute('data-theme');return;}
+    var m=String(link.href||'').match(/theme-(dark|light|beige)\.css/);
+    document.documentElement.setAttribute('data-theme',m?m[1]:'dark');
+  };
+  sync();
+  new MutationObserver(sync).observe(link,{attributes:true,attributeFilter:['href']});
+  new MutationObserver(sync).observe(document.head,{childList:true,subtree:true,characterData:true});
+})();
+</script>
+</div>
+<script src="./ui.js"></script>
+<script>
+if (!globalThis.DV1_DRAGON_VIEWS) throw new Error("드래곤 데이터 로드 실패: 초기화 중단");
+
+UI.shell({page:'cham_auto',title:'챔피언대전',sub:'자동 계산기',tasks:{
+  on:'dragon',
+  items:[['dragon','내 드래곤'],['calc','자동 계산'],['sim','정령 · 버프'],['spx','정령 배분']],
+  go:function(k){ if(typeof setPage==='function') setPage(k); }
+}});
+if(typeof setPage==='function') setPage(S&&S.page||'dragon');
+</script>
+</body>
+</html>

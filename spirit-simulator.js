@@ -86,12 +86,15 @@
     if(!accs.length){status.textContent='내 스펙에서 장신구를 1개 이상 등록해 주세요.';return;}
     ui.busy=true;const button=byId('sim-btn');button.disabled=true;button.textContent='세팅 비교 중…';
     status.textContent='보유 장비와 선택한 버프를 비교하고 있습니다.';
+    try{
     // Snapshot all inputs before yielding. No storage/network writes occur here.
     const grade=simGrade,sp=procSpirit(),coll={...S.coll},spiritSnapshot=JSON.parse(JSON.stringify(S.spirit));
     const pool=buildPool(),allocs=genAllocs(pool,5).map(a=>({alloc:a.map((k,i)=>({k,g:pool[i]})).filter(x=>x.k>0),h:a.reduce((s,k,i)=>s+k*pool[i].h,0),a:a.reduce((s,k,i)=>s+k*pool[i].a,0),d:a.reduce((s,k,i)=>s+k*pool[i].d,0)}));
     const pends=JSON.parse(JSON.stringify(getPends(byId('exc-sun-pend').checked)));
     const rows=[];let tested=0,order=0;
-    try{
+    const total=DTYPES.length*buffs.length*accs.length*(encMode==='infinite'?3:1)*pends.length*allocs.length;
+    let lastYield=performance.now();
+    const contributions={h:[...new Set(allocs.map(a=>a.h))],a:[...new Set(allocs.map(a=>a.a))],d:[...new Set(allocs.map(a=>a.d))]};
       await new Promise(r=>setTimeout(r,0));
       for(const dt of DTYPES){
         const base=BASE[grade][dt];
@@ -99,14 +102,19 @@
           const group=[];const add={h:Math.floor(buf.h*base.hp*.2),a:Math.floor(buf.a*base.atk*.2),d:Math.floor(buf.d*base.def*.2)};
           for(const acc of accs)for(const enc of encMode==='infinite'?['hp','atk','def']:[acc.enc])for(const pend of pends){
             const pp=calcPendPct(pend);
+            // Each stat depends only on its own gem total. Reuse identical calculations.
+            const hs=new Map(contributions.h.map(h=>[h,calcStat(base.hp,h,24,acc.hp+(enc==='hp'?.21:0),sp.pct.hp,pp.pH,sp.plus.hp,sp.bonus.hp,coll.hp,add.h)]));
+            const ats=new Map(contributions.a.map(a=>[a,calcStat(base.atk,a,6,acc.atk+(enc==='atk'?.21:0),sp.pct.atk,pp.pA,sp.plus.atk,sp.bonus.atk,coll.atk,add.a)]));
+            const ds=new Map(contributions.d.map(d=>[d,calcStat(base.def,d,6,acc.def+(enc==='def'?.21:0),sp.pct.def,pp.pD,sp.plus.def,sp.bonus.def,coll.def,add.d)]));
             for(const a of allocs){
-              const fH=calcStat(base.hp,a.h,24,acc.hp+(enc==='hp'?.21:0),sp.pct.hp,pp.pH,sp.plus.hp,sp.bonus.hp,coll.hp,add.h);
-              const fA=calcStat(base.atk,a.a,6,acc.atk+(enc==='atk'?.21:0),sp.pct.atk,pp.pA,sp.plus.atk,sp.bonus.atk,coll.atk,add.a);
-              const fD=calcStat(base.def,a.d,6,acc.def+(enc==='def'?.21:0),sp.pct.def,pp.pD,sp.plus.def,sp.bonus.def,coll.def,add.d);
+              const fH=hs.get(a.h),fA=ats.get(a.a),fD=ds.get(a.d);
               const bv=fH*fA*fD;tested++;order++;
               // Within a fixed type/buff, TAR is monotonic in BV. Keeping 10 per group preserves both global top tens.
               if(group.length<10||bv>group[group.length-1].bv)topInsert(group,{dt,buf,accN:acc.n,enc,pend,alloc:a.alloc,fH,fA,fD,bv,add,order,tar:typeof tarPercent==='function'?tarPercent(bv,dt,{hp:buf.h,atk:buf.a,def:buf.d}):null});
-              if(tested%25000===0)await new Promise(r=>setTimeout(r,0));
+              if(tested%8192===0&&performance.now()-lastYield>=80){
+                status.textContent='세팅 비교 중 '+Math.min(99,Math.floor(tested/total*100))+'% · '+tested.toLocaleString('ko-KR')+' / '+total.toLocaleString('ko-KR');
+                await new Promise(r=>setTimeout(r,0));lastYield=performance.now();
+              }
             }
           }
           rows.push(...group);

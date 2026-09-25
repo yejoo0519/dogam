@@ -307,13 +307,7 @@ input[type=number]{appearance:textfield;-moz-appearance:textfield}
             <button class="btn-white" onclick="addAcc()">+ Add</button>
           </div>
         </div>
-        <div class="acc-preset-row">
-          <button class="btn-white" onclick="addAccBulk(16)">16</button>
-          <button class="btn-white" onclick="addAccBulk(17)">17</button>
-          <button class="btn-white" onclick="addAccBulk(18)">18</button>
-          <button class="btn-white" onclick="addAccBulk(19)">19</button>
-          <button class="btn-white" onclick="addAccBulk(20)">20</button>
-        </div>
+<div class="acc-preset-row" style="flex-wrap:wrap;align-items:center"><label>Level <select id="quick-acc-level"><option>20</option><option>19</option><option>18</option><option>17</option><option>16</option></select></label><label>Enchant <select id="quick-acc-enc"><option value="none">None</option><option value="hp">HP</option><option value="atk">ATK</option><option value="def">DEF</option></select></label><button type="button" class="btn-white" id="acc-bulk-add" onclick="addAccBulk(Number(document.getElementById('quick-acc-level').value))">Add all at selected level</button></div><p style="padding:0 12px;font-size:12px">Adds one of each accessory at the selected level. Uses the Stat only filter.</p><div id="quick-acc-status" role="status" aria-live="polite" style="padding:0 12px"></div>
         <div class="sec-bd"><div id="acc-list"><div style="color:var(--dimmer);font-size:13px">No accessories</div></div></div>
       </div>
     </div>
@@ -1090,13 +1084,16 @@ function sortAccCards(){
   S.accCards=S.accCards.map(({_idx,...c})=>c);
 }
 function addAccBulk(lv){
-  const statOnly=document.getElementById('chk-stat-only')?.checked;
-  const targets=ACC_DB.filter(a=>getAccNum(a.n)===lv&&(!statOnly||!a.n.startsWith('Horn of light')));
-  if(!targets.length){alert(`${lv} Accessory not found.`);return;}
-  targets.forEach(a=>S.accCards.unshift({name:a.n,enchant:'none'}));
-  sortAccCards();renderAcc();qSave();
-  alert(`${lv} An accessory set was added.`);
+ const statOnly=document.getElementById('chk-stat-only')?.checked;
+ const targets=ACC_DB.filter(a=>getAccNum(a.n)===lv&&(!statOnly||!a.n.startsWith('Horn of light')));
+ const status=document.getElementById('quick-acc-status');
+ if(!targets.length){status.textContent='No accessories at this level.';return;}
+ const enchant=document.getElementById('quick-acc-enc')?.value||'none';
+ S.accCards.unshift(...targets.map(a=>({name:a.n,enchant})));
+ sortAccCards();renderAcc();qSave();
+ status.textContent=`Added ${targets.length} accessories at level ${lv}.`;
 }
+
 function delAcc(ci){S.accCards.splice(ci,1);renderAcc();qSave();}
 function resetAcc(){if(!confirm('Reset all accessories.'))return;S.accCards=[];renderAcc();qSave();}
 function onAccEnc(ci,enc){S.accCards[ci].enchant=enc;qSave();}

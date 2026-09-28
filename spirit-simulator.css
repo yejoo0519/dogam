@@ -12,3 +12,19 @@
 .sp-card-body{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:18px;padding:18px}.sp-card-body small{display:block;color:var(--dim);font-size:10px;margin-bottom:7px}.sp-equipment{display:flex;align-items:center;gap:10px;min-width:0}.sp-equipment img{width:40px;height:40px;object-fit:contain}.sp-equipment strong{display:block;font-size:12px;margin-bottom:6px;word-break:keep-all}.sp-final-stats{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--bd);padding-top:14px;gap:10px}.sp-final-stats>div{display:flex;align-items:baseline;gap:10px}.sp-final-stats strong{font-size:18px;font-variant-numeric:tabular-nums}.stat-hp strong{color:var(--hpc)}.stat-atk strong{color:var(--atc)}.stat-def strong{color:var(--dfc)}
 .sp-breakdown{border-top:1px solid var(--bd);font-size:11px;padding:11px 18px;color:var(--dim)}.sp-breakdown summary{cursor:pointer}.sp-breakdown>div{display:flex;gap:12px 25px;flex-wrap:wrap;padding-top:10px}.sp-breakdown b{color:var(--gold)}
 @media(max-width:760px){.sp-workspace-head{display:block}.sp-workspace-head .sp-priority{margin-top:14px}.sp-workspace-head h2{font-size:20px}.sp-type-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.sp-type-card:first-child{grid-column:1/-1}.sp-result-card>header{padding:13px;align-items:flex-start}.sp-card-label{gap:6px;font-size:12px}.sp-rank{font-size:18px}.sp-buff-tag{font-size:10px}.sp-metrics{gap:12px}.sp-metrics b{font-size:18px}.sp-card-body{grid-template-columns:1fr 1fr;padding:14px;gap:16px 10px}.sp-equipment{grid-column:1/-1}.sp-final-stats>div{display:block}.sp-final-stats strong{font-size:17px}.sp-breakdown{padding:10px 14px}}
+
+/* Per-buff attainable maxima; separate from the global top ten. */
+.sp-buff-overview-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:20px}
+.sp-buff-overview-card{min-width:0;border:1px solid var(--bd);border-radius:9px;padding:14px;background:var(--sf)}
+.sp-buff-overview-card h4{margin:0 0 12px;color:var(--gold)}
+.sp-buff-overview-card dl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 14px}
+.sp-buff-overview-card dt{font-size:12px;color:var(--dim)}
+.sp-buff-overview-card dd{margin:5px 0;font-size:18px;font-weight:700}
+.sp-buff-overview-card dd small{display:block;font-size:11px;font-weight:400;color:var(--dim);margin-top:5px}
+.sp-buff-overview-card summary{cursor:pointer;font-size:13px;padding:8px 0}
+.sp-buff-best{border-top:1px solid var(--bd)}
+.sp-buff-best .sp-card-body{grid-template-columns:1fr}
+.sp-result-buff-filters{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+.sp-result-buff-filters button{font:inherit;font-size:12px;padding:8px 12px;border:1px solid var(--bd);border-radius:6px;color:var(--text);background:var(--sf);cursor:pointer}
+.sp-result-buff-filters button[aria-pressed="true"]{color:var(--gold);border-color:var(--gold)}
+@media(max-width:760px){.sp-buff-overview-grid{grid-template-columns:1fr}}

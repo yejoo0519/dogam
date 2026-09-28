@@ -9,7 +9,7 @@
   }
 
   if(!globalThis.DV1_DRAGON_VIEWS)return;
-  const ui={priority:'bv',selected:new Set(),stage:2,results:null,type:'all',busy:false};
+  const ui={priority:'bv',selected:new Set(),stage:2,results:null,type:'all',buff:'all',busy:false};
   const byId=id=>document.getElementById(id);
   const escape=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const key=b=>[b.h,b.a,b.d].join('');
@@ -62,13 +62,38 @@
       <details class="sp-breakdown"><summary>버프 적용 전후</summary><div>${[['체력',r.fH,r.add.h],['공격',r.fA,r.add.a],['방어',r.fD,r.add.d]].map(([label,n,add])=>`<span>${label} ${value(n-add)} <b>+${value(add)}</b> → ${value(n)}</span>`).join('')}</div></details>
     </article>`;
   }
+  // Low/mean compare the best attainable setting for each buff, not the weakest equipment.
+  function summaries(){
+    return DTYPES.map(dt=>{
+      const best=new Map();
+      ui.results.rows.filter(r=>r.dt===dt).forEach(r=>{
+        const k=key(r.buf);if(!best.has(k)||r.bv>best.get(k).bv)best.set(k,r);
+      });
+      const buffs=[...best.values()].sort((a,b)=>b.bv-a.bv);
+      if(!buffs.length)return null;
+      const weight=buffs.reduce((s,r)=>s+(r.buf.w??1),0);
+      return {dt,buffs,peak:buffs[0],low:buffs[buffs.length-1],avg:buffs.reduce((s,r)=>s+r.bv*(r.buf.w??1),0)/weight};
+    }).filter(Boolean);
+  }
+  function renderOverview(){
+    let host=byId('spirit-buff-overview');
+    if(!host){host=document.createElement('div');host.id='spirit-buff-overview';byId('spirit-type-summary').after(host);}
+    const stats=summaries().filter(s=>ui.type==='all'||s.dt===ui.type);
+    host.innerHTML='<h3 class="sp-list-title">타입별 고점 · 저점 · 평균 비밸</h3><p class="sp-help">각 버프에서 가장 높은 비밸을 비교합니다. 평균은 기존 버프 가중치를 적용합니다(2버프: 같은 스탯 1/9, 혼합 2/9). 버프마다 최적 장비가 다를 수 있으며, 고정 장비의 평균은 아닙니다. 단위: 백만.</p><div class="sp-buff-overview-grid">'+stats.map(s=>`<article class="sp-buff-overview-card"><h4>${escape(s.dt)}</h4><dl>${[['고점',s.peak.bv,s.peak.buf.label],['저점',s.low.bv,s.low.buf.label],['평균',s.avg,'버프별 최고값의 가중평균']].map(([label,n,detail])=>`<div><dt>${label}</dt><dd>${(n/1e6).toFixed(1)}<small>${escape(detail)}</small></dd></div>`).join('')}</dl><details><summary>버프별 최고 비밸 · ${s.buffs.length}개</summary>${s.buffs.map(r=>`<details class="sp-buff-best"><summary>${escape(r.buf.label)} · ${(r.bv/1e6).toFixed(1)}</summary>${card(r,0)}</details>`).join('')}</details></article>`).join('')+'</div>';
+    let filters=byId('spirit-result-buffs');
+    if(!filters){filters=document.createElement('div');filters.id='spirit-result-buffs';filters.className='sp-result-buff-filters';byId('spirit-ranking-label').before(filters);}
+    const buffs=[...new Map(ui.results.rows.map(r=>[key(r.buf),r.buf])).entries()];
+    filters.innerHTML=[['all','전체 버프'],...buffs.map(([k,b])=>[k,b.label])].map(([k,label])=>`<button type="button" data-buff="${k}" aria-pressed="${ui.buff===k}">${escape(label)}</button>`).join('');
+    filters.querySelectorAll('button').forEach(b=>b.onclick=()=>{ui.buff=b.dataset.buff;render();});
+  }
   function render(){
     if(!ui.results)return;
     const all=ui.results.rows.slice().sort((a,b)=>compare(a,b,ui.priority));
     const best=DTYPES.map(dt=>all.find(r=>r.dt===dt)).filter(Boolean).sort((a,b)=>compare(a,b,ui.priority));
     byId('spirit-type-summary').innerHTML=`<button class="sp-type-card ${ui.type==='all'?'selected':''}" data-type="all"><small>전체 타입</small><strong>통합 TOP 10</strong><span>${ui.priority==='tar'?'TAR':'비밸'} 우선</span></button>`+best.map(r=>`<button class="sp-type-card ${ui.type===r.dt?'selected':''}" data-type="${r.dt}"><small>${r.dt}</small><strong>${ui.priority==='tar'?r.tar.toFixed(1):(r.bv/1e6).toFixed(1)}</strong><span>${escape(r.buf.label)} · ${ui.priority==='tar'?'TAR':'비밸(백만)'}</span></button>`).join('');
     byId('spirit-type-summary').querySelectorAll('button').forEach(b=>b.onclick=()=>{ui.type=b.dataset.type;render();});
-    const rows=all.filter(r=>ui.type==='all'||r.dt===ui.type).slice(0,10);
+    renderOverview();
+    const rows=all.filter(r=>(ui.type==='all'||r.dt===ui.type)&&(ui.buff==='all'||key(r.buf)===ui.buff)).slice(0,10);
     byId('spirit-result-list').innerHTML=rows.map(card).join('');
     byId('spirit-run-caption').textContent=`${ui.results.grade} 등급 · ${ui.results.labels.join(', ')} · ${value(ui.results.tested)}개 세팅 비교`;
     byId('spirit-ranking-label').textContent=`${ui.type==='all'?'전체 타입':ui.type} · ${ui.priority==='tar'?'TAR':'비밸'} 우선 TOP ${rows.length}`;
@@ -120,7 +145,7 @@
           rows.push(...group);
         }
       }
-      ui.results={grade,spirit:spiritSnapshot,labels:buffs.map(b=>b.label),rows,tested};ui.type='all';
+      ui.results={grade,spirit:spiritSnapshot,labels:buffs.map(b=>b.label),rows,tested};ui.type='all';ui.buff='all';
       byId('res-sec').style.display='';byId('res-sec-empty').style.display='none';render();status.textContent='계산 완료. 우선순위와 타입을 바꿔 결과를 비교해 보세요.';
     }catch(e){status.textContent='계산하지 못했습니다: '+e.message;console.error(e);}
     finally{ui.busy=false;button.disabled=false;button.textContent='내 세팅 비교하기';}

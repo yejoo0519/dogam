@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="ko" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>전투 지수 세팅 비교 (테스트)</title>
+<!-- 사이트 파일 복사본(읽기 전용 사용): 드래곤 목록 · 테마. 폴더를 어디에 두든 같은 폴더 안에서 읽습니다. -->
+<script src="./site-files/dragons.js"></script>
+<script src="./site-files/cham-rules.js"></script>
+<script src="./site-files/dragon-views.js"></script>
+<link rel="stylesheet" href="./site-files/theme-dark.css">
+<link rel="stylesheet" href="./site-files/ui.css">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./ci.css">
+<script src="./ci-data.js"></script>
+<script src="./ci-engine.js"></script>
+</head>
+<body class="u ci">
+<div class="ci-wrap">
+
+  <header class="ci-head">
+    <div>
+      <div class="ci-kicker"><span class="ci-test">TEST</span> 독립 테스트 계산기</div>
+      <h1>전투 지수 세팅 비교</h1>
+      <p class="u-note">같은 입력과 보유 장비로 <b>기존 비밸</b>(체×공×방)과 <b>전투 지수</b>(체×공×(방+21))를 각각 최대로 만드는 세팅을 찾아 나란히 보여 줍니다.
+        스탯은 기존 계산기와 같은 순서·버림으로 계산하며, +21은 지수 계산에만 쓰입니다. 전투 지수는 비교용 테스트 지표로, 인게임 공식 수치나 승률이 아닙니다.</p>
+    </div>
+    <label class="ci-theme">테마
+      <select id="ci-theme" aria-label="테마">
+        <option value="dark">다크</option><option value="light">라이트</option><option value="beige">베이지</option>
+      </select>
+    </label>
+  </header>
+
+  <nav class="u-tabs ci-tabs" role="tablist" aria-label="화면 선택">
+    <button class="u-tab on" role="tab" type="button" data-tab="gear" aria-selected="true">보유 장비</button>
+    <button class="u-tab" role="tab" type="button" data-tab="single" aria-selected="false">단일 드래곤 비교</button>
+    <button class="u-tab" role="tab" type="button" data-tab="team" aria-selected="false">길드전 3인조 비교</button>
+  </nav>
+
+  <!-- ───────── 보유 장비 ───────── -->
+  <section id="tab-gear" class="ci-panel" role="tabpanel">
+    <div class="u-sec">
+      <div class="u-sec-hd">내 스펙 불러오기 <span class="u-badge">읽기 전용</span></div>
+      <div class="u-sec-bd">
+        <p class="u-note">사이트의 <b>내 스펙</b>에 저장된 장신구·펜던트·젬·컬렉션을 이 테스트 페이지로 복사해 옵니다. 내 스펙 쪽 데이터는 읽기만 하고 바꾸지 않으며, 이 페이지에서 고친 내용은 별도 저장 공간(<code>ci_test_v1</code>)에만 저장됩니다.</p>
+        <div class="u-row ci-gap">
+          <button type="button" class="u-btn pri" id="import-spec">내 스펙에서 불러오기</button>
+          <button type="button" class="u-btn danger" id="reset-gear">테스트 장비 비우기</button>
+        </div>
+        <div id="import-status" class="ci-status" role="status" aria-live="polite"></div>
+      </div>
+    </div>
+
+    <div class="ci-grid2">
+      <div class="u-sec">
+        <div class="u-sec-hd">보유 장신구 <span class="ci-count" id="acc-count">0개</span></div>
+        <div class="u-sec-bd">
+          <details class="ci-quick" open>
+            <summary>장신구 빠른 추가</summary>
+            <p class="u-note">누를 때마다 선택한 인챈트로 1개씩 추가됩니다.</p>
+            <div class="ci-quick-controls">
+              <label>레벨<select id="qa-level"><option>20</option><option>19</option><option>18</option><option>17</option><option>16</option></select></label>
+              <label>인챈트<select id="qa-enc"><option value="none">없음</option><option value="hp">체력 +21%</option><option value="atk">공격 +21%</option><option value="def">방어 +21%</option></select></label>
+              <label class="ci-check"><input type="checkbox" id="qa-stat-only" checked> 스탯 장신구만</label>
+              <input type="search" id="qa-search" placeholder="장신구 검색" aria-label="장신구 검색">
+            </div>
+            <div id="qa-list" class="ci-quick-grid"></div>
+          </details>
+          <div class="ci-owned-hd"><span>넣은 장신구</span><button type="button" class="u-btn sm danger" id="acc-clear">전체 삭제</button></div>
+          <ul id="acc-owned" class="ci-owned" aria-label="넣은 장신구"></ul>
+          <p class="u-note ci-mt">빛뿔은 체·공·방 %만 계산에 들어갑니다(크리티컬·회피는 지수에 없음).</p>
+        </div>
+      </div>
+
+      <div class="u-sec">
+        <div class="u-sec-hd">보유 펜던트 <span class="ci-count" id="pend-count">0개</span></div>
+        <div class="u-sec-bd">
+          <details class="ci-quick" open>
+            <summary>펜던트 빠른 추가</summary>
+            <p class="u-note">종류와 옵션 수치를 고른 뒤 조합을 누르면 1개씩 추가됩니다.</p>
+            <div class="ci-quick-controls">
+              <label>종류<select id="qp-type"><option value="태양">태양 (3옵)</option><option value="달">달 (2옵)</option><option value="별">별 (1옵)</option></select></label>
+              <label>각 옵션<select id="qp-val"><option>6</option><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option></select></label>
+              <button type="button" class="u-btn sm" id="qp-sunset">태펜 6% 세트 10종 추가</button>
+            </div>
+            <div id="qp-list" class="ci-quick-grid"></div>
+            <div class="ci-custom-pend">
+              <div class="ci-sub">옵션을 하나씩 정해서 추가</div>
+              <div class="ci-quick-controls" id="cp-row">
+                <label>종류<select id="cp-type"><option value="태양">태양</option><option value="달">달</option><option value="별">별</option></select></label>
+                <span id="cp-opts" class="ci-cp-opts"></span>
+                <button type="button" class="u-btn sm pri" id="cp-add">추가</button>
+              </div>
+            </div>
+          </details>
+          <div class="ci-owned-hd"><span>넣은 펜던트</span><button type="button" class="u-btn sm danger" id="pend-clear">전체 삭제</button></div>
+          <ul id="pend-owned" class="ci-owned" aria-label="넣은 펜던트"></ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="ci-grid2">
+      <div class="u-sec">
+        <div class="u-sec-hd">보유 젬</div>
+        <div class="u-sec-bd">
+          <div class="ci-gem-grid" id="gem-grid"></div>
+          <p class="u-note ci-mt">36젬은 기존 계산기처럼 개수 제한 없이 사용할 수 있다고 보고 계산합니다. 3인조에서는 위 개수를 세 마리가 나눠 씁니다.</p>
+        </div>
+      </div>
+      <div class="u-sec">
+        <div class="u-sec-hd">컬렉션 · 포션</div>
+        <div class="u-sec-bd">
+          <div class="ci-coll">
+            <label class="u-field"><span class="u-hp">체력</span><input type="number" min="0" inputmode="numeric" id="coll-hp"></label>
+            <label class="u-field"><span class="u-atk">공격</span><input type="number" min="0" inputmode="numeric" id="coll-atk"></label>
+            <label class="u-field"><span class="u-def">방어</span><input type="number" min="0" inputmode="numeric" id="coll-def"></label>
+          </div>
+          <div class="u-row ci-mt"><button type="button" class="u-btn sm" id="coll-full">풀컬렉 (240 / 60 / 60)</button></div>
+          <p class="u-note ci-mt">포션은 기존 계산기와 같이 <b>체력 +24 · 공격 +6 · 방어 +6</b>으로 고정합니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────── 단일 드래곤 ───────── -->
+  <section id="tab-single" class="ci-panel" role="tabpanel" hidden>
+    <div class="u-sec">
+      <div class="u-sec-hd">계산 조건</div>
+      <div class="u-sec-bd ci-settings">
+        <div>
+          <div class="u-lbl">드래곤 등급</div>
+          <div class="u-seg solid" id="s-grade"></div>
+          <p class="u-note ci-mt">정령 계산기와 같이 선택한 등급의 6가지 타입을 모두 계산합니다.</p>
+        </div>
+        <div>
+          <div class="u-lbl">버프</div>
+          <select id="s-buf-mode" aria-label="버프 설정 방식"><option value="auto">버프 단계별 모든 조합</option><option value="manual">버프 직접 지정</option></select>
+          <div class="u-seg solid ci-mt" id="s-buf-lv"></div>
+          <div class="ci-manual-buf ci-mt" id="s-buf-manual" hidden>
+            <label>HP<select data-mbuf="h"><option value="0">없음</option><option value="1">20%</option><option value="2">40%</option></select></label>
+            <label>ATK<select data-mbuf="a"><option value="0">없음</option><option value="1">20%</option><option value="2">40%</option></select></label>
+            <label>DEF<select data-mbuf="d"><option value="0">없음</option><option value="1">20%</option><option value="2">40%</option></select></label>
+          </div>
+          <p class="u-note ci-mt" id="s-buf-help"></p>
+        </div>
+        <div class="ci-span2">
+          <div class="u-lbl">정령 옵션 <span class="u-dim">(입력한 그대로 고정)</span></div>
+          <div id="s-spirit"></div>
+          <div class="u-row ci-mt">
+            <button type="button" class="u-btn sm" id="s-spirit-from-spec">내 스펙 드래곤의 정령 가져오기</button>
+            <select id="s-spirit-pick" hidden aria-label="정령을 가져올 드래곤"></select>
+          </div>
+        </div>
+        <div class="ci-span2" id="s-opts"></div>
+      </div>
+    </div>
+    <div class="ci-run">
+      <button type="button" class="u-btn-run" id="s-run">두 기준으로 계산</button>
+      <div class="ci-progress" id="s-progress" hidden>
+        <div class="u-prog"><i></i></div>
+        <div class="ci-progress-row"><span class="ci-progress-text"></span><button type="button" class="u-btn sm danger ci-cancel">취소</button></div>
+      </div>
+      <div class="ci-status" id="s-status" role="status" aria-live="polite"></div>
+    </div>
+    <div id="s-results"></div>
+  </section>
+
+  <!-- ───────── 길드전 3인조 ───────── -->
+  <section id="tab-team" class="ci-panel" role="tabpanel" hidden>
+    <div class="u-sec">
+      <div class="u-sec-hd">드래곤 3마리
+        <span class="u-row">
+          <select id="t-list-mode" aria-label="드래곤 목록 기준" class="ci-inline-select"><option value="pvp">길드전 목록</option><option value="noob">뉴비 길드전 목록</option></select>
+        </span>
+      </div>
+      <div class="u-sec-bd">
+        <div class="u-row ci-gap">
+          <button type="button" class="u-btn sm" id="t-from-spec">내 스펙 드래곤 목록 불러오기 (읽기 전용)</button>
+        </div>
+        <div id="t-dragons" class="ci-dragons"></div>
+      </div>
+    </div>
+    <div class="u-sec">
+      <div class="u-sec-hd">길드전 버프 · 디버프</div>
+      <div class="u-sec-bd">
+        <div id="t-buffs" class="ci-weekly"></div>
+        <p class="u-note ci-mt">기존 길드전 계산기와 같이 속성이 같으면 왼쪽 스탯, 타입이 같으면 오른쪽 스탯에 한 단계씩 적용합니다(한 단계 = 기본 스탯 × 20%, 버림). 디버프는 같은 방식으로 뺍니다.</p>
+      </div>
+    </div>
+    <div class="u-sec">
+      <div class="u-sec-hd">계산 옵션</div>
+      <div class="u-sec-bd ci-settings">
+        <div class="ci-span2" id="t-opts"></div>
+        <div>
+          <div class="u-lbl">기준별 최대 계산 시간</div>
+          <select id="t-time"><option value="30000">30초</option><option value="60000" selected>60초</option><option value="120000">120초</option></select>
+          <p class="u-note ci-mt">대부분 몇 초 안에 끝납니다. 시간을 넘기면 그때까지의 최선과 '최적과 최대 몇 % 차이'를 함께 보여 줍니다.</p>
+        </div>
+      </div>
+    </div>
+    <div class="ci-run">
+      <button type="button" class="u-btn-run" id="t-run">두 기준으로 3인조 계산</button>
+      <div class="ci-progress" id="t-progress" hidden>
+        <div class="u-prog"><i></i></div>
+        <div class="ci-progress-row"><span class="ci-progress-text"></span><button type="button" class="u-btn sm danger ci-cancel">취소</button></div>
+      </div>
+      <div class="ci-status" id="t-status" role="status" aria-live="polite"></div>
+    </div>
+    <div id="t-results"></div>
+  </section>
+
+  <details class="u-sec ci-method">
+    <summary class="u-sec-hd">계산 방식과 범위</summary>
+    <div class="u-sec-bd u-note">
+      <p><b>최종 스탯</b> = 기존 계산기와 같은 순서와 버림: ① (기본 + 젬 + 포션) × (1 + 장신구% + 인챈트%) 버림 → ② × (1 + 정령%) + 정령 고정값 × (1 + 정령%) 버림 → ③ × (1 + 펜던트%) 버림 → ④ + 부가옵 + 컬렉션 + 버프(기본 스탯 × 20% × 단계, 버림).</p>
+      <p><b>기존 비밸</b> = 체력 × 공격력 × 방어력 (백만 단위로 표시). <b>전투 지수</b> = 체력 × 공격력 × (방어력 + 21) — 비밸과 헷갈리지 않게 1억으로 나눈 값에 <b>CI</b>(Combat Index) 기호를 붙여 표시 (예: 10.548 CI). 화면의 방어력은 실제 값이며 21을 더하지 않습니다.</p>
+      <p><b>정확 계산</b>: 단일 모드는 장신구·인챈트·펜던트·젬 칸 배분의 모든 조합을 계산합니다. 한 스탯에 젬 n개를 넣을 때는 가장 높은 젬 n개가 항상 최선이므로, 같은 칸 배분에서 더 낮은 젬을 쓰는 세팅은 TOP10에서 뺍니다(최고값은 바뀌지 않음).
+        3인조는 장신구·펜던트 중복과 젬 개수를 지키면서 세 마리 점수 합이 가장 큰 조합을 찾습니다. 하한(실제로 가능한 조합)과 상한(자원 경쟁을 느슨하게 푼 값)을 비교해, 더 좋은 해가 있을 수 없는 경우만 건너뛰므로 결과는 정확한 최적입니다. 시간 제한에 걸린 경우에만 '최대 차이'를 함께 표시합니다.</p>
+      <p><b>범위</b>: 전투 시뮬레이션, 용 순서, 승패 예측은 포함하지 않습니다. 팀 합계는 세 마리 지수의 단순 합이며 팀 승률이 아닙니다.</p>
+    </div>
+  </details>
+</div>
+<script src="./ci-app.js"></script>
+</body>
+</html>

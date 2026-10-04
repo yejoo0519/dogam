@@ -51,7 +51,7 @@
     ] },
     { g: T.g_calc, items: [
       ['score-guide', EN ? 'BV & TAR guide' : '비밸·TAR 설명서', 'score-guide.html'],
-      ['calculator',  EN ? 'Spirit sim'   : '정령 시뮬레이터', 'calculator.html'],
+      ['calculator',  EN ? 'Spirit calc'  : '정령 계산/배분', 'calculator.html'],
       ['spirit-peak', EN ? 'Spirit peak' : '정령 고점', 'spirit-peak.html'],
       ['pvp',         EN ? 'Guild war'    : '길드전', 'pvp.html'],
       ...(EN ? [['noob','Guild (new)','noob.html']] : []),

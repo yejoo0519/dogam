@@ -1,13 +1,6 @@
 /* 정령 시뮬레이터: 저장 계층과 분리된 후보 탐색 및 결과 화면. */
 (function(){
   'use strict';
-  function resultSpirit(sp){
-    const names={hp:'체력',atk:'공격',def:'방어'},colors={hp:'#fbbf24',atk:'#f87171',def:'#60a5fa'};
-    const rows=Array.from({length:4},(_,i)=>{const o=sp?.opts?.[i];const valid=o&&names[o.stat]&&['%','+'].includes(o.type);return '<span style="color:'+(valid?colors[o.stat]:'var(--dim)')+'">'+(i+1)+'옵 · '+(valid?names[o.stat]+' '+fmtSpVal(i+1,o.stat,o.type):'없음')+'</span>';});
-    rows.push('<span style="color:'+(colors[sp?.bonus]||'var(--dim)')+'">부가옵 · '+(names[sp?.bonus]?names[sp.bonus]+' +'+SP_BONUS[sp.bonus]:'없음')+'</span>');
-    return '<div class="sp-result-spirit" style="grid-column:1/-1"><small>사용 정령</small><div style="display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:6px">'+rows.join('')+'</div></div>';
-  }
-
   if(!globalThis.DV1_DRAGON_VIEWS)return;
   const ui={priority:'bv',selected:new Set(),stage:2,results:null,type:'all',buff:'all',busy:false};
   const byId=id=>document.getElementById(id);
@@ -51,52 +44,104 @@
     if(ui.busy||!['bv','tar'].includes(p)||p==='tar'&&!tarAvailable())return;
     ui.priority=p;refreshPriority();render();
   }
-  function card(r,i){
+  // ── 결과 화면: 타입 요약표 + 한 줄 목록 (줄을 누르면 장비·스탯이 펼쳐진다) ──
+  const SCOL={hp:'var(--hpc)',atk:'var(--atc)',def:'var(--dfc)'};
+  const PEND_SHORT={태양:'태양펜',달:'달펜',별:'별펜'};
+  function pendText(p){
+    if(!p)return '펜던트 없음';
+    const mo=p.type==='태양'?3:p.type==='달'?2:1;
+    return (PEND_SHORT[p.type]||p.type)+' '+p.options.slice(0,mo).filter(o=>o&&o.stat).map(o=>`<span style="color:${SCOL[o.stat]}">${SK[o.stat]}${o.val||0}</span>`).join('/');
+  }
+  const accShort=n=>String(n||'').replace(/^(악몽|황혼|여명) 수호자의 보주 \((..)\)/,'$2');
+  // 목록용 작은 이미지 (장신구·펜던트)
+  const accImgTag=(n,cls)=>{const a=ACC_DB.find(x=>x.n===n);return a&&a.img?`<img class="${cls}" src="${escape(a.img)}" alt="" onerror="this.hidden=true">`:'';};
+  const pendImgTag=(p,cls)=>p&&IMG_PEND[p.type]?`<img class="${cls}" src="${escape(IMG_PEND[p.type])}" alt="" onerror="this.hidden=true">`:'';
+  const encText=e=>e&&e!=='none'?` <span style="color:${SCOL[e]}">${SK[e]}+21%</span>`:'';
+  function spiritChips(sp){
+    const out=(sp?.opts||[]).map(o=>o&&o.stat&&o.type?`<span class="sp-chip ${o.stat}">${SK[o.stat]}${o.type}</span>`:'<span class="sp-chip none">·</span>');
+    if(sp?.bonus)out.push(`<span class="sp-chip ${sp.bonus} bn">부가</span>`);
+    return `<span class="sp-chips">${out.join('')}</span>`;
+  }
+  function row(r,i){
+    return `<details class="spx-row sim-row"><summary>
+        <span class="spx-r-no">${i+1}</span>
+        <span class="sim-r-type"><b style="color:${DCOLORS[r.dt]}">${r.dt}</b> <span>${escape(r.buf.label)}</span></span>
+        <span class="sim-r-gear">${accImgTag(r.accN,'sim-ico')}${escape(accShort(r.accN))}${encText(r.enc)}</span>
+        <span class="sim-r-gear">${pendImgTag(r.pend,'sim-ico')}${pendText(r.pend)}</span>
+        <span class="spx-r-num${ui.priority==='bv'?' on':''}">${(r.bv/1e6).toFixed(1)}</span>
+        <span class="spx-r-num${ui.priority==='tar'?' on':''}">${r.tar===null?'—':r.tar.toFixed(1)}</span>
+      </summary>
+      <div class="spx-r-detail">
+        <div><small>장신구</small><span class="sim-gear-line">${accImgTag(r.accN,'sim-img')}<span>${escape(r.accN)}${encText(r.enc)}</span></span></div>
+        <div><small>펜던트</small><span class="sim-gear-line">${pendImgTag(r.pend,'sim-img')}<span>${pendText(r.pend)}</span></span></div>
+        <div><small>젬</small><span class="gem-tags">${fmtGem(r.alloc)}</span></div>
+        <div><small>최종 스탯 (버프 포함)</small><span style="color:var(--hpc)">${value(r.fH)}</span> / <span style="color:var(--atc)">${value(r.fA)}</span> / <span style="color:var(--dfc)">${value(r.fD)}</span></div>
+        <div><small>버프 전 스탯</small>${value(r.fH-r.add.h)} / ${value(r.fA-r.add.a)} / ${value(r.fD-r.add.d)}</div>
+      </div>
+    </details>`;
+  }
+  // 가장 높은 세팅: 목록과 별개로 항상 보이는 카드 — 기존 사이트 결과 카드 디자인 그대로 (현재 타입·버프 필터 기준 1위)
+  function spiritBlock(sp){
+    const names={hp:'체력',atk:'공격',def:'방어'},colors={hp:'#fbbf24',atk:'#f87171',def:'#60a5fa'};
+    const rows=Array.from({length:4},(_,i)=>{const o=sp?.opts?.[i];const valid=o&&names[o.stat]&&['%','+'].includes(o.type);return '<span style="color:'+(valid?colors[o.stat]:'var(--dim)')+'">'+(i+1)+'옵 · '+(valid?names[o.stat]+' '+fmtSpVal(i+1,o.stat,o.type):'없음')+'</span>';});
+    rows.push('<span style="color:'+(colors[sp?.bonus]||'var(--dim)')+'">부가옵 · '+(names[sp?.bonus]?names[sp.bonus]+' +'+SP_BONUS[sp.bonus]:'없음')+'</span>');
+    return '<div class="sp-result-spirit" style="grid-column:1/-1"><small>사용 정령</small><div style="display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:6px">'+rows.join('')+'</div></div>';
+  }
+  function bestCard(r){
+    if(!r)return '';
     const acc=ACC_DB.find(a=>a.n===r.accN);
-    return `<article class="sp-result-card">
-      <header><div class="sp-card-label"><span class="sp-rank">${i+1}</span><strong style="color:${DCOLORS[r.dt]}">${r.dt}</strong><span class="sp-buff-tag">${escape(r.buf.label)}</span></div>
+    return `<article class="sp-result-card sim-best">
+      <header><div class="sp-card-label"><span class="sp-rank">1</span><strong style="color:${DCOLORS[r.dt]}">${r.dt}</strong><span class="sp-buff-tag">${escape(r.buf.label)}</span><span class="sim-best-tag">가장 높은 세팅</span></div>
       <div class="sp-metrics"><div class="${ui.priority==='bv'?'is-primary':''}"><small>비밸 · 백만</small><b>${(r.bv/1e6).toFixed(1)}</b></div><div class="${ui.priority==='tar'?'is-primary':''}"><small>TAR</small><b>${r.tar===null?'—':r.tar.toFixed(1)}</b></div></div></header>
       <div class="sp-card-body"><div class="sp-equipment">${acc?.img?`<img src="${escape(acc.img)}" alt="">`:''}<div><small>장신구 / 인챈트</small><strong>${escape(r.accN)}</strong>${fmtAccEnc(r.enc)}</div></div>
       <div><small>젬 배분</small><div class="gem-tags">${fmtGem(r.alloc)}</div></div><div><small>펜던트</small>${fmtPend(r.pend)}</div>
-      ${resultSpirit(ui.results.spirit)}<div class="sp-final-stats">${[['체력',r.fH,'hp'],['공격',r.fA,'atk'],['방어',r.fD,'def']].map(([label,n,k])=>`<div class="stat-${k}"><small>${label}</small><strong>${value(n)}</strong></div>`).join('')}</div></div>
+      ${spiritBlock(ui.results.spirit)}<div class="sp-final-stats">${[['체력',r.fH,'hp'],['공격',r.fA,'atk'],['방어',r.fD,'def']].map(([label,n,k])=>`<div class="stat-${k}"><small>${label}</small><strong>${value(n)}</strong></div>`).join('')}</div></div>
       <details class="sp-breakdown"><summary>버프 적용 전후</summary><div>${[['체력',r.fH,r.add.h],['공격',r.fA,r.add.a],['방어',r.fD,r.add.d]].map(([label,n,add])=>`<span>${label} ${value(n-add)} <b>+${value(add)}</b> → ${value(n)}</span>`).join('')}</div></details>
     </article>`;
   }
-  // Low/mean compare the best attainable setting for each buff, not the weakest equipment.
+  // 타입별: 버프마다 가능한 최고 비밸 기준 고점·저점·가중평균 (고정 장비의 평균이 아님)
   function summaries(){
     return DTYPES.map(dt=>{
       const best=new Map();
       ui.results.rows.filter(r=>r.dt===dt).forEach(r=>{
-        const k=key(r.buf);if(!best.has(k)||r.bv>best.get(k).bv)best.set(k,r);
+        const k=key(r.buf);if(!best.has(k)||compare(r,best.get(k),ui.priority)<0)best.set(k,r);
       });
-      const buffs=[...best.values()].sort((a,b)=>b.bv-a.bv);
+      const buffs=[...best.values()].sort((a,b)=>compare(a,b,ui.priority));
       if(!buffs.length)return null;
       const weight=buffs.reduce((s,r)=>s+(r.buf.w??1),0);
-      return {dt,buffs,peak:buffs[0],low:buffs[buffs.length-1],avg:buffs.reduce((s,r)=>s+r.bv*(r.buf.w??1),0)/weight};
+      return {dt,peak:buffs[0],low:buffs[buffs.length-1],avg:buffs.reduce((s,r)=>s+r.bv*(r.buf.w??1),0)/weight};
     }).filter(Boolean);
   }
   function renderOverview(){
-    let host=byId('spirit-buff-overview');
-    if(!host){host=document.createElement('div');host.id='spirit-buff-overview';byId('spirit-type-summary').after(host);}
-    const stats=summaries().filter(s=>ui.type==='all'||s.dt===ui.type);
-    host.innerHTML='<h3 class="sp-list-title">타입별 고점 · 저점 · 평균 비밸</h3><p class="sp-help">각 버프에서 가장 높은 비밸을 비교합니다. 평균은 기존 버프 가중치를 적용합니다(2버프: 같은 스탯 1/9, 혼합 2/9). 버프마다 최적 장비가 다를 수 있으며, 고정 장비의 평균은 아닙니다. 단위: 백만.</p><div class="sp-buff-overview-grid">'+stats.map(s=>`<article class="sp-buff-overview-card"><h4>${escape(s.dt)}</h4><dl>${[['고점',s.peak.bv,s.peak.buf.label],['저점',s.low.bv,s.low.buf.label],['평균',s.avg,'버프별 최고값의 가중평균']].map(([label,n,detail])=>`<div><dt>${label}</dt><dd>${(n/1e6).toFixed(1)}<small>${escape(detail)}</small></dd></div>`).join('')}</dl><details><summary>버프별 최고 비밸 · ${s.buffs.length}개</summary>${s.buffs.map(r=>`<details class="sp-buff-best"><summary>${escape(r.buf.label)} · ${(r.bv/1e6).toFixed(1)}</summary>${card(r,0)}</details>`).join('')}</details></article>`).join('')+'</div>';
+    const pri=ui.priority;
+    const fmt=r=>pri==='tar'?(r.tar===null?'—':r.tar.toFixed(1)):(r.bv/1e6).toFixed(1);
+    const stats=summaries().sort((a,b)=>compare(a.peak,b.peak,pri));
+    const multi=ui.results.labels.length>1;
+    byId('spirit-type-summary').innerHTML=`<div class="sim-ttbl">
+      <div class="sim-thead"><span>타입</span><span>고점 버프</span><span>고점</span>${multi?'<span>저점</span><span>평균 비밸</span>':''}</div>
+      <button type="button" class="sim-trow${ui.type==='all'?' on':''}" data-type="all"><span><b>전체 타입</b></span><span></span><span></span>${multi?'<span></span><span></span>':''}</button>
+      ${stats.map(s=>`<button type="button" class="sim-trow${ui.type===s.dt?' on':''}" data-type="${s.dt}">
+        <span><b style="color:${DCOLORS[s.dt]}">${s.dt}</b></span><span>${escape(s.peak.buf.label)}</span><span class="n on">${fmt(s.peak)}</span>
+        ${multi?`<span class="n">${fmt(s.low)}</span><span class="n">${(s.avg/1e6).toFixed(1)}</span>`:''}</button>`).join('')}
+    </div>
+    <p class="sp-help">고점·저점은 버프 조합마다 나올 수 있는 최고 세팅끼리 비교한 값이에요 (${pri==='tar'?'TAR':'비밸 · 백만'}). 평균 비밸은 버프 가중치(2버프: 같은 스탯 1/9, 혼합 2/9)를 적용해요. 타입을 누르면 아래 목록이 그 타입으로 바뀌어요.</p>`;
+    byId('spirit-type-summary').querySelectorAll('[data-type]').forEach(b=>b.onclick=()=>{ui.type=b.dataset.type;render();});
     let filters=byId('spirit-result-buffs');
     if(!filters){filters=document.createElement('div');filters.id='spirit-result-buffs';filters.className='sp-result-buff-filters';byId('spirit-ranking-label').before(filters);}
     const buffs=[...new Map(ui.results.rows.map(r=>[key(r.buf),r.buf])).entries()];
+    filters.hidden=buffs.length<2;
     filters.innerHTML=[['all','전체 버프'],...buffs.map(([k,b])=>[k,b.label])].map(([k,label])=>`<button type="button" data-buff="${k}" aria-pressed="${ui.buff===k}">${escape(label)}</button>`).join('');
     filters.querySelectorAll('button').forEach(b=>b.onclick=()=>{ui.buff=b.dataset.buff;render();});
   }
   function render(){
     if(!ui.results)return;
-    const all=ui.results.rows.slice().sort((a,b)=>compare(a,b,ui.priority));
-    const best=DTYPES.map(dt=>all.find(r=>r.dt===dt)).filter(Boolean).sort((a,b)=>compare(a,b,ui.priority));
-    byId('spirit-type-summary').innerHTML=`<button class="sp-type-card ${ui.type==='all'?'selected':''}" data-type="all"><small>전체 타입</small><strong>통합 TOP 10</strong><span>${ui.priority==='tar'?'TAR':'비밸'} 우선</span></button>`+best.map(r=>`<button class="sp-type-card ${ui.type===r.dt?'selected':''}" data-type="${r.dt}"><small>${r.dt}</small><strong>${ui.priority==='tar'?r.tar.toFixed(1):(r.bv/1e6).toFixed(1)}</strong><span>${escape(r.buf.label)} · ${ui.priority==='tar'?'TAR':'비밸(백만)'}</span></button>`).join('');
-    byId('spirit-type-summary').querySelectorAll('button').forEach(b=>b.onclick=()=>{ui.type=b.dataset.type;render();});
     renderOverview();
-    const rows=all.filter(r=>(ui.type==='all'||r.dt===ui.type)&&(ui.buff==='all'||key(r.buf)===ui.buff)).slice(0,10);
-    byId('spirit-result-list').innerHTML=rows.map(card).join('');
-    byId('spirit-run-caption').textContent=`${ui.results.grade} 등급 · ${ui.results.labels.join(', ')} · ${value(ui.results.tested)}개 세팅 비교`;
-    byId('spirit-ranking-label').textContent=`${ui.type==='all'?'전체 타입':ui.type} · ${ui.priority==='tar'?'TAR':'비밸'} 우선 TOP ${rows.length}`;
+    const rows=ui.results.rows.slice().sort((a,b)=>compare(a,b,ui.priority)).filter(r=>(ui.type==='all'||r.dt===ui.type)&&(ui.buff==='all'||key(r.buf)===ui.buff)).slice(0,10);
+    byId('spirit-result-list').innerHTML=bestCard(rows[0])+`<div class="spx-tblock sim-list" style="--tc:var(--gold)">
+      <div class="spx-cols sim-cols"><span>#</span><span>타입 · 버프</span><span>장신구</span><span>펜던트</span><span>비밸(백만)</span><span>TAR</span></div>
+      ${rows.map(row).join('')}</div>`;
+    byId('spirit-run-caption').innerHTML=`${ui.results.grade} 등급 · ${value(ui.results.tested)}개 세팅 비교 · 사용 정령 ${spiritChips(ui.results.spirit)}`;
+    byId('spirit-ranking-label').textContent=`${ui.type==='all'?'전체 타입':ui.type} · ${ui.priority==='tar'?'TAR':'비밸'} 우선 TOP ${rows.length} · 줄을 누르면 젬과 스탯이 보여요`;
   }
   async function calculate(){
     if(ui.busy)return;

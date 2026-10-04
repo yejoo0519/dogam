@@ -1,0 +1,215 @@
+/* 전투 지수 테스트 계산기 전용 스타일 (기존 ui.css 토큰 사용) */
+.ci *{box-sizing:border-box}
+.ci{touch-action:manipulation}
+.ci-wrap{max-width:1180px;margin:0 auto;padding:22px 24px 80px}
+.ci code{font-family:var(--u-mono);font-size:.92em;background:var(--sf2);padding:1px 5px;border-radius:4px}
+.ci-mt{margin-top:10px}
+.ci-gap{gap:8px;margin-top:10px}
+.ci-status{font-size:12.5px;color:var(--dim);line-height:1.7;margin-top:8px;min-height:1.7em}
+.ci-link{color:var(--gold);text-decoration:underline}
+.ci-check{display:inline-flex;align-items:center;gap:6px;font-size:13px;cursor:pointer}
+.ci-sub{font-size:12px;color:var(--dim);font-weight:600;margin:12px 0 4px}
+.ci-h3{font-size:14px;margin:4px 0 10px;color:var(--text)}
+
+/* 머리말 */
+.ci-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:6px}
+.ci-head h1{font-size:22px;margin:4px 0 8px;letter-spacing:-.01em}
+.ci-head .u-note{max-width:760px}
+.ci-kicker{font-size:12px;color:var(--dim);display:flex;align-items:center;gap:8px}
+.ci-test{display:inline-block;padding:2px 7px;border-radius:4px;background:var(--accent-bg);color:var(--gold);font-weight:800;font-size:11px;letter-spacing:.08em}
+.ci-theme{display:flex;flex-direction:column;gap:4px;font-size:11px;color:var(--dim);flex-shrink:0;width:110px}
+.ci-tabs{position:sticky;top:0;z-index:30;background:var(--bg);margin-bottom:16px}
+.ci-panel{min-height:200px}
+.ci-panel[hidden]{display:none}
+.ci-grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:16px}
+.ci-grid2>.u-sec{margin-top:0}
+.u-sec+.ci-grid2{margin-top:16px}
+.ci-panel>.u-sec+.u-sec{margin-top:16px}
+.ci-count{font-size:12px;color:var(--dim);font-weight:600}
+.ci-inline-select{width:auto!important;padding:5px 8px!important;font-size:12px!important}
+
+/* 빠른 추가 */
+.ci-quick{border:1px solid var(--bd);border-radius:8px;padding:10px 12px;background:var(--bg)}
+.ci-quick summary{cursor:pointer;font-weight:700;font-size:13px}
+.ci-quick .u-note{font-size:12px;margin:6px 0}
+.ci-quick-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin:8px 0}
+.ci-quick-controls>label:not(.ci-check){display:flex;flex-direction:column;gap:3px;font-size:11px;color:var(--dim);min-width:96px}
+.ci-quick-controls>input[type=search]{flex:1 1 160px;min-width:0}
+.ci-quick-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;max-height:330px;overflow:auto;overscroll-behavior:contain;padding:1px}
+.ci-quick-item{display:flex;align-items:center;gap:8px;text-align:left;padding:8px;min-height:60px;background:var(--sf2);color:var(--text);border:1px solid var(--bd);border-radius:7px;font:inherit;font-size:12px;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none}
+.ci-quick-item:active{border-color:var(--gold)}
+.ci-quick-item.has{border-color:var(--accent-border)}
+.ci-quick-item img{width:32px;height:32px;object-fit:contain;flex-shrink:0}
+.ci-quick-item span{min-width:0;word-break:keep-all}
+.ci-quick-item em{display:block;font-style:normal;font-size:11px;margin-top:2px}
+.ci-quick-item small{display:block;margin-top:3px;font-size:11px;color:var(--dim)}
+.ci-custom-pend{border-top:1px dashed var(--bd);margin-top:10px;padding-top:2px}
+.ci-cp-opts{display:flex;gap:8px;flex-wrap:wrap}
+.ci-cp-opt{display:flex;align-items:center;gap:4px}
+.ci-cp-opt small{font-size:11px;color:var(--dim)}
+.ci-cp-opt select{width:auto!important;min-width:70px}
+
+/* 넣은 장비 목록 */
+.ci-owned-hd{display:flex;justify-content:space-between;align-items:center;margin:14px 0 6px;font-size:12.5px;font-weight:700;color:var(--text2)}
+.ci-owned{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;overflow-anchor:none}
+.ci-owned-row{display:flex;align-items:center;gap:10px;padding:7px 9px;border:1px solid var(--bd);border-radius:7px;background:var(--sf)}
+.ci-owned-row>img,.ci-img-ph{width:32px;height:32px;object-fit:contain;flex-shrink:0}
+.ci-owned-name{flex:1;min-width:0;font-size:12.5px;line-height:1.45}
+.ci-owned-name b{display:block;font-weight:700;word-break:keep-all}
+.ci-owned-name small{display:block;font-size:11px;color:var(--dim)}
+.ci-qty{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.ci-qty b{min-width:22px;text-align:center;font-family:var(--u-mono);font-size:14px}
+.ci-qty button{width:34px;height:34px;border-radius:7px;border:1px solid var(--bd2);background:var(--sf2);color:var(--text);font-size:17px;line-height:1;padding:0;-webkit-tap-highlight-color:transparent}
+.ci-qty button:active{border-color:var(--gold)}
+.ci-empty-row{font-size:12.5px;color:var(--dimmer);padding:8px 2px}
+.ci-enc{display:inline-block;padding:0 6px;border-radius:3px;font-size:10.5px;font-weight:700;border:1px solid currentColor;line-height:1.6;white-space:nowrap}
+.ci-enc.hp{color:var(--hp)}.ci-enc.atk{color:var(--atk)}.ci-enc.def{color:var(--def)}
+.ci-enc.none{color:var(--dimmer)}
+
+/* 젬 · 컬렉션 */
+.ci-gem-grid{display:grid;grid-template-columns:48px repeat(4,minmax(0,1fr));gap:6px;align-items:center}
+.ci-gem-hd{font-size:11px;color:var(--dim);text-align:center}
+.ci-gem-lbl{font-weight:800;font-size:13px}
+.ci-gem-grid input{text-align:center;padding:8px 4px!important}
+.ci-coll{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.ci-coll input{text-align:center}
+
+/* 설정 */
+.ci-settings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 22px}
+.ci-span2{grid-column:1/-1}
+.ci-manual-buf{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.ci-manual-buf[hidden],.u-seg[hidden]{display:none}
+.ci-manual-buf label{font-size:11px;color:var(--dim);display:flex;flex-direction:column;gap:4px}
+.ci-opt-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 22px}
+.ci-radio{display:flex;align-items:center;gap:8px;font-size:13px;margin:6px 0;cursor:pointer}
+
+/* 정령 입력 */
+.ci-presets{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-bottom:8px}
+.ci-preset{padding:7px 4px;border:1px solid var(--bd2);border-radius:6px;background:var(--sf2);color:var(--text);font-size:12px;cursor:pointer;line-height:1.3}
+.ci-preset b{color:var(--gold);font-weight:700}
+.ci-preset small{color:var(--dim);font-size:11px}
+.ci-preset.on{border-color:var(--gold);background:var(--accent-bg)}
+.ci-sp-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.ci-sp-opt{display:grid;grid-template-columns:30px minmax(0,1fr) minmax(0,1fr) 54px;gap:6px;align-items:center;padding:6px 8px;border:1px solid var(--bd);border-radius:6px;background:var(--sf)}
+.ci-sp-n{font-size:11px;font-weight:800;color:var(--gold)}
+.ci-sp-opt select{padding:7px 6px!important;font-size:13px}
+.ci-sp-val{font-size:11.5px;color:var(--ok);text-align:right;font-weight:700}
+.ci-sp-bonus{display:flex;align-items:center;gap:10px;margin-top:8px;font-size:12px;color:var(--dim)}
+.ci-sp-bonus select{max-width:200px}
+
+/* 3인조 드래곤 카드 */
+.ci-dragons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:12px}
+.ci-dragon{border:1px solid var(--bd);border-radius:9px;padding:12px;background:var(--bg);min-width:0}
+.ci-dragon-hd{display:flex;align-items:center;gap:8px}
+.ci-slot{width:24px;height:24px;border-radius:50%;background:var(--accent-bg);color:var(--gold);font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ci-dragon-img{width:40px;height:40px;border-radius:8px;background:var(--sf2);flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.ci-dragon-img img{width:100%;height:100%;object-fit:contain}
+.ci-name-wrap{position:relative;flex:1;min-width:0}
+.ci-drop{position:absolute;top:calc(100% + 2px);left:0;right:0;z-index:40;max-height:260px;overflow:auto;overscroll-behavior:contain;background:var(--sf2);border:1px solid var(--gold);border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.ci-drop[hidden]{display:none}
+.ci-drop-item{display:flex;align-items:center;gap:8px;width:100%;padding:9px 10px;border:0;background:none;color:var(--text);text-align:left;font-size:13px;cursor:pointer}
+.ci-drop-item:hover,.ci-drop-item:focus{background:var(--accent-bg)}
+.ci-drop-item img{width:18px;height:18px}
+.ci-drop-empty{padding:9px 10px;font-size:12px;color:var(--dim)}
+.ci-dragon-meta{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:10px 0}
+.ci-meta{grid-column:1/-1;display:flex;align-items:center;gap:5px;font-size:12.5px}
+.ci-meta img{width:20px;height:20px}
+.ci-dragon-meta select[data-from-spec]{grid-column:1/-1}
+.ci-dragon .ci-presets{grid-template-columns:repeat(3,minmax(0,1fr))}
+.ci-preset{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ci-dragon .ci-sp-grid{grid-template-columns:1fr}
+.ci-weekly-preview{margin-top:8px;font-size:12px;color:var(--dim);min-height:1.5em}
+.ci-weekly{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.ci-weekly-panel{border:1px solid var(--bd);border-radius:8px;overflow:hidden}
+.ci-weekly-title{padding:8px 10px;background:var(--sf2);border-bottom:1px solid var(--bd);font-weight:700;color:var(--gold)}
+.ci-weekly-body{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:10px}
+.ci-weekly-body label{display:flex;flex-direction:column;gap:4px;font-size:11px;color:var(--dim)}
+
+/* 실행 · 진행 */
+.ci-run{margin:16px 0}
+.ci-progress{margin-top:10px}
+.ci-progress[hidden]{display:none}
+.ci-progress-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:6px;font-size:12.5px;color:var(--dim)}
+
+/* 결과 */
+.ci-results{margin-top:8px}
+.ci-res-head h2{font-size:19px;margin:0 0 6px}
+.ci-res-head p{margin:4px 0}
+.ci-chips{gap:6px}
+.ci-chips .u-chip{cursor:pointer}
+.ci-sum tbody tr[data-type]{cursor:pointer}
+.ci-sum tbody tr.on td{background:var(--accent-bg)}
+.ci-sum td{vertical-align:top}
+.ci-wrap-cell{white-space:normal!important;text-align:left!important;font-size:12px;line-height:1.6}
+.ci-cmp-wrap{overflow-x:auto;margin-top:10px}
+.ci-cmp{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed}
+.ci-cmp th,.ci-cmp td{white-space:normal;padding:9px 8px;border-bottom:1px solid var(--bd);text-align:left;vertical-align:top;word-break:keep-all;overflow-wrap:anywhere}
+.ci-cmp thead th{font-size:11.5px;color:var(--gold);font-weight:700;background:var(--sf2)}
+.ci-cmp thead th:first-child{width:24%}
+.ci-cmp tbody th{font-size:12px;color:var(--dim);font-weight:600}
+.ci-cmp td small{font-size:10.5px;color:var(--dim);margin-left:3px}
+.ci-cmp tr.is-diff td{background:rgba(224,177,91,.10)}
+.ci-cmp tr.is-diff th{color:var(--gold)}
+.ci-diff-dot{color:var(--gold);font-size:9px;vertical-align:2px}
+.ci-cmp .ci-span-row td{color:var(--text2)}
+.ci-gem{display:inline-block;margin:1px 6px 1px 0;font-weight:700;white-space:nowrap}
+.ci-gem small{font-weight:400;color:var(--dim)}
+.ci-pend{display:inline-flex;align-items:center;gap:5px;flex-wrap:wrap}
+.ci-pend img{width:22px;height:22px}
+.ci-spirit{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px}
+.ci-dname{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}
+.ci-dname img{width:28px;height:28px;object-fit:contain}
+.ci-dname img.ci-attr{width:18px;height:18px}
+
+.ci-top-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:10px}
+.ci-top{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.ci-top-row{border:1px solid var(--bd);border-radius:8px;padding:9px 10px;background:var(--sf)}
+.ci-top-hd{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ci-rank{font-family:var(--u-mono);font-weight:800;color:var(--dim);min-width:18px}
+.ci-top-row:first-child .ci-rank{color:var(--gold)}
+.ci-tag{font-size:11px;border:1px solid var(--bd);border-radius:20px;padding:1px 8px;color:var(--dim)}
+.ci-top-metric{margin-left:auto;display:flex;align-items:baseline;gap:5px}
+.ci-top-metric b{font-family:var(--u-mono);font-size:16px;color:var(--gold)}
+.ci-top-metric small{font-size:10.5px;color:var(--dim)}
+.ci-top-body{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:6px;font-size:12px;align-items:center}
+.ci-top-stats{font-family:var(--u-mono);font-size:12px}
+
+.ci-method{margin-top:28px}
+.ci-method summary{cursor:pointer;list-style:none}
+.ci-method summary::-webkit-details-marker{display:none}
+.ci-method p{margin:0 0 10px}
+
+/* 반응형 */
+@media (max-width:980px){
+  .ci-dragons{grid-template-columns:1fr}
+  .ci-dragon .ci-sp-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:760px){
+  .ci-wrap{padding:14px 16px 70px}
+  .ci-head{flex-direction:column;gap:8px}
+  .ci-head h1{font-size:19px}
+  .ci-theme{flex-direction:row;align-items:center;width:auto}
+  .ci-theme select{width:auto}
+  .ci-grid2,.ci-settings,.ci-opt-grid,.ci-weekly,.ci-top-cols{grid-template-columns:1fr}
+  .ci-tabs{gap:16px}
+  .ci-presets,.ci-dragon .ci-presets{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .ci-sp-grid,.ci-dragon .ci-sp-grid{grid-template-columns:1fr}
+  .ci-sp-opt{grid-template-columns:30px minmax(0,1fr) minmax(0,1fr) 50px}
+  .ci-gem-grid{grid-template-columns:40px repeat(4,minmax(0,1fr));gap:5px}
+  .ci-cmp{font-size:12.5px}
+  .ci-cmp th,.ci-cmp td{padding:8px 5px}
+  .ci-cmp thead th:first-child{width:23%}
+  .ci-quick-grid{max-height:300px}
+}
+@media (max-width:380px){
+  .ci-quick-grid{grid-template-columns:1fr}
+}
+/* 고정 탭 아래로 결과 제목이 가려지지 않게 */
+.ci [id]{scroll-margin-top:64px}
+
+/* 전투 지수(CI) 숫자: 비밸과 구분되는 색 + CI 기호 */
+.ci{--ci:#5eead4}
+[data-theme="light"] .ci,[data-theme="beige"] .ci{--ci:#0f766e}
+.ci-idx{color:var(--ci)}
+.ci-idx small{color:var(--ci);opacity:.8;font-size:10.5px;margin-left:3px;font-weight:700;letter-spacing:.04em}
+.ci-top-metric b.ci-idx{color:var(--ci)}

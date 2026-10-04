@@ -18,7 +18,7 @@ if (!globalThis.DV1_DRAGON_VIEWS) {
 </script>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>드래곤빌리지1 비밸 시뮬레이터</title>
+<title>드래곤빌리지1 정령 계산/배분</title>
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
 <link id="theme-css" rel="stylesheet" href="./theme-dark.css">
 <link rel="stylesheet" href="./ui.css">
@@ -241,6 +241,129 @@ input[type=number]{-moz-appearance:textfield}
 .u-main #res-sec{margin-top:0}
 </style>
 <link rel="stylesheet" href="./spirit-simulator.css">
+<link rel="stylesheet" href="./spirit-input.css">
+<style>
+/* ── 정령 계산 / 정령 배분 모드 전환 ── */
+body[data-calc-mode="dist"] [data-mode="calc"],body:not([data-calc-mode="dist"]) [data-mode="dist"]{display:none!important}
+.calc-mode{display:flex;align-items:center;gap:12px;padding:0 0 16px;flex-wrap:wrap}
+.calc-mode-lbl{font-size:12px;font-weight:700;color:var(--dim)}
+.calc-mode .sp-priority{flex:0 1 360px}
+.spx-wrap{margin-bottom:28px}
+.spx-dim{color:var(--dim);font-size:12px}
+/* 보유 정령 입력 — 챔대 자동 계산기 [정령 배분]과 같은 모양 (이 영역 안으로만 한정) */
+#spx-wrap .sec-hd{user-select:none}
+#spx-wrap .btn{background:none;border:1px solid var(--gold);color:var(--gold);padding:5px 12px;border-radius:5px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:700}
+#spx-wrap .spx-note{font-size:12px;color:var(--dim);line-height:1.7;margin-bottom:10px}
+#spx-wrap .spx-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+#spx-wrap .spx-card{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:9px 10px}
+#spx-wrap .spx-hd{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+#spx-wrap .spx-no{font-size:11px;font-weight:800;color:var(--gold);white-space:nowrap}
+#spx-wrap .spx-memo{flex:1;min-width:0;font-size:12px!important;padding:4px 7px!important}
+#spx-wrap .spx-empty{border:1px dashed var(--bd);border-radius:10px;padding:18px;text-align:center;color:var(--dim);font-size:12px}
+#spx-wrap .icon-btn{background:none;border:1px solid var(--bd);color:var(--dim);width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:12px;font-family:inherit;display:flex;align-items:center;justify-content:center;padding:0}
+#spx-wrap .icon-btn:hover{border-color:var(--gold);color:var(--gold)}
+#spx-wrap .icon-btn.red:hover{border-color:var(--red);color:var(--red)}
+#spx-wrap .chip{padding:4px 0;min-width:0;background:var(--sf2);border:1px solid var(--bd);border-radius:6px;color:var(--dim);font-family:inherit;font-size:12px;font-weight:800;cursor:pointer;text-align:center}
+#spx-wrap .chip.on-hp{border-color:var(--hpc);color:var(--hpc);background:rgba(251,191,36,.12)}
+#spx-wrap .chip.on-atk{border-color:var(--atc);color:var(--atc);background:rgba(248,113,113,.12)}
+#spx-wrap .chip.on-def{border-color:var(--dfc);color:var(--dfc);background:rgba(96,165,250,.12)}
+#spx-wrap .chip.on{border-color:var(--gold);color:var(--gold);background:var(--accent-bg)}
+#spx-wrap .preset-row{display:flex;gap:4px;flex-wrap:wrap;margin-top:2px}
+#spx-wrap .preset-row .chip{padding:3px 9px;font-size:11px}
+#spx-wrap .preset-row .chip.pat{font-family:'Courier New',monospace;letter-spacing:1px;font-size:12px}
+#spx-wrap .sp2-row{display:grid;grid-template-columns:30px repeat(3,1fr) 44px 50px;gap:4px;align-items:center;margin-top:4px}
+#spx-wrap .sp2-row .k{font-size:11px;color:var(--dim);font-weight:700}
+#spx-wrap .sp2-row .v{font-size:11px;color:var(--text2);text-align:right;font-weight:700;white-space:nowrap}
+#spx-wrap .sp2-bonus{grid-template-columns:30px repeat(3,1fr) 98px}
+#spx-wrap .sp-chips,#spx-res .sp-chips,#res-sec .sp-chips{display:inline-flex;gap:3px;align-items:center}
+#spx-wrap .sp-chip,#spx-res .sp-chip,#res-sec .sp-chip{min-width:26px;height:22px;padding:0 5px;display:inline-flex;align-items:center;justify-content:center;border-radius:5px;font-size:11px;font-weight:600}
+#spx-wrap .sp-chip.hp,#spx-res .sp-chip.hp,#res-sec .sp-chip.hp{background:rgba(251,191,36,.14);color:var(--hpc)}
+#spx-wrap .sp-chip.atk,#spx-res .sp-chip.atk,#res-sec .sp-chip.atk{background:rgba(248,113,113,.14);color:var(--atc)}
+#spx-wrap .sp-chip.def,#spx-res .sp-chip.def,#res-sec .sp-chip.def{background:rgba(96,165,250,.14);color:var(--dfc)}
+#spx-wrap .sp-chip.none,#spx-res .sp-chip.none,#res-sec .sp-chip.none{border:1px dashed var(--border3,var(--bd));color:var(--text4,var(--dim))}
+#spx-wrap .sp-chip.bn,#spx-res .sp-chip.bn,#res-sec .sp-chip.bn{border:1px solid currentColor;background:none}
+/* 접은 상태: 정령마다 번호·메모·옵션 칩 한 줄 */
+#spx-wrap .spx-fold-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:6px}
+#spx-wrap .spx-fold-item{display:flex;align-items:center;gap:7px;min-width:0;padding:7px 10px;border:1px solid var(--bd);border-radius:8px;background:var(--sf2)}
+#spx-wrap .spx-fold-item.is-empty{border-style:dashed;opacity:.6}
+#spx-wrap .spx-fold-item .sp-chips{margin-left:auto;flex-shrink:0}
+#spx-wrap .spx-fold-memo{font-size:12px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:1000px){#spx-wrap .spx-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:680px){#spx-wrap .spx-grid{grid-template-columns:1fr}}
+.spx-res-empty{padding:80px 20px;text-align:center;color:var(--text4);font-size:13.5px}
+.spx-cfg{display:flex;flex-direction:column;gap:16px}
+.spx-warn{font-size:12px;line-height:1.7;color:var(--red);border:1px solid var(--red);border-radius:6px;padding:8px 10px;background:rgba(248,113,113,.06)}
+.spx-left-chip{font-size:12px;padding:4px 9px;border:1px solid var(--bd);border-radius:5px;background:var(--sf2)}
+/* 정령 계산 결과: 타입 요약표 + 한 줄 목록 */
+#res-sec #spirit-type-summary{display:block;margin-bottom:18px}
+#res-sec .sim-ttbl{border:1px solid var(--bd);border-radius:8px;background:var(--sf);overflow:hidden}
+#res-sec .sim-thead,#res-sec .sim-trow{display:grid;grid-template-columns:minmax(80px,1.2fr) 1fr 80px 80px 90px;gap:10px;align-items:center;padding:9px 14px}
+#res-sec .sim-ttbl:not(:has(.sim-thead span:nth-child(4))) .sim-thead,#res-sec .sim-ttbl:not(:has(.sim-thead span:nth-child(4))) .sim-trow{grid-template-columns:minmax(80px,1.2fr) 1fr 80px}
+#res-sec .sim-thead{font-size:11px;color:var(--dim);font-weight:700;border-bottom:1px solid var(--bd)}
+#res-sec .sim-thead span:nth-child(n+3),#res-sec .sim-trow .n{text-align:right}
+#res-sec .sim-trow{width:100%;background:none;border:0;border-bottom:1px solid var(--bd);color:var(--text);font:inherit;font-size:12.5px;text-align:left;cursor:pointer}
+#res-sec .sim-trow:last-child{border-bottom:0}
+#res-sec .sim-trow:hover{background:var(--sf2)}
+#res-sec .sim-trow.on{background:rgba(224,177,91,.08);box-shadow:inset 3px 0 0 var(--gold)}
+#res-sec .sim-trow .n{font-family:'IBM Plex Mono',monospace;color:var(--dim)}
+#res-sec .sim-trow .n.on{color:var(--gold);font-weight:700}
+#res-sec .spx-cols.sim-cols,#res-sec .spx-row.sim-row>summary{grid-template-columns:30px minmax(110px,1.1fr) minmax(0,1fr) minmax(0,1fr) 72px 56px}
+#res-sec .spx-cols.sim-cols{padding:10px 14px 8px;border-bottom:1px solid var(--bd)}
+#res-sec .spx-cols.sim-cols span:first-child{grid-column:auto}
+#res-sec .spx-cols.sim-cols span:nth-child(-n+4){text-align:left}
+#res-sec .sim-r-type{font-size:12.5px;white-space:nowrap}
+#res-sec .sim-r-type span{color:var(--dim);font-size:12px}
+#res-sec .sim-r-gear{font-size:12px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#res-sec .sim-row .spx-r-detail{padding-left:54px}
+#res-sec .sim-ico{width:22px;height:22px;object-fit:contain;vertical-align:middle;margin-right:5px}
+#res-sec .sim-gear-line{display:flex;align-items:center;gap:8px}
+#res-sec .sim-img{width:34px;height:34px;object-fit:contain;flex-shrink:0}
+#res-sec .sim-best{margin-bottom:14px;border-color:var(--gold)}
+#res-sec .sim-best-tag{font-size:11px;font-weight:800;color:#12151c;background:var(--gold);border-radius:4px;padding:2px 7px;white-space:nowrap}
+#res-sec .sp-result-buff-filters{margin:4px 0 12px}
+#spirit-run-caption .sp-chips{vertical-align:middle;margin-left:4px}
+@media(max-width:600px){
+  #res-sec .sim-thead,#res-sec .sim-trow{grid-template-columns:1fr 1fr 64px!important}
+  #res-sec .sim-thead span:nth-child(n+4),#res-sec .sim-trow span:nth-child(n+4){display:none}
+  #res-sec .spx-cols.sim-cols{display:none}
+  #res-sec .spx-row.sim-row>summary{grid-template-columns:24px minmax(0,1fr) 46px 40px;gap:6px}
+  #res-sec .sim-r-gear{display:none}
+  #res-sec .sim-row .spx-r-detail{padding-left:10px}
+}
+/* 정령 배분 결과: 타입별 묶음 + 한 줄 목록 */
+#spx-res .spx-cols,#spx-res .spx-row>summary,#res-sec .spx-cols,#res-sec .spx-row>summary{display:grid;grid-template-columns:38px minmax(0,1fr) auto 70px 78px 58px;gap:10px;align-items:center}
+#spx-res .spx-cols,#res-sec .spx-cols{padding:0 14px 8px;font-size:11px;color:var(--dim);font-weight:700}
+#spx-res .spx-cols span:first-child,#res-sec .spx-cols span:first-child{grid-column:1/3}
+#spx-res .spx-cols span:nth-child(n+3),#res-sec .spx-cols span:nth-child(n+3){text-align:right}
+#spx-res .spx-cols span:nth-child(2),#res-sec .spx-cols span:nth-child(2){text-align:left}
+#spx-res .spx-tblock,#res-sec .spx-tblock{border:1px solid var(--bd);border-left:3px solid var(--tc);border-radius:8px;background:var(--sf);margin-bottom:10px;overflow:hidden}
+#spx-res .spx-thead,#res-sec .spx-thead{display:flex;align-items:baseline;gap:8px;padding:9px 14px;border-bottom:1px solid var(--bd)}
+#spx-res .spx-thead b,#res-sec .spx-thead b{color:var(--tc);font-size:14px}
+#spx-res .spx-thead span,#res-sec .spx-thead span{font-size:11px;color:var(--dim)}
+#spx-res .spx-row,#res-sec .spx-row{border-bottom:1px solid var(--bd)}
+#spx-res .spx-row:last-child,#res-sec .spx-row:last-child{border-bottom:0}
+#spx-res .spx-row>summary,#res-sec .spx-row>summary{list-style:none;cursor:pointer;padding:9px 14px}
+#spx-res .spx-row>summary::-webkit-details-marker,#res-sec .spx-row>summary::-webkit-details-marker{display:none}
+#spx-res .spx-row>summary:hover,#res-sec .spx-row>summary:hover{background:var(--sf2)}
+#spx-res .spx-row[open]>summary,#res-sec .spx-row[open]>summary{background:var(--sf2)}
+#spx-res .spx-r-no,#res-sec .spx-r-no{font-size:12px;font-weight:800;color:var(--gold)}
+#spx-res .spx-r-name,#res-sec .spx-r-name{font-size:12.5px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#spx-res .spx-r-buf,#res-sec .spx-r-buf{font-size:12px;font-weight:700;text-align:right;white-space:nowrap}
+#spx-res .spx-r-num,#res-sec .spx-r-num{font-family:'IBM Plex Mono',monospace;font-size:13px;text-align:right;color:var(--dim)}
+#spx-res .spx-r-num.on,#res-sec .spx-r-num.on{color:var(--gold);font-weight:700}
+#spx-res .spx-r-detail,#res-sec .spx-r-detail{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 18px;padding:10px 14px 14px 62px;font-size:12px;background:var(--sf2)}
+#spx-res .spx-r-detail small,#res-sec .spx-r-detail small{display:block;font-size:10.5px;color:var(--dim);margin-bottom:3px}
+#spx-res .spx-r-others,#res-sec .spx-r-others{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:4px 14px}
+#spx-res .spx-r-others small,#res-sec .spx-r-others small{width:100%}
+@media(max-width:600px){
+  #spx-res .spx-cols,#spx-res .spx-row>summary,#res-sec .spx-cols,#res-sec .spx-row>summary{grid-template-columns:30px auto minmax(0,1fr) 46px 40px;gap:6px}
+  #spx-res .spx-cols,#spx-res .spx-r-name,#res-sec .spx-cols,#res-sec .spx-r-name{display:none}
+  #spx-res .spx-row>summary,#res-sec .spx-row>summary{padding:9px 10px}
+  #spx-res .spx-r-num,#res-sec .spx-r-num{font-size:12px}
+  #spx-res .spx-r-detail,#res-sec .spx-r-detail{grid-template-columns:1fr;padding:10px}
+}
+.weekly-stat b{margin-right:6px}.weekly-plus{color:var(--gold);font-weight:700}.weekly-minus{color:#f87171;font-weight:700}
+</style>
 </head>
 <body class="u">
 <div class="u-app">
@@ -251,6 +374,7 @@ input[type=number]{-moz-appearance:textfield}
     <div class="sec-bd">
       <div class="sim-cfg">
 <div><div class="cfg-lbl">펜던트 옵션</div><label style="display:flex;gap:8px;align-items:center;font-size:13px"><input type="checkbox" id="exc-sun-pend" style="accent-color:var(--gold)">태펜 제외</label></div>
+        <div id="spx-cfg" class="spx-cfg" data-mode="dist"></div>
         <div>
           <div class="cfg-lbl">드래곤 등급</div>
           <div class="btn-grp" id="grd-grp">
@@ -282,9 +406,10 @@ input[type=number]{-moz-appearance:textfield}
 <button class="btn-sim" id="sim-btn" onclick="runSim()" disabled>내 세팅 비교하기</button><div id="spirit-status" role="status" aria-live="polite">계산기 준비 중…</div>
 </aside>
 <main class="u-main" id="mainpane">
+<div class="calc-mode"><span class="calc-mode-lbl">계산 방식</span><div class="sp-priority" role="group" aria-label="계산 방식"><button type="button" data-calc-mode="calc" aria-pressed="true">정령 계산</button><button type="button" data-calc-mode="dist" aria-pressed="false">정령 배분</button></div></div>
 <!-- ■ 내 스펙 탭 (보기 전용) -->
 <div id="tab-spec" class="tc active"><div class="ti">
-  <div class="spec-spirit" id="spec-spirit-wrap">
+  <div class="spec-spirit" id="spec-spirit-wrap" data-mode="calc">
     <div class="sec">
       <div class="sec-hd">
         <span>정령</span>
@@ -293,13 +418,17 @@ input[type=number]{-moz-appearance:textfield}
       <div class="sec-bd" id="sp-bd"></div>
     </div>
   </div>
+  <div class="spx-wrap" id="spx-wrap" data-mode="dist"><!-- spirit-distribute.js로 채워짐 --></div>
   <div id="spec-view-wrap"><!-- renderSpecView()로 채워짐 --></div>
 </div></div>
 
 <!-- ■ 시뮬레이터 탭 -->
 <div id="tab-sim" class="tc"><div class="ti ti-sim">
+<div data-mode="dist"><div id="spx-res-empty" class="spx-res-empty">왼쪽에서 설정을 마치고 [정령 배분 실행]을 눌러주세요.</div><section id="spx-res" class="sp-workspace" hidden></section></div>
+<div data-mode="calc">
 <div id="res-sec-empty">왼쪽에서 설정을 마치고 [시뮬레이션 실행]을 눌러주세요.</div>
   <section id="res-sec" class="sp-workspace" style="display:none"><header class="sp-workspace-head"><div><h2>시뮬레이션 결과</h2><p id="spirit-run-caption"></p></div><div class="sp-priority"><button data-spirit-priority="bv">비밸 우선</button><button data-spirit-priority="tar">TAR 우선</button></div></header><div id="spirit-type-summary" class="sp-type-grid"></div><h3 class="sp-list-title" id="spirit-ranking-label"></h3><div id="spirit-result-list"></div></section>
+</div>
 
 </div></div>
 
@@ -482,7 +611,9 @@ const mkState=()=>({
   gems:{hp:{37:0,38:0,39:0,40:0},atk:{37:0,38:0,39:0,40:0},def:{37:0,38:0,39:0,40:0}},
   pendants:[],
   spirit:{level:1,maxLvl:false,opts:[{stat:'',type:''},{stat:'',type:''},{stat:'',type:''},{stat:'',type:''}],bonus:''},
-  coll:{hp:0,atk:0,def:0}
+  coll:{hp:0,atk:0,def:0},
+  calcMode:'calc',
+  spxList:[]
 });
 
 let S=mkState();
@@ -1005,38 +1136,7 @@ function renderSpirit(){
     </button>`;
   }).join('');
 
-  let opts='';
-  for(let i=1;i<=4;i++){
-    const o=sp.opts[i-1]||{stat:'',type:''};
-    const v=(o.stat&&o.type)?fmtSpVal(i,o.stat,o.type):'';
-    opts+=`<div class="sp-ocard">
-      <span class="sp-onum">${i}옵</span>
-      <select onchange="onSpOpt(${i-1},'stat',this.value)">
-        <option value=""    ${!o.stat?'selected':''}>-</option>
-        <option value="hp"  ${o.stat==='hp'?'selected':''}>체력</option>
-        <option value="atk" ${o.stat==='atk'?'selected':''}>공격</option>
-        <option value="def" ${o.stat==='def'?'selected':''}>방어</option>
-      </select>
-      <select onchange="onSpOpt(${i-1},'type',this.value)">
-        <option value=""  ${!o.type?'selected':''}>-</option>
-        <option value="+" ${o.type==='+'?'selected':''}>+스탯</option>
-        <option value="%" ${o.type==='%'?'selected':''}>%스탯</option>
-      </select>
-      <span class="sp-oval">${v}</span>
-    </div>`;
-  }
-
-  el.innerHTML=`
-    <div class="sp-preset-grid">${presets}</div>
-    <div class="sp-opts">${opts}</div>
-    <div class="fg"><label>부가옵</label>
-      <select onchange="onSpBonus(this.value)">
-        <option value=""    ${!sp.bonus?'selected':''}>없음</option>
-        <option value="hp"  ${sp.bonus==='hp'?'selected':''}>체력 (+40)</option>
-        <option value="atk" ${sp.bonus==='atk'?'selected':''}>공격 (+10)</option>
-        <option value="def" ${sp.bonus==='def'?'selected':''}>방어 (+10)</option>
-      </select>
-    </div>`;
+  el.innerHTML=`<div class="sp-preset-grid">${presets}</div>${SpiritInput.options(sp,'onSpOpt',[],fmtSpVal)}${SpiritInput.bonus(sp,'onSpBonus',[])}`;
 }
 
 function resetSpirit(){
@@ -1446,12 +1546,14 @@ if (!globalThis.DV1_DRAGON_VIEWS) throw new Error("드래곤 데이터 로드 �
 </div>
 </div>
 <script src="./tar-db.js"></script>
+<script src="./spirit-input.js"></script>
 <script src="./spirit-simulator.js"></script>
+<script src="./spirit-distribute.js"></script>
 <script src="./ui.js"></script>
 <script>
 if (!globalThis.DV1_DRAGON_VIEWS) throw new Error("드래곤 데이터 로드 실패: 초기화 중단");
 
-UI.shell({page:'calculator',title:'정령 시뮬레이터',sub:'비벨(체력 × 공격 × 방어) 최적화',tasks:{
+UI.shell({page:'calculator',title:'정령 계산/배분',sub:'비벨(체력 × 공격 × 방어) 최적화',tasks:{
   on:'spec', items:[['spec','내 스펙'],['sim','시뮬레이터']],
   go:function(k){ if(typeof switchTab==='function') switchTab(k); }
 }});

@@ -1,0 +1,371 @@
+/* ============================================================
+   ui.css — 드래곤빌리지1 도감 공통 UI
+   theme-dark/light/beige.css 뒤에 불러오세요.
+   <link rel="stylesheet" href="./theme-dark.css" id="theme-css">
+   <link rel="stylesheet" href="./ui.css">
+   ============================================================ */
+
+/* ── 1. 토큰 ────────────────────────────────────────────── */
+:root{
+  --u-side: 232px;          /* PC 세로 내비 폭 */
+  --u-panel: 360px;         /* 설정 패널 폭 */
+  --u-tabbar: 66px;         /* 모바일 하단 탭바 높이 */
+  --u-gap: 12px;
+  --u-r: 7px;               /* 기본 모서리 */
+  --u-r-lg: 10px;
+  --u-sans: 'IBM Plex Sans KR','Malgun Gothic',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --u-tabh: 47px;
+  --u-mono: 'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+
+  /* theme-*.css 위에 얹는 별칭 */
+  --sf: var(--bg2);
+  --sf2: var(--bg3);
+  --bd: var(--border);
+  --bd2: var(--border3, var(--border));
+  --dim: var(--text3);
+  --dimmer: var(--text4);
+  --gold: var(--accent);
+
+  /* 스탯 색 — 계산기에서 쓰던 값 그대로 */
+  --hp: #fbbf24;
+  --atk: #f87171;
+  --def: #60a5fa;
+  --ok: #4ade80;
+  --warn: #e0b15b;
+  --bad: #f87171;
+  /* 계산기 쪽 이름 (원본과 동일하게 유지) */
+  --hpc: var(--hp);
+  --atc: var(--atk);
+  --dfc: var(--def);
+  --red: var(--bad);
+  --green: var(--ok);
+  --blue: var(--def);
+  --gold2: var(--accent);
+}
+
+/* 팔레트 — theme-*.css 가 옛 값이라 여기서 통째로 덮어씁니다.
+   (ui.css 를 theme-*.css 뒤에 불러야 적용됩니다) */
+[data-theme="dark"]{
+  --bg:#0e1116; --bg2:#161a22; --bg3:#1c212c;
+  --border:#23293a; --border2:#1b1f2a; --border3:#2d3447;
+  --text:#eaecf2; --text2:#b3b9c7; --text3:#7d8597; --text4:#565d6e;
+  --accent:#e0b15b; --accent-bg:rgba(224,177,91,.12); --accent-border:rgba(224,177,91,.34);
+}
+[data-theme="light"]{
+  --bg:#f7f7f8; --bg2:#ffffff; --bg3:#f1f2f4;
+  --border:#e6e7ea; --border2:#eeeff2; --border3:#d4d6db;
+  --text:#15171c; --text2:#4a4d57; --text3:#71757f; --text4:#9aa0aa;
+  --accent:#9a6512; --accent-bg:rgba(154,101,18,.10); --accent-border:rgba(154,101,18,.34);
+  --hp:#b07600; --atk:#d03b33; --def:#1f66cc; --ok:#1f8a4d; --bad:#d03b33;
+}
+[data-theme="beige"]{
+  --bg:#f3ecdd; --bg2:#faf3e2; --bg3:#ebe0c7;
+  --border:#d8caa8; --border2:#e1d4b3; --border3:#c0ad84;
+  --text:#2a2316; --text2:#5a4e34; --text3:#837553; --text4:#a99971;
+  --accent:#a2601a; --accent-bg:rgba(162,96,26,.10); --accent-border:rgba(162,96,26,.34);
+  --hp:#a06a00; --atk:#c4382f; --def:#2360bd; --ok:#227a49; --bad:#c4382f;
+}
+/* data-theme 이 아직 안 붙은 순간에도 어둡게 (FOUC 방지) */
+html:not([data-theme]) body{background:#0e1116;color:#eaecf2}
+
+/* ── 2. 기본 ────────────────────────────────────────────── */
+.u *,.u *::before,.u *::after{box-sizing:border-box}
+body.u{margin:0;font-family:var(--u-sans);font-size:15px;line-height:1.6;
+  background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;
+  -webkit-text-size-adjust:100%}
+.u h1,.u h2,.u h3,.u h4,.u p,.u figure{margin:0}
+.u a{color:inherit;text-decoration:none}
+.u button{font-family:inherit;cursor:pointer}
+.u img{max-width:100%}
+.u :focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.u ::-webkit-scrollbar{width:10px;height:10px}
+.u ::-webkit-scrollbar-thumb{background:var(--bd);border-radius:99px}
+.u ::-webkit-scrollbar-track{background:transparent}
+
+.u-num{font-family:var(--u-mono);font-variant-numeric:tabular-nums}
+.u-hp{color:var(--hp)} .u-atk{color:var(--atk)} .u-def{color:var(--def)}
+.u-ok{color:var(--ok)} .u-bad{color:var(--bad)} .u-dim{color:var(--dim)}
+.u th,.u button,.u .u-btn{white-space:nowrap}
+/* 한국어 줄바꿈 — 낱말 중간에서 끊기지 않게, 대신 아주 긴 낱말은 넘치지 않게 */
+.u{word-break:keep-all;overflow-wrap:break-word}
+/* 두 줄로 넘어가더라도 한 덩어리로 읽히도록 */
+.u td,.u th,.u label,.u .u-btn,.u button,.u select,.u option{line-height:1.35}
+.u-hide{display:none !important}
+
+/* ── 3. 셸: 세로 내비 + 본문 ───────────────────────────── */
+.u-app{display:flex;min-height:100vh}
+
+.u-side{width:var(--u-side);flex-shrink:0;display:flex;flex-direction:column;
+  background:var(--sf);border-right:1px solid var(--bd);
+  position:sticky;top:0;height:100vh;overflow-y:auto}
+.u-side-hd{padding:26px 24px 22px;border-bottom:1px solid var(--bd)}
+/* 사이드바 접기 */
+.u-side-hd{position:relative}
+.u-sidetog{position:absolute;top:14px;right:12px;width:26px;height:26px;padding:0;
+  display:flex;align-items:center;justify-content:center;border:1px solid var(--bd);
+  border-radius:7px;background:var(--sf2);color:var(--dim);cursor:pointer;line-height:1}
+.u-sidetog:hover{border-color:var(--gold);color:var(--text)}
+.u-sideopen{display:none;position:fixed;top:14px;left:14px;z-index:60;
+  width:32px;height:32px;align-items:center;justify-content:center;border:1px solid var(--bd);
+  border-radius:8px;background:var(--sf);color:var(--text2);cursor:pointer;line-height:1}
+.u-sideopen:hover{border-color:var(--gold);color:var(--text)}
+body.u.side-off .u-side{display:none}
+body.u.side-off .u-sideopen{display:flex}
+body.u.side-off .u-app>.u-wrap:not(.full){padding-left:60px}
+body.u.side-off .u-app>.u-wrap.full,body.u.side-off .u-setpane{padding-left:58px}
+body.u.side-off .u-taskbar{padding-left:58px}
+.u-side-kicker{font-size:11.5px;letter-spacing:.14em;color:var(--dimmer);font-weight:600}
+.u-side-t{margin-top:7px;font-size:18px;font-weight:700;letter-spacing:-.01em;color:var(--text)}
+.u-side-s{margin-top:4px;font-size:12.5px;color:var(--dim)}
+.u-side-nav{padding:18px 12px;display:flex;flex-direction:column;gap:2px}
+/* 계산기 작업 탭 — 사이드 맨 위 그룹 */
+.u-nav-i .n{margin-left:auto;font-family:var(--u-mono);font-size:11.5px;color:var(--dimmer)}
+.u-nav-i.on .n{color:var(--dim)}
+/* 페이지 안 작업 탭 — 사이드를 접어도 쓸 수 있게 본문 위에 둡니다 */
+.u-col{flex-grow:1;min-width:0;display:flex;flex-direction:column}
+.u-col>.u-content{flex-grow:1;min-height:0}
+.u-taskbar{display:flex;gap:4px;padding:10px 30px 0;overflow-x:auto;
+  border-bottom:1px solid var(--bd);background:var(--bg);
+  position:sticky;top:0;z-index:41;scrollbar-width:none}
+.u-taskbar::-webkit-scrollbar{display:none}
+.u-taskbar button{flex:0 0 auto;padding:10px 16px;border:1px solid transparent;
+  border-bottom:0;border-radius:8px 8px 0 0;margin-bottom:-1px;
+  background:transparent;color:var(--dim);font:inherit;font-size:13.5px;cursor:pointer;
+  display:inline-flex;align-items:center;gap:7px}
+.u-taskbar button:hover{color:var(--text2)}
+.u-taskbar button.on{border-color:var(--bd);background:var(--sf);
+  color:var(--gold);font-weight:600}
+.u-taskbar .n{font-family:var(--u-mono);font-size:11px;color:var(--dimmer)}
+/* 탭이 있으면 설정 패널이 그 아래에서 고정됩니다 */
+body.u.has-taskbar .u-setpane{top:var(--u-tabh);max-height:calc(100vh - var(--u-tabh))}
+.u-side-grp{padding:8px 12px 8px;font-size:11px;letter-spacing:.12em;color:var(--dimmer);font-weight:600}
+.u-side-grp+.u-side-grp{margin-top:10px}
+.u-nav-i{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:6px;
+  color:var(--text2);font-size:14.5px;border:none;background:none;text-align:left;width:100%}
+.u-nav-i::before{content:"";width:3px;height:15px;border-radius:2px;background:transparent;flex-shrink:0}
+.u-nav-i:hover{background:var(--sf2);color:var(--text)}
+.u-nav-i.on{background:var(--sf2);color:var(--text);font-weight:600}
+.u-nav-i.on::before{background:var(--gold)}
+.u-nav-i .n{margin-left:auto;font-family:var(--u-mono);font-size:12px;color:var(--dimmer)}
+.u-side-ft{margin-top:auto;padding:14px 24px 20px;border-top:1px solid var(--bd);
+  font-size:12.5px;color:var(--dimmer);line-height:1.9}
+.u-side-ft .kv{display:flex;justify-content:space-between}
+.u-side-ft .kv b{font-family:var(--u-mono);color:var(--text2);font-weight:600}
+
+.u-content{flex-grow:1;min-width:0;display:flex}
+.u-setpane{width:var(--u-panel);flex-shrink:0;padding:28px 26px;border-right:1px solid var(--bd);
+  align-self:flex-start;position:sticky;top:0;max-height:100vh;overflow-y:auto}
+/* 설정 패널 접기 — 결과를 넓게 보고 싶을 때 */
+.u-panetog{position:absolute;top:12px;right:10px;width:26px;height:26px;padding:0;
+  display:flex;align-items:center;justify-content:center;border:1px solid var(--bd);
+  border-radius:7px;background:var(--sf2);color:var(--dim);cursor:pointer;line-height:1;z-index:2}
+.u-panetog:hover{border-color:var(--gold);color:var(--text)}
+.u-paneopen{display:none;position:sticky;top:0;align-self:flex-start;flex-shrink:0;
+  width:38px;padding:14px 0;border-right:1px solid var(--bd);background:var(--sf)}
+.u-paneopen button{width:26px;height:26px;margin:0 auto;padding:0;display:flex;align-items:center;
+  justify-content:center;border:1px solid var(--bd);border-radius:7px;background:var(--sf2);
+  color:var(--dim);cursor:pointer}
+.u-paneopen button:hover{border-color:var(--gold);color:var(--text)}
+body.u.pane-off .u-setpane{display:none}
+body.u.pane-off .u-paneopen{display:block}
+.u-main{flex-grow:1;min-width:0;padding:26px 30px 60px}
+.u-main.wide{padding:26px 34px 60px}
+
+/* 내비 없이 한 단으로 쓰는 페이지 */
+.u-wrap{max-width:1180px;margin:0 auto;padding:26px 30px 60px}
+.u-wrap.narrow{max-width:760px}
+/* 목록/표 페이지 — 남는 폭을 전부 씁니다 */
+.u-wrap.full{max-width:none;margin:0}
+/* .u-app 바로 밑에 놓인 본문은 남는 폭을 전부 차지 */
+.u-app>.u-wrap,.u-app>.u-content{flex-grow:1;min-width:0}
+
+/* ── 4. 모바일 하단 탭바 / 상단 바 ─────────────────────── */
+.u-topbar{display:none;align-items:center;gap:10px;padding:13px 16px;
+  background:var(--sf);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:40}
+.u-topbar .t{font-size:15.5px;font-weight:700;letter-spacing:-.01em}
+.u-topbar .s{font-size:11.5px;color:var(--dim);margin-top:1px}
+
+.u-tabbar{display:none;position:fixed;left:0;right:0;bottom:0;height:var(--u-tabbar);z-index:50;
+  background:var(--sf);border-top:1px solid var(--bd);
+  padding-bottom:env(safe-area-inset-bottom)}
+.u-tabbar a,.u-tabbar button{flex-grow:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:4px;font-size:11.5px;color:var(--dim);
+  border:none;background:none;border-top:2px solid transparent;margin-top:-1px}
+.u-tabbar .on{color:var(--gold);font-weight:700;border-top-color:var(--gold)}
+.u-tabbar svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.5;
+  stroke-linecap:round;stroke-linejoin:round}
+
+/* ── 5. 섹션 ────────────────────────────────────────────── */
+.u-sec{border:1px solid var(--bd);border-radius:var(--u-r-lg);background:var(--sf);overflow:hidden}
+.u-sec+.u-sec{margin-top:16px}
+.u-sec-hd{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:11px 16px;background:var(--sf2);border-bottom:1px solid var(--bd);
+  font-size:13px;font-weight:800;color:var(--gold)}
+.u-sec-bd{padding:16px}
+.u-lbl{font-size:12px;letter-spacing:.1em;color:var(--dimmer);font-weight:600;margin-bottom:9px}
+.u-lbl+*{margin-top:0}
+.u-note{font-size:12.5px;color:var(--dim);line-height:1.75}
+.u-hr{height:1px;background:var(--bd);border:0;margin:16px 0}
+.u-stack{display:flex;flex-direction:column;gap:var(--u-gap)}
+.u-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.u-spacer{flex-grow:1}
+
+.u-page-t{display:flex;align-items:baseline;gap:14px;margin-bottom:16px}
+.u-page-t h1{font-size:21px;font-weight:700;letter-spacing:-.015em}
+.u-page-t .s{font-size:13px;color:var(--dim)}
+
+/* ── 6. 버튼 · 칩 ───────────────────────────────────────── */
+.u-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:8px 14px;border:1px solid var(--bd2);border-radius:6px;background:var(--sf);
+  color:var(--text2);font-size:13px;font-weight:600;white-space:nowrap}
+.u-btn:hover{border-color:var(--gold);color:var(--text)}
+.u-btn.on,.u-btn[aria-pressed="true"]{border-color:var(--gold);background:var(--accent-bg);color:var(--gold)}
+.u-btn.ghost{border-color:transparent;background:none}
+.u-btn.sm{padding:6px 11px;font-size:12px}
+.u-btn.danger{border-color:var(--bad);color:var(--bad)}
+.u-btn.pri{border-color:var(--accent-border);background:var(--accent-bg);color:var(--gold);font-weight:600}
+.u-btn.pri:hover{background:var(--accent-border)}
+.u-btn:disabled{opacity:.45;cursor:not-allowed}
+
+.u-btn-run{display:block;width:100%;padding:13px 0;border:none;border-radius:8px;
+  background:var(--gold);color:var(--bg);font-size:15px;font-weight:700;letter-spacing:-.01em}
+.u-btn-run:hover{filter:brightness(1.07)}
+.u-btn-run:disabled{opacity:.5;cursor:not-allowed;filter:none}
+
+.u-seg{display:flex;gap:5px;flex-wrap:wrap}
+.u-chip{padding:8px 14px;border:1px solid var(--bd2);border-radius:6px;background:var(--sf);
+  color:var(--dim);font-size:13px;font-weight:600;white-space:nowrap}
+.u-chip:hover{color:var(--text)}
+.u-chip.on{border-color:var(--gold);background:var(--accent-bg);color:var(--gold)}
+.u-seg.solid{gap:0;border:1px solid var(--bd2);border-radius:6px;overflow:hidden;width:100%}
+.u-seg.solid .u-chip{flex-grow:1;border:0;border-radius:0;text-align:center;justify-content:center}
+.u-seg.solid .u-chip.on{background:var(--gold);color:var(--bg)}
+
+/* 라인 탭 (페이지 안 전환) */
+.u-tabs{display:flex;gap:24px;border-bottom:1px solid var(--bd);overflow-x:auto;
+  scrollbar-width:none}
+.u-tabs::-webkit-scrollbar{display:none}
+.u-tab{padding:13px 0;font-size:14px;font-weight:500;color:var(--dim);
+  border:0;background:none;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.u-tab:hover{color:var(--text2)}
+.u-tab.on{color:var(--text);font-weight:700;border-bottom-color:var(--gold)}
+
+/* ── 7. 폼 ──────────────────────────────────────────────── */
+.u input[type=text],.u input[type=number],.u input[type=password],
+.u input[type=search],.u input[type=email],.u select,.u textarea{
+  width:100%;padding:10px 12px;border:1px solid var(--bd2);border-radius:6px;
+  background:var(--sf2);color:var(--text);font-family:inherit;font-size:14px}
+.u select{cursor:pointer}
+.u textarea{min-height:110px;resize:vertical;line-height:1.7}
+.u input:focus,.u select:focus,.u textarea:focus{outline:none;border-color:var(--gold)}
+.u input::placeholder,.u textarea::placeholder{color:var(--dimmer)}
+.u input[type=checkbox],.u input[type=radio]{width:16px;height:16px;margin:0;
+  accent-color:var(--gold);cursor:pointer;flex-shrink:0}
+.u input.u-num,.u .u-num input{font-family:var(--u-mono);text-align:right}
+.u-field{display:flex;flex-direction:column;gap:5px}
+.u-field>span{font-size:12px;color:var(--dim);font-weight:600}
+.u-field-row{display:flex;align-items:center;gap:10px}
+.u-field-row>span:first-child{width:66px;flex-shrink:0;font-size:13px;font-weight:600}
+.u-opt{display:flex;align-items:flex-start;gap:9px;padding:11px 12px;
+  border:1px solid var(--bd2);border-radius:6px}
+.u-opt.on{border-color:var(--gold);background:var(--accent-bg)}
+.u-opt b{display:block;font-size:13.5px;font-weight:600}
+.u-opt em{display:block;margin-top:3px;font-size:12px;color:var(--dim);font-style:normal}
+
+/* ── 8. 표 ──────────────────────────────────────────────── */
+.u-tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.u-tbl{width:100%;border-collapse:collapse;font-size:14px}
+.u-tbl th{padding:9px 8px;font-size:11.5px;letter-spacing:.06em;color:var(--dimmer);
+  font-weight:600;text-align:right;white-space:nowrap;border-bottom:1px solid var(--bd2)}
+.u-tbl td{padding:10px 8px;text-align:right;border-bottom:1px solid var(--border2,var(--bd));
+  white-space:nowrap}
+.u-tbl th.l,.u-tbl td.l{text-align:left}
+.u-tbl th:first-child,.u-tbl td:first-child{padding-left:0}
+.u-tbl th:last-child,.u-tbl td:last-child{padding-right:0}
+.u-tbl tbody tr:hover td{background:var(--sf2)}
+.u-tbl td.rk{font-family:var(--u-mono);color:var(--dimmer);width:34px;text-align:center}
+.u-tbl tr.top td.rk{color:var(--gold);font-weight:700}
+.u-tbl .sub{display:block;font-size:11.5px;color:var(--dim);font-weight:400}
+.u-tbl-note{margin-top:10px;font-size:12px;color:var(--dimmer);line-height:1.7}
+
+/* ── 9. 카드 · 뱃지 ─────────────────────────────────────── */
+.u-cards{display:grid;gap:var(--u-gap);grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+.u-cards.c2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.u-cards.c3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.u-card{padding:14px 15px;border:1px solid var(--bd);border-radius:var(--u-r);
+  background:var(--sf);display:block}
+a.u-card:hover,.u-card.click:hover{border-color:var(--gold);background:var(--accent-bg)}
+.u-card-t{font-size:14.5px;font-weight:600}
+.u-card-s{margin-top:4px;font-size:11.5px;color:var(--dim)}
+.u-card-ft{margin-top:11px;padding-top:9px;border-top:1px solid var(--bd);
+  font-size:11.5px;color:var(--dim);line-height:1.65}
+
+.u-badge{display:inline-block;padding:3px 8px;border-radius:4px;background:var(--sf2);
+  color:var(--dim);font-size:11px;font-weight:700;vertical-align:1px}
+.u-badge.gold{background:var(--accent-bg);color:var(--gold)}
+.u-badge.ok{background:rgba(94,192,138,.14);color:var(--ok)}
+.u-badge.bad{background:rgba(224,112,107,.14);color:var(--bad)}
+
+.u-stat{display:flex;gap:26px;flex-wrap:wrap}
+.u-stat>div>.k{font-size:11.5px;letter-spacing:.1em;color:var(--dimmer);font-weight:600}
+.u-stat>div>.v{margin-top:5px;font-family:var(--u-mono);font-size:26px;font-weight:600;letter-spacing:-.02em}
+
+.u-prog{width:100%;height:6px;border-radius:99px;background:var(--bd);overflow:hidden;margin-top:8px}
+.u-prog i{display:block;height:100%;width:0;background:var(--gold);transition:width .1s linear}
+
+.u-empty{padding:30px 12px;text-align:center;font-size:13.5px;color:var(--dim)}
+.u-warn{padding:12px 14px;border:1px solid var(--accent-border);border-radius:var(--u-r);
+  background:var(--accent-bg);font-size:13px;color:var(--text2);line-height:1.75}
+.u-warn.bad{border-color:var(--bad);background:rgba(224,112,107,.09)}
+
+/* ── 10. 반응형 ─────────────────────────────────────────── */
+@media (max-width:1180px){
+  :root{--u-panel:340px}
+  .u-main{padding:22px 22px 60px}
+}
+@media (max-width:980px){
+  .u-content{flex-direction:column}
+  .u-panetog,.u-paneopen{display:none !important}
+  body.u.pane-off .u-setpane{display:block}
+  .u-setpane{width:auto;align-self:stretch;position:static;max-height:none;border-right:0;
+    border-bottom:1px solid var(--bd);padding:20px 22px}
+}
+@media (max-width:760px){
+  body.u{font-size:14.5px}
+  .u-app{display:block}
+  .u-side{display:none}
+  .u-sideopen{display:none !important}
+  body.u.side-off .u-app>.u-wrap,body.u.side-off .u-setpane{padding-left:16px}
+  .u-topbar{display:flex}
+  .u-tabbar{display:flex}
+  body.u.has-tabbar{padding-bottom:calc(var(--u-tabbar) + env(safe-area-inset-bottom))}
+  .u-setpane,.u-main,.u-wrap{padding:16px 16px 20px}
+  .u-taskbar{padding:8px 12px 0;top:var(--u-topbar,52px)}
+  .u-taskbar button{padding:9px 13px;font-size:13px}
+  body.u.has-taskbar .u-setpane{top:auto;max-height:none}
+  .u-sec-bd{padding:14px}
+  /* 상단바가 제목을 이미 보여주므로 본문 제목은 숨김 */
+  .u-page-t{display:none}
+  .u-page-t.keep{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+  .u-page-t.keep h1{font-size:19px}
+  .u-stat{gap:16px}
+  .u-stat>div>.v{font-size:21px}
+  .u-cards{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+  .u-cards.c3{grid-template-columns:repeat(2,minmax(0,1fr))}
+  /* 터치 타겟 */
+  .u-btn,.u-chip{padding:11px 15px;font-size:13.5px}
+  .u-btn.sm{padding:9px 13px;font-size:12.5px}
+  .u input[type=text],.u input[type=number],.u input[type=password],
+  .u input[type=search],.u input[type=email],.u select{padding:11px;font-size:16px}
+  .u-tbl{font-size:13px}
+  .u-tbl th,.u-tbl td{padding:9px 6px}
+}
+@media (max-width:420px){
+  .u-cards.c2,.u-cards.c3{grid-template-columns:1fr}
+}
+
+@media print{
+  .u-side,.u-tabbar,.u-topbar,.u-btn,.u-btn-run,.u-chip{display:none !important}
+  body.u{background:#fff;color:#000}
+  .u-sec{break-inside:avoid}
+}

@@ -75327,7 +75327,7 @@
         grades: null,
       },
       description: {
-        ko: null,
+        ko: "공간의 신 구드라가 헬레나에게 보낸 물 속성 드래곤으로, 여신의 판단을 돕는 조력자다. 심해 사대신룡 가운데 가장 강한 존재이며, 바루나스가 아쿠리스에서 하듯 심해의 위험을 없애는 역할을 맡는다. 페르시온 결정의 힘을 다룰 수 있는 존재는 넵튠뿐이다.",
       },
       assets: {
         gameId: 3759,
@@ -75426,7 +75426,7 @@
         },
       },
       description: {
-        ko: null,
+        ko: "기누가 헬레나에게 선물한 물고기 모습의 드래곤이다. 화려한 비늘로 덮인 긴 몸과 시원스러운 성격을 지녔으며, 주변을 유쾌하게 만든다. 넵튠의 명령에 따라 심해를 지키고, 유연한 몸을 이용해 좁고 복잡한 지형에도 들어간다. 몸의 탄력으로 상대의 움직임을 제어할 수 있다.",
       },
       assets: {
         gameId: 3760,
@@ -75515,7 +75515,7 @@
         },
       },
       description: {
-        ko: null,
+        ko: "샌즈가 선물한 거대한 고래 모습의 드래곤으로, 심해를 떠돌며 등에 폐허가 된 유적을 싣고 다닌다. 과거에는 행성의 생명들을 구해 유적 안에서 돌보았다. 타인을 위하는 온화한 성품 때문에 주변의 고통을 외면하지 않으며, 정신적인 교감을 통해 상대의 마음에 공감하고 평온을 되찾도록 돕는다.",
       },
       assets: {
         gameId: 3766,
@@ -75652,6 +75652,173 @@
           },
         ],
       },
+    },
+    // 717 블랙홀 드래곤
+    {
+      "id": 717,
+      "name": {
+        "ko": "블랙홀 드래곤"
+      },
+      "aliases": {
+        "ko": [
+          "블랙홀"
+        ]
+      },
+      "element": "어둠",
+      "type": "체방",
+      "stages": {
+        "awakening": false,
+        "transcendence": true,
+        "advent": true
+      },
+      "canLevelUp": true,
+      "codeAvailability": "Yes",
+      "tier": {
+        "value": 6.2,
+        "status": "listed",
+        "source": "초등계산기.html:20레벨 체방형 계산"
+      },
+      "stats": {
+        "regular": {
+          "hp": [
+            253,
+            12
+          ],
+          "atk": [
+            19,
+            3
+          ],
+          "def": [
+            36,
+            4
+          ]
+        },
+        "grades": null
+      },
+      "description": {
+        "ko": null
+      },
+      "assets": {
+        "gameId": null,
+        "gradeFamilyId": null,
+        "familyMembers": null
+      },
+      "availability": {
+        "guildWarOriginal": true,
+        "guildWarNewbie": true,
+        "championshipExcluded": false
+      },
+      "rankingProfiles": [
+        {
+          "name": "블랙홀 드래곤",
+          "element": "어둠",
+          "skill": null,
+          "statsRef": "regular",
+          "appearances": [
+            {
+              "page": "cham",
+              "tab": "SSS",
+              "levels": [
+                45,
+                21
+              ]
+            },
+            {
+              "page": "cham",
+              "tab": "SS",
+              "levels": [
+                45,
+                21
+              ]
+            }
+          ]
+        }
+      ],
+      "compatibility": {}
+    },
+
+    // 718 크로마 블랙홀 드래곤
+    {
+      "id": 718,
+      "name": {
+        "ko": "크로마 블랙홀 드래곤"
+      },
+      "aliases": {
+        "ko": [
+          "크로마 블랙홀"
+        ]
+      },
+      "element": "어둠",
+      "type": "체방",
+      "stages": {
+        "awakening": false,
+        "transcendence": true,
+        "advent": true
+      },
+      "canLevelUp": true,
+      "codeAvailability": "Yes",
+      "tier": {
+        "value": 6.2,
+        "status": "listed",
+        "source": "초등계산기.html:20레벨 체방형 계산"
+      },
+      "stats": {
+        "regular": {
+          "hp": [
+            253,
+            12
+          ],
+          "atk": [
+            19,
+            3
+          ],
+          "def": [
+            36,
+            4
+          ]
+        },
+        "grades": null
+      },
+      "description": {
+        "ko": null
+      },
+      "assets": {
+        "gameId": null,
+        "gradeFamilyId": null,
+        "familyMembers": null
+      },
+      "availability": {
+        "guildWarOriginal": true,
+        "guildWarNewbie": true,
+        "championshipExcluded": false
+      },
+      "rankingProfiles": [
+        {
+          "name": "크로마 블랙홀 드래곤",
+          "element": "어둠",
+          "skill": null,
+          "statsRef": "regular",
+          "appearances": [
+            {
+              "page": "cham",
+              "tab": "SSS",
+              "levels": [
+                45,
+                21
+              ]
+            },
+            {
+              "page": "cham",
+              "tab": "SS",
+              "levels": [
+                45,
+                21
+              ]
+            }
+          ]
+        }
+      ],
+      "compatibility": {}
     },
   ];
 

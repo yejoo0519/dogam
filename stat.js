@@ -529,6 +529,8 @@ const dexStatMap = {
 711: { hp:[229,13], atk:[38,4], def:[21,3] }, // 크로마 오파님 / Chroma Ophanim
 712: { hp:[218,9], atk:[25,5], def:[24,3] }, // 카스티그 / Castigue
 713: { hp:[186,11], atk:[21,3], def:[35,5] }, // 넵튠
+717: { hp:[253,12], atk:[19,3], def:[36,4] }, // 블랙홀 드래곤
+718: { hp:[253,12], atk:[19,3], def:[36,4] }, // 크로마 블랙홀 드래곤
 };
 
 if (typeof module !== "undefined" && module.exports) module.exports = dexStatMap;

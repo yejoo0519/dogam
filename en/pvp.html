@@ -2495,7 +2495,17 @@ function runSim(){
       const filtered=includeDebuff?candidates:candidates.filter(d=>!isDebuffedDragon(d));
       if(!filtered.length)throw new Error('No dragons are free of the debuff.');
       if(filtered.length<3)throw new Error('Fewer than 3 calculable dragons after excluding debuffed.');
-      const deck=doSimDeck(ownedAcc,filtered,excSun);
+      let deck;
+      if(encMode==='infinite'){
+        // "Inherit" includes keeping owned enchants, so also compute the owned-enchant result and keep the better one.
+        const owned=ownedAcc.map(a=>({...a,_enc:S.accCards[a._accId]?.enchant||'none'}));
+        const fixedDeck=doSimDeck(owned,filtered,excSun,'fixed');
+        const infDeck=doSimDeck(ownedAcc,filtered,excSun,'infinite');
+        const tot=d=>d.reduce((t,o)=>t+o.bv,0);
+        deck=infDeck.length<3||(fixedDeck.length>=3&&tot(fixedDeck)>tot(infDeck))?fixedDeck:infDeck;
+      }else{
+        deck=doSimDeck(ownedAcc,filtered,excSun);
+      }
       if(deck.length<3)throw new Error('Could not find a 3-dragon combo within the accessory/pendant/gem duplicate limits.');
       renderResDeck(deck,includeDebuff?0:candidates.length-filtered.length);
       const rs=document.getElementById('res-sec');
@@ -2570,12 +2580,12 @@ function getDragonBuffCounts(dragon){
 }
 
 
-function doSimDeck(ownedAcc,dragons,excSun){
+function doSimDeck(ownedAcc,dragons,excSun,encModeOverride=null){
   const pool=buildBaselineGemPool(15);
   const allocs=genAllocs(pool,5,true);
   const pends=getPends(excSun);
   const coll=S.coll;
-  const encMode=document.querySelector('input[name="enc-mode"]:checked')?.value||'fixed';
+  const encMode=encModeOverride||document.querySelector('input[name="enc-mode"]:checked')?.value||'fixed';
   const optionLimit=80;
   const dragonOptionSets=[];
 
@@ -2649,8 +2659,7 @@ function doSimDeck(ownedAcc,dragons,excSun){
   }
 
   dragonOptionSets.sort((a,b)=>b.bestBV-a.bestBV);
-  const deck=findBestDeck(dragonOptionSets,pool);
-  return deck.length?applyBestGemUpgrades(deck):deck;
+  return pickBestUpgradedDeck(findBestDecks(dragonOptionSets,pool));
 }
 
 function deckOptionsCompatible(a,b,pool){
@@ -2675,33 +2684,50 @@ function deckCanAdd(deck,opt,pool){
   return true;
 }
 
-function findBestDeck(dragonOptionSets,pool){
-  let bestDeck=null,bestScore=-Infinity;
+// Pick several top combos with baseline gems, then upgrade gems on each and keep the best final result.
+// Picking only one combo before upgrades could miss a better final combo (e.g. "inherit" scoring below "owned").
+const DECK_CANDIDATES=40;
+function findBestDecks(dragonOptionSets,pool,limit=DECK_CANDIDATES){
+  const top=[]; // {bv,deck} high to low
+  const floor=()=>top.length<limit?-Infinity:top[top.length-1].bv;
   for(let i=0;i<dragonOptionSets.length-2;i++){
     for(let j=i+1;j<dragonOptionSets.length-1;j++){
       for(let k=j+1;k<dragonOptionSets.length;k++){
         const aSet=dragonOptionSets[i],bSet=dragonOptionSets[j],cSet=dragonOptionSets[k];
-        if(aSet.bestBV+bSet.bestBV+cSet.bestBV<=bestScore)continue;
+        if(aSet.bestBV+bSet.bestBV+cSet.bestBV<=floor())continue;
         for(const a of aSet.options){
-          if(a.bv+bSet.bestBV+cSet.bestBV<=bestScore)break;
+          if(a.bv+bSet.bestBV+cSet.bestBV<=floor())break;
           for(const b of bSet.options){
-            if(a.bv+b.bv+cSet.bestBV<=bestScore)break;
+            if(a.bv+b.bv+cSet.bestBV<=floor())break;
             if(!deckOptionsCompatible(a,b,pool))continue;
             for(const c of cSet.options){
-              if(a.bv+b.bv+c.bv<=bestScore)break;
-              if(!deckCanAdd([a,b],c,pool))continue;
               const score=a.bv+b.bv+c.bv;
-              if(score>bestScore){
-                bestScore=score;
-                bestDeck=[a,b,c].sort((x,y)=>y.bv-x.bv);
-              }
+              if(score<=floor())break;
+              if(!deckCanAdd([a,b],c,pool))continue;
+              let lo=0,hi=top.length;
+              while(lo<hi){const m=(lo+hi)>>1;if(top[m].bv>=score)lo=m+1;else hi=m;}
+              top.splice(lo,0,{bv:score,deck:[a,b,c]});
+              if(top.length>limit)top.pop();
             }
           }
         }
       }
     }
   }
-  return bestDeck||[];
+  return top.map(t=>t.deck);
+}
+function findBestDeck(dragonOptionSets,pool){
+  const d=findBestDecks(dragonOptionSets,pool,1)[0];
+  return d?d.slice().sort((x,y)=>y.bv-x.bv):[];
+}
+function pickBestUpgradedDeck(decks){
+  let best=null,bestBV=-Infinity;
+  for(const d of decks){
+    const up=applyBestGemUpgrades(d.map(o=>({...o})));
+    const bv=up.reduce((t,o)=>t+o.bv,0);
+    if(bv>bestBV){best=up;bestBV=bv;}
+  }
+  return best||[];
 }
 
 function doSimTop(ownedAcc,bufCombos,excSun){

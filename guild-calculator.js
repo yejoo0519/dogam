@@ -1790,7 +1790,20 @@ function runSim(){
       const filtered=includeDebuff?candidates:candidates.filter(d=>!isDebuffedDragon(d));
       if(!filtered.length)throw new Error('디버프를 받지 않는 용이 없습니다.');
       if(filtered.length<3)throw new Error('디버프 제외 후 계산 가능한 용이 3마리 미만입니다.');
-      const deck=await doSimDeck(ownedAcc,filtered,excSun,(p,stage)=>CalcProgress.update(p,stage));
+      let deck;
+      if(encMode==='infinite'){
+        // 승계 가능은 보유 인챈트를 그대로 쓰는 경우도 포함한다. 보유 인챈트 기준 결과도 함께 계산해
+        // 더 높은 쪽을 고르므로, 승계 가능 결과가 보유 인챈트 결과보다 낮게 나오지 않는다.
+        const owned=ownedAcc.map(a=>({...a,_enc:S.accCards[a._accId]?.enchant||'none'}));
+        const fixedDeck=await doSimDeck(owned,filtered,excSun,(p,stage)=>CalcProgress.update(p*0.3,stage),'fixed');
+        const infDeck=await doSimDeck(ownedAcc,filtered,excSun,(p,stage)=>CalcProgress.update(30+p*0.7,stage),'infinite');
+        const score=r=>typeof guildScore==='function'?guildScore(r):r.bv;
+        const tot=d=>[d.reduce((t,o)=>t+score(o),0),d.reduce((t,o)=>t+o.bv,0)];
+        const [fs,fb]=tot(fixedDeck),[is,ib]=tot(infDeck);
+        deck=infDeck.length<3||(fixedDeck.length>=3&&(fs>is||(fs===is&&fb>ib)))?fixedDeck:infDeck;
+      }else{
+        deck=await doSimDeck(ownedAcc,filtered,excSun,(p,stage)=>CalcProgress.update(p,stage));
+      }
       if(deck.length<3)throw new Error('장신구/펜던트/젬 중복 제한을 만족하는 3마리 조합을 찾지 못했습니다.');
       renderResDeck(deck,includeDebuff?0:candidates.length-filtered.length);
       const rs=document.getElementById('res-sec');
@@ -1874,12 +1887,12 @@ function getDragonDebuffCounts(dragon){
   return counts;
 }
 
-async function doSimDeck(ownedAcc,dragons,excSun,onProgress=()=>{}){
+async function doSimDeck(ownedAcc,dragons,excSun,onProgress=()=>{},encModeOverride=null){
   const pool=buildBaselineGemPool(15);
   const allocs=genAllocs(pool,5,true);
   const pends=getPends(excSun);
   const coll=S.coll;
-  const encMode=document.querySelector('input[name="enc-mode"]:checked')?.value||'fixed';
+  const encMode=encModeOverride||document.querySelector('input[name="enc-mode"]:checked')?.value||'fixed';
   const optionLimit=80;
   const dragonOptionSets=[];
   const total=dragons.length*ownedAcc.length*(encMode==='infinite'?3:1)*pends.length*allocs.length;
@@ -1963,8 +1976,8 @@ async function doSimDeck(ownedAcc,dragons,excSun,onProgress=()=>{}){
 
   dragonOptionSets.sort((a,b)=>b.bestBV-a.bestBV);
   onProgress(80,'3마리 조합 탐색');
-  const deck=await findBestDeck(dragonOptionSets,pool,onProgress);
-  return deck.length?applyBestGemUpgrades(deck):deck;
+  const decks=await findBestDecks(dragonOptionSets,pool,onProgress);
+  return pickBestUpgradedDeck(decks);
 }
 
 function deckOptionsCompatible(a,b,pool){
@@ -1989,12 +2002,25 @@ function deckCanAdd(deck,opt,pool){
   return true;
 }
 
-async function findBestDeck(dragonOptionSets,pool,onProgress=()=>{}){
+// 기준 단계 젬으로 상위 후보 조합을 여러 개 뽑는다 (고단계 젬은 이후 applyBestGemUpgrades에서 끼운다).
+// 1개만 고르면, 젬을 끼운 뒤 다른 조합이 더 높아지는 경우를 놓친다 — 예: 승계 가능이 보유 인챈트보다 낮게 나오던 문제.
+const DECK_CANDIDATES=40;
+async function findBestDecks(dragonOptionSets,pool,onProgress=()=>{},limit=DECK_CANDIDATES){
   const score=r=>typeof guildScore==='function'?guildScore(r):r.bv;
   const sets=dragonOptionSets.map(s=>({...s,options:s.options.slice().sort((a,b)=>score(b)-score(a)||b.bv-a.bv)}));
-  let bestDeck=[],bestScore=-Infinity,bestBV=-Infinity;
+  const top=[]; // {score,bv,deck} 높은 순
   const totalTriples=sets.length*(sets.length-1)*(sets.length-2)/6;let done=0,steps=0,lastYield=0;
-  const cannotBeat=(scoreSum,bvSum)=>scoreSum<bestScore||(scoreSum===bestScore&&bvSum<=bestBV);
+  const cannotBeat=(scoreSum,bvSum)=>{
+    if(top.length<limit)return false;
+    const w=top[top.length-1];
+    return scoreSum<w.score||(scoreSum===w.score&&bvSum<=w.bv);
+  };
+  const push=(total,bv,deck)=>{
+    let lo=0,hi=top.length;
+    while(lo<hi){const m=(lo+hi)>>1;if(top[m].score>total||(top[m].score===total&&top[m].bv>=bv))lo=m+1;else hi=m;}
+    top.splice(lo,0,{score:total,bv,deck});
+    if(top.length>limit)top.pop();
+  };
   for(let i=0;i<sets.length-2;i++)for(let j=i+1;j<sets.length-1;j++)for(let k=j+1;k<sets.length;k++){
     if((done&31)===0&&performance.now()-lastYield>=100){onProgress(80+19*done/Math.max(1,totalTriples),'3마리 조합 탐색');await CalcProgress.yield();lastYield=performance.now();}
     done++;
@@ -2010,12 +2036,30 @@ async function findBestDeck(dragonOptionSets,pool,onProgress=()=>{}){
           const total=score(a)+score(b)+score(c),bv=a.bv+b.bv+c.bv;
           if(cannotBeat(total,bv))break;
           if(!deckCanAdd([a,b],c,pool))continue;
-          bestScore=total;bestBV=bv;bestDeck=[a,b,c].sort((x,y)=>score(y)-score(x)||y.bv-x.bv);
+          push(total,bv,[a,b,c]);
         }
       }
     }
   }
-  return bestDeck;
+  return top.map(t=>t.deck);
+}
+
+async function findBestDeck(dragonOptionSets,pool,onProgress=()=>{}){
+  const score=r=>typeof guildScore==='function'?guildScore(r):r.bv;
+  const decks=await findBestDecks(dragonOptionSets,pool,onProgress,1);
+  return decks.length?decks[0].slice().sort((x,y)=>score(y)-score(x)||y.bv-x.bv):[];
+}
+
+// 후보 조합마다 고단계 젬을 끼운 뒤 최종 점수(추천 기준 합계 → 비밸 합계)가 가장 높은 조합을 고른다.
+function pickBestUpgradedDeck(decks){
+  const score=r=>typeof guildScore==='function'?guildScore(r):r.bv;
+  let best=null,bestS=-Infinity,bestB=-Infinity;
+  for(const d of decks){
+    const up=applyBestGemUpgrades(d.map(o=>({...o})));
+    const s=up.reduce((t,o)=>t+score(o),0),b=up.reduce((t,o)=>t+o.bv,0);
+    if(s>bestS||(s===bestS&&b>bestB)){best=up;bestS=s;bestB=b;}
+  }
+  return best||[];
 }
 
 function doSimTop(ownedAcc,bufCombos,excSun){

@@ -902,6 +902,8 @@ const ASSET_BASES = [
  'https://yejoo0519.github.io/img/dragon/',
  'https://raw.githubusercontent.com/yejoo0519/img/main/dragon/',
 ];
+const LOCAL_ASSET_BASE = "./assets/aura-dragons/";
+const LOCAL_ASSETS = {"3778": ["child1", "child2", "adult", "transcended", "advent"], "3779": ["child1", "child2", "adult", "transcended", "advent"]};
 let ASSET_BASE = ASSET_BASES[0]; // 매니페스트를 받은 주소로 확정됩니다
 
 // 아이콘·동굴 배경·오라는 기존 사이트에서 그대로 가져옵니다
@@ -980,7 +982,7 @@ const AURAS = [
 ];
 
 // 도감 아이콘 단계: 강림 8, 초월 7, 그 외 성체 4
-const ICON_SRC = (id, stage) =>SITE_BASE + 'dragon/' + id + '/profile/' + stage + '.png';
+const ICON_SRC = (id, stage) =>(['717', '718'].includes(String(id)) ? './' : SITE_BASE) + 'dragon/' + id + '/profile/' + stage + '.png';
 const ELEM_ICON = {
  '땅': 'icon/11.png', '물': 'icon/12.png', '불': 'icon/13.png',
  '바람': 'icon/14.png', '빛': 'icon/84.png', '어둠': 'icon/87.png',
@@ -1018,7 +1020,7 @@ const DRAGONS = DEX_DRAGONS.map(([id, name, elem, ad, stage]) =>({
  key: name.replace(/\s+/g, '').toLowerCase()
 }));
 
-let manifest = null; // { 게임ID: [세트 이름들] }
+let manifest = { ...LOCAL_ASSETS }; // { 게임ID: [세트 이름들] }
 let skel = null; // 본체 스켈레톤
 let fxBack = [], fxFront = []; // 장식 이펙트 (드래곤 뒤 / 앞)
 let curAnim = null, t = 0, lastMs = 0, baseDPR = 1, drawBase = [1,0,0,-1,0,0];
@@ -1127,7 +1129,7 @@ function renderSetButtons(){
 
 /* ── 원격 로딩 ── */
 async function fetchSet(gameId, name){
- const base = ASSET_BASE + gameId + '/' + name;
+ const base = (LOCAL_ASSETS[gameId] ? LOCAL_ASSET_BASE : ASSET_BASE) + gameId + '/' + name;
  const [jsonRes, atlasRes] = await Promise.all([fetch(base + '.json'), fetch(base + '.atlas')]);
  if(!jsonRes.ok || !atlasRes.ok) throw new Error(name + ' 파일을 찾을 수 없습니다');
  const [json, atlasText] = await Promise.all([jsonRes.json(), atlasRes.text()]);
@@ -1676,7 +1678,7 @@ async function loadManifest(){
  try{
  const res = await fetch(base + 'manifest.json');
  if(!res.ok) throw new Error('HTTP ' + res.status);
- manifest = await res.json();
+ manifest = { ...(await res.json()), ...LOCAL_ASSETS };
  ASSET_BASE = base;
  resolveAssets();
  renderDragonGrid();

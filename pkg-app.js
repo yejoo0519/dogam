@@ -20,7 +20,11 @@
     if(d.next) return `<span class="pkg-mono">${pretty(d.next.start)}</span><div class="pkg-cell-sub">공식 판매 예정</div>`;
     if(!d.estimate) return '<span class="pkg-muted">산정 불가</span>';
     const label=d.daysLeft<0?`${Math.abs(d.daysLeft)}일 경과`:d.daysLeft===0?'오늘 · 추정':`D-${d.daysLeft} · 추정`;
-    return `<span class="pkg-mono">${pretty(d.estimate)}</span><div class="pkg-cell-sub">${label}</div>`;
+    return `<span class="pkg-mono">${pretty(d.estimate)}</span><div class="pkg-cell-sub">${label}${d.usesNoticeDates?' · 공지 기준 포함':''}</div>`;
+  }
+  function recordDate(d,first=false){
+    const basis=first?d.firstDateBasis:d.recentDateBasis;
+    return `<span class="pkg-mono">${pretty(first?d.first:d.recent)}</span>${basis==='notice'?'<div class="pkg-cell-sub">공지일 · 판매일 미확정</div>':''}`;
   }
   function avatar(d){
     const dragon=window.DV1_DRAGONS?.getById(d.id);
@@ -45,13 +49,13 @@
     const list=filteredRecords();
     $('resultCount').textContent=`${list.length}종`;
     if(!list.length){$('results').innerHTML='<div class="pkg-empty">검색 조건에 맞는 드래곤이 없습니다.</div>';return;}
-    $('results').innerHTML=`<div class="pkg-table-scroll"><table class="pkg-table"><thead><tr><th scope="col">드래곤 / 상태</th><th scope="col">판매 회차</th><th scope="col" class="pkg-first">첫 판매</th><th scope="col">최근 판매</th><th scope="col">중앙값 간격</th><th scope="col">예상 복각일</th><th scope="col">근거</th></tr></thead><tbody>${list.map(d=>{
-      const recent=d.sales.filter(s=>s.start<=H.todayKST()).at(-1)||d.sales[0];
+    $('results').innerHTML=`<div class="pkg-table-scroll"><table class="pkg-table"><thead><tr><th scope="col">드래곤 / 상태</th><th scope="col">판매 회차</th><th scope="col" class="pkg-first">첫 판매 / 공지</th><th scope="col">최근 판매 / 공지</th><th scope="col">중앙값 간격</th><th scope="col">예상 복각일</th><th scope="col">근거</th></tr></thead><tbody>${list.map(d=>{
+      const recent=d.sales.filter(s=>s.referenceDate<=H.todayKST()).at(-1)||d.sales[0];
       const dots=Math.min(d.count,8);
-      return `<tr><td><button class="pkg-name" data-detail="${d.id}" aria-label="${escape(d.name)} 판매 이력 보기">${avatar(d)}<span>${escape(d.name)}<div class="pkg-cell-sub">${status(d)}</div></span></button></td><td><span class="pkg-mono">${d.count}회</span><div class="pkg-history-line" aria-hidden="true">${Array.from({length:dots},(_,i)=>(i?'<i></i>':'')+'<span></span>').join('')}</div></td><td class="pkg-first pkg-mono">${pretty(d.first)}</td><td class="pkg-mono">${pretty(d.recent)}</td><td><span class="pkg-mono">${d.cycle?Math.round(d.cycle)+'일':'—'}</span><div class="pkg-cell-sub">${d.lastInterval?'최근 간격 '+d.lastInterval+'일':'간격 자료 없음'}</div></td><td>${estimate(d)}</td><td>${link(recent.notices[0],'공지')}<br><button class="pkg-text-button" data-detail="${d.id}">이력 보기</button></td></tr>`;
+      return `<tr><td><button class="pkg-name" data-detail="${d.id}" aria-label="${escape(d.name)} 판매 이력 보기">${avatar(d)}<span>${escape(d.name)}<div class="pkg-cell-sub">${status(d)}</div></span></button></td><td><span class="pkg-mono">${d.count}회</span><div class="pkg-history-line" aria-hidden="true">${Array.from({length:dots},(_,i)=>(i?'<i></i>':'')+'<span></span>').join('')}</div></td><td class="pkg-first pkg-mono">${recordDate(d,true)}</td><td>${recordDate(d)}</td><td><span class="pkg-mono">${d.cycle?Math.round(d.cycle)+'일':'—'}</span><div class="pkg-cell-sub">${d.lastInterval?'최근 간격 '+d.lastInterval+'일':'간격 자료 없음'}</div></td><td>${estimate(d)}</td><td>${link(recent.notices[0],'공지')}<br><button class="pkg-text-button" data-detail="${d.id}">이력 보기</button></td></tr>`;
     }).join('')}</tbody></table></div><div class="pkg-cards">${list.map(d=>{
-      const recent=d.sales.filter(s=>s.start<=H.todayKST()).at(-1)||d.sales[0];
-      return `<article class="pkg-card"><button class="pkg-card-head" data-detail="${d.id}" aria-label="${escape(d.name)} 판매 이력 보기">${avatar(d)}<span class="pkg-card-name">${escape(d.name)}</span>${status(d)}</button><dl class="pkg-card-facts"><div><dt>최근 판매</dt><dd class="pkg-mono">${pretty(d.recent)}</dd></div><div><dt>판매 회차</dt><dd>${d.count}회</dd></div><div><dt>중앙값 간격</dt><dd>${d.cycle?Math.round(d.cycle)+'일':'자료 부족'}</dd></div><div><dt>예상 복각일</dt><dd>${estimate(d)}</dd></div></dl><footer class="pkg-card-actions">${link(recent.notices[0],'근거 공지')}<button class="pkg-button" data-detail="${d.id}">판매 이력 보기</button></footer></article>`;
+      const recent=d.sales.filter(s=>s.referenceDate<=H.todayKST()).at(-1)||d.sales[0];
+      return `<article class="pkg-card"><button class="pkg-card-head" data-detail="${d.id}" aria-label="${escape(d.name)} 판매 이력 보기">${avatar(d)}<span class="pkg-card-name">${escape(d.name)}</span>${status(d)}</button><dl class="pkg-card-facts"><div><dt>최근 판매 / 공지</dt><dd>${recordDate(d)}</dd></div><div><dt>판매 회차</dt><dd>${d.count}회</dd></div><div><dt>중앙값 간격</dt><dd>${d.cycle?Math.round(d.cycle)+'일':'자료 부족'}</dd></div><div><dt>예상 복각일</dt><dd>${estimate(d)}</dd></div></dl><footer class="pkg-card-actions">${link(recent.notices[0],'근거 공지')}<button class="pkg-button" data-detail="${d.id}">판매 이력 보기</button></footer></article>`;
     }).join('')}</div>`;
   }
   function renderNotices(){
@@ -76,8 +80,8 @@
   function openDetail(id){
     const d=records.find(d=>d.id===Number(id));if(!d)return;
     lastFocus=document.activeElement;
-    const prediction=d.next?`공식 판매 시작 <strong>${pretty(d.next.start)}</strong>`:d.estimate?`예상 복각일 <strong>${pretty(d.estimate)}</strong> · ${d.daysLeft<0?'예상일 경과':'통계적 추정'}<br>최근 판매일 + 판매 간격 중앙값. 실제 일정은 공식 공지에서 확인해 주세요.`:'판매 간격을 산정할 자료가 부족하거나, 장기간 판매가 확인되지 않아 예상일을 표시하지 않습니다.';
-    $('detailBody').innerHTML=`<header class="pkg-detail-head"><div><p class="pkg-eyebrow">PACKAGE HISTORY</p><h2 id="detailTitle">${escape(d.name)}</h2></div><button data-close>닫기</button></header><div class="pkg-detail-content"><dl class="pkg-detail-facts"><div><dt>확인한 회차</dt><dd>${d.count}회</dd></div><div><dt>중앙값 간격</dt><dd>${d.cycle?Math.round(d.cycle)+'일':'—'}</dd></div><div><dt>최근 간격</dt><dd>${d.lastInterval?d.lastInterval+'일':'—'}</dd></div></dl><div class="pkg-estimate-box">${prediction}</div><ol class="pkg-timeline">${d.sales.map((s,i)=>`<li><h3>${pretty(s.start)} <span class="pkg-badge">${i+1}회차${s.start>H.todayKST()?' · 예정':''}</span></h3><p>판매 기간 ${pretty(s.start)} — ${pretty(s.end)}${i?'<br>직전 판매와 '+(H.day(s.start)-H.day(d.sales[i-1].start))+'일 간격':''}${s.price!=null?'<br>확인된 가격 '+s.price.toLocaleString('ko-KR')+'원':''}${s.evidence?'<br>'+escape(s.evidence):''}</p>${s.notices.map(n=>link(n)).join('')}</li>`).join('')}</ol><a class="pkg-link pkg-detail-dex" href="./dex.html">드래곤 도감 보기 ↗</a></div>`;
+    const prediction=d.next?`공식 판매 시작 <strong>${pretty(d.next.start)}</strong>`:d.estimate?`예상 복각일 <strong>${pretty(d.estimate)}</strong> · ${d.daysLeft<0?'예상일 경과':'통계적 추정'}<br>${d.usesNoticeDates?'판매일 미확정 회차는 공지일을 사용한 추정입니다.':'최근 판매일 + 판매 간격 중앙값.'} 실제 일정은 공식 공지에서 확인해 주세요.`:'판매 간격을 산정할 자료가 부족하거나, 장기간 판매가 확인되지 않아 예상일을 표시하지 않습니다.';
+    $('detailBody').innerHTML=`<header class="pkg-detail-head"><div><p class="pkg-eyebrow">PACKAGE HISTORY</p><h2 id="detailTitle">${escape(d.name)}</h2></div><button data-close>닫기</button></header><div class="pkg-detail-content"><dl class="pkg-detail-facts"><div><dt>확인한 회차</dt><dd>${d.count}회</dd></div><div><dt>중앙값 간격</dt><dd>${d.cycle?Math.round(d.cycle)+'일':'—'}</dd></div><div><dt>최근 간격</dt><dd>${d.lastInterval?d.lastInterval+'일':'—'}</dd></div></dl><div class="pkg-estimate-box">${prediction}</div><ol class="pkg-timeline">${d.sales.map((s,i)=>`<li><h3>${pretty(s.referenceDate)} <span class="pkg-badge">${i+1}회차${s.dateBasis==='notice'?' · 공지 기준':s.start>H.todayKST()?' · 예정':''}</span></h3><p>${s.dateBasis==='notice'?'판매 안내 공지일 '+pretty(s.noticeDate)+' · 실제 판매 기간 미확정':'판매 기간 '+pretty(s.start)+' — '+pretty(s.end)}${i?'<br>직전 회차와 '+(H.day(s.referenceDate)-H.day(d.sales[i-1].referenceDate))+'일 간격':''}${s.price!=null?'<br>확인된 가격 '+s.price.toLocaleString('ko-KR')+'원':''}${s.evidence?'<br>'+escape(s.evidence):''}</p>${s.notices.map(n=>link(n)).join('')}</li>`).join('')}</ol><a class="pkg-link pkg-detail-dex" href="./dex.html">드래곤 도감 보기 ↗</a></div>`;
     $('detail').showModal();
   }
   $('detail').addEventListener('click',e=>{

@@ -19,34 +19,53 @@
   }
   function build(source,today=todayKST()){
     const groups = new Map(), current = day(today);
+    const excluded=['골드드래곤','헬드래곤','수룡','히드라곤','청룡','백룡','흑룡'];
     for(const notice of source.notices){
       for(const event of notice.events){
-        if(['골드드래곤','헬드래곤'].includes(event.name.replace(/\s+/g,''))) continue;
-        if(!groups.has(event.dragonId)) groups.set(event.dragonId,{id:event.dragonId,name:event.name,sales:new Map()});
-        const group = groups.get(event.dragonId);
-        if(!group.sales.has(event.start)) group.sales.set(event.start,{...event,notices:[]});
-        const sale = group.sales.get(event.start);
-        if(!sale.notices.some(n=>n.id===notice.id)) sale.notices.push(notice);
-        // More recent corrections supersede old ending dates; image review
-        // prices survive a second source describing the same sale.
-        if(!sale.latestNoticeId || notice.id > sale.latestNoticeId){sale.end=event.end;sale.latestNoticeId=notice.id;}
-        if(event.price != null) sale.price=event.price;
-        if(event.evidence) sale.evidence=event.evidence;
+        if(excluded.includes(event.name.replace(/\s+/g,''))) continue;
+        if(!groups.has(event.dragonId)) groups.set(event.dragonId,{id:event.dragonId,name:event.name,entries:[]});
+        groups.get(event.dragonId).entries.push({event,notice});
       }
     }
+    for(const group of groups.values()){
+      const entries=group.entries.sort((a,b)=>a.notice.date.localeCompare(b.notice.date)||a.notice.id-b.notice.id);
+      const sales=[];
+      for(const {event,notice} of entries){
+        let sale=sales.at(-1);
+        // Follow successive notice dates: corrections inside three calendar
+        // months belong to the same announcement round, including chains.
+        if(!sale || notice.date>=addMonths(sale.lastNoticeDate,3)){
+          sale={...event,start:event.start||null,end:event.end||null,dateBasis:event.start?'sale':'notice',
+            referenceDate:event.start||notice.date,noticeDate:notice.date,lastNoticeDate:notice.date,notices:[]};
+          sales.push(sale);
+        }
+        sale.lastNoticeDate=notice.date;
+        if(!sale.notices.some(n=>n.id===notice.id)) sale.notices.push(notice);
+        // A precise sale period takes precedence over a notice-date fallback.
+        if(event.start && (!sale.start || event.start<sale.start)){
+          sale.start=event.start;sale.end=event.end;sale.referenceDate=event.start;sale.dateBasis='sale';sale.latestNoticeId=notice.id;
+        }else if(event.start===sale.start && (!sale.latestNoticeId || notice.id>sale.latestNoticeId)){
+          sale.end=event.end;sale.latestNoticeId=notice.id;
+        }
+        if(event.price!=null) sale.price=event.price;
+        if(event.evidence) sale.evidence=event.evidence;
+      }
+      group.sales=sales.sort((a,b)=>a.referenceDate.localeCompare(b.referenceDate));
+    }
     return Array.from(groups.values(),group=>{
-      const sales = Array.from(group.sales.values()).sort((a,b)=>a.start.localeCompare(b.start));
+      const sales = group.sales;
       // Upcoming official sales are displayed, but cannot become a completed
       // recurrence interval before their starting date.
-      const begun = sales.filter(s=>s.start <= today);
-      const gaps = begun.slice(1).map((s,i)=>day(s.start)-day(begun[i].start));
-      const cycle = median(gaps), recent = begun.at(-1), next = sales.find(s=>s.start > today);
-      const elapsed = recent ? current-day(recent.start) : 0;
-      const stale = recent ? today >= addMonths(recent.start,30) : false;
-      const estimate = cycle && !stale ? iso(day(recent.start)+Math.round(cycle)) : null;
-      const active = sales.find(s=>s.start<=today && s.end>=today);
-      return {id:group.id,name:group.name,sales,count:begun.length,first:begun[0]?.start||sales[0].start,
-        recent:recent?.start||null,gaps,cycle,lastInterval:gaps.at(-1)||null,elapsed,stale,
+      const begun = sales.filter(s=>s.referenceDate <= today);
+      const gaps = begun.slice(1).map((s,i)=>day(s.referenceDate)-day(begun[i].referenceDate));
+      const cycle = median(gaps), recent = begun.at(-1), next = sales.find(s=>s.start && s.start > today);
+      const elapsed = recent ? current-day(recent.referenceDate) : 0;
+      const stale = recent ? today >= addMonths(recent.referenceDate,30) : false;
+      const estimate = cycle && !stale ? iso(day(recent.referenceDate)+Math.round(cycle)) : null;
+      const active = sales.find(s=>s.start && s.end && s.start<=today && s.end>=today);
+      return {id:group.id,name:group.name,sales,count:begun.length,first:begun[0]?.referenceDate||sales[0].referenceDate,
+        firstDateBasis:(begun[0]||sales[0]).dateBasis,recentDateBasis:recent?.dateBasis||'notice',usesNoticeDates:begun.some(s=>s.dateBasis==='notice'),
+        recent:recent?.referenceDate||null,gaps,cycle,lastInterval:gaps.at(-1)||null,elapsed,stale,
         estimate,daysLeft:estimate?day(estimate)-current:null,active,next};
     });
   }

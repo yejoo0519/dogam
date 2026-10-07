@@ -5082,10 +5082,10 @@
       "url": "https://www.dragonvillage.net/notice/21142",
       "events": [
         {
-          "dragonId": 41,
-          "name": "골드 드래곤",
+          "dragonId": 344,
+          "name": "혼",
           "start": "2025-09-24",
-          "end": "2025-09-30",
+          "end": "2025-10-31",
           "noticeId": 21142
         }
       ],
@@ -6679,7 +6679,17 @@
       "title": "[공지] 종합 선물 패키지 판매 안내",
       "date": "2023-12-08",
       "url": "https://www.dragonvillage.net/notice/20767",
-      "events": [],
+      "events": [
+        {
+          "dragonId": 344,
+          "name": "혼",
+          "start": "2023-12-09",
+          "end": "2024-01-07",
+          "noticeId": 20767,
+          "price": 12000,
+          "evidence": "종합 선물 패키지1 구성표 이미지"
+        }
+      ],
       "periods": [
         {
           "start": "2023-12-09",
@@ -7081,7 +7091,17 @@
       "title": "[개발자노트] 2023년 하반기 업데이트 관련 개발자 노트 1편",
       "date": "2023-05-26",
       "url": "https://www.dragonvillage.net/notice/20673",
-      "events": [],
+      "events": [
+        {
+          "dragonId": 372,
+          "name": "화이트썬더 드래곤",
+          "start": null,
+          "end": null,
+          "noticeId": 20673,
+          "dateBasis": "notice",
+          "evidence": "판매 안내 공지 기준 · 실제 판매 기간 미확정"
+        }
+      ],
       "periods": [],
       "hasImages": true
     },
@@ -7207,15 +7227,15 @@
         {
           "dragonId": 252,
           "name": "유니버스",
-          "start": "2023-03-18",
-          "end": "2023-03-31",
+          "start": "2023-03-21",
+          "end": "2023-04-03",
           "noticeId": 20644
         }
       ],
       "periods": [
         {
-          "start": "2023-03-18",
-          "end": "2023-03-31",
+          "start": "2023-03-21",
+          "end": "2023-04-03",
           "label": "판매 일정"
         }
       ],
@@ -7443,7 +7463,7 @@
         {
           "start": "2023-01-09",
           "end": "2023-02-07",
-          "label": "패키지 품목 안내​"
+          "label": "패키지 품목 안내"
         }
       ],
       "hasImages": true
@@ -7786,7 +7806,35 @@
       "title": "[공지] 제피로스,포폰,솔라 패키지 판매 예정 안내",
       "date": "2022-08-18",
       "url": "https://www.dragonvillage.net/notice/20566",
-      "events": [],
+      "events": [
+        {
+          "dragonId": 348,
+          "name": "솔라",
+          "start": null,
+          "end": null,
+          "noticeId": 20566,
+          "dateBasis": "notice",
+          "evidence": "판매 안내 공지 기준 · 실제 판매 기간 미확정"
+        },
+        {
+          "dragonId": 349,
+          "name": "포폰",
+          "start": null,
+          "end": null,
+          "noticeId": 20566,
+          "dateBasis": "notice",
+          "evidence": "판매 안내 공지 기준 · 실제 판매 기간 미확정"
+        },
+        {
+          "dragonId": 350,
+          "name": "제피로스",
+          "start": null,
+          "end": null,
+          "noticeId": 20566,
+          "dateBasis": "notice",
+          "evidence": "판매 안내 공지 기준 · 실제 판매 기간 미확정"
+        }
+      ],
       "periods": [],
       "hasImages": true
     },
@@ -7876,7 +7924,17 @@
       "title": "[공지] 5.4.18 업데이트 안내",
       "date": "2021-11-17",
       "url": "https://www.dragonvillage.net/notice/20484",
-      "events": [],
+      "events": [
+        {
+          "dragonId": 538,
+          "name": "프라이드",
+          "start": null,
+          "end": null,
+          "noticeId": 20484,
+          "dateBasis": "notice",
+          "evidence": "판매 안내 공지 기준 · 실제 판매 기간 미확정"
+        }
+      ],
       "periods": [],
       "hasImages": true
     },
@@ -7978,7 +8036,38 @@
       "title": "[공지] 5.4.03 업데이트 사전 안내 (수정)",
       "date": "2021-06-15",
       "url": "https://www.dragonvillage.net/notice/20412",
-      "events": [],
+      "events": [
+        {
+          "dragonId": 166,
+          "name": "쿠로이 드래곤",
+          "start": null,
+          "end": null,
+          "noticeId": 20412,
+          "price": null,
+          "evidence": "신규 패키지 이미지 · 공지 기준, 실제 판매 기간 미확정",
+          "dateBasis": "notice"
+        },
+        {
+          "dragonId": 266,
+          "name": "그레이탄",
+          "start": null,
+          "end": null,
+          "noticeId": 20412,
+          "price": null,
+          "evidence": "신규 패키지 이미지 · 공지 기준, 실제 판매 기간 미확정",
+          "dateBasis": "notice"
+        },
+        {
+          "dragonId": 526,
+          "name": "미스핏",
+          "start": null,
+          "end": null,
+          "noticeId": 20412,
+          "price": null,
+          "evidence": "신규 패키지 이미지 · 공지 기준, 실제 판매 기간 미확정",
+          "dateBasis": "notice"
+        }
+      ],
       "periods": [],
       "hasImages": true
     },
@@ -8057,7 +8146,17 @@
       "title": "[공지] 5.3.99 업데이트 사전 안내",
       "date": "2021-03-22",
       "url": "https://www.dragonvillage.net/notice/20372",
-      "events": [],
+      "events": [
+        {
+          "dragonId": 520,
+          "name": "강림 강화곤",
+          "start": null,
+          "end": null,
+          "noticeId": 20372,
+          "dateBasis": "notice",
+          "evidence": "판매 안내 공지 기준 · 실제 판매 기간 미확정"
+        }
+      ],
       "periods": [],
       "hasImages": true
     },
@@ -8267,7 +8366,26 @@
       "title": "[공지] 단계 추가 사전 안내",
       "date": "2020-09-03",
       "url": "https://www.dragonvillage.net/notice/20238",
-      "events": [],
+      "events": [
+        {
+          "dragonId": 17,
+          "name": "페어리 드래곤",
+          "start": null,
+          "end": null,
+          "noticeId": 20238,
+          "dateBasis": "notice",
+          "evidence": "판매 안내 공지 기준 · 실제 판매 기간 미확정"
+        },
+        {
+          "dragonId": 160,
+          "name": "태엽 드래곤",
+          "start": null,
+          "end": null,
+          "noticeId": 20238,
+          "dateBasis": "notice",
+          "evidence": "판매 안내 공지 기준 · 실제 판매 기간 미확정"
+        }
+      ],
       "periods": [],
       "hasImages": true
     },
@@ -8285,7 +8403,26 @@
       "title": "[공지] 알상점 개편 업데이트 사전 안내",
       "date": "2020-08-25",
       "url": "https://www.dragonvillage.net/notice/20226",
-      "events": [],
+      "events": [
+        {
+          "dragonId": 162,
+          "name": "블랙티어 드래곤",
+          "start": null,
+          "end": null,
+          "noticeId": 20226,
+          "dateBasis": "notice",
+          "evidence": "판매 안내 공지 기준 · 실제 판매 기간 미확정"
+        },
+        {
+          "dragonId": 163,
+          "name": "블랙아머 드래곤",
+          "start": null,
+          "end": null,
+          "noticeId": 20226,
+          "dateBasis": "notice",
+          "evidence": "판매 안내 공지 기준 · 실제 판매 기간 미확정"
+        }
+      ],
       "periods": [],
       "hasImages": true
     },
@@ -8294,7 +8431,26 @@
       "title": "[공지] 단계 추가 사전 안내",
       "date": "2020-08-21",
       "url": "https://www.dragonvillage.net/notice/20224",
-      "events": [],
+      "events": [
+        {
+          "dragonId": 163,
+          "name": "블랙아머 드래곤",
+          "start": null,
+          "end": null,
+          "noticeId": 20224,
+          "dateBasis": "notice",
+          "evidence": "판매 안내 공지 기준 · 실제 판매 기간 미확정"
+        },
+        {
+          "dragonId": 162,
+          "name": "블랙티어 드래곤",
+          "start": null,
+          "end": null,
+          "noticeId": 20224,
+          "dateBasis": "notice",
+          "evidence": "판매 안내 공지 기준 · 실제 판매 기간 미확정"
+        }
+      ],
       "periods": [],
       "hasImages": true
     },
@@ -8355,12 +8511,31 @@
       "title": "[공지] 단계 추가 사전 안내",
       "date": "2020-07-09",
       "url": "https://www.dragonvillage.net/notice/20181",
-      "events": [],
+      "events": [
+        {
+          "dragonId": 415,
+          "name": "애플칙",
+          "start": "2020-07-15",
+          "end": "2020-07-21",
+          "noticeId": 20181,
+          "price": null,
+          "evidence": "개별 드래곤 패키지 배너 이미지"
+        },
+        {
+          "dragonId": 416,
+          "name": "트로페우스",
+          "start": "2020-07-15",
+          "end": "2020-07-21",
+          "noticeId": 20181,
+          "price": null,
+          "evidence": "개별 드래곤 패키지 배너 이미지"
+        }
+      ],
       "periods": [
         {
           "start": "2020-07-15",
           "end": "2020-07-21",
-          "label": "*단계추가 기념 패키지​"
+          "label": "*단계추가 기념 패키지"
         }
       ],
       "hasImages": true
@@ -8403,7 +8578,17 @@
       "title": "[공지] 단계 추가 사전 안내 (추가)",
       "date": "2020-06-11",
       "url": "https://www.dragonvillage.net/notice/20155",
-      "events": [],
+      "events": [
+        {
+          "dragonId": 342,
+          "name": "베르나",
+          "start": "2020-06-17",
+          "end": "2020-06-23",
+          "noticeId": 20155,
+          "price": null,
+          "evidence": "단계 추가 합본 패키지 구성품 본문"
+        }
+      ],
       "periods": [
         {
           "start": "2020-06-17",
@@ -8418,7 +8603,17 @@
       "title": "[공지] 단계 추가 합본 패키지 안내",
       "date": "2020-05-11",
       "url": "https://www.dragonvillage.net/notice/20118",
-      "events": [],
+      "events": [
+        {
+          "dragonId": 213,
+          "name": "문라이트",
+          "start": "2020-05-13",
+          "end": "2020-05-19",
+          "noticeId": 20118,
+          "price": null,
+          "evidence": "단계 추가 합본 패키지 구성표 이미지"
+        }
+      ],
       "periods": [
         {
           "start": "2020-05-13",
@@ -8433,7 +8628,17 @@
       "title": "[공지] 신규 레이드 몬스터 추가 및 코드화 확장 안내",
       "date": "2020-03-27",
       "url": "https://www.dragonvillage.net/notice/20070",
-      "events": [],
+      "events": [
+        {
+          "dragonId": 473,
+          "name": "엘리고스",
+          "start": "2020-03-31",
+          "end": "2020-04-06",
+          "noticeId": 20070,
+          "price": null,
+          "evidence": "엘리고스 패키지 배너와 구성표 이미지"
+        }
+      ],
       "periods": [
         {
           "start": "2020-03-31",
@@ -8448,12 +8653,40 @@
       "title": "[공지] 행운 상점 + 포인트 교환소 업데이트 안내",
       "date": "2020-03-17",
       "url": "https://www.dragonvillage.net/notice/20058",
-      "events": [],
+      "events": [
+        {
+          "dragonId": 322,
+          "name": "지진",
+          "start": "2020-03-18",
+          "end": "2020-03-24",
+          "noticeId": 20058,
+          "price": null,
+          "evidence": "단계 추가 합본 패키지 구성표 이미지"
+        },
+        {
+          "dragonId": 134,
+          "name": "루미네스",
+          "start": "2020-03-18",
+          "end": "2020-03-24",
+          "noticeId": 20058,
+          "price": null,
+          "evidence": "단계 추가 합본 패키지 구성표 이미지"
+        },
+        {
+          "dragonId": 135,
+          "name": "번네스",
+          "start": "2020-03-18",
+          "end": "2020-03-24",
+          "noticeId": 20058,
+          "price": null,
+          "evidence": "단계 추가 합본 패키지 구성표 이미지"
+        }
+      ],
       "periods": [
         {
           "start": "2020-03-18",
           "end": "2020-03-24",
-          "label": "▶​​패키지 판매​"
+          "label": "▶ 패키지 판매"
         }
       ],
       "hasImages": true
@@ -8463,12 +8696,22 @@
       "title": "[공지] 젬 합성 + 길드 동굴 업데이트 안내 (수정)",
       "date": "2020-02-25",
       "url": "https://www.dragonvillage.net/notice/20031",
-      "events": [],
+      "events": [
+        {
+          "dragonId": 463,
+          "name": "베리스",
+          "start": "2020-02-26",
+          "end": "2020-03-03",
+          "noticeId": 20031,
+          "price": null,
+          "evidence": "베리스 패키지 배너와 구성표 이미지"
+        }
+      ],
       "periods": [
         {
           "start": "2020-02-26",
           "end": "2020-03-03",
-          "label": "▶​​​업데이트 기념 패키지 판매 안내​"
+          "label": "▶ 업데이트 기념 패키지 판매 안내"
         }
       ],
       "hasImages": true
@@ -8487,7 +8730,26 @@
       "title": "[공지] 패키지 할인 이벤트 및 편의성 개선 공지 안내",
       "date": "2020-02-10",
       "url": "https://www.dragonvillage.net/notice/20018",
-      "events": [],
+      "events": [
+        {
+          "dragonId": 250,
+          "name": "루가르 드래곤",
+          "start": "2020-02-12",
+          "end": "2020-02-16",
+          "noticeId": 20018,
+          "price": 15000,
+          "evidence": "단계 추가 합본 패키지 구매 화면 이미지"
+        },
+        {
+          "dragonId": 344,
+          "name": "혼",
+          "start": "2020-02-12",
+          "end": "2020-02-16",
+          "noticeId": 20018,
+          "price": 15000,
+          "evidence": "단계 추가 합본 패키지 구매 화면 이미지"
+        }
+      ],
       "periods": [
         {
           "start": "2020-02-12",
@@ -8502,7 +8764,26 @@
       "title": "[공지] 8주년 이벤트 사전 공지 안내",
       "date": "2020-01-19",
       "url": "https://www.dragonvillage.net/notice/19988",
-      "events": [],
+      "events": [
+        {
+          "dragonId": 186,
+          "name": "카오스",
+          "start": "2020-01-22",
+          "end": "2020-01-27",
+          "noticeId": 19988,
+          "price": null,
+          "evidence": "단계 추가 합본 패키지 구성표 이미지"
+        },
+        {
+          "dragonId": 225,
+          "name": "가루다",
+          "start": "2020-01-22",
+          "end": "2020-01-27",
+          "noticeId": 19988,
+          "price": null,
+          "evidence": "단계 추가 합본 패키지 구성표 이미지"
+        }
+      ],
       "periods": [
         {
           "start": "2020-01-22",
@@ -8568,12 +8849,12 @@
         {
           "start": "2019-12-23",
           "end": "2020-01-01",
-          "label": "​​패키지 판매 안내​​"
+          "label": "패키지 판매 안내"
         },
         {
           "start": "2019-12-23",
           "end": "2020-01-01",
-          "label": "​​패키지 판매 안내​​"
+          "label": "패키지 판매 안내"
         },
         {
           "start": "2019-12-23",
@@ -8593,12 +8874,12 @@
         {
           "start": "2019-12-23",
           "end": "2020-01-01",
-          "label": "​​패키지 판매 안내​​"
+          "label": "패키지 판매 안내"
         },
         {
           "start": "2019-12-23",
           "end": "2020-01-01",
-          "label": "​​패키지 판매 안내​​"
+          "label": "패키지 판매 안내"
         },
         {
           "start": "2019-12-23",
@@ -8622,17 +8903,36 @@
       "title": "[공지] 아르하 입구 보스 추가 및 드래곤 추가 안내",
       "date": "2019-11-22",
       "url": "https://www.dragonvillage.net/notice/19899",
-      "events": [],
+      "events": [
+        {
+          "dragonId": 448,
+          "name": "애니마라",
+          "start": "2019-11-27",
+          "end": "2019-12-03",
+          "noticeId": 19899,
+          "price": 33000,
+          "evidence": "애니마라 패키지 배너와 구매 화면 이미지"
+        },
+        {
+          "dragonId": 449,
+          "name": "설리반",
+          "start": "2019-11-27",
+          "end": "2019-12-03",
+          "noticeId": 19899,
+          "price": 22000,
+          "evidence": "설리반 패키지 배너와 구매 화면 이미지"
+        }
+      ],
       "periods": [
         {
           "start": "2019-11-27",
           "end": "2019-12-03",
-          "label": "아르하 입구 보스 추가 기념 패키지​"
+          "label": "아르하 입구 보스 추가 기념 패키지"
         },
         {
           "start": "2019-11-27",
           "end": "2019-12-03",
-          "label": "아르하 입구 보스 추가 기념 패키지​"
+          "label": "아르하 입구 보스 추가 기념 패키지"
         }
       ],
       "hasImages": true
@@ -8662,7 +8962,7 @@
         {
           "start": "2019-11-06",
           "end": "2019-11-12",
-          "label": "레이드 업데이트 기념 패키지 판매​"
+          "label": "레이드 업데이트 기념 패키지 판매"
         }
       ],
       "hasImages": true
@@ -8685,22 +8985,22 @@
         {
           "dragonId": 147,
           "name": "므네이아",
-          "start": "2019-10-15",
-          "end": "2019-10-21",
+          "start": "2019-10-08",
+          "end": "2019-10-14",
           "noticeId": 19833
         },
         {
           "dragonId": 206,
           "name": "아실리",
-          "start": "2019-10-15",
-          "end": "2019-10-21",
+          "start": "2019-10-08",
+          "end": "2019-10-14",
           "noticeId": 19833
         },
         {
           "dragonId": 218,
           "name": "위드미",
-          "start": "2019-10-15",
-          "end": "2019-10-21",
+          "start": "2019-10-08",
+          "end": "2019-10-14",
           "noticeId": 19833
         },
         {
@@ -8730,7 +9030,17 @@
       "title": "[공지] 허리케인 패키지 안내",
       "date": "2019-09-26",
       "url": "https://www.dragonvillage.net/notice/19822",
-      "events": [],
+      "events": [
+        {
+          "dragonId": 433,
+          "name": "허리케인",
+          "start": "2019-09-26",
+          "end": "2019-10-02",
+          "noticeId": 19822,
+          "price": null,
+          "evidence": "구성표 이미지와 공지 19813의 동일 상품 판매 일정 대조"
+        }
+      ],
       "periods": [],
       "hasImages": true
     },
@@ -8739,14 +9049,18 @@
       "title": "[공지] 길드 컨텐츠 업데이트 사전 안내 (수정)",
       "date": "2019-09-20",
       "url": "https://www.dragonvillage.net/notice/19813",
-      "events": [],
-      "periods": [
+      "events": [
         {
+          "dragonId": 433,
+          "name": "허리케인",
           "start": "2019-09-26",
           "end": "2019-10-02",
-          "label": "길드 컨텐츠 업데이트 기념패키지 판매"
+          "noticeId": 19813,
+          "price": null,
+          "evidence": "허리케인 패키지 배너와 구성표 이미지"
         }
       ],
+      "periods": [],
       "hasImages": true
     },
     {
@@ -8816,17 +9130,17 @@
         {
           "start": "2019-08-01",
           "end": "2019-08-07",
-          "label": "이벤트 드링크​ 패키지 추가"
+          "label": "이벤트 드링크 패키지 추가"
         },
         {
           "start": "2019-08-01",
           "end": "2019-08-07",
-          "label": "이블던 패키지 / 레버넌트 패키지 재판매​"
+          "label": "이블던 패키지 / 레버넌트 패키지 재판매"
         },
         {
           "start": "2019-08-01",
           "end": "2019-08-07",
-          "label": "레버넌트, 이블던 패키지 (기존 동일 구성 동일 가격)​"
+          "label": "레버넌트, 이블던 패키지 (기존 동일 구성 동일 가격)"
         }
       ],
       "hasImages": true
@@ -8863,12 +9177,103 @@
       "title": "[공지] 패키지 변경 및 추가 안내",
       "date": "2018-12-17",
       "url": "https://www.dragonvillage.net/notice/19550",
-      "events": [],
+      "events": [
+        {
+          "dragonId": 322,
+          "name": "지진",
+          "start": "2018-12-19",
+          "end": "2019-01-01",
+          "noticeId": 19550,
+          "price": 33000,
+          "evidence": "2018 출석용 패키지 구매 화면 이미지; 상시 스타터/초보자 상품 제외"
+        },
+        {
+          "dragonId": 323,
+          "name": "니케",
+          "start": "2018-12-19",
+          "end": "2019-01-01",
+          "noticeId": 19550,
+          "price": 33000,
+          "evidence": "2018 출석용 패키지 구매 화면 이미지; 상시 스타터/초보자 상품 제외"
+        },
+        {
+          "dragonId": 328,
+          "name": "데네브",
+          "start": "2018-12-19",
+          "end": "2019-01-01",
+          "noticeId": 19550,
+          "price": 33000,
+          "evidence": "2018 출석용 패키지 구매 화면 이미지; 상시 스타터/초보자 상품 제외"
+        },
+        {
+          "dragonId": 361,
+          "name": "트와일라잇",
+          "start": "2018-12-19",
+          "end": "2019-01-01",
+          "noticeId": 19550,
+          "price": 33000,
+          "evidence": "2018 출석용 패키지 구매 화면 이미지; 상시 스타터/초보자 상품 제외"
+        },
+        {
+          "dragonId": 331,
+          "name": "부두룡",
+          "start": "2018-12-19",
+          "end": "2019-01-01",
+          "noticeId": 19550,
+          "price": 33000,
+          "evidence": "2018 출석용 패키지 구매 화면 이미지; 상시 스타터/초보자 상품 제외"
+        },
+        {
+          "dragonId": 327,
+          "name": "스윗클라우드",
+          "start": "2018-12-19",
+          "end": "2019-01-01",
+          "noticeId": 19550,
+          "price": 33000,
+          "evidence": "2018 출석용 패키지 구매 화면 이미지; 상시 스타터/초보자 상품 제외"
+        },
+        {
+          "dragonId": 326,
+          "name": "나이트메어",
+          "start": "2018-12-19",
+          "end": "2019-01-01",
+          "noticeId": 19550,
+          "price": 33000,
+          "evidence": "2018 출석용 패키지 구매 화면 이미지; 상시 스타터/초보자 상품 제외"
+        },
+        {
+          "dragonId": 332,
+          "name": "화주사",
+          "start": "2018-12-19",
+          "end": "2019-01-01",
+          "noticeId": 19550,
+          "price": 33000,
+          "evidence": "2018 출석용 패키지 구매 화면 이미지; 상시 스타터/초보자 상품 제외"
+        },
+        {
+          "dragonId": 330,
+          "name": "우파룸",
+          "start": "2018-12-19",
+          "end": "2019-01-01",
+          "noticeId": 19550,
+          "price": 33000,
+          "evidence": "2018 출석용 패키지 구매 화면 이미지; 상시 스타터/초보자 상품 제외"
+        },
+        {
+          "dragonId": 375,
+          "name": "호크아이",
+          "start": "2018-12-19",
+          "end": "2019-01-01",
+          "noticeId": 19550,
+          "price": 33000,
+          "evidence": "2018 출석용 패키지 구매 화면 이미지; 상시 스타터/초보자 상품 제외"
+        }
+      ],
       "periods": [
         {
           "start": "2018-12-19",
           "end": "2019-01-01",
-          "label": "출석용 패키지■​"
+          "label": "출석용 패키지■"
         }
       ],
       "hasImages": true
@@ -8891,20 +9296,6 @@
         {
           "dragonId": 192,
           "name": "시타엘",
-          "start": "2018-09-19",
-          "end": "2018-09-30",
-          "noticeId": 19463
-        },
-        {
-          "dragonId": 20,
-          "name": "헬 드래곤",
-          "start": "2018-09-19",
-          "end": "2018-09-30",
-          "noticeId": 19463
-        },
-        {
-          "dragonId": 364,
-          "name": "프로딘",
           "start": "2018-09-19",
           "end": "2018-09-30",
           "noticeId": 19463
@@ -8990,7 +9381,7 @@
         {
           "start": "2018-08-24",
           "end": "2018-09-09",
-          "label": "드래곤빌리지 시즌5 에피소드3 아르하 업데이트 시 추가되었던 블리자드,다크나이트​ 패키지를"
+          "label": "드래곤빌리지 시즌5 에피소드3 아르하 업데이트 시 추가되었던 블리자드,다크나이트 패키지를"
         }
       ],
       "hasImages": true
@@ -9064,7 +9455,38 @@
       "title": "[공지] 신규 패키지 및 골드 상점 변경 안내",
       "date": "2018-07-23",
       "url": "https://www.dragonvillage.net/notice/19399",
-      "events": [],
+      "events": [
+        {
+          "dragonId": 368,
+          "name": "다크나이트",
+          "start": null,
+          "end": null,
+          "noticeId": 19399,
+          "price": null,
+          "evidence": "패키지 구매 화면 이미지 · 공지 기준, 실제 판매 시작일 미확정",
+          "dateBasis": "notice"
+        },
+        {
+          "dragonId": 369,
+          "name": "엔더 드래곤",
+          "start": null,
+          "end": null,
+          "noticeId": 19399,
+          "price": null,
+          "evidence": "패키지 구매 화면 이미지 · 공지 기준, 실제 판매 시작일 미확정",
+          "dateBasis": "notice"
+        },
+        {
+          "dragonId": 367,
+          "name": "블리자드",
+          "start": null,
+          "end": null,
+          "noticeId": 19399,
+          "price": null,
+          "evidence": "패키지 구매 화면 이미지 · 공지 기준, 실제 판매 시작일 미확정",
+          "dateBasis": "notice"
+        }
+      ],
       "periods": [],
       "hasImages": true
     },
@@ -9100,7 +9522,17 @@
       "title": "[공지] 신규 레이드 추가 사전 안내",
       "date": "2018-03-27",
       "url": "https://www.dragonvillage.net/notice/19272",
-      "events": [],
+      "events": [
+        {
+          "dragonId": 347,
+          "name": "움브라",
+          "start": "2018-03-30",
+          "end": "2018-04-05",
+          "noticeId": 19272,
+          "price": 33000,
+          "evidence": "신규 레이드 기념 패키지 구매 화면 이미지"
+        }
+      ],
       "periods": [
         {
           "start": "2018-03-30",
@@ -9138,7 +9570,28 @@
       "title": "[공지] 업데이트 사전 안내 (수정)",
       "date": "2018-03-14",
       "url": "https://www.dragonvillage.net/notice/19246",
-      "events": [],
+      "events": [
+        {
+          "dragonId": 344,
+          "name": "혼",
+          "start": null,
+          "end": null,
+          "noticeId": 19246,
+          "price": null,
+          "evidence": "본문의 루키/마스터 리그 기념 패키지 · 공지 기준, 실제 판매 시작일 미확정",
+          "dateBasis": "notice"
+        },
+        {
+          "dragonId": 345,
+          "name": "나트론",
+          "start": null,
+          "end": null,
+          "noticeId": 19246,
+          "price": null,
+          "evidence": "본문의 루키/마스터 리그 기념 패키지 · 공지 기준, 실제 판매 시작일 미확정",
+          "dateBasis": "notice"
+        }
+      ],
       "periods": [],
       "hasImages": true
     },
@@ -9175,13 +9628,6 @@
       "date": "2018-02-02",
       "url": "https://www.dragonvillage.net/notice/19188",
       "events": [
-        {
-          "dragonId": 41,
-          "name": "골드 드래곤",
-          "start": "2018-02-02",
-          "end": "2018-02-08",
-          "noticeId": 19188
-        },
         {
           "dragonId": 335,
           "name": "다크베인",
@@ -9480,7 +9926,44 @@
       "title": "[공지] 지하성채 개편 및 패키지 사전 안내",
       "date": "2017-05-31",
       "url": "https://www.dragonvillage.net/notice/18893",
-      "events": [],
+      "events": [
+        {
+          "dragonId": 292,
+          "name": "미스틸테인",
+          "start": "2017-06-01",
+          "end": "2017-06-07",
+          "noticeId": 18893,
+          "price": null,
+          "evidence": "지하성채 개편 기념 패키지 상품 구성표 이미지"
+        },
+        {
+          "dragonId": 293,
+          "name": "시소르",
+          "start": "2017-06-01",
+          "end": "2017-06-07",
+          "noticeId": 18893,
+          "price": null,
+          "evidence": "지하성채 개편 기념 패키지 상품 구성표 이미지"
+        },
+        {
+          "dragonId": 294,
+          "name": "루",
+          "start": "2017-06-01",
+          "end": "2017-06-07",
+          "noticeId": 18893,
+          "price": null,
+          "evidence": "지하성채 개편 기념 패키지 상품 구성표 이미지"
+        },
+        {
+          "dragonId": 295,
+          "name": "플래그너",
+          "start": "2017-06-01",
+          "end": "2017-06-07",
+          "noticeId": 18893,
+          "price": null,
+          "evidence": "지하성채 개편 기념 패키지 상품 구성표 이미지"
+        }
+      ],
       "periods": [
         {
           "start": "2017-06-01",

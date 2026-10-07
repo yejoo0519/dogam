@@ -23,18 +23,31 @@ class PlainText(HTMLParser):
         super().__init__()
         self.parts = []
         self.images = 0
+        self.deleted_tags = []
     def handle_starttag(self, tag, attrs):
+        void = tag in ['img', 'br', 'hr', 'input', 'meta', 'link', 'wbr']
+        deleted = tag in ['s', 'strike', 'del'] or 'line-through' in (dict(attrs).get('style', '') or '')
+        if self.deleted_tags or deleted:
+            if not void:
+                self.deleted_tags.append(tag)
+            return
         if tag in ['p', 'div', 'br', 'li', 'tr', 'h1', 'h2', 'h3']:
             self.parts.append('\n')
         if tag == 'img':
             self.images += 1
     def handle_endtag(self, tag):
+        if self.deleted_tags:
+            if tag in self.deleted_tags:
+                at = len(self.deleted_tags)-1-self.deleted_tags[::-1].index(tag)
+                del self.deleted_tags[at:]
+            return
         if tag in ['td', 'th']:
             self.parts.append(' | ')
         if tag in ['p', 'div', 'li', 'tr']:
             self.parts.append('\n')
     def handle_data(self, text):
-        self.parts.append(text)
+        if not self.deleted_tags:
+            self.parts.append(text)
 
 
 def fetch_page(page):
@@ -55,7 +68,8 @@ def fetch_page(page):
                 text = re.sub(r'[\t \xa0\ufeff\u200b]+', ' ', ''.join(parser.parts))
                 rows.append({'id': record['bno'], 'title': record['bsubject'],
                              'date': record['regDate'][:10], 'text': text,
-                             'images': parser.images})
+                             'images': parser.images,
+                             'mentionsPackage': '패키지' in record['bsubject'] + (record.get('bcontent') or '')})
             return data['totalCount'], rows
         except Exception:
             if attempt == 3:
@@ -126,21 +140,34 @@ def extract(notice, names):
     for i, line in enumerate([notice['title']] + lines):
         if '패키지' not in line or len(line) > 200:
             continue
-        if re.search(r'불가|정상화|문제|결제 관련|보상|획득처|소급|조정 안내|구성품 변경', line):
+        if re.search(r'불가|정상화|문제|결제 관련|보상|획득처|소급|조정 안내|구성품 변경|까지만.*구매|판매.?종료|일일.?패키지|초보자.?패키지|스타터.?패키지', line):
             continue
         label = line
         if '패키지 품목' in line:
             label = line.split('패키지 품목', 1)[1]
         for dragon in names:
+            if dragon['name'].replace(' ', '') in ['골드드래곤', '헬드래곤', '수룡', '히드라곤', '청룡', '백룡', '흑룡']:
+                continue
             if not any(v in label for v in dragon['variants']):
                 continue
-            found = any(re.search(r'(?<![가-힣A-Za-z])' + re.escape(v) + r'(?=$|[^가-힣A-Za-z]|의\s|을\s|를\s|은\s|는\s)', label)
+            found = any(re.search(r'(?<![가-힣A-Za-z])' + re.escape(v) + r'(?=$|[^가-힣A-Za-z]|의\s|을\s|를\s|은\s|는\s|이\s|가\s)', label)
                         for v in dragon['variants'])
             if found:
                 matches.append((dragon, i-1))
     events = {}
     for dragon, index in matches:
         if not periods:
+            # Use the announcement date only as an explicitly marked fallback.
+            # Operational/reward/ending notices are not new sale announcements.
+            heading = next((l for l in reversed(lines[:max(0,index)]) if re.match(r'^(?:[▶■▣<]|\d+[.)]|\[)', l)), '')
+            context = notice['title']+' '+heading+' '+(lines[index] if index>=0 else '')
+            if re.search(r'판매.?종료|판매.?중지|판매.?중단|결제|오류|문제|정상화|보상|일일.?패키지|초보자|스타터|획득처|관련 안내', context):
+                continue
+            if not re.search(r'판매|신규|추가|출시|기념|패키지.*안내', context):
+                continue
+            events[(dragon['id'], None)] = {'dragonId':dragon['id'], 'name':dragon['name'],
+                'start':None, 'end':None, 'noticeId':notice['id'], 'dateBasis':'notice',
+                'evidence':'판매 안내 공지 기준 · 실제 판매 기간 미확정'}
             continue
         # Main titles apply to a single period only. Notices with several sales
         # need an explicit package subsection, so avoid assigning all dates.
@@ -156,7 +183,7 @@ def extract(notice, names):
                 if candidate['line'] < index and re.match(r'^\d+[.)]\s', lines[index]):
                     continue
                 intervening = lines[lo+1:hi]
-                if any(re.match(r'^\d+[.)]\s', l) for l in intervening):
+                if any(re.match(r'^\d+[.)]\s', l) or (candidate['line'] > index and re.fullmatch(r'\[.*패키지.*\]', l) and '품목' not in l and '구성' not in l) for l in intervening):
                     continue
                 period = candidate
                 break
@@ -179,22 +206,29 @@ def build(rows, previous, total, names, full):
     for row in rows:
         ids.add(row['id'])
         notices.pop(row['id'], None)
-        if '패키지' in row['title'] + row['text']:
+        if row.get('mentionsPackage') or '패키지' in row['title'] + row['text']:
             notices[row['id']] = extract(row, names)
     reviewed_path = ROOT / 'data' / 'pkg-reviewed.json'
     reviewed = json.loads(reviewed_path.read_text(encoding='utf-8')) if reviewed_path.exists() else {'events': []}
     by_name = {n['name']: n for n in names}
-    for item in reviewed['events']:
+    for item in reviewed['events'] + reviewed.get('announcements', []):
         notice = notices.get(item['noticeId'])
         if not notice:
             raise ValueError(f"Reviewed source is missing: {item['noticeId']}")
         for name in item['names']:
+            if name.replace(' ', '') in ['골드드래곤', '헬드래곤', '수룡', '히드라곤', '청룡', '백룡', '흑룡']:
+                continue
             dragon = by_name[name]
-            event = {'dragonId': dragon['id'], 'name': name, 'start': item['start'],
-                     'end': item['end'], 'noticeId': item['noticeId'],
+            event = {'dragonId': dragon['id'], 'name': name, 'start': item.get('start'),
+                     'end': item.get('end'), 'noticeId': item['noticeId'],
                      'price': item.get('price'), 'evidence': item['evidence']}
-            notice['events'] = [e for e in notice['events'] if not (e['dragonId'] == dragon['id'] and e['start'] == item['start'])]
+            notice['events'] = [e for e in notice['events'] if not (e['dragonId'] == dragon['id'] and e['start'] == item.get('start'))]
+            if not item.get('start'):
+                event['dateBasis'] = 'notice'
             notice['events'].append(event)
+    for notice in notices.values():
+        exact_ids = {e['dragonId'] for e in notice['events'] if e.get('start')}
+        notice['events'] = [e for e in notice['events'] if e.get('start') or e['dragonId'] not in exact_ids]
     # A rerun on the same date/source is stable, avoiding empty daily commits.
     return {'schemaVersion': 1, 'checkedAt': datetime.now(KST).date().isoformat(),
             'source': 'https://www.dragonvillage.net/notice', 'totalCount': total,

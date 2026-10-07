@@ -11,10 +11,17 @@
     const sorted = values.slice().sort((a,b)=>a-b), mid = Math.floor(sorted.length/2);
     return sorted.length % 2 ? sorted[mid] : (sorted[mid-1]+sorted[mid])/2;
   }
+  function addMonths(value,months){
+    const date=new Date(value+'T00:00:00Z'),originalDay=date.getUTCDate();
+    date.setUTCDate(1);date.setUTCMonth(date.getUTCMonth()+months);
+    const end=new Date(Date.UTC(date.getUTCFullYear(),date.getUTCMonth()+1,0)).getUTCDate();
+    date.setUTCDate(Math.min(originalDay,end));return date.toISOString().slice(0,10);
+  }
   function build(source,today=todayKST()){
     const groups = new Map(), current = day(today);
     for(const notice of source.notices){
       for(const event of notice.events){
+        if(['골드드래곤','헬드래곤'].includes(event.name.replace(/\s+/g,''))) continue;
         if(!groups.has(event.dragonId)) groups.set(event.dragonId,{id:event.dragonId,name:event.name,sales:new Map()});
         const group = groups.get(event.dragonId);
         if(!group.sales.has(event.start)) group.sales.set(event.start,{...event,notices:[]});
@@ -35,14 +42,15 @@
       const gaps = begun.slice(1).map((s,i)=>day(s.start)-day(begun[i].start));
       const cycle = median(gaps), recent = begun.at(-1), next = sales.find(s=>s.start > today);
       const elapsed = recent ? current-day(recent.start) : 0;
-      const estimate = cycle && elapsed < 1095 ? iso(day(recent.start)+Math.round(cycle)) : null;
+      const stale = recent ? today >= addMonths(recent.start,30) : false;
+      const estimate = cycle && !stale ? iso(day(recent.start)+Math.round(cycle)) : null;
       const active = sales.find(s=>s.start<=today && s.end>=today);
       return {id:group.id,name:group.name,sales,count:begun.length,first:begun[0]?.start||sales[0].start,
-        recent:recent?.start||null,gaps,cycle,lastInterval:gaps.at(-1)||null,elapsed,
+        recent:recent?.start||null,gaps,cycle,lastInterval:gaps.at(-1)||null,elapsed,stale,
         estimate,daysLeft:estimate?day(estimate)-current:null,active,next};
     });
   }
-  const api={day,iso,todayKST,median,build};
+  const api={day,iso,todayKST,median,addMonths,build};
   if(typeof module==='object' && module.exports) module.exports=api;
   else root.PackageHistory=api;
 })(globalThis);

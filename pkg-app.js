@@ -1,7 +1,7 @@
 (function(){
   'use strict';
   const $=id=>document.getElementById(id), H=window.PackageHistory;
-  const state={tab:'history',filter:'all',query:'',sort:'recent',page:1};
+  const state={tab:'history',filter:'all',query:'',sort:'estimate',page:1};
   const PAGE_SIZE=20;
   let source,records=[],lastFocus;
   const escape=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -12,7 +12,7 @@
   function status(d){
     if(d.active) return '<span class="pkg-badge gold">판매 중</span>';
     if(d.next) return '<span class="pkg-badge gold">판매 예정</span>';
-    if(d.elapsed>=1095) return '<span class="pkg-badge">장기 미판매</span>';
+    if(d.stale) return '<span class="pkg-badge">장기 미판매</span>';
     if(d.count<2) return '<span class="pkg-badge">1회 확인</span>';
     return '<span class="pkg-badge">복각 기록</span>';
   }
@@ -49,7 +49,10 @@
       const recent=d.sales.filter(s=>s.start<=H.todayKST()).at(-1)||d.sales[0];
       const dots=Math.min(d.count,8);
       return `<tr><td><button class="pkg-name" data-detail="${d.id}" aria-label="${escape(d.name)} 판매 이력 보기">${avatar(d)}<span>${escape(d.name)}<div class="pkg-cell-sub">${status(d)}</div></span></button></td><td><span class="pkg-mono">${d.count}회</span><div class="pkg-history-line" aria-hidden="true">${Array.from({length:dots},(_,i)=>(i?'<i></i>':'')+'<span></span>').join('')}</div></td><td class="pkg-first pkg-mono">${pretty(d.first)}</td><td class="pkg-mono">${pretty(d.recent)}</td><td><span class="pkg-mono">${d.cycle?Math.round(d.cycle)+'일':'—'}</span><div class="pkg-cell-sub">${d.lastInterval?'최근 간격 '+d.lastInterval+'일':'간격 자료 없음'}</div></td><td>${estimate(d)}</td><td>${link(recent.notices[0],'공지')}<br><button class="pkg-text-button" data-detail="${d.id}">이력 보기</button></td></tr>`;
-    }).join('')}</tbody></table></div>`;
+    }).join('')}</tbody></table></div><div class="pkg-cards">${list.map(d=>{
+      const recent=d.sales.filter(s=>s.start<=H.todayKST()).at(-1)||d.sales[0];
+      return `<article class="pkg-card"><button class="pkg-card-head" data-detail="${d.id}" aria-label="${escape(d.name)} 판매 이력 보기">${avatar(d)}<span class="pkg-card-name">${escape(d.name)}</span>${status(d)}</button><dl class="pkg-card-facts"><div><dt>최근 판매</dt><dd class="pkg-mono">${pretty(d.recent)}</dd></div><div><dt>판매 회차</dt><dd>${d.count}회</dd></div><div><dt>중앙값 간격</dt><dd>${d.cycle?Math.round(d.cycle)+'일':'자료 부족'}</dd></div><div><dt>예상 복각일</dt><dd>${estimate(d)}</dd></div></dl><footer class="pkg-card-actions">${link(recent.notices[0],'근거 공지')}<button class="pkg-button" data-detail="${d.id}">판매 이력 보기</button></footer></article>`;
+    }).join('')}</div>`;
   }
   function renderNotices(){
     const q=clean(state.query),list=source.notices.filter(n=>!q||clean(n.title+' '+n.events.map(e=>e.name).join(' ')).includes(q));

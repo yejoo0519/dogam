@@ -30,3 +30,8 @@ assert.equal(H.build(fixture,'2022-08-01')[0].estimate,'2022-01-02','Overdue est
 assert.equal(H.todayKST(new Date('2026-10-06T15:30:00Z')),'2026-10-07');
 assert.equal(H.build({notices:[fixture.notices[0]]},'2020-10-01')[0].estimate,null,'A single sale must not imply a two-year cycle');
 console.log(`Package history verified: ${source.scannedCount} notices scanned, ${records.length} dragons, ${records.reduce((n,d)=>n+d.count,0)} sale rounds.`);
+
+assert.ok(!records.some(d=>['골드드래곤','헬드래곤'].includes(d.name.replace(/\s+/g,''))));
+assert.equal(H.build(fixture,'2023-06-30')[0].estimate,'2022-01-02');
+assert.equal(H.build(fixture,'2023-07-01')[0].estimate,null,'30-month boundary must disable estimates');
+assert.equal(H.addMonths('2023-08-31',30),'2026-02-28');

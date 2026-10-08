@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSS Essence</title>
+<script src="../dragons.js"></script>
+<script>
+if (!globalThis.DV1_DRAGONS) {
+  document.addEventListener('DOMContentLoaded', function () {
+    var warning = document.createElement('div');
+    warning.setAttribute('role', 'alert');
+    warning.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:#171b25;color:#fff;padding:48px;font:18px/1.8 sans-serif';
+    warning.textContent = 'Dragon data failed to load, so the page was not started. Please refresh or contact the site admin.';
+    document.body.appendChild(warning);
+  });
+}
+</script>
+<link id="theme-css" rel="stylesheet" href="../theme-dark.css">
+<link rel="stylesheet" href="../ui.css">
+<link rel="stylesheet" href="../essence.css">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="./theme.js"></script>
+</head>
+<body class="u">
+<div class="u-app">
+<main class="u-wrap narrow">
+  <div class="u-page-t"><h1>SSS Essence</h1><span class="s">Dragon Lab · SS → SSS evolution</span></div>
+
+  <section class="u-sec es-sec-pick">
+    <div class="u-sec-hd">Dragon</div>
+    <div class="u-sec-bd">
+      <div class="es-combo">
+        <input type="search" id="es-q" autocomplete="off" spellcheck="false" role="combobox"
+          aria-label="Search dragon" aria-autocomplete="list" aria-expanded="false" aria-controls="es-list">
+        <ul class="es-list" id="es-list" role="listbox" hidden></ul>
+      </div>
+      <div class="es-picked" id="es-picked" hidden></div>
+    </div>
+  </section>
+
+  <section class="u-sec">
+    <div class="u-sec-hd">Grade <span class="u-badge gold u-num" id="es-mult">×1.0</span></div>
+    <div class="u-sec-bd">
+      <div class="es-grades">
+        <label class="u-field"><span>Main</span><input type="number" id="es-g0" value="7.0" min="0" max="7" step="0.1" inputmode="decimal"></label>
+        <label class="u-field"><span>Sub 1</span><input type="number" id="es-g1" value="7.0" min="0" max="7" step="0.1" inputmode="decimal"></label>
+        <label class="u-field"><span>Sub 2</span><input type="number" id="es-g2" value="7.0" min="0" max="7" step="0.1" inputmode="decimal"></label>
+      </div>
+    </div>
+  </section>
+
+  <section class="u-sec">
+    <div class="u-sec-hd">Required essence</div>
+    <div class="u-sec-bd">
+      <div class="es-out" id="es-out"></div>
+      <p class="u-note es-msg" id="es-msg" role="status" aria-live="polite"></p>
+    </div>
+  </section>
+</main>
+</div>
+<script src="../essence.js"></script>
+<script src="../ui.js"></script>
+<script>UI.shell({page:'essence',title:'SSS Essence',sub:'SS → SSS evolution'});</script>
+</body>
+</html>

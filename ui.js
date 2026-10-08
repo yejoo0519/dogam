@@ -68,6 +68,7 @@
       ...(!EN ? [['guild-home','길드','guild-home.html']] : []),
       ['guild',        EN ? 'Guilds'   : '길드 홍보',   'guild.html'],
       ['aura-preview', EN ? 'Auras'    : '오라 미리보기', 'aura-preview.html'],
+      ['essence',      EN ? 'SSS essence' : '트스 정수량', 'essence.html'],
       ['patchnote',    EN ? 'Patch'    : '패치 노트',   'patchnote.html']
     ] }
   ];
@@ -126,7 +127,7 @@
         list.appendChild(el('div', 'u-side-grp', esc(grp.g)));
         grp.items.forEach(function (it) {
           var a = el('a', 'u-nav-i' + (it[0] === opt.page ? ' on' : ''));
-          a.href = (EN && ['score-guide.html','index.html','calculator.html','spirit-peak.html','pvp.html','noob.html','cham_auto.html','cham_manual.html','dex.html','tier.html','sss.html','cham.html','raid.html','raid_info.html','my.html','aura-preview.html','patchnote.html'].includes(it[2]) ? './' : UP) + it[2];
+          a.href = (EN && ['score-guide.html','index.html','calculator.html','spirit-peak.html','pvp.html','noob.html','cham_auto.html','cham_manual.html','dex.html','tier.html','sss.html','cham.html','raid.html','raid_info.html','my.html','aura-preview.html','essence.html','patchnote.html'].includes(it[2]) ? './' : UP) + it[2];
           a.innerHTML = esc(it[1]) + (it[3] ? '<span class="n">' + esc(it[3]) + '</span>' : '');
           if (it[0] === opt.page) a.setAttribute('aria-current', 'page');
           list.appendChild(a);

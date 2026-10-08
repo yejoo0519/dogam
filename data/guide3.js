@@ -27,7 +27,7 @@ const guideContent = {
       아이폰을 이용하는 유저분들의 경우 난이도가 훨씬 올라갈 수 있습니다.
     </div>
     <p>아래 링크에서 드래곤 이름을 검색하여 초월등급을 확인할 수 있으니, 드래곤 육성 전 확인해보시길 권장드립니다.</p>
-    <p><a href="https://yejoo0519.github.io/dogam/tier.html" target="_blank" style="color:#5dcff5">→ 초월 등급표 바로가기</a></p>
+    <p><a href="./tier.html" target="_blank" style="color:#5dcff5">→ 초월 등급표 바로가기</a></p>
 
     <hr>
 

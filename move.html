@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>디비룡 · 데이터 이동 중</title>
+<style>
+  html,body{margin:0;height:100%;background:#15171c;color:#cfd3dc;font:14px/1.6 system-ui,-apple-system,"Malgun Gothic",sans-serif}
+  body{display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;box-sizing:border-box}
+</style>
+</head>
+<body>
+<p>저장 데이터를 불러오는 중입니다…</p>
+<script>
+// 옛 주소(yejoo0519.github.io/dogam-move/)에서 넘겨받은 저장 데이터를
+// 이 브라우저의 dbryong.com 저장소에 넣고 원래 보던 페이지로 돌려보냅니다.
+// 새 주소에 이미 같은 항목이 있으면 덮어쓰지 않습니다.
+(async function () {
+  var p = new URLSearchParams(location.hash.slice(1));
+
+  var r = p.get('r') || '/';
+  if (r.charAt(0) !== '/' || r.charAt(1) === '/' || r.indexOf('\\') >= 0 || /^\/move\.html/.test(r)) r = '/';
+
+  function done() {
+    try { localStorage.setItem('dbr_moved', 'done'); } catch (e) {}
+    location.replace(r);
+  }
+
+  try {
+    var d = p.get('d');
+    if (!d) return done();
+
+    var b64 = d.replace(/-/g, '+').replace(/_/g, '/');
+    while (b64.length % 4) b64 += '=';
+    var bin = atob(b64);
+    var bytes = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+
+    if (p.get('z') === '1') {
+      var ds = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
+      bytes = new Uint8Array(await new Response(ds).arrayBuffer());
+    }
+    var data = JSON.parse(new TextDecoder().decode(bytes));
+
+    Object.keys(data).forEach(function (k) {
+      if (k === 'dbr_moved' || typeof data[k] !== 'string') return;
+      try {
+        if (localStorage.getItem(k) === null) localStorage.setItem(k, data[k]);
+      } catch (e) {}
+    });
+  } catch (e) {}
+
+  done();
+})();
+</script>
+</body>
+</html>

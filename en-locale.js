@@ -82,7 +82,7 @@
  '용 정보 삭제':'Delete dragon','용 이름':'Dragon name','중복 여부':'Allow duplicate','직접입력':'Custom',
  '설정':'Settings','추천 기준':'Ranking','인챈트 옵션':'Enchantment options','버프 설정':'Buff settings',
  '버프 최적화':'Optimize buffs','버프 직접 지정':'Set buffs manually','전체 보기':'Show all',
- '종합 정보사이트':'Dragon Village 1 Guide','정보':'Info','계산기':'Calculators','편의성':'Tools','공략 & 가이드':'Guides',
+ '종합 정보사이트':'DBRyong','디비룡':'DBRyong','정보':'Info','계산기':'Calculators','편의성':'Tools','공략 & 가이드':'Guides',
  '초월 등급표':'Transcendence tiers','드래곤 도감':'Dragon Dex','길드전':'Guild War','길드 홍보':'Guild listings',
  '아르하 입구':'Arha Gate','레이드 정보':'Raid Info','오라 미리보기':'Aura Preview','패치 노트':'Patch notes',
  '로그인':'Sign in','로그아웃':'Sign out','회원가입':'Register','친구코드':'Friend code','관리자':'Admin','어드민':'Admin',

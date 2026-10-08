@@ -31,11 +31,11 @@
   var HOME = EN ? './index.html' : './index.html';
 
   var T = EN ? {
-    kicker: 'DRAGON VILLAGE 1', site: 'Dex', home: 'Home',
+    kicker: 'DRAGON VILLAGE 1', site: 'DBRyong', home: 'Home',
     g_info: 'INFO', g_guide: 'GUIDE', g_calc: 'CALCULATOR', g_etc: 'MORE', g_acct: 'ACCOUNT',
     more: 'More', theme: 'Theme', lang: '한국어', spec: 'My Spec', login: 'Sign in'
   } : {
-    kicker: 'DRAGON VILLAGE 1', site: '종합 정보사이트', home: '메인',
+    kicker: 'DRAGON VILLAGE 1', site: '디비룡', home: '메인',
     g_info: '정보', g_guide: '공략', g_calc: '계산기', g_etc: '편의성', g_acct: '계정',
     more: '전체', theme: '테마', lang: 'EN', spec: '내 스펙', login: '로그인'
   };

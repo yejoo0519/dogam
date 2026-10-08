@@ -11,8 +11,8 @@
 <script src="../cham-access.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>Dragon Village Info Hub</title>
-<meta property="og:title" content="Dragon Village Info Hub">
+<title>DBRyong</title>
+<meta property="og:title" content="DBRyong">
 <meta property="og:description" content="Dragon Village calculators, dragon encyclopedia, raids, guides, and guild tools.">
 <meta property="og:image" content="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/icon/main.jpg">
 <meta property="og:url" content="https://dbryong.com/en/">
@@ -312,8 +312,21 @@
   .ban-on{background:rgba(239,83,80,.12);border:1px solid rgba(239,83,80,.3);color:#ef5350}
   .ban-off{background:rgba(102,187,106,.12);border:1px solid rgba(102,187,106,.3);color:#66bb6a}
   /* pill-btn 로그인 상태 */
+  /* ── 사이트 로고 (DB 배지 + 이름) ── */
+  .header-actions { align-items: center; }
+  .site-logo { display: inline-flex; align-items: center; gap: 8px; margin-right: auto; color: var(--text); text-decoration: none; }
+  .logo-db { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px;
+             background: #e2574c; color: #fff; font-family: 'Do Hyeon', sans-serif; font-size: 15px; font-weight: 400; line-height: 1; }
+  .logo-text { font-family: 'Do Hyeon', sans-serif; font-size: 24px; font-weight: 400; line-height: 1; }
+  .mobile-logo .logo-db { width: 26px; height: 26px; border-radius: 7px; font-size: 13px; }
+  .mobile-logo .logo-text { font-size: 19px; }
   .pill-btn.auth-user{color:var(--accent);background:var(--accent-bg);border-color:var(--accent-border);cursor:default}
 </style>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&text=%EB%94%94%EB%B9%84%EB%A3%A1DBRyong&display=swap">
 <link rel="stylesheet" href="../ui.css">
 </head>
 
@@ -322,8 +335,8 @@
 <template id="__bundler_thumbnail" data-bg-color="#0e1116">
   <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
     <rect width="100" height="100" fill="#0e1116"/>
-    <rect x="30" y="30" width="40" height="40" rx="8" fill="#7aa2f7"/>
-    <text x="50" y="58" font-family="-apple-system, sans-serif" font-size="22" font-weight="800" text-anchor="middle" fill="#fff">N</text>
+    <rect x="30" y="30" width="40" height="40" rx="9" fill="#e2574c"/>
+    <text x="50" y="58" font-family="-apple-system, sans-serif" font-size="22" font-weight="800" text-anchor="middle" fill="#fff">DB</text>
   </svg>
 </template>
 
@@ -332,8 +345,8 @@
   <!-- 모바일 스티키 헤더 -->
   <div class="mobile-sticky mobile-only">
     <div class="mobile-logo">
-      <div class="mobile-logo-tile">N</div>
-      <span class="mobile-logo-text">Dragon Village 1 Guide</span>
+      <span class="logo-db">DB</span>
+      <span class="logo-text">DBRyong</span>
     </div>
     <div class="mobile-actions">
       <a href="../index.html" class="icon-btn">🌐</a>
@@ -344,6 +357,7 @@
 
   <!-- PC 헤더 액션 -->
   <div class="header-actions pc-only">
+    <a href="./index.html" class="site-logo" aria-label="DBRyong"><span class="logo-db">DB</span><span class="logo-text">DBRyong</span></a>
     <a href="../index.html" class="pill-btn">🌐 한국어</a>
     <button class="pill-btn" onclick="openThemeModal()">🎨 Theme</button>
     <div id="pc-auth" style="display:flex;gap:6px;align-items:center;margin-left:4px"></div>
@@ -549,7 +563,7 @@
       </a>
     </div>
     <div class="footer-meta">
-      <span>© Dragon Village 1 Guide · made by Nix
+      <span>© DBRyong · made by Nix
       </span>
       <span>Replies may take 1–2 days.</span>
     </div>

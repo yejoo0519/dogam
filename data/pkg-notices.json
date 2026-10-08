@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-07",
+  "checkedAt": "2026-10-08",
   "source": "https://www.dragonvillage.net/notice",
-  "totalCount": 3943,
-  "scannedCount": 3943,
+  "totalCount": 3945,
+  "scannedCount": 3945,
   "scannedIds": [
     283,
     284,
@@ -3947,7 +3947,9 @@
     21434,
     21435,
     21436,
-    21437
+    21437,
+    21438,
+    21439
   ],
   "notices": [
     {

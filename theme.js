@@ -1,3 +1,19 @@
+// ── 옛 주소(yejoo0519.github.io) 저장 데이터 1회 이동 ──
+// dbryong.com 에서 처음 접속한 브라우저만, 옛 주소 쪽 이동 페이지를 한 번 거쳐 돌아옵니다.
+(function(){
+  try {
+    var h = location.hostname;
+    if (h !== 'dbryong.com' && h !== 'www.dbryong.com') return;
+    if (/\/move\.html$/.test(location.pathname)) return;
+    if (localStorage.getItem('dbr_moved')) return;
+    localStorage.setItem('dbr_moved', 'pending');
+    if (localStorage.getItem('dbr_moved') !== 'pending') return; // 저장소 차단 시 무한 이동 방지
+    document.documentElement.style.visibility = 'hidden';
+    location.replace('https://yejoo0519.github.io/dogam-move/?r=' +
+      encodeURIComponent(location.pathname + location.search + location.hash));
+  } catch (e) {}
+})();
+
 // ── FOUC 방지: 렌더링 전 data-theme 즉시 설정 ──
 (function(){
   var t = localStorage.getItem('theme') || 'dark';

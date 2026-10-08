@@ -1,3 +1,13 @@
+// ── http 로 들어온 경우 https 로 이동 (http 에서는 로그인 암호화 기능이 동작하지 않음) ──
+(function(){
+  try {
+    var h = location.hostname;
+    if (location.protocol === 'http:' && (h === 'dbryong.com' || h === 'www.dbryong.com')) {
+      location.replace('https://dbryong.com' + location.pathname + location.search + location.hash);
+    }
+  } catch (e) {}
+})();
+
 // ── 옛 주소(yejoo0519.github.io) 저장 데이터 1회 이동 ──
 // dbryong.com 에서 처음 접속한 브라우저만, 옛 주소 쪽 이동 페이지를 한 번 거쳐 돌아옵니다.
 (function(){
@@ -5,6 +15,7 @@
     var h = location.hostname;
     if (h !== 'dbryong.com' && h !== 'www.dbryong.com') return;
     if (/\/move\.html$/.test(location.pathname)) return;
+    if (location.protocol !== 'https:') return; // http 이면 위에서 https 로 이동 중이므로 건너뜀
     if (localStorage.getItem('dbr_moved')) return;
     localStorage.setItem('dbr_moved', 'pending');
     if (localStorage.getItem('dbr_moved') !== 'pending') return; // 저장소 차단 시 무한 이동 방지

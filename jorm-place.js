@@ -13,7 +13,7 @@
  Object.keys(D.gems).sort((a,b)=>D.gemNames[b]-D.gemNames[a]).forEach(k=>$('gem').add(new Option(String(D.gemNames[k]),k)));
  const gemHelp=()=>{const g=D.gems[v('gem')];$('gemNote').textContent=`체력 +${g.hp} / 공격 +${g.atk} / 방어 +${g.def}`;};
  $('gem').addEventListener('change',gemHelp);
- Object.keys(D.potions).map(Number).sort((a,b)=>b-a).forEach(k=>$('potion').add(new Option(k+'단계',String(k)),1));
+ Object.keys(D.potions).map(Number).sort((a,b)=>a-b).forEach(k=>$('potion').add(new Option(k+'단계',String(k))));
  $('potion').value=String(Math.max(...Object.keys(D.potions).map(Number)));
  let normalGrade=null;
  function bossView(){const c=v('boss')==='corrupted',g=$('grade');
@@ -137,7 +137,7 @@
  function renderResults(){
   const {result,config:c}=lastResult,hits=c.hits,by=new Map(result.results.map(x=>[x.pos,x]));
   const pen=result.pen,s=result.summary;
-  $('resultConditions').textContent=`${c.boss==='corrupted'?'잠식된 요르문간드':'요르문간드'} / ${c.grade} / 젬 ${D.gemNames[c.gem]} / ${c.potion?'물약 '+c.potion+'단계':'물약 미사용'} / ${pen?`관통 1회 ${fmt(c.pen.damage)} (방어 ${fmt(c.pen.def)} · ${c.pen.light?'빛':'빛 아님'}) 기준 ${hits}회`:'관통 미입력 · 관통 자리도 딜러 셋팅'}`;
+  $('resultConditions').textContent=`${c.boss==='corrupted'?'잠식된 요르문간드':'요르문간드'} / ${c.grade} / 젬 ${D.gemNames[c.gem]} / 물약 ${c.potion}단계 / ${pen?`관통 1회 ${fmt(c.pen.damage)} (방어 ${fmt(c.pen.def)} · ${c.pen.light?'빛':'빛 아님'}) 기준 ${hits}회`:'관통 미입력 · 관통 자리도 딜러 셋팅'}`;
   $('resultSummary').innerHTML=[
    pen?`<div class="${pen.passed===pen.total?'ok':'bad'}"><small>관통 ${hits}회 통과</small><strong>${pen.passed}/${pen.total}</strong></div>`:'',
    s.frontMin!=null?`<div><small>앞라인 최저 생존 점수</small><strong>${fmt(s.frontMin)}</strong></div>`:'',

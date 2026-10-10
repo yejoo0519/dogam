@@ -21,7 +21,7 @@
 <p class="muted">비워 두면 관통 자리 4칸도 양끝처럼 딜러 셋팅으로 계산합니다. 어둠은 방어 보정이 없어 빛이 아닌 속성과 같게 계산됩니다.</p></section>
 
 <section data-input-panel="basic" hidden><h2>기본 설정</h2><div class="fields"><label>성장·등급<select id="grade"><option>9.0</option><option>8.0</option><option>7.0</option><option>진각</option></select></label><label>젬 수치<select id="gem"></select><small id="gemNote" class="j-field-help"></small></label><label>인챈트<select id="enchant"><option value="auto">체력·공격·방어 최적화</option><option value="none">없음</option><option value="hp">체력 +21%</option><option value="atk">공격 +21%</option><option value="def">방어 +21%</option></select></label></div>
-<div class="fields"><label>물약 단계<select id="potion"><option value="0">미사용</option></select><small class="j-field-help">앞라인 회피 물약 · 뒷라인 크리 물약</small></label></div>
+<div class="fields"><label>물약 단계<select id="potion"></select><small class="j-field-help">앞라인 회피 물약 · 뒷라인 크리 물약</small></label></div>
 <h3>컬렉션</h3><div class="fields"><label>컬렉션 체력<input id="col-hp" type="number" min="0" max="10000" value="240" required></label><label>컬렉션 공격<input id="col-atk" type="number" min="0" max="10000" value="60" required></label><label>컬렉션 방어<input id="col-def" type="number" min="0" max="10000" value="60" required></label></div></section>
 
 <div class="runbar"><button id="run" type="submit">배치 계산</button><button id="cancel" type="button" hidden>계산 중단</button><button id="resetSaved" type="button">입력 초기화</button><span id="status" role="status" aria-live="polite">드래곤을 배치하고 보유 정령을 추가해 주세요.</span></div></form>

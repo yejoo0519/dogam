@@ -32,3 +32,8 @@
 .jorm .j-boss-toggle button[data-boss=corrupted][aria-pressed=true]{border-color:#b07ae0;background:rgba(176,122,224,.12)}
 .jorm .j-field-help{display:block;margin-top:6px;font-size:11px}
 @media(max-width:760px){.jorm .j-boss-toggle button{font-size:13px;gap:8px;padding:6px 8px 6px 6px}.jorm .j-boss-toggle button img{width:36px;height:36px}}
+.jorm .j-rank{font-style:normal;font-size:11px;font-weight:700;color:var(--accent);margin-right:6px}
+.jorm .j-rank-head{display:flex;align-items:center;gap:10px}.jorm .j-rank-head h3{margin:0}
+.jorm .j-rank-badge{display:inline-flex;align-items:center;justify-content:center;min-width:44px;height:30px;padding:0 10px;border-radius:15px;background:var(--bg3);border:1px solid var(--border3);font-weight:800;font-size:14px;color:var(--text)}
+.jorm .j-result.j-top{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.jorm .j-result.j-top .j-rank-badge{background:var(--accent);border-color:var(--accent);color:var(--bg)}

@@ -44,3 +44,4 @@
  .jp-dragons{grid-template-columns:repeat(2,minmax(0,1fr));height:300px}
  .jp-summary{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+@media(max-width:760px){.jp .j-input-tabs{display:flex}.jp .j-input-tabs button{flex:1}}

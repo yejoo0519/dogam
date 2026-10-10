@@ -19,7 +19,10 @@
  function bossView(){const c=v('boss')==='corrupted',g=$('grade');
   document.querySelectorAll('[data-boss]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.boss===v('boss'))));
   if(c&&!g.disabled){normalGrade=g.value;g.value='9.0';}else if(!c&&g.disabled&&normalGrade){g.value=normalGrade;}
-  g.disabled=c;g.title=c?'잠식된 요르문간드는 9.0 스탯으로 고정됩니다.':'';}
+  g.disabled=c;g.title=c?'잠식된 요르문간드는 9.0 스탯으로 고정됩니다.':'';
+  const tab=document.querySelector('[data-panel=pen]');tab.hidden=!c;document.querySelector('.jp-legend .pen').hidden=!c;
+  if(!c&&tab.getAttribute('aria-pressed')==='true')document.querySelector('[data-panel=place]').click();
+  if(document.getElementById('board').children.length)renderBoard();}
  document.querySelectorAll('[data-boss]').forEach(b=>b.onclick=()=>{if(v('boss')===b.dataset.boss)return;$('boss').value=b.dataset.boss;bossView();changed()});
  document.querySelectorAll('[data-panel]').forEach(button=>button.onclick=()=>{
   document.querySelectorAll('[data-panel]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
@@ -30,11 +33,13 @@
  ['col-hp','col-atk','col-def','penDamage','penDef'].forEach(id=>$(id).addEventListener('input',changed));
 
  /* ---------- board ---------- */
- const roleOf=pos=>pos<10?'front':PEN.includes(pos)?'pen':'dealer';
+ // 관통 자리는 잠식된 요르문간드에서만 사용합니다.
+ const penOn=()=>v('boss')==='corrupted';
+ const roleOf=pos=>pos<10?'front':penOn()&&PEN.includes(pos)?'pen':'dealer';
  const posLabel=pos=>pos<10?`앞 ${pos+1}`:`뒤 ${pos-9}`;
  const roleLabel={front:'앞라인',pen:'관통',dealer:'딜러'};
  const icon=d=>`<img src="./dragon/${d.id}/profile/8.png" alt="" loading="lazy" onerror="this.onerror=null;this.src='./dragon/${d.id}/adult.png'">`;
- function slotCell(pos,inner,extra=''){return `<button type="button" class="jp-slot ${roleOf(pos)}${extra}" data-pos="${pos}" aria-label="${posLabel(pos)} ${roleLabel[roleOf(pos)]}">${inner}</button>`;}
+ function slotCell(pos,inner,extra='',role=roleOf(pos)){return `<button type="button" class="jp-slot ${role}${extra}" data-pos="${pos}" aria-label="${posLabel(pos)} ${roleLabel[role]}">${inner}</button>`;}
  function boardHTML(cell){return ['앞라인','뒷라인'].map((label,row)=>`<div class="jp-row"><span class="jp-row-label">${label}</span><div class="jp-cells">${Array.from({length:10},(_,i)=>cell(row*10+i)).join('')}</div></div>`).join('');}
  function renderBoard(){
   $('board').innerHTML=boardHTML(pos=>{const d=byId.get(slots[pos]);return slotCell(pos,d?`${icon(d)}<span>${esc(d.name)}</span>`:`<em>${posLabel(pos)}</em>`,(pos===selected?' on':'')+(d?'':' empty'));});
@@ -107,7 +112,7 @@
  function config(){
   const dmg=n('penDamage'),def=n('penDef');
   return {boss:v('boss'),grade:v('boss')==='corrupted'?'9.0':v('grade'),gem:v('gem'),enchant:v('enchant'),potion:n('potion'),collection:Object.fromEntries(['hp','atk','def'].map(k=>[k,n('col-'+k)])),
-   pen:v('penDamage')!==''&&dmg>0?{damage:dmg,def:v('penDef')===''?0:def,light:v('penLight')==='1'}:null,hits:4,
+   pen:penOn()&&v('penDamage')!==''&&dmg>0?{damage:dmg,def:v('penDef')===''?0:def,light:v('penLight')==='1'}:null,hits:4,
    slots:slots.map(id=>{const d=byId.get(id);return d?{id:d.id,type:d.type,light:d.element==='빛',dark:d.element==='어둠'}:null}),spirits};
  }
  function finish(){worker?.terminate();worker=null;$('run').disabled=false;$('cancel').hidden=true;}
@@ -137,14 +142,14 @@
  function renderResults(){
   const {result,config:c}=lastResult,hits=c.hits,by=new Map(result.results.map(x=>[x.pos,x]));
   const pen=result.pen,s=result.summary;
-  $('resultConditions').textContent=`${c.boss==='corrupted'?'잠식된 요르문간드':'요르문간드'} / ${c.grade} / 젬 ${D.gemNames[c.gem]} / 물약 ${c.potion}단계 / ${pen?`관통 1회 ${fmt(c.pen.damage)} (방어 ${fmt(c.pen.def)} · ${c.pen.light?'빛':'빛 아님'}) 기준 ${hits}회`:'관통 미입력 · 관통 자리도 딜러 셋팅'}`;
+  $('resultConditions').textContent=`${c.boss==='corrupted'?'잠식된 요르문간드':'요르문간드'} / ${c.grade} / 젬 ${D.gemNames[c.gem]} / 물약 ${c.potion}단계 / ${pen?`관통 1회 ${fmt(c.pen.damage)} (방어 ${fmt(c.pen.def)} · ${c.pen.light?'빛':'빛 아님'}) 기준 ${hits}회`:c.boss==='corrupted'?'관통 미입력 · 관통 자리도 딜러 셋팅':'뒷라인 전체 딜러 셋팅'}`;
   $('resultSummary').innerHTML=[
    pen?`<div class="${pen.passed===pen.total?'ok':'bad'}"><small>관통 ${hits}회 통과</small><strong>${pen.passed}/${pen.total}</strong></div>`:'',
    s.frontMin!=null?`<div><small>앞라인 최저 생존 점수</small><strong>${fmt(s.frontMin)}</strong></div>`:'',
    `<div><small>딜러 기대 피해 합</small><strong>${fmt(s.dealt)}</strong></div>`,
    `<div><small>정령 사용</small><strong>${s.spiritsUsed}/${s.spiritsOwned}</strong></div>`].join('');
-  $('resultBoard').innerHTML=boardHTML(pos=>{const x=by.get(pos),d=x&&byId.get(x.dragon.id);if(!x)return slotCell(pos,`<em>${posLabel(pos)}</em>`,' empty');const ps=x.role==='pen'?penState(x.row,hits):null;
-   return slotCell(pos,`${d?icon(d):''}<span class="jp-metric ${ps?ps.cls:''}">${esc(metricOf(x,hits))}</span>${x.spirit?'<i class="jp-sp-dot" title="정령 배정"></i>':''}`,'');});
+  $('resultBoard').innerHTML=boardHTML(pos=>{const x=by.get(pos),d=x&&byId.get(x.dragon.id);if(!x)return slotCell(pos,`<em>${posLabel(pos)}</em>`,' empty',pos<10?'front':c.boss==='corrupted'&&PEN.includes(pos)?'pen':'dealer');const ps=x.role==='pen'?penState(x.row,hits):null;
+   return slotCell(pos,`${d?icon(d):''}<span class="jp-metric ${ps?ps.cls:''}">${esc(metricOf(x,hits))}</span>${x.spirit?'<i class="jp-sp-dot" title="정령 배정"></i>':''}`,'',x.role);});
   $('resultList').innerHTML=result.results.map(x=>{const r=x.row,d=byId.get(x.dragon.id);if(!r)return '';const ps=x.role==='pen'?penState(r,hits):null;
    const roleText=x.role==='front'?'앞라인 · 생존 점수':x.role==='pen'?'관통 자리 · 기대 피해':'딜러 · 기대 피해';
    return `<article class="j-result jp-card ${x.role}" id="jp-card-${x.pos}"><header><div class="j-rank-head"><span class="j-rank-badge">${posLabel(x.pos)}</span>${d?icon(d):''}<div><h3>${esc(d?d.name:x.dragon.type)}</h3><small>${esc(x.dragon.type)}${d?' · '+esc(d.element):''} · ${roleLabel[x.role]}</small></div></div><div class="j-metrics"><div class="primary"><small>${roleText}</small><strong>${fmt(x.role==='front'?r.score:r.dealt)}</strong></div>${ps?`<div class="jp-pen ${ps.cls}"><small>관통 1회 ${fmt(r.penHit)}</small><strong>${ps.text}</strong></div>`:''}</div></header>

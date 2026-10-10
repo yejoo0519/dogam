@@ -5,7 +5,7 @@
  const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const v=id=>$(id).value,n=id=>Number($(id).value);
  const fmt=x=>x===Number.MAX_VALUE||!Number.isFinite(x)?'피해 없음':x.toLocaleString('ko-KR',{maximumFractionDigits:1});
- let slots=Array(20).fill(null),spirits=[],selected=0,worker=null,dirty=false,restoring=false,dragons=[],byId=new Map(),lastResult=null;
+ let slots=Array(20).fill(null),spirits=[],selected=0,worker=null,dirty=false,restoring=false,dragons=[],byId=new Map(),lastResult=null,resultPos=null;
  const blankSpirit=()=>({opts:[{stat:'hp',type:'%'},{stat:'atk',type:'%'},{stat:'def',type:'%'},{stat:'hp',type:'+'}],bonus:'hp'});
  let editing=blankSpirit();
 
@@ -128,7 +128,7 @@
   worker.onmessage=({data})=>{
    if(data.progress){$('status').textContent=`계산 중 ${Math.floor(data.progress.done/data.progress.total*100)}%`;return}
    finish();if(data.error){$('status').textContent=data.error;return}
-   lastResult={result:data.result,config:c};renderResults();$('results').hidden=false;
+   lastResult={result:data.result,config:c};resultPos=null;renderResults();$('results').hidden=false;
    $('status').textContent='배치 계산 완료.'+(dirty?' 계산 중 설정이 변경되어 결과는 실행 당시 조건입니다.':'');
    $('results').scrollIntoView({behavior:'smooth',block:'start'});
   };
@@ -142,15 +142,14 @@
  function renderResults(){
   const {result,config:c}=lastResult,hits=c.hits,by=new Map(result.results.map(x=>[x.pos,x]));
   const pen=result.pen,s=result.summary;
+  if(!by.has(resultPos))resultPos=result.results[0]?.pos;
   $('resultConditions').textContent=`${c.boss==='corrupted'?'잠식된 요르문간드':'요르문간드'} / ${c.grade} / 젬 ${D.gemNames[c.gem]} / 물약 ${c.potion}단계 / ${pen?`관통 1회 ${fmt(c.pen.damage)} (방어 ${fmt(c.pen.def)} · ${c.pen.light?'빛':'빛 아님'}) 기준 ${hits}회`:c.boss==='corrupted'?'관통 미입력 · 관통 자리도 딜러 셋팅':'뒷라인 전체 딜러 셋팅'}`;
   $('resultSummary').innerHTML=[
    pen?`<div class="${pen.passed===pen.total?'ok':'bad'}"><small>관통 ${hits}회 통과</small><strong>${pen.passed}/${pen.total}</strong></div>`:'',
-   s.frontMin!=null?`<div><small>앞라인 최저 생존 점수</small><strong>${fmt(s.frontMin)}</strong></div>`:'',
-   `<div><small>딜러 기대 피해 합</small><strong>${fmt(s.dealt)}</strong></div>`,
    `<div><small>정령 사용</small><strong>${s.spiritsUsed}/${s.spiritsOwned}</strong></div>`].join('');
   $('resultBoard').innerHTML=boardHTML(pos=>{const x=by.get(pos),d=x&&byId.get(x.dragon.id);if(!x)return slotCell(pos,`<em>${posLabel(pos)}</em>`,' empty',pos<10?'front':c.boss==='corrupted'&&PEN.includes(pos)?'pen':'dealer');const ps=x.role==='pen'?penState(x.row,hits):null;
-   return slotCell(pos,`${d?icon(d):''}<span class="jp-metric ${ps?ps.cls:''}">${esc(metricOf(x,hits))}</span>${x.spirit?'<i class="jp-sp-dot" title="정령 배정"></i>':''}`,'',x.role);});
-  $('resultList').innerHTML=result.results.map(x=>{const r=x.row,d=byId.get(x.dragon.id);if(!r)return '';const ps=x.role==='pen'?penState(r,hits):null;
+   return slotCell(pos,`${d?icon(d):''}<span class="jp-metric ${ps?ps.cls:''}">${esc(metricOf(x,hits))}</span>${x.spirit?'<i class="jp-sp-dot" title="정령 배정"></i>':''}`,x.pos===resultPos?' on':'',x.role);});
+  $('resultList').innerHTML=result.results.filter(x=>x.pos===resultPos).map(x=>{const r=x.row,d=byId.get(x.dragon.id);if(!r)return '';const ps=x.role==='pen'?penState(r,hits):null;
    const roleText=x.role==='front'?'앞라인 · 생존 점수':x.role==='pen'?'관통 자리 · 기대 피해':'딜러 · 기대 피해';
    return `<article class="j-result jp-card ${x.role}" id="jp-card-${x.pos}"><header><div class="j-rank-head"><span class="j-rank-badge">${posLabel(x.pos)}</span>${d?icon(d):''}<div><h3>${esc(d?d.name:x.dragon.type)}</h3><small>${esc(x.dragon.type)}${d?' · '+esc(d.element):''} · ${roleLabel[x.role]}</small></div></div><div class="j-metrics"><div class="primary"><small>${roleText}</small><strong>${fmt(x.role==='front'?r.score:r.dealt)}</strong></div>${ps?`<div class="jp-pen ${ps.cls}"><small>관통 1회 ${fmt(r.penHit)}</small><strong>${ps.text}</strong></div>`:''}</div></header>
    <div class="j-final-stats">${['hp','atk','def'].map(k=>`<div class="${k}"><small>${names[k]}</small><b>${fmt(r.stats[k])}</b></div>`).join('')}</div>
@@ -161,7 +160,8 @@
    <div><small>물약</small>${esc(r.potion.n)}</div>
    <div><small>${r.probability?.kind==='eva'?'회피율':'크리 확률'}</small>${r.probability?`<b class="prob">${fmt(r.probability.final)}%</b><span class="sub">기본 ${fmt(r.probability.base)}% + 장비 ${fmt(r.probability.gear)}%</span>`:'미적용'}</div></div></article>`;}).join('');
  }
- $('resultBoard').onclick=e=>{const b=e.target.closest('[data-pos]');if(!b)return;$('jp-card-'+b.dataset.pos)?.scrollIntoView({behavior:'smooth',block:'start'});};
+ // 결과 배치판에서 누른 칸의 셋팅을 아래에 표시합니다.
+ $('resultBoard').onclick=e=>{const b=e.target.closest('[data-pos]');if(!b||b.classList.contains('empty'))return;resultPos=Number(b.dataset.pos);renderResults();};
 
  restore();loadDragons();renderEditor();renderSpirits();renderBoard();renderDragons();
 })();

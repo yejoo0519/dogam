@@ -93,13 +93,13 @@
     const pairs=[...new Map(pends.map(p=>[p.hp+','+p.def,p])).values()].filter(p=>!pends.some(q=>q.hp>=p.hp&&q.def>=p.def&&(q.hp>p.hp||q.def>p.def)));
     const pf=(v,p)=>Math.floor(v*(1+p/100)+1e-9);
     // Optimistic row from pre-pendant values; every stage is monotone, so this never undercuts a real row.
-    function loose(h,a,d,add,prob){const hp=pf(h,maxPend.hp)+add.hp,df=pf(d,maxPend.def)+add.def;const r={tankBV:hp*df,dealt:dealtWithCrit(pf(a,maxPend.atk)+add.atk,c,tank?null:prob,critMult)};if(tank)r.score=applyEvasion(survivalScore(hp,df,lightArg),prob);return r;}
-    function tight(h,a,d,add,prob){let score=-Infinity;for(const p of pairs){const v=survivalUpper(pf(h,p.hp)+add.hp,pf(d,p.def)+add.def,lightArg);if(v>score)score=v;}return {score:applyEvasion(score,prob),tankBV:(pf(h,maxPend.hp)+add.hp)*(pf(d,maxPend.def)+add.def),dealt:attack(pf(a,maxPend.atk)+add.atk,c)};}
+    function loose(h,a,d,add,prob){const hp=pf(h,maxPend.hp)+add.hp,df=pf(d,maxPend.def)+add.def,at=pf(a,maxPend.atk)+add.atk;const r={tankBV:hp*at*df,dealt:dealtWithCrit(at,c,tank?null:prob,critMult)};if(tank)r.score=applyEvasion(survivalScore(hp,df,lightArg),prob);return r;}
+    function tight(h,a,d,add,prob){let score=-Infinity;for(const p of pairs){const v=survivalUpper(pf(h,p.hp)+add.hp,pf(d,p.def)+add.def,lightArg);if(v>score)score=v;}return {score:applyEvasion(score,prob),tankBV:(pf(h,maxPend.hp)+add.hp)*(pf(a,maxPend.atk)+add.atk)*(pf(d,maxPend.def)+add.def),dealt:attack(pf(a,maxPend.atk)+add.atk,c)};}
     const pass=(top,bound)=>top.length<10||better(bound,top[9])<=0;
     for(const type of types){const top=[];byType[type]=top;const base=data.base[grade][type];
       // Pruning. Every bound is >= any real row in the sort order, and blocks/spirit groups are visited
       // best-bound first, so the first one that fails the current 10th place ends that loop.
-      // Tank bounds use only hp/def (dealt bound = Infinity); dealer bounds put 5 gems in every stat.
+      // Tank group bounds use only hp/def for the score (tankBV/dealt bounds = Infinity); dealer bounds put 5 gems in every stat.
       const vals=(k,pot,accPct,sp)=>{const v=new Array(6);for(let g=0;g<6;g++)v[g]=stat(base[k],g*data.gems[c.gem][k],pot[k],accPct(k),sp.pct[k],0,sp.plus[k],0,0);return v;};
       const addOf=sp=>Object.fromEntries(keys.map(k=>[k,(sp.bonus===k?data.bonus[k]:0)+c.collection[k]]));
       function groupBound(pot,accPct,prob,sp){
@@ -107,7 +107,7 @@
         if(!tank){const g5=k=>stat(base[k],5*data.gems[c.gem][k],pot[k],accPct(k),sp.pct[k],0,sp.plus[k],0,0);return loose(g5('hp'),g5('atk'),g5('def'),add,prob);}
         const vh=vals('hp',pot,accPct,sp),vd=vals('def',pot,accPct,sp);let m=-Infinity;
         for(let g=0;g<6;g++)for(const p of pairs){const u=survivalUpper(pf(vh[g],p.hp)+add.hp,pf(vd[5-g],p.def)+add.def,lightArg);if(u>m)m=u;}
-        return {score:applyEvasion(m,prob),tankBV:(pf(vh[5],maxPend.hp)+add.hp)*(pf(vd[5],maxPend.def)+add.def),dealt:Infinity};
+        return {score:applyEvasion(m,prob),tankBV:Infinity,dealt:Infinity};
       }
       // Tank: spirits with the same hp/def contribution share one bound.
       const groupMap=new Map();spirits.forEach((sp,si)=>{const k=tank?[sp.pct.hp,sp.pct.def,sp.plus.hp,sp.plus.def,sp.bonus==='atk'?'':sp.bonus].join():si;if(!groupMap.has(k))groupMap.set(k,[]);groupMap.get(k).push(si);});
@@ -137,7 +137,7 @@
               if(!pass(top,loose(h,a,d,adds,prob))||(tank&&!pass(top,tight(h,a,d,adds,prob))))continue;
               for(let pi=0;pi<pends.length;pi++){const pend=pends[pi];
                 const stats={hp:pf(h,pend.hp)+adds.hp,atk:pf(a,pend.atk)+adds.atk,def:pf(d,pend.def)+adds.def};
-                const tankBV=stats.hp*stats.def,dealt=dealtWithCrit(stats.atk,c,tank?null:prob,critMult);
+                const tankBV=stats.hp*stats.atk*stats.def,dealt=dealtWithCrit(stats.atk,c,tank?null:prob,critMult);
                 qualified++;const row={type,acc:ai,enchant,pend,spirit:{opts:sp.opts,bonus:sp.bonus},gems,potion:pot,probability:prob,stats,tankBV,dealt,score:tank?applyEvasion(survivalScore(stats.hp,stats.def,lightArg),prob):null,seq:((bSeq*spirits.length+si)*allocs.length+gi)*pends.length+pi};
                 if(top.length<10||better(row,top[top.length-1])<0){top.push(row);top.sort(better);if(top.length>10)top.pop();}
               }

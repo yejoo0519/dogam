@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ko" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>요르문간드 배치 계산기</title><link id="theme-css" rel="stylesheet" href="./theme-dark.css"><script src="./theme.js"></script><link rel="stylesheet" href="./ui.css"><link rel="stylesheet" href="./spirit-input.css"><link rel="stylesheet" href="./jorm.css"><link rel="stylesheet" href="./jorm-place.css"></head>
+<body class="u"><div class="u-app"><main class="u-wrap full jorm jp"><h1>요르문간드 배치 계산기</h1><p class="muted">앞라인 10칸 · 뒷라인 10칸에 드래곤을 넣고, 보유한 정령을 자리마다 나눠 줍니다. 젬·장신구·펜던트는 칸마다 자동으로 고릅니다. 층 버프와 4층 버프(크리·회피)는 계산에 넣지 않습니다. 입력은 이 브라우저에 저장됩니다.</p>
+<form id="config"><input type="hidden" id="boss" value="normal"><div class="j-boss-toggle" role="group" aria-label="보스 선택"><button type="button" data-boss="normal" aria-pressed="true"><img src="./dragon/662/profile/8.png" alt="" width="44" height="44"><span><small>보스</small>요르문간드</span></button><button type="button" data-boss="corrupted" aria-pressed="false"><img src="./dragon/664/profile/8.png" alt="" width="44" height="44"><span><small>보스 · 9.0 고정</small>잠식된 요르문간드</span></button></div>
+<nav class="j-input-tabs" aria-label="계산기 입력"><button type="button" data-panel="place" aria-pressed="true">배치</button><button type="button" data-panel="spirit" aria-pressed="false">정령</button><button type="button" data-panel="pen" aria-pressed="false">관통 피해</button><button type="button" data-panel="basic" aria-pressed="false">기본 설정</button></nav>
+
+<section data-input-panel="place"><h2>배치 <small id="placeCount"></small></h2><p class="muted">칸을 누른 뒤 아래 목록에서 드래곤을 고르세요. 타입과 속성은 도감 정보를 따릅니다.</p>
+<div class="jp-board" id="board"></div>
+<div class="jp-legend"><span class="front">앞라인 · 탱</span><span class="pen">관통 자리</span><span class="dealer">뒷라인 · 딜러</span></div>
+<div class="jp-picker" id="picker"><div class="jp-picker-head"><strong id="pickTitle"></strong><button type="button" id="clearSlot">이 칸 비우기</button><button type="button" id="clearAll">전체 비우기</button></div>
+<div class="toolbar"><input id="dragonSearch" type="search" placeholder="드래곤 이름 검색" aria-label="드래곤 검색"><select id="dragonType" aria-label="타입"><option value="">전체 타입</option></select><select id="dragonElement" aria-label="속성"><option value="">전체 속성</option></select></div>
+<div class="jp-dragons" id="dragons"><p class="muted">드래곤 목록을 불러오는 중…</p></div></div></section>
+
+<section data-input-panel="spirit" hidden><h2>보유 정령 <small id="spiritCount"></small></h2><p class="muted">가진 정령을 하나씩 추가하세요. 정령은 한 마리에게만 들어가며, 남는 칸은 정령 없이 계산합니다.</p>
+<div class="toolbar" id="spPresets"><button type="button" data-preset="last">막플</button><button type="button" data-preset="all">올퍼</button><button type="button" data-preset="14">14플</button><button type="button" data-preset="24">24플</button></div>
+<div id="spiritEditor"></div><div class="toolbar jp-add"><label>수량<input id="spiritQty" type="number" min="1" max="20" value="1"></label><button type="button" id="addSpirit">정령 추가</button></div>
+<div id="spiritList" class="jp-spirits"></div></section>
+
+<section data-input-panel="pen" hidden><h2>관통 피해</h2><p class="muted">뒷라인 가운데 4칸은 앞라인이 살아 있는 동안 관통 공격만 받습니다. 관통 1회 피해량과 그때 맞은 드래곤의 방어력을 넣으면 보스 관통 공격력을 거꾸로 계산해, 칸마다 관통 <b>4회</b>를 버티는지 판정합니다(난수 100%, 보스 크리 없음). 가장 크게 들어온 값을 넣어 주세요.</p>
+<div class="fields"><label>관통 1회 피해량<input id="penDamage" type="number" min="0" max="100000" placeholder="비우면 관통 자리도 딜러 셋팅"></label><label>맞은 드래곤 방어력<input id="penDef" type="number" min="0" max="100000" placeholder="예: 400"></label><label>맞은 드래곤 속성<select id="penLight"><option value="0">빛 아님 (어둠 등)</option><option value="1">빛</option></select></label></div>
+<p class="muted">비워 두면 관통 자리 4칸도 양끝처럼 딜러 셋팅으로 계산합니다. 어둠은 방어 보정이 없어 빛이 아닌 속성과 같게 계산됩니다.</p></section>
+
+<section data-input-panel="basic" hidden><h2>기본 설정</h2><div class="fields"><label>성장·등급<select id="grade"><option>9.0</option><option>8.0</option><option>7.0</option><option>진각</option></select></label><label>젬 수치<select id="gem"></select><small id="gemNote" class="j-field-help"></small></label><label>인챈트<select id="enchant"><option value="auto">체력·공격·방어 최적화</option><option value="none">없음</option><option value="hp">체력 +21%</option><option value="atk">공격 +21%</option><option value="def">방어 +21%</option></select></label></div>
+<div class="fields"><label>물약 단계<select id="potion"><option value="0">미사용</option></select><small class="j-field-help">앞라인 회피 물약 · 뒷라인 크리 물약</small></label></div>
+<h3>컬렉션</h3><div class="fields"><label>컬렉션 체력<input id="col-hp" type="number" min="0" max="10000" value="240" required></label><label>컬렉션 공격<input id="col-atk" type="number" min="0" max="10000" value="60" required></label><label>컬렉션 방어<input id="col-def" type="number" min="0" max="10000" value="60" required></label></div></section>
+
+<div class="runbar"><button id="run" type="submit">배치 계산</button><button id="cancel" type="button" hidden>계산 중단</button><button id="resetSaved" type="button">입력 초기화</button><span id="status" role="status" aria-live="polite">드래곤을 배치하고 보유 정령을 추가해 주세요.</span></div></form>
+<section id="results" hidden><h2>추천 배치</h2><p id="resultConditions" class="muted"></p><div id="resultSummary" class="jp-summary"></div><div class="jp-board" id="resultBoard"></div><h3>칸별 셋팅</h3><div id="resultList"></div></section></main></div>
+<script src="./jorm-data.js"></script><script src="./spirit-input.js"></script><script src="./dragons.js" defer></script><script src="./jorm-place.js" defer></script><script src="./ui.js"></script><script>UI.shell({page:'jorm-place',title:'요르문간드 배치 계산기',sub:'앞라인 · 관통 · 딜러 정령 배분'});</script></body></html>

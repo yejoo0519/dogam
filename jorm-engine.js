@@ -43,6 +43,11 @@
   function cycleDamage(def,light){const den=def*lightMul(light)+352;return 4*Math.floor(44*5000*16/den)+Math.floor(44*3500*16/den);}
   function survivalUpper(hp,def,light){const C=cycleDamage(def,light);return C?100*5*hp/C/reference:Infinity;}
   function survivalScore(hp,def,light=false){return 100*endurance(hp,def,light)/reference;}
+  // Penetration (관통): one hit at random 100%, no crit/evasion. bossAtk is back-calculated from a measured hit.
+  function penetrationHit(def,bossAtk,light=false){return Math.floor(44*bossAtk*16/(def*lightMul(light)+352)+1e-9);}
+  function penetrationHits(hp,def,bossAtk,light=false){const h=penetrationHit(def,bossAtk,light);return h>0?Math.floor((hp-1)/h):Infinity;}
+  // Largest boss attack that still gives the measured damage (conservative: floor keeps the same hit).
+  function penetrationAttack(damage,def,light=false){return (damage+1)*(def*lightMul(light)+352)/704-1e-6;}
   function stat(b,g,p,a,s,pend,plus,bonus,col){const x=Math.floor((b+g+p)*(1+a)+1e-9);const y=Math.floor((x+plus)*(1+s)+1e-9);return Math.floor(y*(1+pend)+1e-9)+bonus+col;}
   function spiritVariants(c,data){
     let rows=[[]];for(let i=0;i<4;i++){const opts=c.spirit[i];const stats=opts.stat==='auto'?keys:[opts.stat];const types=opts.type==='auto'?['%','+']:[opts.type];rows=rows.flatMap(r=>stats.flatMap(k=>types.map(type=>[...r,{stat:k,type}])));}
@@ -88,6 +93,8 @@
     // seq = original enumeration order; keeps tie order identical regardless of search order.
     const better=(a,b)=>(tank?(b.score-a.score||b.tankBV-a.tankBV||b.dealt-a.dealt):(b.dealt-a.dealt||b.tankBV-a.tankBV))||(a.seq??-1)-(b.seq??-1);
     let nextProgress=32768;
+    // c.minHits = {hits, attack}: keep only rows that survive `hits` penetration hits (used by the placement calculator).
+    const req=c.minHits&&c.minHits.attack>0?c.minHits:null;
     const maxPend=Object.fromEntries(keys.map(k=>[k,Math.max(...pends.map(p=>p[k]))]));
     // Pareto-maximal (hp,def) pendant pairs: exact upper bound of the tank score for one gem split.
     const pairs=[...new Map(pends.map(p=>[p.hp+','+p.def,p])).values()].filter(p=>!pends.some(q=>q.hp>=p.hp&&q.def>=p.def&&(q.hp>p.hp||q.def>p.def)));
@@ -135,8 +142,10 @@
               const h=values.hp[gems.hp],a=values.atk[gems.atk],d=values.def[gems.def];
               tested+=pends.length;
               if(!pass(top,loose(h,a,d,adds,prob))||(tank&&!pass(top,tight(h,a,d,adds,prob))))continue;
+              if(req&&penetrationHits(pf(h,maxPend.hp)+adds.hp,pf(d,maxPend.def)+adds.def,req.attack,lightArg)<req.hits)continue;
               for(let pi=0;pi<pends.length;pi++){const pend=pends[pi];
                 const stats={hp:pf(h,pend.hp)+adds.hp,atk:pf(a,pend.atk)+adds.atk,def:pf(d,pend.def)+adds.def};
+                if(req&&penetrationHits(stats.hp,stats.def,req.attack,lightArg)<req.hits)continue;
                 const tankBV=stats.hp*stats.atk*stats.def,dealt=dealtWithCrit(stats.atk,c,tank?null:prob,critMult);
                 qualified++;const row={type,acc:ai,enchant,pend,spirit:{opts:sp.opts,bonus:sp.bonus},gems,potion:pot,probability:prob,stats,tankBV,dealt,score:tank?applyEvasion(survivalScore(stats.hp,stats.def,lightArg),prob):null,seq:((bSeq*spirits.length+si)*allocs.length+gi)*pends.length+pi};
                 if(top.length<10||better(row,top[top.length-1])<0){top.push(row);top.sort(better);if(top.length>10)top.pop();}
@@ -150,9 +159,9 @@
     for(const t in byType)for(const r of byType[t])delete r.seq;
     return {rows:Object.values(byType).flat().sort(better).slice(0,10),byType,tested,qualified,totalCandidates:total/pends.length*allPend.length};
   }
-  const api={endurance,survivalScore,attack,probability,applyEvasion,dealtWithCrit,potionCandidates,stat,optimize,allPendants,pendantFrontier,spiritVariants};
+  const api={endurance,survivalScore,penetrationHit,penetrationHits,penetrationAttack,attack,probability,applyEvasion,dealtWithCrit,potionCandidates,stat,optimize,allPendants,pendantFrontier,spiritVariants};
   if(typeof module!=='undefined')module.exports=api;else root.JormEngine=api;
-  if(typeof document==='undefined'&&typeof importScripts==='function'){
+  if(typeof document==='undefined'&&typeof importScripts==='function'&&!root.JormEngineNoWorker){
     importScripts('./jorm-data.js');root.onmessage=e=>{try{root.postMessage({result:optimize(e.data,root.JormData,p=>root.postMessage({progress:p}))})}catch(err){root.postMessage({error:err.message})}};
   }
 })(globalThis);

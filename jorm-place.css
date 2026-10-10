@@ -1,0 +1,46 @@
+/* 요르문간드 배치 계산기 — jorm.css 위에 추가 */
+.jp{--front:#6ba4e1;--pen:#b07ae0;--dealer:#e87979}
+.jp [data-input-panel]{min-height:0}
+.jp-board{display:grid;gap:10px;margin:14px 0 10px}
+.jp-row{display:grid;grid-template-columns:52px minmax(0,1fr);gap:8px;align-items:center}
+.jp-row-label{font-size:12px;color:var(--text2);font-weight:700}
+.jp-cells{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:6px}
+.jorm .jp-slot{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:0;aspect-ratio:1/1.18;padding:6px 3px;border:1px solid var(--border3);border-top:3px solid var(--front);border-radius:9px;background:var(--bg);overflow:hidden}
+.jorm .jp-slot.pen{border-top-color:var(--pen);background:color-mix(in srgb,var(--pen) 9%,var(--bg))}
+.jorm .jp-slot.dealer{border-top-color:var(--dealer)}
+.jorm .jp-slot.on{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent) inset}
+.jp-slot img{width:72%;max-width:56px;aspect-ratio:1;object-fit:contain;border-radius:7px}
+.jp-slot span{display:block;max-width:100%;font-size:11px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.jp-slot em{font-style:normal;font-size:11px;color:var(--text2)}
+.jp-slot.empty{opacity:.75}
+.jp-slot .jp-metric{font-weight:700;color:var(--accent)}
+.jp-slot .jp-metric.ok{color:#9fd18b}.jp-slot .jp-metric.ok2{color:#6fd3b8}.jp-slot .jp-metric.bad{color:#f08a7a}
+.jp-sp-dot{position:absolute;top:5px;right:5px;width:7px;height:7px;border-radius:50%;background:var(--accent)}
+.jp-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--text2);margin:0 0 4px 60px}
+.jp-legend span::before{content:'';display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.jp-legend .front::before{background:var(--front)}.jp-legend .pen::before{background:var(--pen)}.jp-legend .dealer::before{background:var(--dealer)}
+.jp-picker{margin-top:18px;padding-top:16px;border-top:1px solid var(--border)}
+.jp-picker-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}.jp-picker-head strong{margin-right:auto;font-size:14px}
+.jp-dragons{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;height:330px;overflow:auto;margin-top:12px;align-content:start}
+.jorm .jp-dragons button{display:flex;align-items:center;gap:8px;padding:6px 8px;text-align:left;min-width:0}
+.jorm .jp-dragons button[aria-pressed=true]{border-color:var(--accent);background:var(--accent-bg)}
+.jp-dragons img{width:36px;height:36px;object-fit:contain;flex-shrink:0;border-radius:6px}
+.jp-dragons span{min-width:0;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.jp-dragons small{display:block;font-size:11px}
+.jp-add{margin:14px 0}.jp-add label{display:flex;align-items:center;gap:8px}.jorm .jp-add input{width:80px;margin:0}
+.jp-spirits{display:grid;gap:8px}
+.jp-spirit{display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap;padding:10px 12px;border:1px solid var(--border);border-radius:9px;background:var(--bg)}
+.jp-spirit-opts{display:flex;flex-wrap:wrap;gap:6px;font-size:13px}.jp-spirit-opts span{padding:4px 8px;background:var(--bg2);border-radius:5px}.jp-spirit-opts small{margin-right:5px;font-size:11px}
+.jp-qty{display:flex;align-items:center;gap:6px}.jorm .jp-qty button{padding:6px 10px}.jp-qty b{min-width:22px;text-align:center}
+.jp-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:14px 0}
+.jp-summary>div{padding:12px 14px;border:1px solid var(--border);border-radius:9px;background:var(--bg)}.jp-summary small{display:block;font-size:11px}.jp-summary strong{font-size:20px;color:var(--accent)}
+.jp-summary .ok strong{color:#9fd18b}.jp-summary .bad strong{color:#f08a7a}
+.jp-card .j-rank-head img{width:40px;height:40px;object-fit:contain;border-radius:7px}
+.jp-card.front{border-left:3px solid var(--front)!important}.jp-card.pen{border-left:3px solid var(--pen)!important}.jp-card.dealer{border-left:3px solid var(--dealer)!important}
+.jp-pen.ok strong{color:#9fd18b!important}.jp-pen.ok2 strong{color:#6fd3b8!important}.jp-pen.bad strong{color:#f08a7a!important}
+@media(max-width:760px){
+ .jp-row{grid-template-columns:1fr;gap:4px}.jp-legend{margin-left:0}
+ .jp-cells{grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}.jorm .jp-slot{padding:4px 2px;border-radius:7px;gap:2px}.jp-slot span,.jp-slot em{font-size:10px}
+ .jp-slot img{width:70%}
+ .jp-dragons{grid-template-columns:repeat(2,minmax(0,1fr));height:300px}
+ .jp-summary{grid-template-columns:repeat(2,minmax(0,1fr))}
+}

@@ -106,7 +106,7 @@
   $('resultTypes').innerHTML=entries.map(([id,label,rows,rank])=>`<button type="button" data-result-type="${esc(id)}" aria-pressed="${resultType===id}"><span>${rank?`<em class="j-rank">${rank}</em>`:''}${esc(label)}</span><strong>${rows.length?fmt(metric(c,rows[0])):'—'}</strong><small>${metricName(c)} 최고</small></button>`).join('');
   const rows=resultType==='all'?result.rows:result.byType[resultType]||[];
   $('resultTitle').textContent=(resultType==='all'?'전체 타입':resultType)+' · TOP '+rows.length+' · '+metricName(c)+' 높은 순';
-  $('resultList').innerHTML=rows.map((r,i)=>`<article class="j-result${i===0?' j-top':''}"><header><div class="j-rank-head"><span class="j-rank-badge">${i+1}위</span><h3>${esc(r.type)}</h3></div><div class="j-metrics"><div class="primary"><small>${metricName(c)}</small><strong>${fmt(metric(c,r))}</strong></div><div><small>탱킹 비밸</small><strong>${fmt(r.tankBV)}</strong></div></div></header>
+  $('resultList').innerHTML=rows.map((r,i)=>`<article class="j-result${i===0?' j-top':''}"><header><div class="j-rank-head"><span class="j-rank-badge">${i+1}위</span><h3>${esc(r.type)}</h3></div><div class="j-metrics"><div class="primary"><small>${metricName(c)}</small><strong>${fmt(metric(c,r))}</strong></div><div><small>비밸</small><strong>${fmt(r.tankBV)}</strong></div></div></header>
   <div class="j-final-stats">${['hp','atk','def'].map(k=>`<div class="${k}"><small>${names[k]}</small><b>${fmt(r.stats[k])}</b></div>`).join('')}</div>
   <div class="j-gear"><div><small>장신구</small><b>${esc(D.accessories[r.acc].n)}</b><div>인챈트 · ${names[r.enchant]}${r.enchant==='none'?'':' +21%'}</div></div>
   <div><small>젬 배분</small>${['hp','atk','def'].map(k=>`<span class="j-stat-chip ${k}">${names[k]} ${r.gems[k]}개</span>`).join('')}</div>

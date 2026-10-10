@@ -48,7 +48,7 @@
  /* ---------- dragon picker ---------- */
  function loadDragons(){
   const src=window.DV1_DRAGONS;if(!src){$('dragons').innerHTML='<p class="muted">드래곤 목록을 불러오지 못했습니다.</p>';return}
-  dragons=src.records.filter(r=>r.type&&r.type!=='중립'&&D.types.includes(r.type+'형')).map(r=>({id:r.id,name:r.name.ko,aliases:(r.aliases&&r.aliases.ko)||[],type:r.type+'형',element:r.element}));
+  dragons=src.records.filter(r=>r.stages&&r.stages.advent&&r.type&&r.type!=='중립'&&D.types.includes(r.type+'형')).map(r=>({id:r.id,name:r.name.ko,aliases:(r.aliases&&r.aliases.ko)||[],type:r.type+'형',element:r.element}));
   byId=new Map(dragons.map(d=>[d.id,d]));
   slots=slots.map(id=>byId.has(id)?id:null);
   D.types.forEach(t=>$('dragonType').add(new Option(t,t)));

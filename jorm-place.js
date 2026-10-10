@@ -112,6 +112,8 @@
    if(Array.isArray(s.spirits))spirits=s.spirits.filter(x=>x&&Array.isArray(x.opts)&&x.opts.length===4).map(x=>({opts:x.opts.map(o=>({stat:['hp','atk','def'].includes(o.stat)?o.stat:'none',type:o.type==='+'?'+':'%'})),bonus:['hp','atk','def'].includes(x.bonus)?x.bonus:'none',count:Math.max(1,Math.min(20,x.count|0))}));
    if(s.gemStock)for(const k of ['hp','atk','def'])for(const g of STOCK_KEYS){const n=Math.trunc(Number(s.gemStock[k]?.[g]));if(n>0)gemStock[k][g]=Math.min(100,n);}
   }
+  // 일반 요르문간드는 현재 선택할 수 없습니다(코드는 유지). 잠식된 요르문간드로 고정.
+  $('boss').value='corrupted';
   bossView();gemHelp();gemModeView();renderGemGrid();restoring=false;
  }
  $('resetSaved').onclick=()=>{try{localStorage.removeItem(STORE)}catch(_){}location.reload()};

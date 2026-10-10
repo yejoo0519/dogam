@@ -85,6 +85,19 @@
     }
     const results=slots.map((sl,i)=>{const r=table[i][best.pick[i]],k=cols[best.pick[i]];return {pos:sl.pos,role:sl.role,dragon:sl.dragon,spirit:k===noSpirit.key?null:kinds.get(k),row:r&&{...r}};});
     if(input.gemStock)distributeGems(results,input,E,data,{bossAtk,hits,lightOf,grade:base.grade});
+    // 추천 배치: 앞라인은 생존 점수가 높은 순으로 가운데부터, 딜러는 기대 피해가 높은 순으로 가장자리부터.
+    // (계산 모델에서 같은 줄 안의 칸 위치는 결과에 영향을 주지 않으므로 자리만 다시 정합니다.)
+    const FRONT_ORDER=[4,5,3,6,2,7,1,8,0,9],BACK_ORDER=[10,19,11,18,12,17,13,16,14,15];
+    function arrange(role,order,metric){
+      const group=results.filter(x=>x.role===role).sort((a,b)=>metric(b)-metric(a));
+      const free=order.filter(p=>results.some(x=>x.role===role&&x.pos===p)||!slots.some(sl=>sl.pos===p));
+      const allowed=role==='dealer'?order.filter(p=>roleOf(p,pen)==='dealer'):order;
+      const targets=allowed.filter(p=>free.includes(p));
+      group.forEach((x,i)=>{x.from=x.pos;x.pos=targets[i];});
+    }
+    arrange('front',FRONT_ORDER,x=>x.row?x.row.score:-Infinity);
+    arrange('dealer',BACK_ORDER,x=>x.row?x.row.dealt:-Infinity);
+    results.sort((a,b)=>a.pos-b.pos);
     const front=results.filter(r=>r.role==='front'&&r.row),pens=results.filter(r=>r.role==='pen');
     return {results,pen:pen?{bossAtk,hits,passed:pens.filter(r=>r.row&&r.row.pass).length,total:pens.length}:null,
       summary:{frontMin:front.length?Math.min(...front.map(r=>r.row.score)):null,dealt:results.filter(r=>r.row&&(r.role==='dealer'||(r.role==='pen'&&r.row.pass))).reduce((a,r)=>a+r.row.dealt,0),spiritsUsed:results.filter(r=>r.spirit).length,spiritsOwned:units.length},evaluated:total};

@@ -13,6 +13,13 @@
  Object.keys(D.gems).sort((a,b)=>D.gemNames[b]-D.gemNames[a]).forEach(k=>$('gem').add(new Option(String(D.gemNames[k]),k)));
  const gemHelp=()=>{const g=D.gems[v('gem')];$('gemNote').textContent=`체력 +${g.hp} / 공격 +${g.atk} / 방어 +${g.def}`;};
  $('gem').addEventListener('change',gemHelp);
+ // 보유 젬: 스탯별 38·40·42·44젬 갯수 (저장 키는 jorm-data의 젬 키). 모자라면 36젬.
+ const STOCK_KEYS=Object.keys(D.gems).filter(k=>D.gemNames[k]>36).sort((a,b)=>D.gemNames[b]-D.gemNames[a]),FALLBACK_GEM='36';
+ let gemStock={hp:{},atk:{},def:{}};
+ function renderGemGrid(){$('gemGrid').innerHTML=`<span></span>${['hp','atk','def'].map(k=>`<b class="${k}">${names[k]}</b>`).join('')}`+STOCK_KEYS.map(g=>`<span>${D.gemNames[g]}젬</span>${['hp','atk','def'].map(k=>`<input type="number" min="0" max="100" inputmode="numeric" data-gs="${k}" data-g="${g}" value="${gemStock[k][g]||0}" aria-label="${names[k]} ${D.gemNames[g]}젬 갯수">`).join('')}`).join('');}
+ $('gemGrid').addEventListener('input',e=>{const el=e.target;if(!el.dataset.gs)return;gemStock[el.dataset.gs][el.dataset.g]=Math.max(0,Math.min(100,Math.trunc(Number(el.value))||0));changed();});
+ function gemModeView(){const stock=v('gemMode')==='stock';$('gemStock').hidden=!stock;$('gemSame').hidden=stock;}
+ $('gemMode').addEventListener('change',gemModeView);
  Object.keys(D.potions).map(Number).sort((a,b)=>a-b).forEach(k=>$('potion').add(new Option(k+'단계',String(k))));
  $('potion').value=String(Math.max(...Object.keys(D.potions).map(Number)));
  let normalGrade=null;
@@ -94,8 +101,8 @@
   renderSpirits();changed();};
 
  /* ---------- save ---------- */
- const SAVED=['boss','grade','gem','enchant','potion','col-hp','col-atk','col-def','penDamage','penDef','penLight'];
- function save(){if(restoring)return;try{localStorage.setItem(STORE,JSON.stringify({v:1,fields:Object.fromEntries(SAVED.map(id=>[id,id==='grade'&&$('grade').disabled&&normalGrade?normalGrade:v(id)])),slots,spirits}))}catch(_){}}
+ const SAVED=['boss','grade','gemMode','gem','enchant','potion','col-hp','col-atk','col-def','penDamage','penDef','penLight'];
+ function save(){if(restoring)return;try{localStorage.setItem(STORE,JSON.stringify({v:1,fields:Object.fromEntries(SAVED.map(id=>[id,id==='grade'&&$('grade').disabled&&normalGrade?normalGrade:v(id)])),slots,spirits,gemStock}))}catch(_){}}
  function restore(){
   let s=null;try{s=JSON.parse(localStorage.getItem(STORE)||'null')}catch(_){}
   restoring=true;
@@ -103,15 +110,16 @@
    for(const id of SAVED){const val=s.fields?.[id];if(val==null)continue;const el=$(id);if(el.tagName==='SELECT'&&![...el.options].some(o=>o.value===val))continue;el.value=val;}
    if(Array.isArray(s.slots)&&s.slots.length===20)slots=s.slots.map(x=>Number.isInteger(x)?x:null);
    if(Array.isArray(s.spirits))spirits=s.spirits.filter(x=>x&&Array.isArray(x.opts)&&x.opts.length===4).map(x=>({opts:x.opts.map(o=>({stat:['hp','atk','def'].includes(o.stat)?o.stat:'none',type:o.type==='+'?'+':'%'})),bonus:['hp','atk','def'].includes(x.bonus)?x.bonus:'none',count:Math.max(1,Math.min(20,x.count|0))}));
+   if(s.gemStock)for(const k of ['hp','atk','def'])for(const g of STOCK_KEYS){const n=Math.trunc(Number(s.gemStock[k]?.[g]));if(n>0)gemStock[k][g]=Math.min(100,n);}
   }
-  bossView();gemHelp();restoring=false;
+  bossView();gemHelp();gemModeView();renderGemGrid();restoring=false;
  }
  $('resetSaved').onclick=()=>{try{localStorage.removeItem(STORE)}catch(_){}location.reload()};
 
  /* ---------- run ---------- */
  function config(){
   const dmg=n('penDamage'),def=n('penDef');
-  return {boss:v('boss'),grade:v('boss')==='corrupted'?'9.0':v('grade'),gem:v('gem'),enchant:v('enchant'),potion:n('potion'),collection:Object.fromEntries(['hp','atk','def'].map(k=>[k,n('col-'+k)])),
+  return {boss:v('boss'),grade:v('boss')==='corrupted'?'9.0':v('grade'),gem:v('gemMode')==='stock'?FALLBACK_GEM:v('gem'),gemStock:v('gemMode')==='stock'?gemStock:null,enchant:v('enchant'),potion:n('potion'),collection:Object.fromEntries(['hp','atk','def'].map(k=>[k,n('col-'+k)])),
    pen:penOn()&&v('penDamage')!==''&&dmg>0?{damage:dmg,def:v('penDef')===''?0:def,light:v('penLight')==='1'}:null,hits:4,
    slots:slots.map(id=>{const d=byId.get(id);return d?{id:d.id,type:d.type,light:d.element==='빛',dark:d.element==='어둠'}:null}),spirits};
  }
@@ -139,11 +147,12 @@
  function penState(r,hits){if(!r||r.penHits==null)return {cls:'',text:''};if(r.penHits>=hits+1)return {cls:'ok2',text:`${hits+1}회 OK`};if(r.penHits>=hits)return {cls:'ok',text:`${hits}회 OK`};return {cls:'bad',text:`부족 · ${r.penHits}회`};}
  function metricOf(x,hits){const r=x.row;if(!r)return '—';if(x.role==='front')return fmt(Math.round(r.score));if(x.role==='pen'){const p=penState(r,hits);return p.cls==='bad'?'부족':p.text.replace(' OK','');}return fmt(Math.round(r.dealt));}
  function spiritHTML(s){if(!s)return '<b>정령 없음</b>';return `<div class="j-spirit-result">${s.opts.map((o,j)=>`<span class="${o.stat}"><small>${j+1}옵</small>${optText(o,j)}</span>`).join('')}</div><div class="${s.bonus}">부가옵 · ${names[s.bonus]||'없음'}</div>`;}
+ const gemText=list=>{const m=new Map();list.forEach(g=>m.set(g,(m.get(g)||0)+1));return [...m].map(([g,n])=>`${D.gemNames[g]}×${n}`).join(' ');};
  function renderResults(){
   const {result,config:c}=lastResult,hits=c.hits,by=new Map(result.results.map(x=>[x.pos,x]));
   const pen=result.pen,s=result.summary;
   if(!by.has(resultPos))resultPos=result.results[0]?.pos;
-  $('resultConditions').textContent=`${c.boss==='corrupted'?'잠식된 요르문간드':'요르문간드'} / ${c.grade} / 젬 ${D.gemNames[c.gem]} / 물약 ${c.potion}단계 / ${pen?`관통 1회 ${fmt(c.pen.damage)} (방어 ${fmt(c.pen.def)} · ${c.pen.light?'빛':'빛 아님'}) 기준 ${hits}회`:c.boss==='corrupted'?'관통 미입력 · 관통 자리도 딜러 셋팅':'뒷라인 전체 딜러 셋팅'}`;
+  $('resultConditions').textContent=`${c.boss==='corrupted'?'잠식된 요르문간드':'요르문간드'} / ${c.grade} / ${c.gemStock?'보유 젬 (부족분 36젬)':'젬 '+D.gemNames[c.gem]} / 물약 ${c.potion}단계 / ${pen?`관통 1회 ${fmt(c.pen.damage)} (방어 ${fmt(c.pen.def)} · ${c.pen.light?'빛':'빛 아님'}) 기준 ${hits}회`:c.boss==='corrupted'?'관통 미입력 · 관통 자리도 딜러 셋팅':'뒷라인 전체 딜러 셋팅'}`;
   $('resultSummary').innerHTML=[
    pen?`<div class="${pen.passed===pen.total?'ok':'bad'}"><small>관통 ${hits}회 통과</small><strong>${pen.passed}/${pen.total}</strong></div>`:'',
    `<div><small>정령 사용</small><strong>${s.spiritsUsed}/${s.spiritsOwned}</strong></div>`].join('');
@@ -155,7 +164,7 @@
    <div class="j-final-stats">${['hp','atk','def'].map(k=>`<div class="${k}"><small>${names[k]}</small><b>${fmt(r.stats[k])}</b></div>`).join('')}</div>
    <div class="j-gear"><div><small>정령</small>${spiritHTML(x.spirit)}</div>
    <div><small>장신구</small><b>${esc(D.accessories[r.acc].n)}</b><div>인챈트 · ${names[r.enchant]}${r.enchant==='none'?'':' +21%'}</div></div>
-   <div><small>젬 배분</small>${['hp','atk','def'].map(k=>`<span class="j-stat-chip ${k}">${names[k]} ${r.gems[k]}개</span>`).join('')}</div>
+   <div><small>젬 배분</small>${['hp','atk','def'].map(k=>`<span class="j-stat-chip ${k}">${names[k]} ${r.gems[k]}개${r.gemLv&&r.gems[k]?' · '+gemText(r.gemLv[k]):''}</span>`).join('')}</div>
    <div><small>펜던트 · ${esc(r.pend.name)}</small>${['hp','atk','def'].filter(k=>r.pend[k]).map(k=>`<span class="j-stat-chip ${k}">${names[k]} ${r.pend[k]}%</span>`).join('')||'미착용'}</div>
    <div><small>물약</small>${esc(r.potion.n)}</div>
    <div><small>${r.probability?.kind==='eva'?'회피율':'크리 확률'}</small>${r.probability?`<b class="prob">${fmt(r.probability.final)}%</b><span class="sub">기본 ${fmt(r.probability.base)}% + 장비 ${fmt(r.probability.gear)}%</span>`:'미적용'}</div></div></article>`;}).join('');

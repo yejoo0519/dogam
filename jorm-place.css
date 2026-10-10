@@ -45,3 +45,7 @@
  .jp-summary{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media(max-width:760px){.jp .j-input-tabs{display:flex}.jp .j-input-tabs button{flex:1}}
+.jp-gem-stock{margin-top:12px;max-width:520px}
+.jp-gem-grid{display:grid;grid-template-columns:64px repeat(3,minmax(0,1fr));gap:6px 8px;align-items:center}
+.jp-gem-grid>b{font-size:12px;text-align:center}.jp-gem-grid>span{font-size:13px;font-weight:700}
+.jorm .jp-gem-grid input{margin:0;text-align:center;padding:8px}

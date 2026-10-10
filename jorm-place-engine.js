@@ -83,10 +83,66 @@
       let lo=0,hi=cands.length-1;
       while(lo<=hi){const mid=(lo+hi)>>1,s=solve(cands[mid]);if(s.low===0&&s.passes===maxPass){best=s;lo=mid+1;}else hi=mid-1;}
     }
-    const results=slots.map((sl,i)=>{const r=table[i][best.pick[i]],k=cols[best.pick[i]];return {pos:sl.pos,role:sl.role,dragon:sl.dragon,spirit:k===noSpirit.key?null:kinds.get(k),row:r};});
+    const results=slots.map((sl,i)=>{const r=table[i][best.pick[i]],k=cols[best.pick[i]];return {pos:sl.pos,role:sl.role,dragon:sl.dragon,spirit:k===noSpirit.key?null:kinds.get(k),row:r&&{...r}};});
+    if(input.gemStock)distributeGems(results,input,E,data,{bossAtk,hits,lightOf,grade:base.grade});
     const front=results.filter(r=>r.role==='front'&&r.row),pens=results.filter(r=>r.role==='pen');
     return {results,pen:pen?{bossAtk,hits,passed:pens.filter(r=>r.row&&r.row.pass).length,total:pens.length}:null,
       summary:{frontMin:front.length?Math.min(...front.map(r=>r.row.score)):null,dealt:results.filter(r=>r.row&&(r.role==='dealer'||(r.role==='pen'&&r.row.pass))).reduce((a,r)=>a+r.row.dealt,0),spiritsUsed:results.filter(r=>r.spirit).length,spiritsOwned:units.length},evaluated:total};
+  }
+  // 보유 젬 배분: 셋팅(장신구·펜던트·정령·젬 갯수)은 기준 젬(input.gem, 보통 36)으로 고른 그대로 두고,
+  // 보유한 상위 젬을 한 개씩 넣어 볼 때마다 목표(관통 통과 수 > 앞라인 최저 점수 > 딜 합 + 앞라인 합)가
+  // 가장 좋아지는 칸에 넣습니다. 남는 자리는 기준 젬으로 채웁니다.
+  function distributeGems(results,input,E,data,ctx){
+    const keys=['hp','atk','def'],baseGem=input.gem,mult=data.probability.dealer.multiplier;
+    const items=results.filter(x=>x.row);
+    const pf=(v,p)=>Math.floor(v*(1+p/100)+1e-9);
+    for(const x of items){x.row.gemLv=Object.fromEntries(keys.map(k=>[k,Array(x.row.gems[k]).fill(baseGem)]));}
+    function restat(x,lv){
+      const r=x.row,d=x.dragon,b=data.base[ctx.grade][d.type],acc=data.accessories[r.acc],sp=x.spirit,out={};
+      for(const k of keys){
+        let plus=0,pct=0;if(sp)sp.opts.forEach((o,i)=>{if(o.stat!==k)return;if(o.type==='+')plus+=data.plus[k][i+1];else pct+=data.pct[i+1];});
+        const gem=lv[k].reduce((a,g)=>a+data.gems[g][k],0);
+        const add=(sp&&sp.bonus===k?data.bonus[k]:0)+input.collection[k];
+        out[k]=pf(E.stat(b[k],gem,r.potion[k],acc[k]+(r.enchant===k?.21:0),pct,0,plus,0,0),r.pend[k])+add;
+      }
+      return out;
+    }
+    function measure(x,stats){
+      const r=x.row,light=ctx.lightOf(x.dragon.light);
+      if(x.role==='front'){const prob=r.probability&&r.probability.kind==='eva'?r.probability:null;return {score:E.applyEvasion(E.survivalScore(stats.hp,stats.def,light),prob)};}
+      const c={dark:!!x.dragon.dark};
+      const out={dealt:E.dealtWithCrit(stats.atk,c,r.probability&&r.probability.kind==='crit'?r.probability:null,mult)};
+      if(x.role==='pen'){out.penHit=E.penetrationHit(stats.def,ctx.bossAtk,light);out.penHits=E.penetrationHits(stats.hp,stats.def,ctx.bossAtk,light);out.pass=out.penHits>=ctx.hits;}
+      return out;
+    }
+    function apply(x,lv){const stats=restat(x,lv);Object.assign(x.row,{stats,tankBV:stats.hp*stats.atk*stats.def},measure(x,stats));x.row.gemLv=lv;}
+    items.forEach(x=>apply(x,x.row.gemLv));
+    function objective(list){
+      let passes=0,min=Infinity,sum=0;
+      for(const x of list){const r=x.row;
+        if(x.role==='front'){min=Math.min(min,r.score);sum+=r.score*1e-3;}
+        else if(x.role==='pen'){if(r.pass){passes++;sum+=r.dealt;}else sum+=r.penHits*1e-6;}
+        else sum+=r.dealt;}
+      return [passes,min,sum];
+    }
+    const cmp=(a,b)=>a[0]-b[0]||a[1]-b[1]||a[2]-b[2];
+    // 보유 젬: 스탯별 [단계, 남은 수], 높은 단계부터. 기준 젬보다 낮은 단계는 쓰지 않습니다.
+    const stock=Object.fromEntries(keys.map(k=>[k,Object.entries(input.gemStock[k]||{}).filter(([g,n])=>data.gems[g]&&n>0&&data.gemNames[g]>data.gemNames[baseGem]).map(([g,n])=>[g,Math.floor(n)]).sort((a,b)=>data.gemNames[b[0]]-data.gemNames[a[0]])]));
+    for(;;){
+      let bestMove=null,bestObj=objective(items);
+      for(const k of keys){const top=stock[k].find(e=>e[1]>0);if(!top)continue;const g=top[0];
+        for(const x of items){const lv=x.row.gemLv,at=lv[k].findIndex(q=>data.gemNames[q]<data.gemNames[g]);if(at<0)continue;
+          // 가장 낮은 젬 자리를 교체해 봅니다.
+          let low=at;lv[k].forEach((q,i)=>{if(data.gemNames[q]<data.gemNames[lv[k][low]])low=i;});
+          const saved={...x.row},next={...lv,[k]:lv[k].map((q,i)=>i===low?g:q)};
+          apply(x,next);const obj=objective(items);Object.keys(x.row).forEach(f=>delete x.row[f]);Object.assign(x.row,saved);
+          if(!bestMove||cmp(obj,bestObj)>0||(cmp(obj,bestObj)===0&&!bestMove)){bestObj=obj;bestMove={x,next,entry:top};}
+        }
+      }
+      if(!bestMove)break;
+      apply(bestMove.x,bestMove.next);bestMove.entry[1]--;
+    }
+    for(const x of items)x.row.gemLv=Object.fromEntries(keys.map(k=>[k,x.row.gemLv[k].slice().sort((a,b)=>data.gemNames[b]-data.gemNames[a])]));
   }
   const api={plan,hungarian,roleOf,PEN_SLOTS,spiritKey};
   if(typeof module!=='undefined')module.exports=api;else root.JormPlace=api;

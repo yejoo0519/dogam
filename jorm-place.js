@@ -102,7 +102,7 @@
 
  /* ---------- save ---------- */
  const SAVED=['boss','grade','gemMode','gem','enchant','potion','col-hp','col-atk','col-def','penDamage','penDef','penLight'];
- function save(){if(restoring)return;try{localStorage.setItem(STORE,JSON.stringify({v:1,fields:Object.fromEntries(SAVED.map(id=>[id,id==='grade'&&$('grade').disabled&&normalGrade?normalGrade:v(id)])),slots,spirits,gemStock}))}catch(_){}}
+ function save(){if(restoring)return;try{localStorage.setItem(STORE,JSON.stringify({v:1,fields:Object.fromEntries(SAVED.map(id=>[id,id==='grade'&&$('grade').disabled&&normalGrade?normalGrade:v(id)])),slots,spirits,gemStock}))}catch(_){}globalThis.CalcCloud?.push(STORE);}
  function restore(){
   let s=null;try{s=JSON.parse(localStorage.getItem(STORE)||'null')}catch(_){}
   restoring=true;
@@ -116,7 +116,7 @@
   $('boss').value='corrupted';
   bossView();gemHelp();gemModeView();renderGemGrid();restoring=false;
  }
- $('resetSaved').onclick=()=>{try{localStorage.removeItem(STORE)}catch(_){}location.reload()};
+ $('resetSaved').onclick=async()=>{try{localStorage.removeItem(STORE)}catch(_){}await globalThis.CalcCloud?.clear(STORE);location.reload()};
 
  /* ---------- run ---------- */
  function config(){
@@ -175,4 +175,5 @@
  $('resultBoard').onclick=e=>{const b=e.target.closest('[data-pos]');if(!b||b.classList.contains('empty'))return;resultPos=Number(b.dataset.pos);renderResults();};
 
  restore();loadDragons();renderEditor();renderSpirits();renderBoard();renderDragons();
+ globalThis.CalcCloud?.start(STORE);
 })();

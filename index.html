@@ -134,6 +134,8 @@
   .cards { display: grid; gap: 14px;
            grid-template-columns: repeat(2, 1fr); }
   .cards.tri { grid-template-columns: repeat(3, 1fr); }
+  .cat-sub { font-size: 14px; font-weight: 700; color: var(--text2); margin: 10px 0 -10px; }
+  .cat-head + .cat-sub { margin-top: -4px; }
 
   /* 카드 — 좌측 액센트 보더 스타일 */
   .card { display: flex; gap: 12px; align-items: flex-start;
@@ -459,14 +461,22 @@
 
       <section class="category" id="cat-calculator">
         <div class="cat-head cat-head-row">
-          <div class="cat-head-inner"><h3>계산기</h3><span class="meta">· 4개 메뉴</span></div>
+          <div class="cat-head-inner"><h3>계산기</h3><span class="meta">· 8개 메뉴</span></div>
           <a href="./my.html" class="my-spec-btn">👤 내 스펙 →</a>
         </div>
+        <h4 class="cat-sub">단일 계산</h4>
         <div class="cards tri">
           <a href="./calculator.html?from=calculator" class="card"><span class="icon-tile amber">정령</span><div class="card-body"><div class="card-title">정령 계산/배분</div><div class="card-desc">비밸·TAR 비교 · 보유 정령 타입 배분</div></div></a>
-          <a href="./pvp.html?from=calculator" class="card"><span class="icon-tile amber">길드</span><div class="card-body"><div class="card-title">길드전 계산기</div><div class="card-desc">오리지널·뉴비 모드 전환 · 비밸·TAR 추천</div></div></a>
-          <a href="./score-guide.html" class="card"><span class="icon-tile violet">TAR</span><div class="card-body"><div class="card-title">비밸·TAR 설명서</div><div class="card-desc">지표의 의미·계산법·추천 기준 선택 안내</div></div></a>
           <a href="./spirit-peak.html" class="card"><span class="icon-tile violet">고점</span><div class="card-body"><div class="card-title">정령 고점 계산기</div><div class="card-desc">보유 제한 없이 정령의 이론상 최고점 탐색</div></div></a>
+          <a href="./jorm.html" class="card"><span class="icon-tile violet">욜문</span><div class="card-body"><div class="card-title">요르문간드 계산기</div><div class="card-desc">탱커·딜러 세팅 최적화 · 일반/잠식 보스</div></div></a>
+          <a href="./score-guide.html" class="card"><span class="icon-tile violet">TAR</span><div class="card-body"><div class="card-title">비밸·TAR 설명서</div><div class="card-desc">지표의 의미·계산법·추천 기준 선택 안내</div></div></a>
+        </div>
+        <h4 class="cat-sub">길드전</h4>
+        <div class="cards tri">
+          <a href="./pvp.html?from=calculator" class="card"><span class="icon-tile amber">길드</span><div class="card-body"><div class="card-title">길드전 계산기</div><div class="card-desc">오리지널·뉴비 모드 전환 · 비밸·TAR 추천</div></div></a>
+        </div>
+        <h4 class="cat-sub">챔피언 대전</h4>
+        <div class="cards tri">
           <a href="./cham_auto.html?from=calculator" class="card"><span class="icon-tile amber">챔대</span><div class="card-body"><div class="card-title">챔피언대전 계산기 (자동)</div><div class="card-desc">보유 드래곤과 장비로 세팅 계산</div></div></a>
           <a href="./cham_manual.html?from=calculator" class="card">
             <span class="icon-tile violet">챔대</span>
@@ -475,6 +485,10 @@
               <div class="card-desc">3팀 × 3마리 · 최종 스탯 · EVAL · 비벨</div>
             </div>
           </a>
+        </div>
+        <h4 class="cat-sub">요새 계산기</h4>
+        <div class="cards tri">
+          <a href="./jorm-place.html" class="card"><span class="icon-tile amber">요새</span><div class="card-body"><div class="card-title">잠욜문 배치 계산기</div><div class="card-desc">앞라인·관통·딜러 자리별 정령 배분</div></div></a>
         </div>
       </section>
 

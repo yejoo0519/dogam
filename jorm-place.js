@@ -41,8 +41,8 @@
   document.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===v('mode'))));
   $('freeBoard').hidden=eq;$('equipList').hidden=!eq;
   const tab=document.querySelector('[data-panel=spirit]');tab.hidden=eq;if(eq&&tab.getAttribute('aria-pressed')==='true')document.querySelector('[data-panel=place]').click();
-  $('placeTitle').textContent=eq?'보유 드래곤 (정령 장착)':'배치';
-  $('placeHelp').textContent=eq?'아래 목록에서 드래곤을 눌러 추가하고, 추가한 드래곤을 눌러 장착한 정령을 입력하세요. 자리는 계산기가 정합니다. (최대 20마리)':'칸을 누른 뒤 아래 목록에서 드래곤을 고르세요. 타입과 속성은 도감 정보를 따릅니다.';
+  $('placeTitle').textContent=eq?'보유 드래곤 (정령 귀속)':'배치';
+  $('placeHelp').textContent=eq?'아래 목록에서 드래곤을 눌러 추가하고, 추가한 드래곤을 눌러 귀속된 정령을 입력하세요. 자리는 계산기가 정합니다. (최대 20마리)':'칸을 누른 뒤 아래 목록에서 드래곤을 고르세요. 타입과 속성은 도감 정보를 따릅니다.';
   $('clearSlot').textContent=eq?'선택한 드래곤 빼기':'이 칸 비우기';
   if(dragons.length){renderBoard();renderUnits();renderDragons();}}
  document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{if(v('mode')===b.dataset.mode)return;$('mode').value=b.dataset.mode;modeView();changed()});
@@ -99,7 +99,7 @@
  function renderUnits(){
   $('units').innerHTML=units.map((u,i)=>{const d=byId.get(u.id);return d?`<button type="button" class="jp-unit" data-unit="${i}" aria-pressed="${i===selUnit}">${icon(d)}<span><b>${esc(d.name)}</b><small>${esc(d.type)} · ${esc(d.element)}</small><small>${esc(spSummary(u.spirit))}</small></span></button>`:'';}).join('')||'<p class="muted">아직 추가한 드래곤이 없습니다.</p>';
   const u=units[selUnit],d=u&&byId.get(u.id);
-  $('unitEditor').innerHTML=d?`<h3>${esc(d.name)} · 장착 정령</h3><div class="toolbar" id="unitPresets"><button type="button" data-up="last">막플</button><button type="button" data-up="all">올퍼</button><button type="button" data-up="14">14플</button><button type="button" data-up="24">24플</button><button type="button" data-up="none">정령 없음</button></div>`+SpiritInput.options(u.spirit,'jpUnitOpt',[],(i,k,t)=>!k||!t?'—':t==='%'?Math.round(D.pct[i]*100)+'%':'+'+D.plus[k][i])+SpiritInput.bonus(u.spirit,'jpUnitBonus',[]):'';
+  $('unitEditor').innerHTML=d?`<h3>${esc(d.name)} · 귀속 정령</h3><div class="toolbar" id="unitPresets"><button type="button" data-up="last">막플</button><button type="button" data-up="all">올퍼</button><button type="button" data-up="14">14플</button><button type="button" data-up="24">24플</button><button type="button" data-up="none">정령 없음</button></div>`+SpiritInput.options(u.spirit,'jpUnitOpt',[],(i,k,t)=>!k||!t?'—':t==='%'?Math.round(D.pct[i]*100)+'%':'+'+D.plus[k][i])+SpiritInput.bonus(u.spirit,'jpUnitBonus',[]):'';
  }
  window.jpUnitOpt=(i,field,value)=>{const u=units[selUnit];if(!u)return;u.spirit.opts[i][field]=value;renderUnits();changed()};
  window.jpUnitBonus=value=>{const u=units[selUnit];if(!u)return;u.spirit.bonus=value;renderUnits();changed()};
@@ -196,7 +196,7 @@
   const {result,config:c}=lastResult,hits=c.hits,by=new Map(result.results.map(x=>[x.pos,x]));
   const pen=result.pen,s=result.summary;
   if(!by.has(resultPos))resultPos=result.results[0]?.pos;
-  $('resultConditions').textContent=`${c.mode==='equip'?'정령 장착 상태 · 자리 배치':'정령 해제 상태 · 정령 배분'} / ${c.boss==='corrupted'?'잠식된 요르문간드':'요르문간드'} / ${c.grade} / ${c.gemStock?'보유 젬 (부족분 36젬)':'젬 '+D.gemNames[c.gem]} / 물약 ${c.potion}단계 / ${pen&&pen.reference?'관통 표본 기준 (관통 내구 47만 6천 · 잠정)':pen?`관통 1회 ${fmt(c.pen.damage)} (방어 ${fmt(c.pen.def)} · ${c.pen.light?'빛':'빛 아님'}) 기준 ${hits}회`:c.boss==='corrupted'?'관통 미입력 · 관통 자리도 딜러 셋팅':'뒷라인 전체 딜러 셋팅'}`;
+  $('resultConditions').textContent=`${c.mode==='equip'?'정령 귀속 상태 · 자리 배치':'정령 해제 상태 (귀속X) · 정령 배분'} / ${c.boss==='corrupted'?'잠식된 요르문간드':'요르문간드'} / ${c.grade} / ${c.gemStock?'보유 젬 (부족분 36젬)':'젬 '+D.gemNames[c.gem]} / 물약 ${c.potion}단계 / ${pen&&pen.reference?'관통 표본 기준 (관통 내구 47만 6천 · 잠정)':pen?`관통 1회 ${fmt(c.pen.damage)} (방어 ${fmt(c.pen.def)} · ${c.pen.light?'빛':'빛 아님'}) 기준 ${hits}회`:c.boss==='corrupted'?'관통 미입력 · 관통 자리도 딜러 셋팅':'뒷라인 전체 딜러 셋팅'}`;
   $('resultSummary').innerHTML=[
    pen?`<div class="${pen.passed===pen.total?'ok':'bad'}"><small>${pen.reference?'관통 기준 통과':`관통 ${hits}회 통과`}</small><strong>${pen.passed}/${pen.total}</strong></div>`:'',
    result.mode==='equip'?`<div><small>배치한 드래곤</small><strong>${result.results.length}마리</strong></div>`:`<div><small>정령 사용</small><strong>${s.spiritsUsed}/${s.spiritsOwned}</strong></div>`].join('');

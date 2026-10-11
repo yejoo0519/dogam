@@ -56,7 +56,9 @@
       ['pvp',         EN ? 'Guild war'    : '길드전', 'pvp.html'],
       ...(EN ? [['noob','Guild (new)','noob.html']] : []),
       ['cham_manual', EN ? 'Champ manual' : '챔대 수동',      'cham_manual.html'],
-      ['cham_auto',   EN ? 'Champ auto'   : '챔대 자동',      'cham_auto.html']
+      ['cham_auto',   EN ? 'Champ auto'   : '챔대 자동',      'cham_auto.html'],
+      ['rookie_manual', EN ? 'Rookie manual' : '루키 수동',  'rookie_manual.html'],
+      ['rookie_auto',   EN ? 'Rookie auto'   : '루키 자동',  'rookie_auto.html']
     ] },
     { g: T.g_guide, items: [
       ['guide',     EN ? 'Guides'      : '공략 & 가이드', 'guide.html'],

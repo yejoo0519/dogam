@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<script src="./dragons.js"></script>
+<script src="./cham-rules.js"></script>
+<script src="./dragon-views.js"></script>
+<script>
+if (!globalThis.DV1_DRAGON_VIEWS) {
+  document.addEventListener('DOMContentLoaded', function () {
+    var warning = document.createElement('div');
+    warning.setAttribute('role', 'alert');
+    warning.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:#171b25;color:#fff;padding:48px;font:18px/1.8 sans-serif';
+    warning.textContent = '드래곤 데이터를 불러오지 못해 페이지를 시작하지 않았습니다. 새로고침하거나 사이트 관리자에게 문의해 주세요.';
+    document.body.appendChild(warning);
+  });
+}
+</script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>루키대전 수동 계산기</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+<link id="theme-css" rel="stylesheet" href="./theme-dark.css">
+<link rel="stylesheet" href="./ui.css">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="./theme.js"></script>
+<style>
+
+.hd-back{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;border:1px solid var(--bd);background:var(--sf2);color:var(--text2);text-decoration:none;font-size:16px;flex-shrink:0}
+.hd-icon{font-size:26px}.hd-t{font-size:15px;font-weight:800;color:var(--gold)}.hd-s{font-size:11px;color:var(--dim);margin-top:2px}
+.wrap{max-width:none;margin:0;padding:0}
+.sec{background:var(--sf);border:1px solid var(--bd);border-radius:8px;margin-bottom:14px;overflow:hidden}
+.sec-hd{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 15px;background:transparent;border-bottom:1px solid var(--bd);font-size:13.5px;font-weight:600;color:var(--text)}
+.sec-bd{padding:12px 16px}
+select,input[type=number]{background:var(--sf2);border:1px solid var(--bd);color:var(--text);padding:5px 7px;border-radius:5px;font-family:inherit;font-size:13px;min-width:0}
+select:focus,input:focus{outline:none;border-color:var(--gold)}
+input[type=number]{width:100%}
+.btn{background:none;border:1px solid var(--gold);color:var(--gold);padding:5px 12px;border-radius:5px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:700}
+.btn-red{background:none;border:1px solid var(--red);color:var(--red);padding:5px 12px;border-radius:5px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:700}
+.common-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:760px){.common-grid{grid-template-columns:1fr}}
+.lbl{font-size:11px;color:var(--dim);margin-bottom:5px;font-weight:700}
+.row3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.row3 label{display:flex;flex-direction:column;gap:3px;font-size:11px;font-weight:800}
+.c-hp{color:var(--hpc)}.c-atk{color:var(--atc)}.c-def{color:var(--dfc)}
+
+.team-tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.team-tab{flex:1;min-width:90px;padding:10px 8px;background:var(--sf);border:1px solid var(--bd);border-radius:8px;color:var(--dim);font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;text-align:center;line-height:1.35}
+.team-tab small{display:block;font-size:10px;font-weight:700;opacity:.8}
+.team-tab.on{border-color:var(--gold);color:var(--gold);background:var(--accent-bg)}
+
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media(max-width:1000px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:680px){.cards{grid-template-columns:1fr}}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+.card-hd{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--sf2);border-bottom:1px solid var(--bd)}
+.card-img{width:44px;height:44px;object-fit:contain;border-radius:8px;background:var(--sf);flex-shrink:0}
+.card-name{font-size:14px;font-weight:800;line-height:1.3;word-break:keep-all}
+.card-sub{font-size:11px;color:var(--dim);margin-top:2px}
+.card-slot{margin-left:auto;font-size:11px;color:var(--dim);font-weight:800;white-space:nowrap}
+.card-bd{padding:10px 12px;display:flex;flex-direction:column;gap:10px}
+.grp{border-top:1px dashed var(--bd);padding-top:9px}
+.grp:first-child{border-top:none;padding-top:0}
+.grp-t{font-size:11px;font-weight:800;color:var(--gold);margin-bottom:6px;display:flex;justify-content:space-between;gap:6px}
+.grp-t span{color:var(--dim);font-weight:700}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.f1{display:grid;grid-template-columns:1fr;gap:6px}
+.gem-row,.sp-row{display:grid;grid-template-columns:40px 1fr 1fr;gap:6px;align-items:center;margin-bottom:5px}
+.sp-row{grid-template-columns:40px 1fr 1fr 58px}
+.gem-row .k,.sp-row .k{font-size:11px;color:var(--dim);font-weight:700}
+.sp-row .v{font-size:11px;color:var(--text2);text-align:right;font-weight:700}
+.ds-wrap{position:relative}
+.ds-in{width:100%;background:var(--sf2);border:1px solid var(--bd);color:var(--text);padding:5px 7px;border-radius:5px;font-family:inherit;font-size:13px}
+.ds-in:focus{outline:none;border-color:var(--gold)}
+.ds-drop{display:none;position:absolute;left:0;right:0;top:100%;margin-top:2px;max-height:240px;overflow:auto;background:var(--sf2);border:1px solid var(--gold);border-radius:6px;z-index:50;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.ds-drop.open{display:block}
+.ds-item{display:flex;align-items:center;gap:8px;padding:6px 8px;cursor:pointer;font-size:12px;border-bottom:1px solid var(--bd)}
+.ds-item:last-child{border-bottom:none}
+.ds-item:hover{background:var(--accent-bg)}
+.ds-item img{width:26px;height:26px;object-fit:contain;border-radius:5px;flex-shrink:0}
+.ds-item .m{margin-left:auto;font-size:10px;color:var(--dim);white-space:nowrap}
+.ds-empty{padding:8px;font-size:12px;color:var(--dim);text-align:center}
+.base-line{display:flex;gap:10px;font-size:12px;font-weight:800;flex-wrap:wrap}
+.skill{font-size:10px;padding:1px 6px;border-radius:8px;border:1px solid var(--bd);color:var(--dim);margin-left:4px;font-weight:700}
+.result{margin-top:auto;border-top:1px solid var(--bd);background:var(--sf2);padding:10px 12px}
+.res-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:center}
+.res-stats div{background:var(--sf);border:1px solid var(--bd);border-radius:6px;padding:6px 2px}
+.res-stats b{display:block;font-size:16px}
+.res-stats small{font-size:10px;color:var(--dim);font-weight:800}
+.res-sum{display:flex;justify-content:space-between;gap:8px;margin-top:8px;font-size:12px;color:var(--dim);flex-wrap:wrap}
+.res-sum b{color:var(--text)}
+.buff-badge{display:inline-block;font-size:10px;font-weight:800;padding:1px 6px;border-radius:8px;border:1px solid var(--gold);color:var(--gold);margin-left:3px}
+.empty-note{font-size:12px;color:var(--dim);text-align:center;padding:4px 0}
+
+.sum-table{width:100%;border-collapse:collapse;font-size:12px}
+.sum-table th{font-size:11px;color:var(--dim);padding:6px;border-bottom:1px solid var(--bd);text-align:center;white-space:nowrap}
+.sum-table td{padding:6px;border-bottom:1px solid var(--bd);text-align:center}
+.sum-table td.nm{text-align:left;font-weight:700}
+.sum-table tr.team-sep td{background:var(--sf2);color:var(--gold);font-weight:800;text-align:left;font-size:11px}
+.sum-scroll{overflow-x:auto}
+.save-msg{font-size:11px;color:var(--green);margin-left:auto;white-space:nowrap}
+
+/* ── 콘솔 레이아웃 보정 ── */
+.pane-top{display:flex;align-items:center;gap:8px;justify-content:flex-end;min-height:20px;margin-bottom:6px}
+.pane-top .save-msg{margin-left:0}
+.u-setpane .sec{background:none;border:0;border-radius:0;margin-bottom:20px;overflow:visible}
+.u-setpane .sec-hd{padding:0 0 10px;border-bottom:1px solid var(--bd);margin-bottom:12px}
+.u-setpane .sec-bd{padding:0}
+.u-setpane .set-blk>.sec:last-child{margin-bottom:0}
+.u-setpane .btn-run,.u-setpane .btn{width:100%}
+.u-setpane .row3{max-width:none}
+/* 수동 계산기: 공통 설정을 본문 위에 가로로 */
+.m-top{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;padding:14px 16px;margin-bottom:14px;
+  border:1px solid var(--bd);border-radius:10px;background:var(--sf)}
+.m-top .sec{background:none;border:0;border-radius:0;margin:0;overflow:visible;flex-grow:1;min-width:0}
+.m-top .sec-hd{padding:0 0 9px;border-bottom:1px solid var(--bd);margin-bottom:11px}
+.m-top .sec-bd{padding:0}
+.m-top .row3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;max-width:640px}
+.m-top>.btn{flex-shrink:0;padding:9px 16px}
+@media(max-width:760px){
+  .m-top{flex-direction:column;align-items:stretch;gap:12px}
+  .m-top .row3{grid-template-columns:1fr;max-width:none}
+  .m-top>.btn{width:100%}
+}
+.u-main #result:empty::after,.u-main #spx-result:empty::after{
+  content:attr(data-empty);display:block;padding:70px 20px;text-align:center;
+  font-size:13.5px;color:var(--text4);line-height:1.9}
+/* 좁은 화면에서 정령 옵션 줄이 눌리지 않도록 */
+@media(max-width:1180px){
+  .u-setpane .sp2-row{grid-template-columns:26px repeat(3,1fr) 36px 44px;gap:3px}
+  .u-setpane .sp2-row .chip{padding:5px 4px}
+}
+@media(max-width:980px){.u-setpane .sec{margin-bottom:16px}}
+</style>
+</head>
+<body class="u">
+<div class="u-app">
+<main class="u-main wide" id="mainpane">
+<div class="pane-top"><span class="save-msg" id="save-msg"></span></div>
+<div class="m-top">
+<div class="sec">
+    <div class="sec-hd"><span>공통 설정</span><button class="btn-red" onclick="resetAll()">전체 초기화</button></div>
+    <div class="sec-bd">
+      <div class="lbl">속성 버프 (해당 속성 드래곤에 적용) · 컬렉션은 풀컬(240/60/60) 고정</div>
+      <div class="row3" style="max-width:560px" id="buff-row"></div>
+      <div class="lbl" style="margin-top:10px;font-weight:400">루키 제한: SS 등급용 · 초월 · 성체만 · 젬 31 이하 · 4성 정령 · 물약 5등급 이하 · 정령 50% 적용</div>
+    </div>
+  </div>
+</div>
+
+  <div class="team-tabs" id="team-tabs"></div>
+  <div class="cards" id="cards"></div>
+
+  <div class="sec" style="margin-top:14px">
+    <div class="sec-hd"><span>전체 결과</span></div>
+    <div class="sec-bd sum-scroll"><table class="sum-table" id="sum-table"></table></div>
+  </div>
+</main>
+
+<script>
+'use strict';
+if (!globalThis.DV1_DRAGON_VIEWS) throw new Error("드래곤 데이터 로드 실패: 초기화 중단");
+const D=window.CHAM_DATA;
+const DB=window.DV1_DRAGONS;
+const ASSET='./';
+const SAVE_KEY='dv1sim_rookie_manual';
+const ATTRS=['땅','물','불','바람','빛','어둠','황혼','여명','악몽'];
+const STATS=['hp','atk','def'];
+const STAT_LBL={hp:'체력',atk:'공격',def:'방어'};
+const SKILL_LBL={boom:'폭스',def:'방확'};
+
+// ── 루키 제한 ──────────────────────────────────────────────
+// 젬: 31 이하, 1단계씩. 단계 L → 체 4L / 공 L / 방 L
+const GEM_LVS=Array.from({length:31},(_,i)=>31-i);
+const gemVal=(lv,st)=>st==='hp'?lv*4:lv;
+// 4성 정령: 옵션 2개
+const SP_PLUS={hp:{1:144,2:168},atk:{1:36,2:42},def:{1:36,2:42}};
+const SP_PCT={1:0.20,2:0.24};
+const SP_N=2;
+const SPIRIT_W=0.5; // 루키도 챔대와 같이 정령 50%
+// 물약: 5등급 이하
+const POTIONS=D.POTION.filter(p=>{const m=p.ko.match(/(\d+)$/);return !m||Number(m[1])<=5;});
+const COLL={hp:240,atk:60,def:60};
+const TEAM_N=3;
+
+// ── 드래곤 목록 ────────────────────────────────────────────
+// SS 등급용: 루키 랭킹 데이터 (Lv.21 / Lv.45)
+const SS_ROWS=(()=>{
+  const seen=new Set(),out=[];
+  [45,21].forEach(lv=>DB.getRankingRows('cham','SS',lv).forEach(r=>{
+    if(/^고귀한\s/.test(r.name))return; // 원본과 스탯이 같은 중복 (챔대와 동일하게 제외)
+    const k=r.name+'|'+r.element+'|'+lv;if(seen.has(k))return;seen.add(k);
+    out.push({ko:r.name,did:r.id,elem:r.element,lv,hp:r.hp,atk:r.atk,def:r.def,ev:r.evaluation,sk:r.skill||''});
+  }));
+  return out;
+})();
+// 초월 · 성체: 도감 스탯(성체 기준, [1레벨, 성장폭])
+const REG_ROWS=DB.records.filter(r=>r.stats.regular).map(r=>({
+  ko:r.name.ko,did:r.id,elem:r.element,tr:!!r.stages.transcendence,st:r.stats.regular,aliases:r.aliases.ko||[]}));
+const KINDS={ss:'SS 등급용',reg:'초월 · 성체'};
+
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const normName=n=>String(n||'').replace(/ 드래곤$/,'').replace(/\s+/g,'').toLowerCase();
+const fmt=n=>Number(n).toLocaleString();
+const ssOf=s=>SS_ROWS.find(d=>d.ko===s.name&&d.lv===s.ssLv&&d.elem===s.attr)||null;
+const regOf=s=>REG_ROWS.find(d=>d.ko===s.name&&d.elem===s.attr)||null;
+const dragonOf=s=>s.kind==='ss'?ssOf(s):regOf(s);
+const imgOf=(s,d)=>d?`${ASSET}dragon/${d.did}/profile/${s.kind==='reg'&&d.tr?7:4}.png`:'';
+
+// ── 상태 ─────────────────────────────────────────────────────
+const mkSlot=()=>({kind:'ss',attr:'',name:'',ssLv:45,lv:45,
+  gems:Array.from({length:5},()=>({stat:'',lv:31})),
+  pend:{hp:0,atk:0,def:0},acc:'',potion:'',enc:{stat:'',val:21},
+  sp:Array.from({length:SP_N},()=>({stat:'',type:''}))});
+const mkState=()=>({buff:{hp:'',atk:'',def:''},tab:0,teams:Array.from({length:TEAM_N},()=>[mkSlot(),mkSlot(),mkSlot()])});
+let S=mkState();
+function load(){
+  try{
+    const r=localStorage.getItem(SAVE_KEY);if(!r)return;
+    const p=JSON.parse(r);const base=mkState();
+    S={...base,...p,buff:{...base.buff,...(p.buff||{})},
+      teams:base.teams.map((t,ti)=>t.map((s,si)=>{
+        const q=(p.teams&&p.teams[ti]&&p.teams[ti][si])||{};
+        return {...s,...q,pend:{...s.pend,...(q.pend||{})},enc:{...s.enc,...(q.enc||{})},
+          gems:s.gems.map((g,i)=>({...g,...((q.gems||[])[i]||{})})),
+          sp:s.sp.map((o,i)=>({...o,...((q.sp||[])[i]||{})}))};
+      }))};
+    if(!(S.tab>=0&&S.tab<TEAM_N))S.tab=0;
+  }catch(e){console.warn(e);}
+}
+let saveT=null;
+function save(){
+  clearTimeout(saveT);
+  saveT=setTimeout(()=>{
+    try{localStorage.setItem(SAVE_KEY,JSON.stringify(S));
+      const el=document.getElementById('save-msg');el.textContent='저장됨';clearTimeout(el._t);el._t=setTimeout(()=>el.textContent='',1500);}catch(e){}
+  },500);
+}
+
+// ── 계산 (챔대 수동 계산기와 같은 공식, 루키 제한값 적용) ──────────
+const INT=x=>Math.floor(x+1e-9);
+function baseOf(slot){
+  const d=dragonOf(slot);if(!d)return null;
+  if(slot.kind==='ss')return {hp:d.hp,atk:d.atk,def:d.def};
+  const lv=Math.max(1,Math.floor(Number(slot.lv)||1));
+  return {hp:d.st.hp[0]+d.st.hp[1]*(lv-1),atk:d.st.atk[0]+d.st.atk[1]*(lv-1),def:d.st.def[0]+d.st.def[1]*(lv-1)};
+}
+function calcSlot(slot){
+  const base=baseOf(slot);
+  if(!base)return null;
+  const acc=D.ACC.find(a=>a.ko===slot.acc);
+  const pot=POTIONS.find(p=>p.ko===slot.potion);
+  const out={buffs:[]};
+  STATS.forEach(st=>{
+    const gem=slot.gems.reduce((s,g)=>s+(g.stat===st&&g.lv>=1&&g.lv<=31?gemVal(g.lv,st):0),0);
+    const statSum=base[st]+gem;
+    const potion=pot?pot[st]:0;
+    const accP=acc?acc[st]:0;
+    const encP=slot.enc.stat===st?(Number(slot.enc.val)||0)/100:0;
+    const pendP=(Number(slot.pend[st])||0)/100;
+    let spP=0,spF=0;
+    slot.sp.forEach((o,i)=>{
+      if(o.stat!==st)return;
+      if(o.type==='%')spP+=SP_PCT[i+1];
+      else if(o.type==='+')spF+=SP_PLUS[st][i+1];
+    });
+    const buffP=(S.buff[st]&&S.buff[st]===slot.attr)?(st==='def'?0.5:0.4):0;
+    if(buffP)out.buffs.push(st);
+    const s1=INT((statSum+potion)*(1+accP+encP));
+    const s2=INT(s1*(1+SPIRIT_W*spP)+(SPIRIT_W*spF)*(1+SPIRIT_W*spP));
+    const s3=INT(s2*(1+pendP))+COLL[st];
+    out[st]=INT(s3*(1+buffP));
+  });
+  out.eval=out.hp+out.atk*4+out.def*4;
+  out.bv=out.hp*out.atk*out.def;
+  return out;
+}
+
+// ── 렌더 ─────────────────────────────────────────────────────
+const opt=(v,label,cur)=>`<option value="${esc(v)}"${String(v)===String(cur)?' selected':''}>${esc(label)}</option>`;
+const statOpts=cur=>opt('','—',cur)+STATS.map(s=>opt(s,STAT_LBL[s],cur)).join('');
+const attrOpts=cur=>opt('','속성 선택',cur)+ATTRS.map(a=>opt(a,a,cur)).join('');
+const P=(ti,si)=>`S.teams[${ti}][${si}]`;
+
+function renderCommon(){
+  document.getElementById('buff-row').innerHTML=STATS.map(st=>`<label class="c-${st}">${STAT_LBL[st]} ${st==='def'?'50%':'40%'}
+    <select onchange="S.buff.${st}=this.value;onChange()">${opt('','없음',S.buff[st])}${ATTRS.map(a=>opt(a,a,S.buff[st])).join('')}</select></label>`).join('');
+}
+function renderTabs(){
+  document.getElementById('team-tabs').innerHTML=Array.from({length:TEAM_N},(_,i)=>
+    `<button class="team-tab${S.tab===i?' on':''}" onclick="setTab(${i})">${i+1}팀</button>`).join('');
+}
+function setTab(i){S.tab=i;renderTabs();renderCards();save();}
+
+function cardHtml(ti,si){
+  const slot=S.teams[ti][si];
+  const d=dragonOf(slot);
+  let title='드래곤 미선택',sub='',skill='';
+  if(d){
+    title=d.ko;
+    sub=slot.kind==='ss'?[slot.attr,'SS 등급용','Lv.'+slot.ssLv].join(' · '):[slot.attr,d.tr?'초월':'성체','Lv.'+slot.lv].join(' · ');
+    if(slot.kind==='ss'&&d.sk)skill=`<span class="skill">${esc(SKILL_LBL[d.sk]||d.sk)}</span>`;
+  }
+  const img=imgOf(slot,d);
+  const lvCtl=slot.kind==='ss'
+    ?`<select onchange="${P(ti,si)}.ssLv=+this.value;fixSS(${ti},${si});onChange(true)">${[45,21].map(l=>opt(l,'Lv.'+l,slot.ssLv)).join('')}</select>`
+    :`<input type="number" min="1" step="1" value="${Number(slot.lv)||45}" title="레벨" oninput="${P(ti,si)}.lv=Math.max(1,parseInt(this.value)||1);onChange()">`;
+  const pick=`<div class="f2">
+      <select onchange="setKind(${ti},${si},this.value)">${Object.entries(KINDS).map(([k,v])=>opt(k,v,slot.kind)).join('')}</select>
+      ${lvCtl}
+      <select onchange="setAttr(${ti},${si},this.value)">${attrOpts(slot.attr)}</select>
+      ${searchBox(ti,si,d?d.ko:'')}
+    </div>`;
+  const base=baseOf(slot);
+  const baseLine=base?`<div class="base-line"><span class="c-hp">체력 ${base.hp}</span><span class="c-atk">공격 ${base.atk}</span><span class="c-def">방어 ${base.def}</span></div>`:'';
+
+  const gems=slot.gems.map((g,i)=>`<div class="gem-row"><span class="k">젬 ${i+1}</span>
+      <select onchange="${P(ti,si)}.gems[${i}].stat=this.value;onChange()">${statOpts(g.stat)}</select>
+      <select onchange="${P(ti,si)}.gems[${i}].lv=+this.value;onChange()">${GEM_LVS.map(l=>opt(l,l+'단계',g.lv)).join('')}</select></div>`).join('');
+
+  const pend=`<div class="row3">${STATS.map(st=>`<label class="c-${st}">${STAT_LBL[st]} %<input type="number" min="0" step="1" value="${Number(slot.pend[st])||0}" oninput="${P(ti,si)}.pend.${st}=Math.max(0,parseFloat(this.value)||0);onChange()"></label>`).join('')}</div>`;
+
+  const acc=D.ACC.find(a=>a.ko===slot.acc);
+  const accInfo=acc?STATS.filter(st=>acc[st]).map(st=>STAT_LBL[st]+' '+Math.round(acc[st]*100)+'%').join(' · '):'';
+  const accSel=`<select style="width:100%" onchange="${P(ti,si)}.acc=this.value;onChange(true)">${opt('','없음',slot.acc)}${D.ACC.map(a=>opt(a.ko,a.ko,slot.acc)).join('')}</select>`;
+  const potSel=`<select onchange="${P(ti,si)}.potion=this.value;onChange()">${opt('','없음',slot.potion)}${POTIONS.map(p=>opt(p.ko,p.ko,slot.potion)).join('')}</select>`;
+  const enc=`<div class="f2" style="grid-template-columns:1fr 1fr 64px">${potSel}
+      <select onchange="${P(ti,si)}.enc.stat=this.value;onChange()">${opt('','인첸트 없음',slot.enc.stat)}${STATS.map(s=>opt(s,'인첸트 '+STAT_LBL[s],slot.enc.stat)).join('')}</select>
+      <input type="number" min="0" step="1" value="${Number(slot.enc.val)||0}" title="%" oninput="${P(ti,si)}.enc.val=Math.max(0,parseFloat(this.value)||0);onChange()"></div>`;
+
+  const sp=slot.sp.map((o,i)=>{
+    const v=o.stat&&o.type?(o.type==='%'?'+'+Math.round(SP_PCT[i+1]*100)+'%':'+'+SP_PLUS[o.stat][i+1]):'';
+    return `<div class="sp-row"><span class="k">${i+1}옵</span>
+      <select onchange="${P(ti,si)}.sp[${i}].stat=this.value;onChange(true)">${statOpts(o.stat)}</select>
+      <select onchange="${P(ti,si)}.sp[${i}].type=this.value;onChange(true)">${opt('','—',o.type)}${opt('+','(+)',o.type)}${opt('%','(%)',o.type)}</select>
+      <span class="v">${v}</span></div>`;
+  }).join('');
+
+  return `<div class="card">
+    <div class="card-hd">
+      ${img?`<img class="card-img" src="${esc(img)}" onerror="this.style.visibility='hidden'" alt="">`:`<div class="card-img"></div>`}
+      <div><div class="card-name">${esc(title)}${skill}</div><div class="card-sub">${esc(sub)}</div></div>
+      <div class="card-slot">${si+1}번</div>
+    </div>
+    <div class="card-bd">
+      <div class="grp"><div class="grp-t">드래곤</div>${pick}${baseLine?'<div style="margin-top:6px">'+baseLine+'</div>':''}</div>
+      <div class="grp"><div class="grp-t">젬<span>31단계 이하</span></div>${gems}</div>
+      <div class="grp"><div class="grp-t">펜던트</div>${pend}</div>
+      <div class="grp"><div class="grp-t">장신구<span>${esc(accInfo)}</span></div>${accSel}</div>
+      <div class="grp"><div class="grp-t">물약 · 인첸트<span>물약 5등급 이하</span></div>${enc}</div>
+      <div class="grp"><div class="grp-t">4성 정령<span>50% 적용</span></div>${sp}</div>
+    </div>
+    <div class="result" id="res-${ti}-${si}"></div>
+  </div>`;
+}
+function resultHtml(ti,si){
+  const r=calcSlot(S.teams[ti][si]);
+  if(!r)return `<div class="empty-note">드래곤을 선택하면 계산돼요</div>`;
+  const badge=st=>r.buffs.includes(st)?`<span class="buff-badge">${st==='def'?'+50%':'+40%'}</span>`:'';
+  return `<div class="res-stats">${STATS.map(st=>`<div><small class="c-${st}">${STAT_LBL[st]}${badge(st)}</small><b class="c-${st}">${fmt(r[st])}</b></div>`).join('')}</div>
+    <div class="res-sum"><span>EVAL <b>${fmt(r.eval)}</b></span><span>비벨 <b>${fmt(r.bv)}</b></span></div>`;
+}
+function renderCards(){
+  const ti=S.tab;
+  document.getElementById('cards').innerHTML=[0,1,2].map(si=>cardHtml(ti,si)).join('');
+  renderResults();
+}
+function renderResults(){
+  const ti=S.tab;
+  [0,1,2].forEach(si=>{const el=document.getElementById(`res-${ti}-${si}`);if(el)el.innerHTML=resultHtml(ti,si);});
+  renderSummary();
+}
+function renderSummary(){
+  let html=`<tr><th style="text-align:left">드래곤</th><th class="c-hp">체력</th><th class="c-atk">공격</th><th class="c-def">방어</th><th>EVAL</th><th>비벨</th></tr>`;
+  S.teams.forEach((team,ti)=>{
+    html+=`<tr class="team-sep"><td colspan="6">${ti+1}팀</td></tr>`;
+    team.forEach((slot,si)=>{
+      const r=calcSlot(slot);const d=dragonOf(slot);
+      html+=r?`<tr><td class="nm">${esc(d.ko)}</td><td class="c-hp">${fmt(r.hp)}</td><td class="c-atk">${fmt(r.atk)}</td><td class="c-def">${fmt(r.def)}</td><td>${fmt(r.eval)}</td><td>${fmt(r.bv)}</td></tr>`
+        :`<tr><td class="nm" style="color:var(--dim)">${si+1}번 —</td><td colspan="5" style="color:var(--dim)">—</td></tr>`;
+    });
+  });
+  document.getElementById('sum-table').innerHTML=html;
+}
+
+// ── 드래곤 검색 ───────────────────────────────────────────────
+function searchBox(ti,si,val){
+  return `<div class="ds-wrap"><input class="ds-in" id="ds-in-${ti}-${si}" value="${esc(val)}" placeholder="드래곤 이름 검색" autocomplete="off"
+      onfocus="this.dataset.d='';this.select();dsFilter(${ti},${si},this.value)" oninput="this.dataset.d='1';dsFilter(${ti},${si},this.value)" onblur="dsBlur(${ti},${si},this)" onkeydown="if(event.key==='Escape')this.blur()">
+    <div class="ds-drop" id="ds-${ti}-${si}"></div></div>`;
+}
+function dsCandidates(ti,si,q){
+  const slot=S.teams[ti][si];const key=normName(q);
+  const hit=names=>!key||names.some(n=>n&&normName(n).includes(key));
+  const inAttr=d=>!slot.attr||d.elem===slot.attr;
+  if(slot.kind==='ss'){
+    return SS_ROWS.filter(d=>d.lv===slot.ssLv&&inAttr(d)&&hit([d.ko])).sort((a,b)=>b.ev-a.ev).slice(0,40)
+      .map(d=>({d,img:imgOf(slot,d),meta:d.elem+' · '+d.ev}));
+  }
+  return REG_ROWS.filter(d=>inAttr(d)&&hit([d.ko,...d.aliases])).slice(0,40)
+    .map(d=>({d,img:`${ASSET}dragon/${d.did}/profile/${d.tr?7:4}.png`,meta:d.elem+(d.tr?' · 초월':' · 성체')}));
+}
+function dsFilter(ti,si,q){
+  const drop=document.getElementById(`ds-${ti}-${si}`);if(!drop)return;
+  const list=dsCandidates(ti,si,q);
+  drop.innerHTML=list.length?list.map(x=>`<div class="ds-item" onmousedown="event.preventDefault();dsPick(${ti},${si},'${esc(x.d.elem)}','${esc(x.d.ko).replace(/'/g,"\\'")}')">
+      <img src="${esc(x.img)}" onerror="this.style.visibility='hidden'" alt=""><span>${esc(x.d.ko)}</span><span class="m">${esc(x.meta)}</span></div>`).join('')
+    :`<div class="ds-empty">검색 결과 없음</div>`;
+  drop.classList.add('open');
+}
+let _dsLock=false;
+function dsBlur(ti,si,el){
+  const drop=document.getElementById(`ds-${ti}-${si}`);if(drop)drop.classList.remove('open');
+  if(_dsLock)return;
+  const inp=el||document.getElementById(`ds-in-${ti}-${si}`);const slot=S.teams[ti][si];
+  const d=dragonOf(slot);
+  if(inp){
+    if(inp.dataset.d&&inp.value.trim()===''&&slot.name){slot.name='';onChange(true);return;}
+    inp.value=d?d.ko:'';
+    inp.dataset.d='';
+  }
+}
+function dsPick(ti,si,attr,name){
+  _dsLock=true;
+  const s=S.teams[ti][si];
+  s.attr=attr;s.name=name;
+  const swallow=e=>{e.stopPropagation();e.preventDefault();};
+  ['click','mouseup'].forEach(t=>document.addEventListener(t,swallow,{capture:true,once:true}));
+  setTimeout(()=>{['click','mouseup'].forEach(t=>document.removeEventListener(t,swallow,{capture:true}));_dsLock=false;},250);
+  onChange(true);
+}
+
+// ── 입력 ─────────────────────────────────────────────────────
+function onChange(rerender){
+  if(rerender)renderCards();else renderResults();
+  save();
+}
+function setKind(ti,si,v){const s=S.teams[ti][si];if(s.kind===v)return;s.kind=v;s.name='';onChange(true);}
+function setAttr(ti,si,v){const s=S.teams[ti][si];if(s.attr===v)return;s.attr=v;s.name='';onChange(true);}
+// SS 레벨을 바꿨을 때 해당 레벨에 같은 드래곤이 없으면 선택 해제
+function fixSS(ti,si){const s=S.teams[ti][si];if(s.name&&!ssOf(s))s.name='';}
+function resetAll(){
+  if(!confirm('모든 팀의 입력값이 초기화됩니다. 계속할까요?'))return;
+  const tab=S.tab;S=mkState();S.tab=tab;
+  renderCommon();renderTabs();renderCards();save();
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  load();renderCommon();renderTabs();renderCards();
+});
+</script>
+<script>
+(function(){
+  var link=document.getElementById('theme-css');
+  if(!link)return;
+  var sync=function(){
+    var c=document.getElementById('custom-theme-style');
+    if(c&&c.textContent&&c.textContent.length>0){document.documentElement.removeAttribute('data-theme');return;}
+    var m=String(link.href||'').match(/theme-(dark|light|beige)\.css/);
+    document.documentElement.setAttribute('data-theme',m?m[1]:'dark');
+  };
+  sync();
+  new MutationObserver(sync).observe(link,{attributes:true,attributeFilter:['href']});
+  new MutationObserver(sync).observe(document.head,{childList:true,subtree:true,characterData:true});
+})();
+</script>
+</div>
+<script src="./ui.js"></script>
+<script>
+if (!globalThis.DV1_DRAGON_VIEWS) throw new Error("드래곤 데이터 로드 실패: 초기화 중단");
+UI.shell({page:'rookie_manual',title:'루키대전',sub:'수동 계산기'});</script>
+</body>
+</html>

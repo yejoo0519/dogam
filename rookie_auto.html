@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<script src="./dragons.js"></script>
+<script src="./cham-rules.js"></script>
+<script src="./dragon-views.js"></script>
+<script>
+if (!globalThis.DV1_DRAGON_VIEWS) {
+  document.addEventListener('DOMContentLoaded', function () {
+    var warning = document.createElement('div');
+    warning.setAttribute('role', 'alert');
+    warning.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:#171b25;color:#fff;padding:48px;font:18px/1.8 sans-serif';
+    warning.textContent = '드래곤 데이터를 불러오지 못해 페이지를 시작하지 않았습니다. 새로고침하거나 사이트 관리자에게 문의해 주세요.';
+    document.body.appendChild(warning);
+  });
+}
+</script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>루키대전 자동 계산기</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+<link id="theme-css" rel="stylesheet" href="./theme-dark.css">
+<link rel="stylesheet" href="./ui.css">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="./theme.js"></script>
+<style>
+
+.hd-back{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;border:1px solid var(--bd);background:var(--sf2);color:var(--text2);text-decoration:none;font-size:16px;flex-shrink:0}
+.hd-icon{font-size:26px}.hd-t{font-size:15px;font-weight:800;color:var(--gold)}.hd-s{font-size:11px;color:var(--dim);margin-top:2px}
+.wrap{max-width:none;margin:0;padding:0}
+.sec{background:var(--sf);border:1px solid var(--bd);border-radius:8px;margin-bottom:14px;overflow:hidden}
+.sec-hd{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 15px;background:transparent;border-bottom:1px solid var(--bd);font-size:13.5px;font-weight:600;color:var(--text)}
+.sec-bd{padding:12px 16px}
+select,input[type=number]{background:var(--sf2);border:1px solid var(--bd);color:var(--text);padding:5px 7px;border-radius:5px;font-family:inherit;font-size:13px;min-width:0}
+select:focus,input:focus{outline:none;border-color:var(--gold)}
+input[type=number]{width:100%}
+.btn{background:none;border:1px solid var(--gold);color:var(--gold);padding:5px 12px;border-radius:5px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:700}
+.btn-red{background:none;border:1px solid var(--red);color:var(--red);padding:5px 12px;border-radius:5px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:700}
+.common-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:760px){.common-grid{grid-template-columns:1fr}}
+.lbl{font-size:11px;color:var(--dim);margin-bottom:5px;font-weight:700}
+.row3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.row3 label{display:flex;flex-direction:column;gap:3px;font-size:11px;font-weight:800}
+.c-hp{color:var(--hpc)}.c-atk{color:var(--atc)}.c-def{color:var(--dfc)}
+
+.team-tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.team-tab{flex:1;min-width:90px;padding:10px 8px;background:var(--sf);border:1px solid var(--bd);border-radius:8px;color:var(--dim);font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;text-align:center;line-height:1.35}
+.team-tab small{display:block;font-size:10px;font-weight:700;opacity:.8}
+.team-tab.on{border-color:var(--gold);color:var(--gold);background:var(--accent-bg)}
+
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media(max-width:1000px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:680px){.cards{grid-template-columns:1fr}}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+.card-hd{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--sf2);border-bottom:1px solid var(--bd)}
+.card-img{width:44px;height:44px;object-fit:contain;border-radius:8px;background:var(--sf);flex-shrink:0}
+.card-name{font-size:14px;font-weight:800;line-height:1.3;word-break:keep-all}
+.card-sub{font-size:11px;color:var(--dim);margin-top:2px}
+.card-slot{margin-left:auto;font-size:11px;color:var(--dim);font-weight:800;white-space:nowrap}
+.card-bd{padding:10px 12px;display:flex;flex-direction:column;gap:10px}
+.grp{border-top:1px dashed var(--bd);padding-top:9px}
+.grp:first-child{border-top:none;padding-top:0}
+.grp-t{font-size:11px;font-weight:800;color:var(--gold);margin-bottom:6px;display:flex;justify-content:space-between;gap:6px}
+.grp-t span{color:var(--dim);font-weight:700}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.f1{display:grid;grid-template-columns:1fr;gap:6px}
+.gem-row,.sp-row{display:grid;grid-template-columns:40px 1fr 1fr;gap:6px;align-items:center;margin-bottom:5px}
+.sp-row{grid-template-columns:40px 1fr 1fr 58px}
+.gem-row .k,.sp-row .k{font-size:11px;color:var(--dim);font-weight:700}
+.sp-row .v{font-size:11px;color:var(--text2);text-align:right;font-weight:700}
+.ds-wrap{position:relative}
+.ds-in{width:100%;background:var(--sf2);border:1px solid var(--bd);color:var(--text);padding:5px 7px;border-radius:5px;font-family:inherit;font-size:13px}
+.ds-in:focus{outline:none;border-color:var(--gold)}
+.ds-drop{display:none;position:absolute;left:0;right:0;top:100%;margin-top:2px;max-height:240px;overflow:auto;background:var(--sf2);border:1px solid var(--gold);border-radius:6px;z-index:50;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.ds-drop.open{display:block}
+.ds-item{display:flex;align-items:center;gap:8px;padding:6px 8px;cursor:pointer;font-size:12px;border-bottom:1px solid var(--bd)}
+.ds-item:last-child{border-bottom:none}
+.ds-item:hover{background:var(--accent-bg)}
+.ds-item img{width:26px;height:26px;object-fit:contain;border-radius:5px;flex-shrink:0}
+.ds-item .m{margin-left:auto;font-size:10px;color:var(--dim);white-space:nowrap}
+.ds-empty{padding:8px;font-size:12px;color:var(--dim);text-align:center}
+.base-line{display:flex;gap:10px;font-size:12px;font-weight:800;flex-wrap:wrap}
+.skill{font-size:10px;padding:1px 6px;border-radius:8px;border:1px solid var(--bd);color:var(--dim);margin-left:4px;font-weight:700}
+.result{margin-top:auto;border-top:1px solid var(--bd);background:var(--sf2);padding:10px 12px}
+.res-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:center}
+.res-stats div{background:var(--sf);border:1px solid var(--bd);border-radius:6px;padding:6px 2px}
+.res-stats b{display:block;font-size:16px}
+.res-stats small{font-size:10px;color:var(--dim);font-weight:800}
+.res-sum{display:flex;justify-content:space-between;gap:8px;margin-top:8px;font-size:12px;color:var(--dim);flex-wrap:wrap}
+.res-sum b{color:var(--text)}
+.buff-badge{display:inline-block;font-size:10px;font-weight:800;padding:1px 6px;border-radius:8px;border:1px solid var(--gold);color:var(--gold);margin-left:3px}
+.empty-note{font-size:12px;color:var(--dim);text-align:center;padding:4px 0}
+
+.sum-table{width:100%;border-collapse:collapse;font-size:12px}
+.sum-table th{font-size:11px;color:var(--dim);padding:6px;border-bottom:1px solid var(--bd);text-align:center;white-space:nowrap}
+.sum-table td{padding:6px;border-bottom:1px solid var(--bd);text-align:center}
+.sum-table td.nm{text-align:left;font-weight:700}
+.sum-table tr.team-sep td{background:var(--sf2);color:var(--gold);font-weight:800;text-align:left;font-size:11px}
+.sum-scroll{overflow-x:auto}
+.save-msg{font-size:11px;color:var(--green);margin-left:auto;white-space:nowrap}
+
+/* ── 자동 계산기 전용 ───────────────────────── */
+
+.page-tab{flex:1;padding:11px 8px;background:var(--sf);border:1px solid var(--bd);border-radius:8px;color:var(--dim);font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;text-align:center}
+.page-tab.on{border-color:var(--gold);color:var(--gold);background:var(--accent-bg)}
+@media(max-width:680px){.page-tab{font-size:12px;padding:10px 4px;word-break:keep-all}}
+.panel{background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:12px 16px}
+.note{font-size:12px;color:var(--dim);line-height:1.7}
+.hr{height:1px;background:var(--bd);margin:12px 0}
+.metric-bar{display:flex;gap:6px}
+.metric-btn{padding:7px 16px;background:var(--sf2);border:1px solid var(--bd);border-radius:8px;color:var(--dim);font-family:inherit;font-size:12px;font-weight:800;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}
+.metric-btn.on{border-color:var(--gold);color:var(--gold);background:var(--accent-bg)}
+.goto-my{display:inline-flex;align-items:center;gap:4px;padding:6px 14px;border:1px solid var(--gold);border-radius:16px;background:var(--accent-bg);color:var(--gold);font-size:12px;font-weight:800;text-decoration:none;white-space:nowrap;flex-shrink:0}
+.goto-my:hover{background:var(--gold);color:var(--bg)}
+.spec-line{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--text2)}
+.spec-line b{color:var(--text)}
+.spec-warn{font-size:12px;color:var(--red);margin-top:8px;line-height:1.6}
+.run-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px}
+.btn-run{background:var(--accent-bg);border:1px solid var(--gold);color:var(--gold);padding:10px 26px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:800}
+.btn-run:disabled{opacity:.5;cursor:not-allowed}
+.min-box{display:flex;flex-direction:column;gap:14px;margin-top:7px;padding:12px;border:1px solid var(--bd);border-radius:8px;background:var(--sf2)}
+.min-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px 8px;align-items:center}
+.min-row .k{grid-column:1/3;font-size:12.5px;font-weight:600;color:var(--text2)}
+.min-row .tg{grid-column:3/4;justify-self:end;font-size:11px;font-weight:600;padding:4px 10px;border-radius:5px;border:1px solid var(--bd);background:var(--sf);color:var(--dim);cursor:pointer;font-family:inherit}
+.min-row .tg.on{border-color:var(--gold);background:var(--accent-bg);color:var(--gold)}
+.min-row .f{display:flex;flex-direction:column;align-items:stretch;gap:3px;min-width:0}
+.min-row .f span{font-size:11px;font-weight:500;color:var(--dim);white-space:nowrap}
+.min-row input{width:100%;padding:6px 8px;border:1px solid var(--bd);border-radius:5px;background:var(--sf);color:var(--text);font-family:inherit;font-size:12px;text-align:right}
+.min-row input:focus{outline:none;border-color:var(--gold)}
+.min-row.off .f{opacity:.4}
+.min-row.off input{pointer-events:none}
+.prog{width:100%;height:6px;border-radius:99px;background:var(--bd);overflow:hidden;margin-top:2px}
+.prog i{display:block;height:100%;width:0;background:var(--gold);transition:width .1s linear}
+.own-bar{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin:7px 0 8px}
+.own-q{flex:1;min-width:130px;padding:6px 10px;border:1px solid var(--bd);border-radius:6px;background:var(--sf);color:var(--text);font-family:inherit;font-size:12px}
+.own-q:focus{outline:none;border-color:var(--gold)}
+.own-body{max-height:330px;overflow-y:auto;border:1px solid var(--bd);border-radius:7px;background:var(--sf2);padding:9px 11px}
+.own-grp+.own-grp{margin-top:11px}
+.own-grp-t{font-size:11px;font-weight:800;color:var(--gold);margin-bottom:5px}
+.own-grp-t span{color:var(--dim);font-weight:700;margin-left:3px}
+.own-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(62px,1fr));gap:6px}
+.own-it{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 3px 4px;border:1px solid var(--bd);border-radius:7px;background:var(--sf);cursor:pointer;font-family:inherit;opacity:.4;filter:grayscale(1)}
+.own-it:hover{opacity:.75}
+.own-it.on,.own-it.on:hover{opacity:1;filter:none;border-color:var(--gold);background:var(--accent-bg)}
+.own-it img{width:38px;height:38px;object-fit:contain}
+.own-it em{font-style:normal;font-size:9.5px;line-height:1.2;color:var(--dim);text-align:center;word-break:keep-all;max-height:23px;overflow:hidden}
+.own-it.on em{color:var(--text)}
+.own-n{position:absolute;top:2px;right:4px;font-size:10px;font-weight:800;color:var(--gold)}
+.own-empty{font-size:12px;color:var(--dim);padding:16px 4px;text-align:center}
+.run-note{font-size:11px;color:var(--dim);line-height:1.6}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg .chip{padding:6px 12px;font-size:12px}
+.chip{padding:4px 0;min-width:0;background:var(--sf2);border:1px solid var(--bd);border-radius:6px;color:var(--dim);font-family:inherit;font-size:12px;font-weight:800;cursor:pointer;text-align:center}
+.chip.on-hp{border-color:var(--hpc);color:var(--hpc);background:rgba(251,191,36,.12)}
+.chip.on-atk{border-color:var(--atc);color:var(--atc);background:rgba(248,113,113,.12)}
+.chip.on-def{border-color:var(--dfc);color:var(--dfc);background:rgba(96,165,250,.12)}
+.chip.on{border-color:var(--gold);color:var(--gold);background:var(--accent-bg)}
+.preset-row{display:flex;gap:4px;flex-wrap:wrap;margin-top:2px}
+.preset-row .chip{padding:3px 9px;font-size:11px}
+.preset-row .chip.pat{font-family:'Courier New',monospace;letter-spacing:1px;font-size:12px}
+.preset-row .sep{width:1px;background:var(--bd);margin:0 2px}
+.sp2-row{display:grid;grid-template-columns:30px repeat(3,1fr) 44px 50px;gap:4px;align-items:center;margin-top:4px}
+.sp2-row .k{font-size:11px;color:var(--dim);font-weight:700}
+.sp2-row .v{font-size:11px;color:var(--text2);text-align:right;font-weight:700;white-space:nowrap}
+.sp2-bonus{grid-template-columns:30px repeat(3,1fr) 98px}
+.icon-btn{background:none;border:1px solid var(--bd);color:var(--dim);width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:12px;font-family:inherit;display:flex;align-items:center;justify-content:center;padding:0}
+.icon-btn:hover{border-color:var(--gold);color:var(--gold)}
+.icon-btn.red:hover{border-color:var(--red);color:var(--red)}
+
+/* 드래곤 등록 */
+.team-tabs{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.team-tab{flex:1;min-width:90px;padding:9px 8px;background:var(--sf);border:1px solid var(--bd);border-radius:8px;color:var(--dim);font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;text-align:center;line-height:1.35}
+.team-tab small{display:block;font-size:10px;font-weight:700;opacity:.8}
+.team-tab.on{border-color:var(--gold);color:var(--gold);background:var(--accent-bg)}
+.team-head{display:flex;align-items:center;gap:10px;margin:2px 0 8px 2px}
+.team-head small{font-size:11px;color:var(--dim);font-weight:700}
+.attr-grp{background:var(--sf);border:1px solid var(--bd);border-radius:8px;margin-bottom:8px;overflow:hidden}
+.attr-grp>summary{list-style:none;display:flex;align-items:center;gap:8px;padding:9px 14px;cursor:pointer;font-size:13px;font-weight:800;user-select:none}
+.attr-grp>summary::-webkit-details-marker{display:none}
+.attr-grp>summary::before{content:'▸';color:var(--dim);font-size:11px;transition:transform .15s}
+.attr-grp[open]>summary::before{transform:rotate(90deg)}
+.attr-grp>summary .n{font-size:11px;color:var(--dim);font-weight:700}
+.attr-grp>summary .n b{color:var(--gold)}
+.attr-grp>summary .btn{margin-left:auto;padding:3px 10px;font-size:11px}
+.attr-body{padding:10px 12px;border-top:1px solid var(--bd)}
+.attr-body .dr-grid{margin-bottom:0}
+.attr-empty{font-size:12px;color:var(--dim);text-align:center;padding:8px 0}
+.grp-tools{display:flex;justify-content:flex-end;gap:6px;margin:-2px 0 8px}
+.grp-tools .btn{padding:3px 10px;font-size:11px}
+.dr-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:16px}
+@media(max-width:1000px){.dr-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:680px){.dr-grid{grid-template-columns:1fr}}
+.dr-card{background:var(--sf);border:1px solid var(--bd);border-radius:10px;overflow:hidden}
+.dr-hd{display:flex;align-items:center;gap:9px;padding:8px 10px;background:var(--sf2);border-bottom:1px solid var(--bd);cursor:pointer}
+.dr-img{width:38px;height:38px;object-fit:contain;border-radius:7px;background:var(--sf);flex-shrink:0}
+.dr-name{font-size:13px;font-weight:800;line-height:1.3;word-break:keep-all}
+.dr-sub{font-size:10px;color:var(--dim);margin-top:1px}
+.dr-acts{margin-left:auto;display:flex;gap:4px;flex-shrink:0}
+.dr-bd{padding:9px 10px;display:flex;flex-direction:column;gap:8px}
+.dr-card.closed .dr-bd{display:none}
+.dr-sum{padding:7px 10px;font-size:11px;color:var(--text2);line-height:1.5;border-top:1px solid var(--bd);display:none}
+.dr-card.closed .dr-sum{display:block}
+.dr-sum b{color:var(--text)}
+.dr-sum .warn{color:var(--red)}
+.empty-team{border:1px dashed var(--bd);border-radius:10px;padding:18px;text-align:center;color:var(--dim);font-size:12px;margin-bottom:16px}
+
+/* 보유 정령 */
+.spx-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media(max-width:1000px){.spx-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:680px){.spx-grid{grid-template-columns:1fr}}
+.spx-card{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:9px 10px}
+.spx-hd{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.spx-no{font-size:11px;font-weight:800;color:var(--gold);white-space:nowrap}
+.spx-memo{flex:1;min-width:0;font-size:12px!important;padding:4px 7px!important}
+.spx-empty{border:1px dashed var(--bd);border-radius:10px;padding:18px;text-align:center;color:var(--dim);font-size:12px}
+
+/* 결과 카드 */
+.team-block{margin-bottom:16px}
+.team-title{display:flex;align-items:baseline;gap:8px;font-size:13px;font-weight:800;color:var(--gold);margin:0 0 8px 2px}
+.team-title small{font-size:11px;color:var(--dim);font-weight:700}
+.card-bd{padding:10px 12px;display:flex;flex-direction:column;gap:8px;flex:1}
+.kv{display:flex;justify-content:space-between;gap:10px;font-size:12px}
+.kv .k{color:var(--dim);font-weight:700;flex-shrink:0}
+.kv .v{color:var(--text);font-weight:700;text-align:right;word-break:keep-all}
+.total-line{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;font-weight:800}
+.total-line span{color:var(--dim);font-weight:700;font-size:12px}
+.empty-note{color:var(--dim);text-align:center;padding:20px 0;font-size:13px;background:var(--sf);border:1px solid var(--bd);border-radius:8px}
+
+/* 정령·버프 순위표 */
+.sim-grid{display:block}
+@media(max-width:860px){.sim-grid{grid-template-columns:1fr}}
+.rank-tbl{width:100%;border-collapse:collapse;font-size:12px}
+.rank-tbl th{font-size:11px;color:var(--dim);padding:7px 6px;border-bottom:1px solid var(--bd);text-align:right;white-space:nowrap;position:sticky;top:0;background:var(--sf)}
+.rank-tbl th.l,.rank-tbl td.l{text-align:left}
+.rank-tbl td{padding:6px;border-bottom:1px solid var(--bd);text-align:right;white-space:nowrap}
+.rank-tbl td.rk{color:var(--dim);font-weight:800;width:28px;text-align:center}
+.rank-tbl .nmc{display:flex;align-items:center;gap:7px;text-align:left;white-space:normal;min-width:130px}
+.rank-tbl .nmc img{width:28px;height:28px;object-fit:contain;border-radius:5px;flex-shrink:0}
+.rank-tbl .nmc b{display:block;font-size:12px;word-break:keep-all}
+.rank-tbl .nmc small{display:block;font-size:10px;color:var(--dim);font-weight:700}
+.rank-tbl tr.buffed td.m{color:var(--gold);font-weight:800}
+.rank-wrap{max-height:640px;overflow:auto;-webkit-overflow-scrolling:touch}
+.tbl-note{font-size:11px;color:var(--dim);margin-top:8px;line-height:1.6}
+.sk-ic{width:16px;height:16px;margin-left:5px;vertical-align:-3px;object-fit:contain}
+.det-box .sk-ic{margin-left:0}
+.det-box .sk-ic-t{margin-left:0}
+.sk-ic-t{display:inline-block;margin-left:5px;font-size:10px;font-weight:800;color:var(--dim);border:1px solid var(--bd);border-radius:7px;padding:1px 5px;vertical-align:middle}
+.rank-tbl tr.rw{cursor:pointer}
+.rank-tbl tr.rw.on td{background:var(--accent-bg)}
+.rank-tbl tr.det td{background:var(--sf2);padding:0}
+.det-box{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px 16px;padding:12px 14px;text-align:left;align-items:start}
+.det-box>div{min-width:0}
+.det-box .wide{grid-column:1/-1}
+.det-box .dl{font-size:10px;color:var(--dim);font-weight:700;margin-bottom:2px}
+.det-box .dv{font-size:12px;color:var(--text);font-weight:700;line-height:1.55;word-break:keep-all;overflow-wrap:anywhere;white-space:normal}
+.save-msg{font-size:11px;color:var(--green);margin-left:auto;white-space:nowrap}
+
+/* ── 내 드래곤: 레일 + 속성 그룹 표 ───────────────────────── */
+.dr-split{display:flex;gap:0;border:1px solid var(--bd);border-radius:10px;background:var(--sf);overflow:hidden}
+.dr-rail{width:186px;flex-shrink:0;border-right:1px solid var(--bd);padding:14px 10px;display:flex;flex-direction:column;gap:2px}
+.dr-rail-t{font-size:11px;letter-spacing:.1em;color:var(--dimmer);font-weight:600;padding:0 8px 7px}
+.dr-rail-i{display:flex;align-items:center;gap:8px;padding:7px 9px;border:0;border-radius:7px;background:transparent;
+  color:var(--text);font-family:inherit;font-size:13px;cursor:pointer;text-align:left;width:100%}
+.dr-rail-i img{width:17px;height:17px;object-fit:contain;flex-shrink:0;max-width:none}
+.dr-rail-i .n{margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--dim)}
+.dr-rail-i:hover{background:var(--sf2)}
+.dr-rail-i.off{color:var(--text4)}
+.dr-rail-i.off .n{color:var(--text4)}
+.dr-rail-i.on{background:var(--accent-bg);color:var(--gold);font-weight:600}
+.dr-main{flex-grow:1;min-width:0}
+.dr-empty{padding:40px 16px;text-align:center;color:var(--dim);font-size:13px}
+
+.dr-tbl{width:100%;border-collapse:collapse}
+.dr-tbl td{padding:9px 12px;border-bottom:1px solid var(--border2);vertical-align:middle;font-size:13.5px}
+.dr-tbl tr:last-child td{border-bottom:0}
+.dr-tbl .c-bar{width:5px;padding:0}
+.dr-tbl .grp-row td{padding:0;border-bottom:1px solid var(--bd)}
+.dr-tbl .grp-row:first-child .grp-bar{border-top:0}
+.grp-bar{display:flex;align-items:center;gap:9px;padding:8px 12px;background:var(--sf2);border-top:1px solid var(--bd)}
+.grp-bar .bar{width:3px;height:17px;border-radius:2px;flex-shrink:0}
+.grp-bar img{width:20px;height:20px;object-fit:contain;flex-shrink:0;max-width:none}
+.grp-bar .nm{font-size:13px;font-weight:600;color:var(--text)}
+.grp-bar .cnt{font-size:11.5px;color:var(--dim)}
+.grp-bar .cnt b{color:var(--gold)}
+.grp-bar .btn{margin-left:auto;padding:3px 10px;font-size:11.5px}
+.dr-tbl .dr-row{cursor:pointer}
+.dr-tbl .dr-row:hover td{background:var(--sf2)}
+.dr-tbl .dr-row.on td{background:var(--accent-bg)}
+.dr-tbl .c-name{min-width:0}
+.dr-tbl .c-name .nw{display:flex;align-items:center;gap:10px;min-width:0}
+.dr-tbl .c-name .dr-img{width:34px;height:34px;object-fit:contain;flex-shrink:0;max-width:none;display:block}
+.dr-tbl .c-name .t{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dr-tbl .c-sub{width:190px;color:var(--text2);font-size:12.5px;white-space:nowrap}
+.dr-tbl .c-sp{white-space:nowrap}
+.dr-tbl .c-act{width:70px;white-space:nowrap}
+.dr-tbl .c-act .icon-btn{display:inline-flex;vertical-align:middle}
+.dr-tbl .c-act .icon-btn{width:24px;height:24px;font-size:11px}
+.dr-tbl .c-caret{width:26px;color:var(--dimmer);font-size:11px;text-align:center}
+.dr-tbl .dim{color:var(--text4)}
+.dr-tbl .warn-i{margin-left:8px;font-size:11.5px;color:var(--red)}
+.dr-tbl .dr-editrow>td{background:var(--bg);padding:0}
+.dr-edit{padding:14px 14px 16px;display:flex;flex-direction:column;gap:10px}
+.dr-edit .f1{display:flex;gap:8px}
+.dr-edit .f2{display:flex;gap:8px;margin-top:8px}
+
+.sp-chips{display:inline-flex;gap:3px;align-items:center}
+.sp-chip{min-width:26px;height:22px;padding:0 5px;display:inline-flex;align-items:center;justify-content:center;
+  border-radius:5px;font-size:11px;font-weight:600}
+.sp-chip.hp{background:rgba(251,191,36,.14);color:var(--hpc)}
+.sp-chip.atk{background:rgba(248,113,113,.14);color:var(--atc)}
+.sp-chip.def{background:rgba(96,165,250,.14);color:var(--dfc)}
+.sp-chip.none{border:1px dashed var(--border3);color:var(--text4)}
+.sp-chip.bn{border:1px solid currentColor;background:none}
+
+.dr-hint{padding:13px 14px;color:var(--text4);font-size:12.5px;border-bottom:1px solid var(--bd)}
+
+/* 모바일 목록 + 편집 시트 */
+.dr-mo{display:none}
+.mo-grp{display:flex;align-items:center;gap:8px;padding:8px 11px;margin:12px 0 7px;border-radius:8px;background:var(--sf2)}
+.mo-grp .bar{width:3px;height:16px;border-radius:2px;flex-shrink:0}
+.mo-grp img{width:19px;height:19px;object-fit:contain;flex-shrink:0;max-width:none}
+.mo-grp .nm{font-size:13px;font-weight:600}
+.mo-grp .cnt{font-size:11.5px;color:var(--dim)}
+.mo-grp .btn{margin-left:auto;padding:4px 12px;font-size:13px}
+.mo-list{display:flex;flex-direction:column;gap:6px}
+.mo-row{display:flex;align-items:center;gap:9px;width:100%;padding:11px 12px 11px 0;border:1px solid var(--bd);
+  border-radius:10px;background:var(--sf);color:var(--text);font-family:inherit;text-align:left;cursor:pointer;overflow:hidden}
+.mo-row .bar{width:4px;align-self:stretch;flex-shrink:0}
+.mo-row .dr-img{width:34px;height:34px;object-fit:contain;flex-shrink:0;max-width:none}
+.mo-row .tx{flex-grow:1;min-width:0}
+.mo-row .tx .t{display:block;font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mo-row .tx .s{display:block;font-size:11.5px;color:var(--dim);margin-top:2px}
+.dr-scrim{display:none;position:fixed;inset:0;background:rgba(6,8,11,.62);z-index:90}
+.dr-sheet{display:none;position:fixed;left:0;right:0;bottom:0;max-height:88vh;z-index:91;flex-direction:column;
+  background:var(--sf);border-top:1px solid var(--border3);border-radius:18px 18px 0 0}
+.dr-sheet-grab{align-self:center;width:38px;height:4px;border-radius:99px;background:var(--border3);margin:9px 0 4px}
+.dr-sheet-hd{display:flex;align-items:center;gap:10px;padding:8px 16px 13px;border-bottom:1px solid var(--bd)}
+.dr-sheet-hd .dr-img{width:38px;height:38px;object-fit:contain;flex-shrink:0;max-width:none}
+.dr-sheet-hd .t{font-size:15.5px;font-weight:600}
+.dr-sheet-hd .s{font-size:11.5px;color:var(--dim);margin-top:1px}
+.dr-sheet-hd .icon-btn{margin-left:auto}
+.dr-sheet-bd{flex-grow:1;min-height:0;overflow-y:auto}
+.dr-sheet-bd .dr-edit{padding:14px 16px}
+.dr-sheet-ft{padding:11px 16px calc(14px + env(safe-area-inset-bottom));border-top:1px solid var(--bd)}
+.dr-sheet-ft .btn-run{width:100%}
+
+@media(max-width:900px){
+  .dr-tbl .c-sub{width:auto}
+}
+@media(max-width:760px){
+  .dr-split{display:none}
+  .dr-mo{display:block}
+  .dr-scrim{display:block}
+  .dr-sheet{display:flex}
+  /* 시트 안에서는 정령 버튼을 손가락 크기로 */
+  .dr-sheet .sp2-row{grid-template-columns:32px repeat(3,1fr) 44px;gap:5px}
+  .dr-sheet .sp2-row .chip{padding:11px 2px;font-size:13px}
+  .dr-sheet .sp2-row .v{display:none}
+  .dr-sheet .preset-row .chip{padding:9px 11px}
+}
+
+/* ── 콘솔 레이아웃 보정 ── */
+.pane-top{display:flex;align-items:center;gap:8px;justify-content:flex-end;min-height:20px;margin-bottom:6px}
+.pane-top .save-msg{margin-left:0}
+.u-setpane .sec{background:none;border:0;border-radius:0;margin-bottom:20px;overflow:visible}
+.u-setpane .sec-hd{padding:0 0 10px;border-bottom:1px solid var(--bd);margin-bottom:12px}
+.u-setpane .sec-bd{padding:0}
+.u-setpane .set-blk>.sec:last-child{margin-bottom:0}
+.u-setpane .btn-run,.u-setpane .btn{width:100%}
+.u-setpane .row3{max-width:none}
+/* 수동 계산기: 공통 설정을 본문 위에 가로로 */
+.m-top{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;padding:14px 16px;margin-bottom:14px;
+  border:1px solid var(--bd);border-radius:10px;background:var(--sf)}
+.m-top .sec{background:none;border:0;border-radius:0;margin:0;overflow:visible;flex-grow:1;min-width:0}
+.m-top .sec-hd{padding:0 0 9px;border-bottom:1px solid var(--bd);margin-bottom:11px}
+.m-top .sec-bd{padding:0}
+.m-top .row3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;max-width:640px}
+.m-top>.btn{flex-shrink:0;padding:9px 16px}
+@media(max-width:760px){
+  .m-top{flex-direction:column;align-items:stretch;gap:12px}
+  .m-top .row3{grid-template-columns:1fr;max-width:none}
+  .m-top>.btn{width:100%}
+}
+.u-main #result:empty::after,.u-main #spx-result:empty::after{
+  content:attr(data-empty);display:block;padding:70px 20px;text-align:center;
+  font-size:13.5px;color:var(--text4);line-height:1.9}
+/* 좁은 화면에서 정령 옵션 줄이 눌리지 않도록 */
+@media(max-width:1180px){
+  .u-setpane .sp2-row{grid-template-columns:26px repeat(3,1fr) 36px 44px;gap:3px}
+  .u-setpane .sp2-row .chip{padding:5px 4px}
+}
+@media(max-width:980px){.u-setpane .sec{margin-bottom:16px}}
+</style>
+</head>
+<body class="u">
+<div class="u-app">
+<div class="u-content">
+<aside class="u-setpane" id="setpane">
+<div class="set-blk" id="set-calc" style="display:none">
+<div class="sec">
+      <div class="sec-hd"><span>자동 계산 설정</span><a href="./my.html" class="goto-my">내 스펙 →</a></div>
+      <div class="sec-bd">
+        <div class="lbl">보유 현황 (장신구·펜던트는 내 스펙 값, 젬은 아래 루키 젬 값 사용)</div>
+        <div class="spec-line" id="spec-line"></div>
+        <div class="spec-warn" id="spec-warn" style="display:none"></div>
+        <div style="height:12px"></div>
+        <div class="lbl">루키 젬 보유 (31단계 이하 · 단계별 개수)</div>
+        <div id="gem-box"></div>
+        <div style="height:12px"></div>
+        <div class="lbl">물약 (5등급 이하)</div>
+        <div class="metric-bar" id="pot-bar"></div>
+        <div style="height:12px"></div>
+        <div class="lbl">속성 버프 (해당 속성 드래곤에 적용)</div>
+        <div id="round-bar"></div>
+        <div class="row3" id="buff-row"></div>
+        <div style="height:12px"></div>
+        <div class="lbl">최소 스탯</div>
+        <div class="min-box" id="min-box"></div>
+        <div class="run-note" style="margin-top:6px">각 팀에서 이 값보다 낮은 스탯이 나오는 셋팅은 후보에서 빼요. 켜지 않으면 제한 없이 계산해요.</div>
+        <div style="height:12px"></div>
+        <div class="lbl">최적화 기준</div>
+        <div class="metric-bar" id="metric-bar"></div>
+        <div class="run-row">
+          <button class="btn-run" id="run-btn" onclick="run()">자동 계산 실행</button>
+          <div class="run-note">4성 정령 50% 적용, 인첸트는 무한 인첸트(스탯 자동 선택) 21%, 컬렉션은 풀컬(240/60/60) 고정이에요.
+각 팀에 등록한 드래곤 중 3마리씩 골라 장신구·젬·펜던트를 겹치지 않게 배분해요.</div>
+        </div>
+      </div>
+</div>
+</div>
+</aside>
+<main class="u-main" id="mainpane">
+<div class="pane-top"><span class="save-msg" id="save-msg"></span></div>
+  <div id="page-dragon">
+    <div class="sec"><div class="sec-bd" style="font-size:12px;color:var(--dim);line-height:1.7">루키대전에 쓸 드래곤을 팀별로 등록해두는 곳이에요. 챔대 계산기와는 <b>별도로 저장</b>되고, 4성 정령 옵션까지 입력해두면 자동 계산에 그대로 반영돼요.<br>루키 제한: SS 등급용 · 초월 · 성체만 사용 가능</div></div>
+    <div id="dragon-teams"></div>
+  </div>
+  <div id="page-calc" style="display:none">
+    <div id="result" data-empty="왼쪽에서 설정을 마치고 [자동 계산 실행]을 눌러주세요."></div>
+  </div>
+</main>
+</div>
+
+<script>
+'use strict';
+if (!globalThis.DV1_DRAGON_VIEWS) throw new Error("드래곤 데이터 로드 실패: 초기화 중단");
+const D=window.CHAM_DATA;
+const DB=window.DV1_DRAGONS;
+const ASSET='./';
+const SPEC_KEY='dv1sim_spec';
+const SAVE_KEY='dv1sim_rookie_auto';
+const MANUAL_KEY='dv1sim_rookie_manual';
+const ATTRS=['땅','물','불','바람','빛','어둠','황혼','여명','악몽'];
+const STATS=['hp','atk','def'];
+const STAT_LBL={hp:'체력',atk:'공격',def:'방어'};
+const SKILL_LBL={boom:'폭스',def:'방확'};
+const ROUND_NAMES=['32강','16강','8강','4강','결승'];
+const ROUND_N=5;
+
+// ── 루키 규칙 ───────────────────────────────────────────────
+const GEM_MAX=31;
+const gemVal=(lv,st)=>st==='hp'?lv*4:lv;                 // 단계 L → 체 4L / 공 L / 방 L
+const SP_PLUS={hp:{1:144,2:168},atk:{1:36,2:42},def:{1:36,2:42}}; // 4성 정령
+const SP_PCT={1:0.20,2:0.24};
+const SP_N=2;
+const SPIRIT_W=0.5;
+const ENC_PCT=0.21;
+const COLL={hp:240,atk:60,def:60};
+const BUFF_PCT={hp:0.4,atk:0.4,def:0.5};
+const TEAM_N=3;
+const OPT_LIMIT=60;
+const potOf=ko=>D.POTION.find(p=>p.ko===ko);
+const POT_CRIT=potOf('크리•회피');
+const POT_STAT=['체5','공5','방5'].map(potOf).filter(Boolean);
+
+// ── 드래곤 목록 ────────────────────────────────────────────
+const SS_ROWS=(()=>{
+  const seen=new Set(),out=[];
+  [45,21].forEach(lv=>DB.getRankingRows('cham','SS',lv).forEach(r=>{
+    if(/^고귀한\s/.test(r.name))return; // 원본과 스탯이 같은 중복 (챔대와 동일하게 제외)
+    const k=r.name+'|'+r.element+'|'+lv;if(seen.has(k))return;seen.add(k);
+    out.push({ko:r.name,did:r.id,elem:r.element,lv,hp:r.hp,atk:r.atk,def:r.def,ev:r.evaluation,sk:r.skill||''});
+  }));
+  return out;
+})();
+const REG_ROWS=DB.records.filter(r=>r.stats.regular).map(r=>({
+  ko:r.name.ko,did:r.id,elem:r.element,tr:!!r.stages.transcendence,st:r.stats.regular,aliases:r.aliases.ko||[]}));
+const KINDS={ss:'SS 등급용',reg:'초월 · 성체'};
+
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=n=>Number(n).toLocaleString();
+const normName=n=>String(n||'').replace(/ 드래곤$/,'').replace(/\s+/g,'').toLowerCase();
+const INT=x=>Math.floor(x+1e-9);
+const imgUrl=(id,stage)=>id?`${ASSET}dragon/${id}/profile/${stage}.png`:'';
+const rd=k=>{try{const r=localStorage.getItem(k);return r?JSON.parse(r):null;}catch(e){return null;}};
+const lvClamp=v=>Math.max(1,Math.min(99,parseInt(v)||1));
+function ssOf(en){return SS_ROWS.find(d=>d.ko===en.name&&d.lv===en.ssLv&&d.elem===en.attr)||null;}
+function regOf(en){return REG_ROWS.find(d=>d.ko===en.name&&d.elem===en.attr)||null;}
+function dragonOf(en){return en.kind==='ss'?ssOf(en):regOf(en);}
+function baseOf(en){
+  const d=dragonOf(en);if(!d)return null;
+  if(en.kind==='ss')return {hp:d.hp,atk:d.atk,def:d.def};
+  const lv=lvClamp(en.lv);
+  return {hp:d.st.hp[0]+d.st.hp[1]*(lv-1),atk:d.st.atk[0]+d.st.atk[1]*(lv-1),def:d.st.def[0]+d.st.def[1]*(lv-1)};
+}
+function entryImg(en,d){return d?imgUrl(d.did,en.kind==='reg'&&d.tr?7:4):'';}
+function entrySub(en,d){
+  if(!d)return '';
+  return en.kind==='ss'?'SS · Lv.'+en.ssLv+' · EVAL '+d.ev:(d.tr?'초월':'성체')+' · Lv.'+lvClamp(en.lv);
+}
+
+// ── 상태 ─────────────────────────────────────────────────────
+let _uidN=0;const newUid=()=>'r'+Date.now().toString(36)+(_uidN++).toString(36)+Math.random().toString(36).slice(2,5);
+const mkSp=()=>Array.from({length:SP_N},()=>({stat:'',type:'%'}));
+const mkEntry=()=>({uid:newUid(),kind:'ss',attr:'',name:'',ssLv:45,lv:45,sp:mkSp()});
+const mkMin=()=>Array.from({length:TEAM_N},()=>({on:0,hp:0,atk:0,def:0}));
+const minClamp=v=>Math.max(0,Math.min(9999999,parseInt(v)||0));
+const mkRounds=()=>ROUND_NAMES.map(n=>({name:n,buff:{hp:'',atk:'',def:''}}));
+const mkGemInv=()=>({hp:{},atk:{},def:{}});
+const mkState=()=>({page:'dragon',dteam:0,round:0,rounds:mkRounds(),metric:'bv',pot:'crit',minst:mkMin(),gemInv:mkGemInv(),teams:Array.from({length:TEAM_N},()=>[])});
+function normEntry(q){
+  const e=mkEntry();
+  const out={...e,...q,uid:q.uid||e.uid};
+  if(!KINDS[out.kind])out.kind='ss';
+  if(out.ssLv!==21)out.ssLv=45;
+  out.lv=lvClamp(out.lv||45);
+  out.sp=e.sp.map((o,k)=>{const r={...o,...((q.sp||[])[k]||{})};if(r.type!=='%'&&r.type!=='+')r.type='%';if(!STATS.includes(r.stat))r.stat='';return r;});
+  return out;
+}
+function normGemInv(raw){
+  const out=mkGemInv();
+  if(raw&&typeof raw==='object')STATS.forEach(st=>{
+    const m=raw[st];if(!m||typeof m!=='object')return;
+    Object.keys(m).forEach(lv=>{const l=parseInt(lv),n=parseInt(m[lv]);if(l>=1&&l<=GEM_MAX&&n>0)out[st][l]=Math.min(999,n);});
+  });
+  return out;
+}
+let S=mkState();
+(function(){
+  const p=rd(SAVE_KEY);if(!p)return;
+  const base=mkState();
+  S={...base,...p};
+  S.rounds=base.rounds.map((r,i)=>{const q=(p.rounds||[])[i]||{};return {name:String(q.name||r.name).slice(0,12),buff:{...r.buff,...(q.buff||{})}};});
+  if(!(S.round>=0&&S.round<ROUND_N))S.round=0;
+  if(S.metric!=='eval')S.metric='bv';
+  if(S.pot!=='stat')S.pot='crit';
+  if(S.page!=='calc')S.page='dragon';
+  if(!(S.dteam>=0&&S.dteam<TEAM_N))S.dteam=0;
+  S.minst=base.minst.map((m,i)=>{const q=(p.minst||[])[i]||{};return {on:q.on?1:0,hp:minClamp(q.hp),atk:minClamp(q.atk),def:minClamp(q.def)};});
+  S.gemInv=normGemInv(p.gemInv);
+  S.teams=base.teams.map((_,ti)=>((p.teams&&p.teams[ti])||[]).filter(q=>q&&ATTRS.includes(q.attr)).map(normEntry));
+})();
+let saveT=null;
+function save(){
+  clearTimeout(saveT);
+  saveT=setTimeout(()=>{
+    try{localStorage.setItem(SAVE_KEY,JSON.stringify(S));
+      const el=document.getElementById('save-msg');el.textContent='저장됨';clearTimeout(el._t);el._t=setTimeout(()=>el.textContent='',1500);}catch(e){}
+  },500);
+}
+const curBuff=()=>(S.rounds[S.round]||S.rounds[0]).buff;
+function minOf(ti){const m=S.minst[ti];return m&&m.on?m:null;}
+function minOk(ti,r){const m=minOf(ti);return !m||(r.hp>=m.hp&&r.atk>=m.atk&&r.def>=m.def);}
+
+// ── 내 스펙 (장신구 · 펜던트) ──────────────────────────────
+let SPEC=null;
+function loadSpec(){
+  const p=rd(SPEC_KEY)||{};
+  SPEC={
+    accCards:(p.accCards||[]).map((c,i)=>{
+      const a=D.ACC.find(x=>x.ko===c.name||x.en===c.name);
+      return a?{...a,_id:i}:null;
+    }).filter(Boolean),
+    pendants:(p.pendants||[]).map((pd,i)=>({...pd,_id:i}))
+  };
+}
+function accVariants(){const out=[];SPEC.accCards.forEach(a=>STATS.forEach(st=>out.push({...a,enc:st})));return out;}
+
+// ── 계산 (챔대 공식 + 루키 값) ──────────────────────────────
+function procSpirit(en){
+  const plus={hp:0,atk:0,def:0},pct={hp:0,atk:0,def:0};
+  (en.sp||[]).slice(0,SP_N).forEach((o,i)=>{
+    if(!o||!o.stat||!SP_PLUS[o.stat])return;
+    if(o.type==='+')plus[o.stat]+=SP_PLUS[o.stat][i+1];
+    else if(o.type==='%')pct[o.stat]+=SP_PCT[i+1];
+  });
+  return {plus,pct};
+}
+function calcPendPct(pend){
+  let pH=0,pA=0,pD=0;
+  if(pend){
+    const mo=pend.type==='태양'?3:pend.type==='달'?2:1;
+    (pend.options||[]).slice(0,mo).forEach(o=>{
+      if(!o||!o.stat)return;
+      const v=(o.val||0)/100;
+      if(o.stat==='hp')pH+=v;else if(o.stat==='atk')pA+=v;else pD+=v;
+    });
+  }
+  return {pH,pA,pD};
+}
+function rookieStat(base,gem,pot,accP,spPct,spPlus,pendP,coll,buffP){
+  const s1=INT((base+gem+pot)*(1+accP));
+  const s2=INT(s1*(1+SPIRIT_W*spPct)+(SPIRIT_W*spPlus)*(1+SPIRIT_W*spPct));
+  const s3=INT(s2*(1+pendP))+coll;
+  return INT(s3*(1+buffP));
+}
+function calcWithPot(cand,acc,pend,gem,pot){
+  const {pH,pA,pD}=pend?pend._pct:{pH:0,pA:0,pD:0};
+  const out={buffs:[],pot};
+  STATS.forEach(st=>{
+    const accP=acc[st]+(acc.enc===st?ENC_PCT:0);
+    const pendP=st==='hp'?pH:st==='atk'?pA:pD;
+    const buffP=(curBuff()[st]&&curBuff()[st]===cand.attr)?BUFF_PCT[st]:0;
+    if(buffP)out.buffs.push(st);
+    out[st]=rookieStat(cand.base[st],gem[st],pot[st],accP,cand.sp.pct[st],cand.sp.plus[st],pendP,COLL[st],buffP);
+  });
+  out.eval=out.hp+out.atk*4+out.def*4;
+  out.bv=out.hp*out.atk*out.def;
+  out.m=S.metric==='eval'?out.eval:out.bv;
+  return out;
+}
+// 물약은 수량 제한이 없으니 셋팅마다 가장 좋은 걸 고름
+function calcOption(cand,acc,pend,gem){
+  const pots=S.pot==='stat'?POT_STAT:[POT_CRIT];
+  let best=null;
+  for(const p of pots){const r=calcWithPot(cand,acc,pend,gem,p);if(!best||r.m>best.m)best=r;}
+  return best;
+}
+
+// ── 젬 재고 ──────────────────────────────────────────────────
+let INV=null;
+function buildInv(){
+  INV={tot:{}};
+  STATS.forEach(s=>{
+    INV[s]=Object.keys(S.gemInv[s]).map(Number).sort((a,b)=>b-a)
+      .map(lv=>({lv,val:gemVal(lv,s),cnt:Number(S.gemInv[s][lv])||0})).filter(x=>x.cnt>0);
+    INV.tot[s]=INV[s].reduce((a,x)=>a+x.cnt,0);
+  });
+}
+function topGemSum(st,k){
+  let s=0,left=k;
+  for(const g of INV[st]){const t=Math.min(g.cnt,left);s+=t*g.val;left-=t;if(!left)break;}
+  return s;
+}
+const gemSums=sh=>({hp:topGemSum('hp',sh.h),atk:topGemSum('atk',sh.a),def:topGemSum('def',sh.d)});
+function genShapes(){
+  const res=[];
+  for(let h=0;h<=5;h++)for(let a=0;a<=5-h;a++)for(let d=0;d<=5-h-a;d++){
+    if(h>INV.tot.hp||a>INV.tot.atk||d>INV.tot.def)continue;
+    res.push({h,a,d});
+  }
+  return res;
+}
+
+// ── 등록 드래곤 → 후보 ───────────────────────────────────────
+function entryValid(en){return !!(en.attr&&en.name&&dragonOf(en));}
+function teamCandidates(ti){
+  return S.teams[ti].map((en,i)=>{
+    if(!entryValid(en))return null;
+    const d=dragonOf(en);
+    return {id:'e'+ti+'-'+i,attr:en.attr,name:d.ko,img:entryImg(en,d),sub:en.attr+' · '+entrySub(en,d),
+      base:baseOf(en),sp:procSpirit(en),sk:en.kind==='ss'?d.sk:'',entry:en};
+  }).filter(Boolean);
+}
+
+// ── 드래곤별 셋팅 후보 ────────────────────────────────────────
+let ACCV=[];
+function buildOptions(cand,shapes,pends){
+  const bestBy=new Map();
+  const opts=[];let minM=-Infinity;
+  for(const acc of ACCV){
+    for(const pend of pends){
+      for(const sh of shapes){
+        const r=calcOption(cand,acc,pend,gemSums(sh));
+        const opt={cand,acc,pend,sh,r,m:r.m};
+        const pid=pend?pend._id:'x';
+        const gc=sh.h+sh.a+sh.d;
+        if(!pend){const k='n'+acc._id+'|'+sh.h+','+sh.a+','+sh.d;if(!bestBy.has(k)||opt.m>bestBy.get(k).m)bestBy.set(k,opt);}
+        for(const k of ['a'+acc._id,'p'+pid,'pg'+pid+'|'+gc,'pa'+pid+'|'+acc._id,'pag'+pid+'|'+acc._id+'|'+gc]){
+          if(!bestBy.has(k)||opt.m>bestBy.get(k).m)bestBy.set(k,opt);
+        }
+        if(opt.m>minM||opts.length<OPT_LIMIT){
+          let lo=0,hi=opts.length;
+          while(lo<hi){const md=(lo+hi)>>1;if(opts[md].m>=opt.m)lo=md+1;else hi=md;}
+          opts.splice(lo,0,opt);
+          if(opts.length>OPT_LIMIT)opts.pop();
+          minM=opts.length===OPT_LIMIT?opts[opts.length-1].m:-Infinity;
+        }
+      }
+    }
+  }
+  const seen=new Set(),merged=[];
+  [...opts,...bestBy.values()].sort((a,b)=>b.m-a.m).forEach(o=>{
+    const k=o.acc._id+'|'+(o.pend?o.pend._id:'x')+'|'+o.sh.h+','+o.sh.a+','+o.sh.d;
+    if(seen.has(k))return;seen.add(k);merged.push(o);
+  });
+  return merged;
+}
+
+// ── 자원 체크 ────────────────────────────────────────────────
+function fits(opt,used){
+  if(used.acc.has(opt.acc._id))return false;
+  if(opt.pend&&used.pend.has(opt.pend._id))return false;
+  if(used.gem.hp+opt.sh.h>INV.tot.hp)return false;
+  if(used.gem.atk+opt.sh.a>INV.tot.atk)return false;
+  if(used.gem.def+opt.sh.d>INV.tot.def)return false;
+  return true;
+}
+function consume(opt,used){
+  used.acc.add(opt.acc._id);
+  if(opt.pend)used.pend.add(opt.pend._id);
+  used.gem.hp+=opt.sh.h;used.gem.atk+=opt.sh.a;used.gem.def+=opt.sh.d;
+  used.slot.add(opt.cand.id);
+}
+function release(opt,used){
+  used.acc.delete(opt.acc._id);
+  if(opt.pend)used.pend.delete(opt.pend._id);
+  used.gem.hp-=opt.sh.h;used.gem.atk-=opt.sh.a;used.gem.def-=opt.sh.d;
+  used.slot.delete(opt.cand.id);
+}
+function diversifyOpts(opts,n){
+  const keep=new Set(),out=[];
+  const add=o=>{if(!keep.has(o)){keep.add(o);out.push(o);}};
+  opts.slice(0,n).forEach(add);
+  const seenA=new Set(),seenAE=new Set(),seenP=new Set(),seenPG=new Set(),seenPA=new Set(),seenPAG=new Set(),seenAN=new Set(),seenS=new Set(),seenG=new Set(),seenAG=new Set();
+  for(const o of opts){
+    const a=o.acc._id,p=o.pend?o.pend._id:'x',sh=o.sh.h+','+o.sh.a+','+o.sh.d;
+    const gc=o.sh.h+o.sh.a+o.sh.d;
+    if(!seenA.has(a)){seenA.add(a);add(o);}
+    const ae=a+'|'+(o.acc.enc||'x');
+    if(!seenAE.has(ae)){seenAE.add(ae);add(o);}
+    if(!seenP.has(p)){seenP.add(p);add(o);}
+    if(p==='x'&&!seenAN.has(a)){seenAN.add(a);add(o);}
+    if(!seenS.has(sh)&&seenS.size<12){seenS.add(sh);add(o);}
+    if(!seenG.has(gc)){seenG.add(gc);add(o);}
+    if(!seenPG.has(p+'|'+gc)){seenPG.add(p+'|'+gc);add(o);}
+    if(!seenPA.has(p+'|'+a)){seenPA.add(p+'|'+a);add(o);}
+    if(!seenPAG.has(p+'|'+a+'|'+gc)&&seenPAG.size<220){seenPAG.add(p+'|'+a+'|'+gc);add(o);}
+    const ag=a+'|'+gc;
+    if(gc<=2&&!seenAG.has(ag)&&seenAG.size<40){seenAG.add(ag);add(o);}
+  }
+  return out;
+}
+
+// ── 팀 3마리 최적 조합 ────────────────────────────────────────
+function bestTeamDeck(sets,used,mTi){
+  const gemLeft={hp:INV.tot.hp-used.gem.hp,atk:INV.tot.atk-used.gem.atk,def:INV.tot.def-used.gem.def};
+  const S3=sets
+    .filter(s=>!used.slot.has(s.cand.id))
+    .map(s=>({cand:s.cand,opts:diversifyOpts(s.opts.filter(o=>fits(o,used)),60).sort((a,b)=>b.m-a.m)}))
+    .filter(s=>s.opts.length)
+    .map(s=>({...s,best:s.opts[0].m}))
+    .sort((a,b)=>b.best-a.best)
+    .slice(0,14);
+  let bestDeck=null,bestScore=-Infinity;
+  const compat=(a,b)=>!(a.acc._id===b.acc._id||a.cand.id===b.cand.id||(a.pend&&b.pend&&a.pend._id===b.pend._id));
+  const gemOk=(a,b,c)=>
+    (a.sh.h+b.sh.h+(c?c.sh.h:0)<=gemLeft.hp)&&
+    (a.sh.a+b.sh.a+(c?c.sh.a:0)<=gemLeft.atk)&&
+    (a.sh.d+b.sh.d+(c?c.sh.d:0)<=gemLeft.def);
+  for(let i=0;i<S3.length-2;i++)for(let j=i+1;j<S3.length-1;j++)for(let k=j+1;k<S3.length;k++){
+    const A=S3[i],B=S3[j],C=S3[k];
+    if(A.best+B.best+C.best<=bestScore)continue;
+    for(const a of A.opts){
+      if(a.m+B.best+C.best<=bestScore)break;
+      for(const b of B.opts){
+        if(a.m+b.m+C.best<=bestScore)break;
+        if(!compat(a,b)||!gemOk(a,b,null))continue;
+        for(const c of C.opts){
+          if(a.m+b.m+c.m<=bestScore)break;
+          if(!compat(a,c)||!compat(b,c)||!gemOk(a,b,c))continue;
+          bestScore=a.m+b.m+c.m;bestDeck=[a,b,c];
+        }
+      }
+    }
+  }
+  if(bestDeck)return bestDeck;
+  // 자원이 빠듯하면 남은 자원으로 한 마리씩 채움
+  const tmp={acc:new Set(used.acc),pend:new Set(used.pend),gem:{...used.gem},slot:new Set(used.slot)};
+  const picked=[];
+  for(const s of sets.filter(s=>!used.slot.has(s.cand.id))){
+    if(picked.length>=3)break;
+    const o=(s.opts||[]).find(x=>fits(x,tmp)&&minOk(mTi,x.r))||bestFeasibleOption(s.cand,tmp,mTi);
+    if(!o)continue;
+    picked.push(o);consume(o,tmp);
+  }
+  return picked.length===3?picked:null;
+}
+function bestFeasibleOption(cand,used,mTi){
+  const left={hp:INV.tot.hp-used.gem.hp,atk:INV.tot.atk-used.gem.atk,def:INV.tot.def-used.gem.def};
+  const pends=[null,...SPEC.pendants.map(p=>({...p,_pct:calcPendPct(p)}))].filter(p=>!p||!used.pend.has(p._id));
+  const accs=ACCV.filter(a=>!used.acc.has(a._id));
+  let best=null;
+  for(const acc of accs)for(const pend of pends){
+    for(let h=0;h<=Math.min(5,left.hp);h++)for(let a=0;a<=Math.min(5-h,left.atk);a++){
+      for(let d=0;d<=Math.min(5-h-a,left.def);d++){
+        const sh={h,a,d};
+        const r=calcOption(cand,acc,pend,gemSums(sh));
+        if(!minOk(mTi,r))continue;
+        if(!best||r.m>best.m)best={cand,acc,pend,sh,r,m:r.m};
+      }
+    }
+  }
+  return best;
+}
+
+// ── 남은 펜던트 채우기 ───────────────────────────────────────
+function assignLeftoverPendants(decks){
+  const all=[];decks.forEach(d=>{if(d)d.forEach(o=>all.push(o));});
+  if(!all.length)return;
+  const used=new Set(all.filter(o=>o.pend).map(o=>o.pend._id));
+  let left=SPEC.pendants.filter(p=>!used.has(p._id)).map(p=>({...p,_pct:calcPendPct(p)}));
+  let empties=all.filter(o=>!o.pend);
+  while(left.length&&empties.length){
+    let pick=null;
+    empties.forEach(o=>{const g=gemSums(o.sh);left.forEach(p=>{const r=calcOption(o.cand,o.acc,p,g);const gain=r.m-o.m;if(!pick||gain>pick.gain)pick={o,p,r,gain};});});
+    if(!pick||pick.gain<=0)break;
+    pick.o.pend=pick.p;pick.o.r=pick.r;pick.o.m=pick.r.m;
+    left=left.filter(p=>p._id!==pick.p._id);
+    empties=empties.filter(o=>o!==pick.o);
+  }
+  let changed=true,guard=0;
+  while(left.length&&changed&&guard++<20){
+    changed=false;let best=null;
+    all.forEach(o=>{if(!o.pend)return;const g=gemSums(o.sh);left.forEach(p=>{const r=calcOption(o.cand,o.acc,p,g);const gain=r.m-o.m;if(gain>0&&(!best||gain>best.gain))best={o,p,r,gain,old:o.pend};});});
+    if(best){
+      left=left.filter(p=>p._id!==best.p._id).concat([{...best.old,_pct:calcPendPct(best.old)}]);
+      best.o.pend=best.p;best.o.r=best.r;best.o.m=best.r.m;changed=true;
+    }
+  }
+}
+// ── 최종 젬 단계 배정 ────────────────────────────────────────
+function finalizeGems(decks){
+  const left={};STATS.forEach(s=>{left[s]=INV[s].map(g=>({...g}));});
+  const take=(st,k)=>{
+    const items=[];let sum=0;
+    for(const g of left[st]){while(g.cnt>0&&items.length<k){g.cnt--;items.push(g.lv);sum+=g.val;}if(items.length>=k)break;}
+    return {items,sum};
+  };
+  const all=[];decks.forEach(d=>{if(d)d.forEach(o=>all.push(o));});
+  all.sort((a,b)=>b.m-a.m);
+  all.forEach(o=>{
+    const gh=take('hp',o.sh.h),ga=take('atk',o.sh.a),gd=take('def',o.sh.d);
+    o.gems={hp:gh.items,atk:ga.items,def:gd.items};
+    o.r=calcOption(o.cand,o.acc,o.pend,{hp:gh.sum,atk:ga.sum,def:gd.sum});o.m=o.r.m;
+  });
+}
+
+const tick=()=>new Promise(r=>setTimeout(r,0));
+function progBar(btn,p){
+  if(!btn||!btn.parentNode)return;
+  let el=btn.parentNode.querySelector('.prog');
+  if(p==null){if(el)el.remove();return;}
+  if(!el){el=document.createElement('div');el.className='prog';el.innerHTML='<i></i>';btn.insertAdjacentElement('afterend',el);}
+  el.firstChild.style.width=Math.max(0,Math.min(100,p))+'%';
+}
+async function solve(onProg){
+  const P=onProg||(()=>{});
+  buildInv();
+  ACCV=accVariants();
+  const shapes=genShapes();
+  const pends=[null,...SPEC.pendants.map(p=>({...p,_pct:calcPendPct(p)}))];
+  P(1);await tick();
+  let setsByTeam=[];
+  for(let ti=0;ti<TEAM_N;ti++){
+    const cands=teamCandidates(ti);const arr=[];
+    for(let i=0;i<cands.length;i++){
+      const opts=buildOptions(cands[i],shapes,pends).filter(o=>minOk(ti,o.r));
+      if(opts.length)arr.push({cand:cands[i],opts});
+      P(1+((ti+(i+1)/Math.max(1,cands.length))/TEAM_N)*62);
+      await tick();
+    }
+    setsByTeam.push(arr);
+  }
+  P(63);await tick();
+  const orders=[[0,1,2],[2,1,0]];
+  let best=null;
+  const STEPS=orders.length*9;let step=0;
+  const bump=async()=>{step++;P(63+step/STEPS*35);await tick();};
+  for(const order of orders){
+    const used={acc:new Set(),pend:new Set(),gem:{hp:0,atk:0,def:0},slot:new Set()};
+    let decks=Array(TEAM_N).fill(null);
+    for(const ti of order){
+      const deck=bestTeamDeck(setsByTeam[ti],used,ti);
+      decks[ti]=deck;if(deck)deck.forEach(o=>consume(o,used));
+      await bump();
+    }
+    for(let r=0;r<2;r++){
+      for(let ti=0;ti<TEAM_N;ti++){
+        if(decks[ti])decks[ti].forEach(o=>release(o,used));
+        const deck=bestTeamDeck(setsByTeam[ti],used,ti);
+        const oldM=decks[ti]?decks[ti].reduce((s,o)=>s+o.m,0):-1;
+        const newM=deck?deck.reduce((s,o)=>s+o.m,0):-1;
+        decks[ti]=newM>=oldM?deck:decks[ti];
+        if(decks[ti])decks[ti].forEach(o=>consume(o,used));
+        await bump();
+      }
+    }
+    decks=decks.map(d=>d?d.map(o=>({...o})):null);
+    const total=decks.reduce((s,d)=>s+(d?d.reduce((x,o)=>x+o.m,0):0),0);
+    const filled=decks.reduce((s,d)=>s+(d?d.length:0),0);
+    if(!best||filled>best.filled||(filled===best.filled&&total>best.total))best={decks,total,filled};
+  }
+  assignLeftoverPendants(best.decks);
+  finalizeGems(best.decks);
+  P(100);
+  return best;
+}
+async function run(){
+  loadSpec();
+  const btn=document.getElementById('run-btn');
+  btn.disabled=true;btn.textContent='⏳ 계산 중... 0%';progBar(btn,0);
+  save();await tick();
+  try{
+    const t0=performance.now();let last=-1;
+    const best=await solve(p=>{const v=Math.max(0,Math.min(99,Math.round(p)));if(v!==last){last=v;btn.textContent='⏳ 계산 중... '+v+'%';progBar(btn,v);}});
+    renderResult(best,performance.now()-t0);
+  }catch(e){console.error(e);alert('오류: '+e.message);}
+  progBar(btn,null);
+  btn.disabled=false;btn.textContent='자동 계산 실행';
+  updateRunState();
+}
+
+// ── 결과 렌더 ────────────────────────────────────────────────
+function skillTag(sk){return sk?`<span class="sk-ic-t" title="${esc(SKILL_LBL[sk]||sk)}">${esc(SKILL_LBL[sk]||sk)}</span>`:'';}
+function gemText(opt){
+  const parts=[];
+  STATS.forEach(st=>{
+    const cnt={};(opt.gems&&opt.gems[st]||[]).forEach(lv=>{cnt[lv]=(cnt[lv]||0)+1;});
+    Object.keys(cnt).sort((a,b)=>b-a).forEach(lv=>parts.push(`${STAT_LBL[st]} ${lv} ×${cnt[lv]}`));
+  });
+  return parts.length?parts.join(', '):'없음';
+}
+function spiritText(en){
+  const parts=(en.sp||[]).map(o=>o&&o.stat?STAT_LBL[o.stat]+(o.type==='%'?'%':'+'):null).filter(Boolean);
+  return parts.length?parts.join(' / '):null;
+}
+const pendText=p=>p?`${p.type} ${(p.options||[]).slice(0,p.type==='태양'?3:p.type==='달'?2:1).map(o=>STAT_LBL[o.stat]+o.val+'%').join('/')}`:'없음';
+function cardHtml(opt){
+  const c=opt.cand,r=opt.r;
+  const badge=st=>r.buffs.includes(st)?`<span class="buff-badge">${st==='def'?'+50%':'+40%'}</span>`:'';
+  const acc=opt.acc;
+  const sp=spiritText(c.entry);
+  const kv=(k,v)=>`<div class="kv"><span class="k">${k}</span><span class="v">${esc(v)}</span></div>`;
+  return `<div class="card">
+    <div class="card-hd">
+      ${c.img?`<img class="card-img" src="${esc(c.img)}" onerror="this.style.visibility='hidden'" alt="">`:`<div class="card-img"></div>`}
+      <div><div class="card-name">${esc(c.name)}${skillTag(c.sk)}</div><div class="card-sub">${esc(c.sub)}</div></div>
+    </div>
+    <div class="card-bd">
+      ${kv('장신구',acc.ko+` (인첸트 ${STAT_LBL[acc.enc]} 21%)`)}
+      ${kv('젬',gemText(opt))}
+      ${kv('펜던트',pendText(opt.pend))}
+      ${kv('물약',r.pot.ko)}
+      ${sp?kv('정령',sp):''}
+    </div>
+    <div class="result">
+      <div class="res-stats">${STATS.map(st=>`<div><small class="c-${st}">${STAT_LBL[st]}${badge(st)}</small><b class="c-${st}">${fmt(r[st])}</b></div>`).join('')}</div>
+      <div class="res-sum"><span>EVAL <b>${fmt(r.eval)}</b></span><span>비벨 <b>${fmt(r.bv)}</b></span></div>
+    </div>
+  </div>`;
+}
+let LAST_BEST=null;
+function renderResult(best,ms){
+  LAST_BEST=best;
+  const el=document.getElementById('result');
+  if(!best||!best.filled){el.innerHTML=`<div class="sec"><div class="sec-bd empty-note">조건에 맞는 조합을 찾지 못했어요.</div></div>`;return;}
+  let html='',tE=0,tB=0;
+  for(let ti=0;ti<TEAM_N;ti++){
+    const deck=best.decks[ti];
+    html+=`<div class="team-block"><div class="team-title">${ti+1}팀</div>`;
+    if(!deck){
+      const reason=teamCandidates(ti).length<3?'이 팀은 등록된 드래곤이 3마리 미만이에요. 드래곤 탭에서 추가해주세요.'
+        :minOf(ti)?'최소 스탯 조건을 만족하는 셋팅이 3마리만큼 안 나와요. 값을 낮추거나 꺼주세요.'
+        :'이 팀은 자원(장신구 등)이 부족해서 채우지 못했어요.';
+      html+=`<div class="sec"><div class="sec-bd empty-note">${reason}</div></div></div>`;continue;
+    }
+    deck.sort((a,b)=>b.m-a.m);
+    deck.forEach(o=>{tE+=o.r.eval;tB+=o.r.bv;});
+    html+=`<div class="cards">${deck.map(cardHtml).join('')}</div></div>`;
+  }
+  html+=`<div class="sec"><div class="sec-hd"><span>전체 합계</span><span style="color:var(--dim);font-weight:700">${(ms/1000).toFixed(1)}s</span></div>
+    <div class="sec-bd total-line"><span>EVAL</span> ${fmt(tE)} <span>비벨</span> ${fmt(tB)}</div>
+    <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap"><button class="btn" onclick="sendToManual()">수동 계산기로 보내기</button></div></div>`;
+  el.innerHTML=html;
+  el.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+// ── 수동 계산기 연동 ─────────────────────────────────────────
+function sendToManual(){
+  const best=LAST_BEST;if(!best)return;
+  if(!confirm('루키 수동 계산기의 현재 입력값을 이 결과로 덮어쓸까요?'))return;
+  const M=rd(MANUAL_KEY)||{};
+  M.buff={...curBuff()};M.tab=0;
+  M.teams=Array.from({length:TEAM_N},(_,ti)=>{
+    const deck=best.decks[ti]||[];
+    return [0,1,2].map(si=>{
+      const o=deck[si];
+      if(!o)return {kind:'ss',attr:'',name:'',ssLv:45,lv:45,gems:Array.from({length:5},()=>({stat:'',lv:31})),pend:{hp:0,atk:0,def:0},acc:'',potion:'',enc:{stat:'',val:21},sp:mkSp().map(x=>({stat:'',type:''}))};
+      const gems=[];STATS.forEach(st=>(o.gems[st]||[]).forEach(lv=>gems.push({stat:st,lv})));
+      while(gems.length<5)gems.push({stat:'',lv:31});
+      const pp=o.pend?o.pend._pct||calcPendPct(o.pend):{pH:0,pA:0,pD:0};
+      const en=o.cand.entry;
+      return {kind:en.kind,attr:en.attr,name:en.name,ssLv:en.ssLv,lv:en.lv,gems:gems.slice(0,5),
+        pend:{hp:Math.round(pp.pH*100),atk:Math.round(pp.pA*100),def:Math.round(pp.pD*100)},
+        acc:o.acc.ko,potion:o.r.pot.ko,enc:{stat:o.acc.enc,val:21},
+        sp:en.sp.map(x=>({stat:x.stat,type:x.stat?x.type:''}))};
+    });
+  });
+  try{localStorage.setItem(MANUAL_KEY,JSON.stringify(M));}catch(e){alert('저장 실패: '+e.message);return;}
+  location.href='./rookie_manual.html';
+}
+function importFromManual(){
+  const M=rd(MANUAL_KEY);
+  const rows=[];
+  ((M&&M.teams)||[]).forEach((team,ti)=>(team||[]).forEach(s=>{
+    if(!s||!s.attr||!s.name||ti>=TEAM_N)return;
+    const en=normEntry({kind:s.kind,attr:s.attr,name:s.name,ssLv:s.ssLv,lv:s.lv,sp:(s.sp||[]).map(o=>({stat:o.stat,type:o.type||'%'}))});
+    if(!entryValid(en))return;
+    rows.push({ti,en});
+  }));
+  if(!rows.length){alert('수동 계산기에 저장된 드래곤이 없어요.');return;}
+  let added=0;
+  rows.forEach(({ti,en})=>{
+    if(S.teams[ti].some(x=>x.attr===en.attr&&x.name===en.name&&x.kind===en.kind&&x.ssLv===en.ssLv))return;
+    S.teams[ti].push(en);added++;
+  });
+  if(!added){alert('가져올 새 드래곤이 없어요. (이미 등록됐거나 비어 있어요)');return;}
+  renderDragonTeams();save();alert(added+'마리를 가져왔어요.');
+}
+
+// ── 내 드래곤 탭 ─────────────────────────────────────────────
+const EL_ICON={'땅':11,'물':12,'불':13,'바람':14,'빛':84,'어둠':87,'황혼':487,'여명':486,'악몽':488};
+const EL_DOT={'땅':'#a3956b','물':'#5b9bd5','불':'#e0776f','바람':'#6fbf8e','빛':'#e8d07a','어둠':'#9b8bc4','황혼':'#c9836b','여명':'#7fb3d5','악몽':'#8f7ab0'};
+const elIcon=a=>`${ASSET}icon/${EL_ICON[a]||11}.png`;
+let D_ATTR='',EDIT_UID=null;
+const _drMQ=window.matchMedia('(max-width:760px)');
+const DR_MOBILE=()=>_drMQ.matches;
+if(_drMQ.addEventListener)_drMQ.addEventListener('change',()=>{if(EDIT_UID)renderDragonTeams();});
+function setDAttr(a){D_ATTR=(D_ATTR===a)?'':a;renderDragonTeams();}
+function openEdit(uid){EDIT_UID=(EDIT_UID===uid)?null:uid;renderDragonTeams();}
+function closeEdit(){EDIT_UID=null;renderDragonTeams();}
+function drInfo(ti,i){
+  const en=S.teams[ti][i];const d=dragonOf(en);
+  return {en,d,valid:entryValid(en),img:entryImg(en,d),title:d?d.ko:'드래곤 미선택',sub:entrySub(en,d),skill:en.kind==='ss'&&d?skillTag(d.sk):''};
+}
+function spChips(en){
+  return `<span class="sp-chips">${en.sp.map(o=>o.stat?`<span class="sp-chip ${o.stat}">${STAT_LBL[o.stat].slice(0,1)}${o.type==='+'?'+':'%'}</span>`:`<span class="sp-chip none">·</span>`).join('')}</span>`;
+}
+function drEditHtml(ti,i){
+  const en=S.teams[ti][i],d=dragonOf(en);
+  const P=`S.teams[${ti}][${i}]`;
+  const kindSel=`<select onchange="setKind(${ti},${i},this.value)">${Object.entries(KINDS).map(([k,v])=>`<option value="${k}"${en.kind===k?' selected':''}>${v}</option>`).join('')}</select>`;
+  const lvCtl=en.kind==='ss'
+    ?`<select onchange="${P}.ssLv=+this.value;if(!ssOf(${P}))${P}.name='';onEdit()">${[45,21].map(l=>`<option value="${l}"${en.ssLv===l?' selected':''}>Lv.${l}</option>`).join('')}</select>`
+    :`<input type="number" min="1" step="1" value="${lvClamp(en.lv)}" title="레벨" onchange="${P}.lv=lvClamp(this.value);onEdit()">`;
+  const rows=en.sp.map((o,k)=>{
+    const v=o.stat&&o.type?(o.type==='%'?'+'+Math.round(SP_PCT[k+1]*100)+'%':'+'+SP_PLUS[o.stat][k+1]):'';
+    return `<div class="sp2-row"><span class="k">${k+1}옵</span>
+      ${STATS.map(x=>`<button type="button" class="chip${o.stat===x?' on-'+x:''}" onclick="spStat(${ti},${i},${k},'${x}')">${STAT_LBL[x]}</button>`).join('')}
+      <button type="button" class="chip on" onclick="spType(${ti},${i},${k})" title="눌러서 % ↔ + 전환">${o.type==='+'?'+':'%'}</button>
+      <span class="v">${v}</span></div>`;
+  }).join('');
+  return `<div class="dr-edit">
+    <div class="f2">${kindSel}${lvCtl}</div>
+    <div class="f1">${searchBox(ti,i,d?d.ko:'')}</div>
+    ${d?`<div class="base-line" style="font-size:12px;font-weight:700;display:flex;gap:10px">${(b=>`<span class="c-hp">체력 ${b.hp}</span><span class="c-atk">공격 ${b.atk}</span><span class="c-def">방어 ${b.def}</span>`)(baseOf(en))}</div>`:''}
+    <div class="grp-t">4성 정령<span>50% 적용</span></div>
+    <div>${rows}</div>
+  </div>`;
+}
+function renderDragonTeams(){
+  const el=document.getElementById('dragon-teams');
+  const ti=S.dteam,list=S.teams[ti];
+  const valid=new Set(teamCandidates(ti).map(c=>c.id));
+  const tabs=`<div class="team-tabs">${Array.from({length:TEAM_N},(_,k)=>
+    `<button class="team-tab${k===ti?' on':''}" onclick="setDTeam(${k})">${k+1}팀 <span style="font-weight:700">(${teamCandidates(k).length})</span></button>`).join('')}</div>`;
+  const byAttr={};ATTRS.forEach(a=>byAttr[a]=[]);
+  list.forEach((en,i)=>{if(byAttr[en.attr])byAttr[en.attr].push(i);});
+  const shown=D_ATTR?[D_ATTR]:ATTRS.slice();
+  const cnt=(ok,n)=>'<b>'+ok+'</b> / '+n+'마리';
+  const rail=`<div class="dr-rail"><div class="dr-rail-t">속성</div>
+    <button class="dr-rail-i${D_ATTR?'':' on'}" onclick="setDAttr('')">전체<span class="n">${list.length}</span></button>
+    ${ATTRS.map(a=>{const n=byAttr[a].length;return `<button class="dr-rail-i${D_ATTR===a?' on':''}${n?'':' off'}" onclick="setDAttr('${a}')">
+      <img src="${esc(elIcon(a))}" onerror="this.style.visibility='hidden'" alt="">${a}<span class="n">${n||'—'}</span></button>`;}).join('')}
+  </div>`;
+  let rows='';
+  shown.forEach(attr=>{
+    const idxs=byAttr[attr];
+    const ok=idxs.filter(i=>valid.has('e'+ti+'-'+i)).length;
+    rows+=`<tr class="grp-row"><td colspan="6"><div class="grp-bar">
+      <span class="bar" style="background:${EL_DOT[attr]}"></span>
+      <img src="${esc(elIcon(attr))}" onerror="this.style.visibility='hidden'" alt="">
+      <span class="nm">${attr}</span><span class="cnt">${cnt(ok,idxs.length)}</span>
+      <button class="btn" onclick="addEntry(${ti},'${attr}')">＋ 추가</button></div></td></tr>`;
+    idxs.forEach(i=>{
+      const f=drInfo(ti,i);const open=EDIT_UID===f.en.uid;
+      rows+=`<tr class="dr-row${open?' on':''}" onclick="openEdit('${f.en.uid}')">
+        <td class="c-bar" style="background:${EL_DOT[attr]}"></td>
+        <td class="c-name"><span class="nw">${f.img?`<img class="dr-img" src="${esc(f.img)}" onerror="this.style.visibility='hidden'" alt="">`:`<span class="dr-img"></span>`}<span class="t">${esc(f.title)}${f.skill}</span></span></td>
+        <td class="c-sub">${esc(f.sub)||'<span class="dim">—</span>'}</td>
+        <td class="c-sp">${f.d?spChips(f.en):'<span class="dim">—</span>'}</td>
+        <td class="c-act">
+          <button class="icon-btn" title="복제" onclick="event.stopPropagation();dupEntry(${ti},${i})">⧉</button>
+          <button class="icon-btn red" title="삭제" onclick="event.stopPropagation();delEntry(${ti},${i})">✕</button>
+        </td>
+        <td class="c-caret">${open?'▴':'▾'}</td></tr>`;
+      if(open&&!DR_MOBILE())rows+=`<tr class="dr-editrow"><td class="c-bar" style="background:${EL_DOT[attr]}"></td><td colspan="5">${drEditHtml(ti,i)}</td></tr>`;
+    });
+  });
+  const hint=list.length?'':`<div class="dr-hint">등록된 드래곤이 없어요. [추가]로 후보를 등록해주세요. (팀당 3마리 이상)</div>`;
+  let mo='';
+  shown.forEach(attr=>{
+    const idxs=byAttr[attr];
+    const ok=idxs.filter(i=>valid.has('e'+ti+'-'+i)).length;
+    mo+=`<div class="mo-grp"><span class="bar" style="background:${EL_DOT[attr]}"></span>
+      <img src="${esc(elIcon(attr))}" onerror="this.style.visibility='hidden'" alt="">
+      <span class="nm">${attr}</span><span class="cnt">${cnt(ok,idxs.length)}</span>
+      <button class="btn" onclick="addEntry(${ti},'${attr}')">＋</button></div>`;
+    mo+=`<div class="mo-list">`+idxs.map(i=>{
+      const f=drInfo(ti,i);
+      return `<button type="button" class="mo-row" onclick="openEdit('${f.en.uid}')">
+        <span class="bar" style="background:${EL_DOT[attr]}"></span>
+        ${f.img?`<img class="dr-img" src="${esc(f.img)}" onerror="this.style.visibility='hidden'" alt="">`:`<span class="dr-img"></span>`}
+        <span class="tx"><span class="t">${esc(f.title)}${f.skill}</span><span class="s">${esc(f.sub)}</span></span>
+        ${f.d?spChips(f.en):''}</button>`;
+    }).join('')+`</div>`;
+  });
+  let sheet='';
+  if(EDIT_UID&&DR_MOBILE()){
+    const i=list.findIndex(en=>en.uid===EDIT_UID);
+    if(i>=0){
+      const f=drInfo(ti,i);
+      sheet=`<div class="dr-scrim" onclick="closeEdit()"></div>
+        <div class="dr-sheet"><div class="dr-sheet-grab"></div>
+          <div class="dr-sheet-hd">
+            ${f.img?`<img class="dr-img" src="${esc(f.img)}" onerror="this.style.visibility='hidden'" alt="">`:`<span class="dr-img"></span>`}
+            <div><div class="t">${esc(f.title)}${f.skill}</div><div class="s">${ti+1}팀 · ${esc(f.en.attr)}</div></div>
+            <button class="icon-btn red" title="삭제" onclick="delEntry(${ti},${i});closeEdit()">✕</button>
+          </div>
+          <div class="dr-sheet-bd">${drEditHtml(ti,i)}</div>
+          <div class="dr-sheet-ft"><button class="btn-run" onclick="closeEdit()">확인</button></div>
+        </div>`;
+    }
+  }
+  el.innerHTML=tabs
+    +`<div class="team-head"><small>속성을 골라 드래곤을 등록하세요. 팀당 계산 가능한 드래곤이 3마리 이상이어야 해요.</small><button class="btn" style="margin-left:auto" onclick="importFromManual()">수동 계산기에서 가져오기</button></div>`
+    +`<div class="dr-split">${rail}<div class="dr-main">${hint}<table class="dr-tbl"><tbody>${rows}</tbody></table></div></div>`
+    +`<div class="dr-mo">${list.length?'':hint}${mo}</div>`+sheet;
+}
+function setDTeam(k){S.dteam=k;EDIT_UID=null;D_ATTR='';renderDragonTeams();save();}
+function addEntry(ti,attr){
+  if(!ATTRS.includes(attr))return;
+  const en=mkEntry();en.attr=attr;
+  S.teams[ti].push(en);EDIT_UID=en.uid;
+  renderDragonTeams();save();
+  const inp=document.getElementById(`ds-in-${ti}-${S.teams[ti].length-1}`);
+  if(inp)setTimeout(()=>inp.focus(),30);
+}
+function dupEntry(ti,i){
+  const cp=JSON.parse(JSON.stringify(S.teams[ti][i]));cp.uid=newUid();
+  S.teams[ti].splice(i+1,0,cp);renderDragonTeams();save();
+}
+function delEntry(ti,i){const u=(S.teams[ti][i]||{}).uid;S.teams[ti].splice(i,1);if(EDIT_UID===u)EDIT_UID=null;renderDragonTeams();save();}
+function onEdit(){
+  const bd=document.querySelector('.dr-sheet-bd');const y=bd?bd.scrollTop:0;
+  renderDragonTeams();
+  const bd2=document.querySelector('.dr-sheet-bd');if(bd2)bd2.scrollTop=y;
+  save();
+}
+function setKind(ti,i,v){const en=S.teams[ti][i];if(en.kind===v)return;en.kind=v;en.name='';onEdit();}
+function spStat(ti,i,k,x){const o=S.teams[ti][i].sp[k];o.stat=o.stat===x?'':x;onEdit();}
+function spType(ti,i,k){const o=S.teams[ti][i].sp[k];o.type=o.type==='%'?'+':'%';onEdit();}
+
+// ── 드래곤 검색 ───────────────────────────────────────────────
+function searchBox(ti,i,val){
+  return `<div class="ds-wrap"><input class="ds-in" id="ds-in-${ti}-${i}" value="${esc(val)}" placeholder="드래곤 이름 검색" autocomplete="off"
+      onfocus="this.dataset.d='';this.select();dsFilter(${ti},${i},this.value)" oninput="this.dataset.d='1';dsFilter(${ti},${i},this.value)" onblur="dsBlur(${ti},${i},this)" onkeydown="if(event.key==='Escape')this.blur()">
+    <div class="ds-drop" id="ds-${ti}-${i}"></div></div>`;
+}
+function dsCandidates(ti,i,q){
+  const en=S.teams[ti][i];const key=normName(q);
+  const hit=names=>!key||names.some(n=>n&&normName(n).includes(key));
+  if(en.kind==='ss'){
+    return SS_ROWS.filter(d=>d.lv===en.ssLv&&d.elem===en.attr&&hit([d.ko])).sort((a,b)=>b.ev-a.ev).slice(0,40)
+      .map(d=>({d,img:imgUrl(d.did,4),meta:'EVAL '+d.ev}));
+  }
+  return REG_ROWS.filter(d=>d.elem===en.attr&&hit([d.ko,...d.aliases])).slice(0,40)
+    .map(d=>({d,img:imgUrl(d.did,d.tr?7:4),meta:d.tr?'초월':'성체'}));
+}
+function dsFilter(ti,i,q){
+  const drop=document.getElementById(`ds-${ti}-${i}`);if(!drop)return;
+  const list=dsCandidates(ti,i,q);
+  drop.innerHTML=list.length?list.map(x=>`<div class="ds-item" onmousedown="event.preventDefault();dsPick(${ti},${i},'${esc(x.d.ko).replace(/'/g,"\\'")}')">
+      <img src="${esc(x.img)}" onerror="this.style.visibility='hidden'" alt=""><span>${esc(x.d.ko)}</span><span class="m">${esc(x.meta)}</span></div>`).join('')
+    :`<div class="ds-empty">검색 결과 없음</div>`;
+  drop.classList.add('open');
+}
+let _dsLock=false;
+function dsBlur(ti,i,el){
+  const drop=document.getElementById(`ds-${ti}-${i}`);if(drop)drop.classList.remove('open');
+  if(_dsLock)return;
+  const en=S.teams[ti]&&S.teams[ti][i];if(!en)return;
+  const d=dragonOf(en);
+  if(el){
+    if(el.dataset.d&&el.value.trim()===''&&en.name){en.name='';onEdit();return;}
+    el.value=d?d.ko:'';el.dataset.d='';
+  }
+}
+function dsPick(ti,i,name){
+  _dsLock=true;
+  S.teams[ti][i].name=name;
+  const swallow=e=>{e.stopPropagation();e.preventDefault();};
+  ['click','mouseup'].forEach(t=>document.addEventListener(t,swallow,{capture:true,once:true}));
+  setTimeout(()=>{['click','mouseup'].forEach(t=>document.removeEventListener(t,swallow,{capture:true}));_dsLock=false;},250);
+  onEdit();
+}
+
+// ── 계산 탭 설정 ─────────────────────────────────────────────
+function gemBoxHtml(){
+  const rows=[];
+  STATS.forEach(st=>Object.keys(S.gemInv[st]).map(Number).sort((a,b)=>b-a).forEach(lv=>rows.push({st,lv,n:S.gemInv[st][lv]})));
+  const lvOpts=cur=>Array.from({length:GEM_MAX},(_,k)=>GEM_MAX-k).map(l=>`<option value="${l}"${l===cur?' selected':''}>${l}단계</option>`).join('');
+  const list=rows.map(r=>`<div class="min-row" style="grid-template-columns:1fr 1fr 70px 30px;margin-bottom:6px">
+      <span class="c-${r.st}" style="font-size:12px;font-weight:700">${STAT_LBL[r.st]} 젬 <small style="color:var(--dim);font-weight:500">(+${gemVal(r.lv,r.st)})</small></span>
+      <select onchange="gemMove('${r.st}',${r.lv},+this.value)">${lvOpts(r.lv)}</select>
+      <input type="number" min="0" step="1" value="${r.n}" onchange="gemSet('${r.st}',${r.lv},this.value)" aria-label="개수">
+      <button class="icon-btn red" title="삭제" onclick="gemSet('${r.st}',${r.lv},0)">✕</button></div>`).join('');
+  return (list||`<div class="run-note" style="margin-bottom:6px">젬이 없어요. 아래 버튼으로 보유 젬을 추가해주세요.</div>`)
+    +`<div style="display:flex;gap:6px;flex-wrap:wrap">${STATS.map(st=>`<button class="btn" onclick="gemAdd('${st}')">＋ ${STAT_LBL[st]} 젬</button>`).join('')}</div>`;
+}
+function gemAdd(st){
+  let lv=GEM_MAX;while(lv>1&&S.gemInv[st][lv])lv--;
+  if(S.gemInv[st][lv])return;
+  S.gemInv[st][lv]=1;renderSetting();renderSpecLine();save();
+}
+function gemSet(st,lv,v){
+  const n=Math.max(0,Math.min(999,parseInt(v)||0));
+  if(n)S.gemInv[st][lv]=n;else delete S.gemInv[st][lv];
+  renderSetting();renderSpecLine();save();
+}
+function gemMove(st,from,to){
+  if(from===to)return;
+  const n=S.gemInv[st][from]||0;delete S.gemInv[st][from];
+  S.gemInv[st][to]=(S.gemInv[st][to]||0)+n;
+  renderSetting();renderSpecLine();save();
+}
+function roundBarHtml(){
+  return `<div class="seg" style="margin-bottom:8px">${S.rounds.map((r,i)=>
+    `<button type="button" class="chip${S.round===i?' on':''}" style="padding:6px 12px" onclick="setRound(${i})">${esc(r.name)}</button>`).join('')}
+    <button type="button" class="chip" style="padding:6px 10px" title="라운드 이름" onclick="renameRound()">이름</button></div>`;
+}
+function setRound(i){S.round=i;save();renderSetting();}
+function renameRound(){
+  const r=S.rounds[S.round];const v=prompt('라운드 이름',r.name);if(v===null)return;
+  r.name=String(v).trim().slice(0,12)||ROUND_NAMES[S.round];save();renderSetting();
+}
+function setBuff(st,v){curBuff()[st]=v;save();renderSetting();}
+function setMinOn(ti){S.minst[ti].on=S.minst[ti].on?0:1;renderSetting();save();}
+function setMinVal(ti,st,v){S.minst[ti][st]=minClamp(v);save();}
+function renderSetting(){
+  document.getElementById('gem-box').innerHTML=gemBoxHtml();
+  document.getElementById('pot-bar').innerHTML=[['crit','크리•회피 고정'],['stat','체5/공5/방5 자동']].map(([k,lb])=>
+    `<button class="metric-btn${S.pot===k?' on':''}" onclick="S.pot='${k}';save();renderSetting()">${lb}</button>`).join('');
+  document.getElementById('round-bar').innerHTML=roundBarHtml();
+  document.getElementById('buff-row').innerHTML=STATS.map(st=>`<label class="c-${st}">${STAT_LBL[st]} ${st==='def'?'50%':'40%'}
+    <select onchange="setBuff('${st}',this.value)"><option value="">없음</option>${ATTRS.map(a=>`<option value="${a}"${curBuff()[st]===a?' selected':''}>${a}</option>`).join('')}</select></label>`).join('');
+  document.getElementById('min-box').innerHTML=S.minst.map((m,ti)=>{
+    const on=!!m.on;
+    return `<div class="min-row${on?'':' off'}"><span class="k">${ti+1}팀</span>
+      <button type="button" class="tg${on?' on':''}" onclick="setMinOn(${ti})">${on?'사용':'사용 안 함'}</button>
+      ${STATS.map(st=>`<label class="f"><span class="c-${st}">${STAT_LBL[st]}</span>
+        <input type="number" min="0" step="1" value="${minClamp(m[st])||''}" placeholder="0" oninput="setMinVal(${ti},'${st}',this.value)"></label>`).join('')}</div>`;}).join('');
+  document.getElementById('metric-bar').innerHTML=[['bv','비벨 최대'],['eval','EVAL']].map(([k,lb])=>
+    `<button class="metric-btn${S.metric===k?' on':''}" onclick="S.metric='${k}';save();renderSetting()">${lb}</button>`).join('');
+}
+function gemTotal(){return STATS.reduce((s,st)=>s+Object.values(S.gemInv[st]).reduce((a,n)=>a+(Number(n)||0),0),0);}
+function renderSpecLine(){
+  const dn=Array.from({length:TEAM_N},(_,ti)=>teamCandidates(ti).length);
+  document.getElementById('spec-line').innerHTML=
+    `<span>등록 드래곤 (1/2/3팀) <b>${dn.join(' / ')}</b></span>`+
+    `<span>장신구 <b>${SPEC.accCards.length}</b></span><span>루키 젬 <b>${gemTotal()}</b></span><span>펜던트 <b>${SPEC.pendants.length}</b></span>`;
+  const warns=[];
+  if(!SPEC.accCards.length)warns.push('장신구가 없어요. 내 스펙에서 장신구를 추가하면 계산할 수 있어요.');
+  if(dn.every(n=>n<3))warns.push('계산 가능한 드래곤이 부족해요. 드래곤 탭에서 팀당 3마리 이상 등록해주세요.');
+  const w=document.getElementById('spec-warn');
+  if(warns.length){w.style.display='';w.innerHTML=warns.join('<br>');}else w.style.display='none';
+  updateRunState();
+}
+function updateRunState(){
+  const dn=Array.from({length:TEAM_N},(_,ti)=>teamCandidates(ti).length);
+  document.getElementById('run-btn').disabled=!SPEC.accCards.length||dn.every(n=>n<3);
+}
+function setPage(p){
+  S.page=p==='calc'?'calc':'dragon';
+  ['dragon','calc'].forEach(k=>{
+    document.getElementById('page-'+k).style.display=S.page===k?'':'none';
+    const st=document.getElementById('set-'+k);if(st)st.style.display=S.page===k?'':'none';
+  });
+  document.getElementById('setpane').style.display=S.page==='dragon'?'none':'';
+  if(window.UI&&UI.task&&!setPage._q){setPage._q=1;UI.task(S.page);setPage._q=0;}
+  if(S.page==='calc'){loadSpec();renderSetting();renderSpecLine();}
+  save();
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  loadSpec();
+  renderDragonTeams();
+  renderSetting();
+  renderSpecLine();
+  setPage(S.page);
+});
+</script>
+<script>
+(function(){
+  var link=document.getElementById('theme-css');
+  if(!link)return;
+  var sync=function(){
+    var c=document.getElementById('custom-theme-style');
+    if(c&&c.textContent&&c.textContent.length>0){document.documentElement.removeAttribute('data-theme');return;}
+    var m=String(link.href||'').match(/theme-(dark|light|beige)\.css/);
+    document.documentElement.setAttribute('data-theme',m?m[1]:'dark');
+  };
+  sync();
+  new MutationObserver(sync).observe(link,{attributes:true,attributeFilter:['href']});
+  new MutationObserver(sync).observe(document.head,{childList:true,subtree:true,characterData:true});
+})();
+</script>
+</div>
+<script src="./ui.js"></script>
+<script>
+if (!globalThis.DV1_DRAGON_VIEWS) throw new Error("드래곤 데이터 로드 실패: 초기화 중단");
+UI.shell({page:'rookie_auto',title:'루키대전',sub:'자동 계산기',tasks:{
+  on:'dragon',
+  items:[['dragon','내 드래곤'],['calc','자동 계산']],
+  go:function(k){ if(typeof setPage==='function') setPage(k); }
+}});
+if(typeof setPage==='function') setPage(S&&S.page||'dragon');
+</script>
+</body>
+</html>

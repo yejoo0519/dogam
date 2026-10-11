@@ -72,17 +72,19 @@
   // Keep 10 representatives for every attainable stat vector. A vector may be
   // removed only if at least 10 distinct candidates are no worse in every stat.
   // Hence the top-10 score multiset (including ties) is preserved, not only #1.
-  function pendantFrontier(rows){
-    const groups=new Map();for(const r of rows){const k=keys.map(x=>r[x]).join(',');const g=groups.get(k)||[];if(g.length<10)g.push(r);groups.set(k,g)}
-    const gs=[...groups.values()];return gs.filter(g=>{let count=0;for(const other of gs){if(other===g)continue;if(keys.every(k=>other[0][k]>=g[0][k]))count+=other.length;if(count>=10)return false}return true}).flat();
+  function pendantFrontier(rows,N=10){
+    const groups=new Map();for(const r of rows){const k=keys.map(x=>r[x]).join(',');const g=groups.get(k)||[];if(g.length<N)g.push(r);groups.set(k,g)}
+    const gs=[...groups.values()];return gs.filter(g=>{let count=0;for(const other of gs){if(other===g)continue;if(keys.every(k=>other[0][k]>=g[0][k]))count+=other.length;if(count>=N)return false}return true}).flat();
   }
   function optimize(c,data,progress=()=>{}){
     validate(c);
+    // c.topN: 타입별·전체 결과 개수 (기본 10, 최대 50)
+    const N=Math.max(1,Math.min(50,Math.trunc(c.topN)||10));
     // boss: 'corrupted' = 잠식된 요르문간드 (light x5/4, 9.0 stats fixed); otherwise 요르문간드 (light x23/16).
     const corrupted=c.boss==='corrupted',lightArg=c.light?(corrupted?20:23):false,grade=corrupted?'9.0':c.grade;
     const spirits=spiritVariants(c,data),allocs=[];
     const allPend=c.pendantMode==='auto'?allPendants():c.pendants;
-    const pends=c.pendantMode==='auto'?pendantFrontier(allPend):allPend;
+    const pends=c.pendantMode==='auto'?pendantFrontier(allPend,N):allPend;
     // c.gems = {hp,atk,def} (sum 5) fixes the gem split; otherwise all 21 splits are compared.
     if(c.gems){const g=Object.fromEntries(keys.map(k=>[k,Math.trunc(Number(c.gems[k]))]));if(keys.some(k=>!(g[k]>=0))||g.hp+g.atk+g.def!==5)throw Error('젬 배분은 체력·공격·방어 합계 5개로 입력해 주세요.');allocs.push(g);}
     else for(let h=0;h<=5;h++)for(let a=0;a<=5-h;a++)allocs.push({hp:h,atk:a,def:5-h-a});
@@ -102,7 +104,7 @@
     // Optimistic row from pre-pendant values; every stage is monotone, so this never undercuts a real row.
     function loose(h,a,d,add,prob){const hp=pf(h,maxPend.hp)+add.hp,df=pf(d,maxPend.def)+add.def,at=pf(a,maxPend.atk)+add.atk;const r={tankBV:hp*at*df,dealt:dealtWithCrit(at,c,tank?null:prob,critMult)};if(tank)r.score=applyEvasion(survivalScore(hp,df,lightArg),prob);return r;}
     function tight(h,a,d,add,prob){let score=-Infinity;for(const p of pairs){const v=survivalUpper(pf(h,p.hp)+add.hp,pf(d,p.def)+add.def,lightArg);if(v>score)score=v;}return {score:applyEvasion(score,prob),tankBV:(pf(h,maxPend.hp)+add.hp)*(pf(a,maxPend.atk)+add.atk)*(pf(d,maxPend.def)+add.def),dealt:attack(pf(a,maxPend.atk)+add.atk,c)};}
-    const pass=(top,bound)=>top.length<10||better(bound,top[9])<=0;
+    const pass=(top,bound)=>top.length<N||better(bound,top[N-1])<=0;
     for(const type of types){const top=[];byType[type]=top;const base=data.base[grade][type];
       // Pruning. Every bound is >= any real row in the sort order, and blocks/spirit groups are visited
       // best-bound first, so the first one that fails the current 10th place ends that loop.
@@ -148,7 +150,7 @@
                 if(req&&penetrationHits(stats.hp,stats.def,req.attack,lightArg)<req.hits)continue;
                 const tankBV=stats.hp*stats.atk*stats.def,dealt=dealtWithCrit(stats.atk,c,tank?null:prob,critMult);
                 qualified++;const row={type,acc:ai,enchant,pend,spirit:{opts:sp.opts,bonus:sp.bonus},gems,potion:pot,probability:prob,stats,tankBV,dealt,score:tank?applyEvasion(survivalScore(stats.hp,stats.def,lightArg),prob):null,seq:((bSeq*spirits.length+si)*allocs.length+gi)*pends.length+pi};
-                if(top.length<10||better(row,top[top.length-1])<0){top.push(row);top.sort(better);if(top.length>10)top.pop();}
+                if(top.length<N||better(row,top[top.length-1])<0){top.push(row);top.sort(better);if(top.length>N)top.pop();}
               }
             }
             if(tested>=nextProgress){progress({tested,total});nextProgress=tested+100000;}
@@ -157,7 +159,7 @@
       }
     }
     for(const t in byType)for(const r of byType[t])delete r.seq;
-    return {rows:Object.values(byType).flat().sort(better).slice(0,10),byType,tested,qualified,totalCandidates:total/pends.length*allPend.length};
+    return {rows:Object.values(byType).flat().sort(better).slice(0,N),byType,tested,qualified,totalCandidates:total/pends.length*allPend.length};
   }
   const api={endurance,survivalScore,penetrationHit,penetrationHits,penetrationAttack,attack,probability,applyEvasion,dealtWithCrit,potionCandidates,stat,optimize,allPendants,pendantFrontier,spiritVariants};
   if(typeof module!=='undefined')module.exports=api;else root.JormEngine=api;

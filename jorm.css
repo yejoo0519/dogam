@@ -37,3 +37,5 @@
 .jorm .j-rank-badge{display:inline-flex;align-items:center;justify-content:center;min-width:44px;height:30px;padding:0 10px;border-radius:15px;background:var(--bg3);border:1px solid var(--border3);font-weight:800;font-size:14px;color:var(--text)}
 .jorm .j-result.j-top{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
 .jorm .j-result.j-top .j-rank-badge{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.jorm .j-topn{display:flex;align-items:center;gap:8px;font-size:13px}.jorm .j-topn select{width:auto;margin:0;padding:8px}
+@media(max-width:760px){.jorm .j-topn{flex:1 1 100%}}

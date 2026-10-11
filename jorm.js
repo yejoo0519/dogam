@@ -76,7 +76,7 @@
  renderChoices();
 
  /* Saved per browser: basic settings + accessory mode/selection (by name). Pendant/spirit reset on reload. */
- const SAVED=['boss','role','type','grade','element','gem','enchant','potion','col-hp','col-atk','col-def','accessoryMode'];
+ const SAVED=['boss','role','type','grade','element','gem','enchant','potion','col-hp','col-atk','col-def','accessoryMode','topN'];
  function save(){if(restoring)return;try{localStorage.setItem(STORE,JSON.stringify({v:1,fields:Object.fromEntries(SAVED.map(id=>[id,id==='grade'&&$('grade').disabled&&normalGrade?normalGrade:v(id)])),accessories:[...chosen].map(i=>D.accessories[i].n)}))}catch(_){}globalThis.CalcCloud?.push(STORE);}
  function restore(){
   let s=null;try{s=JSON.parse(localStorage.getItem(STORE)||'null')}catch(_){}
@@ -89,7 +89,7 @@
  }
  $('resetSaved').onclick=async()=>{try{localStorage.removeItem(STORE)}catch(_){}await globalThis.CalcCloud?.clear(STORE);location.reload()};
 
- function config(){return {boss:v('boss'),role:v('role'),type:v('type'),grade:v('boss')==='corrupted'?'9.0':v('grade'),light:v('element')==='light',dark:v('element')==='dark',gem:v('gem'),enchant:v('enchant'),potion:n('potion'),potionKind:v('role')==='tank'?'eva':'crit',collection:Object.fromEntries(['hp','atk','def'].map(k=>[k,n('col-'+k)])),spirit:spirit.opts.map(o=>({stat:v('spiritMode')==='auto'?'auto':(o.stat&&o.type?o.stat:'none'),type:v('spiritMode')==='auto'?'auto':(o.type||'%')})),bonus:v('spiritMode')==='auto'?'auto':(spirit.bonus||'none'),accessoryMode:v('accessoryMode'),pendantMode:v('pendantMode'),accessories:v('accessoryMode')==='auto'?D.accessories.map((_,i)=>i):[...chosen],pendants:pendants.map(p=>{const result={name:p.name,hp:0,atk:0,def:0};p.options.forEach(o=>result[o.stat]+=o.val);return result})};}
+ function config(){return {topN:n('topN'),boss:v('boss'),role:v('role'),type:v('type'),grade:v('boss')==='corrupted'?'9.0':v('grade'),light:v('element')==='light',dark:v('element')==='dark',gem:v('gem'),enchant:v('enchant'),potion:n('potion'),potionKind:v('role')==='tank'?'eva':'crit',collection:Object.fromEntries(['hp','atk','def'].map(k=>[k,n('col-'+k)])),spirit:spirit.opts.map(o=>({stat:v('spiritMode')==='auto'?'auto':(o.stat&&o.type?o.stat:'none'),type:v('spiritMode')==='auto'?'auto':(o.type||'%')})),bonus:v('spiritMode')==='auto'?'auto':(spirit.bonus||'none'),accessoryMode:v('accessoryMode'),pendantMode:v('pendantMode'),accessories:v('accessoryMode')==='auto'?D.accessories.map((_,i)=>i):[...chosen],pendants:pendants.map(p=>{const result={name:p.name,hp:0,atk:0,def:0};p.options.forEach(o=>result[o.stat]+=o.val);return result})};}
  function finish(){worker?.terminate();worker=null;$('run').disabled=false;$('cancel').hidden=true;}
  $('cancel').onclick=()=>{finish();$('status').textContent='계산을 중단했습니다. 기존 결과는 유지됩니다.';};
  $('config').addEventListener('change',changed);

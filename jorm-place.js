@@ -5,7 +5,7 @@
  const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const v=id=>$(id).value,n=id=>Number($(id).value);
  const fmt=x=>x===Number.MAX_VALUE||!Number.isFinite(x)?'피해 없음':x.toLocaleString('ko-KR',{maximumFractionDigits:1});
- let slots=Array(20).fill(null),spirits=[],selected=0,worker=null,dirty=false,restoring=false,dragons=[],byId=new Map(),lastResult=null,resultPos=null;
+ let slots=Array(20).fill(null),spirits=[],units=[],selUnit=0,selected=0,worker=null,dirty=false,restoring=false,dragons=[],byId=new Map(),lastResult=null,resultPos=null;
  const blankSpirit=()=>({opts:[{stat:'hp',type:'%'},{stat:'atk',type:'%'},{stat:'def',type:'%'},{stat:'hp',type:'+'}],bonus:'hp'});
  let editing=blankSpirit();
 
@@ -35,6 +35,19 @@
   document.querySelectorAll('[data-panel]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
   document.querySelectorAll('[data-input-panel]').forEach(p=>p.hidden=p.dataset.inputPanel!==button.dataset.panel);
  });
+ const equipMode=()=>v('mode')==='equip';
+ const emptySpirit=()=>({opts:[{stat:'',type:'%'},{stat:'',type:'%'},{stat:'',type:'%'},{stat:'',type:'+'}],bonus:''});
+ function modeView(){const eq=equipMode();
+  document.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===v('mode'))));
+  $('freeBoard').hidden=eq;$('equipList').hidden=!eq;
+  const tab=document.querySelector('[data-panel=spirit]');tab.hidden=eq;if(eq&&tab.getAttribute('aria-pressed')==='true')document.querySelector('[data-panel=place]').click();
+  $('placeTitle').textContent=eq?'보유 드래곤 (정령 장착)':'배치';
+  $('placeHelp').textContent=eq?'아래 목록에서 드래곤을 눌러 추가하고, 추가한 드래곤을 눌러 장착한 정령을 입력하세요. 자리는 계산기가 정합니다. (최대 20마리)':'칸을 누른 뒤 아래 목록에서 드래곤을 고르세요. 타입과 속성은 도감 정보를 따릅니다.';
+  $('clearSlot').textContent=eq?'선택한 드래곤 빼기':'이 칸 비우기';
+  if(dragons.length){renderBoard();renderUnits();renderDragons();}}
+ document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{if(v('mode')===b.dataset.mode)return;$('mode').value=b.dataset.mode;modeView();changed()});
+ function penModeView(){const on=v('penMode')==='input';$('penInputs').hidden=!on;$('penSampleNote').hidden=on;}
+ $('penMode').addEventListener('change',penModeView);
  function changed(){dirty=true;save();if(!$('results').hidden)$('status').textContent='설정이 변경되었습니다. 아래 결과는 이전 조건입니다. 다시 계산해 주세요.';}
  $('config').addEventListener('change',e=>{if(e.target.closest('#picker'))return;changed()});
  ['col-hp','col-atk','col-def','penDamage','penDef'].forEach(id=>$(id).addEventListener('input',changed));
@@ -50,32 +63,50 @@
  function boardHTML(cell){return ['앞라인','뒷라인'].map((label,row)=>`<div class="jp-row"><span class="jp-row-label">${label}</span><div class="jp-cells">${Array.from({length:10},(_,i)=>cell(row*10+i)).join('')}</div></div>`).join('');}
  function renderBoard(){
   $('board').innerHTML=boardHTML(pos=>{const d=byId.get(slots[pos]);return slotCell(pos,d?`${icon(d)}<span>${esc(d.name)}</span>`:`<em>${posLabel(pos)}</em>`,(pos===selected?' on':'')+(d?'':' empty'));});
+  if(equipMode()){const u=units[selUnit],d=u&&byId.get(u.id);$('placeCount').textContent=`${units.length}/20`;$('pickTitle').textContent=d?`선택: ${d.name}`:'드래곤을 눌러 추가';return;}
   $('placeCount').textContent=`${slots.filter(Boolean).length}/20`;
   $('pickTitle').textContent=`${posLabel(selected)} · ${roleLabel[roleOf(selected)]}${byId.get(slots[selected])?' · '+byId.get(slots[selected]).name:''}`;
  }
  $('board').onclick=e=>{const b=e.target.closest('[data-pos]');if(!b)return;selected=Number(b.dataset.pos);renderBoard();renderDragons();};
- $('clearSlot').onclick=()=>{slots[selected]=null;renderBoard();renderDragons();changed()};
- $('clearAll').onclick=()=>{slots=Array(20).fill(null);renderBoard();renderDragons();changed()};
+ $('clearSlot').onclick=()=>{if(equipMode()){units.splice(selUnit,1);selUnit=Math.max(0,Math.min(selUnit,units.length-1));renderUnits();}else slots[selected]=null;renderBoard();renderDragons();changed()};
+ $('clearAll').onclick=()=>{if(equipMode()){units=[];selUnit=0;renderUnits();}else slots=Array(20).fill(null);renderBoard();renderDragons();changed()};
 
  /* ---------- dragon picker ---------- */
  function loadDragons(){
   const src=window.DV1_DRAGONS;if(!src){$('dragons').innerHTML='<p class="muted">드래곤 목록을 불러오지 못했습니다.</p>';return}
   dragons=src.records.filter(r=>r.stages&&r.stages.advent&&r.type&&r.type!=='중립'&&D.types.includes(r.type+'형')).map(r=>({id:r.id,name:r.name.ko,aliases:(r.aliases&&r.aliases.ko)||[],type:r.type+'형',element:r.element}));
   byId=new Map(dragons.map(d=>[d.id,d]));
-  slots=slots.map(id=>byId.has(id)?id:null);
+  slots=slots.map(id=>byId.has(id)?id:null);units=units.filter(u=>byId.has(u.id));
   D.types.forEach(t=>$('dragonType').add(new Option(t,t)));
   [...new Set(dragons.map(d=>d.element))].forEach(e=>$('dragonElement').add(new Option(e,e)));
  }
  function renderDragons(){
   if(!dragons.length)return;const q=v('dragonSearch').trim(),t=v('dragonType'),el=v('dragonElement');
   const list=dragons.filter(d=>(!q||d.name.includes(q)||d.aliases.some(a=>a.includes(q)))&&(!t||d.type===t)&&(!el||d.element===el));
-  $('dragons').innerHTML=list.map(d=>`<button type="button" data-dragon="${d.id}" aria-pressed="${slots[selected]===d.id}">${icon(d)}<span>${esc(d.name)}<small>${esc(d.type)} · ${esc(d.element)}</small></span></button>`).join('')||'<p class="muted">조건에 맞는 드래곤이 없습니다.</p>';
+  $('dragons').innerHTML=list.map(d=>`<button type="button" data-dragon="${d.id}" aria-pressed="${equipMode()?units.some(u=>u.id===d.id):slots[selected]===d.id}">${icon(d)}<span>${esc(d.name)}<small>${esc(d.type)} · ${esc(d.element)}</small></span></button>`).join('')||'<p class="muted">조건에 맞는 드래곤이 없습니다.</p>';
  }
- $('dragons').onclick=e=>{const b=e.target.closest('[data-dragon]');if(!b)return;slots[selected]=Number(b.dataset.dragon);
+ $('dragons').onclick=e=>{const b=e.target.closest('[data-dragon]');if(!b)return;
+  if(equipMode()){if(units.length>=20){$('status').textContent='드래곤은 최대 20마리까지 넣을 수 있습니다.';return}
+   units.push({id:Number(b.dataset.dragon),spirit:emptySpirit()});selUnit=units.length-1;renderUnits();renderBoard();renderDragons();changed();return;}
+  slots[selected]=Number(b.dataset.dragon);
   // Move to the next empty slot to speed up filling.
   const next=[...Array(20).keys()].map(i=>(selected+1+i)%20).find(i=>!slots[i]);if(next!==undefined)selected=next;
   renderBoard();renderDragons();changed();};
  $('dragonSearch').oninput=renderDragons;$('dragonType').onchange=e=>{e.stopPropagation();renderDragons()};$('dragonElement').onchange=e=>{e.stopPropagation();renderDragons()};
+
+ /* ---------- equipped units ---------- */
+ const spSummary=s=>{const o=(s.opts||[]).filter(x=>x.stat&&x.stat!=='none');return o.length?o.map(x=>names[x.stat][0]+(x.type==='%'?'%':'+')).join(' ')+(s.bonus&&s.bonus!=='none'?' · 부가 '+names[s.bonus][0]:''):'정령 없음';};
+ function renderUnits(){
+  $('units').innerHTML=units.map((u,i)=>{const d=byId.get(u.id);return d?`<button type="button" class="jp-unit" data-unit="${i}" aria-pressed="${i===selUnit}">${icon(d)}<span><b>${esc(d.name)}</b><small>${esc(d.type)} · ${esc(d.element)}</small><small>${esc(spSummary(u.spirit))}</small></span></button>`:'';}).join('')||'<p class="muted">아직 추가한 드래곤이 없습니다.</p>';
+  const u=units[selUnit],d=u&&byId.get(u.id);
+  $('unitEditor').innerHTML=d?`<h3>${esc(d.name)} · 장착 정령</h3><div class="toolbar" id="unitPresets"><button type="button" data-up="last">막플</button><button type="button" data-up="all">올퍼</button><button type="button" data-up="14">14플</button><button type="button" data-up="24">24플</button><button type="button" data-up="none">정령 없음</button></div>`+SpiritInput.options(u.spirit,'jpUnitOpt',[],(i,k,t)=>!k||!t?'—':t==='%'?Math.round(D.pct[i]*100)+'%':'+'+D.plus[k][i])+SpiritInput.bonus(u.spirit,'jpUnitBonus',[]):'';
+ }
+ window.jpUnitOpt=(i,field,value)=>{const u=units[selUnit];if(!u)return;u.spirit.opts[i][field]=value;renderUnits();changed()};
+ window.jpUnitBonus=value=>{const u=units[selUnit];if(!u)return;u.spirit.bonus=value;renderUnits();changed()};
+ $('units').onclick=e=>{const b=e.target.closest('[data-unit]');if(!b)return;selUnit=Number(b.dataset.unit);renderUnits();renderBoard();};
+ $('unitEditor').addEventListener('click',e=>{const k=e.target.dataset&&e.target.dataset.up;if(!k)return;const u=units[selUnit];if(!u)return;
+  if(k==='none')u.spirit=emptySpirit();else{const p={last:['%','%','%','+'],all:['%','%','%','%'],'14':['+','%','%','+'],'24':['%','+','%','+']}[k];u.spirit.opts.forEach((o,i)=>o.type=p[i]);}
+  renderUnits();changed();});
 
  /* ---------- spirits ---------- */
  const optText=(o,i)=>o.stat&&o.stat!=='none'?`${names[o.stat]} ${o.type==='%'?Math.round(D.pct[i+1]*100)+'%':'+'+D.plus[o.stat][i+1]}`:'—';
@@ -101,8 +132,8 @@
   renderSpirits();changed();};
 
  /* ---------- save ---------- */
- const SAVED=['boss','grade','gemMode','gem','enchant','potion','col-hp','col-atk','col-def','penDamage','penDef','penLight'];
- function save(){if(restoring)return;try{localStorage.setItem(STORE,JSON.stringify({v:1,fields:Object.fromEntries(SAVED.map(id=>[id,id==='grade'&&$('grade').disabled&&normalGrade?normalGrade:v(id)])),slots,spirits,gemStock}))}catch(_){}globalThis.CalcCloud?.push(STORE);}
+ const SAVED=['boss','mode','penMode','grade','gemMode','gem','enchant','potion','col-hp','col-atk','col-def','penDamage','penDef','penLight'];
+ function save(){if(restoring)return;try{localStorage.setItem(STORE,JSON.stringify({v:1,fields:Object.fromEntries(SAVED.map(id=>[id,id==='grade'&&$('grade').disabled&&normalGrade?normalGrade:v(id)])),slots,spirits,units,gemStock}))}catch(_){}globalThis.CalcCloud?.push(STORE);}
  function restore(){
   let s=null;try{s=JSON.parse(localStorage.getItem(STORE)||'null')}catch(_){}
   restoring=true;
@@ -110,11 +141,14 @@
    for(const id of SAVED){const val=s.fields?.[id];if(val==null)continue;const el=$(id);if(el.tagName==='SELECT'&&![...el.options].some(o=>o.value===val))continue;el.value=val;}
    if(Array.isArray(s.slots)&&s.slots.length===20)slots=s.slots.map(x=>Number.isInteger(x)?x:null);
    if(Array.isArray(s.spirits))spirits=s.spirits.filter(x=>x&&Array.isArray(x.opts)&&x.opts.length===4).map(x=>({opts:x.opts.map(o=>({stat:['hp','atk','def'].includes(o.stat)?o.stat:'none',type:o.type==='+'?'+':'%'})),bonus:['hp','atk','def'].includes(x.bonus)?x.bonus:'none',count:Math.max(1,Math.min(20,x.count|0))}));
+   const okSt=x=>['hp','atk','def'].includes(x)?x:'';
+   if(Array.isArray(s.units))units=s.units.filter(u=>u&&Number.isInteger(u.id)).slice(0,20).map(u=>({id:u.id,spirit:{opts:[0,1,2,3].map(i=>({stat:okSt(u.spirit?.opts?.[i]?.stat),type:u.spirit?.opts?.[i]?.type==='+'?'+':'%'})),bonus:okSt(u.spirit?.bonus)}}));
    if(s.gemStock)for(const k of ['hp','atk','def'])for(const g of STOCK_KEYS){const n=Math.trunc(Number(s.gemStock[k]?.[g]));if(n>0)gemStock[k][g]=Math.min(100,n);}
   }
+  if(s&&s.v===1&&s.fields&&s.fields.penMode==null&&Number(s.fields.penDamage)>0)$('penMode').value='input';
   // 일반 요르문간드는 현재 선택할 수 없습니다(코드는 유지). 잠식된 요르문간드로 고정.
   $('boss').value='corrupted';
-  bossView();gemHelp();gemModeView();renderGemGrid();restoring=false;
+  bossView();gemHelp();gemModeView();renderGemGrid();penModeView();restoring=false;
  }
  $('resetSaved').onclick=async()=>{try{localStorage.removeItem(STORE)}catch(_){}await globalThis.CalcCloud?.clear(STORE);location.reload()};
 
@@ -122,15 +156,21 @@
  function config(){
   const dmg=n('penDamage'),def=n('penDef');
   return {boss:v('boss'),grade:v('boss')==='corrupted'?'9.0':v('grade'),gem:v('gemMode')==='stock'?FALLBACK_GEM:v('gem'),gemStock:v('gemMode')==='stock'?gemStock:null,enchant:v('enchant'),potion:n('potion'),collection:Object.fromEntries(['hp','atk','def'].map(k=>[k,n('col-'+k)])),
-   pen:!penOn()?null:v('penDamage')!==''&&dmg>0?{damage:dmg,def:v('penDef')===''?0:def,light:v('penLight')==='1'}:{reference:true},hits:4,
+   pen:!penOn()?null:v('penMode')==='input'?{damage:dmg,def,light:v('penLight')==='1'}:{reference:true},hits:4,mode:v('mode'),
+   units:units.map(u=>{const d=byId.get(u.id);return d?{dragon:{id:d.id,type:d.type,light:d.element==='빛',dark:d.element==='어둠'},spirit:u.spirit}:null}).filter(Boolean),
    slots:slots.map(id=>{const d=byId.get(id);return d?{id:d.id,type:d.type,light:d.element==='빛',dark:d.element==='어둠'}:null}),spirits};
  }
  function finish(){worker?.terminate();worker=null;$('run').disabled=false;$('cancel').hidden=true;}
  $('cancel').onclick=()=>{finish();$('status').textContent='계산을 중단했습니다. 기존 결과는 유지됩니다.';};
  $('config').onsubmit=e=>{
   e.preventDefault();if(worker)return;const c=config();
-  if(!c.slots.some(Boolean)){$('status').textContent='배치할 드래곤을 한 마리 이상 넣어 주세요.';return}
-  if(c.pen&&!c.pen.reference&&v('penDef')===''){$('status').textContent='관통 피해를 받은 드래곤의 방어력을 입력해 주세요.';return}
+  if(c.mode==='equip'?!c.units.length:!c.slots.some(Boolean)){$('status').textContent='배치할 드래곤을 한 마리 이상 넣어 주세요.';return}
+  if(c.pen&&!c.pen.reference){
+   const bad=msg=>{document.querySelector('[data-panel=pen]').click();$('status').textContent=msg;};
+   if(v('penDamage')===''||!(c.pen.damage>0)||!Number.isInteger(c.pen.damage))return bad('관통 1회 피해량을 1 이상의 정수로 입력해 주세요.');
+   if(v('penDef')===''||!(c.pen.def>=0)||!Number.isInteger(c.pen.def))return bad('관통 피해를 받은 드래곤의 방어력을 0 이상의 정수로 입력해 주세요.');
+   if(c.pen.def>5000||c.pen.damage>100000)return bad('관통 피해량·방어력 값을 확인해 주세요.');
+  }
   if(['hp','atk','def'].some(k=>!(c.collection[k]>=0))){$('status').textContent='컬렉션 수치를 확인해 주세요.';return}
   dirty=false;$('run').disabled=true;$('cancel').hidden=false;$('status').textContent='자리별 셋팅 계산 중…';
   try{worker=new Worker('./jorm-place-engine.js');}catch(error){finish();$('status').textContent='계산기를 시작하지 못했습니다. 웹 서버에서 페이지를 열어 주세요.';return}
@@ -156,10 +196,10 @@
   const {result,config:c}=lastResult,hits=c.hits,by=new Map(result.results.map(x=>[x.pos,x]));
   const pen=result.pen,s=result.summary;
   if(!by.has(resultPos))resultPos=result.results[0]?.pos;
-  $('resultConditions').textContent=`${c.boss==='corrupted'?'잠식된 요르문간드':'요르문간드'} / ${c.grade} / ${c.gemStock?'보유 젬 (부족분 36젬)':'젬 '+D.gemNames[c.gem]} / 물약 ${c.potion}단계 / ${pen&&pen.reference?'관통 표본 기준 (관통 내구 47만 6천 · 잠정)':pen?`관통 1회 ${fmt(c.pen.damage)} (방어 ${fmt(c.pen.def)} · ${c.pen.light?'빛':'빛 아님'}) 기준 ${hits}회`:c.boss==='corrupted'?'관통 미입력 · 관통 자리도 딜러 셋팅':'뒷라인 전체 딜러 셋팅'}`;
+  $('resultConditions').textContent=`${c.mode==='equip'?'정령 장착 상태 · 자리 배치':'정령 해제 상태 · 정령 배분'} / ${c.boss==='corrupted'?'잠식된 요르문간드':'요르문간드'} / ${c.grade} / ${c.gemStock?'보유 젬 (부족분 36젬)':'젬 '+D.gemNames[c.gem]} / 물약 ${c.potion}단계 / ${pen&&pen.reference?'관통 표본 기준 (관통 내구 47만 6천 · 잠정)':pen?`관통 1회 ${fmt(c.pen.damage)} (방어 ${fmt(c.pen.def)} · ${c.pen.light?'빛':'빛 아님'}) 기준 ${hits}회`:c.boss==='corrupted'?'관통 미입력 · 관통 자리도 딜러 셋팅':'뒷라인 전체 딜러 셋팅'}`;
   $('resultSummary').innerHTML=[
    pen?`<div class="${pen.passed===pen.total?'ok':'bad'}"><small>${pen.reference?'관통 기준 통과':`관통 ${hits}회 통과`}</small><strong>${pen.passed}/${pen.total}</strong></div>`:'',
-   `<div><small>정령 사용</small><strong>${s.spiritsUsed}/${s.spiritsOwned}</strong></div>`].join('');
+   result.mode==='equip'?`<div><small>배치한 드래곤</small><strong>${result.results.length}마리</strong></div>`:`<div><small>정령 사용</small><strong>${s.spiritsUsed}/${s.spiritsOwned}</strong></div>`].join('');
   $('resultBoard').innerHTML=boardHTML(pos=>{const x=by.get(pos),d=x&&byId.get(x.dragon.id);if(!x)return slotCell(pos,`<em>${posLabel(pos)}</em>`,' empty',pos<10?'front':c.boss==='corrupted'&&PEN.includes(pos)?'pen':'dealer');const ps=x.role==='pen'?penState(x.row,hits,pen):null;
    return slotCell(pos,`${d?icon(d):''}<span class="jp-metric ${ps?ps.cls:''}">${esc(metricOf(x,hits,pen))}</span>${x.spirit?'<i class="jp-sp-dot" title="정령 배정"></i>':''}`,x.pos===resultPos?' on':'',x.role);});
   $('resultList').innerHTML=result.results.filter(x=>x.pos===resultPos).map(x=>{const r=x.row,d=byId.get(x.dragon.id);if(!r)return '';const ps=x.role==='pen'?penState(r,hits,pen):null;
@@ -176,6 +216,6 @@
  // 결과 배치판에서 누른 칸의 셋팅을 아래에 표시합니다.
  $('resultBoard').onclick=e=>{const b=e.target.closest('[data-pos]');if(!b||b.classList.contains('empty'))return;resultPos=Number(b.dataset.pos);renderResults();};
 
- restore();loadDragons();renderEditor();renderSpirits();renderBoard();renderDragons();
+ restore();loadDragons();renderEditor();renderSpirits();modeView();renderBoard();renderUnits();renderDragons();
  globalThis.CalcCloud?.start(STORE);
 })();

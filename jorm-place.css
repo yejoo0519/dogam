@@ -49,3 +49,13 @@
 .jp-gem-grid{display:grid;grid-template-columns:64px repeat(3,minmax(0,1fr));gap:6px 8px;align-items:center}
 .jp-gem-grid>b{font-size:12px;text-align:center}.jp-gem-grid>span{font-size:13px;font-weight:700}
 .jorm .jp-gem-grid input{margin:0;text-align:center;padding:8px}
+.jp-mode{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0 0;max-width:640px}
+.jorm .jp-mode button{text-align:left;padding:10px 14px;opacity:.65}.jp-mode b{display:block;font-size:14px}.jp-mode small{display:block;margin-top:3px;font-size:11px}
+.jorm .jp-mode button[aria-pressed=true]{opacity:1;border-color:var(--accent);background:var(--accent-bg)}
+.jp-units{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:6px;margin:12px 0}
+.jorm .jp-unit{display:flex;align-items:center;gap:8px;padding:6px 8px;text-align:left;min-width:0}
+.jorm .jp-unit[aria-pressed=true]{border-color:var(--accent);background:var(--accent-bg)}
+.jp-unit img{width:36px;height:36px;object-fit:contain;flex-shrink:0;border-radius:6px}
+.jp-unit span{min-width:0;font-size:12px;overflow:hidden}.jp-unit span b,.jp-unit span small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.jp-unit small{font-size:11px}
+.jp-unit-editor{border-top:1px solid var(--border);padding-top:12px;margin-top:4px}.jp-unit-editor h3{margin:0 0 10px}
+@media(max-width:760px){.jp-mode b{font-size:13px}.jp-units{grid-template-columns:repeat(2,minmax(0,1fr))}}

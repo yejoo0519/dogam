@@ -75413,11 +75413,31 @@
       stats: {
         regular: null,
         grades: {
-          C: null,
-          B: null,
-          A: null,
-          S: null,
-          SS: null,
+          C: {
+            hp: [203, 12],
+            atk: [22, 3],
+            def: [15, 3],
+          },
+          B: {
+            hp: [208, 13],
+            atk: [23, 3],
+            def: [16, 3],
+          },
+          A: {
+            hp: [211, 13],
+            atk: [24, 4],
+            def: [17, 3],
+          },
+          S: {
+            hp: [217, 13],
+            atk: [26, 4],
+            def: [18, 3],
+          },
+          SS: {
+            hp: [222, 14],
+            atk: [28, 4],
+            def: [19, 4],
+          },
           SSS: {
             hp: [225, 13],
             atk: [29, 5],
@@ -75457,6 +75477,24 @@
             },
           ],
         },
+        {
+          name: "아우로스 SS",
+          element: "바람",
+          skill: "boom",
+          statsRef: "grades.SS",
+          appearances: [
+            {
+              page: "sss",
+              tab: "SS",
+              levels: [45, 21],
+            },
+            {
+              page: "cham",
+              tab: "SS",
+              levels: [45, 21],
+            },
+          ],
+        },
       ],
       compatibility: {
         chamGrade: [
@@ -75470,6 +75508,18 @@
             name: "아우로스 SSS",
             level: 21,
             order: 743,
+            showSkill: false,
+          },
+          {
+            name: "아우로스 SS",
+            level: 45,
+            order: 748,
+            showSkill: false,
+          },
+          {
+            name: "아우로스 SS",
+            level: 21,
+            order: 749,
             showSkill: false,
           },
         ],
@@ -75502,11 +75552,31 @@
       stats: {
         regular: null,
         grades: {
-          C: null,
-          B: null,
-          A: null,
-          S: null,
-          SS: null,
+          C: {
+            hp: [241, 11],
+            atk: [21, 3],
+            def: [20, 4],
+          },
+          B: {
+            hp: [249, 11],
+            atk: [21, 3],
+            def: [20, 4],
+          },
+          A: {
+            hp: [254, 12],
+            atk: [22, 3],
+            def: [20, 4],
+          },
+          S: {
+            hp: [266, 13],
+            atk: [23, 3],
+            def: [20, 4],
+          },
+          SS: {
+            hp: [276, 14],
+            atk: [24, 3],
+            def: [21, 4],
+          },
           SSS: {
             hp: [281, 14],
             atk: [24, 3],
@@ -75546,6 +75616,24 @@
             },
           ],
         },
+        {
+          name: "노아 SS",
+          element: "물",
+          skill: "def",
+          statsRef: "grades.SS",
+          appearances: [
+            {
+              page: "sss",
+              tab: "SS",
+              levels: [45, 21],
+            },
+            {
+              page: "cham",
+              tab: "SS",
+              levels: [45, 21],
+            },
+          ],
+        },
       ],
       compatibility: {
         chamGrade: [
@@ -75559,6 +75647,18 @@
             name: "노아 SSS",
             level: 21,
             order: 745,
+            showSkill: false,
+          },
+          {
+            name: "노아 SS",
+            level: 45,
+            order: 750,
+            showSkill: false,
+          },
+          {
+            name: "노아 SS",
+            level: 21,
+            order: 751,
             showSkill: false,
           },
         ],

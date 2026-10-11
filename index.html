@@ -134,8 +134,36 @@
   .cards { display: grid; gap: 14px;
            grid-template-columns: repeat(2, 1fr); }
   .cards.tri { grid-template-columns: repeat(3, 1fr); }
-  .cat-sub { font-size: 14px; font-weight: 700; color: var(--text2); margin: 10px 0 -10px; }
-  .cat-head + .cat-sub { margin-top: -4px; }
+  /* 계산기 분류: 가로(줄별 버튼) · 세로(묶음 상자). 모바일은 가로 고정 */
+  .calc-head-actions { display: flex; align-items: center; gap: 8px; }
+  .calc-layout-toggle { display: inline-flex; border: 1px solid var(--border); border-radius: 20px; overflow: hidden; }
+  .calc-layout-toggle button { background: none; border: 0; color: var(--text3); font: inherit; font-size: 11px; font-weight: 600; padding: 5px 12px; cursor: pointer; }
+  .calc-layout-toggle button[aria-pressed=true] { background: var(--accent-bg); color: var(--accent); }
+  .calc-groups .cat-sub { font-size: 13px; font-weight: 700; color: var(--text2); margin: 0; }
+  .calc-groups .card-title { word-break: keep-all; margin: 0; }
+  .calc-groups .card-title br, .calc-groups .card-desc { display: none; }
+  .calc-groups .card { align-items: center; }
+  .calc-groups .icon-tile { width: 24px; height: 24px; font-size: 10px; }
+  .calc-group { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 12px; align-items: start; padding: 12px 0; border-top: 1px solid var(--border); }
+  .calc-group .cat-sub { margin-top: 8px; }
+  .calc-group .cards { display: flex; flex-wrap: wrap; gap: 8px; }
+  .calc-group .card { padding: 8px 14px 8px 10px; gap: 8px; border-radius: 20px; border-left-width: 1px; }
+  .calc-group .icon-tile { border-radius: 12px; }
+  .calc-group .card-title { font-size: 13px; white-space: nowrap; }
+  @media (min-width: 761px) {
+    .calc-groups[data-layout=col] { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+    .calc-groups[data-layout=col] .calc-group { display: flex; flex-direction: column; gap: 6px; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg2); }
+    .calc-groups[data-layout=col] .cat-sub { margin: 0 0 4px; }
+    .calc-groups[data-layout=col] .cards { flex-direction: column; flex-wrap: nowrap; gap: 6px; }
+    .calc-groups[data-layout=col] .card { padding: 8px 10px; border-radius: 6px; border-left-width: 2px; background: var(--bg); }
+    .calc-groups[data-layout=col] .icon-tile { border-radius: 6px; }
+    .calc-groups[data-layout=col] .card-title { white-space: normal; }
+  }
+  @media (max-width: 760px) {
+    .calc-layout-toggle { display: none; }
+    .calc-group { grid-template-columns: 1fr; gap: 6px; }
+    .calc-group .cat-sub { margin-top: 0; }
+  }
 
   /* 카드 — 좌측 액센트 보더 스타일 */
   .card { display: flex; gap: 12px; align-items: flex-start;
@@ -462,21 +490,19 @@
       <section class="category" id="cat-calculator">
         <div class="cat-head cat-head-row">
           <div class="cat-head-inner"><h3>계산기</h3><span class="meta">· 8개 메뉴</span></div>
-          <a href="./my.html" class="my-spec-btn">👤 내 스펙 →</a>
+          <div class="calc-head-actions"><div class="calc-layout-toggle" role="group" aria-label="계산기 보기 방식"><button type="button" data-calc-layout="row" aria-pressed="true">가로</button><button type="button" data-calc-layout="col" aria-pressed="false">세로</button></div><a href="./my.html" class="my-spec-btn">👤 내 스펙 →</a></div>
         </div>
-        <h4 class="cat-sub">단일 계산</h4>
-        <div class="cards tri">
+        <div class="calc-groups" id="calcGroups" data-layout="row">
+          <div class="calc-group"><h4 class="cat-sub">단일 계산</h4><div class="cards">
           <a href="./calculator.html?from=calculator" class="card"><span class="icon-tile amber">정령</span><div class="card-body"><div class="card-title">정령 계산/배분</div><div class="card-desc">비밸·TAR 비교 · 보유 정령 타입 배분</div></div></a>
           <a href="./spirit-peak.html" class="card"><span class="icon-tile violet">고점</span><div class="card-body"><div class="card-title">정령 고점 계산기</div><div class="card-desc">보유 제한 없이 정령의 이론상 최고점 탐색</div></div></a>
           <a href="./jorm.html" class="card"><span class="icon-tile violet">욜문</span><div class="card-body"><div class="card-title">요르문간드 계산기</div><div class="card-desc">탱커·딜러 세팅 최적화 · 일반/잠식 보스</div></div></a>
           <a href="./score-guide.html" class="card"><span class="icon-tile violet">TAR</span><div class="card-body"><div class="card-title">비밸·TAR 설명서</div><div class="card-desc">지표의 의미·계산법·추천 기준 선택 안내</div></div></a>
-        </div>
-        <h4 class="cat-sub">길드전</h4>
-        <div class="cards tri">
+          </div></div>
+          <div class="calc-group"><h4 class="cat-sub">길드전</h4><div class="cards">
           <a href="./pvp.html?from=calculator" class="card"><span class="icon-tile amber">길드</span><div class="card-body"><div class="card-title">길드전 계산기</div><div class="card-desc">오리지널·뉴비 모드 전환 · 비밸·TAR 추천</div></div></a>
-        </div>
-        <h4 class="cat-sub">챔피언 대전</h4>
-        <div class="cards tri">
+          </div></div>
+          <div class="calc-group"><h4 class="cat-sub">챔피언 대전</h4><div class="cards">
           <a href="./cham_auto.html?from=calculator" class="card"><span class="icon-tile amber">챔대</span><div class="card-body"><div class="card-title">챔피언대전 계산기 (자동)</div><div class="card-desc">보유 드래곤과 장비로 세팅 계산</div></div></a>
           <a href="./cham_manual.html?from=calculator" class="card">
             <span class="icon-tile violet">챔대</span>
@@ -485,10 +511,10 @@
               <div class="card-desc">3팀 × 3마리 · 최종 스탯 · EVAL · 비벨</div>
             </div>
           </a>
-        </div>
-        <h4 class="cat-sub">요새 계산기</h4>
-        <div class="cards tri">
+          </div></div>
+          <div class="calc-group"><h4 class="cat-sub">요새 계산기</h4><div class="cards">
           <a href="./jorm-place.html" class="card"><span class="icon-tile amber">요새</span><div class="card-body"><div class="card-title">잠욜문 배치 계산기</div><div class="card-desc">앞라인·관통·딜러 자리별 정령 배분</div></div></a>
+          </div></div>
         </div>
       </section>
 
@@ -808,5 +834,12 @@
   })();
 </script>
 
+<script>
+/* 계산기 분류 보기 방식 (PC 전용, 이 브라우저에 저장) */
+(function(){var box=document.getElementById('calcGroups');if(!box)return;var KEY='index-calc-layout';
+function set(v){box.dataset.layout=v;document.querySelectorAll('[data-calc-layout]').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.calcLayout===v));});}
+try{var saved=localStorage.getItem(KEY);if(saved==='row'||saved==='col')set(saved);}catch(e){}
+document.querySelectorAll('[data-calc-layout]').forEach(function(b){b.addEventListener('click',function(){set(b.dataset.calcLayout);try{localStorage.setItem(KEY,b.dataset.calcLayout);}catch(e){}});});})();
+</script>
 </body>
 </html>

@@ -10,6 +10,9 @@
 (function(root){
   'use strict';
   const PEN_SLOTS=[13,14,15,16];
+  // 관통 피해 미입력 시 기준: 실제 운용 셋팅 표본(피올<·귕벼몽뭉·파괴전차·Misthios, 11개)의 관통 내구 중간값(잠정).
+  // 관통 내구 = 체력 × (방어 × 빛보정 + 22). 난수가 없어 관통을 버티는 횟수에 정비례합니다.
+  const PEN_REF=476000;
   const noSpirit={key:'none',opts:[0,1,2,3].map(()=>({stat:'none',type:'%'})),bonus:'none'};
   const spiritKey=s=>s.opts.map(o=>o.stat==='none'?'-':o.stat+o.type).join(',')+'|'+s.bonus;
   function roleOf(pos,pen){if(pos<10)return 'front';if(pen&&PEN_SLOTS.includes(pos))return 'pen';return 'dealer';}
@@ -31,10 +34,13 @@
   }
 
   function plan(input,E,data,progress=()=>{}){
-    const pen=input.pen&&input.pen.damage>0&&input.pen.def>=0?input.pen:null;
+    const measured=input.pen&&input.pen.damage>0&&input.pen.def>=0;
+    const pen=measured?input.pen:(input.pen&&input.pen.reference?{reference:true,ref:PEN_REF}:null);
     const corrupted=input.boss==='corrupted',lightOf=l=>l?(corrupted?20:23):false;
     const hits=input.hits||4;
-    const bossAtk=pen?E.penetrationAttack(pen.damage,pen.def,lightOf(pen.light)):0;
+    // 기준 모드: 관통 4회 = 관통 내구 PEN_REF가 되도록 보스 관통 공격력을 맞춥니다 (hp×(def×m+22) > 176×A).
+    const bossAtk=!pen?0:measured?E.penetrationAttack(pen.damage,pen.def,lightOf(pen.light)):PEN_REF/176;
+    const tough=(hp,def,light)=>hp*(def*(lightOf(light)||16)/16+22);
     const slots=input.slots.map((d,pos)=>d?{pos,dragon:d,role:roleOf(pos,pen)}:null).filter(Boolean);
     if(!slots.length)throw Error('배치할 드래곤을 한 마리 이상 넣어 주세요.');
     // Spirit units (each owned spirit once) + a "no spirit" column per slot.
@@ -57,7 +63,7 @@
         if(!row){ok=false;row=E.optimize({...c,role:'tank',potionKind:'crit'},data).rows[0];}
       }
       const r=row?{...row,pass:ok}:null;
-      if(r&&sl.role==='pen'){r.penHit=E.penetrationHit(r.stats.def,bossAtk,lightOf(d.light));r.penHits=E.penetrationHits(r.stats.hp,r.stats.def,bossAtk,lightOf(d.light));}
+      if(r&&sl.role==='pen'){r.penTough=tough(r.stats.hp,r.stats.def,d.light);r.penHit=E.penetrationHit(r.stats.def,bossAtk,lightOf(d.light));r.penHits=E.penetrationHits(r.stats.hp,r.stats.def,bossAtk,lightOf(d.light));}
       if(r&&sl.role==='front'&&r.score==null)r.score=0;
       cache.set(key,r);done++;progress({done,total});return r;
     }
@@ -84,7 +90,7 @@
       while(lo<=hi){const mid=(lo+hi)>>1,s=solve(cands[mid]);if(s.low===0&&s.passes===maxPass){best=s;lo=mid+1;}else hi=mid-1;}
     }
     const results=slots.map((sl,i)=>{const r=table[i][best.pick[i]],k=cols[best.pick[i]];return {pos:sl.pos,role:sl.role,dragon:sl.dragon,spirit:k===noSpirit.key?null:kinds.get(k),row:r&&{...r}};});
-    if(input.gemStock)distributeGems(results,input,E,data,{bossAtk,hits,lightOf,grade:base.grade});
+    if(input.gemStock)distributeGems(results,input,E,data,{bossAtk,hits,lightOf,tough,grade:base.grade});
     // 추천 배치: 앞라인은 생존 점수가 높은 순으로 가운데부터, 딜러는 기대 피해가 높은 순으로 가장자리부터.
     // (계산 모델에서 같은 줄 안의 칸 위치는 결과에 영향을 주지 않으므로 자리만 다시 정합니다.)
     const FRONT_ORDER=[4,5,3,6,2,7,1,8,0,9],BACK_ORDER=[10,19,11,18,12,17,13,16,14,15];
@@ -99,7 +105,7 @@
     arrange('dealer',BACK_ORDER,x=>x.row?x.row.dealt:-Infinity);
     results.sort((a,b)=>a.pos-b.pos);
     const front=results.filter(r=>r.role==='front'&&r.row),pens=results.filter(r=>r.role==='pen');
-    return {results,pen:pen?{bossAtk,hits,passed:pens.filter(r=>r.row&&r.row.pass).length,total:pens.length}:null,
+    return {results,pen:pen?{reference:!measured,ref:PEN_REF,bossAtk,hits,passed:pens.filter(r=>r.row&&r.row.pass).length,total:pens.length}:null,
       summary:{frontMin:front.length?Math.min(...front.map(r=>r.row.score)):null,dealt:results.filter(r=>r.row&&(r.role==='dealer'||(r.role==='pen'&&r.row.pass))).reduce((a,r)=>a+r.row.dealt,0),spiritsUsed:results.filter(r=>r.spirit).length,spiritsOwned:units.length},evaluated:total};
   }
   // 보유 젬 배분: 셋팅(장신구·펜던트·정령·젬 갯수)은 기준 젬(input.gem, 보통 36)으로 고른 그대로 두고,
@@ -125,7 +131,7 @@
       if(x.role==='front'){const prob=r.probability&&r.probability.kind==='eva'?r.probability:null;return {score:E.applyEvasion(E.survivalScore(stats.hp,stats.def,light),prob)};}
       const c={dark:!!x.dragon.dark};
       const out={dealt:E.dealtWithCrit(stats.atk,c,r.probability&&r.probability.kind==='crit'?r.probability:null,mult)};
-      if(x.role==='pen'){out.penHit=E.penetrationHit(stats.def,ctx.bossAtk,light);out.penHits=E.penetrationHits(stats.hp,stats.def,ctx.bossAtk,light);out.pass=out.penHits>=ctx.hits;}
+      if(x.role==='pen'){out.penTough=ctx.tough(stats.hp,stats.def,x.dragon.light);out.penHit=E.penetrationHit(stats.def,ctx.bossAtk,light);out.penHits=E.penetrationHits(stats.hp,stats.def,ctx.bossAtk,light);out.pass=out.penHits>=ctx.hits;}
       return out;
     }
     function apply(x,lv){const stats=restat(x,lv);Object.assign(x.row,{stats,tankBV:stats.hp*stats.atk*stats.def},measure(x,stats));x.row.gemLv=lv;}

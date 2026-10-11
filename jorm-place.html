@@ -17,8 +17,8 @@
 <div id="spiritList" class="jp-spirits"></div></section>
 
 <section data-input-panel="pen" hidden><h2>관통 피해</h2><p class="muted">뒷라인 가운데 4칸은 앞라인이 살아 있는 동안 관통 공격만 받습니다. 관통 1회 피해량과 그때 맞은 드래곤의 방어력을 넣으면 보스 관통 공격력을 거꾸로 계산해, 칸마다 관통 <b>4회</b>를 버티는지 판정합니다(난수 100%, 보스 크리 없음). 가장 크게 들어온 값을 넣어 주세요.</p>
-<div class="fields"><label>관통 1회 피해량<input id="penDamage" type="number" min="0" max="100000" placeholder="비우면 관통 자리도 딜러 셋팅"></label><label>맞은 드래곤 방어력<input id="penDef" type="number" min="0" max="100000" placeholder="예: 400"></label><label>맞은 드래곤 속성<select id="penLight"><option value="0">빛 아님 (어둠 등)</option><option value="1">빛</option></select></label></div>
-<p class="muted">비워 두면 관통 자리 4칸도 양끝처럼 딜러 셋팅으로 계산합니다. 어둠은 방어 보정이 없어 빛이 아닌 속성과 같게 계산됩니다.</p></section>
+<div class="fields"><label>관통 1회 피해량<input id="penDamage" type="number" min="0" max="100000" placeholder="비우면 표본 기준으로 계산"></label><label>맞은 드래곤 방어력<input id="penDef" type="number" min="0" max="100000" placeholder="예: 400"></label><label>맞은 드래곤 속성<select id="penLight"><option value="0">빛 아님 (어둠 등)</option><option value="1">빛</option></select></label></div>
+<p class="muted">비워 두면 실제 운용 셋팅 표본을 기준으로 계산합니다. 관통 내구(체력 × (방어 × 빛보정 + 22))가 표본 중간값 47만 6천 이상이 되도록 맞추고, 그 안에서 기대 피해가 가장 높은 셋팅을 고릅니다(잠정 기준). 어둠은 방어 보정이 없어 빛이 아닌 속성과 같게 계산됩니다.</p></section>
 
 <section data-input-panel="basic" hidden><h2>기본 설정</h2><div class="fields"><label>성장·등급<select id="grade"><option>9.0</option><option>8.0</option><option>7.0</option><option>진각</option></select></label><label>인챈트<select id="enchant"><option value="auto">체력·공격·방어 최적화</option><option value="none">없음</option><option value="hp">체력 +21%</option><option value="atk">공격 +21%</option><option value="def">방어 +21%</option></select></label><label>물약 단계<select id="potion"></select><small class="j-field-help">앞라인 회피 물약 · 뒷라인 크리 물약</small></label></div>
 <h3>젬</h3><div class="fields"><label>젬 입력 방식<select id="gemMode"><option value="same">젬 수치 통일</option><option value="stock">보유 젬 갯수 입력</option></select></label><label id="gemSame">젬 수치<select id="gem"></select><small id="gemNote" class="j-field-help"></small></label></div>

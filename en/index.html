@@ -161,6 +161,17 @@
   .icon-tile.amber   { background: color-mix(in oklab, var(--tone-amber)   18%, transparent); color: var(--tone-amber); }
   .icon-tile.rose    { background: color-mix(in oklab, var(--tone-rose)    18%, transparent); color: var(--tone-rose); }
   .icon-tile.emerald { background: color-mix(in oklab, var(--tone-emerald) 18%, transparent); color: var(--tone-emerald); }
+  /* card accent follows icon tone */
+  .card:has(.icon-tile.sky) { border-left-color: var(--tone-sky); }
+  .card:has(.icon-tile.violet) { border-left-color: var(--tone-violet); }
+  .card:has(.icon-tile.amber) { border-left-color: var(--tone-amber); }
+  .card:has(.icon-tile.rose) { border-left-color: var(--tone-rose); }
+  .card:has(.icon-tile.emerald) { border-left-color: var(--tone-emerald); }
+  .calc-group .card:has(.icon-tile.sky) { border-color: color-mix(in oklab, var(--tone-sky) 55%, var(--border)); }
+  .calc-group .card:has(.icon-tile.violet) { border-color: color-mix(in oklab, var(--tone-violet) 55%, var(--border)); }
+  .calc-group .card:has(.icon-tile.amber) { border-color: color-mix(in oklab, var(--tone-amber) 55%, var(--border)); }
+  .calc-group .card:has(.icon-tile.rose) { border-color: color-mix(in oklab, var(--tone-rose) 55%, var(--border)); }
+  .calc-group .card:has(.icon-tile.emerald) { border-color: color-mix(in oklab, var(--tone-emerald) 55%, var(--border)); }
 
   /* 우측 사이드 레일 — 길드 배너 */
   .guild-aside { display: flex; align-items: center; gap: 10px;
@@ -416,7 +427,7 @@
             </div>
           </a>
           <a href="./cham.html" class="card">
-            <span class="icon-tile amber">Champ</span>
+            <span class="icon-tile rose">Champ</span>
             <div class="card-body">
               <div class="card-title">Champion / Rookie Rankings</div>
               <div class="card-desc">Champion (SSS) and Rookie (SS) · Lv.45 / Lv.21 · Element filters</div>
@@ -468,8 +479,8 @@
         </div>
         <div class="cards tri">
           <a href="./calculator.html?from=calculator" class="card"><span class="icon-tile amber">Spirit</span><div class="card-body"><div class="card-title">Spirit Simulator</div><div class="card-desc">Compare B-Val and TAR · Optimize or set buffs</div></div></a>
-          <a href="./pvp.html?from=calculator" class="card"><span class="icon-tile amber">Guild</span><div class="card-body"><div class="card-title">Guild War Calculator</div><div class="card-desc">Original and Beginner modes · B-Val and TAR rankings</div></div></a>
-          <a href="./score-guide.html" class="card"><span class="icon-tile violet">TAR</span><div class="card-body"><div class="card-title">BV &amp; TAR guide</div><div class="card-desc">Meaning, formulas and choosing a comparison metric</div></div></a>
+          <a href="./pvp.html?from=calculator" class="card"><span class="icon-tile rose">Guild</span><div class="card-body"><div class="card-title">Guild War Calculator</div><div class="card-desc">Original and Beginner modes · B-Val and TAR rankings</div></div></a>
+          <a href="./score-guide.html" class="card"><span class="icon-tile emerald">TAR</span><div class="card-body"><div class="card-title">BV &amp; TAR guide</div><div class="card-desc">Meaning, formulas and choosing a comparison metric</div></div></a>
           <a href="./spirit-peak.html" class="card"><span class="icon-tile violet">Peak</span><div class="card-body"><div class="card-title">Spirit Peak Calculator</div><div class="card-desc">Find your spirit’s theoretical peak without inventory limits</div></div></a>
           <a href="./cham_auto.html?from=calculator" class="card"><span class="icon-tile amber">Champ</span><div class="card-body"><div class="card-title">Champion League Calculator (Auto)</div><div class="card-desc">Optimize your dragons and equipment</div></div></a>
           <a href="./cham_manual.html?from=calculator" class="card">
@@ -484,7 +495,7 @@
 
       <section class="category" id="cat-convenience">
         <div class="cat-head"><h3>Tools</h3><span class="meta">· 4 pages</span></div>
-        <div class="cards"><a href="./my.html" class="card"><span class="icon-tile amber">Spec</span><div class="card-body"><div class="card-title">My Spec</div><div class="card-desc">Accessories · Pendants · Gems · Collection · Dragons</div></div></a><a href="../guild-home.html" class="card"><span class="icon-tile amber">Guild</span><div class="card-body"><div class="card-title">Guild</div><div class="card-desc">Guild linking, join requests and management</div></div></a>
+        <div class="cards"><a href="./my.html" class="card"><span class="icon-tile amber">Spec</span><div class="card-body"><div class="card-title">My Spec</div><div class="card-desc">Accessories · Pendants · Gems · Collection · Dragons</div></div></a><a href="../guild-home.html" class="card"><span class="icon-tile rose">Guild</span><div class="card-body"><div class="card-title">Guild</div><div class="card-desc">Guild linking, join requests and management</div></div></a>
           <a href="./aura-preview.html" class="card">
             <span class="icon-tile sky">Aura</span>
             <div class="card-body">

@@ -159,6 +159,18 @@
     .calc-groups[data-layout=col] .icon-tile { border-radius: 6px; }
     .calc-groups[data-layout=col] .card-title { white-space: normal; }
   }
+  /* 계산기 설명: PC는 마우스 올리면 말풍선, 모바일은 이름 아래 한 줄 */
+  @media (hover: hover) and (min-width: 761px) {
+    .calc-groups .card { position: relative; }
+    .calc-groups .card:hover { z-index: 30; }
+    .calc-groups .card:hover .card-desc { display: block; position: absolute; left: 0; top: calc(100% + 6px); width: max-content; max-width: 260px; padding: 8px 10px; background: var(--bg3); color: var(--text); border: 1px solid var(--border); border-radius: 6px; font-size: 12px; line-height: 1.5; white-space: normal; box-shadow: 0 6px 18px rgba(0,0,0,.35); pointer-events: none; }
+  }
+  @media (max-width: 760px) {
+    .calc-groups .calc-group .cards { flex-direction: column; flex-wrap: nowrap; gap: 6px; }
+    .calc-groups .calc-group .card { border-radius: 10px; padding: 8px 12px 8px 10px; }
+    .calc-groups .card-title { white-space: normal; }
+    .calc-groups .card-desc { display: block; font-size: 11px; line-height: 1.4; margin-top: 2px; color: var(--text2); }
+  }
   @media (max-width: 760px) {
     .calc-layout-toggle { display: none; }
     .calc-group { grid-template-columns: 1fr; gap: 6px; }

@@ -50,16 +50,18 @@
     if(equip)for(const u of unitsIn){if(!kinds.has(u.sp.key))kinds.set(u.sp.key,u.sp);}
     else for(const s of input.spirits||[]){const sp=normSp(s);if(sp.key===noSpirit.key)continue;if(!kinds.has(sp.key))kinds.set(sp.key,sp);for(let i=0;i<Math.max(1,s.count|0);i++)units.push(sp.key);}
     const base={boss:input.boss,type:'',grade:corrupted?'9.0':input.grade,gem:input.gem,enchant:input.enchant,potion:input.potion,collection:input.collection,accessories:data.accessories.map((_,i)=>i),pendantMode:'auto',pendants:[]};
+    // 보유 펜던트: 정령 배분은 펜던트 없이 정한 뒤, 보유 펜던트를 칸마다 나눠 줍니다(distributePendants).
+    const pk=pendantKinds(input.pendants,E);
     const cache=new Map(),jobs=new Set();
-    const jobKey=(sl,k)=>[sl.role,sl.dragon.type,sl.role==='dealer'?'':!!sl.dragon.light,sl.role==='front'?'':!!sl.dragon.dark,k].join('|');
+    const jobKey=(sl,k,pid=pk?'none':'')=>[sl.role,sl.dragon.type,sl.role==='dealer'?'':!!sl.dragon.light,sl.role==='front'?'':!!sl.dragon.dark,k,pid].join('|');
     const positions=[...Array(20).keys()].map(pos=>({pos,role:roleOf(pos,pen)}));
     const rolesUsed=[...new Set(positions.map(x=>x.role))];
     if(equip){for(const u of unitsIn)for(const role of rolesUsed)jobs.add(jobKey({role,dragon:u.dragon},u.sp.key));}
     else for(const sl of slots)for(const k of kinds.keys())jobs.add(jobKey(sl,k));
-    const total=jobs.size;let done=0;
-    function evaluate(sl,k){
-      const key=jobKey(sl,k);if(cache.has(key))return cache.get(key);
-      const sp=kinds.get(k),d=sl.dragon,c={...base,type:d.type,light:!!d.light,dark:!!d.dark,spirit:sp.opts,bonus:sp.bonus};
+    const total=jobs.size*(pk?pk.kinds.size:1);let done=0;
+    function evaluate(sl,k,pid=pk?'none':''){
+      const key=jobKey(sl,k,pid);if(cache.has(key))return cache.get(key);
+      const sp=kinds.get(k),d=sl.dragon,c={...base,type:d.type,light:!!d.light,dark:!!d.dark,spirit:sp.opts,bonus:sp.bonus,...(pk?{pendantMode:'manual',pendants:pk.kinds.get(pid)}:{})};
       let row,ok=true;
       if(sl.role==='front')row=E.optimize({...c,role:'tank',potionKind:'eva'},data).rows[0];
       else if(sl.role==='dealer')row=E.optimize({...c,role:'dealer',potionKind:'crit'},data).rows[0];
@@ -101,6 +103,7 @@
       if(equip)return {pos:cols[j].pos,role:cols[j].role,dragon:x.dragon,spirit:x.sp.key===noSpirit.key?null:x.sp,row:r&&{...r}};
       const k=cols[j];return {pos:x.pos,role:x.role,dragon:x.dragon,spirit:k===noSpirit.key?null:kinds.get(k),row:r&&{...r}};});
     if(equip)results.forEach(x=>slots.push({pos:x.pos}));
+    if(pk)distributePendants(results,pk,(x,pid)=>evaluate({role:x.role,dragon:x.dragon},x.spirit?x.spirit.key:noSpirit.key,pid));
     if(input.gemStock)distributeGems(results,input,E,data,{bossAtk,hits,lightOf,tough,grade:base.grade});
     // 추천 배치: 앞라인은 생존 점수가 높은 순으로 가운데부터, 딜러는 기대 피해가 높은 순으로 가장자리부터.
     // (계산 모델에서 같은 줄 안의 칸 위치는 결과에 영향을 주지 않으므로 자리만 다시 정합니다.)
@@ -117,7 +120,49 @@
     results.sort((a,b)=>a.pos-b.pos);
     const front=results.filter(r=>r.role==='front'&&r.row),pens=results.filter(r=>r.role==='pen');
     return {results,pen:pen?{reference:!measured,bossAtk,hits,passed:pens.filter(r=>r.row&&r.row.pass).length,total:pens.length}:null,
-      summary:{frontMin:front.length?Math.min(...front.map(r=>r.row.score)):null,dealt:results.filter(r=>r.row&&(r.role==='dealer'||(r.role==='pen'&&r.row.pass))).reduce((a,r)=>a+r.row.dealt,0),spiritsUsed:results.filter(r=>r.spirit).length,spiritsOwned:equip?results.filter(r=>r.spirit).length:units.length},mode:equip?'equip':'free',evaluated:total};
+      summary:{frontMin:front.length?Math.min(...front.map(r=>r.row.score)):null,dealt:results.filter(r=>r.row&&(r.role==='dealer'||(r.role==='pen'&&r.row.pass))).reduce((a,r)=>a+r.row.dealt,0),spiritsUsed:results.filter(r=>r.spirit).length,spiritsOwned:equip?results.filter(r=>r.spirit).length:units.length,pendantsUsed:pk?results.filter(r=>r.pid&&r.pid!=='none').length:null,pendantsOwned:pk?pk.owned:null},mode:equip?'equip':'free',evaluated:total};
+  }
+  // 펜던트 종류: none = 미착용. count 모드는 태양/달 옵션을 칸마다 고르고(후보 전체), list 모드는 입력한 펜던트 그대로.
+  function pendantKinds(p,E){
+    if(!p)return null;
+    const none={name:'미착용',hp:0,atk:0,def:0},kinds=new Map([['none',[none]]]),stock={};
+    const cap=x=>Math.max(0,Math.min(20,Math.trunc(Number(x))||0));
+    if(p.mode==='count'){
+      const val=Math.max(1,Math.min(6,Math.trunc(Number(p.val))||6));
+      const combos=(name,n)=>{const out=[];const ks=['hp','atk','def'];(function b(st,left,cur){if(!left){out.push(cur);return}for(let i=st;i<3;i++)b(i,left-1,{...cur,[ks[i]]:cur[ks[i]]+val});})(0,n,{name,hp:0,atk:0,def:0});return out;};
+      if(cap(p.sun)){kinds.set('sun',combos('태양',3));stock.sun=cap(p.sun);}
+      if(cap(p.moon)){kinds.set('moon',combos('달',2));stock.moon=cap(p.moon);}
+    }else for(const it of p.items||[]){
+      const row={name:String(it.name||'펜던트'),hp:0,atk:0,def:0};(it.options||[]).forEach(o=>{if(row[o.stat]!=null)row[o.stat]+=Math.max(0,Math.min(6,Math.trunc(Number(o.val))||0));});
+      const id=row.name+':'+row.hp+','+row.atk+','+row.def;if(!kinds.has(id))kinds.set(id,[row]);stock[id]=(stock[id]||0)+cap(it.count);
+    }
+    return {kinds,stock,owned:Object.values(stock).reduce((a,b)=>a+b,0)};
+  }
+  const objective=list=>{let passes=0,min=Infinity,sum=0;
+    for(const x of list){const r=x.row;if(!r)continue;
+      if(x.role==='front'){min=Math.min(min,r.score);sum+=r.score*1e-3;}
+      else if(x.role==='pen'){if(r.pass){passes++;sum+=r.dealt;}else sum+=r.penHits*1e-6;}
+      else sum+=r.dealt;}
+    return [passes,min,sum];};
+  const cmpObj=(a,b)=>a[0]-b[0]||a[1]-b[1]||a[2]-b[2];
+  // 보유 펜던트 배분: 펜던트 하나를 어느 칸에 끼우거나 바꿔 끼울 때(뺀 것은 다시 보유로) 목표
+  // (관통 통과 수 > 앞라인 최저 점수 > 딜 합 + 앞라인 합)가 가장 좋아지는 수를 반복합니다.
+  // 목표가 매번 엄격히 좋아져야 하므로 반드시 끝납니다. 칸의 장신구·젬 등은 그 펜던트 기준으로 다시 고릅니다.
+  function distributePendants(results,pk,evalRow){
+    const stock={...pk.stock},items=results.filter(x=>x.row);
+    items.forEach(x=>{x.pid='none';});
+    for(let guard=0;guard<200;guard++){
+      let best=null,bestObj=objective(items);
+      for(const pid of Object.keys(stock)){if(stock[pid]<=0)continue;
+        for(const x of items){if(x.pid===pid)continue;
+          const r=evalRow(x,pid);if(!r)continue;
+          const saved=x.row;x.row=r;const obj=objective(items);x.row=saved;
+          if(cmpObj(obj,bestObj)>0){bestObj=obj;best={x,pid,r};}
+        }}
+      if(!best)break;
+      if(best.x.pid!=='none')stock[best.x.pid]++;
+      stock[best.pid]--;best.x.pid=best.pid;best.x.row={...best.r};
+    }
   }
   // 보유 젬 배분: 셋팅(장신구·펜던트·정령·젬 갯수)은 기준 젬(input.gem, 보통 36)으로 고른 그대로 두고,
   // 보유한 상위 젬을 한 개씩 넣어 볼 때마다 목표(관통 통과 수 > 앞라인 최저 점수 > 딜 합 + 앞라인 합)가
@@ -147,15 +192,7 @@
     }
     function apply(x,lv){const stats=restat(x,lv);Object.assign(x.row,{stats,tankBV:stats.hp*stats.atk*stats.def},measure(x,stats));x.row.gemLv=lv;}
     items.forEach(x=>apply(x,x.row.gemLv));
-    function objective(list){
-      let passes=0,min=Infinity,sum=0;
-      for(const x of list){const r=x.row;
-        if(x.role==='front'){min=Math.min(min,r.score);sum+=r.score*1e-3;}
-        else if(x.role==='pen'){if(r.pass){passes++;sum+=r.dealt;}else sum+=r.penHits*1e-6;}
-        else sum+=r.dealt;}
-      return [passes,min,sum];
-    }
-    const cmp=(a,b)=>a[0]-b[0]||a[1]-b[1]||a[2]-b[2];
+    const cmp=cmpObj;
     // 보유 젬: 스탯별 [단계, 남은 수], 높은 단계부터. 기준 젬보다 낮은 단계는 쓰지 않습니다.
     const stock=Object.fromEntries(keys.map(k=>[k,Object.entries(input.gemStock[k]||{}).filter(([g,n])=>data.gems[g]&&n>0&&data.gemNames[g]>data.gemNames[baseGem]).map(([g,n])=>[g,Math.floor(n)]).sort((a,b)=>data.gemNames[b[0]]-data.gemNames[a[0]])]));
     for(;;){

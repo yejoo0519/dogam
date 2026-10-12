@@ -62,3 +62,23 @@
 .jp .spirit-option-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 .jp-unit-sp i{font-style:normal;font-weight:700}.jp-unit-sp .sp-hp{color:#fbbf24}.jp-unit-sp .sp-atk{color:#f87171}.jp-unit-sp .sp-def{color:#60a5fa}
 @media(max-width:580px){.jp .spirit-option-grid{grid-template-columns:1fr}}
+.jp-pend-editor{display:grid;gap:12px;margin:12px 0 16px;padding:14px;border:1px solid var(--border);border-radius:10px;background:var(--bg)}
+.jp-pend-type{display:flex;gap:8px}
+.jorm .jp-pend-type button{flex:1;display:flex;align-items:baseline;justify-content:center;gap:6px;padding:9px 10px;opacity:.65}
+.jorm .jp-pend-type button[aria-pressed=true]{opacity:1;border-color:var(--accent);background:var(--accent-bg)}
+.jp-pend-type small{font-size:11px;color:var(--text2)}
+.jp-pend-opts{display:grid;gap:8px}
+.jp-pend-opt{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:8px 10px;border:1px solid var(--sp-color,var(--border));border-radius:8px;background:var(--sp-tint,transparent)}
+.jp-pend-no{font-size:12px;font-weight:700;min-width:28px;color:var(--sp-color,var(--text))}
+.jp-pend-chips{display:flex;gap:6px}
+.jp-pend-vals{display:flex;align-items:center;gap:4px;margin-left:auto}
+.jorm .jp-pend-vals button{min-width:30px;padding:5px 0;font-size:12px;opacity:.6}
+.jorm .jp-pend-vals button[aria-pressed=true]{opacity:1;color:var(--sp-color);border-color:var(--sp-color);background:var(--sp-tint)}
+.jp-pend-vals span{font-size:12px;color:var(--text2);margin-left:2px}
+.jp-pend-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.jp-pend-preview{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-right:auto;font-size:13px}
+.jp-pend-preview span{padding:3px 8px;border-radius:5px;background:var(--bg2);font-size:12px}
+.jp-pend-preview .hp{color:#fbbf24}.jp-pend-preview .atk{color:#f87171}.jp-pend-preview .def{color:#60a5fa}
+.jorm .jp-qty input{width:52px;margin:0;text-align:center;padding:6px}
+.jorm .jp-pend-add{border-color:var(--accent);color:var(--accent)}
+@media(max-width:580px){.jp-pend-vals{margin-left:0;width:100%}.jorm .jp-pend-vals button{flex:1}.jp-pend-preview{width:100%}}

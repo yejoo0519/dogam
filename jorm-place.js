@@ -134,15 +134,22 @@
  /* ---------- pendants ---------- */
  let pendItems=[],editPend={name:'태양',options:[]};
  const PSLOTS={태양:3,달:2,별:1};
- function resetEditPend(){const n=PSLOTS[v('pendType')]||3;editPend={name:v('pendType'),options:Array.from({length:n},(_,i)=>editPend.options[i]||{stat:'hp',val:6})};}
- function renderPendEditor(){resetEditPend();$('pendOptEditor').innerHTML=editPend.options.map((o,i)=>`<label>${i+1}옵<select data-po="${i}" data-f="stat">${['hp','atk','def'].map(k=>`<option value="${k}"${o.stat===k?' selected':''}>${names[k]}</option>`).join('')}</select></label><label>수치<select data-po="${i}" data-f="val">${[6,5,4,3,2,1].map(x=>`<option value="${x}"${o.val===x?' selected':''}>${x}%</option>`).join('')}</select></label>`).join('');}
- $('pendType').addEventListener('change',e=>{e.stopPropagation();renderPendEditor();});
- $('pendOptEditor').addEventListener('change',e=>{e.stopPropagation();const el=e.target;if(el.dataset.po===undefined)return;const o=editPend.options[Number(el.dataset.po)];o[el.dataset.f]=el.dataset.f==='val'?Number(el.value):el.value;});
+ function resetEditPend(name){const n=PSLOTS[name]||3;editPend={name,options:Array.from({length:n},(_,i)=>editPend.options[i]||{stat:'hp',val:6})};}
+ const statShort={hp:'체',atk:'공',def:'방'};
+ function renderPendEditor(){
+  $('pendType').innerHTML=Object.keys(PSLOTS).map(k=>`<button type="button" data-ptype="${k}" aria-pressed="${editPend.name===k}"><b>${k}</b><small>${PSLOTS[k]}옵</small></button>`).join('');
+  $('pendOptEditor').innerHTML=editPend.options.map((o,i)=>`<div class="jp-pend-opt" data-stat="${o.stat}"><span class="jp-pend-no">${i+1}옵</span><div class="jp-pend-chips">${['hp','atk','def'].map(k=>`<button type="button" class="champ-chip${o.stat===k?' on-'+k:''}" data-po="${i}" data-pstat="${k}" aria-pressed="${o.stat===k}">${statShort[k]}</button>`).join('')}</div><div class="jp-pend-vals">${[6,5,4,3,2,1].map(x=>`<button type="button" data-po="${i}" data-val="${x}" aria-pressed="${o.val===x}">${x}</button>`).join('')}<span>%</span></div></div>`).join('');
+  $('pendPreview').innerHTML=`<b>${editPend.name}</b>`+pendChips(editPend);
+ }
+ $('pendType').onclick=e=>{const b=e.target.closest('[data-ptype]');if(!b)return;resetEditPend(b.dataset.ptype);renderPendEditor();};
+ $('pendOptEditor').onclick=e=>{const b=e.target.closest('[data-po]');if(!b)return;const o=editPend.options[Number(b.dataset.po)];if(b.dataset.val)o.val=Number(b.dataset.val);else o.stat=b.dataset.pstat;renderPendEditor();};
+ const qtyStep=d=>{$('pendQty').value=Math.max(1,Math.min(99,(Math.trunc(n('pendQty'))||1)+d));};
+ $('pendQtyDown').onclick=()=>qtyStep(-1);$('pendQtyUp').onclick=()=>qtyStep(1);
  const pendSum=p=>{const t={hp:0,atk:0,def:0};p.options.forEach(o=>t[o.stat]+=o.val);return t;};
  const pendKey=p=>{const t=pendSum(p);return p.name+':'+t.hp+','+t.atk+','+t.def;};
  const pendChips=p=>{const t=pendSum(p);return ['hp','atk','def'].filter(k=>t[k]).map(k=>`<span class="${k}">${names[k]} ${t[k]}%</span>`).join('');};
  $('addPend').onclick=()=>{const qty=Math.max(1,Math.min(99,Math.trunc(n('pendQty'))||1));const p={name:editPend.name,options:editPend.options.map(o=>({...o})),count:qty};
-  const same=pendItems.find(x=>pendKey(x)===pendKey(p));if(same)same.count=Math.min(99,same.count+qty);else pendItems.push(p);renderPendList();changed();$('status').textContent='펜던트를 추가했습니다.';};
+  const same=pendItems.find(x=>pendKey(x)===pendKey(p));if(same)same.count=Math.min(99,same.count+qty);else pendItems.push(p);renderPendList();changed();$('status').textContent='펜던트를 추가했습니다.';$('pendQty').value=1;};
  function renderPendList(){$('pendList').innerHTML=pendItems.map((p,i)=>`<div class="jp-spirit"><div class="jp-spirit-opts"><span><small>종류</small>${esc(p.name)}</span>${pendChips(p)}</div><div class="jp-qty"><button type="button" data-pi="${i}" data-d="-1" aria-label="수량 줄이기">−</button><b>${p.count}</b><button type="button" data-pi="${i}" data-d="1" aria-label="수량 늘리기">+</button><button type="button" data-pdel="${i}">삭제</button></div></div>`).join('')||'<p class="muted">추가한 펜던트가 없습니다. 펜던트 없이도 계산할 수 있습니다.</p>';pendCountView();}
  $('pendList').onclick=e=>{const b=e.target.closest('button');if(!b)return;
   if(b.dataset.pdel!==undefined)pendItems.splice(Number(b.dataset.pdel),1);
@@ -168,7 +175,7 @@
   if(s&&s.v===1&&s.fields&&s.fields.penMode==null&&Number(s.fields.penDamage)>0)$('penMode').value='input';
   // 일반 요르문간드는 현재 선택할 수 없습니다(코드는 유지). 잠식된 요르문간드로 고정.
   $('boss').value='corrupted';
-  bossView();gemHelp();gemModeView();renderGemGrid();penModeView();renderPendEditor();renderPendList();restoring=false;
+  bossView();gemHelp();gemModeView();renderGemGrid();penModeView();resetEditPend('태양');renderPendEditor();renderPendList();restoring=false;
  }
  $('resetSaved').onclick=async()=>{try{localStorage.removeItem(STORE)}catch(_){}await globalThis.CalcCloud?.clear(STORE);location.reload()};
 

@@ -153,13 +153,14 @@
     const def=Object.keys(stock).sort((a,b)=>stock[b]-stock[a]||(b==='sun')-(a==='sun'))[0]||'none';
     return {kinds,stock,def,owned:Object.values(stock).reduce((a,b)=>a+b,0)};
   }
-  const objective=list=>{let passes=0,min=Infinity,sum=0;
-    for(const x of list){const r=x.row;if(!r)continue;
+  // 4번째 항: 체·공·방 곱(tankBV)의 합. 앞의 목표가 같으면 스탯이 오르는 쪽을 골라, 이득이 없는 칸에도 남는 펜던트를 끼웁니다.
+  const objective=list=>{let passes=0,min=Infinity,sum=0,bv=0;
+    for(const x of list){const r=x.row;if(!r)continue;bv+=r.tankBV||0;
       if(x.role==='front'){min=Math.min(min,r.score);sum+=r.score*1e-3;}
       else if(x.role==='pen'){if(r.pass){passes++;sum+=r.dealt;}else sum+=r.penHits*1e-6;}
       else sum+=r.dealt;}
-    return [passes,min,sum];};
-  const cmpObj=(a,b)=>a[0]-b[0]||a[1]-b[1]||a[2]-b[2];
+    return [passes,min,sum,bv];};
+  const cmpObj=(a,b)=>a[0]-b[0]||a[1]-b[1]||a[2]-b[2]||a[3]-b[3];
   // 보유 펜던트 배분: 펜던트 하나를 어느 칸에 끼우거나 바꿔 끼울 때(뺀 것은 다시 보유로) 목표
   // (관통 통과 수 > 앞라인 최저 점수 > 딜 합 + 앞라인 합)가 가장 좋아지는 수를 반복합니다.
   // 목표가 매번 엄격히 좋아져야 하므로 반드시 끝납니다. 칸의 장신구·젬 등은 그 펜던트 기준으로 다시 고릅니다.

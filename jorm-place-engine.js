@@ -53,13 +53,13 @@
     // 보유 펜던트: 정령 배분은 펜던트 없이 정한 뒤, 보유 펜던트를 칸마다 나눠 줍니다(distributePendants).
     const pk=pendantKinds(input.pendants,E);
     const cache=new Map(),jobs=new Set();
-    const jobKey=(sl,k,pid=pk?'none':'')=>[sl.role,sl.dragon.type,sl.role==='dealer'?'':!!sl.dragon.light,sl.role==='front'?'':!!sl.dragon.dark,k,pid].join('|');
+    const jobKey=(sl,k,pid=pk?pk.def:'')=>[sl.role,sl.dragon.type,sl.role==='dealer'?'':!!sl.dragon.light,sl.role==='front'?'':!!sl.dragon.dark,k,pid].join('|');
     const positions=[...Array(20).keys()].map(pos=>({pos,role:roleOf(pos,pen)}));
     const rolesUsed=[...new Set(positions.map(x=>x.role))];
     if(equip){for(const u of unitsIn)for(const role of rolesUsed)jobs.add(jobKey({role,dragon:u.dragon},u.sp.key));}
     else for(const sl of slots)for(const k of kinds.keys())jobs.add(jobKey(sl,k));
     const total=jobs.size*(pk?pk.kinds.size:1);let done=0;
-    function evaluate(sl,k,pid=pk?'none':''){
+    function evaluate(sl,k,pid=pk?pk.def:''){
       const key=jobKey(sl,k,pid);if(cache.has(key))return cache.get(key);
       const sp=kinds.get(k),d=sl.dragon,c={...base,type:d.type,light:!!d.light,dark:!!d.dark,spirit:sp.opts,bonus:sp.bonus,...(pk?{pendantMode:'manual',pendants:pk.kinds.get(pid)}:{})};
       let row,ok=true;
@@ -86,8 +86,10 @@
     const rows=equip?unitsIn:slots;
     const cols=equip?positions:[...units,...slots.map(()=>noSpirit.key)];
     const roleAt=(i,j)=>equip?cols[j].role:rows[i].role;
-    const table=equip?unitsIn.map(u=>{const byRole=new Map(rolesUsed.map(role=>[role,evaluate({role,dragon:u.dragon},u.sp.key)]));return positions.map(x=>byRole.get(x.role));})
-      :slots.map(sl=>{const byKind=new Map();for(const k of kinds.keys())byKind.set(k,evaluate(sl,k));return cols.map(k=>byKind.get(k));});
+    // rowPid[i] = i번째 칸(해제) 또는 드래곤(장착)에 낀 펜던트 종류. 펜던트를 입력하지 않으면 '' (제한 없이 최적화).
+    function assign(rowPid){
+    const table=equip?unitsIn.map((u,i)=>{const byRole=new Map(rolesUsed.map(role=>[role,evaluate({role,dragon:u.dragon},u.sp.key,rowPid[i])]));return positions.map(x=>byRole.get(x.role));})
+      :slots.map((sl,i)=>{const byKind=new Map();for(const k of kinds.keys())byKind.set(k,evaluate(sl,k,rowPid[i]));return cols.map(k=>byKind.get(k));});
     function solve(T){
       const cost=rows.map((_,i)=>table[i].map((r,j)=>-valueOf(roleAt(i,j),r,T)));
       const pick=hungarian(cost);
@@ -99,11 +101,22 @@
     const cands=[...new Set(rows.flatMap((_,i)=>table[i].filter((r,j)=>r&&roleAt(i,j)==='front').map(r=>r.score)))].sort((a,b)=>a-b);
     if(maxFront){let lo=0,hi=cands.length-1;
       while(lo<=hi){const mid=(lo+hi)>>1,s=solve(cands[mid]);if(s.low===0&&s.passes===maxPass&&s.fronts===maxFront){best=s;lo=mid+1;}else hi=mid-1;}}
-    const results=rows.map((x,i)=>{const j=best.pick[i],r=table[i][j];
-      if(equip)return {pos:cols[j].pos,role:cols[j].role,dragon:x.dragon,spirit:x.sp.key===noSpirit.key?null:x.sp,row:r&&{...r}};
-      const k=cols[j];return {pos:x.pos,role:x.role,dragon:x.dragon,spirit:k===noSpirit.key?null:kinds.get(k),row:r&&{...r}};});
+    return rows.map((x,i)=>{const j=best.pick[i],r=table[i][j];
+      if(equip)return {ri:i,pos:cols[j].pos,role:cols[j].role,dragon:x.dragon,spirit:x.sp.key===noSpirit.key?null:x.sp,row:r&&{...r},pid:rowPid[i]};
+      const k=cols[j];return {ri:i,pos:x.pos,role:x.role,dragon:x.dragon,spirit:k===noSpirit.key?null:kinds.get(k),row:r&&{...r},pid:rowPid[i]};});
+    }
+    // 펜던트 입력 시: 모든 칸에 기본 펜던트를 낀 상태로 정령(자리)을 배분 → 보유 펜던트 배분 →
+    // 그 펜던트로 정령(자리) 배분을 다시 계산. 펜던트 배치가 더 바뀌지 않을 때까지 반복합니다(최대 5회).
+    let rowPid=rows.map(()=>pk?pk.def:''),results=assign(rowPid);
+    if(pk)for(let it=0;it<5;it++){
+      distributePendants(results,pk,(x,pid)=>evaluate({role:x.role,dragon:x.dragon},x.spirit?x.spirit.key:noSpirit.key,pid));
+      const next=rows.map((_,i)=>results.find(x=>x.ri===i).pid);
+      if(it&&next.every((p,i)=>p===rowPid[i]))break;
+      const prev=results,prevObj=objective(prev);rowPid=next;results=assign(rowPid);
+      // 재배분 결과가 더 나쁘면 이전 결과를 유지합니다.
+      if(cmpObj(objective(results),prevObj)<0){results=prev;break;}
+    }
     if(equip)results.forEach(x=>slots.push({pos:x.pos}));
-    if(pk)distributePendants(results,pk,(x,pid)=>evaluate({role:x.role,dragon:x.dragon},x.spirit?x.spirit.key:noSpirit.key,pid));
     if(input.gemStock)distributeGems(results,input,E,data,{bossAtk,hits,lightOf,tough,grade:base.grade});
     // 추천 배치: 앞라인은 생존 점수가 높은 순으로 가운데부터, 딜러는 기대 피해가 높은 순으로 가장자리부터.
     // (계산 모델에서 같은 줄 안의 칸 위치는 결과에 영향을 주지 않으므로 자리만 다시 정합니다.)
@@ -136,7 +149,9 @@
       const row={name:String(it.name||'펜던트'),hp:0,atk:0,def:0};(it.options||[]).forEach(o=>{if(row[o.stat]!=null)row[o.stat]+=Math.max(0,Math.min(6,Math.trunc(Number(o.val))||0));});
       const id=row.name+':'+row.hp+','+row.atk+','+row.def;if(!kinds.has(id))kinds.set(id,[row]);stock[id]=(stock[id]||0)+cap(it.count);
     }
-    return {kinds,stock,owned:Object.values(stock).reduce((a,b)=>a+b,0)};
+    // 처음 정령 배분에 쓸 기본 펜던트: 가장 많이 가진 종류 (태양 > 달 순으로 동률 처리).
+    const def=Object.keys(stock).sort((a,b)=>stock[b]-stock[a]||(b==='sun')-(a==='sun'))[0]||'none';
+    return {kinds,stock,def,owned:Object.values(stock).reduce((a,b)=>a+b,0)};
   }
   const objective=list=>{let passes=0,min=Infinity,sum=0;
     for(const x of list){const r=x.row;if(!r)continue;
@@ -150,7 +165,7 @@
   // 목표가 매번 엄격히 좋아져야 하므로 반드시 끝납니다. 칸의 장신구·젬 등은 그 펜던트 기준으로 다시 고릅니다.
   function distributePendants(results,pk,evalRow){
     const stock={...pk.stock},items=results.filter(x=>x.row);
-    items.forEach(x=>{x.pid='none';});
+    items.forEach(x=>{x.pid='none';const r=evalRow(x,'none');if(r)x.row={...r};});
     for(let guard=0;guard<200;guard++){
       let best=null,bestObj=objective(items);
       for(const pid of Object.keys(stock)){if(stock[pid]<=0)continue;

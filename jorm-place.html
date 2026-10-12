@@ -20,10 +20,10 @@
 
 <section data-input-panel="pendant" hidden><h2>펜던트 <small id="pendCount"></small></h2>
 <div class="fields"><label>펜던트 입력 방식<select id="pendMode"><option value="count">보유 갯수 입력</option><option value="list">직접 입력</option></select></label></div>
-<div id="pendCountBox"><p class="muted">가진 펜던트 수만 넣으면 옵션은 칸마다 계산기가 고릅니다. 모자라는 칸은 펜던트 없이 계산합니다.</p><div class="fields"><label>태양의 펜던트<input id="pendSun" type="number" min="0" max="20" inputmode="numeric" value="20"></label><label>달의 펜던트<input id="pendMoon" type="number" min="0" max="20" inputmode="numeric" value="0"></label><label>각 옵션 수치<select id="pendVal"><option value="6">6%</option><option value="5">5%</option><option value="4">4%</option><option value="3">3%</option><option value="2">2%</option><option value="1">1%</option></select></label></div></div>
+<div id="pendCountBox"><p class="muted">가진 펜던트 수만 넣으면 옵션은 칸마다 계산기가 고릅니다. 모자라는 칸은 펜던트 없이 계산합니다.</p><div class="fields"><label>태양의 펜던트<input id="pendSun" type="number" min="0" max="99" inputmode="numeric" value="20"></label><label>달의 펜던트<input id="pendMoon" type="number" min="0" max="99" inputmode="numeric" value="0"></label><label>각 옵션 수치<select id="pendVal"><option value="6">6%</option><option value="5">5%</option><option value="4">4%</option><option value="3">3%</option><option value="2">2%</option><option value="1">1%</option></select></label></div></div>
 <div id="pendListBox" hidden><p class="muted">가진 펜던트를 옵션 그대로 추가하세요. 계산기가 칸마다 나눠 주고, 모자라는 칸은 펜던트 없이 계산합니다.</p>
 <div class="fields"><label>종류<select id="pendType"><option>태양</option><option>달</option><option>별</option></select></label></div><div class="fields" id="pendOptEditor"></div>
-<div class="toolbar jp-add"><label>수량<input id="pendQty" type="number" min="1" max="20" value="1"></label><button type="button" id="addPend">펜던트 추가</button></div><div id="pendList" class="jp-spirits"></div></div></section>
+<div class="toolbar jp-add"><label>수량<input id="pendQty" type="number" min="1" max="99" value="1"></label><button type="button" id="addPend">펜던트 추가</button></div><div id="pendList" class="jp-spirits"></div></div></section>
 
 <section data-input-panel="pen" hidden><h2>관통 피해</h2><p class="muted">뒷라인 가운데 4칸은 앞라인이 살아 있는 동안 관통 공격만 받습니다.</p>
 <div class="fields"><label>관통 피해 입력<select id="penMode"><option value="sample">입력하지 않기 · 실측값으로 판정</option><option value="input">입력하기 · 관통 4회 판정</option></select></label></div>

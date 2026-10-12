@@ -141,14 +141,14 @@
  const pendSum=p=>{const t={hp:0,atk:0,def:0};p.options.forEach(o=>t[o.stat]+=o.val);return t;};
  const pendKey=p=>{const t=pendSum(p);return p.name+':'+t.hp+','+t.atk+','+t.def;};
  const pendChips=p=>{const t=pendSum(p);return ['hp','atk','def'].filter(k=>t[k]).map(k=>`<span class="${k}">${names[k]} ${t[k]}%</span>`).join('');};
- $('addPend').onclick=()=>{const qty=Math.max(1,Math.min(20,Math.trunc(n('pendQty'))||1));const p={name:editPend.name,options:editPend.options.map(o=>({...o})),count:qty};
-  const same=pendItems.find(x=>pendKey(x)===pendKey(p));if(same)same.count=Math.min(20,same.count+qty);else pendItems.push(p);renderPendList();changed();$('status').textContent='펜던트를 추가했습니다.';};
+ $('addPend').onclick=()=>{const qty=Math.max(1,Math.min(99,Math.trunc(n('pendQty'))||1));const p={name:editPend.name,options:editPend.options.map(o=>({...o})),count:qty};
+  const same=pendItems.find(x=>pendKey(x)===pendKey(p));if(same)same.count=Math.min(99,same.count+qty);else pendItems.push(p);renderPendList();changed();$('status').textContent='펜던트를 추가했습니다.';};
  function renderPendList(){$('pendList').innerHTML=pendItems.map((p,i)=>`<div class="jp-spirit"><div class="jp-spirit-opts"><span><small>종류</small>${esc(p.name)}</span>${pendChips(p)}</div><div class="jp-qty"><button type="button" data-pi="${i}" data-d="-1" aria-label="수량 줄이기">−</button><b>${p.count}</b><button type="button" data-pi="${i}" data-d="1" aria-label="수량 늘리기">+</button><button type="button" data-pdel="${i}">삭제</button></div></div>`).join('')||'<p class="muted">추가한 펜던트가 없습니다. 펜던트 없이도 계산할 수 있습니다.</p>';pendCountView();}
  $('pendList').onclick=e=>{const b=e.target.closest('button');if(!b)return;
   if(b.dataset.pdel!==undefined)pendItems.splice(Number(b.dataset.pdel),1);
-  else{const p=pendItems[Number(b.dataset.pi)];p.count+=Number(b.dataset.d);if(p.count<1)pendItems.splice(Number(b.dataset.pi),1);else p.count=Math.min(20,p.count);}
+  else{const p=pendItems[Number(b.dataset.pi)];p.count+=Number(b.dataset.d);if(p.count<1)pendItems.splice(Number(b.dataset.pi),1);else p.count=Math.min(99,p.count);}
   renderPendList();changed();};
- const pendCap=id=>Math.max(0,Math.min(20,Math.trunc(n(id))||0));
+ const pendCap=id=>Math.max(0,Math.min(99,Math.trunc(n(id))||0));
  function pendCountView(){const list=v('pendMode')==='list',t=list?pendItems.reduce((a,p)=>a+p.count,0):pendCap('pendSun')+pendCap('pendMoon');$('pendCount').textContent=t?`${t}개`:'';}
  function pendModeView(){const list=v('pendMode')==='list';$('pendListBox').hidden=!list;$('pendCountBox').hidden=list;pendCountView();}
  $('pendMode').addEventListener('change',pendModeView);
@@ -166,7 +166,7 @@
    if(Array.isArray(s.spirits))spirits=s.spirits.filter(x=>x&&Array.isArray(x.opts)&&x.opts.length===4).map(x=>({opts:x.opts.map(o=>({stat:['hp','atk','def'].includes(o.stat)?o.stat:'none',type:o.type==='+'?'+':'%'})),bonus:['hp','atk','def'].includes(x.bonus)?x.bonus:'none',count:Math.max(1,Math.min(20,x.count|0))}));
    const okSt=x=>['hp','atk','def'].includes(x)?x:'';
    if(Array.isArray(s.units))units=s.units.filter(u=>u&&Number.isInteger(u.id)).slice(0,20).map(u=>({id:u.id,spirit:{opts:[0,1,2,3].map(i=>({stat:okSt(u.spirit?.opts?.[i]?.stat),type:u.spirit?.opts?.[i]?.type==='+'?'+':'%'})),bonus:okSt(u.spirit?.bonus)}}));
-   if(Array.isArray(s.pendItems))pendItems=s.pendItems.filter(p=>p&&PSLOTS[p.name]&&Array.isArray(p.options)&&p.options.length===PSLOTS[p.name]).map(p=>({name:p.name,options:p.options.map(o=>({stat:['hp','atk','def'].includes(o.stat)?o.stat:'hp',val:Math.max(1,Math.min(6,Math.trunc(Number(o.val))||6))})),count:Math.max(1,Math.min(20,p.count|0))}));
+   if(Array.isArray(s.pendItems))pendItems=s.pendItems.filter(p=>p&&PSLOTS[p.name]&&Array.isArray(p.options)&&p.options.length===PSLOTS[p.name]).map(p=>({name:p.name,options:p.options.map(o=>({stat:['hp','atk','def'].includes(o.stat)?o.stat:'hp',val:Math.max(1,Math.min(6,Math.trunc(Number(o.val))||6))})),count:Math.max(1,Math.min(99,p.count|0))}));
    if(s.gemStock)for(const k of ['hp','atk','def'])for(const g of STOCK_KEYS){const n=Math.trunc(Number(s.gemStock[k]?.[g]));if(n>0)gemStock[k][g]=Math.min(100,n);}
   }
   if(s&&s.v===1&&s.fields&&s.fields.penMode==null&&Number(s.fields.penDamage)>0)$('penMode').value='input';

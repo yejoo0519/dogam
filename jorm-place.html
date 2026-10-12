@@ -19,9 +19,7 @@
 <div id="spiritList" class="jp-spirits"></div></section>
 
 <section data-input-panel="pendant" hidden><h2>펜던트 <small id="pendCount"></small></h2>
-<div class="fields"><label>펜던트 입력 방식<select id="pendMode"><option value="count">보유 갯수 입력</option><option value="list">직접 입력</option></select></label></div>
-<div id="pendCountBox"><p class="muted">가진 펜던트 수만 넣으면 옵션은 칸마다 계산기가 고릅니다. 모자라는 칸은 펜던트 없이 계산합니다.</p><div class="fields"><label>태양의 펜던트<input id="pendSun" type="number" min="0" max="99" inputmode="numeric" value="20"></label><label>달의 펜던트<input id="pendMoon" type="number" min="0" max="99" inputmode="numeric" value="0"></label><label>각 옵션 수치<select id="pendVal"><option value="6">6%</option><option value="5">5%</option><option value="4">4%</option><option value="3">3%</option><option value="2">2%</option><option value="1">1%</option></select></label></div></div>
-<div id="pendListBox" hidden><p class="muted">가진 펜던트를 옵션 그대로 추가하세요. 계산기가 칸마다 나눠 주고, 모자라는 칸은 펜던트 없이 계산합니다.</p>
+<div id="pendListBox"><p class="muted">가진 펜던트를 종류·옵션·수량으로 추가하세요. 계산기가 칸마다 나눠 주고, 모자라는 칸은 펜던트 없이 계산합니다. 하나도 넣지 않으면 펜던트 제한 없이 칸마다 최적의 펜던트로 계산합니다.</p>
 <div class="fields"><label>종류<select id="pendType"><option>태양</option><option>달</option><option>별</option></select></label></div><div class="fields" id="pendOptEditor"></div>
 <div class="toolbar jp-add"><label>수량<input id="pendQty" type="number" min="1" max="99" value="1"></label><button type="button" id="addPend">펜던트 추가</button></div><div id="pendList" class="jp-spirits"></div></div></section>
 

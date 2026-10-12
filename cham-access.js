@@ -6,6 +6,8 @@
   const restricted=d.documentElement.hasAttribute('data-cham-auto-page');
   let pending=null;
   let config=null;
+  let lastAllowed=false;
+  let lastUid=null;
   function user(){try{return JSON.parse(localStorage.getItem('community_user'));}catch(_){return null;}}
   function readyConfig(){
     if(typeof supabase==='function')return Promise.resolve();
@@ -53,7 +55,10 @@
     if(pending)return pending;
     pending=(async()=>{
       let allowed=false;
-      try{const row=await readMember();allowed=!!row&&row.can_cham_auto===true&&row.is_banned!==true;}catch(_){/* Deny on missing migration/network errors. */}
+      const u=user();const uid=u&&u.id!=null?String(u.id):null;
+      try{const row=await readMember();allowed=!!row&&row.can_cham_auto===true&&row.is_banned!==true;}
+      catch(_){/* 네트워크·타임아웃 오류: 같은 계정으로 이미 확인된 권한은 유지, 첫 확인이면 거부 */allowed=lastAllowed&&uid!==null&&uid===lastUid;}
+      lastAllowed=allowed;lastUid=uid;
       apply(allowed);return allowed;
     })().finally(()=>{pending=null;});
     return pending;

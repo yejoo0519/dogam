@@ -138,7 +138,7 @@
  const statShort={hp:'체',atk:'공',def:'방'};
  function renderPendEditor(){
   $('pendType').innerHTML=Object.keys(PSLOTS).map(k=>`<button type="button" data-ptype="${k}" aria-pressed="${editPend.name===k}"><b>${k}</b><small>${PSLOTS[k]}옵</small></button>`).join('');
-  $('pendOptEditor').innerHTML=editPend.options.map((o,i)=>`<div class="jp-pend-opt" data-stat="${o.stat}"><span class="jp-pend-no">${i+1}옵</span><div class="jp-pend-chips">${['hp','atk','def'].map(k=>`<button type="button" class="champ-chip${o.stat===k?' on-'+k:''}" data-po="${i}" data-pstat="${k}" aria-pressed="${o.stat===k}">${statShort[k]}</button>`).join('')}</div><div class="jp-pend-vals">${[6,5,4,3,2,1].map(x=>`<button type="button" data-po="${i}" data-val="${x}" aria-pressed="${o.val===x}">${x}</button>`).join('')}<span>%</span></div></div>`).join('');
+  $('pendOptEditor').innerHTML=editPend.options.map((o,i)=>`<div class="jp-pend-opt" data-stat="${o.stat}"><span class="jp-pend-no">${i+1}옵</span><div class="jp-pend-chips">${['hp','atk','def'].map(k=>`<button type="button" class="champ-chip${o.stat===k?' on-'+k:''}" data-po="${i}" data-pstat="${k}" aria-pressed="${o.stat===k}">${statShort[k]}</button>`).join('')}</div><div class="jp-pend-vals">${[6,5,4,3,2,1].map(x=>`<button type="button" data-po="${i}" data-val="${x}" aria-pressed="${o.val===x}">${x}</button>`).join('')}</div></div>`).join('');
   $('pendPreview').innerHTML=`<b>${editPend.name}</b>`+pendChips(editPend);
  }
  $('pendType').onclick=e=>{const b=e.target.closest('[data-ptype]');if(!b)return;resetEditPend(b.dataset.ptype);renderPendEditor();};

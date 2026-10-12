@@ -59,3 +59,6 @@
 .jp-unit span{min-width:0;font-size:12px;overflow:hidden}.jp-unit span b,.jp-unit span small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.jp-unit small{font-size:11px}
 .jp-unit-editor{border-top:1px solid var(--border);padding-top:12px;margin-top:4px}.jp-unit-editor h3{margin:0 0 10px}
 @media(max-width:760px){.jp-mode b{font-size:13px}.jp-units{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.jp .spirit-option-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.jp-unit-sp i{font-style:normal;font-weight:700}.jp-unit-sp .sp-hp{color:#fbbf24}.jp-unit-sp .sp-atk{color:#f87171}.jp-unit-sp .sp-def{color:#60a5fa}
+@media(max-width:580px){.jp .spirit-option-grid{grid-template-columns:1fr}}

@@ -95,9 +95,9 @@
  $('dragonSearch').oninput=renderDragons;$('dragonType').onchange=e=>{e.stopPropagation();renderDragons()};$('dragonElement').onchange=e=>{e.stopPropagation();renderDragons()};
 
  /* ---------- equipped units ---------- */
- const spSummary=s=>{const o=(s.opts||[]).filter(x=>x.stat&&x.stat!=='none');return o.length?o.map(x=>names[x.stat][0]+(x.type==='%'?'%':'+')).join(' ')+(s.bonus&&s.bonus!=='none'?' · 부가 '+names[s.bonus][0]:''):'정령 없음';};
+ const spSummary=s=>{const o=(s.opts||[]).filter(x=>x.stat&&x.stat!=='none');return o.length?o.map(x=>`<i class="sp-${x.stat}">${names[x.stat][0]}${x.type==='%'?'%':'+'}</i>`).join(' ')+(s.bonus&&s.bonus!=='none'?` · 부가 <i class="sp-${s.bonus}">${names[s.bonus][0]}</i>`:''):'정령 없음';};
  function renderUnits(){
-  $('units').innerHTML=units.map((u,i)=>{const d=byId.get(u.id);return d?`<button type="button" class="jp-unit" data-unit="${i}" aria-pressed="${i===selUnit}">${icon(d)}<span><b>${esc(d.name)}</b><small>${esc(d.type)} · ${esc(d.element)}</small><small>${esc(spSummary(u.spirit))}</small></span></button>`:'';}).join('')||'<p class="muted">아직 추가한 드래곤이 없습니다.</p>';
+  $('units').innerHTML=units.map((u,i)=>{const d=byId.get(u.id);return d?`<button type="button" class="jp-unit" data-unit="${i}" aria-pressed="${i===selUnit}">${icon(d)}<span><b>${esc(d.name)}</b><small>${esc(d.type)} · ${esc(d.element)}</small><small class="jp-unit-sp">${spSummary(u.spirit)}</small></span></button>`:'';}).join('')||'<p class="muted">아직 추가한 드래곤이 없습니다.</p>';
   const u=units[selUnit],d=u&&byId.get(u.id);
   $('unitEditor').innerHTML=d?`<h3>${esc(d.name)} · 귀속 정령</h3><div class="toolbar" id="unitPresets"><button type="button" data-up="last">막플</button><button type="button" data-up="all">올퍼</button><button type="button" data-up="14">14플</button><button type="button" data-up="24">24플</button><button type="button" data-up="none">정령 없음</button></div>`+SpiritInput.options(u.spirit,'jpUnitOpt',[],(i,k,t)=>!k||!t?'—':t==='%'?Math.round(D.pct[i]*100)+'%':'+'+D.plus[k][i])+SpiritInput.bonus(u.spirit,'jpUnitBonus',[]):'';
  }

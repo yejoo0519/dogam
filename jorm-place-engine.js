@@ -10,9 +10,9 @@
 (function(root){
   'use strict';
   const PEN_SLOTS=[13,14,15,16];
-  // 관통 피해 미입력 시 기준: 실제 운용 셋팅 표본 12개의 관통 내구 중간값(잠정).
-  // 관통 내구 = 체력 × (방어 × 빛보정 + 22). 난수가 없어 관통을 버티는 횟수에 정비례합니다.
-  const PEN_REF=476000;
+  // 관통 피해 미입력 시: 실측으로 확정한 잠식 요르문간드 관통 공격 X = 2750 (난수 없음).
+  // 관통 1회 = floor(44·X / (방어 × 방어계수 + 22)), 빛 방어계수 1.25. 측정 8건(일반·크리·가드·빛)과 일치.
+  const PEN_ATK=2750;
   const noSpirit={key:'none',opts:[0,1,2,3].map(()=>({stat:'none',type:'%'})),bonus:'none'};
   const spiritKey=s=>s.opts.map(o=>o.stat==='none'?'-':o.stat+o.type).join(',')+'|'+s.bonus;
   function roleOf(pos,pen){if(pos<10)return 'front';if(pen&&PEN_SLOTS.includes(pos))return 'pen';return 'dealer';}
@@ -35,11 +35,10 @@
 
   function plan(input,E,data,progress=()=>{}){
     const measured=input.pen&&input.pen.damage>0&&input.pen.def>=0;
-    const pen=measured?input.pen:(input.pen&&input.pen.reference?{reference:true,ref:PEN_REF}:null);
+    const pen=measured?input.pen:(input.pen&&input.pen.reference?{reference:true}:null);
     const corrupted=input.boss==='corrupted',lightOf=l=>l?(corrupted?20:23):false;
     const hits=input.hits||4;
-    // 기준 모드: 관통 4회 = 관통 내구 PEN_REF가 되도록 보스 관통 공격력을 맞춥니다 (hp×(def×m+22) > 176×A).
-    const bossAtk=!pen?0:measured?E.penetrationAttack(pen.damage,pen.def,lightOf(pen.light)):PEN_REF/176;
+    const bossAtk=!pen?0:measured?E.penetrationAttack(pen.damage,pen.def,lightOf(pen.light)):PEN_ATK;
     const tough=(hp,def,light)=>hp*(def*(lightOf(light)||16)/16+22);
     const equip=input.mode==='equip';
     const normSp=s=>{const sp={opts:(s&&s.opts||[]).slice(0,4).map(o=>({stat:o.stat||'none',type:o.type||'%'})),bonus:(s&&s.bonus)||'none'};while(sp.opts.length<4)sp.opts.push({stat:'none',type:'%'});sp.key=spiritKey(sp);return sp.opts.every(o=>o.stat==='none')&&sp.bonus==='none'?noSpirit:sp;};
@@ -117,7 +116,7 @@
     arrange('dealer',BACK_ORDER,x=>x.row?x.row.dealt:-Infinity);
     results.sort((a,b)=>a.pos-b.pos);
     const front=results.filter(r=>r.role==='front'&&r.row),pens=results.filter(r=>r.role==='pen');
-    return {results,pen:pen?{reference:!measured,ref:PEN_REF,bossAtk,hits,passed:pens.filter(r=>r.row&&r.row.pass).length,total:pens.length}:null,
+    return {results,pen:pen?{reference:!measured,bossAtk,hits,passed:pens.filter(r=>r.row&&r.row.pass).length,total:pens.length}:null,
       summary:{frontMin:front.length?Math.min(...front.map(r=>r.row.score)):null,dealt:results.filter(r=>r.row&&(r.role==='dealer'||(r.role==='pen'&&r.row.pass))).reduce((a,r)=>a+r.row.dealt,0),spiritsUsed:results.filter(r=>r.spirit).length,spiritsOwned:equip?results.filter(r=>r.spirit).length:units.length},mode:equip?'equip':'free',evaluated:total};
   }
   // 보유 젬 배분: 셋팅(장신구·펜던트·정령·젬 갯수)은 기준 젬(input.gem, 보통 36)으로 고른 그대로 두고,

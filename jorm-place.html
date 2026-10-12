@@ -19,8 +19,8 @@
 <div id="spiritList" class="jp-spirits"></div></section>
 
 <section data-input-panel="pen" hidden><h2>관통 피해</h2><p class="muted">뒷라인 가운데 4칸은 앞라인이 살아 있는 동안 관통 공격만 받습니다.</p>
-<div class="fields"><label>관통 피해 입력<select id="penMode"><option value="sample">입력하지 않기 · 표본 기준</option><option value="input">입력하기 · 관통 4회 판정</option></select></label></div>
-<p class="muted" id="penSampleNote">실제 운용 셋팅 표본을 기준으로 계산합니다. 관통 내구(체력 × (방어 × 빛보정 + 22))가 표본 중간값 47만 6천 이상이 되도록 맞추고, 그 안에서 기대 피해가 가장 높은 셋팅을 고릅니다(잠정 기준).</p>
+<div class="fields"><label>관통 피해 입력<select id="penMode"><option value="sample">입력하지 않기 · 실측값으로 판정</option><option value="input">입력하기 · 관통 4회 판정</option></select></label></div>
+<p class="muted" id="penSampleNote">실측으로 확인한 잠식된 요르문간드 관통 피해로 칸마다 관통 <b>4회</b>를 버티는지 판정합니다. 관통 1회 피해 = 121,000 ÷ (방어 × 방어계수 + 22), 빛은 방어 ×1.25 · 난수 없음. 크리(2배)·가드는 확률이라 판정에서 제외합니다.</p>
 <div id="penInputs" hidden><p class="muted">관통 1회 피해량과 그때 맞은 드래곤의 방어력을 넣으면 보스 관통 공격력을 거꾸로 계산해, 칸마다 관통 <b>4회</b>를 버티는지 판정합니다(난수 없음, 보스 크리 없음).</p><div class="fields"><label>관통 1회 피해량<input id="penDamage" type="number" min="1" max="100000" placeholder="예: 600"></label><label>맞은 드래곤 방어력<input id="penDef" type="number" min="0" max="100000" placeholder="예: 400"></label><label>맞은 드래곤 속성<select id="penLight"><option value="0">빛 아님 (어둠 등)</option><option value="1">빛</option></select></label></div>
 <p class="muted">어둠은 방어 보정이 없어 빛이 아닌 속성과 같게 계산됩니다.</p></div></section>
 

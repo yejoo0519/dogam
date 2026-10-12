@@ -200,7 +200,7 @@
     function measure(x,stats){
       const r=x.row,light=ctx.lightOf(x.dragon.light);
       if(x.role==='front'){const prob=r.probability&&r.probability.kind==='eva'?r.probability:null;return {score:E.applyEvasion(E.survivalScore(stats.hp,stats.def,light),prob)};}
-      const c={dark:!!x.dragon.dark};
+      const c={dark:!!x.dragon.dark,boss:input.boss};
       const out={dealt:E.dealtWithCrit(stats.atk,c,r.probability&&r.probability.kind==='crit'?r.probability:null,mult)};
       if(x.role==='pen'){out.penTough=ctx.tough(stats.hp,stats.def,x.dragon.light);out.penHit=E.penetrationHit(stats.def,ctx.bossAtk,light);out.penHits=E.penetrationHits(stats.hp,stats.def,ctx.bossAtk,light);out.pass=out.penHits>=ctx.hits;}
       return out;

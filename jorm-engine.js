@@ -3,7 +3,8 @@
   'use strict';
   const keys=['hp','atk','def'];
   // Standard hit reference, without user-configurable battle actions.
-  function attack(atk,c,crit=1){return Math.floor(44*Math.floor(atk*crit*(c.dark?1.25:1)+1e-9)/322);}
+  // 보스 방어: 요르문간드 300, 잠식된 요르문간드 275 (20축복 기준). 어둠 공격 1.25배는 둘 다 적용.
+  function attack(atk,c,crit=1){return Math.floor(44*Math.floor(atk*crit*(c.dark?1.25:1)+1e-9)/((c.boss==='corrupted'?275:300)+22));}
   // Probability (on by default; pass enabled:false to turn off): tank evasion, dealer critical.
   // final% = base% (user input, estimate) + accessory% + potion%, clamped 0..100.
   function probability(c,data,acc,pot){

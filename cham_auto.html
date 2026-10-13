@@ -487,7 +487,7 @@ input[type=number]{width:100%}
 if (!globalThis.DV1_DRAGON_VIEWS) throw new Error("드래곤 데이터 로드 실패: 초기화 중단");
 
 const L={lang:'ko',
- saved:'저장됨',data_missing_t:'데이터 파일을 불러오지 못했어요',data_missing_d:'계산기에 필요한 cham-data.js 파일이 없어요. 사이트 루트에 이 파일이 있는지 확인해주세요.',cloud_saving:'클라우드 저장 중…',cloud_saved:'클라우드 저장됨',cloud_fail:'클라우드 저장 실패',cloud_loading:'클라우드에서 불러오는 중…',cloud_loaded:'클라우드에서 불러옴',cloud_none:'클라우드에 저장된 챔대 셋팅이 없어요.',cloud_refresh:'새로고침',cloud_refresh_confirm:'아직 올라가는 중인 수정사항이 있어요. 그래도 새로고침할까요?',round_names:['32강','16강','8강','4강','결승'],round_rename:'라운드 이름',send_manual:'수동 계산기로 보내기',export_img:'이미지로 저장',snap_save:'비교용으로 담기',advise:'다음 투자처 분석',img_title:'챔피언대전 셋팅',img_footer:'드래곤빌리지1 도감 · 챔피언대전 자동 계산기',img_fail:'이미지를 만들지 못했어요.',cmp_item:'항목',cmp_diff:'차이',cmp_title:n=>'결과 비교 ('+n+'개)',cmp_clear:'비우기',cmp_note1:'다른 설정으로 다시 계산한 뒤 [비교용으로 담기]를 한 번 더 누르면 두 결과를 비교해요.',cmp_note2:'왼쪽이 먼저 담은 결과예요. 새로 담으면 오래된 것부터 밀려나요.',adv_running_p:(i,n)=>'분석 중… ('+i+'/'+n+')',adv_running:'분석 중… (여러 번 다시 계산하느라 몇 초 걸려요)',adv_title:m=>'다음 투자처 ('+m+' 기준)',adv_item:'추가했을 때',adv_gain:'증가량',adv_gem:(st,lv)=>st+' 젬 '+lv+'단계 1개',adv_acc:n=>'장신구 1개 ('+n+')',adv_pend:'태양 펜던트 1개 (9/9/9)',adv_note:'지금 셋팅에 하나씩 더 넣어보고 전체 합계가 얼마나 오르는지 계산한 값이에요. 실제 획득 난이도는 고려하지 않아요.',send_manual_confirm:'수동 계산기의 현재 입력값을 이 결과로 덮어쓸까요?',import_manual:'수동 계산기에서 가져오기',import_none:'수동 계산기에 저장된 드래곤이 없어요.',import_none2:'가져올 새 드래곤이 없어요. (이미 등록됐거나 비어 있어요)',import_done:n=>n+'마리를 가져왔어요.',tab_dragon:'내 드래곤',tab_calc:'자동 계산',tab_sim:'정령·버프',tab_spx:'정령 배분',spx_fold:'접기',spx_unfold:'펼치기',spx_add:'정령 추가',spx_set:'배분 설정',spx_title:(ok,n)=>'보유 정령 '+ok+'개'+(n>ok?' (미입력 '+(n-ok)+')':''),spx_note:'가지고 있는 정령을 전부 입력하면 어느 드래곤에 넣는 게 좋은지 장비와 함께 자동으로 배분해서 보여줘요. 결과는 미리보기라 내 드래곤 탭에는 저장되지 않아요. (입력한 정령 목록은 저장돼요)',spx_memo_ph:'메모 (구분용, 선택)',spx_empty:'등록된 정령이 없어요. [＋ 정령 추가]로 보유 정령을 입력해주세요.',spx_no:n=>'정령 '+n,spx_target:'배분 대상 드래곤',spx_mine:'내 드래곤',spx_all:'전체 드래곤',spx_mine_note:dn=>'내 드래곤 탭에 등록한 드래곤 ('+dn.join(' / ')+'마리)에 넣어봐요. 카드에 입력한 정령은 무시하고 보유 정령으로 대체해요.',spx_all_note2:(a,b,c)=>'보유 드래곤으로 고른 1팀 '+a+'종 · 2팀 '+b+'종 · 3팀 '+c+'종 중에서 골라요. (0종인 구역은 전체에서 골라요)',spx_all_note:'1팀은 강림 드래곤 전체, 2·3팀은 SSS Lv.21 / 45 전체에서 골라요. 버프·정령 기준 상위 드래곤만 추려서 계산해요.',own_t:'보유 드래곤',own_gang:'강림',own_pick:'모아보기',own_clear:'모두 해제',own_q:'드래곤 이름 검색',own_cnt:n=>n+'종',own_unit:n=>n+'마리',own_note:'가지고 있는 드래곤을 눌러서 골라주세요. 누를 때마다 1 → 2 → 3마리 → 해제 순서로 바뀌고, 고른 수만큼 한 팀에 중복 편성돼요.',own_note2:'한 마리도 안 고른 구역은 예전처럼 전체 드래곤을 후보로 써요.',own_none:'고른 드래곤이 없어요. 강림 · Lv.21 · Lv.45 탭에서 보유한 드래곤을 눌러주세요.',own_empty:'조건에 맞는 드래곤이 없어요.',own_sum:(a,b,c)=>'강림 '+a+' · Lv.21 '+b+' · Lv.45 '+c,spx_grade:'1팀 강림 등급',spx_run:'정령 배분 미리보기',spx_run_note:'각 정령은 한 드래곤에만 들어가요. 장신구·젬·펜던트는 내 스펙 값을 겹치지 않게 배분하고, 인첸트는 무한 인첸트 기준이에요.',spx_w_sp:'입력된 정령이 없어요. 옵션을 하나 이상 고른 정령이 있어야 해요.',spx_nosp:'정령 없음',spx_left:n=>'남은 정령 '+n+'개',spx_apply:'이대로 내 드래곤에 적용',spx_apply_confirm:'배분된 정령을 [내 드래곤] 탭에 적용할까요? 해당 드래곤의 기존 정령 입력은 덮어써져요.',spx_apply_done:(a,b2)=>'정령 '+a+'마리 적용, 새 드래곤 '+b2+'마리 추가했어요.',spx_undo:'적용 되돌리기',spx_undo_done:'적용 전 상태로 되돌렸어요.',spx_left_none:'모든 정령이 배분됐어요.',sim_in:'정령 · 버프 입력',sim_run:'계산',sim_run_done:'계산됨',sim_idle:'정령과 버프를 고른 뒤 왼쪽 [계산]을 눌러주세요.',sim_lv:'대상 드래곤',sim_sort:'정렬 기준',sim_gear:'장비 적용',det_base:'기본 스탯',det_final:'최종 스탯',det_potion:'크리•회피',det_potion_lbl:'물약',det_buff:'속성 버프',det_coll:'컬렉션',det_skill:'스킬',sim_gear_on:'내 스펙 장비 적용',sim_gear_off:'정령만 (장비 없이)',sim_gear_none:'내 스펙에 장신구가 없어서 장비 없이 계산해요.',all:'전체',dragon:'드래곤',sim_title:lv=>'SSS Lv.'+lv+' 장착 결과',sim_count:n=>n+'마리',sim_more:n=>'▾ '+n+'마리 더 보기',sim_all:'전체 보기',sim_note:'드래곤마다 내 스펙에서 가장 좋은 장신구·인첸트·젬·펜던트를 끼웠을 때의 값이에요 (드래곤별로 따로 계산해서 자원이 겹칠 수 있어요). 물약 크리•회피(24/6/6)와 풀컬(240/60/60) 포함, 버프 받는 드래곤은 강조 표시돼요.',
+ saved:'저장됨',data_missing_t:'데이터 파일을 불러오지 못했어요',data_missing_d:'계산기에 필요한 cham-data.js 파일이 없어요. 사이트 루트에 이 파일이 있는지 확인해주세요.',cloud_saving:'클라우드 저장 중…',cloud_saved:'클라우드 저장됨',cloud_fail:'클라우드 저장 실패',cloud_loading:'클라우드에서 불러오는 중…',cloud_loaded:'클라우드에서 불러옴',cloud_none:'클라우드에 저장된 챔대 셋팅이 없어요.',cloud_refresh:'새로고침',cloud_refresh_confirm:'아직 올라가는 중인 수정사항이 있어요. 그래도 새로고침할까요?',round_names:['32강','16강','8강','4강','결승'],round_rename:'라운드 이름',send_manual:'수동 계산기로 보내기',export_img:'이미지로 저장',snap_save:'비교용으로 담기',advise:'다음 투자처 분석',img_title:'챔피언대전 셋팅',img_footer:'드래곤빌리지1 도감 · 챔피언대전 자동 계산기',img_fail:'이미지를 만들지 못했어요.',cmp_item:'항목',cmp_diff:'차이',cmp_title:n=>'결과 비교 ('+n+'개)',cmp_clear:'비우기',cmp_note1:'다른 설정으로 다시 계산한 뒤 [비교용으로 담기]를 한 번 더 누르면 두 결과를 비교해요.',cmp_note2:'왼쪽이 먼저 담은 결과예요. 새로 담으면 오래된 것부터 밀려나요.',adv_running_p:(i,n)=>'분석 중… ('+i+'/'+n+')',adv_running:'분석 중… (여러 번 다시 계산하느라 몇 초 걸려요)',adv_title:m=>'다음 투자처 ('+m+' 기준)',adv_item:'추가했을 때',adv_gain:'증가량',adv_gem:(st,lv)=>st+' 젬 '+lv+'단계 1개',adv_acc:n=>'장신구 1개 ('+n+')',adv_pend:'태양 펜던트 1개 (9/9/9)',adv_note:'지금 셋팅에 하나씩 더 넣어보고 전체 합계가 얼마나 오르는지 계산한 값이에요. 실제 획득 난이도는 고려하지 않아요.',send_manual_confirm:'수동 계산기의 현재 입력값을 이 결과로 덮어쓸까요?',import_manual:'수동 계산기에서 가져오기',import_none:'수동 계산기에 저장된 드래곤이 없어요.',import_none2:'가져올 새 드래곤이 없어요. (이미 등록됐거나 비어 있어요)',import_done:n=>n+'마리를 가져왔어요.',tab_dragon:'내 드래곤',tab_calc:'자동 계산',tab_sim:'정령·버프',tab_spx:'정령 배분',spx_fold:'접기',spx_unfold:'펼치기',spx_add:'정령 추가',spx_set:'배분 설정',spx_title:(ok,n)=>'보유 정령 '+ok+'개'+(n>ok?' (미입력 '+(n-ok)+')':''),spx_note:'가지고 있는 정령을 전부 입력하면 어느 드래곤에 넣는 게 좋은지 장비와 함께 자동으로 배분해서 보여줘요. 결과는 미리보기라 내 드래곤 탭에는 저장되지 않아요. (입력한 정령 목록은 저장돼요)',spx_memo_ph:'메모 (구분용, 선택)',spx_empty:'등록된 정령이 없어요. [＋ 정령 추가]로 보유 정령을 입력해주세요.',spx_no:n=>'정령 '+n,spx_target:'배분 대상 드래곤',spx_mine:'내 드래곤',spx_all:'전체 드래곤',spx_mine_note:dn=>'내 드래곤 탭에 등록한 드래곤 ('+dn.join(' / ')+'마리)에 넣어봐요. 카드에 입력한 정령은 무시하고 보유 정령으로 대체해요.',spx_all_note2:(a,b,c)=>'보유 드래곤으로 고른 1팀 '+a+'종 · 2팀 '+b+'종 · 3팀 '+c+'종 중에서 골라요. (0종인 구역은 전체에서 골라요)',spx_all_note:'1팀은 강림 드래곤 전체, 2·3팀은 SSS Lv.21 / 45 전체에서 골라요. 버프·정령 기준 상위 드래곤만 추려서 계산해요.',own_t:'보유 드래곤',own_gang:'강림',own_pick:'모아보기',own_clear:'모두 해제',own_q:'드래곤 이름 검색',own_cnt:n=>n+'종',own_unit:n=>n+'마리',own_note:'가지고 있는 드래곤을 눌러서 골라주세요. 누를 때마다 1 → 2 → 3마리 → 해제 순서로 바뀌고, 고른 수만큼 한 팀에 중복 편성돼요.',own_note2:'한 마리도 안 고른 구역은 예전처럼 전체 드래곤을 후보로 써요.',own_none:'고른 드래곤이 없어요. 강림 · Lv.21 · Lv.45 탭에서 보유한 드래곤을 눌러주세요.',own_empty:'조건에 맞는 드래곤이 없어요.',own_sum:(a,b,c)=>'강림 '+a+' · Lv.21 '+b+' · Lv.45 '+c,spx_grade:'1팀 강림 등급',spx_run:'정령 배분 미리보기',spx_run_note:'각 정령은 한 드래곤에만 들어가요. 장신구·젬·펜던트는 내 스펙 값을 겹치지 않게 배분하고, 인첸트는 무한 인첸트 기준이에요.',spx_w_sp:'입력된 정령이 없어요. 옵션을 하나 이상 고른 정령이 있어야 해요.',spx_nosp:'정령 없음',spx_left:n=>'남은 정령 '+n+'개',spx_apply:'이대로 내 드래곤에 적용',spx_apply_confirm:'배분된 정령을 [내 드래곤] 탭에 적용할까요? 해당 드래곤의 기존 정령 입력은 덮어써져요.',spx_apply_done:(a,b2)=>'정령 '+a+'마리 적용, 새 드래곤 '+b2+'마리 추가했어요.',spx_undo:'적용 되돌리기',spx_undo_done:'적용 전 상태로 되돌렸어요.',spx_left_none:'모든 정령이 배분됐어요.',sim_in:'정령 · 버프 입력',sim_run:'계산',sim_run_done:'계산됨',sim_idle:'정령과 버프를 고른 뒤 왼쪽 [계산]을 눌러주세요.',sim_lv:'대상 드래곤',sim_sort:'정렬 기준',sim_gear:'장비 적용',det_base:'기본 스탯',det_final:'최종 스탯',det_potion:'크리•회피',det_potion_lbl:'물약',det_buff:'속성 버프',det_coll:'컬렉션',det_skill:'스킬',det_buff_each:'버프별 결과 (이 드래곤 속성으로 버프를 받았을 때)',det_buff_col:'버프',sim_gear_on:'내 스펙 장비 적용',sim_gear_off:'정령만 (장비 없이)',sim_gear_none:'내 스펙에 장신구가 없어서 장비 없이 계산해요.',all:'전체',dragon:'드래곤',sim_title:lv=>'SSS Lv.'+lv+' 장착 결과',sim_count:n=>n+'마리',sim_more:n=>'▾ '+n+'마리 더 보기',sim_all:'전체 보기',sim_note:'드래곤마다 내 스펙에서 가장 좋은 장신구·인첸트·젬·펜던트를 끼웠을 때의 값이에요 (드래곤별로 따로 계산해서 자원이 겹칠 수 있어요). 물약 크리•회피(24/6/6)와 풀컬(240/60/60) 포함, 버프 받는 드래곤은 강조 표시돼요.',
  dragon_note:'챔피언대전에 쓸 드래곤을 팀별로 등록해두는 곳이에요. 길드전 계산기와는 <b>별도로 저장</b>되고, 정령 옵션과 부가옵까지 입력해두면 자동 계산에 그대로 반영돼요.',
  t_setting:'자동 계산 설정',t_goto_my:'내 스펙 →',t_spec:'보유 현황 (장신구·젬·펜던트는 내 스펙 페이지 값을 사용해요)',
  t_buff:'속성 버프 (해당 속성 드래곤에 적용)',t_min:'최소 스탯',min_off:'사용 안 함',min_on:'사용',min_team:(n,s)=>n+'팀 · '+s,min_note:'각 팀에서 이 값보다 낮은 스탯이 나오는 셋팅은 후보에서 빼요. 켜지 않으면 제한 없이 계산해요.',team_min:'최소 스탯 조건을 만족하는 셋팅이 3마리만큼 안 나와요. 값을 낮추거나 꺼주세요.',t_metric:'최적화 기준',
@@ -790,7 +790,7 @@ function chamStat(base,gem,pot,accP,spPct,spPlus,pendP,bonus,coll,buffP){
   const s3=INT(s2*(1+pendP))+bonus+coll;
   return INT(s3*(1+buffP));
 }
-function calcOption(cand,acc,pend,gemHAD){
+function calcOption(cand,acc,pend,gemHAD,force){
   const {pH,pA,pD}=pend?pend._pct:{pH:0,pA:0,pD:0};
   const sp=cand.sp;
   const out={};
@@ -798,7 +798,7 @@ function calcOption(cand,acc,pend,gemHAD){
   STATS.forEach(st=>{
     const accP=acc[st]+(acc.enc===st?ENC_PCT:0);
     const pendP=st==='hp'?pH:st==='atk'?pA:pD;
-    const buffP=(curBuff()[st]&&curBuff()[st]===cand.attr)?BUFF_PCT[st]:0;
+    const buffP=force!==undefined?(force===st?BUFF_PCT[st]:0):(curBuff()[st]&&curBuff()[st]===cand.attr)?BUFF_PCT[st]:0;
     if(buffP)buffs.push(st);
     out[st]=chamStat(cand.base[st],gemHAD[st],POTION[st],accP,sp.pct[st],sp.plus[st],pendP,sp.bonus[st],COLL[st],buffP);
   });
@@ -1985,6 +1985,20 @@ function simToggle(k){
   const el=document.querySelector(`.rank-tbl tr.rw[data-row="${k}"]`);
   if(el&&SIM_OPEN===k)el.scrollIntoView({block:'nearest'});
 }
+function simBuffEachHtml(g,gear){
+  const cand={attr:g.elem,base:{hp:g.hp,atk:g.atk,def:g.def},sp:procSpirit(S.sim)};
+  const acc=gear?gear.acc:NO_ACC,pend=gear?gear.pend:null;
+  const gem=gear?{hp:topGemSum('hp',gear.sh.h),atk:topGemSum('atk',gear.sh.a),def:topGemSum('def',gear.sh.d)}:{hp:0,atk:0,def:0};
+  const th='padding:3px 8px;font-size:10px;color:var(--dim);text-align:right',td='padding:3px 8px;text-align:right';
+  const mC=m=>S.metric===m?';color:var(--gold)':'';
+  const rows=STATS.map(st=>{
+    const r=calcOption(cand,acc,pend,gem,st);
+    const c=s2=>s2===st?';color:var(--gold)':'';
+    return `<tr><td style="${td};text-align:left" class="c-${st}">${statLbl(st)} +${st==='def'?50:40}%</td><td style="${td}${c('hp')}">${fmt(r.hp)}</td><td style="${td}${c('atk')}">${fmt(r.atk)}</td><td style="${td}${c('def')}">${fmt(r.def)}</td><td style="${td}${mC('eval')}">${fmt(r.eval)}</td><td style="${td}${mC('bv')}">${fmt(r.bv)}</td></tr>`;
+  }).join('');
+  return `<div class="wide"><div class="dl">${L.det_buff_each}</div><div style="overflow-x:auto"><table style="border-collapse:collapse;font-size:12px;font-weight:700;color:var(--text)">
+    <tr><th style="${th};text-align:left">${L.det_buff_col}</th><th style="${th}" class="c-hp">${statLbl('hp')}</th><th style="${th}" class="c-atk">${statLbl('atk')}</th><th style="${th}" class="c-def">${statLbl('def')}</th><th style="${th}">EVAL</th><th style="${th}">${L.bv}</th></tr>${rows}</table></div></div>`;
+}
 function simDetailHtml(g,r,gear){
   const d=(lab,val)=>`<div><div class="dl">${lab}</div><div class="dv">${esc(val)}</div></div>`;
   const acc=gear?gear.acc:null;
@@ -2013,6 +2027,7 @@ function simDetailHtml(g,r,gear){
     ${d(L.det_buff,buffTxt)}
     ${d('EVAL',fmt(r.eval))}
     ${d(L.bv,fmt(r.bv))}
+    ${simBuffEachHtml(g,gear)}
     ${g.sk?`<div><div class="dl">${L.det_skill}</div><div class="dv">${skillIcon(g.sk)} ${esc(L.skill[g.sk]||g.sk)}</div></div>`:''}
   </div>`;
 }

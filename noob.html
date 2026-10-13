@@ -564,12 +564,12 @@ function renderSpecView(){
   const PEND_IMG={달:'1336',태양:'1337',별:'1335'};
   const IB='https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main';
   let gemRows='';
-  for(const lv of [40,39,38,37]){
+  for(const lv of (typeof lowGemOn==='function'&&lowGemOn()?[40,39,38,37,36,35]:[40,39,38,37])){
     const hp=S.gems?.hp?.[lv]||0,atk=S.gems?.atk?.[lv]||0,def=S.gems?.def?.[lv]||0;
-    if(hp||atk||def)gemRows+=`<tr><td style="color:var(--dim);font-weight:700">${GEM_NAME[lv]||lv}젬 <span style="color:var(--dimmer);font-weight:400;font-size:10px">(기존 ${lv})</span></td><td class="sv-gem-hp">${hp||'-'}</td><td class="sv-gem-atk">${atk||'-'}</td><td class="sv-gem-def">${def||'-'}</td></tr>`;
+    if(hp||atk||def)gemRows+=`<tr><td style="color:var(--dim);font-weight:700">${GEM_NAME[lv]||lv}젬 ${GEM_NAME[lv]!==lv?`<span style="color:var(--dimmer);font-weight:400;font-size:10px">(기존 ${lv})</span>`:''}</td><td class="sv-gem-hp">${hp||'-'}</td><td class="sv-gem-atk">${atk||'-'}</td><td class="sv-gem-def">${def||'-'}</td></tr>`;
   }
   const t={hp:0,atk:0,def:0};
-  for(const s of ['hp','atk','def'])for(const lv of [37,38,39,40])t[s]+=(S.gems?.[s]?.[lv]||0);
+  for(const s of ['hp','atk','def'])for(const lv of (typeof lowGemOn==='function'&&lowGemOn()?[35,36,37,38,39,40]:[37,38,39,40]))t[s]+=(S.gems?.[s]?.[lv]||0);
   if(gemRows)gemRows+=`<tr style="border-top:2px solid var(--bd)"><td style="color:var(--dim);font-size:10px">합계</td><td class="sv-gem-hp">${t.hp||'-'}</td><td class="sv-gem-atk">${t.atk||'-'}</td><td class="sv-gem-def">${t.def||'-'}</td></tr>`;
   const gemH=gemRows?`<table class="sv-gem-table"><thead><tr><th></th><th class="sv-gem-hp">체</th><th class="sv-gem-atk">공</th><th class="sv-gem-def">방</th></tr></thead><tbody>${gemRows}</tbody></table>`:`<div class="sv-empty">젬 없음</div>`;
   const accs=S.accCards||[];

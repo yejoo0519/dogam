@@ -84,6 +84,8 @@ select:disabled,input:disabled{opacity:.3;cursor:not-allowed}
 .gem-grid{display:grid;grid-template-columns:58px repeat(3,1fr);gap:6px;align-items:center}
 .gem-hdr{font-size:11px;color:var(--dim);text-align:center}
 .gem-lbl{font-weight:800;font-size:13px}
+.gem-grid:not(.show-low) .gem-low{display:none}
+.gem-low-tg{display:flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--dim);text-transform:none;letter-spacing:0;cursor:pointer;white-space:nowrap}
 .gem-grid input{width:100%;text-align:center;padding:5px;font-size:13px}
 .gem-grid input[type=number]::-webkit-outer-spin-button,.gem-grid input[type=number]::-webkit-inner-spin-button{-webkit-appearance:auto!important;margin:0}
 .gem-grid input[type=number]{appearance:auto;-moz-appearance:number-input!important}
@@ -256,7 +258,7 @@ button{white-space:nowrap}
  <div class="sec">
  <div class="sec-hd">
  <span>젬 보유량</span>
- <button class="btn-reset" onclick="resetGems()">↺</button>
+ <span style="display:flex;align-items:center;gap:8px"><label class="gem-low-tg"><input type="checkbox" id="gem-low-tg" onchange="toggleLowGem(this.checked)"> 뉴비용 젬</label><button class="btn-reset" onclick="resetGems()">↺</button></span>
  </div>
  <div class="sec-bd">
  <div class="gem-grid">
@@ -264,6 +266,14 @@ button{white-space:nowrap}
  <div class="gem-hdr" style="color:var(--hpc)">체</div>
  <div class="gem-hdr" style="color:var(--atc)">공</div>
  <div class="gem-hdr" style="color:var(--dfc)">방</div>
+ <div class="gem-lbl gem-low">35젬</div>
+ <input class="gem-low" type="number" id="gem-hp-35" min="0" value="0" oninput="onGem('hp',35,this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+ <input class="gem-low" type="number" id="gem-atk-35" min="0" value="0" oninput="onGem('atk',35,this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+ <input class="gem-low" type="number" id="gem-def-35" min="0" value="0" oninput="onGem('def',35,this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+ <div class="gem-lbl gem-low">36젬</div>
+ <input class="gem-low" type="number" id="gem-hp-36" min="0" value="0" oninput="onGem('hp',36,this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+ <input class="gem-low" type="number" id="gem-atk-36" min="0" value="0" oninput="onGem('atk',36,this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
+ <input class="gem-low" type="number" id="gem-def-36" min="0" value="0" oninput="onGem('def',36,this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
  <div class="gem-lbl">38젬<div style="color:var(--dimmer);font-weight:400;font-size:10px">(기존 37)</div></div>
  <input type="number" id="gem-hp-37" min="0" value="0" oninput="onGem('hp',37,this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
  <input type="number" id="gem-atk-37" min="0" value="0" oninput="onGem('atk',37,this.value)" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value=0" onkeydown="if(event.key==='Enter')this.blur()">
@@ -875,8 +885,17 @@ function showToast(msg){
 // ================================================================
 // 젬
 // ================================================================
+// 뉴비용 35·36젬 입력칸 표시 (화면 표시만, 계산은 길드전 뉴비 모드 부가 옵션에서 사용)
+const LOW_GEM_VIEW_KEY='dv1_spec_lowgem';
+function toggleLowGem(on){
+ document.querySelector('.gem-grid')?.classList.toggle('show-low',!!on);
+ try{localStorage.setItem(LOW_GEM_VIEW_KEY,on?'1':'0');}catch(e){}
+}
 function populateGems(){
- for(const s of SKEYS)for(const lv of [37,38,39,40]){
+ let low=false;try{low=localStorage.getItem(LOW_GEM_VIEW_KEY)==='1';}catch(e){}
+ const tg=document.getElementById('gem-low-tg');if(tg)tg.checked=low;
+ document.querySelector('.gem-grid')?.classList.toggle('show-low',low);
+ for(const s of SKEYS)for(const lv of [35,36,37,38,39,40]){
  const el=document.getElementById(`gem-${s}-${lv}`);
  if(el)el.value=S.gems[s]?.[lv]||0;
  }

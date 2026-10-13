@@ -307,10 +307,15 @@ const BASE={
 };
 
 // 젬 DB (단계별 체/공/방 수치)
-const GEM={36:{hp:144,atk:36,def:36},37:{hp:152,atk:38,def:38},38:{hp:160,atk:40,def:40},39:{hp:168,atk:42,def:42},40:{hp:176,atk:44,def:44}};
-const GEM_NAME={36:36,37:38,38:40,39:42,40:44}; // 저장키(구 단계) → 표시명(신 단계)
+const GEM={34:{hp:136,atk:34,def:34},35:{hp:140,atk:35,def:35},36:{hp:144,atk:36,def:36},37:{hp:152,atk:38,def:38},38:{hp:160,atk:40,def:40},39:{hp:168,atk:42,def:42},40:{hp:176,atk:44,def:44}};
+const GEM_NAME={34:34,35:35,36:36,37:38,38:40,39:42,40:44}; // 저장키(구 단계) → 표시명(신 단계)
 const FALLBACK_GEM_LV=36;
 const FALLBACK_GEM_COUNT=999;
+// 뉴비 모드 부가 옵션: 35·36젬 포함 (모자라면 34젬)
+const LOW_GEM_KEY='dv1_noob_lowgem';
+function lowGemOn(){if(GUILD_MODE!=='noob')return false;try{return localStorage.getItem(LOW_GEM_KEY)==='1';}catch(e){return false;}}
+function ownGemLvs(){return lowGemOn()?[35,36,37,38,39,40]:[37,38,39,40];}
+function fallbackGemLv(){return lowGemOn()?34:FALLBACK_GEM_LV;}
 
 // 정령 DB: +옵 수치 (스탯×옵번호), %옵 수치 (옵번호), 부가옵 수치
 const SP_PLUS={hp:{1:216,2:240,3:264,4:480},atk:{1:54,2:60,3:66,4:120},def:{1:54,2:60,3:66,4:120}};
@@ -1522,12 +1527,12 @@ function setBuf(b){
 // 보유 젬을 풀(pool)로 변환. 각 원소: {s:스탯, lv:단계, cnt:보유수, h:체기여, a:공기여, d:방기여}
 function buildPool(){
   const pool=[];
-  for(const s of SKEYS)for(const lv of [37,38,39,40]){
+  for(const s of SKEYS)for(const lv of ownGemLvs()){
     const cnt=S.gems[s]?.[lv]||0;
     if(cnt>0)pool.push({s,lv,cnt,h:s==='hp'?GEM[lv].hp:0,a:s==='atk'?GEM[lv].atk:0,d:s==='def'?GEM[lv].def:0});
   }
   for(const s of SKEYS){
-    const lv=FALLBACK_GEM_LV;
+    const lv=fallbackGemLv();
     pool.push({s,lv,cnt:FALLBACK_GEM_COUNT,h:s==='hp'?GEM[lv].hp:0,a:s==='atk'?GEM[lv].atk:0,d:s==='def'?GEM[lv].def:0});
   }
   return pool;
@@ -1571,11 +1576,11 @@ function maxGemLevel(pool,alloc){
 
 function getBaselineGemLv(stat,totalNeed=15){
   let sum=0;
-  for(const lv of [40,39,38,37]){
+  for(const lv of ownGemLvs().slice().reverse()){
     sum+=S.gems[stat]?.[lv]||0;
     if(sum>=totalNeed)return lv;
   }
-  return FALLBACK_GEM_LV;
+  return fallbackGemLv();
 }
 
 function buildBaselineGemPool(totalNeed=15){
@@ -1623,7 +1628,7 @@ function getUpgradeGemTokens(){
   const tokens=[];
   for(const s of SKEYS){
     const base=getBaselineGemLv(s);
-    for(const lv of [40,39,38,37]){
+    for(const lv of ownGemLvs().slice().reverse()){
       if(lv<=base)continue;
       const cnt=S.gems[s]?.[lv]||0;
       for(let i=0;i<cnt;i++)tokens.push({s,lv,h:s==='hp'?GEM[lv].hp:0,a:s==='atk'?GEM[lv].atk:0,d:s==='def'?GEM[lv].def:0});
@@ -1676,7 +1681,7 @@ function genDiverseGemAllocs(pool,slots,perShapeLimit=24){
   groups.forEach(list=>{
     list.sort((a,b)=>gemAllocScore(pool,b)-gemAllocScore(pool,a));
     const picks=[...list.slice(0,perShapeLimit)];
-    [40,39,38,37].forEach(lv=>{
+    ownGemLvs().slice().reverse().forEach(lv=>{
       const capped=list.find(alloc=>maxGemLevel(pool,alloc)<=lv);
       if(capped)picks.push(capped);
     });
@@ -2492,8 +2497,18 @@ function fmtPend(p){
 // ================================================================
 // 초기화
 // ================================================================
+function mountLowGemOpt(){
+  if(GUILD_MODE!=='noob'||document.getElementById('low-gem'))return;
+  const box=document.getElementById('include-debuff')?.closest('.sim-cfg');if(!box)return;
+  const d=document.createElement('div');
+  d.innerHTML='<div class="cfg-lbl">부가 옵션</div><div class="radio-opts"><label><input type="checkbox" id="low-gem"> 35·36젬 포함 (모자라면 34젬)</label></div>';
+  box.appendChild(d);
+  const c=d.querySelector('#low-gem');c.checked=lowGemOn();
+  c.addEventListener('change',()=>{try{localStorage.setItem(LOW_GEM_KEY,c.checked?'1':'0');}catch(e){}try{renderSpecView();}catch(e){}});
+}
 function init(){
   try{doLoad();}catch(e){console.error('doLoad',e);}
+  try{mountLowGemOpt();}catch(e){}
   try{renderAcc();}catch(e){}
   try{populateGems();}catch(e){}
   try{renderPends();}catch(e){}

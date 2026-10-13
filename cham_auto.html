@@ -1818,13 +1818,14 @@ function simRowsAll(){
 }
 function simGrade(){return GRADES.includes(S.sim.grade)?S.sim.grade:'9.0';}
 function simLvName(){return S.sim.lv==='gang'?L.own_gang+' '+simGrade():'SSS Lv.'+S.sim.lv;}
-// 강림: 스탯은 타입·등급 기준 (D.BASE), 타입을 모르는 드래곤은 제외
+// 강림: 스탯이 속성·타입·등급으로만 정해져서 드래곤 대신 속성×타입으로 묶는다 (D.BASE)
 function simGangList(){
   const gr=simGrade(),out=[],seen=new Set();
   ATTRS.forEach(attr=>gangDb(attr).forEach(g=>{
     const dt=findType(g.ko),b=dt&&D.BASE[gr]&&D.BASE[gr][dt];if(!b)return;
-    const k=attr+'|'+g.ko;if(seen.has(k))return;seen.add(k);
-    out.push({ko:g.ko,en:g.en,did:g.img,stage:8,elem:attr,dtype:dt,hp:b.hp,atk:b.atk,def:b.def});
+    const k=attr+'|'+dt;if(seen.has(k))return;seen.add(k);
+    const lb=attrLbl(attr)+' · '+typeLbl(dt);
+    out.push({ko:lb,en:lb,gang:true,elem:attr,hp:b.hp,atk:b.atk,def:b.def});
   }));
   return out;
 }
@@ -1980,8 +1981,8 @@ function renderSimTableNow(){
     const gearTxt=simGearText(gear);
     return `<tr class="rw ${r.buffs.length?'buffed':''}${SIM_OPEN===k?' on':''}" data-row="${k}" onclick="simToggle(${k})">
       <td class="rk">${k+1}</td>
-      <td class="l"><div class="nmc" style="display:flex;align-items:center;gap:7px"><img src="${esc(imgUrl(g.did,g.stage||4))}" onerror="this.style.visibility='hidden'" alt="">
-        <div><b>${esc(nm(g))}${skillIcon(g.sk)}</b><small>${esc(attrLbl(g.elem)+(g.dtype?' · '+typeLbl(g.dtype):''))}</small>${gearTxt?`<small style="color:var(--dimmer)">${esc(gearTxt)}</small>`:''}</div></div></td>
+      <td class="l"><div class="nmc" style="display:flex;align-items:center;gap:7px">${g.gang?'':`<img src="${esc(imgUrl(g.did,4))}" onerror="this.style.visibility='hidden'" alt="">`}
+        <div><b>${esc(nm(g))}${skillIcon(g.sk)}</b>${g.gang?'':`<small>${esc(attrLbl(g.elem))}</small>`}${gearTxt?`<small style="color:var(--dimmer)">${esc(gearTxt)}</small>`:''}</div></div></td>
       <td class="c-hp">${fmt(r.hp)}${badge('hp')}</td><td class="c-atk">${fmt(r.atk)}${badge('atk')}</td><td class="c-def">${fmt(r.def)}${badge('def')}</td>
       <td class="${mCls('eval')}">${fmt(r.eval)}</td><td class="${mCls('bv')}">${fmt(r.bv)}</td></tr>
       ${SIM_OPEN===k?`<tr class="det"><td colspan="7">${simDetailHtml(g,r,gear)}</td></tr>`:''}`;

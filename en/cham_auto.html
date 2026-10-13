@@ -1842,7 +1842,7 @@ function simRowsAll(){
   SIM_CKEY=key;SIM_CACHE=rows;
   return rows;
 }
-function simGrade(){return GRADES.includes(S.sim.grade)?S.sim.grade:'9.0';}
+function simGrade(){return '9.0';}
 function simLvName(){return S.sim.lv==='gang'?L.own_gang+' '+simGrade():'SSS Lv.'+S.sim.lv;}
 // 강림: 스탯이 속성·타입·등급으로만 정해져서 드래곤 대신 속성×타입으로 묶는다 (D.BASE)
 function simGangList(){
@@ -1956,8 +1956,7 @@ function renderSimInput(){
       <span class="v">${sm.bonus?'+'+SP_BONUS[sm.bonus]:''}</span></div>`;
   const buff=`<div class="row3" style="max-width:none">${STATS.map(st=>`<label class="c-${st}">${statLbl(st)} ${st==='def'?'50%':'40%'}
       <select onchange="setBuff('${st}',this.value);simTouch()"><option value="">${L.none}</option>${ATTRS.map(a=>`<option value="${a}"${curBuff()[st]===a?' selected':''}>${attrLbl(a)}</option>`).join('')}</select></label>`).join('')}</div>`;
-  const lvSeg=`<div class="seg">${[['gang',L.own_gang],[45,'SSS Lv.45'],[21,'SSS Lv.21']].map(([lv,lb])=>`<button type="button" class="chip${sm.lv===lv?' on':''}" onclick="simEdit(s=>{s.lv=${typeof lv==='string'?`'${lv}'`:lv};})">${esc(lb)}</button>`).join('')}</div>`
-    +(sm.lv==='gang'?`<div class="seg" style="margin-top:6px">${GRADES.map(g=>`<button type="button" class="chip${simGrade()===g?' on':''}" onclick="simEdit(s=>{s.grade='${g}';})">${g}</button>`).join('')}</div>`:'');
+  const lvSeg=`<div class="seg">${[['gang',L.own_gang],[45,'SSS Lv.45'],[21,'SSS Lv.21']].map(([lv,lb])=>`<button type="button" class="chip${sm.lv===lv?' on':''}" onclick="simEdit(s=>{s.lv=${typeof lv==='string'?`'${lv}'`:lv};})">${esc(lb)}</button>`).join('')}</div>`;
   const gearSeg=`<div class="seg">${[[1,L.sim_gear_on],[0,L.sim_gear_off]].map(([v,lb])=>`<button type="button" class="chip${sm.gear===v?' on':''}" onclick="simEdit(s=>{s.gear=${v};})">${esc(lb)}</button>`).join('')}</div>`;
   const metric=`<div class="seg">${[['bv',L.bv],['eval','EVAL']].map(([m,lb])=>`<button type="button" class="chip${S.metric===m?' on':''}" onclick="S.metric='${m}';renderSetting();save();simTouch()">${lb}</button>`).join('')}</div>`;
   document.getElementById('sim-input').innerHTML=`

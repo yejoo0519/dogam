@@ -2007,7 +2007,7 @@ function renderSimTableNow(){
     const gearTxt=simGearText(gear);
     return `<tr class="rw ${r.buffs.length?'buffed':''}${SIM_OPEN===k?' on':''}" data-row="${k}" onclick="simToggle(${k})">
       <td class="rk">${k+1}</td>
-      <td class="l"><div class="nmc" style="display:flex;align-items:center;gap:7px">${g.gang?'':`<img src="${esc(imgUrl(g.did,4))}" onerror="this.style.visibility='hidden'" alt="">`}
+      <td class="l"><div class="nmc" style="display:flex;align-items:center;gap:7px"><img src="${esc(g.gang?elIcon(g.elem):imgUrl(g.did,4))}" onerror="this.style.visibility='hidden'" alt="">
         <div><b>${esc(nm(g))}${skillIcon(g.sk)}</b>${g.gang?'':`<small>${esc(attrLbl(g.elem))}</small>`}${gearTxt?`<small style="color:var(--dimmer)">${esc(gearTxt)}</small>`:''}</div></div></td>
       <td class="c-hp">${fmt(r.hp)}${badge('hp')}</td><td class="c-atk">${fmt(r.atk)}${badge('atk')}</td><td class="c-def">${fmt(r.def)}${badge('def')}</td>
       <td class="${mCls('eval')}">${fmt(r.eval)}</td><td class="${mCls('bv')}">${fmt(r.bv)}</td></tr>

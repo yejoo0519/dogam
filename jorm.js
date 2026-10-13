@@ -63,13 +63,14 @@
  let pendChoices=[];
  const pendLabel=p=>p.options.map(o=>`<span class="${o.stat}">${names[o.stat]} ${o.val}%</span>`).join(' / ');
  function renderChoices(){pendChoices=pendOptions(v('pendType'),n('pendValue'));$('pendChoices').innerHTML=pendChoices.map((p,i)=>`<button type="button" data-choice="${i}">${pendLabel(p)}<small>눌러서 추가</small></button>`).join('');}
- function addPendants(items){for(const p of items)if(!pendants.some(x=>JSON.stringify(x)===JSON.stringify(p)))pendants.push(JSON.parse(JSON.stringify(p)));renderPends();changed()}
+ // dup=true: 같은 옵션도 한 번 더 추가 (추가한 뒤 옵션 수치를 바꿔 쓸 수 있게). 세트 추가는 중복 없이.
+ function addPendants(items,dup=false){for(const p of items)if(dup||!pendants.some(x=>JSON.stringify(x)===JSON.stringify(p)))pendants.push(JSON.parse(JSON.stringify(p)));renderPends();changed()}
  function renderPends(){
   $('pendCount').textContent=pendants.length+'개';
   $('pendants').innerHTML=pendants.map((p,i)=>`<div class="j-pendant"><header><strong>${esc(p.name)}</strong><button type="button" data-pend="${i}" aria-label="${esc(p.name)} 제거">제거</button></header>${p.options.map((o,j)=>`<div class="fields"><label>${j+1}옵 스탯<select data-pi="${i}" data-oi="${j}" data-field="stat">${['hp','atk','def'].map(k=>`<option value="${k}" ${k===o.stat?'selected':''}>${names[k]}</option>`).join('')}</select></label><label>수치<select data-pi="${i}" data-oi="${j}" data-field="val">${[6,5,4,3,2,1].map(x=>`<option value="${x}" ${x===o.val?'selected':''}>${x}%</option>`).join('')}</select></label></div>`).join('')}</div>`).join('');
  }
  $('pendType').onchange=e=>{e.stopPropagation();renderChoices()};$('pendValue').onchange=e=>{e.stopPropagation();renderChoices()};
- $('pendChoices').onclick=e=>{const b=e.target.closest('[data-choice]');if(b)addPendants([pendChoices[Number(b.dataset.choice)]])};
+ $('pendChoices').onclick=e=>{const b=e.target.closest('[data-choice]');if(b)addPendants([pendChoices[Number(b.dataset.choice)]],true)};
  $('sunSet').onclick=()=>addPendants(pendOptions('태양',6));$('moonSet').onclick=()=>addPendants(pendOptions('달',6));
  $('pendants').onclick=e=>{if(e.target.dataset.pend===undefined)return;pendants.splice(Number(e.target.dataset.pend),1);renderPends();changed()};
  $('pendants').onchange=e=>{const el=e.target;if(el.dataset.pi===undefined)return;e.stopPropagation();pendants[Number(el.dataset.pi)].options[Number(el.dataset.oi)][el.dataset.field]=el.dataset.field==='val'?Number(el.value):el.value;changed()};

@@ -1821,10 +1821,32 @@ function runSim(){
   },20);
 }
 
+// 옵션이 같은 펜던트는 한 종류로 묶고 보유 개수(_pendCnt)로 관리한다.
+// 같은 펜던트를 여러 개 넣어도 후보가 복제되어 탐색 상한을 채우지 않게 하기 위함.
+function pendSig(p){
+  const mo=p.type==='태양'?3:p.type==='달'?2:1;
+  return p.type+'|'+(p.options||[]).slice(0,mo).map(o=>o&&o.stat?o.stat+':'+(Number(o.val)||0):'-').sort().join(',');
+}
 function getPends(excSun){
-  const raw=[null,...S.pendants.map((p,i)=>({...p,_pendId:i}))];
-  const filtered=excSun?raw.filter(p=>!p||p.type!=='태양'):raw;
-  return filtered.length?filtered:[null];
+  const kinds=new Map();
+  (S.pendants||[]).forEach(p=>{
+    if(!p||(excSun&&p.type==='태양'))return;
+    const k=pendSig(p);
+    if(kinds.has(k))kinds.get(k)._pendCnt++;
+    else kinds.set(k,{...p,_pendId:k,_pendCnt:1});
+  });
+  return [null,...kinds.values()];
+}
+
+// 같은 장신구(이름·인챈트 동일)도 한 종류로 묶고 개수(_accCnt)로 관리한다.
+function groupOwnedAcc(list){
+  const kinds=new Map();
+  list.forEach(a=>{
+    const k=a.n+'|'+(a._enc||'none');
+    if(kinds.has(k))kinds.get(k)._accCnt++;
+    else kinds.set(k,{...a,_accId:k,_accCnt:1});
+  });
+  return [...kinds.values()];
 }
 
 function calcPendPct(pend){
@@ -1892,102 +1914,259 @@ function getDragonDebuffCounts(dragon){
   return counts;
 }
 
+// ================================================================
+// 3마리 덱 탐색 (상한 기반 분기 한정)
+// 1) 용마다 장신구 × 인챈트 × 펜던트 × 젬 개수 분배(체/공/방 합 5) 후보를 전부 만든다.
+//    이때 젬은 "그 스탯의 보유 젬 중 가장 높은 것부터 쓴다"고 가정한 값 = 실제로 낼 수 있는 값의 상한.
+// 2) 상한 높은 순으로 3마리 조합을 탐색하고, 조합마다 공용 젬 주머니에서 실제 젬을 나눠 정확한 값을 계산한다.
+// 3) 남은 자리를 전부 상한으로 채워도 현재 1등을 못 넘을 때만 건너뛴다 → 1등이 될 수 있는 조합은 잘리지 않는다.
+// 후보 개수 상한이 없으므로 장신구·펜던트·젬을 추가해도 결과가 내려가지 않는다.
+// ================================================================
+const GEM_SHAPES=(()=>{const r=[];for(let h=0;h<=5;h++)for(let a=0;a<=5-h;a++)r.push([h,a,5-h-a]);return r;})();
+
+// 스탯별 보유 젬을 높은 단계부터 15개까지 나열 (모자라면 폴백 젬으로 채움)
+function buildGemStock(){
+  const stock={};
+  for(const s of SKEYS){
+    const list=[];
+    for(const lv of ownGemLvs().slice().reverse()){
+      const cnt=Math.min(15,S.gems[s]?.[lv]||0);
+      for(let i=0;i<cnt&&list.length<15;i++)list.push(lv);
+    }
+    while(list.length<15)list.push(fallbackGemLv());
+    const items=list.map(lv=>({s,lv,h:s==='hp'?GEM[lv].hp:0,a:s==='atk'?GEM[lv].atk:0,d:s==='def'?GEM[lv].def:0}));
+    const val=items.map(g=>g.h+g.a+g.d);
+    const pre=[0];val.forEach(v=>pre.push(pre[pre.length-1]+v));
+    stock[s]={items,pre};
+  }
+  return stock;
+}
+
+function guildOptStats(c,gH,gA,gD){
+  const fH=calcStat(c.bh,gH,24,c.aH,c.sPct.hp,c.pH,c.sP.hp,c.sB.hp,c.coll.hp,c.netBufH);
+  const fA=calcStat(c.ba,gA,6,c.aA,c.sPct.atk,c.pA,c.sP.atk,c.sB.atk,c.coll.atk,c.netBufA);
+  const fD=calcStat(c.bd,gD,6,c.aD,c.sPct.def,c.pD,c.sP.def,c.sB.def,c.coll.def,c.netBufD);
+  return {fH,fA,fD,bv:fH*fA*fD};
+}
+
+// 3마리(젬 개수 분배 고정)에 공용 젬을 실제로 나눠 준다.
+// 스탯별로 필요한 개수만큼 높은 젬부터 꺼내고, 기준(가장 낮은 젬)으로 채운 뒤 높은 젬을 이득이 가장 큰 용에게 하나씩 준다.
+function assignTripleGems(deck,stock,score,refineFloor=-Infinity){
+  const items=deck.map(()=>[]);
+  const tokens=[];
+  for(const s of SKEYS){
+    const si=SKEYS.indexOf(s);
+    const need=deck.reduce((t,o)=>t+o.shape[si],0);
+    if(!need)continue;
+    const top=stock[s].items.slice(0,need);
+    const low=top[need-1];
+    deck.forEach((o,di)=>{for(let k=0;k<o.shape[si];k++)items[di].push(low);});
+    top.forEach(g=>{if(g.lv!==low.lv)tokens.push(g);});
+  }
+  const sums=items.map(list=>{let h=0,a=0,d=0;list.forEach(g=>{h+=g.h;a+=g.a;d+=g.d;});return [h,a,d];});
+  const cur=deck.map((o,di)=>guildOptStats(o._calc,...sums[di]));
+  tokens.sort((x,y)=>(y.h+y.a+y.d)-(x.h+x.a+x.d));
+  for(const t of tokens){
+    let best=null;
+    deck.forEach((o,di)=>{
+      const gi=items[di].findIndex(g=>g.s===t.s&&(g.h+g.a+g.d)<(t.h+t.a+t.d)&&!g._up);
+      if(gi<0)return;
+      const old=items[di][gi];
+      const ns=[sums[di][0]-old.h+t.h,sums[di][1]-old.a+t.a,sums[di][2]-old.d+t.d];
+      const r=guildOptStats(o._calc,...ns);
+      const gain=score(o,r.bv)-score(o,cur[di].bv),bvGain=r.bv-cur[di].bv;
+      if(!best||gain>best.gain||(gain===best.gain&&bvGain>best.bvGain))best={di,gi,ns,r,gain,bvGain};
+    });
+    if(!best)continue;
+    items[best.di][best.gi]={...t,_up:true};
+    sums[best.di]=best.ns;cur[best.di]=best.r;
+  }
+  // 정밀 분배는 결과를 아주 조금(보통 0.01% 미만) 올리므로, 현재 1등과 1% 이상 차이 나는 조합은 건너뛴다.
+  const roughTotal=deck.reduce((t,o,di)=>t+score(o,cur[di].bv),0);
+  const refine=roughTotal>=refineFloor;
+  // 스탯 하나씩, 그 스탯 젬을 3마리에게 나누는 모든 경우를 따져 가장 좋은 분배로 바꾼다 (다른 스탯은 고정).
+  // 젬 하나씩 맞바꾸면 소수점 버림 때문에 놓치는 분배까지 찾는다. 더 안 오를 때까지 반복.
+  for(let round=0;refine&&round<4;round++){
+    let improved=false;
+    for(let si=0;si<3;si++){
+      const st=SKEYS[si];
+      const ks=deck.map(o=>o.shape[si]);
+      const need=ks[0]+ks[1]+ks[2];
+      if(!need||ks.filter(k=>k>0).length<2)continue;
+      const top=stock[st].items.slice(0,need);
+      const lvs=[];top.forEach(g=>{const l=lvs.find(x=>x.g.lv===g.lv);if(l)l.n++;else lvs.push({g,n:1});});
+      if(lvs.length<2)continue;
+      const val=lvs.map(l=>l.g.h+l.g.a+l.g.d);
+      const own=deck.map((o,di)=>items[di].filter(g=>g.s===st).reduce((t,g)=>t+g.h+g.a+g.d,0));
+      const baseSum=deck.map((o,di)=>{const v=[...sums[di]];v[si]-=own[di];return v;});
+      const memo=[new Map(),new Map(),new Map()];
+      const evalSum=(di,x)=>{
+        let m=memo[di].get(x);
+        if(!m){const v=[...baseSum[di]];v[si]+=x;const r=guildOptStats(deck[di]._calc,...v);m={r,sc:score(deck[di],r.bv)};memo[di].set(x,m);}
+        return m;
+      };
+      const curTotal=deck.reduce((t,o,di)=>t+score(o,cur[di].bv),0);
+      let best=null;
+      const left=lvs.map(l=>l.n);
+      const pick=[[],[],[]];
+      const rec=(di,li,remK,acc)=>{
+        if(di===3){
+          const m0=evalSum(0,acc[0]),m1=evalSum(1,acc[1]),m2=evalSum(2,acc[2]);
+          const tot=m0.sc+m1.sc+m2.sc;
+          if(!best||tot>best.tot)best={tot,rs:[m0.r,m1.r,m2.r],pick:pick.map(p=>[...p])};
+          return;
+        }
+        if(li===lvs.length){if(remK===0)rec(di+1,0,ks[di+1]??0,acc);return;}
+        const maxN=Math.min(left[li],remK);
+        for(let n=di===2?Math.min(left[li],remK):0;n<=maxN;n++){
+          if(di===2&&n!==left[li])break;
+          left[li]-=n;pick[di][li]=n;acc[di]+=n*val[li];
+          rec(di,li+1,remK-n,acc);
+          acc[di]-=n*val[li];left[li]+=n;
+        }
+        pick[di][li]=0;
+      };
+      rec(0,0,ks[0],[0,0,0]);
+      if(best&&best.tot>curTotal+1e-9){
+        deck.forEach((o,di)=>{
+          const others=items[di].filter(g=>g.s!==st);
+          const mine=[];lvs.forEach((l,li)=>{for(let n=0;n<(best.pick[di][li]||0);n++)mine.push(l.g);});
+          items[di]=[...others,...mine];
+          const v=[...baseSum[di]];v[si]+=mine.reduce((t,g)=>t+g.h+g.a+g.d,0);
+          sums[di]=v;cur[di]=best.rs[di];
+        });
+        improved=true;
+      }
+    }
+    if(!improved)break;
+  }
+  let total=0,bvSum=0;
+  const out=deck.map((o,di)=>{
+    const r=cur[di];total+=score(o,r.bv);bvSum+=r.bv;
+    return {...o,...r,alloc:compressGemItems(items[di].map(({_up,...g})=>g))};
+  });
+  return {total,bvSum,out};
+}
+
+function guildPairOk(a,b){
+  if(a.accId===b.accId&&a.accCnt<2)return false;
+  if(a.pendId!=null&&a.pendId===b.pendId&&a.pendCnt<2)return false;
+  return true;
+}
+function guildTripleOk(a,b,c){
+  if(!guildPairOk(a,c)||!guildPairOk(b,c))return false;
+  if(a.accId===b.accId&&b.accId===c.accId&&c.accCnt<3)return false;
+  if(c.pendId!=null&&a.pendId===b.pendId&&b.pendId===c.pendId&&c.pendCnt<3)return false;
+  return true;
+}
+
 async function doSimDeck(ownedAcc,dragons,excSun,onProgress=()=>{},encModeOverride=null){
-  const pool=buildBaselineGemPool(15);
-  const allocs=genAllocs(pool,5,true);
+  ownedAcc=groupOwnedAcc(ownedAcc);
+  const stock=buildGemStock();
   const pends=getPends(excSun);
   const coll=S.coll;
   const encMode=encModeOverride||document.querySelector('input[name="enc-mode"]:checked')?.value||'fixed';
-  const optionLimit=80;
-  const dragonOptionSets=[];
-  const total=dragons.length*ownedAcc.length*(encMode==='infinite'?3:1)*pends.length*allocs.length;
-  let done=0,lastYield=performance.now();
+  const score=(o,bv)=>typeof guildScore==='function'?guildScore(o,bv):bv;
+  const minGemVal={};SKEYS.forEach(s=>{const it=stock[s].items[14];minGemVal[s]=it.h+it.a+it.d;});
+  // 점수(비밸 또는 TAR)가 비밸 1 늘 때 최소 몇 오르는지 (TAR은 구간별 기울기, 하한 0)
+  const scoreSlopeMin=(o,minBv)=>{
+    if(typeof guildPriority==='undefined'||guildPriority!=='tar')return 1;
+    const M=(TAR_M[o.dragon.dtype]||{})[tarLabel(o.buff)];
+    if(!M)return 0;
+    return minBv/M>0.5?100/M:0;
+  };
+  // 3마리가 같은 상위 젬을 동시에 가정한 만큼 상한에서 빼는 값 (항상 실제 손실 이하)
+  // (용 2마리만 봐도 성립: 셋째가 젬을 더 가져가면 겹침은 늘기만 한다)
+  const lossLB=list=>{
+    let loss=0;
+    for(let si=0;si<3;si++){
+      const pre=stock[SKEYS[si]].pre;
+      let need=0,D=0,m=Infinity,slack=0;
+      for(const o of list){const k=o.shape[si];need+=k;D+=pre[k];if(k)m=Math.min(m,o.mult[si]*o.lossK[si]);slack+=5*o.lossK[si];}
+      if(!need)continue;
+      D-=pre[need];
+      if(D>0)loss+=Math.max(0,m*D-slack);
+    }
+    return loss;
+  };
+  const sets=[];
+  let lastYield=performance.now();
   onProgress(0,'장비 조합 계산');await new Promise(r=>setTimeout(r,0));
 
-  for(const dragon of dragons){
+  for(let di=0;di<dragons.length;di++){
+    const dragon=dragons[di];
     const {plus:sP,pct:sPct,bonus:sB}=procSpiritFrom(dragon);
     const bs=BASE[dragon.grade][dragon.dtype];
     const bh=bs.hp,ba=bs.atk,bd=bs.def;
-    const buff=getDragonBuffCounts(dragon);
-    const bufH=Math.floor(buff.hp*bh*.2);
-    const bufA=Math.floor(buff.atk*ba*.2);
-    const bufD=Math.floor(buff.def*bd*.2);
-    const debuff=getDragonDebuffCounts(dragon);
-    const debufH=Math.floor(debuff.hp*bh*.2);
-    const debufA=Math.floor(debuff.atk*ba*.2);
-    const debufD=Math.floor(debuff.def*bd*.2);
-    const netBufH=bufH-debufH, netBufA=bufA-debufA, netBufD=bufD-debufD;
-    let options=[];
-    const bestByAcc=new Map();
-    const bestByPend=new Map();
-    const bestByAccPend=new Map();
-    const bestByResourceShape=new Map();
-    let minBV=-Infinity;
-
+    const buff=getDragonBuffCounts(dragon),debuff=getDragonDebuffCounts(dragon);
+    const bufH=Math.floor(buff.hp*bh*.2),bufA=Math.floor(buff.atk*ba*.2),bufD=Math.floor(buff.def*bd*.2);
+    const debufH=Math.floor(debuff.hp*bh*.2),debufA=Math.floor(debuff.atk*ba*.2),debufD=Math.floor(debuff.def*bd*.2);
+    const netBufH=bufH-debufH,netBufA=bufA-debufA,netBufD=bufD-debufD;
+    const options=[];
     for(const acc of ownedAcc){
       const encs=encMode==='infinite'?['hp','atk','def']:[acc._enc||'none'];
       for(const enc of encs){
-        const aH=acc.hp+(enc==='hp'?.21:0);
-        const aA=acc.atk+(enc==='atk'?.21:0);
-        const aD=acc.def+(enc==='def'?.21:0);
+        const aH=acc.hp+(enc==='hp'?.21:0),aA=acc.atk+(enc==='atk'?.21:0),aD=acc.def+(enc==='def'?.21:0);
         for(const pend of pends){
-          const{pH,pA,pD}=calcPendPct(pend);
-          for(const alloc of allocs){
-            if((++done&1023)===0&&performance.now()-lastYield>=100){onProgress(80*done/Math.max(1,total),'장비 조합 계산');await CalcProgress.yield();lastYield=performance.now();}
-            let gH=0,gA=0,gD=0;
-            for(let i=0;i<alloc.length;i++){gH+=alloc[i]*pool[i].h;gA+=alloc[i]*pool[i].a;gD+=alloc[i]*pool[i].d;}
-            const fH=calcStat(bh,gH,24,aH,sPct.hp,pH,sP.hp,sB.hp,coll.hp,netBufH);
-            const fA=calcStat(ba,gA,6,aA,sPct.atk,pA,sP.atk,sB.atk,coll.atk,netBufA);
-            const fD=calcStat(bd,gD,6,aD,sPct.def,pD,sP.def,sB.def,coll.def,netBufD);
-            const bv=fH*fA*fD;
-            const opt={
-              bv,dragon,accN:acc.n,accId:acc._accId,enc,pend,pendId:pend?pend._pendId:null,
-              allocRaw:[...alloc],alloc:alloc.map((k,i)=>({k,g:pool[i]})).filter(x=>x.k>0),
-              fH,fA,fD,buff,debuff,_pool:pool,_calc:{bh,ba,bd,aH,aA,aD,pH,pA,pD,sPct,sP,sB,coll,bufH,bufA,bufD,debufH,debufA,debufD,netBufH,netBufA,netBufD}
-            };
-            if(!bestByAcc.has(acc._accId)||opt.bv>bestByAcc.get(acc._accId).bv)bestByAcc.set(acc._accId,opt);
-            const pendKey=pend?pend._pendId:'none';
-            const pairKey=`${acc._accId}|${pendKey}`;
-            if(!bestByPend.has(pendKey)||opt.bv>bestByPend.get(pendKey).bv)bestByPend.set(pendKey,opt);
-            if(!bestByAccPend.has(pairKey)||opt.bv>bestByAccPend.get(pairKey).bv)bestByAccPend.set(pairKey,opt);
-            const gemCount=opt.allocRaw.reduce((s,n)=>s+n,0);
-            const gemByStat=SKEYS.map(stat=>opt.allocRaw.reduce((sum,n,i)=>sum+(pool[i].s===stat?n:0),0)).join('/');
-            const gemLvSig=opt.allocRaw.map((n,i)=>n?`${pool[i].s}${pool[i].lv}:${n}`:'').filter(Boolean).join(',');
-            const shapeKey=`${acc._accId}|${pend?pend._pendId:'none'}|${enc}|${gemCount}|${gemByStat}|${gemLvSig}`;
-            if(!bestByResourceShape.has(shapeKey)||opt.bv>bestByResourceShape.get(shapeKey).bv)bestByResourceShape.set(shapeKey,opt);
-            if(opt.bv>minBV||options.length<optionLimit){
-              let lo=0,hi=options.length;
-              while(lo<hi){const m=(lo+hi)>>1;if(options[m].bv>=opt.bv)lo=m+1;else hi=m;}
-              options.splice(lo,0,opt);
-              if(options.length>optionLimit)options.pop();
-              minBV=options.length===optionLimit?options[optionLimit-1].bv:-Infinity;
-            }
+          const {pH,pA,pD}=calcPendPct(pend);
+          const _calc={bh,ba,bd,aH,aA,aD,pH,pA,pD,sPct,sP,sB,coll,bufH,bufA,bufD,debufH,debufA,debufD,netBufH,netBufA,netBufD};
+          const base={dragon,buff,debuff,accN:acc.n,accId:acc._accId,accCnt:acc._accCnt||1,enc,pend,pendId:pend?pend._pendId:null,pendCnt:pend?pend._pendCnt||1:0,_calc};
+          const mult=[(1+aH)*(1+sPct.hp)*(1+pH),(1+aA)*(1+sPct.atk)*(1+pA),(1+aD)*(1+sPct.def)*(1+pD)];
+          for(const shape of GEM_SHAPES){
+            const r=guildOptStats(_calc,stock.hp.pre[shape[0]],stock.atk.pre[shape[1]],stock.def.pre[shape[2]]);
+            const o={...base,shape,ub:r.bv};
+            o.ubS=score(o,r.bv);
+            // 가장 낮은 젬만 받았을 때의 스탯 → 젬을 덜 받았을 때 줄어드는 양의 하한 계산에 사용
+            const lo=guildOptStats(_calc,shape[0]*minGemVal.hp,shape[1]*minGemVal.atk,shape[2]*minGemVal.def);
+            o.lossK=[lo.fA*lo.fD,lo.fH*lo.fD,lo.fH*lo.fA].map((v,si)=>v*scoreSlopeMin(o,lo.bv));
+            o.mult=mult;
+            options.push(o);
           }
         }
       }
     }
-    if(options.length){
-      const topOptions=[...options].sort((a,b)=>b.bv-a.bv).slice(0,optionLimit);
-      options=mergeOptionGroups([
-        topOptions,
-        [...bestByAcc.values()],
-        [...bestByPend.values()],
-        [...bestByAccPend.values()],
-        [...bestByResourceShape.values()].sort((a,b)=>b.bv-a.bv).slice(0,optionLimit)
-      ],optionLimit*3);
-      dragonOptionSets.push({dragon,options,bestBV:options[0].bv});
-    }
+    options.sort((x,y)=>y.ubS-x.ubS||y.ub-x.ub);
+    if(options.length)sets.push({dragon,options});
+    if(performance.now()-lastYield>=100){onProgress(20*(di+1)/dragons.length,'장비 조합 계산');await CalcProgress.yield();lastYield=performance.now();}
   }
+  sets.sort((x,y)=>y.options[0].ubS-x.options[0].ubS);
 
-  dragonOptionSets.sort((a,b)=>b.bestBV-a.bestBV);
-  onProgress(80,'3마리 조합 탐색');
-  const decks=await findBestDecks(dragonOptionSets,pool,onProgress);
-  return pickBestUpgradedDeck(decks);
+  // 분기 한정 탐색
+  let best=null;
+  const beats=(s,b)=>!best||s>best.total||(s===best.total&&b>best.bvSum);
+  const canBeat=(s,b)=>!best||s>best.total||(s===best.total&&b>best.bvSum);
+  const n=sets.length,totalTriples=n*(n-1)*(n-2)/6;let done=0,steps=0;
+  onProgress(20,'3마리 조합 탐색');
+  for(let i=0;i<n-2;i++)for(let j=i+1;j<n-1;j++)for(let k=j+1;k<n;k++){
+    done++;
+    const A=sets[i].options,B=sets[j].options,C=sets[k].options;
+    if(!canBeat(A[0].ubS+B[0].ubS+C[0].ubS,A[0].ub+B[0].ub+C[0].ub))continue;
+    for(const a of A){
+      if(!canBeat(a.ubS+B[0].ubS+C[0].ubS,a.ub+B[0].ub+C[0].ub))break;
+      for(const b of B){
+        if(!canBeat(a.ubS+b.ubS+C[0].ubS,a.ub+b.ub+C[0].ub))break;
+        if(!guildPairOk(a,b))continue;
+        const abLoss=lossLB([a,b]);
+        if(!canBeat(a.ubS+b.ubS+C[0].ubS-abLoss,a.ub+b.ub+C[0].ub))continue;
+        for(const c of C){
+          if(!canBeat(a.ubS+b.ubS+c.ubS-abLoss,a.ub+b.ub+c.ub))break;
+          if(!guildTripleOk(a,b,c))continue;
+          if(!canBeat(a.ubS+b.ubS+c.ubS-lossLB([a,b,c]),a.ub+b.ub+c.ub))continue;
+          const r=assignTripleGems([a,b,c],stock,score,best?best.total*0.99:-Infinity);
+          if(beats(r.total,r.bvSum))best=r;
+          if((++steps&1023)===0&&performance.now()-lastYield>=100){onProgress(20+79*done/Math.max(1,totalTriples),'3마리 조합 탐색');await CalcProgress.yield();lastYield=performance.now();}
+        }
+      }
+    }
+    if(performance.now()-lastYield>=100){onProgress(20+79*done/Math.max(1,totalTriples),'3마리 조합 탐색');await CalcProgress.yield();lastYield=performance.now();}
+  }
+  if(!best)return [];
+  return best.out.sort((a,b)=>typeof guildCompare==='function'?guildCompare(a,b):b.bv-a.bv);
 }
 
 function deckOptionsCompatible(a,b,pool){
-  if(a.accId===b.accId)return false;
-  if(a.pendId!=null&&a.pendId===b.pendId)return false;
+  if(a.accId===b.accId&&a.accCnt<2)return false;
+  if(a.pendId!=null&&a.pendId===b.pendId&&a.pendCnt<2)return false;
   for(let i=0;i<pool.length;i++){
     if((a.allocRaw[i]||0)+(b.allocRaw[i]||0)>pool[i].cnt)return false;
   }
@@ -1996,9 +2175,10 @@ function deckOptionsCompatible(a,b,pool){
 
 function deckCanAdd(deck,opt,pool){
   const gemUse=new Array(pool.length).fill(0);
+  let accUse=1,pendUse=1;
   for(const cur of deck){
-    if(cur.accId===opt.accId)return false;
-    if(cur.pendId!=null&&opt.pendId!=null&&cur.pendId===opt.pendId)return false;
+    if(cur.accId===opt.accId&&++accUse>opt.accCnt)return false;
+    if(opt.pendId!=null&&cur.pendId===opt.pendId&&++pendUse>opt.pendCnt)return false;
     for(let i=0;i<pool.length;i++)gemUse[i]+=cur.allocRaw[i]||0;
   }
   for(let i=0;i<pool.length;i++){
@@ -2009,7 +2189,7 @@ function deckCanAdd(deck,opt,pool){
 
 // 기준 단계 젬으로 상위 후보 조합을 여러 개 뽑는다 (고단계 젬은 이후 applyBestGemUpgrades에서 끼운다).
 // 1개만 고르면, 젬을 끼운 뒤 다른 조합이 더 높아지는 경우를 놓친다 — 예: 승계 가능이 보유 인챈트보다 낮게 나오던 문제.
-const DECK_CANDIDATES=40;
+const DECK_CANDIDATES=200;
 async function findBestDecks(dragonOptionSets,pool,onProgress=()=>{},limit=DECK_CANDIDATES){
   const score=r=>typeof guildScore==='function'?guildScore(r):r.bv;
   const sets=dragonOptionSets.map(s=>({...s,options:s.options.slice().sort((a,b)=>score(b)-score(a)||b.bv-a.bv)}));

@@ -46,6 +46,9 @@
   function survivalScore(hp,def,light=false){return 100*endurance(hp,def,light)/reference;}
   // Penetration (관통): one hit at random 100%, no crit/evasion. bossAtk is back-calculated from a measured hit.
   function penetrationHit(def,bossAtk,light=false){return Math.floor(44*bossAtk*16/(def*lightMul(light)+352)+1e-9);}
+  // 가드 시 방어력 ×3. 생존: 체력 > 정타 hits회 + 가드 guards회 피해 합.
+  function penetrationGuardHit(def,bossAtk,light=false){return Math.floor(44*bossAtk*16/(def*lightMul(light)*3+352)+1e-9);}
+  function penetrationSurvives(hp,def,bossAtk,light,hits,guards=0){return hp>hits*penetrationHit(def,bossAtk,light)+guards*penetrationGuardHit(def,bossAtk,light);}
   function penetrationHits(hp,def,bossAtk,light=false){const h=penetrationHit(def,bossAtk,light);return h>0?Math.floor((hp-1)/h):Infinity;}
   // Largest boss attack that still gives the measured damage (conservative: floor keeps the same hit).
   function penetrationAttack(damage,def,light=false){return (damage+1)*(def*lightMul(light)+352)/704-1e-6;}
@@ -102,9 +105,11 @@
     // Pareto-maximal (hp,def) pendant pairs: exact upper bound of the tank score for one gem split.
     const pairs=[...new Map(pends.map(p=>[p.hp+','+p.def,p])).values()].filter(p=>!pends.some(q=>q.hp>=p.hp&&q.def>=p.def&&(q.hp>p.hp||q.def>p.def)));
     const pf=(v,p)=>Math.floor(v*(1+p/100)+1e-9);
+    // c.buffs = {hp,atk,def} (%): 1~3층 버프. 최종 능력치(부가옵·컬렉션 포함)에 마지막으로 곱하고 버림.
+    const BF=c.buffs||{},bf=(k,v)=>BF[k]>0?Math.floor(v*(1+BF[k]/100)+1e-9):v;
     // Optimistic row from pre-pendant values; every stage is monotone, so this never undercuts a real row.
-    function loose(h,a,d,add,prob){const hp=pf(h,maxPend.hp)+add.hp,df=pf(d,maxPend.def)+add.def,at=pf(a,maxPend.atk)+add.atk;const r={tankBV:hp*at*df,dealt:dealtWithCrit(at,c,tank?null:prob,critMult)};if(tank)r.score=applyEvasion(survivalScore(hp,df,lightArg),prob);return r;}
-    function tight(h,a,d,add,prob){let score=-Infinity;for(const p of pairs){const v=survivalUpper(pf(h,p.hp)+add.hp,pf(d,p.def)+add.def,lightArg);if(v>score)score=v;}return {score:applyEvasion(score,prob),tankBV:(pf(h,maxPend.hp)+add.hp)*(pf(a,maxPend.atk)+add.atk)*(pf(d,maxPend.def)+add.def),dealt:attack(pf(a,maxPend.atk)+add.atk,c)};}
+    function loose(h,a,d,add,prob){const hp=bf('hp',pf(h,maxPend.hp)+add.hp),df=bf('def',pf(d,maxPend.def)+add.def),at=bf('atk',pf(a,maxPend.atk)+add.atk);const r={tankBV:hp*at*df,dealt:dealtWithCrit(at,c,tank?null:prob,critMult)};if(tank)r.score=applyEvasion(survivalScore(hp,df,lightArg),prob);return r;}
+    function tight(h,a,d,add,prob){let score=-Infinity;for(const p of pairs){const v=survivalUpper(bf('hp',pf(h,p.hp)+add.hp),bf('def',pf(d,p.def)+add.def),lightArg);if(v>score)score=v;}return {score:applyEvasion(score,prob),tankBV:(bf('hp',pf(h,maxPend.hp)+add.hp))*(bf('atk',pf(a,maxPend.atk)+add.atk))*(bf('def',pf(d,maxPend.def)+add.def)),dealt:attack(bf('atk',pf(a,maxPend.atk)+add.atk),c)};}
     const pass=(top,bound)=>top.length<N||better(bound,top[N-1])<=0;
     for(const type of types){const top=[];byType[type]=top;const base=data.base[grade][type];
       // Pruning. Every bound is >= any real row in the sort order, and blocks/spirit groups are visited
@@ -116,7 +121,7 @@
         const add=addOf(sp);
         if(!tank){const g5=k=>stat(base[k],5*data.gems[c.gem][k],pot[k],accPct(k),sp.pct[k],0,sp.plus[k],0,0);return loose(g5('hp'),g5('atk'),g5('def'),add,prob);}
         const vh=vals('hp',pot,accPct,sp),vd=vals('def',pot,accPct,sp);let m=-Infinity;
-        for(let g=0;g<6;g++)for(const p of pairs){const u=survivalUpper(pf(vh[g],p.hp)+add.hp,pf(vd[5-g],p.def)+add.def,lightArg);if(u>m)m=u;}
+        for(let g=0;g<6;g++)for(const p of pairs){const u=survivalUpper(bf('hp',pf(vh[g],p.hp)+add.hp),bf('def',pf(vd[5-g],p.def)+add.def),lightArg);if(u>m)m=u;}
         return {score:applyEvasion(m,prob),tankBV:Infinity,dealt:Infinity};
       }
       // Tank: spirits with the same hp/def contribution share one bound.
@@ -145,10 +150,10 @@
               const h=values.hp[gems.hp],a=values.atk[gems.atk],d=values.def[gems.def];
               tested+=pends.length;
               if(!pass(top,loose(h,a,d,adds,prob))||(tank&&!pass(top,tight(h,a,d,adds,prob))))continue;
-              if(req&&penetrationHits(pf(h,maxPend.hp)+adds.hp,pf(d,maxPend.def)+adds.def,req.attack,lightArg)<req.hits)continue;
+              if(req&&!penetrationSurvives(bf('hp',pf(h,maxPend.hp)+adds.hp),bf('def',pf(d,maxPend.def)+adds.def),req.attack,lightArg,req.hits,req.guards||0))continue;
               for(let pi=0;pi<pends.length;pi++){const pend=pends[pi];
-                const stats={hp:pf(h,pend.hp)+adds.hp,atk:pf(a,pend.atk)+adds.atk,def:pf(d,pend.def)+adds.def};
-                if(req&&penetrationHits(stats.hp,stats.def,req.attack,lightArg)<req.hits)continue;
+                const stats={hp:bf('hp',pf(h,pend.hp)+adds.hp),atk:bf('atk',pf(a,pend.atk)+adds.atk),def:bf('def',pf(d,pend.def)+adds.def)};
+                if(req&&!penetrationSurvives(stats.hp,stats.def,req.attack,lightArg,req.hits,req.guards||0))continue;
                 const tankBV=stats.hp*stats.atk*stats.def,dealt=dealtWithCrit(stats.atk,c,tank?null:prob,critMult);
                 qualified++;const row={type,acc:ai,enchant,pend,spirit:{opts:sp.opts,bonus:sp.bonus},gems,potion:pot,probability:prob,stats,tankBV,dealt,score:tank?applyEvasion(survivalScore(stats.hp,stats.def,lightArg),prob):null,seq:((bSeq*spirits.length+si)*allocs.length+gi)*pends.length+pi};
                 if(top.length<N||better(row,top[top.length-1])<0){top.push(row);top.sort(better);if(top.length>N)top.pop();}
@@ -162,7 +167,7 @@
     for(const t in byType)for(const r of byType[t])delete r.seq;
     return {rows:Object.values(byType).flat().sort(better).slice(0,N),byType,tested,qualified,totalCandidates:total/pends.length*allPend.length};
   }
-  const api={endurance,survivalScore,penetrationHit,penetrationHits,penetrationAttack,attack,probability,applyEvasion,dealtWithCrit,potionCandidates,stat,optimize,allPendants,pendantFrontier,spiritVariants};
+  const api={endurance,survivalScore,penetrationHit,penetrationGuardHit,penetrationSurvives,penetrationHits,penetrationAttack,attack,probability,applyEvasion,dealtWithCrit,potionCandidates,stat,optimize,allPendants,pendantFrontier,spiritVariants};
   if(typeof module!=='undefined')module.exports=api;else root.JormEngine=api;
   if(typeof document==='undefined'&&typeof importScripts==='function'&&!root.JormEngineNoWorker){
     importScripts('./jorm-data.js');root.onmessage=e=>{try{root.postMessage({result:optimize(e.data,root.JormData,p=>root.postMessage({progress:p}))})}catch(err){root.postMessage({error:err.message})}};

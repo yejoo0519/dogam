@@ -214,8 +214,13 @@
  };
 
  /* ---------- results ---------- */
+ const buffText=b=>b?'층 버프 '+[['atk','공'],['hp','체'],['def','방']].filter(([k])=>b[k]).map(([k,l])=>l+b[k]).join(' · '):'층 버프 없음';
+ function buffAdviceHTML(a){if(!a)return '';const o=a.options,b=o[a.best],base=o[0];
+  const name=x=>x.buffs.atk===30?'공 30%':x.buffs.hp?'공 28% + 체 2%':'공 28% + 방 2%';
+  const head=a.best===0?(base.passed===base.total?'<b>공 30% 유지</b> · 체력·방어 2% 버프 필요 없음':'<b>공 30% 유지</b> · 2% 버프로도 관통 통과가 늘지 않음'):`<b>${name(b)} 추천</b> · 관통 통과 ${base.passed}→${b.passed}`;
+  return `<div class="jp-buff-advice"><div>${head}</div><ul>${o.map((x,i)=>`<li class="${i===a.best?'on':''}"><span>${name(x)}</span><span>관통 ${x.passed}/${x.total}</span><span>딜 합 ${fmt(Math.round(x.dealt))}</span></li>`).join('')}</ul><small>결과는 공 30% 기준입니다. 2% 버프는 관통 자리가 정타 4 + 가드 1을 버티는 데 필요할 때만 추천합니다.</small></div>`;}
  function penState(r,hits,pen){if(!r||r.penHits==null)return {cls:'',text:'',short:''};
-  if(r.penHits>=hits+1)return {cls:'ok2',text:`${hits+1}회 OK`,short:`${hits+1}회`};if(r.penHits>=hits)return {cls:'ok',text:`${hits}회 OK`,short:`${hits}회`};return {cls:'bad',text:`부족 · ${r.penHits}회`,short:'부족'};}
+  if(r.penLeft>0)return {cls:'ok',text:'4+1 OK',short:'OK'};return {cls:'bad',text:`부족 · ${fmt(-r.penLeft+1)}`,short:'부족'};}
  function metricOf(x,hits,pen){const r=x.row;if(!r)return '—';if(x.role==='front')return fmt(Math.round(r.score));if(x.role==='pen')return penState(r,hits,pen).short;return fmt(Math.round(r.dealt));}
  function spiritHTML(s){if(!s)return '<b>정령 없음</b>';return `<div class="j-spirit-result">${s.opts.map((o,j)=>`<span class="${o.stat}"><small>${j+1}옵</small>${optText(o,j)}</span>`).join('')}</div><div class="${s.bonus}">부가옵 · ${names[s.bonus]||'없음'}</div>`;}
  const gemText=list=>{const m=new Map();list.forEach(g=>m.set(g,(m.get(g)||0)+1));return [...m].map(([g,n])=>`${D.gemNames[g]}×${n}`).join(' ');};
@@ -223,11 +228,13 @@
   const {result,config:c}=lastResult,hits=c.hits,by=new Map(result.results.map(x=>[x.pos,x]));
   const pen=result.pen,s=result.summary;
   if(!by.has(resultPos))resultPos=result.results[0]?.pos;
-  $('resultConditions').textContent=`${c.mode==='equip'?'정령 귀속 상태 · 자리 배치':'정령 해제 상태 (귀속X) · 정령 배분'} / ${c.boss==='corrupted'?'잠식된 요르문간드':'요르문간드'} / ${c.grade} / ${c.gemStock?'보유 젬 (부족분 36젬)':'젬 '+D.gemNames[c.gem]} / ${c.pendants?'보유 펜던트':'펜던트 제한 없음'} / 물약 ${c.potion}단계 / ${pen&&pen.reference?`관통 실측값 (1회 = 121000 ÷ (방어 × 방어계수 + 22)) 기준 ${hits}회`:pen?`관통 1회 ${fmt(c.pen.damage)} (방어 ${fmt(c.pen.def)} · ${c.pen.light?'빛':'빛 아님'}) 기준 ${hits}회`:c.boss==='corrupted'?'관통 미입력 · 관통 자리도 딜러 셋팅':'뒷라인 전체 딜러 셋팅'}`;
+  $('resultConditions').textContent=`${c.mode==='equip'?'정령 귀속 상태 · 자리 배치':'정령 해제 상태 (귀속X) · 정령 배분'} / ${c.boss==='corrupted'?'잠식된 요르문간드':'요르문간드'} / ${c.grade} / ${c.gemStock?'보유 젬 (부족분 36젬)':'젬 '+D.gemNames[c.gem]} / ${c.pendants?'보유 펜던트':'펜던트 제한 없음'} / ${buffText(result.buffs)} / 물약 ${c.potion}단계 / ${pen&&pen.reference?`관통 실측값 (1회 = 121000 ÷ (방어 × 방어계수 + 22)) 기준 정타 ${hits} + 가드 ${pen.guards}`:pen?`관통 1회 ${fmt(c.pen.damage)} (방어 ${fmt(c.pen.def)} · ${c.pen.light?'빛':'빛 아님'}) 기준 정타 ${hits} + 가드 ${pen.guards}`:c.boss==='corrupted'?'관통 미입력 · 관통 자리도 딜러 셋팅':'뒷라인 전체 딜러 셋팅'}`;
   $('resultSummary').innerHTML=[
-   pen?`<div class="${pen.passed===pen.total?'ok':'bad'}"><small>관통 ${hits}회 통과</small><strong>${pen.passed}/${pen.total}</strong></div>`:'',
+   pen?`<div class="${pen.passed===pen.total?'ok':'bad'}"><small>관통 정타 ${hits} + 가드 ${pen.guards} 통과</small><strong>${pen.passed}/${pen.total}</strong></div>`:'',
+
    result.mode==='equip'?`<div><small>배치한 드래곤</small><strong>${result.results.length}마리</strong></div>`:`<div><small>정령 사용</small><strong>${s.spiritsUsed}/${s.spiritsOwned}</strong></div>`,
    s.pendantsOwned!=null?`<div><small>펜던트 사용</small><strong>${s.pendantsUsed}/${s.pendantsOwned}</strong></div>`:''].join('');
+  $('buffAdvice').innerHTML=buffAdviceHTML(result.buffAdvice);
   $('resultBoard').innerHTML=boardHTML(pos=>{const x=by.get(pos),d=x&&byId.get(x.dragon.id);if(!x)return slotCell(pos,`<em>${posLabel(pos)}</em>`,' empty',pos<10?'front':c.boss==='corrupted'&&PEN.includes(pos)?'pen':'dealer');const ps=x.role==='pen'?penState(x.row,hits,pen):null;
    return slotCell(pos,`${d?icon(d):''}<span class="jp-metric ${ps?ps.cls:''}">${esc(metricOf(x,hits,pen))}</span>${x.spirit?'<i class="jp-sp-dot" title="정령 배정"></i>':''}`,x.pos===resultPos?' on':'',x.role);});
   $('resultList').innerHTML=result.results.filter(x=>x.pos===resultPos).map(x=>{const r=x.row,d=byId.get(x.dragon.id);if(!r)return '';const ps=x.role==='pen'?penState(r,hits,pen):null;
@@ -239,8 +246,20 @@
    <div><small>젬 배분</small>${['hp','atk','def'].map(k=>`<span class="j-stat-chip ${k}">${names[k]} ${r.gems[k]}개${r.gemLv&&r.gems[k]?' · '+gemText(r.gemLv[k]):''}</span>`).join('')}</div>
    <div><small>펜던트${r.pend.name==='미착용'?'':' · '+esc(r.pend.name)}</small>${['hp','atk','def'].filter(k=>r.pend[k]).map(k=>`<span class="j-stat-chip ${k}">${names[k]} ${r.pend[k]}%</span>`).join('')||'미착용'}</div>
    <div><small>물약</small>${esc(r.potion.n)}</div>
-   <div><small>${r.probability?.kind==='eva'?'회피율':'크리 확률'}</small>${r.probability?`<b class="prob">${fmt(r.probability.final)}%</b><span class="sub">기본 ${fmt(r.probability.base)}% + 장비 ${fmt(r.probability.gear)}%</span>`:'미적용'}</div></div></article>`;}).join('');
+   <div><small>${r.probability?.kind==='eva'?'회피율':'크리 확률'}</small>${r.probability?`<b class="prob">${fmt(r.probability.final)}%</b><span class="sub">기본 ${fmt(r.probability.base)}% + 장비 ${fmt(r.probability.gear)}%</span>`:'미적용'}</div></div>${detailHTML(x,c,result)}</article>`;}).join('');
  }
+ const fl=v=>Math.floor(v+1e-9);
+ // 관통 자리: 관통 공격을 몇 대 버티는지.
+ function detailHTML(x,c,result){const r=x.row,st=r.stats,pen=result.pen;let h='';
+  if(x.role==='pen'&&pen){const atk=pen.bossAtk,K=x.dragon.light?20:16;
+   const n1=fl(44*atk*16/(st.def*K+352)),cr=fl(44*fl(atk*2)*16/(st.def*K+352)),gd=fl(44*atk*16/(st.def*K*3+352));
+   const can=(left)=>left>0?Math.floor((left-1)/n1):-1; // 남은 체력으로 더 버티는 정타 수
+   const pure=can(st.hp),withG=can(st.hp-gd),withC=can(st.hp-cr);
+   const gTxt=withG<0?'가드 1회만으로 사망':withG+1>pure?`정타 ${withG} + 가드 1 · <b class="ok">가드 시 1대 더</b>`:`정타 ${withG} + 가드 1 · 가드해도 추가 없음`;
+   const cTxt=withC<0?'크리 1회에 사망':`정타 ${withC} + 크리 1`;
+   h+=`<div class="jp-hits"><div class="jp-hits-head"><b>관통 피격</b> <span>정타 ${fmt(n1)} · 크리 ${fmt(cr)} · 가드 ${fmt(gd)}</span></div>
+    <div class="jp-survive"><div><small>정타만</small><strong>${pure}대</strong></div><div><small>가드 1회 섞이면</small><strong>${withG<0?'—':withG+1+'대'}</strong><em>${gTxt}</em></div><div><small>크리 1회 섞이면</small><strong>${withC<0?'—':withC+1+'대'}</strong><em>${cTxt}</em></div></div></div>`;}
+  return h;}
  // 결과 배치판에서 누른 칸의 셋팅을 아래에 표시합니다.
  $('resultBoard').onclick=e=>{const b=e.target.closest('[data-pos]');if(!b||b.classList.contains('empty'))return;resultPos=Number(b.dataset.pos);renderResults();};
 

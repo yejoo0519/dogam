@@ -33,11 +33,29 @@
     const res=new Array(n);for(let j=1;j<=m;j++)if(p[j])res[p[j]-1]=j-1;return res;
   }
 
+  // 1~3층 버프: 결과는 공격 30% 기준. 같은 입력으로 공28+체2, 공28+방2도 계산해
+  // 관통 자리(정타 4 + 가드 1) 통과 수와 딜 합을 비교한 추천만 따로 알려 줍니다(결과는 바꾸지 않음).
+  const BUFF_SETS=[{hp:0,atk:30,def:0},{hp:2,atk:28,def:0},{hp:0,atk:28,def:2}];
   function plan(input,E,data,progress=()=>{}){
+    if(input.buffs)return planOnce(input,E,data,progress);
+    const runs=[];
+    for(let i=0;i<BUFF_SETS.length;i++){
+      const r=planOnce({...input,buffs:BUFF_SETS[i]},E,data,p=>progress({done:i*p.total+p.done,total:BUFF_SETS.length*p.total}));
+      r.buffs=BUFF_SETS[i];runs.push(r);
+      if(!r.pen)return r;
+    }
+    const main=runs[0];
+    const opts=runs.map(r=>({buffs:r.buffs,passed:r.pen.passed,total:r.pen.total,dealt:r.summary.dealt}));
+    // 추천: 관통 통과 수가 많은 쪽, 같으면 딜 합이 큰 쪽 (동률이면 공 30%).
+    let best=0;opts.forEach((o,i)=>{const b=opts[best];if(o.passed>b.passed||(o.passed===b.passed&&o.dealt>b.dealt+1e-9))best=i;});
+    main.buffAdvice={options:opts,best};
+    return main;
+  }
+  function planOnce(input,E,data,progress=()=>{}){
     const measured=input.pen&&input.pen.damage>0&&input.pen.def>=0;
     const pen=measured?input.pen:(input.pen&&input.pen.reference?{reference:true}:null);
     const corrupted=input.boss==='corrupted',lightOf=l=>l?(corrupted?20:23):false;
-    const hits=input.hits||4;
+    const hits=input.hits||4,guards=input.guards??1;
     const bossAtk=!pen?0:measured?E.penetrationAttack(pen.damage,pen.def,lightOf(pen.light)):PEN_ATK;
     const tough=(hp,def,light)=>hp*(def*(lightOf(light)||16)/16+22);
     const equip=input.mode==='equip';
@@ -49,7 +67,7 @@
     const kinds=new Map([[noSpirit.key,noSpirit]]),units=[];
     if(equip)for(const u of unitsIn){if(!kinds.has(u.sp.key))kinds.set(u.sp.key,u.sp);}
     else for(const s of input.spirits||[]){const sp=normSp(s);if(sp.key===noSpirit.key)continue;if(!kinds.has(sp.key))kinds.set(sp.key,sp);for(let i=0;i<Math.max(1,s.count|0);i++)units.push(sp.key);}
-    const base={boss:input.boss,type:'',grade:corrupted?'9.0':input.grade,gem:input.gem,enchant:input.enchant,potion:input.potion,collection:input.collection,accessories:data.accessories.map((_,i)=>i),pendantMode:'auto',pendants:[]};
+    const base={boss:input.boss,type:'',grade:corrupted?'9.0':input.grade,gem:input.gem,enchant:input.enchant,potion:input.potion,collection:input.collection,buffs:input.buffs||null,accessories:data.accessories.map((_,i)=>i),pendantMode:'auto',pendants:[]};
     // 보유 펜던트: 정령 배분은 펜던트 없이 정한 뒤, 보유 펜던트를 칸마다 나눠 줍니다(distributePendants).
     const pk=pendantKinds(input.pendants,E);
     const cache=new Map(),jobs=new Set();
@@ -66,12 +84,12 @@
       if(sl.role==='front')row=E.optimize({...c,role:'tank',potionKind:'eva'},data).rows[0];
       else if(sl.role==='dealer')row=E.optimize({...c,role:'dealer',potionKind:'crit'},data).rows[0];
       else{
-        row=E.optimize({...c,role:'dealer',potionKind:'crit',minHits:{hits,attack:bossAtk}},data).rows[0];
+        row=E.optimize({...c,role:'dealer',potionKind:'crit',minHits:{hits,guards,attack:bossAtk}},data).rows[0];
         // No setting survives: fall back to the sturdiest (tank) setting and report the hit count.
         if(!row){ok=false;row=E.optimize({...c,role:'tank',potionKind:'crit'},data).rows[0];}
       }
       const r=row?{...row,pass:ok}:null;
-      if(r&&sl.role==='pen'){r.penTough=tough(r.stats.hp,r.stats.def,d.light);r.penHit=E.penetrationHit(r.stats.def,bossAtk,lightOf(d.light));r.penHits=E.penetrationHits(r.stats.hp,r.stats.def,bossAtk,lightOf(d.light));}
+      if(r&&sl.role==='pen'){r.penTough=tough(r.stats.hp,r.stats.def,d.light);r.penHit=E.penetrationHit(r.stats.def,bossAtk,lightOf(d.light));r.penHits=E.penetrationHits(r.stats.hp,r.stats.def,bossAtk,lightOf(d.light));r.penGuard=E.penetrationGuardHit(r.stats.def,bossAtk,lightOf(d.light));r.penLeft=r.stats.hp-hits*r.penHit-guards*r.penGuard;}
       if(r&&sl.role==='front'&&r.score==null)r.score=0;
       cache.set(key,r);done++;progress({done,total});return r;
     }
@@ -108,6 +126,26 @@
     // 펜던트 입력 시: 모든 칸에 기본 펜던트를 낀 상태로 정령(자리)을 배분 → 보유 펜던트 배분 →
     // 그 펜던트로 정령(자리) 배분을 다시 계산. 펜던트 배치가 더 바뀌지 않을 때까지 반복합니다(최대 5회).
     let rowPid=rows.map(()=>pk?pk.def:''),results=assign(rowPid);
+    // (해제 모드) 뒷라인은 놓은 칸 그대로가 아니라, 관통 칸 드래곤과 딜러 칸 드래곤을 서로 바꿔 보며
+    // 정령 배분을 다시 계산해 목표(관통 통과 > 앞라인 최저 > 딜 합)가 좋아지면 바꿉니다. 더 좋아지지 않을 때까지 반복.
+    if(!equip&&pen){
+      const penI=[],dealI=[];slots.forEach((sl,i)=>{if(sl.role==='pen')penI.push(i);else if(sl.role==='dealer')dealI.push(i);});
+      let curObj=objective(results);
+      for(let it=0;it<20;it++){
+        let best=null;
+        for(const i of penI)for(const j of dealI){
+          const a=slots[i].dragon,b=slots[j].dragon;
+          if(a.type===b.type&&!!a.light===!!b.light&&!!a.dark===!!b.dark)continue; // 같은 조건이면 바꿔도 같음
+          slots[i].dragon=b;slots[j].dragon=a;
+          const r=assign(rowPid),o=objective(r);
+          slots[i].dragon=a;slots[j].dragon=b;
+          if(cmpObj(o,best?best.o:curObj)>0)best={i,j,r,o};
+        }
+        if(!best)break;
+        const a=slots[best.i].dragon;slots[best.i].dragon=slots[best.j].dragon;slots[best.j].dragon=a;
+        results=best.r;curObj=best.o;
+      }
+    }
     if(pk)for(let it=0;it<5;it++){
       distributePendants(results,pk,(x,pid)=>evaluate({role:x.role,dragon:x.dragon},x.spirit?x.spirit.key:noSpirit.key,pid));
       const next=rows.map((_,i)=>results.find(x=>x.ri===i).pid);
@@ -117,7 +155,7 @@
       if(cmpObj(objective(results),prevObj)<0){results=prev;break;}
     }
     if(equip)results.forEach(x=>slots.push({pos:x.pos}));
-    if(input.gemStock)distributeGems(results,input,E,data,{bossAtk,hits,lightOf,tough,grade:base.grade});
+    if(input.gemStock)distributeGems(results,input,E,data,{bossAtk,hits,guards,lightOf,tough,grade:base.grade});
     // 추천 배치: 앞라인은 생존 점수가 높은 순으로 가운데부터, 딜러는 기대 피해가 높은 순으로 가장자리부터.
     // (계산 모델에서 같은 줄 안의 칸 위치는 결과에 영향을 주지 않으므로 자리만 다시 정합니다.)
     const FRONT_ORDER=[4,5,3,6,2,7,1,8,0,9],BACK_ORDER=[10,19,11,18,12,17,13,16,14,15];
@@ -132,7 +170,7 @@
     arrange('dealer',BACK_ORDER,x=>x.row?x.row.dealt:-Infinity);
     results.sort((a,b)=>a.pos-b.pos);
     const front=results.filter(r=>r.role==='front'&&r.row),pens=results.filter(r=>r.role==='pen');
-    return {results,pen:pen?{reference:!measured,bossAtk,hits,passed:pens.filter(r=>r.row&&r.row.pass).length,total:pens.length}:null,
+    return {results,pen:pen?{reference:!measured,bossAtk,hits,guards,passed:pens.filter(r=>r.row&&r.row.pass).length,total:pens.length}:null,
       summary:{frontMin:front.length?Math.min(...front.map(r=>r.row.score)):null,dealt:results.filter(r=>r.row&&(r.role==='dealer'||(r.role==='pen'&&r.row.pass))).reduce((a,r)=>a+r.row.dealt,0),spiritsUsed:results.filter(r=>r.spirit).length,spiritsOwned:equip?results.filter(r=>r.spirit).length:units.length,pendantsUsed:pk?results.filter(r=>r.pid&&r.pid!=='none').length:null,pendantsOwned:pk?pk.owned:null},mode:equip?'equip':'free',evaluated:total};
   }
   // 펜던트 종류: none = 미착용. count 모드는 태양/달 옵션을 칸마다 고르고(후보 전체), list 모드는 입력한 펜던트 그대로.
@@ -157,7 +195,7 @@
   const objective=list=>{let passes=0,min=Infinity,sum=0,bv=0;
     for(const x of list){const r=x.row;if(!r)continue;bv+=r.tankBV||0;
       if(x.role==='front'){min=Math.min(min,r.score);sum+=r.score*1e-3;}
-      else if(x.role==='pen'){if(r.pass){passes++;sum+=r.dealt;}else sum+=r.penHits*1e-6;}
+      else if(x.role==='pen'){if(r.pass){passes++;sum+=r.dealt;}else sum+=(r.penLeft??r.penHits)*1e-6;}
       else sum+=r.dealt;}
     return [passes,min,sum,bv];};
   const cmpObj=(a,b)=>a[0]-b[0]||a[1]-b[1]||a[2]-b[2]||a[3]-b[3];
@@ -194,7 +232,8 @@
         let plus=0,pct=0;if(sp)sp.opts.forEach((o,i)=>{if(o.stat!==k)return;if(o.type==='+')plus+=data.plus[k][i+1];else pct+=data.pct[i+1];});
         const gem=lv[k].reduce((a,g)=>a+data.gems[g][k],0);
         const add=(sp&&sp.bonus===k?data.bonus[k]:0)+input.collection[k];
-        out[k]=pf(E.stat(b[k],gem,r.potion[k],acc[k]+(r.enchant===k?.21:0),pct,0,plus,0,0),r.pend[k])+add;
+        const v=pf(E.stat(b[k],gem,r.potion[k],acc[k]+(r.enchant===k?.21:0),pct,0,plus,0,0),r.pend[k])+add,bu=(input.buffs||{})[k]||0;
+        out[k]=bu>0?Math.floor(v*(1+bu/100)+1e-9):v;
       }
       return out;
     }
@@ -203,7 +242,7 @@
       if(x.role==='front'){const prob=r.probability&&r.probability.kind==='eva'?r.probability:null;return {score:E.applyEvasion(E.survivalScore(stats.hp,stats.def,light),prob)};}
       const c={dark:!!x.dragon.dark,boss:input.boss};
       const out={dealt:E.dealtWithCrit(stats.atk,c,r.probability&&r.probability.kind==='crit'?r.probability:null,mult)};
-      if(x.role==='pen'){out.penTough=ctx.tough(stats.hp,stats.def,x.dragon.light);out.penHit=E.penetrationHit(stats.def,ctx.bossAtk,light);out.penHits=E.penetrationHits(stats.hp,stats.def,ctx.bossAtk,light);out.pass=out.penHits>=ctx.hits;}
+      if(x.role==='pen'){out.penTough=ctx.tough(stats.hp,stats.def,x.dragon.light);out.penHit=E.penetrationHit(stats.def,ctx.bossAtk,light);out.penHits=E.penetrationHits(stats.hp,stats.def,ctx.bossAtk,light);out.penGuard=E.penetrationGuardHit(stats.def,ctx.bossAtk,light);out.penLeft=stats.hp-ctx.hits*out.penHit-ctx.guards*out.penGuard;out.pass=out.penLeft>0;}
       return out;
     }
     function apply(x,lv){const stats=restat(x,lv);Object.assign(x.row,{stats,tankBV:stats.hp*stats.atk*stats.def},measure(x,stats));x.row.gemLv=lv;}

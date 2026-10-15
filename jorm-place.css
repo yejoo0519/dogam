@@ -82,3 +82,25 @@
 .jorm .jp-qty input{width:52px;margin:0;text-align:center;padding:6px}
 .jorm .jp-pend-add{border-color:var(--accent);color:var(--accent)}
 @media(max-width:580px){.jp-pend-vals{margin-left:0;width:100%}.jorm .jp-pend-vals button{flex:1}.jp-pend-preview{width:100%}}
+.jp-detail{margin-top:12px;border-top:1px solid var(--border);padding-top:10px}
+.jp-detail summary{cursor:pointer;font-size:13px;font-weight:700;color:var(--accent);padding:4px 0}
+.jp-steps{width:100%;max-width:560px;border-collapse:collapse;margin:10px 0 4px;font-size:12px;font-variant-numeric:tabular-nums}
+.jp-steps th,.jp-steps td{padding:6px 8px;border-bottom:1px solid var(--border);text-align:right;white-space:nowrap}
+.jp-steps tbody th{text-align:left;font-weight:500;color:var(--text2)}
+.jp-steps thead th.hp{color:#fbbf24}.jp-steps thead th.atk{color:#f87171}.jp-steps thead th.def{color:#60a5fa}
+.jp-steps .jp-final th,.jp-steps .jp-final td{font-weight:800;color:var(--text);border-bottom:0}
+.jp-steps-note{font-size:11px;margin:4px 0 10px}
+.jp-hits{font-size:12px;line-height:1.9;padding:8px 10px;margin-top:8px;border-radius:8px;background:var(--bg2)}
+.jp-hits span{display:inline-block;margin-left:10px;color:var(--text2)}.jp-hits em{font-style:normal;font-weight:800}.jp-hits em.ok{color:#9fd18b}.jp-hits em.bad{color:#f08a7a}
+@media(max-width:580px){.jp-steps th,.jp-steps td{padding:5px 4px;font-size:11px}.jp-hits span{margin-left:0;margin-right:10px}}
+.jp-hits-head span{margin-left:6px}
+.jp-survive{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px}
+.jp-survive>div{padding:8px 10px;border-radius:8px;background:var(--bg)}
+.jp-survive small{display:block;font-size:11px;color:var(--text2)}.jp-survive strong{display:block;font-size:20px;color:var(--accent)}
+.jp-survive em{display:block;font-style:normal;font-size:11px;color:var(--text2);margin:0}.jp-survive b.ok{color:#9fd18b}
+@media(max-width:580px){.jp-survive{grid-template-columns:1fr}}
+.jp-buff-advice{margin:0 0 14px;padding:12px 14px;border:1px solid var(--border);border-radius:9px;background:var(--bg);font-size:13px}
+.jp-buff-advice ul{list-style:none;margin:8px 0 6px;padding:0;display:grid;gap:4px}
+.jp-buff-advice li{display:grid;grid-template-columns:minmax(0,1.4fr) 1fr 1fr;gap:8px;padding:5px 8px;border-radius:6px;color:var(--text2)}
+.jp-buff-advice li.on{background:var(--accent-bg);color:var(--text);font-weight:700}
+.jp-buff-advice small{font-size:11px;color:var(--text2)}

@@ -44,9 +44,11 @@
     const equip=input.mode==='equip';
     const normSp=s=>{const sp={opts:(s&&s.opts||[]).slice(0,4).map(o=>({stat:o.stat||'none',type:o.type||'%'})),bonus:(s&&s.bonus)||'none'};while(sp.opts.length<4)sp.opts.push({stat:'none',type:'%'});sp.key=spiritKey(sp);return sp.opts.every(o=>o.stat==='none')&&sp.bonus==='none'?noSpirit:sp;};
     // 정령 해제 모드: 칸에 놓인 드래곤에 보유 정령을 배분. 정령 장착 모드: 드래곤+정령 묶음을 자리에 배치.
-    const slots=equip?[]:input.slots.map((d,pos)=>d?{pos,dragon:d,role:roleOf(pos,pen)}:null).filter(Boolean);
+    // 해제 모드 + 보유 드래곤 목록(input.units): 자리는 아래 규칙으로 계산기가 정합니다(20마리 초과 시 20마리 선택).
+    const freeUnits=!equip&&Array.isArray(input.units)?input.units.filter(u=>u&&u.dragon).map(u=>u.dragon):null;
+    const slots=equip||freeUnits?[]:(input.slots||[]).map((d,pos)=>d?{pos,dragon:d,role:roleOf(pos,pen)}:null).filter(Boolean);
     const unitsIn=equip?(input.units||[]).filter(u=>u&&u.dragon).slice(0,20).map(u=>({dragon:u.dragon,sp:normSp(u.spirit)})):[];
-    if(equip?!unitsIn.length:!slots.length)throw Error('배치할 드래곤을 한 마리 이상 넣어 주세요.');
+    if(equip?!unitsIn.length:freeUnits?!freeUnits.length:!slots.length)throw Error('배치할 드래곤을 한 마리 이상 넣어 주세요.');
     const kinds=new Map([[noSpirit.key,noSpirit]]),units=[];
     if(equip)for(const u of unitsIn){if(!kinds.has(u.sp.key))kinds.set(u.sp.key,u.sp);}
     else for(const s of input.spirits||[]){const sp=normSp(s);if(sp.key===noSpirit.key)continue;if(!kinds.has(sp.key))kinds.set(sp.key,sp);for(let i=0;i<Math.max(1,s.count|0);i++)units.push(sp.key);}
@@ -90,7 +92,7 @@
     // rows = 칸(해제) 또는 드래곤(장착), cols = 정령(해제) 또는 자리(장착)
     // 역할 정하기(규칙): 탱커형(체력·방어·체방) 중 탱커 점수 상위 10 → 앞라인, 나머지 중 딜 상위 6 → 딜러,
     // 남은 드래곤 → 관통(정타 4 + 가드 1 셋팅). 관통 자리가 없으면(잠식 아님) 뒷라인 10마리 모두 딜러.
-    const TANK_TYPES=['체력형','방어형','체방형'];
+    const TANK_TYPES=['체력형','방어형','체방형'];let benched=[];
     const dealtOf=(d,k)=>{const r=evaluate({role:'dealer',dragon:d},k);return r?r.dealt:-Infinity;};
     const frontOf=(d,k)=>{const r=evaluate({role:'front',dragon:d},k);return r?r.score:-Infinity;};
     if(equip){
@@ -102,6 +104,23 @@
       // 딜이 같으면 빛(방어 보정 → 관통에 유리)이 아닌 쪽을 딜러로.
       const dealers=pen?rest.slice().sort((a,b)=>dealtOf(unitsIn[b].dragon,unitsIn[b].sp.key)-dealtOf(unitsIn[a].dragon,unitsIn[a].sp.key)||!!unitsIn[a].dragon.light-!!unitsIn[b].dragon.light).slice(0,6):rest;
       unitsIn.forEach((u,i)=>{u.fixedRole=front.includes(i)?'front':dealers.includes(i)?'dealer':'pen';});
+    }else if(freeUnits){
+      // 해제 모드(보유 드래곤): 정령 없이 평가해 앞라인 10(탱커형 우선) → 딜러 6 → 관통 4(4+1 통과 > 딜). 남는 드래곤은 제외.
+      const left=freeUnits.map((d,i)=>i),by=(score)=>(a,b)=>score(b)-score(a);
+      const fr=i=>frontOf(freeUnits[i],noSpirit.key),dl=i=>dealtOf(freeUnits[i],noSpirit.key);
+      let front=left.filter(i=>TANK_TYPES.includes(freeUnits[i].type)).sort(by(fr)).slice(0,10);
+      if(front.length<10)front=front.concat(left.filter(i=>!front.includes(i)).sort(by(fr)).slice(0,10-front.length));
+      let rest=left.filter(i=>!front.includes(i));
+      const nDeal=pen?6:10;
+      const dealers=rest.slice().sort((a,b)=>dl(b)-dl(a)||!!freeUnits[a].light-!!freeUnits[b].light).slice(0,nDeal);
+      rest=rest.filter(i=>!dealers.includes(i));
+      const penEval=i=>evaluate({role:'pen',dragon:freeUnits[i]},noSpirit.key);
+      const pens=pen?rest.slice().sort((a,b)=>{const ra=penEval(a),rb=penEval(b);return (!!(rb&&rb.pass))-(!!(ra&&ra.pass))||((rb?rb.dealt:0)-(ra?ra.dealt:0));}).slice(0,4):[];
+      const POS={front:[0,1,2,3,4,5,6,7,8,9],dealer:pen?[10,11,12,17,18,19]:[10,11,12,13,14,15,16,17,18,19],pen:[13,14,15,16]};
+      front.forEach((i,j)=>slots.push({pos:POS.front[j],dragon:freeUnits[i],role:'front'}));
+      dealers.forEach((i,j)=>slots.push({pos:POS.dealer[j],dragon:freeUnits[i],role:'dealer'}));
+      pens.forEach((i,j)=>slots.push({pos:POS.pen[j],dragon:freeUnits[i],role:'pen'}));
+      const used=new Set([...front,...dealers,...pens]);benched=left.filter(i=>!used.has(i)).map(i=>freeUnits[i]);
     }else if(pen){
       // 해제 모드: 앞라인은 놓은 그대로. 뒷라인 드래곤 중 정령 없이 딜이 높은 6마리를 딜러 칸에, 나머지를 관통 칸에.
       const back=slots.filter(sl=>sl.pos>=10),ds=back.map(sl=>sl.dragon).sort((a,b)=>dealtOf(b,noSpirit.key)-dealtOf(a,noSpirit.key)||!!a.light-!!b.light);
@@ -162,7 +181,7 @@
     arrange('dealer',BACK_ORDER,x=>x.row?x.row.dealt:-Infinity);
     results.sort((a,b)=>a.pos-b.pos);
     const front=results.filter(r=>r.role==='front'&&r.row),pens=results.filter(r=>r.role==='pen');
-    return {results,pen:pen?{reference:!measured,bossAtk,hits,guards,passed:pens.filter(r=>r.row&&r.row.pass).length,total:pens.length}:null,
+    return {results,benched:benched.map(d=>d.id),pen:pen?{reference:!measured,bossAtk,hits,guards,passed:pens.filter(r=>r.row&&r.row.pass).length,total:pens.length}:null,
       summary:{frontMin:front.length?Math.min(...front.map(r=>r.row.score)):null,dealt:results.filter(r=>r.row&&(r.role==='dealer'||(r.role==='pen'&&r.row.pass))).reduce((a,r)=>a+r.row.dealt,0),spiritsUsed:results.filter(r=>r.spirit).length,spiritsOwned:equip?results.filter(r=>r.spirit).length:units.length,pendantsUsed:pk?results.filter(r=>r.pid&&r.pid!=='none').length:null,pendantsOwned:pk?pk.owned:null,accessoriesUsed:ak?results.filter(r=>r.aid&&r.aid!=='none').length:null,accessoriesOwned:ak?ak.owned:null},mode:equip?'equip':'free',evaluated:total};
   }
   // 펜던트 종류: none = 미착용. count 모드는 태양/달 옵션을 칸마다 고르고(후보 전체), list 모드는 입력한 펜던트 그대로.

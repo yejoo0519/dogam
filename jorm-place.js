@@ -5,7 +5,7 @@
  const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const v=id=>$(id).value,n=id=>Number($(id).value);
  const fmt=x=>x===Number.MAX_VALUE||!Number.isFinite(x)?'피해 없음':x.toLocaleString('ko-KR',{maximumFractionDigits:1});
- let slots=Array(20).fill(null),spirits=[],units=[],selUnit=0,selected=0,worker=null,dirty=false,restoring=false,dragons=[],byId=new Map(),lastResult=null,resultPos=null;
+ let slots=Array(20).fill(null),spirits=[],units=[],freeUnits=[],selUnit=0,selected=0,worker=null,dirty=false,restoring=false,dragons=[],byId=new Map(),lastResult=null,resultPos=null;
  const blankSpirit=()=>({opts:[{stat:'hp',type:'%'},{stat:'atk',type:'%'},{stat:'def',type:'%'},{stat:'hp',type:'+'}],bonus:'hp'});
  let editing=blankSpirit();
 
@@ -35,14 +35,16 @@
   document.querySelectorAll('[data-input-panel]').forEach(p=>p.hidden=p.dataset.inputPanel!==button.dataset.panel);
  });
  const equipMode=()=>v('mode')==='equip';
+ // 현재 모드의 보유 드래곤 목록: 귀속 = units({id,spirit}), 해제 = freeUnits({id}). 해제는 20마리 초과 가능(안내).
+ const curList=()=>equipMode()?units:freeUnits,MAX_UNITS=()=>equipMode()?20:40;
  const emptySpirit=()=>({opts:[{stat:'',type:'%'},{stat:'',type:'%'},{stat:'',type:'%'},{stat:'',type:'+'}],bonus:''});
- function modeView(){const eq=equipMode();
+ function modeView(){const eq=equipMode();selUnit=0;
   document.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===v('mode'))));
-  $('freeBoard').hidden=eq;$('equipList').hidden=!eq;
+  $('freeBoard').hidden=true;$('equipList').hidden=false;$('unitEditor').hidden=!eq;
   const tab=document.querySelector('[data-panel=spirit]');tab.hidden=eq;if(eq&&tab.getAttribute('aria-pressed')==='true')document.querySelector('[data-panel=place]').click();
-  $('placeTitle').textContent=eq?'보유 드래곤 (정령 귀속)':'배치';
-  $('placeHelp').textContent=eq?'아래 목록에서 드래곤을 눌러 추가하고, 추가한 드래곤을 눌러 귀속된 정령을 입력하세요. 자리는 계산기가 정합니다. (최대 20마리)':'칸을 누른 뒤 아래 목록에서 드래곤을 고르세요. 타입과 속성은 도감 정보를 따릅니다.';
-  $('clearSlot').textContent=eq?'선택한 드래곤 빼기':'이 칸 비우기';
+  $('placeTitle').textContent=eq?'보유 드래곤 (정령 귀속)':'보유 드래곤';
+  $('placeHelp').textContent=eq?'아래 목록에서 드래곤을 눌러 추가하고, 추가한 드래곤을 눌러 귀속된 정령을 입력하세요. 자리는 계산기가 정합니다. (최대 20마리)':'아래 목록에서 보유 드래곤을 눌러 추가하세요. 정령은 정령 탭에 보유한 만큼 넣으면 계산기가 자리와 정령을 정합니다. (20마리 권장)';
+  $('clearSlot').textContent='선택한 드래곤 빼기';
   if(dragons.length){renderBoard();renderUnits();renderDragons();}}
  document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{if(v('mode')===b.dataset.mode)return;$('mode').value=b.dataset.mode;modeView();changed()});
  function changed(){dirty=true;save();if(!$('results').hidden)$('status').textContent='설정이 변경되었습니다. 아래 결과는 이전 조건입니다. 다시 계산해 주세요.';}
@@ -60,31 +62,32 @@
  function boardHTML(cell){return ['앞라인','뒷라인'].map((label,row)=>`<div class="jp-row"><span class="jp-row-label">${label}</span><div class="jp-cells">${Array.from({length:10},(_,i)=>cell(row*10+i)).join('')}</div></div>`).join('');}
  function renderBoard(){
   $('board').innerHTML=boardHTML(pos=>{const d=byId.get(slots[pos]);return slotCell(pos,d?`${icon(d)}<span>${esc(d.name)}</span>`:`<em>${posLabel(pos)}</em>`,(pos===selected?' on':'')+(d?'':' empty'));});
-  if(equipMode()){const u=units[selUnit],d=u&&byId.get(u.id);$('placeCount').textContent=`${units.length}/20`;$('pickTitle').textContent=d?`선택: ${d.name}`:'드래곤을 눌러 추가';return;}
+  {const L=curList(),u=L[selUnit],d=u&&byId.get(u.id);$('placeCount').textContent=equipMode()?`${L.length}/20`:`${L.length}마리`;$('pickTitle').textContent=d?`선택: ${d.name}`:'드래곤을 눌러 추가';
+   $('unitWarn').hidden=equipMode()||L.length<=20;return;}
   $('placeCount').textContent=`${slots.filter(Boolean).length}/20`;
   $('pickTitle').textContent=`${posLabel(selected)} · ${roleLabel[roleOf(selected)]}${byId.get(slots[selected])?' · '+byId.get(slots[selected]).name:''}`;
  }
  $('board').onclick=e=>{const b=e.target.closest('[data-pos]');if(!b)return;selected=Number(b.dataset.pos);renderBoard();renderDragons();};
- $('clearSlot').onclick=()=>{if(equipMode()){units.splice(selUnit,1);selUnit=Math.max(0,Math.min(selUnit,units.length-1));renderUnits();}else slots[selected]=null;renderBoard();renderDragons();changed()};
- $('clearAll').onclick=()=>{if(equipMode()){units=[];selUnit=0;renderUnits();}else slots=Array(20).fill(null);renderBoard();renderDragons();changed()};
+ $('clearSlot').onclick=()=>{const L=curList();L.splice(selUnit,1);selUnit=Math.max(0,Math.min(selUnit,L.length-1));renderUnits();renderBoard();renderDragons();changed()};
+ $('clearAll').onclick=()=>{if(equipMode())units=[];else freeUnits=[];selUnit=0;renderUnits();renderBoard();renderDragons();changed()};
 
  /* ---------- dragon picker ---------- */
  function loadDragons(){
   const src=window.DV1_DRAGONS;if(!src){$('dragons').innerHTML='<p class="muted">드래곤 목록을 불러오지 못했습니다.</p>';return}
   dragons=src.records.filter(r=>r.stages&&r.stages.advent&&r.type&&r.type!=='중립'&&D.types.includes(r.type+'형')).map(r=>({id:r.id,name:r.name.ko,aliases:(r.aliases&&r.aliases.ko)||[],type:r.type+'형',element:r.element}));
   byId=new Map(dragons.map(d=>[d.id,d]));
-  slots=slots.map(id=>byId.has(id)?id:null);units=units.filter(u=>byId.has(u.id));
+  slots=slots.map(id=>byId.has(id)?id:null);units=units.filter(u=>byId.has(u.id));freeUnits=freeUnits.filter(u=>byId.has(u.id));
   D.types.forEach(t=>$('dragonType').add(new Option(t,t)));
   [...new Set(dragons.map(d=>d.element))].forEach(e=>$('dragonElement').add(new Option(e,e)));
  }
  function renderDragons(){
   if(!dragons.length)return;const q=v('dragonSearch').trim(),t=v('dragonType'),el=v('dragonElement');
   const list=dragons.filter(d=>(!q||d.name.includes(q)||d.aliases.some(a=>a.includes(q)))&&(!t||d.type===t)&&(!el||d.element===el));
-  $('dragons').innerHTML=list.map(d=>`<button type="button" data-dragon="${d.id}" aria-pressed="${equipMode()?units.some(u=>u.id===d.id):slots[selected]===d.id}">${icon(d)}<span>${esc(d.name)}<small>${esc(d.type)} · ${esc(d.element)}</small></span></button>`).join('')||'<p class="muted">조건에 맞는 드래곤이 없습니다.</p>';
+  $('dragons').innerHTML=list.map(d=>`<button type="button" data-dragon="${d.id}" aria-pressed="${curList().some(u=>u.id===d.id)}">${icon(d)}<span>${esc(d.name)}<small>${esc(d.type)} · ${esc(d.element)}</small></span></button>`).join('')||'<p class="muted">조건에 맞는 드래곤이 없습니다.</p>';
  }
  $('dragons').onclick=e=>{const b=e.target.closest('[data-dragon]');if(!b)return;
-  if(equipMode()){if(units.length>=20){$('status').textContent='드래곤은 최대 20마리까지 넣을 수 있습니다.';return}
-   units.push({id:Number(b.dataset.dragon),spirit:emptySpirit()});selUnit=units.length-1;renderUnits();renderBoard();renderDragons();changed();return;}
+  {const L=curList();if(L.length>=MAX_UNITS()){$('status').textContent=`드래곤은 최대 ${MAX_UNITS()}마리까지 넣을 수 있습니다.`;return}
+   L.push(equipMode()?{id:Number(b.dataset.dragon),spirit:emptySpirit()}:{id:Number(b.dataset.dragon)});selUnit=L.length-1;renderUnits();renderBoard();renderDragons();changed();return;}
   slots[selected]=Number(b.dataset.dragon);
   // Move to the next empty slot to speed up filling.
   const next=[...Array(20).keys()].map(i=>(selected+1+i)%20).find(i=>!slots[i]);if(next!==undefined)selected=next;
@@ -93,8 +96,9 @@
 
  /* ---------- equipped units ---------- */
  const spSummary=s=>{const o=(s.opts||[]).filter(x=>x.stat&&x.stat!=='none');return o.length?o.map(x=>`<i class="sp-${x.stat}">${names[x.stat][0]}${x.type==='%'?'%':'+'}</i>`).join(' ')+(s.bonus&&s.bonus!=='none'?` · 부가 <i class="sp-${s.bonus}">${names[s.bonus][0]}</i>`:''):'정령 없음';};
- function renderUnits(){
-  $('units').innerHTML=units.map((u,i)=>{const d=byId.get(u.id);return d?`<button type="button" class="jp-unit" data-unit="${i}" aria-pressed="${i===selUnit}">${icon(d)}<span><b>${esc(d.name)}</b><small>${esc(d.type)} · ${esc(d.element)}</small><small class="jp-unit-sp">${spSummary(u.spirit)}</small></span></button>`:'';}).join('')||'<p class="muted">아직 추가한 드래곤이 없습니다.</p>';
+ function renderUnits(){const eq=equipMode(),L=curList();
+  $('units').innerHTML=L.map((u,i)=>{const d=byId.get(u.id);return d?`<button type="button" class="jp-unit" data-unit="${i}" aria-pressed="${i===selUnit}">${icon(d)}<span><b>${esc(d.name)}</b><small>${esc(d.type)} · ${esc(d.element)}</small>${eq?`<small class="jp-unit-sp">${spSummary(u.spirit)}</small>`:''}</span></button>`:'';}).join('')||'<p class="muted">아직 추가한 드래곤이 없습니다.</p>';
+  if(!eq){$('unitEditor').innerHTML='';return;}
   const u=units[selUnit],d=u&&byId.get(u.id);
   $('unitEditor').innerHTML=d?`<h3>${esc(d.name)} · 귀속 정령</h3><div class="toolbar" id="unitPresets"><button type="button" data-up="last">막플</button><button type="button" data-up="all">올퍼</button><button type="button" data-up="14">14플</button><button type="button" data-up="24">24플</button><button type="button" data-up="none">정령 없음</button></div>`+SpiritInput.options(u.spirit,'jpUnitOpt',[],(i,k,t)=>!k||!t?'—':t==='%'?Math.round(D.pct[i]*100)+'%':'+'+D.plus[k][i])+SpiritInput.bonus(u.spirit,'jpUnitBonus',[]):'';
  }
@@ -172,7 +176,7 @@
 
  /* ---------- save ---------- */
  const SAVED=['boss','mode','grade','gemMode','gem','enchant','potion','col-hp','col-atk','col-def'];
- function save(){if(restoring)return;try{localStorage.setItem(STORE,JSON.stringify({v:1,fields:Object.fromEntries(SAVED.map(id=>[id,id==='grade'&&$('grade').disabled&&normalGrade?normalGrade:v(id)])),slots,spirits,units,gemStock,pendItems,accStock}))}catch(_){}globalThis.CalcCloud?.push(STORE);}
+ function save(){if(restoring)return;try{localStorage.setItem(STORE,JSON.stringify({v:1,fields:Object.fromEntries(SAVED.map(id=>[id,id==='grade'&&$('grade').disabled&&normalGrade?normalGrade:v(id)])),slots,spirits,units,freeUnits,gemStock,pendItems,accStock}))}catch(_){}globalThis.CalcCloud?.push(STORE);}
  function restore(){
   let s=null;try{s=JSON.parse(localStorage.getItem(STORE)||'null')}catch(_){}
   restoring=true;
@@ -183,6 +187,8 @@
    const okSt=x=>['hp','atk','def'].includes(x)?x:'';
    if(Array.isArray(s.units))units=s.units.filter(u=>u&&Number.isInteger(u.id)).slice(0,20).map(u=>({id:u.id,spirit:{opts:[0,1,2,3].map(i=>({stat:okSt(u.spirit?.opts?.[i]?.stat),type:u.spirit?.opts?.[i]?.type==='+'?'+':'%'})),bonus:okSt(u.spirit?.bonus)}}));
    if(Array.isArray(s.pendItems))pendItems=s.pendItems.filter(p=>p&&PSLOTS[p.name]&&Array.isArray(p.options)&&p.options.length===PSLOTS[p.name]).map(p=>({name:p.name,options:p.options.map(o=>({stat:['hp','atk','def'].includes(o.stat)?o.stat:'hp',val:Math.max(1,Math.min(6,Math.trunc(Number(o.val))||6))})),count:Math.max(1,Math.min(99,p.count|0))}));
+   if(Array.isArray(s.freeUnits))freeUnits=s.freeUnits.filter(u=>u&&Number.isInteger(u.id)).slice(0,40).map(u=>({id:u.id}));
+   else freeUnits=slots.filter(Number.isInteger).map(id=>({id})); // 이전 버전: 칸에 놓은 드래곤을 목록으로
    if(s.accStock&&typeof s.accStock==='object'){const ok=new Set(D.accessories.map(a=>a.n));for(const [k,n] of Object.entries(s.accStock)){const c=Math.trunc(Number(n));if(ok.has(k)&&c>0)accStock[k]=Math.min(20,c);}}
    if(s.gemStock)for(const k of ['hp','atk','def'])for(const g of STOCK_KEYS){const n=Math.trunc(Number(s.gemStock[k]?.[g]));if(n>0)gemStock[k][g]=Math.min(100,n);}
   }
@@ -196,7 +202,7 @@
  function config(){
   return {boss:v('boss'),grade:v('boss')==='corrupted'?'9.0':v('grade'),gem:v('gemMode')==='stock'?FALLBACK_GEM:v('gem'),gemStock:v('gemMode')==='stock'?gemStock:null,enchant:v('enchant'),potion:n('potion'),collection:Object.fromEntries(['hp','atk','def'].map(k=>[k,n('col-'+k)])),
    pen:!penOn()?null:{reference:true},hits:4,mode:v('mode'),
-   units:units.map(u=>{const d=byId.get(u.id);return d?{dragon:{id:d.id,type:d.type,light:d.element==='빛',dark:d.element==='어둠'},spirit:u.spirit}:null}).filter(Boolean),
+   units:(equipMode()?units:freeUnits).map(u=>{const d=byId.get(u.id);return d?{dragon:{id:d.id,type:d.type,light:d.element==='빛',dark:d.element==='어둠'},spirit:u.spirit}:null}).filter(Boolean),
    slots:slots.map(id=>{const d=byId.get(id);return d?{id:d.id,type:d.type,light:d.element==='빛',dark:d.element==='어둠'}:null}),spirits,
    pendants:pendItems.length?{mode:'list',items:pendItems}:null,
    accessories:Object.keys(accStock).length?D.accessories.map((a,i)=>({i,count:accStock[a.n]||0})).filter(x=>x.count>0):null};
@@ -205,7 +211,7 @@
  $('cancel').onclick=()=>{finish();$('status').textContent='계산을 중단했습니다. 기존 결과는 유지됩니다.';};
  $('config').onsubmit=e=>{
   e.preventDefault();if(worker)return;const c=config();
-  if(c.mode==='equip'?!c.units.length:!c.slots.some(Boolean)){$('status').textContent='배치할 드래곤을 한 마리 이상 넣어 주세요.';return}
+  if(!c.units.length){$('status').textContent='배치할 드래곤을 한 마리 이상 넣어 주세요.';return}
   if(['hp','atk','def'].some(k=>!(c.collection[k]>=0))){$('status').textContent='컬렉션 수치를 확인해 주세요.';return}
   dirty=false;$('run').disabled=true;$('cancel').hidden=false;$('status').textContent='자리별 셋팅 계산 중…';
   try{worker=new Worker('./jorm-place-engine.js');}catch(error){finish();$('status').textContent='계산기를 시작하지 못했습니다. 웹 서버에서 페이지를 열어 주세요.';return}
@@ -257,6 +263,7 @@
    pen?`<div class="${pen.passed===pen.total?'ok':'bad'}"><small>관통 정타 ${hits} + 가드 ${pen.guards} 통과</small><strong>${pen.passed}/${pen.total}</strong></div>`:'',
 
    result.mode==='equip'?`<div><small>배치한 드래곤</small><strong>${result.results.length}마리</strong></div>`:`<div><small>정령 사용</small><strong>${s.spiritsUsed}/${s.spiritsOwned}</strong></div>`,
+   result.benched&&result.benched.length?`<div class="jp-bench"><small>배치 제외 ${result.benched.length}마리</small><strong>${result.benched.map(id=>esc(byId.get(id)?.name||id)).join(', ')}</strong></div>`:'',
    s.accessoriesOwned!=null?`<div><small>장신구 사용</small><strong>${s.accessoriesUsed}/${s.accessoriesOwned}</strong></div>`:'',
    s.pendantsOwned!=null?`<div><small>펜던트 사용</small><strong>${s.pendantsUsed}/${s.pendantsOwned}</strong></div>`:''].join('');
   $('buffAdvice').innerHTML=buffAdviceHTML(buffAdvice(result));

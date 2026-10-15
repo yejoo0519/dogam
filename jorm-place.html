@@ -8,7 +8,7 @@
 <section data-input-panel="place"><h2><span id="placeTitle">배치</span> <small id="placeCount"></small></h2><p class="muted" id="placeHelp">칸을 누른 뒤 아래 목록에서 드래곤을 고르세요. 타입과 속성은 도감 정보를 따릅니다.</p>
 <div id="freeBoard"><div class="jp-board" id="board"></div>
 <div class="jp-legend"><span class="front">앞라인 · 탱</span><span class="pen">관통 자리</span><span class="dealer">뒷라인 · 딜러</span></div></div>
-<div id="equipList" hidden><div class="jp-units" id="units"></div><div class="jp-unit-editor" id="unitEditor"></div></div>
+<div id="equipList" hidden><p class="muted jp-warn" id="unitWarn" hidden>20마리를 넘게 넣으면 계산기가 그중 20마리를 골라 배치합니다. 결과가 정확하지 않거나 계산이 오래 걸릴 수 있습니다.</p><div class="jp-units" id="units"></div><div class="jp-unit-editor" id="unitEditor"></div></div>
 <div class="jp-picker" id="picker"><div class="jp-picker-head"><strong id="pickTitle"></strong><button type="button" id="clearSlot">이 칸 비우기</button><button type="button" id="clearAll">전체 비우기</button></div>
 <div class="toolbar"><input id="dragonSearch" type="search" placeholder="드래곤 이름 검색" aria-label="드래곤 검색"><select id="dragonType" aria-label="타입"><option value="">전체 타입</option></select><select id="dragonElement" aria-label="속성"><option value="">전체 속성</option></select></div>
 <div class="jp-dragons" id="dragons"><p class="muted">드래곤 목록을 불러오는 중…</p></div></div></section>

@@ -112,3 +112,5 @@
 @media(max-width:580px){.jp-buff-advice li{grid-template-columns:1fr 1fr;font-size:12px}}
 .jp-survive strong.bad{color:#f08a7a}
 .jp-attr{margin-left:6px;font-size:.62em;font-weight:700;color:#9fd18b;vertical-align:middle}
+.jp-warn{color:#f0b46a!important;margin:8px 0}
+.jp-summary .jp-bench strong{font-size:13px!important;line-height:1.5;color:var(--text)!important}

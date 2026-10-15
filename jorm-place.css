@@ -111,3 +111,4 @@
 .jp-acc-own{display:flex!important;align-items:center;gap:6px;font-size:13px!important}.jorm .jp-acc-own input{width:16px!important;min-width:0!important;flex:none!important;margin:0}
 @media(max-width:580px){.jp-buff-advice li{grid-template-columns:1fr 1fr;font-size:12px}}
 .jp-survive strong.bad{color:#f08a7a}
+.jp-attr{margin-left:6px;font-size:.62em;font-weight:700;color:#9fd18b;vertical-align:middle}

@@ -248,6 +248,10 @@
   o.forEach((x,i)=>{if(!i)return;const b=o[best],sx=x.penOk*100+x.dOk,sb=b.penOk*100+b.dOk;if(sx>sb||(sx===sb&&best&&x.dealt>b.dealt))best=i;});
   const head=best===0?'<b>공 30% 그대로</b> · 체력·방어 2%를 먹어도 더 버티는 칸 없음':`<b>${o[best].name} 추천</b> · 관통 ${base.penOk}→${o[best].penOk}칸, 딜러 ${base.dOk}→${o[best].dOk}칸 생존`;
   return `<div class="jp-buff-advice"><div>${head}</div><ul>${o.map((x,i)=>`<li class="${i===best?'on':''}"><span>${x.name}</span><span>관통 4+1 ${x.penOk}/${x.penN}</span><span>딜러 2+1 ${x.dOk}/${x.dN}</span><span>뒷라인 딜 ${fmt(Math.round(x.dealt))}</span></li>`).join('')}</ul><small>지금 세팅 그대로 1~3층 버프만 바꿔 계산합니다. 관통 칸은 정타 4 + 가드 1, 딜러 칸은 정타 2 + 가드 1을 버티는지 봅니다.</small></div>`;}
+ // 속성 보정: 어둠 = 공격 ×1.25(보스에게 줄 때), 빛 = 방어 ×1.25(잠식에게 맞을 때). 표시는 +증가분, 피해 수치는 이미 적용된 값.
+ function attrBonus(x,k,v){const c=lastResult&&lastResult.config;if(!c||c.boss!=='corrupted')return null;
+  if(k==='atk'&&x.dragon.dark)return {v:Math.floor(v*1.25+1e-9)-v,label:'어둠 공격 ×1.25'};
+  if(k==='def'&&x.dragon.light)return {v:Math.floor(v*1.25+1e-9)-v,label:'빛 방어 ×1.25'};return null;}
  function penState(r,hits,pen){if(!r||r.penHits==null)return {cls:'',text:'',short:''};
   if(r.penLeft>0)return {cls:'ok',text:'4+1 OK',short:'OK'};return {cls:'bad',text:`부족 · ${fmt(-r.penLeft+1)}`,short:'부족'};}
  function metricOf(x,hits,pen){const r=x.row;if(!r)return '—';if(x.role==='front')return fmt(Math.round(r.score));if(x.role==='pen')return penState(r,hits,pen).short;return fmt(Math.round(r.dealt));}
@@ -270,7 +274,7 @@
   $('resultList').innerHTML=result.results.filter(x=>x.pos===resultPos).map(x=>{const r=x.row,d=byId.get(x.dragon.id);if(!r)return '';const ps=x.role==='pen'?penState(r,hits,pen):null;
    const roleText=x.role==='front'?'앞라인 · 생존 점수':x.role==='pen'?'관통 자리 · 기대 피해':'딜러 · 기대 피해';
    return `<article class="j-result jp-card ${x.role}" id="jp-card-${x.pos}"><header><div class="j-rank-head"><span class="j-rank-badge">${posLabel(x.pos)}</span>${d?icon(d):''}<div><h3>${esc(d?d.name:x.dragon.type)}</h3><small>${esc(x.dragon.type)}${d?' · '+esc(d.element):''} · ${roleLabel[x.role]}</small></div></div><div class="j-metrics"><div class="primary"><small>${roleText}</small><strong>${fmt(x.role==='front'?r.score:r.dealt)}</strong></div>${ps?`<div class="jp-pen ${ps.cls}"><small>관통 1회 ${fmt(r.penHit)}</small><strong>${ps.text}</strong></div>`:''}</div></header>
-   <div class="j-final-stats">${['hp','atk','def'].map(k=>`<div class="${k}"><small>${names[k]}</small><b>${fmt(r.stats[k])}</b></div>`).join('')}</div>
+   <div class="j-final-stats">${['hp','atk','def'].map(k=>{const b=attrBonus(x,k,r.stats[k]);return `<div class="${k}"><small>${names[k]}</small><b>${fmt(r.stats[k])}${b?`<span class="jp-attr" title="${b.label}">+${fmt(b.v)}</span>`:''}</b></div>`;}).join('')}</div>
    <div class="j-gear"><div><small>정령</small>${spiritHTML(x.spirit)}</div>
    <div><small>장신구</small><b>${esc(r.accName||D.accessories[r.acc]?.n||'장신구 없음')}</b><div>인챈트 · ${names[r.enchant]}${r.enchant==='none'?'':' +21%'}</div></div>
    <div><small>젬 배분</small>${['hp','atk','def'].map(k=>`<span class="j-stat-chip ${k}">${names[k]} ${r.gems[k]}개${r.gemLv&&r.gems[k]?' · '+gemText(r.gemLv[k]):''}</span>`).join('')}</div>

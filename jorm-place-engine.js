@@ -33,24 +33,7 @@
     const res=new Array(n);for(let j=1;j<=m;j++)if(p[j])res[p[j]-1]=j-1;return res;
   }
 
-  // 층 버프는 계산에 넣지 않습니다(결과는 버프 없음). 같은 입력에 체력 2% 또는 방어 2%만 더해 계산해
-  // 관통 자리(정타 4 + 가드 1) 통과가 늘어나는지만 따로 알려 줍니다(결과는 바꾸지 않음).
-  const BUFF_SETS=[{hp:0,atk:0,def:0},{hp:2,atk:0,def:0},{hp:0,atk:0,def:2}];
-  function plan(input,E,data,progress=()=>{}){
-    if(input.buffs)return planOnce(input,E,data,progress);
-    const runs=[];
-    for(let i=0;i<BUFF_SETS.length;i++){
-      const r=planOnce({...input,buffs:BUFF_SETS[i]},E,data,p=>progress({done:i*p.total+p.done,total:BUFF_SETS.length*p.total}));
-      r.buffs=BUFF_SETS[i];runs.push(r);
-      if(!r.pen)return r;
-    }
-    const main=runs[0];
-    const opts=runs.map(r=>({buffs:r.buffs,passed:r.pen.passed,total:r.pen.total,dealt:r.summary.dealt}));
-    // 추천: 관통 통과가 늘어나는 경우에만 (체2·방2 중 통과 수 > 딜 합). 늘지 않으면 버프 필요 없음.
-    let best=0;opts.forEach((o,i)=>{if(!i)return;const b=opts[best];if(o.passed>b.passed||(best&&o.passed===b.passed&&o.dealt>b.dealt+1e-9))best=i;});
-    main.buffAdvice={options:opts,best};
-    return main;
-  }
+  function plan(input,E,data,progress=()=>{}){return planOnce(input,E,data,progress);}
   function planOnce(input,E,data,progress=()=>{}){
     const measured=input.pen&&input.pen.damage>0&&input.pen.def>=0;
     const pen=measured?input.pen:(input.pen&&input.pen.reference?{reference:true}:null);
@@ -67,49 +50,75 @@
     const kinds=new Map([[noSpirit.key,noSpirit]]),units=[];
     if(equip)for(const u of unitsIn){if(!kinds.has(u.sp.key))kinds.set(u.sp.key,u.sp);}
     else for(const s of input.spirits||[]){const sp=normSp(s);if(sp.key===noSpirit.key)continue;if(!kinds.has(sp.key))kinds.set(sp.key,sp);for(let i=0;i<Math.max(1,s.count|0);i++)units.push(sp.key);}
+    // 보유 장신구(input.accessories=[{i,count}]): 없으면 장신구 제한 없이 최적화. 모자라는 칸은 '장신구 없음'.
+    const NO_ACC=data.accessories.length,dataX={...data,accessories:[...data.accessories,{n:'장신구 없음',hp:0,atk:0,def:0,crit:0,eva:0}]};
+    const ak=accessoryKinds(input.accessories,NO_ACC);
     const base={boss:input.boss,type:'',grade:corrupted?'9.0':input.grade,gem:input.gem,enchant:input.enchant,potion:input.potion,collection:input.collection,buffs:input.buffs||null,accessories:data.accessories.map((_,i)=>i),pendantMode:'auto',pendants:[]};
     // 보유 펜던트: 정령 배분은 펜던트 없이 정한 뒤, 보유 펜던트를 칸마다 나눠 줍니다(distributePendants).
     const pk=pendantKinds(input.pendants,E);
     const cache=new Map(),jobs=new Set();
-    const jobKey=(sl,k,pid=pk?pk.def:'')=>[sl.role,sl.dragon.type,sl.role==='dealer'?'':!!sl.dragon.light,sl.role==='front'?'':!!sl.dragon.dark,k,pid].join('|');
+    const jobKey=(sl,k,pid=pk?pk.def:'',aid=ak?ak.def:'')=>[sl.role,sl.dragon.type,sl.role==='dealer'?'':!!sl.dragon.light,sl.role==='front'?'':!!sl.dragon.dark,k,pid,aid].join('|');
     const positions=[...Array(20).keys()].map(pos=>({pos,role:roleOf(pos,pen)}));
     const rolesUsed=[...new Set(positions.map(x=>x.role))];
     if(equip){for(const u of unitsIn)for(const role of rolesUsed)jobs.add(jobKey({role,dragon:u.dragon},u.sp.key));}
     else for(const sl of slots)for(const k of kinds.keys())jobs.add(jobKey(sl,k));
-    const total=jobs.size*(pk?pk.kinds.size:1);let done=0;
-    function evaluate(sl,k,pid=pk?pk.def:''){
-      const key=jobKey(sl,k,pid);if(cache.has(key))return cache.get(key);
-      const sp=kinds.get(k),d=sl.dragon,c={...base,type:d.type,light:!!d.light,dark:!!d.dark,spirit:sp.opts,bonus:sp.bonus,...(pk?{pendantMode:'manual',pendants:pk.kinds.get(pid)}:{})};
+    const total=jobs.size*(pk?pk.kinds.size:1)*(ak?ak.kinds.size:1);let done=0;
+    function evaluate(sl,k,pid=pk?pk.def:'',aid=ak?ak.def:''){
+      const key=jobKey(sl,k,pid,aid);if(cache.has(key))return cache.get(key);
+      const sp=kinds.get(k),d=sl.dragon,c={...base,type:d.type,light:!!d.light,dark:!!d.dark,spirit:sp.opts,bonus:sp.bonus,...(pk?{pendantMode:'manual',pendants:pk.kinds.get(pid)}:{}),...(ak?{accessories:ak.kinds.get(aid)}:{})};
       let row,ok=true;
-      if(sl.role==='front')row=E.optimize({...c,role:'tank',potionKind:'eva'},data).rows[0];
-      else if(sl.role==='dealer')row=E.optimize({...c,role:'dealer',potionKind:'crit'},data).rows[0];
+      if(sl.role==='front')row=E.optimize({...c,role:'tank',potionKind:'eva'},dataX).rows[0];
+      else if(sl.role==='dealer')row=E.optimize({...c,role:'dealer',potionKind:'crit'},dataX).rows[0];
       else{
-        row=E.optimize({...c,role:'dealer',potionKind:'crit',minHits:{hits,guards,attack:bossAtk}},data).rows[0];
+        row=E.optimize({...c,role:'dealer',potionKind:'crit',minHits:{hits,guards,attack:bossAtk}},dataX).rows[0];
         // No setting survives: fall back to the sturdiest (tank) setting and report the hit count.
-        if(!row){ok=false;row=E.optimize({...c,role:'tank',potionKind:'crit'},data).rows[0];}
+        if(!row){ok=false;row=E.optimize({...c,role:'tank',potionKind:'crit'},dataX).rows[0];}
       }
       const r=row?{...row,pass:ok}:null;
       if(r&&sl.role==='pen'){r.penTough=tough(r.stats.hp,r.stats.def,d.light);r.penHit=E.penetrationHit(r.stats.def,bossAtk,lightOf(d.light));r.penHits=E.penetrationHits(r.stats.hp,r.stats.def,bossAtk,lightOf(d.light));r.penGuard=E.penetrationGuardHit(r.stats.def,bossAtk,lightOf(d.light));r.penLeft=r.stats.hp-hits*r.penHit-guards*r.penGuard;}
       if(r&&sl.role==='front'&&r.score==null)r.score=0;
+      if(r)r.accName=dataX.accessories[r.acc].n;
       cache.set(key,r);done++;progress({done,total});return r;
     }
     // Lexicographic weights. Scores ~10^2-10^3, dealt sums < 10^6.
     // (장착 모드) 앞라인 채우기 > 관통 통과 > 앞라인 최저 점수 > 딜 합 + 앞라인 합
     const W_FILL=1e12,W_PASS=1e10,W_LOW=1e8;
-    const valueOf=(role,r,T)=>{if(!r)return -1e13;
+    const valueOf=(role,r,T,x)=>{if(!r)return -1e13;if(equip&&x&&x.fixedRole&&x.fixedRole!==role)return -1e13;
       if(role==='front')return (equip?W_FILL:0)+(r.score<T?-W_LOW:0)+r.score*1e-3;
       if(role==='pen')return r.pass?W_PASS+r.dealt:r.penHits*1e-3;
       return r.dealt;};
     // rows = 칸(해제) 또는 드래곤(장착), cols = 정령(해제) 또는 자리(장착)
+    // 역할 정하기(규칙): 탱커형(체력·방어·체방) 중 탱커 점수 상위 10 → 앞라인, 나머지 중 딜 상위 6 → 딜러,
+    // 남은 드래곤 → 관통(정타 4 + 가드 1 셋팅). 관통 자리가 없으면(잠식 아님) 뒷라인 10마리 모두 딜러.
+    const TANK_TYPES=['체력형','방어형','체방형'];
+    const dealtOf=(d,k)=>{const r=evaluate({role:'dealer',dragon:d},k);return r?r.dealt:-Infinity;};
+    const frontOf=(d,k)=>{const r=evaluate({role:'front',dragon:d},k);return r?r.score:-Infinity;};
+    if(equip){
+      const left=unitsIn.map((u,i)=>i),take=(list,n,score)=>list.sort((a,b)=>score(b)-score(a)).slice(0,n);
+      const tanks=left.filter(i=>TANK_TYPES.includes(unitsIn[i].dragon.type));
+      let front=take(tanks,10,i=>frontOf(unitsIn[i].dragon,unitsIn[i].sp.key));
+      if(front.length<10)front=front.concat(take(left.filter(i=>!front.includes(i)),10-front.length,i=>frontOf(unitsIn[i].dragon,unitsIn[i].sp.key)));
+      const rest=left.filter(i=>!front.includes(i));
+      // 딜이 같으면 빛(방어 보정 → 관통에 유리)이 아닌 쪽을 딜러로.
+      const dealers=pen?rest.slice().sort((a,b)=>dealtOf(unitsIn[b].dragon,unitsIn[b].sp.key)-dealtOf(unitsIn[a].dragon,unitsIn[a].sp.key)||!!unitsIn[a].dragon.light-!!unitsIn[b].dragon.light).slice(0,6):rest;
+      unitsIn.forEach((u,i)=>{u.fixedRole=front.includes(i)?'front':dealers.includes(i)?'dealer':'pen';});
+    }else if(pen){
+      // 해제 모드: 앞라인은 놓은 그대로. 뒷라인 드래곤 중 정령 없이 딜이 높은 6마리를 딜러 칸에, 나머지를 관통 칸에.
+      const back=slots.filter(sl=>sl.pos>=10),ds=back.map(sl=>sl.dragon).sort((a,b)=>dealtOf(b,noSpirit.key)-dealtOf(a,noSpirit.key)||!!a.light-!!b.light);
+      const dealSlots=back.filter(sl=>sl.role==='dealer'),penSlots=back.filter(sl=>sl.role==='pen');
+      const nDeal=Math.min(dealSlots.length,ds.length);
+      dealSlots.slice(0,nDeal).forEach((sl,i)=>{sl.dragon=ds[i];});
+      penSlots.forEach((sl,i)=>{if(ds[nDeal+i])sl.dragon=ds[nDeal+i];});
+    }
     const rows=equip?unitsIn:slots;
     const cols=equip?positions:[...units,...slots.map(()=>noSpirit.key)];
     const roleAt=(i,j)=>equip?cols[j].role:rows[i].role;
     // rowPid[i] = i번째 칸(해제) 또는 드래곤(장착)에 낀 펜던트 종류. 펜던트를 입력하지 않으면 '' (제한 없이 최적화).
-    function assign(rowPid){
-    const table=equip?unitsIn.map((u,i)=>{const byRole=new Map(rolesUsed.map(role=>[role,evaluate({role,dragon:u.dragon},u.sp.key,rowPid[i])]));return positions.map(x=>byRole.get(x.role));})
-      :slots.map((sl,i)=>{const byKind=new Map();for(const k of kinds.keys())byKind.set(k,evaluate(sl,k,rowPid[i]));return cols.map(k=>byKind.get(k));});
+    function assign(rowPid,rowAid){
+    const table=equip?unitsIn.map((u,i)=>{const byRole=new Map(rolesUsed.map(role=>[role,evaluate({role,dragon:u.dragon},u.sp.key,rowPid[i],rowAid[i])]));return positions.map(x=>byRole.get(x.role));})
+      :slots.map((sl,i)=>{const byKind=new Map();for(const k of kinds.keys())byKind.set(k,evaluate(sl,k,rowPid[i],rowAid[i]));return cols.map(k=>byKind.get(k));});
     function solve(T){
-      const cost=rows.map((_,i)=>table[i].map((r,j)=>-valueOf(roleAt(i,j),r,T)));
+      const cost=rows.map((x,i)=>table[i].map((r,j)=>-valueOf(roleAt(i,j),r,T,x)));
       const pick=hungarian(cost);
       let passes=0,low=0,fronts=0;rows.forEach((_,i)=>{const role=roleAt(i,pick[i]),r=table[i][pick[i]];if(role==='pen'&&r&&r.pass)passes++;if(role==='front'){fronts++;if(r&&r.score<T)low++;}});
       return {pick,passes,low,fronts};
@@ -120,42 +129,25 @@
     if(maxFront){let lo=0,hi=cands.length-1;
       while(lo<=hi){const mid=(lo+hi)>>1,s=solve(cands[mid]);if(s.low===0&&s.passes===maxPass&&s.fronts===maxFront){best=s;lo=mid+1;}else hi=mid-1;}}
     return rows.map((x,i)=>{const j=best.pick[i],r=table[i][j];
-      if(equip)return {ri:i,pos:cols[j].pos,role:cols[j].role,dragon:x.dragon,spirit:x.sp.key===noSpirit.key?null:x.sp,row:r&&{...r},pid:rowPid[i]};
-      const k=cols[j];return {ri:i,pos:x.pos,role:x.role,dragon:x.dragon,spirit:k===noSpirit.key?null:kinds.get(k),row:r&&{...r},pid:rowPid[i]};});
+      if(equip)return {ri:i,pos:cols[j].pos,role:cols[j].role,dragon:x.dragon,spirit:x.sp.key===noSpirit.key?null:x.sp,row:r&&{...r},pid:rowPid[i],aid:rowAid[i]};
+      const k=cols[j];return {ri:i,pos:x.pos,role:x.role,dragon:x.dragon,spirit:k===noSpirit.key?null:kinds.get(k),row:r&&{...r},pid:rowPid[i],aid:rowAid[i]};});
     }
     // 펜던트 입력 시: 모든 칸에 기본 펜던트를 낀 상태로 정령(자리)을 배분 → 보유 펜던트 배분 →
     // 그 펜던트로 정령(자리) 배분을 다시 계산. 펜던트 배치가 더 바뀌지 않을 때까지 반복합니다(최대 5회).
-    let rowPid=rows.map(()=>pk?pk.def:''),results=assign(rowPid);
-    // (해제 모드) 뒷라인은 놓은 칸 그대로가 아니라, 관통 칸 드래곤과 딜러 칸 드래곤을 서로 바꿔 보며
-    // 정령 배분을 다시 계산해 목표(관통 통과 > 앞라인 최저 > 딜 합)가 좋아지면 바꿉니다. 더 좋아지지 않을 때까지 반복.
-    if(!equip&&pen){
-      const penI=[],dealI=[];slots.forEach((sl,i)=>{if(sl.role==='pen')penI.push(i);else if(sl.role==='dealer')dealI.push(i);});
-      let curObj=objective(results);
-      for(let it=0;it<20;it++){
-        let best=null;
-        for(const i of penI)for(const j of dealI){
-          const a=slots[i].dragon,b=slots[j].dragon;
-          if(a.type===b.type&&!!a.light===!!b.light&&!!a.dark===!!b.dark)continue; // 같은 조건이면 바꿔도 같음
-          slots[i].dragon=b;slots[j].dragon=a;
-          const r=assign(rowPid),o=objective(r);
-          slots[i].dragon=a;slots[j].dragon=b;
-          if(cmpObj(o,best?best.o:curObj)>0)best={i,j,r,o};
-        }
-        if(!best)break;
-        const a=slots[best.i].dragon;slots[best.i].dragon=slots[best.j].dragon;slots[best.j].dragon=a;
-        results=best.r;curObj=best.o;
-      }
-    }
-    if(pk)for(let it=0;it<5;it++){
-      distributePendants(results,pk,(x,pid)=>evaluate({role:x.role,dragon:x.dragon},x.spirit?x.spirit.key:noSpirit.key,pid));
-      const next=rows.map((_,i)=>results.find(x=>x.ri===i).pid);
-      if(it&&next.every((p,i)=>p===rowPid[i]))break;
-      const prev=results,prevObj=objective(prev);rowPid=next;results=assign(rowPid);
+    let rowPid=rows.map(()=>pk?pk.def:''),rowAid=rows.map(()=>ak?ak.def:''),results=assign(rowPid,rowAid);
+    // 보유 펜던트·장신구: 칸마다 나눠 준 뒤 그 장비로 정령(자리) 배분을 다시 계산. 바뀌지 않을 때까지 반복(최대 5회).
+    const spk=x=>x.spirit?x.spirit.key:noSpirit.key;
+    if(pk||ak)for(let it=0;it<5;it++){
+      if(pk)distributeItems(results,pk,'pid',(x,pid)=>evaluate({role:x.role,dragon:x.dragon},spk(x),pid,x.aid));
+      if(ak)distributeItems(results,ak,'aid',(x,aid)=>evaluate({role:x.role,dragon:x.dragon},spk(x),x.pid,aid));
+      const nextP=rows.map((_,i)=>results.find(x=>x.ri===i).pid),nextA=rows.map((_,i)=>results.find(x=>x.ri===i).aid);
+      if(it&&nextP.every((p,i)=>p===rowPid[i])&&nextA.every((p,i)=>p===rowAid[i]))break;
+      const prev=results,prevObj=objective(prev);rowPid=nextP;rowAid=nextA;results=assign(rowPid,rowAid);
       // 재배분 결과가 더 나쁘면 이전 결과를 유지합니다.
       if(cmpObj(objective(results),prevObj)<0){results=prev;break;}
     }
     if(equip)results.forEach(x=>slots.push({pos:x.pos}));
-    if(input.gemStock)distributeGems(results,input,E,data,{bossAtk,hits,guards,lightOf,tough,grade:base.grade});
+    if(input.gemStock)distributeGems(results,input,E,dataX,{bossAtk,hits,guards,lightOf,tough,grade:base.grade});
     // 추천 배치: 앞라인은 생존 점수가 높은 순으로 가운데부터, 딜러는 기대 피해가 높은 순으로 가장자리부터.
     // (계산 모델에서 같은 줄 안의 칸 위치는 결과에 영향을 주지 않으므로 자리만 다시 정합니다.)
     const FRONT_ORDER=[4,5,3,6,2,7,1,8,0,9],BACK_ORDER=[10,19,11,18,12,17,13,16,14,15];
@@ -171,7 +163,7 @@
     results.sort((a,b)=>a.pos-b.pos);
     const front=results.filter(r=>r.role==='front'&&r.row),pens=results.filter(r=>r.role==='pen');
     return {results,pen:pen?{reference:!measured,bossAtk,hits,guards,passed:pens.filter(r=>r.row&&r.row.pass).length,total:pens.length}:null,
-      summary:{frontMin:front.length?Math.min(...front.map(r=>r.row.score)):null,dealt:results.filter(r=>r.row&&(r.role==='dealer'||(r.role==='pen'&&r.row.pass))).reduce((a,r)=>a+r.row.dealt,0),spiritsUsed:results.filter(r=>r.spirit).length,spiritsOwned:equip?results.filter(r=>r.spirit).length:units.length,pendantsUsed:pk?results.filter(r=>r.pid&&r.pid!=='none').length:null,pendantsOwned:pk?pk.owned:null},mode:equip?'equip':'free',evaluated:total};
+      summary:{frontMin:front.length?Math.min(...front.map(r=>r.row.score)):null,dealt:results.filter(r=>r.row&&(r.role==='dealer'||(r.role==='pen'&&r.row.pass))).reduce((a,r)=>a+r.row.dealt,0),spiritsUsed:results.filter(r=>r.spirit).length,spiritsOwned:equip?results.filter(r=>r.spirit).length:units.length,pendantsUsed:pk?results.filter(r=>r.pid&&r.pid!=='none').length:null,pendantsOwned:pk?pk.owned:null,accessoriesUsed:ak?results.filter(r=>r.aid&&r.aid!=='none').length:null,accessoriesOwned:ak?ak.owned:null},mode:equip?'equip':'free',evaluated:total};
   }
   // 펜던트 종류: none = 미착용. count 모드는 태양/달 옵션을 칸마다 고르고(후보 전체), list 모드는 입력한 펜던트 그대로.
   function pendantKinds(p,E){
@@ -191,6 +183,15 @@
     const def=Object.keys(stock).sort((a,b)=>stock[b]-stock[a]||(b==='sun')-(a==='sun'))[0]||'none';
     return {kinds,stock,def,owned:Object.values(stock).reduce((a,b)=>a+b,0)};
   }
+  // 보유 장신구: [{i: 장신구 번호, count}] → 종류별 후보(번호 하나)와 수량. 'none' = 장신구 없음.
+  function accessoryKinds(list,noIdx){
+    if(!Array.isArray(list))return null;
+    const kinds=new Map([['none',[noIdx]]]),stock={};
+    for(const it of list){const i=Math.trunc(Number(it&&it.i)),n=Math.max(0,Math.min(20,Math.trunc(Number(it&&it.count))||0));if(!(i>=0&&i<noIdx)||!n)continue;const id='a'+i;kinds.set(id,[i]);stock[id]=Math.min(20,(stock[id]||0)+n);}
+    if(!Object.keys(stock).length)return null;
+    const def=Object.keys(stock).sort((a,b)=>stock[b]-stock[a])[0];
+    return {kinds,stock,def,owned:Object.values(stock).reduce((a,b)=>a+b,0)};
+  }
   // 4번째 항: 체·공·방 곱(tankBV)의 합. 앞의 목표가 같으면 스탯이 오르는 쪽을 골라, 이득이 없는 칸에도 남는 펜던트를 끼웁니다.
   const objective=list=>{let passes=0,min=Infinity,sum=0,bv=0;
     for(const x of list){const r=x.row;if(!r)continue;bv+=r.tankBV||0;
@@ -202,20 +203,21 @@
   // 보유 펜던트 배분: 펜던트 하나를 어느 칸에 끼우거나 바꿔 끼울 때(뺀 것은 다시 보유로) 목표
   // (관통 통과 수 > 앞라인 최저 점수 > 딜 합 + 앞라인 합)가 가장 좋아지는 수를 반복합니다.
   // 목표가 매번 엄격히 좋아져야 하므로 반드시 끝납니다. 칸의 장신구·젬 등은 그 펜던트 기준으로 다시 고릅니다.
-  function distributePendants(results,pk,evalRow){
+  // 펜던트(field 'pid')·장신구(field 'aid') 공통.
+  function distributeItems(results,pk,field,evalRow){
     const stock={...pk.stock},items=results.filter(x=>x.row);
-    items.forEach(x=>{x.pid='none';const r=evalRow(x,'none');if(r)x.row={...r};});
+    items.forEach(x=>{x[field]='none';const r=evalRow(x,'none');if(r)x.row={...r};});
     for(let guard=0;guard<200;guard++){
       let best=null,bestObj=objective(items);
       for(const pid of Object.keys(stock)){if(stock[pid]<=0)continue;
-        for(const x of items){if(x.pid===pid)continue;
+        for(const x of items){if(x[field]===pid)continue;
           const r=evalRow(x,pid);if(!r)continue;
           const saved=x.row;x.row=r;const obj=objective(items);x.row=saved;
           if(cmpObj(obj,bestObj)>0){bestObj=obj;best={x,pid,r};}
         }}
       if(!best)break;
-      if(best.x.pid!=='none')stock[best.x.pid]++;
-      stock[best.pid]--;best.x.pid=best.pid;best.x.row={...best.r};
+      if(best.x[field]!=='none')stock[best.x[field]]++;
+      stock[best.pid]--;best.x[field]=best.pid;best.x.row={...best.r};
     }
   }
   // 보유 젬 배분: 셋팅(장신구·펜던트·정령·젬 갯수)은 기준 젬(input.gem, 보통 36)으로 고른 그대로 두고,

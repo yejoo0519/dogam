@@ -101,6 +101,12 @@
 @media(max-width:580px){.jp-survive{grid-template-columns:1fr}}
 .jp-buff-advice{margin:0 0 14px;padding:12px 14px;border:1px solid var(--border);border-radius:9px;background:var(--bg);font-size:13px}
 .jp-buff-advice ul{list-style:none;margin:8px 0 6px;padding:0;display:grid;gap:4px}
-.jp-buff-advice li{display:grid;grid-template-columns:minmax(0,1fr) 1fr;gap:8px;padding:5px 8px;border-radius:6px;color:var(--text2)}
+.jp-buff-advice li{display:grid;grid-template-columns:minmax(0,1.3fr) 1fr 1fr 1fr;gap:8px;padding:5px 8px;border-radius:6px;color:var(--text2)}
 .jp-buff-advice li.on{background:var(--accent-bg);color:var(--text);font-weight:700}
 .jp-buff-advice small{font-size:11px;color:var(--text2)}
+.jp-acc-grid{max-height:420px}
+.jorm .jp-acc{cursor:default;align-items:center}.jorm .jp-acc>span{flex:1;min-width:0;font-size:12px}
+.jorm .jp-acc.on{border-color:var(--accent);background:var(--accent-bg)}
+.jorm .jp-acc .jp-qty button{padding:4px 9px}
+.jp-acc-own{display:flex!important;align-items:center;gap:6px;font-size:13px!important}.jorm .jp-acc-own input{width:16px!important;min-width:0!important;flex:none!important;margin:0}
+@media(max-width:580px){.jp-buff-advice li{grid-template-columns:1fr 1fr;font-size:12px}}

@@ -157,9 +157,25 @@
   renderPendList();changed();};
  function pendCountView(){const t=pendItems.reduce((a,p)=>a+p.count,0);$('pendCount').textContent=t?`${t}개`:'';}
 
+ /* ---------- accessories (보유 수량) ---------- */
+ let accStock={}; // 장신구 이름 → 보유 수
+ const accLevel=a=>{const m=a.n.match(/\+\s?(\d+)/);return m?m[1]:'';};
+ [...new Set(D.accessories.map(accLevel).filter(Boolean))].sort((a,b)=>b-a).forEach(l=>$('accLevel').add(new Option('+'+l,l)));
+ const accPct=a=>[...['hp','atk','def'].filter(k=>a[k]).map(k=>`<span class="${k}">${names[k]} ${Math.round(a[k]*100)}%</span>`),...(a.crit?[`<span>크리 ${a.crit}%</span>`]:[]),...(a.eva?[`<span>회피 ${a.eva}%</span>`]:[])].join(' · ')||'—';
+ function renderAccList(){
+  if(!$('accList').children.length)$('accList').innerHTML=D.accessories.map((a,i)=>`<div class="acc-item jp-acc" data-item="${i}">${a.img?`<img src="${esc(a.img)}" alt="" loading="lazy">`:''}<span>${esc(a.n)}<small>${accPct(a)}</small></span><div class="jp-qty"><button type="button" data-acc="${i}" data-d="-1" aria-label="수량 줄이기">−</button><b data-accn="${i}">0</b><button type="button" data-acc="${i}" data-d="1" aria-label="수량 늘리기">+</button></div></div>`).join('');
+  const q=v('accSearch').trim(),lv=v('accLevel'),own=$('accOwned').checked;
+  $('accList').querySelectorAll('[data-item]').forEach(el=>{const a=D.accessories[Number(el.dataset.item)],n=accStock[a.n]||0;el.hidden=!((!q||a.n.includes(q))&&(!lv||accLevel(a)===lv)&&(!own||n>0));el.classList.toggle('on',n>0);el.querySelector('[data-accn]').textContent=n;});
+  const t=Object.values(accStock).reduce((a,b)=>a+b,0);$('accCount').textContent=t?`${t}개`:'';
+ }
+ $('accList').onclick=e=>{const b=e.target.closest('[data-acc]');if(!b)return;const a=D.accessories[Number(b.dataset.acc)],n=Math.max(0,Math.min(20,(accStock[a.n]||0)+Number(b.dataset.d)));if(n)accStock[a.n]=n;else delete accStock[a.n];renderAccList();changed();};
+ $('accSearch').addEventListener('input',e=>{e.stopPropagation();renderAccList();});
+ ['accLevel','accOwned'].forEach(id=>$(id).addEventListener('change',e=>{e.stopPropagation();renderAccList();}));
+ $('accClear').onclick=()=>{accStock={};renderAccList();changed();};
+
  /* ---------- save ---------- */
  const SAVED=['boss','mode','penMode','grade','gemMode','gem','enchant','potion','col-hp','col-atk','col-def','penDamage','penDef','penLight'];
- function save(){if(restoring)return;try{localStorage.setItem(STORE,JSON.stringify({v:1,fields:Object.fromEntries(SAVED.map(id=>[id,id==='grade'&&$('grade').disabled&&normalGrade?normalGrade:v(id)])),slots,spirits,units,gemStock,pendItems}))}catch(_){}globalThis.CalcCloud?.push(STORE);}
+ function save(){if(restoring)return;try{localStorage.setItem(STORE,JSON.stringify({v:1,fields:Object.fromEntries(SAVED.map(id=>[id,id==='grade'&&$('grade').disabled&&normalGrade?normalGrade:v(id)])),slots,spirits,units,gemStock,pendItems,accStock}))}catch(_){}globalThis.CalcCloud?.push(STORE);}
  function restore(){
   let s=null;try{s=JSON.parse(localStorage.getItem(STORE)||'null')}catch(_){}
   restoring=true;
@@ -170,12 +186,13 @@
    const okSt=x=>['hp','atk','def'].includes(x)?x:'';
    if(Array.isArray(s.units))units=s.units.filter(u=>u&&Number.isInteger(u.id)).slice(0,20).map(u=>({id:u.id,spirit:{opts:[0,1,2,3].map(i=>({stat:okSt(u.spirit?.opts?.[i]?.stat),type:u.spirit?.opts?.[i]?.type==='+'?'+':'%'})),bonus:okSt(u.spirit?.bonus)}}));
    if(Array.isArray(s.pendItems))pendItems=s.pendItems.filter(p=>p&&PSLOTS[p.name]&&Array.isArray(p.options)&&p.options.length===PSLOTS[p.name]).map(p=>({name:p.name,options:p.options.map(o=>({stat:['hp','atk','def'].includes(o.stat)?o.stat:'hp',val:Math.max(1,Math.min(6,Math.trunc(Number(o.val))||6))})),count:Math.max(1,Math.min(99,p.count|0))}));
+   if(s.accStock&&typeof s.accStock==='object'){const ok=new Set(D.accessories.map(a=>a.n));for(const [k,n] of Object.entries(s.accStock)){const c=Math.trunc(Number(n));if(ok.has(k)&&c>0)accStock[k]=Math.min(20,c);}}
    if(s.gemStock)for(const k of ['hp','atk','def'])for(const g of STOCK_KEYS){const n=Math.trunc(Number(s.gemStock[k]?.[g]));if(n>0)gemStock[k][g]=Math.min(100,n);}
   }
   if(s&&s.v===1&&s.fields&&s.fields.penMode==null&&Number(s.fields.penDamage)>0)$('penMode').value='input';
   // 일반 요르문간드는 현재 선택할 수 없습니다(코드는 유지). 잠식된 요르문간드로 고정.
   $('boss').value='corrupted';
-  bossView();gemHelp();gemModeView();renderGemGrid();penModeView();resetEditPend('태양');renderPendEditor();renderPendList();restoring=false;
+  bossView();gemHelp();gemModeView();renderGemGrid();penModeView();resetEditPend('태양');renderPendEditor();renderPendList();renderAccList();restoring=false;
  }
  $('resetSaved').onclick=async()=>{try{localStorage.removeItem(STORE)}catch(_){}await globalThis.CalcCloud?.clear(STORE);location.reload()};
 
@@ -186,7 +203,8 @@
    pen:!penOn()?null:v('penMode')==='input'?{damage:dmg,def,light:v('penLight')==='1'}:{reference:true},hits:4,mode:v('mode'),
    units:units.map(u=>{const d=byId.get(u.id);return d?{dragon:{id:d.id,type:d.type,light:d.element==='빛',dark:d.element==='어둠'},spirit:u.spirit}:null}).filter(Boolean),
    slots:slots.map(id=>{const d=byId.get(id);return d?{id:d.id,type:d.type,light:d.element==='빛',dark:d.element==='어둠'}:null}),spirits,
-   pendants:pendItems.length?{mode:'list',items:pendItems}:null};
+   pendants:pendItems.length?{mode:'list',items:pendItems}:null,
+   accessories:Object.keys(accStock).length?D.accessories.map((a,i)=>({i,count:accStock[a.n]||0})).filter(x=>x.count>0):null};
  }
  function finish(){worker?.terminate();worker=null;$('run').disabled=false;$('cancel').hidden=true;}
  $('cancel').onclick=()=>{finish();$('status').textContent='계산을 중단했습니다. 기존 결과는 유지됩니다.';};
@@ -214,10 +232,22 @@
  };
 
  /* ---------- results ---------- */
- function buffAdviceHTML(a){if(!a)return '';const o=a.options,base=o[0],b=o[a.best];
-  const name=x=>x.buffs.hp?'체력 2%':'방어 2%';
-  const head=a.best===0?(base.passed===base.total?'<b>체력·방어 2% 버프 필요 없음</b> · 버프 없이 관통 전부 통과':'<b>체력·방어 2% 버프로도 관통 통과가 늘지 않음</b>'):`<b>${name(b)} 버프 추천</b> · 관통 통과 ${base.passed}→${b.passed}`;
-  return `<div class="jp-buff-advice"><div>${head}</div><ul>${o.map((x,i)=>`<li class="${i===a.best?'on':''}"><span>${i?name(x):'버프 없음'}</span><span>관통 ${x.passed}/${x.total}</span></li>`).join('')}</ul><small>결과는 층 버프 없이 계산합니다. 체력·방어 2%는 관통 자리가 정타 4 + 가드 1을 버티는 데 필요할 때만 추천합니다.</small></div>`;}
+ // 층 버프 추천: 결과 세팅은 그대로 두고 1~3층 버프(공30 / 공28+체2 / 공28+방2)를 최종 능력치에 곱해
+ // 뒷라인이 버티는지만 비교합니다. 관통 칸 = 정타 4 + 가드 1, 딜러 칸 = 정타 2 + 가드 1. 딜은 크리 반영 기대 피해.
+ const BUFF_SETS=[{name:'공 30%',hp:0,atk:30,def:0},{name:'공 28% + 체 2%',hp:2,atk:28,def:0},{name:'공 28% + 방 2%',hp:0,atk:28,def:2}];
+ function buffAdvice(result){const pen=result.pen;if(!pen)return null;const atk=pen.bossAtk,fl=v=>Math.floor(v+1e-9);
+  const back=result.results.filter(x=>x.row&&x.pos>=10);
+  return BUFF_SETS.map(b=>{let penOk=0,penN=0,dOk=0,dN=0,dealt=0;
+   for(const x of back){const st=x.row.stats,hp=fl(st.hp*(1+b.hp/100)),def=fl(st.def*(1+b.def/100)),at=fl(st.atk*(1+b.atk/100)),K=x.dragon.light?20:16;
+    const n1=fl(44*atk*16/(def*K+352)),gd=fl(44*atk*16/(def*K*3+352));
+    if(x.role==='pen'){penN++;if(hp>4*n1+gd)penOk++;}else{dN++;if(hp>2*n1+gd)dOk++;}
+    const dk=x.dragon.dark?1.25:1,p=(x.row.probability&&x.row.probability.kind==='crit')?x.row.probability.final/100:0;
+    dealt+=fl(44*fl(at*dk)/297)*(1-p)+fl(44*fl(at*2*dk)/297)*p;}
+   return {...b,penOk,penN,dOk,dN,dealt};});}
+ function buffAdviceHTML(o){if(!o)return '';const base=o[0];let best=0;
+  o.forEach((x,i)=>{if(!i)return;const b=o[best],sx=x.penOk*100+x.dOk,sb=b.penOk*100+b.dOk;if(sx>sb||(sx===sb&&best&&x.dealt>b.dealt))best=i;});
+  const head=best===0?'<b>공 30% 그대로</b> · 체력·방어 2%를 먹어도 더 버티는 칸 없음':`<b>${o[best].name} 추천</b> · 관통 ${base.penOk}→${o[best].penOk}칸, 딜러 ${base.dOk}→${o[best].dOk}칸 생존`;
+  return `<div class="jp-buff-advice"><div>${head}</div><ul>${o.map((x,i)=>`<li class="${i===best?'on':''}"><span>${x.name}</span><span>관통 4+1 ${x.penOk}/${x.penN}</span><span>딜러 2+1 ${x.dOk}/${x.dN}</span><span>뒷라인 딜 ${fmt(Math.round(x.dealt))}</span></li>`).join('')}</ul><small>지금 세팅 그대로 1~3층 버프만 바꿔 계산합니다. 관통 칸은 정타 4 + 가드 1, 딜러 칸은 정타 2 + 가드 1을 버티는지 봅니다.</small></div>`;}
  function penState(r,hits,pen){if(!r||r.penHits==null)return {cls:'',text:'',short:''};
   if(r.penLeft>0)return {cls:'ok',text:'4+1 OK',short:'OK'};return {cls:'bad',text:`부족 · ${fmt(-r.penLeft+1)}`,short:'부족'};}
  function metricOf(x,hits,pen){const r=x.row;if(!r)return '—';if(x.role==='front')return fmt(Math.round(r.score));if(x.role==='pen')return penState(r,hits,pen).short;return fmt(Math.round(r.dealt));}
@@ -227,13 +257,14 @@
   const {result,config:c}=lastResult,hits=c.hits,by=new Map(result.results.map(x=>[x.pos,x]));
   const pen=result.pen,s=result.summary;
   if(!by.has(resultPos))resultPos=result.results[0]?.pos;
-  $('resultConditions').textContent=`${c.mode==='equip'?'정령 귀속 상태 · 자리 배치':'정령 해제 상태 (귀속X) · 정령 배분'} / ${c.boss==='corrupted'?'잠식된 요르문간드':'요르문간드'} / ${c.grade} / ${c.gemStock?'보유 젬 (부족분 36젬)':'젬 '+D.gemNames[c.gem]} / ${c.pendants?'보유 펜던트':'펜던트 제한 없음'} / 물약 ${c.potion}단계 / ${pen&&pen.reference?`관통 실측값 (1회 = 121000 ÷ (방어 × 방어계수 + 22)) 기준 정타 ${hits} + 가드 ${pen.guards}`:pen?`관통 1회 ${fmt(c.pen.damage)} (방어 ${fmt(c.pen.def)} · ${c.pen.light?'빛':'빛 아님'}) 기준 정타 ${hits} + 가드 ${pen.guards}`:c.boss==='corrupted'?'관통 미입력 · 관통 자리도 딜러 셋팅':'뒷라인 전체 딜러 셋팅'}`;
+  $('resultConditions').textContent=`${c.mode==='equip'?'정령 귀속 상태 · 자리 배치':'정령 해제 상태 (귀속X) · 정령 배분'} / ${c.boss==='corrupted'?'잠식된 요르문간드':'요르문간드'} / ${c.grade} / ${c.gemStock?'보유 젬 (부족분 36젬)':'젬 '+D.gemNames[c.gem]} / ${c.accessories?'보유 장신구':'장신구 제한 없음'} / ${c.pendants?'보유 펜던트':'펜던트 제한 없음'} / 물약 ${c.potion}단계 / ${pen&&pen.reference?`관통 실측값 (1회 = 121000 ÷ (방어 × 방어계수 + 22)) 기준 정타 ${hits} + 가드 ${pen.guards}`:pen?`관통 1회 ${fmt(c.pen.damage)} (방어 ${fmt(c.pen.def)} · ${c.pen.light?'빛':'빛 아님'}) 기준 정타 ${hits} + 가드 ${pen.guards}`:c.boss==='corrupted'?'관통 미입력 · 관통 자리도 딜러 셋팅':'뒷라인 전체 딜러 셋팅'}`;
   $('resultSummary').innerHTML=[
    pen?`<div class="${pen.passed===pen.total?'ok':'bad'}"><small>관통 정타 ${hits} + 가드 ${pen.guards} 통과</small><strong>${pen.passed}/${pen.total}</strong></div>`:'',
 
    result.mode==='equip'?`<div><small>배치한 드래곤</small><strong>${result.results.length}마리</strong></div>`:`<div><small>정령 사용</small><strong>${s.spiritsUsed}/${s.spiritsOwned}</strong></div>`,
+   s.accessoriesOwned!=null?`<div><small>장신구 사용</small><strong>${s.accessoriesUsed}/${s.accessoriesOwned}</strong></div>`:'',
    s.pendantsOwned!=null?`<div><small>펜던트 사용</small><strong>${s.pendantsUsed}/${s.pendantsOwned}</strong></div>`:''].join('');
-  $('buffAdvice').innerHTML=buffAdviceHTML(result.buffAdvice);
+  $('buffAdvice').innerHTML=buffAdviceHTML(buffAdvice(result));
   $('resultBoard').innerHTML=boardHTML(pos=>{const x=by.get(pos),d=x&&byId.get(x.dragon.id);if(!x)return slotCell(pos,`<em>${posLabel(pos)}</em>`,' empty',pos<10?'front':c.boss==='corrupted'&&PEN.includes(pos)?'pen':'dealer');const ps=x.role==='pen'?penState(x.row,hits,pen):null;
    return slotCell(pos,`${d?icon(d):''}<span class="jp-metric ${ps?ps.cls:''}">${esc(metricOf(x,hits,pen))}</span>${x.spirit?'<i class="jp-sp-dot" title="정령 배정"></i>':''}`,x.pos===resultPos?' on':'',x.role);});
   $('resultList').innerHTML=result.results.filter(x=>x.pos===resultPos).map(x=>{const r=x.row,d=byId.get(x.dragon.id);if(!r)return '';const ps=x.role==='pen'?penState(r,hits,pen):null;
@@ -241,7 +272,7 @@
    return `<article class="j-result jp-card ${x.role}" id="jp-card-${x.pos}"><header><div class="j-rank-head"><span class="j-rank-badge">${posLabel(x.pos)}</span>${d?icon(d):''}<div><h3>${esc(d?d.name:x.dragon.type)}</h3><small>${esc(x.dragon.type)}${d?' · '+esc(d.element):''} · ${roleLabel[x.role]}</small></div></div><div class="j-metrics"><div class="primary"><small>${roleText}</small><strong>${fmt(x.role==='front'?r.score:r.dealt)}</strong></div>${ps?`<div class="jp-pen ${ps.cls}"><small>관통 1회 ${fmt(r.penHit)}</small><strong>${ps.text}</strong></div>`:''}</div></header>
    <div class="j-final-stats">${['hp','atk','def'].map(k=>`<div class="${k}"><small>${names[k]}</small><b>${fmt(r.stats[k])}</b></div>`).join('')}</div>
    <div class="j-gear"><div><small>정령</small>${spiritHTML(x.spirit)}</div>
-   <div><small>장신구</small><b>${esc(D.accessories[r.acc].n)}</b><div>인챈트 · ${names[r.enchant]}${r.enchant==='none'?'':' +21%'}</div></div>
+   <div><small>장신구</small><b>${esc(r.accName||D.accessories[r.acc]?.n||'장신구 없음')}</b><div>인챈트 · ${names[r.enchant]}${r.enchant==='none'?'':' +21%'}</div></div>
    <div><small>젬 배분</small>${['hp','atk','def'].map(k=>`<span class="j-stat-chip ${k}">${names[k]} ${r.gems[k]}개${r.gemLv&&r.gems[k]?' · '+gemText(r.gemLv[k]):''}</span>`).join('')}</div>
    <div><small>펜던트${r.pend.name==='미착용'?'':' · '+esc(r.pend.name)}</small>${['hp','atk','def'].filter(k=>r.pend[k]).map(k=>`<span class="j-stat-chip ${k}">${names[k]} ${r.pend[k]}%</span>`).join('')||'미착용'}</div>
    <div><small>물약</small>${esc(r.potion.n)}</div>

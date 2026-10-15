@@ -1,9 +1,9 @@
 <!doctype html>
 <html lang="ko" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>요르문간드 배치 계산기</title><link id="theme-css" rel="stylesheet" href="./theme-dark.css"><script src="./theme.js"></script><link rel="stylesheet" href="./ui.css"><link rel="stylesheet" href="./spirit-input.css"><link rel="stylesheet" href="./jorm.css"><link rel="stylesheet" href="./jorm-place.css"></head>
-<body class="u"><div class="u-app"><main class="u-wrap full jorm jp"><h1>요르문간드 배치 계산기</h1><p class="muted">앞라인 10칸 · 뒷라인 10칸 배치를 계산합니다. 젬·장신구·펜던트는 칸마다 자동으로 고릅니다. 층 버프는 계산에 넣지 않습니다. 입력은 이 브라우저에 저장됩니다.</p>
+<body class="u"><div class="u-app"><main class="u-wrap full jorm jp"><h1>요르문간드 배치 계산기</h1><p class="muted">앞라인 10칸 · 뒷라인 10칸 배치를 계산합니다. 젬·장신구·펜던트는 칸마다 자동으로 고릅니다. 층 버프는 계산에 넣지 않고, 체력·방어 2% 버프가 필요한지만 결과에서 알려 줍니다. 입력은 이 브라우저에 저장됩니다.</p>
 <form id="config"><input type="hidden" id="boss" value="corrupted"><div class="j-boss-toggle" role="group" aria-label="보스 선택"><button type="button" data-boss="normal" aria-pressed="false" hidden><img src="./dragon/662/profile/8.png" alt="" width="44" height="44"><span><small>보스</small>요르문간드</span></button><button type="button" data-boss="corrupted" aria-pressed="true"><img src="./dragon/664/profile/8.png" alt="" width="44" height="44"><span><small>보스 · 9.0 고정</small>잠식된 요르문간드</span></button></div>
 <input type="hidden" id="mode" value="free"><div class="jp-mode" role="group" aria-label="계산 방식"><button type="button" data-mode="free" aria-pressed="true"><b>정령 해제 상태 (귀속X)</b><small>칸에 드래곤을 놓고 보유 정령을 나눠 줍니다</small></button><button type="button" data-mode="equip" aria-pressed="false"><b>정령 귀속 상태</b><small>정령을 낀 드래곤들을 계산기가 자리에 배치합니다</small></button></div>
-<nav class="j-input-tabs" aria-label="계산기 입력"><button type="button" data-panel="place" aria-pressed="true">배치</button><button type="button" data-panel="spirit" aria-pressed="false">정령</button><button type="button" data-panel="pendant" aria-pressed="false">펜던트</button><button type="button" data-panel="pen" aria-pressed="false">관통 피해</button><button type="button" data-panel="basic" aria-pressed="false">기본 설정</button></nav>
+<nav class="j-input-tabs" aria-label="계산기 입력"><button type="button" data-panel="place" aria-pressed="true">배치</button><button type="button" data-panel="spirit" aria-pressed="false">정령</button><button type="button" data-panel="accessory" aria-pressed="false">장신구</button><button type="button" data-panel="pendant" aria-pressed="false">펜던트</button><button type="button" data-panel="pen" aria-pressed="false">관통 피해</button><button type="button" data-panel="basic" aria-pressed="false">기본 설정</button></nav>
 
 <section data-input-panel="place"><h2><span id="placeTitle">배치</span> <small id="placeCount"></small></h2><p class="muted" id="placeHelp">칸을 누른 뒤 아래 목록에서 드래곤을 고르세요. 타입과 속성은 도감 정보를 따릅니다.</p>
 <div id="freeBoard"><div class="jp-board" id="board"></div>
@@ -17,6 +17,10 @@
 <div class="toolbar" id="spPresets"><button type="button" data-preset="last">막플</button><button type="button" data-preset="all">올퍼</button><button type="button" data-preset="14">14플</button><button type="button" data-preset="24">24플</button></div>
 <div id="spiritEditor"></div><div class="toolbar jp-add"><label>수량<input id="spiritQty" type="number" min="1" max="20" value="1"></label><button type="button" id="addSpirit">정령 추가</button></div>
 <div id="spiritList" class="jp-spirits"></div></section>
+
+<section data-input-panel="accessory" hidden><h2>장신구 <small id="accCount"></small></h2><p class="muted">가진 장신구 수량을 넣으세요. 계산기가 칸마다 나눠 주고, 모자라는 칸은 장신구 없이 계산합니다. 하나도 넣지 않으면 장신구 제한 없이 칸마다 최적의 장신구로 계산합니다.</p>
+<div class="toolbar"><input id="accSearch" type="search" placeholder="장신구 이름 검색" aria-label="장신구 검색"><select id="accLevel" aria-label="장신구 레벨"><option value="">전체 레벨</option></select><label class="jp-acc-own"><input type="checkbox" id="accOwned"> 보유만</label><button type="button" id="accClear">수량 초기화</button></div>
+<div class="acc-grid jp-acc-grid" id="accList"></div></section>
 
 <section data-input-panel="pendant" hidden><h2>펜던트 <small id="pendCount"></small></h2>
 <div id="pendListBox"><p class="muted">가진 펜던트를 종류·옵션·수량으로 추가하세요. 계산기가 칸마다 나눠 주고, 모자라는 칸은 펜던트 없이 계산합니다. 하나도 넣지 않으면 펜던트 제한 없이 칸마다 최적의 펜던트로 계산합니다.</p>

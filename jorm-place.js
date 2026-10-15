@@ -51,6 +51,9 @@
  function changed(){dirty=true;save();if(!$('results').hidden)$('status').textContent='설정이 변경되었습니다. 아래 결과는 이전 조건입니다. 다시 계산해 주세요.';}
  $('config').addEventListener('change',e=>{if(e.target.closest('#picker'))return;changed()});
  ['col-hp','col-atk','col-def','penDamage','penDef'].forEach(id=>$(id).addEventListener('input',changed));
+ const buffOf=k=>Math.max(0,Math.min(100,Math.trunc(n('buff-'+k))||0));
+ function buffView(){const t=buffOf('hp')+buffOf('atk')+buffOf('def');$('buffSum').textContent=t?`합계 ${t}%`:'';}
+ ['hp','atk','def'].forEach(k=>$('buff-'+k).addEventListener('input',()=>{buffView();changed();}));
 
  /* ---------- board ---------- */
  // 관통 자리는 잠식된 요르문간드에서만 사용합니다.
@@ -158,7 +161,7 @@
  function pendCountView(){const t=pendItems.reduce((a,p)=>a+p.count,0);$('pendCount').textContent=t?`${t}개`:'';}
 
  /* ---------- save ---------- */
- const SAVED=['boss','mode','penMode','grade','gemMode','gem','enchant','potion','col-hp','col-atk','col-def','penDamage','penDef','penLight'];
+ const SAVED=['boss','mode','penMode','buff-hp','buff-atk','buff-def','grade','gemMode','gem','enchant','potion','col-hp','col-atk','col-def','penDamage','penDef','penLight'];
  function save(){if(restoring)return;try{localStorage.setItem(STORE,JSON.stringify({v:1,fields:Object.fromEntries(SAVED.map(id=>[id,id==='grade'&&$('grade').disabled&&normalGrade?normalGrade:v(id)])),slots,spirits,units,gemStock,pendItems}))}catch(_){}globalThis.CalcCloud?.push(STORE);}
  function restore(){
   let s=null;try{s=JSON.parse(localStorage.getItem(STORE)||'null')}catch(_){}
@@ -175,7 +178,7 @@
   if(s&&s.v===1&&s.fields&&s.fields.penMode==null&&Number(s.fields.penDamage)>0)$('penMode').value='input';
   // 일반 요르문간드는 현재 선택할 수 없습니다(코드는 유지). 잠식된 요르문간드로 고정.
   $('boss').value='corrupted';
-  bossView();gemHelp();gemModeView();renderGemGrid();penModeView();resetEditPend('태양');renderPendEditor();renderPendList();restoring=false;
+  bossView();gemHelp();gemModeView();buffView();renderGemGrid();penModeView();resetEditPend('태양');renderPendEditor();renderPendList();restoring=false;
  }
  $('resetSaved').onclick=async()=>{try{localStorage.removeItem(STORE)}catch(_){}await globalThis.CalcCloud?.clear(STORE);location.reload()};
 
@@ -186,7 +189,8 @@
    pen:!penOn()?null:v('penMode')==='input'?{damage:dmg,def,light:v('penLight')==='1'}:{reference:true},hits:4,mode:v('mode'),
    units:units.map(u=>{const d=byId.get(u.id);return d?{dragon:{id:d.id,type:d.type,light:d.element==='빛',dark:d.element==='어둠'},spirit:u.spirit}:null}).filter(Boolean),
    slots:slots.map(id=>{const d=byId.get(id);return d?{id:d.id,type:d.type,light:d.element==='빛',dark:d.element==='어둠'}:null}),spirits,
-   pendants:pendItems.length?{mode:'list',items:pendItems}:null};
+   pendants:pendItems.length?{mode:'list',items:pendItems}:null,
+   buffs:{hp:buffOf('hp'),atk:buffOf('atk'),def:buffOf('def')}};
  }
  function finish(){worker?.terminate();worker=null;$('run').disabled=false;$('cancel').hidden=true;}
  $('cancel').onclick=()=>{finish();$('status').textContent='계산을 중단했습니다. 기존 결과는 유지됩니다.';};
@@ -214,10 +218,7 @@
  };
 
  /* ---------- results ---------- */
- function buffAdviceHTML(a){if(!a)return '';const o=a.options,base=o[0],b=o[a.best];
-  const name=x=>x.buffs.hp?'체력 2%':'방어 2%';
-  const head=a.best===0?(base.passed===base.total?'<b>체력·방어 2% 버프 필요 없음</b> · 버프 없이 관통 전부 통과':'<b>체력·방어 2% 버프로도 관통 통과가 늘지 않음</b>'):`<b>${name(b)} 버프 추천</b> · 관통 통과 ${base.passed}→${b.passed}`;
-  return `<div class="jp-buff-advice"><div>${head}</div><ul>${o.map((x,i)=>`<li class="${i===a.best?'on':''}"><span>${i?name(x):'버프 없음'}</span><span>관통 ${x.passed}/${x.total}</span></li>`).join('')}</ul><small>결과는 층 버프 없이 계산합니다. 체력·방어 2%는 관통 자리가 정타 4 + 가드 1을 버티는 데 필요할 때만 추천합니다.</small></div>`;}
+ const buffText=b=>b&&(b.hp||b.atk||b.def)?'층 버프 '+[['hp','체'],['atk','공'],['def','방']].map(([k,l])=>l+(b[k]||0)+'%').join(' · '):'층 버프 없음';
  function penState(r,hits,pen){if(!r||r.penHits==null)return {cls:'',text:'',short:''};
   if(r.penLeft>0)return {cls:'ok',text:'4+1 OK',short:'OK'};return {cls:'bad',text:`부족 · ${fmt(-r.penLeft+1)}`,short:'부족'};}
  function metricOf(x,hits,pen){const r=x.row;if(!r)return '—';if(x.role==='front')return fmt(Math.round(r.score));if(x.role==='pen')return penState(r,hits,pen).short;return fmt(Math.round(r.dealt));}
@@ -227,13 +228,12 @@
   const {result,config:c}=lastResult,hits=c.hits,by=new Map(result.results.map(x=>[x.pos,x]));
   const pen=result.pen,s=result.summary;
   if(!by.has(resultPos))resultPos=result.results[0]?.pos;
-  $('resultConditions').textContent=`${c.mode==='equip'?'정령 귀속 상태 · 자리 배치':'정령 해제 상태 (귀속X) · 정령 배분'} / ${c.boss==='corrupted'?'잠식된 요르문간드':'요르문간드'} / ${c.grade} / ${c.gemStock?'보유 젬 (부족분 36젬)':'젬 '+D.gemNames[c.gem]} / ${c.pendants?'보유 펜던트':'펜던트 제한 없음'} / 물약 ${c.potion}단계 / ${pen&&pen.reference?`관통 실측값 (1회 = 121000 ÷ (방어 × 방어계수 + 22)) 기준 정타 ${hits} + 가드 ${pen.guards}`:pen?`관통 1회 ${fmt(c.pen.damage)} (방어 ${fmt(c.pen.def)} · ${c.pen.light?'빛':'빛 아님'}) 기준 정타 ${hits} + 가드 ${pen.guards}`:c.boss==='corrupted'?'관통 미입력 · 관통 자리도 딜러 셋팅':'뒷라인 전체 딜러 셋팅'}`;
+  $('resultConditions').textContent=`${c.mode==='equip'?'정령 귀속 상태 · 자리 배치':'정령 해제 상태 (귀속X) · 정령 배분'} / ${c.boss==='corrupted'?'잠식된 요르문간드':'요르문간드'} / ${c.grade} / ${c.gemStock?'보유 젬 (부족분 36젬)':'젬 '+D.gemNames[c.gem]} / ${c.pendants?'보유 펜던트':'펜던트 제한 없음'} / ${buffText(c.buffs)} / 물약 ${c.potion}단계 / ${pen&&pen.reference?`관통 실측값 (1회 = 121000 ÷ (방어 × 방어계수 + 22)) 기준 정타 ${hits} + 가드 ${pen.guards}`:pen?`관통 1회 ${fmt(c.pen.damage)} (방어 ${fmt(c.pen.def)} · ${c.pen.light?'빛':'빛 아님'}) 기준 정타 ${hits} + 가드 ${pen.guards}`:c.boss==='corrupted'?'관통 미입력 · 관통 자리도 딜러 셋팅':'뒷라인 전체 딜러 셋팅'}`;
   $('resultSummary').innerHTML=[
    pen?`<div class="${pen.passed===pen.total?'ok':'bad'}"><small>관통 정타 ${hits} + 가드 ${pen.guards} 통과</small><strong>${pen.passed}/${pen.total}</strong></div>`:'',
 
    result.mode==='equip'?`<div><small>배치한 드래곤</small><strong>${result.results.length}마리</strong></div>`:`<div><small>정령 사용</small><strong>${s.spiritsUsed}/${s.spiritsOwned}</strong></div>`,
    s.pendantsOwned!=null?`<div><small>펜던트 사용</small><strong>${s.pendantsUsed}/${s.pendantsOwned}</strong></div>`:''].join('');
-  $('buffAdvice').innerHTML=buffAdviceHTML(result.buffAdvice);
   $('resultBoard').innerHTML=boardHTML(pos=>{const x=by.get(pos),d=x&&byId.get(x.dragon.id);if(!x)return slotCell(pos,`<em>${posLabel(pos)}</em>`,' empty',pos<10?'front':c.boss==='corrupted'&&PEN.includes(pos)?'pen':'dealer');const ps=x.role==='pen'?penState(x.row,hits,pen):null;
    return slotCell(pos,`${d?icon(d):''}<span class="jp-metric ${ps?ps.cls:''}">${esc(metricOf(x,hits,pen))}</span>${x.spirit?'<i class="jp-sp-dot" title="정령 배정"></i>':''}`,x.pos===resultPos?' on':'',x.role);});
   $('resultList').innerHTML=result.results.filter(x=>x.pos===resultPos).map(x=>{const r=x.row,d=byId.get(x.dragon.id);if(!r)return '';const ps=x.role==='pen'?penState(r,hits,pen):null;

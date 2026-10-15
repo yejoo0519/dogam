@@ -99,3 +99,8 @@
 .jp-survive small{display:block;font-size:11px;color:var(--text2)}.jp-survive strong{display:block;font-size:20px;color:var(--accent)}
 .jp-survive em{display:block;font-style:normal;font-size:11px;color:var(--text2);margin:0}.jp-survive b.ok{color:#9fd18b}
 @media(max-width:580px){.jp-survive{grid-template-columns:1fr}}
+.jp-buff-advice{margin:0 0 14px;padding:12px 14px;border:1px solid var(--border);border-radius:9px;background:var(--bg);font-size:13px}
+.jp-buff-advice ul{list-style:none;margin:8px 0 6px;padding:0;display:grid;gap:4px}
+.jp-buff-advice li{display:grid;grid-template-columns:minmax(0,1fr) 1fr;gap:8px;padding:5px 8px;border-radius:6px;color:var(--text2)}
+.jp-buff-advice li.on{background:var(--accent-bg);color:var(--text);font-weight:700}
+.jp-buff-advice small{font-size:11px;color:var(--text2)}

@@ -27,8 +27,7 @@
   document.querySelectorAll('[data-boss]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.boss===v('boss'))));
   if(c&&!g.disabled){normalGrade=g.value;g.value='9.0';}else if(!c&&g.disabled&&normalGrade){g.value=normalGrade;}
   g.disabled=c;g.title=c?'잠식된 요르문간드는 9.0 스탯으로 고정됩니다.':'';
-  const tab=document.querySelector('[data-panel=pen]');tab.hidden=!c;document.querySelector('.jp-legend .pen').hidden=!c;
-  if(!c&&tab.getAttribute('aria-pressed')==='true')document.querySelector('[data-panel=place]').click();
+  document.querySelector('.jp-legend .pen').hidden=!c;
   if(document.getElementById('board').children.length)renderBoard();}
  document.querySelectorAll('[data-boss]').forEach(b=>b.onclick=()=>{if(v('boss')===b.dataset.boss)return;$('boss').value=b.dataset.boss;bossView();changed()});
  document.querySelectorAll('[data-panel]').forEach(button=>button.onclick=()=>{
@@ -46,11 +45,9 @@
   $('clearSlot').textContent=eq?'선택한 드래곤 빼기':'이 칸 비우기';
   if(dragons.length){renderBoard();renderUnits();renderDragons();}}
  document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{if(v('mode')===b.dataset.mode)return;$('mode').value=b.dataset.mode;modeView();changed()});
- function penModeView(){const on=v('penMode')==='input';$('penInputs').hidden=!on;$('penSampleNote').hidden=on;}
- $('penMode').addEventListener('change',penModeView);
  function changed(){dirty=true;save();if(!$('results').hidden)$('status').textContent='설정이 변경되었습니다. 아래 결과는 이전 조건입니다. 다시 계산해 주세요.';}
  $('config').addEventListener('change',e=>{if(e.target.closest('#picker'))return;changed()});
- ['col-hp','col-atk','col-def','penDamage','penDef'].forEach(id=>$(id).addEventListener('input',changed));
+ ['col-hp','col-atk','col-def'].forEach(id=>$(id).addEventListener('input',changed));
 
  /* ---------- board ---------- */
  // 관통 자리는 잠식된 요르문간드에서만 사용합니다.
@@ -174,7 +171,7 @@
  $('accClear').onclick=()=>{accStock={};renderAccList();changed();};
 
  /* ---------- save ---------- */
- const SAVED=['boss','mode','penMode','grade','gemMode','gem','enchant','potion','col-hp','col-atk','col-def','penDamage','penDef','penLight'];
+ const SAVED=['boss','mode','grade','gemMode','gem','enchant','potion','col-hp','col-atk','col-def'];
  function save(){if(restoring)return;try{localStorage.setItem(STORE,JSON.stringify({v:1,fields:Object.fromEntries(SAVED.map(id=>[id,id==='grade'&&$('grade').disabled&&normalGrade?normalGrade:v(id)])),slots,spirits,units,gemStock,pendItems,accStock}))}catch(_){}globalThis.CalcCloud?.push(STORE);}
  function restore(){
   let s=null;try{s=JSON.parse(localStorage.getItem(STORE)||'null')}catch(_){}
@@ -189,18 +186,16 @@
    if(s.accStock&&typeof s.accStock==='object'){const ok=new Set(D.accessories.map(a=>a.n));for(const [k,n] of Object.entries(s.accStock)){const c=Math.trunc(Number(n));if(ok.has(k)&&c>0)accStock[k]=Math.min(20,c);}}
    if(s.gemStock)for(const k of ['hp','atk','def'])for(const g of STOCK_KEYS){const n=Math.trunc(Number(s.gemStock[k]?.[g]));if(n>0)gemStock[k][g]=Math.min(100,n);}
   }
-  if(s&&s.v===1&&s.fields&&s.fields.penMode==null&&Number(s.fields.penDamage)>0)$('penMode').value='input';
   // 일반 요르문간드는 현재 선택할 수 없습니다(코드는 유지). 잠식된 요르문간드로 고정.
   $('boss').value='corrupted';
-  bossView();gemHelp();gemModeView();renderGemGrid();penModeView();resetEditPend('태양');renderPendEditor();renderPendList();renderAccList();restoring=false;
+  bossView();gemHelp();gemModeView();renderGemGrid();resetEditPend('태양');renderPendEditor();renderPendList();renderAccList();restoring=false;
  }
  $('resetSaved').onclick=async()=>{try{localStorage.removeItem(STORE)}catch(_){}await globalThis.CalcCloud?.clear(STORE);location.reload()};
 
  /* ---------- run ---------- */
  function config(){
-  const dmg=n('penDamage'),def=n('penDef');
   return {boss:v('boss'),grade:v('boss')==='corrupted'?'9.0':v('grade'),gem:v('gemMode')==='stock'?FALLBACK_GEM:v('gem'),gemStock:v('gemMode')==='stock'?gemStock:null,enchant:v('enchant'),potion:n('potion'),collection:Object.fromEntries(['hp','atk','def'].map(k=>[k,n('col-'+k)])),
-   pen:!penOn()?null:v('penMode')==='input'?{damage:dmg,def,light:v('penLight')==='1'}:{reference:true},hits:4,mode:v('mode'),
+   pen:!penOn()?null:{reference:true},hits:4,mode:v('mode'),
    units:units.map(u=>{const d=byId.get(u.id);return d?{dragon:{id:d.id,type:d.type,light:d.element==='빛',dark:d.element==='어둠'},spirit:u.spirit}:null}).filter(Boolean),
    slots:slots.map(id=>{const d=byId.get(id);return d?{id:d.id,type:d.type,light:d.element==='빛',dark:d.element==='어둠'}:null}),spirits,
    pendants:pendItems.length?{mode:'list',items:pendItems}:null,
@@ -211,12 +206,6 @@
  $('config').onsubmit=e=>{
   e.preventDefault();if(worker)return;const c=config();
   if(c.mode==='equip'?!c.units.length:!c.slots.some(Boolean)){$('status').textContent='배치할 드래곤을 한 마리 이상 넣어 주세요.';return}
-  if(c.pen&&!c.pen.reference){
-   const bad=msg=>{document.querySelector('[data-panel=pen]').click();$('status').textContent=msg;};
-   if(v('penDamage')===''||!(c.pen.damage>0)||!Number.isInteger(c.pen.damage))return bad('관통 1회 피해량을 1 이상의 정수로 입력해 주세요.');
-   if(v('penDef')===''||!(c.pen.def>=0)||!Number.isInteger(c.pen.def))return bad('관통 피해를 받은 드래곤의 방어력을 0 이상의 정수로 입력해 주세요.');
-   if(c.pen.def>5000||c.pen.damage>100000)return bad('관통 피해량·방어력 값을 확인해 주세요.');
-  }
   if(['hp','atk','def'].some(k=>!(c.collection[k]>=0))){$('status').textContent='컬렉션 수치를 확인해 주세요.';return}
   dirty=false;$('run').disabled=true;$('cancel').hidden=false;$('status').textContent='자리별 셋팅 계산 중…';
   try{worker=new Worker('./jorm-place-engine.js');}catch(error){finish();$('status').textContent='계산기를 시작하지 못했습니다. 웹 서버에서 페이지를 열어 주세요.';return}

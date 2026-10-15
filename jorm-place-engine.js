@@ -33,9 +33,9 @@
     const res=new Array(n);for(let j=1;j<=m;j++)if(p[j])res[p[j]-1]=j-1;return res;
   }
 
-  // 1~3층 버프: 결과는 공격 30% 기준. 같은 입력으로 공28+체2, 공28+방2도 계산해
-  // 관통 자리(정타 4 + 가드 1) 통과 수와 딜 합을 비교한 추천만 따로 알려 줍니다(결과는 바꾸지 않음).
-  const BUFF_SETS=[{hp:0,atk:30,def:0},{hp:2,atk:28,def:0},{hp:0,atk:28,def:2}];
+  // 층 버프는 계산에 넣지 않습니다(결과는 버프 없음). 같은 입력에 체력 2% 또는 방어 2%만 더해 계산해
+  // 관통 자리(정타 4 + 가드 1) 통과가 늘어나는지만 따로 알려 줍니다(결과는 바꾸지 않음).
+  const BUFF_SETS=[{hp:0,atk:0,def:0},{hp:2,atk:0,def:0},{hp:0,atk:0,def:2}];
   function plan(input,E,data,progress=()=>{}){
     if(input.buffs)return planOnce(input,E,data,progress);
     const runs=[];
@@ -46,8 +46,8 @@
     }
     const main=runs[0];
     const opts=runs.map(r=>({buffs:r.buffs,passed:r.pen.passed,total:r.pen.total,dealt:r.summary.dealt}));
-    // 추천: 관통 통과 수가 많은 쪽, 같으면 딜 합이 큰 쪽 (동률이면 공 30%).
-    let best=0;opts.forEach((o,i)=>{const b=opts[best];if(o.passed>b.passed||(o.passed===b.passed&&o.dealt>b.dealt+1e-9))best=i;});
+    // 추천: 관통 통과가 늘어나는 경우에만 (체2·방2 중 통과 수 > 딜 합). 늘지 않으면 버프 필요 없음.
+    let best=0;opts.forEach((o,i)=>{if(!i)return;const b=opts[best];if(o.passed>b.passed||(best&&o.passed===b.passed&&o.dealt>b.dealt+1e-9))best=i;});
     main.buffAdvice={options:opts,best};
     return main;
   }

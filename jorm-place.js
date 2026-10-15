@@ -214,11 +214,10 @@
  };
 
  /* ---------- results ---------- */
- const buffText=b=>b?'층 버프 '+[['atk','공'],['hp','체'],['def','방']].filter(([k])=>b[k]).map(([k,l])=>l+b[k]).join(' · '):'층 버프 없음';
- function buffAdviceHTML(a){if(!a)return '';const o=a.options,b=o[a.best],base=o[0];
-  const name=x=>x.buffs.atk===30?'공 30%':x.buffs.hp?'공 28% + 체 2%':'공 28% + 방 2%';
-  const head=a.best===0?(base.passed===base.total?'<b>공 30% 유지</b> · 체력·방어 2% 버프 필요 없음':'<b>공 30% 유지</b> · 2% 버프로도 관통 통과가 늘지 않음'):`<b>${name(b)} 추천</b> · 관통 통과 ${base.passed}→${b.passed}`;
-  return `<div class="jp-buff-advice"><div>${head}</div><ul>${o.map((x,i)=>`<li class="${i===a.best?'on':''}"><span>${name(x)}</span><span>관통 ${x.passed}/${x.total}</span><span>딜 합 ${fmt(Math.round(x.dealt))}</span></li>`).join('')}</ul><small>결과는 공 30% 기준입니다. 2% 버프는 관통 자리가 정타 4 + 가드 1을 버티는 데 필요할 때만 추천합니다.</small></div>`;}
+ function buffAdviceHTML(a){if(!a)return '';const o=a.options,base=o[0],b=o[a.best];
+  const name=x=>x.buffs.hp?'체력 2%':'방어 2%';
+  const head=a.best===0?(base.passed===base.total?'<b>체력·방어 2% 버프 필요 없음</b> · 버프 없이 관통 전부 통과':'<b>체력·방어 2% 버프로도 관통 통과가 늘지 않음</b>'):`<b>${name(b)} 버프 추천</b> · 관통 통과 ${base.passed}→${b.passed}`;
+  return `<div class="jp-buff-advice"><div>${head}</div><ul>${o.map((x,i)=>`<li class="${i===a.best?'on':''}"><span>${i?name(x):'버프 없음'}</span><span>관통 ${x.passed}/${x.total}</span></li>`).join('')}</ul><small>결과는 층 버프 없이 계산합니다. 체력·방어 2%는 관통 자리가 정타 4 + 가드 1을 버티는 데 필요할 때만 추천합니다.</small></div>`;}
  function penState(r,hits,pen){if(!r||r.penHits==null)return {cls:'',text:'',short:''};
   if(r.penLeft>0)return {cls:'ok',text:'4+1 OK',short:'OK'};return {cls:'bad',text:`부족 · ${fmt(-r.penLeft+1)}`,short:'부족'};}
  function metricOf(x,hits,pen){const r=x.row;if(!r)return '—';if(x.role==='front')return fmt(Math.round(r.score));if(x.role==='pen')return penState(r,hits,pen).short;return fmt(Math.round(r.dealt));}
@@ -228,7 +227,7 @@
   const {result,config:c}=lastResult,hits=c.hits,by=new Map(result.results.map(x=>[x.pos,x]));
   const pen=result.pen,s=result.summary;
   if(!by.has(resultPos))resultPos=result.results[0]?.pos;
-  $('resultConditions').textContent=`${c.mode==='equip'?'정령 귀속 상태 · 자리 배치':'정령 해제 상태 (귀속X) · 정령 배분'} / ${c.boss==='corrupted'?'잠식된 요르문간드':'요르문간드'} / ${c.grade} / ${c.gemStock?'보유 젬 (부족분 36젬)':'젬 '+D.gemNames[c.gem]} / ${c.pendants?'보유 펜던트':'펜던트 제한 없음'} / ${buffText(result.buffs)} / 물약 ${c.potion}단계 / ${pen&&pen.reference?`관통 실측값 (1회 = 121000 ÷ (방어 × 방어계수 + 22)) 기준 정타 ${hits} + 가드 ${pen.guards}`:pen?`관통 1회 ${fmt(c.pen.damage)} (방어 ${fmt(c.pen.def)} · ${c.pen.light?'빛':'빛 아님'}) 기준 정타 ${hits} + 가드 ${pen.guards}`:c.boss==='corrupted'?'관통 미입력 · 관통 자리도 딜러 셋팅':'뒷라인 전체 딜러 셋팅'}`;
+  $('resultConditions').textContent=`${c.mode==='equip'?'정령 귀속 상태 · 자리 배치':'정령 해제 상태 (귀속X) · 정령 배분'} / ${c.boss==='corrupted'?'잠식된 요르문간드':'요르문간드'} / ${c.grade} / ${c.gemStock?'보유 젬 (부족분 36젬)':'젬 '+D.gemNames[c.gem]} / ${c.pendants?'보유 펜던트':'펜던트 제한 없음'} / 물약 ${c.potion}단계 / ${pen&&pen.reference?`관통 실측값 (1회 = 121000 ÷ (방어 × 방어계수 + 22)) 기준 정타 ${hits} + 가드 ${pen.guards}`:pen?`관통 1회 ${fmt(c.pen.damage)} (방어 ${fmt(c.pen.def)} · ${c.pen.light?'빛':'빛 아님'}) 기준 정타 ${hits} + 가드 ${pen.guards}`:c.boss==='corrupted'?'관통 미입력 · 관통 자리도 딜러 셋팅':'뒷라인 전체 딜러 셋팅'}`;
   $('resultSummary').innerHTML=[
    pen?`<div class="${pen.passed===pen.total?'ok':'bad'}"><small>관통 정타 ${hits} + 가드 ${pen.guards} 통과</small><strong>${pen.passed}/${pen.total}</strong></div>`:'',
 

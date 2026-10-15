@@ -284,11 +284,11 @@
   if(x.role==='pen'&&pen){const atk=pen.bossAtk,K=x.dragon.light?20:16;
    const n1=fl(44*atk*16/(st.def*K+352)),cr=fl(44*fl(atk*2)*16/(st.def*K+352)),gd=fl(44*atk*16/(st.def*K*3+352));
    const can=(left)=>left>0?Math.floor((left-1)/n1):-1; // 남은 체력으로 더 버티는 정타 수
-   const pure=can(st.hp),withG=can(st.hp-gd),withC=can(st.hp-cr);
+   const pure=can(st.hp),withG=can(st.hp-gd);
    const gTxt=withG<0?'가드 1회만으로 사망':withG+1>pure?`정타 ${withG} + 가드 1 · <b class="ok">가드 시 1대 더</b>`:`정타 ${withG} + 가드 1 · 가드해도 추가 없음`;
-   const cTxt=withC<0?'크리 1회에 사망':`정타 ${withC} + 크리 1`;
+   const left41=st.hp-4*n1-gd;
    h+=`<div class="jp-hits"><div class="jp-hits-head"><b>관통 피격</b> <span>정타 ${fmt(n1)} · 크리 ${fmt(cr)} · 가드 ${fmt(gd)}</span></div>
-    <div class="jp-survive"><div><small>정타만</small><strong>${pure}대</strong></div><div><small>가드 1회 섞이면</small><strong>${withG<0?'—':withG+1+'대'}</strong><em>${gTxt}</em></div><div><small>크리 1회 섞이면</small><strong>${withC<0?'—':withC+1+'대'}</strong><em>${cTxt}</em></div></div></div>`;}
+    <div class="jp-survive"><div><small>정타만</small><strong>${pure}대</strong></div><div><small>가드 1회 섞이면</small><strong>${withG<0?'—':withG+1+'대'}</strong><em>${gTxt}</em></div><div><small>정타 4 + 가드 1 후 남은 체력</small><strong class="${left41>0?'':'bad'}">${fmt(left41)}</strong><em>${left41>0?'생존':'사망'}</em></div></div></div>`;}
   return h;}
  // 결과 배치판에서 누른 칸의 셋팅을 아래에 표시합니다.
  $('resultBoard').onclick=e=>{const b=e.target.closest('[data-pos]');if(!b||b.classList.contains('empty'))return;resultPos=Number(b.dataset.pos);renderResults();};

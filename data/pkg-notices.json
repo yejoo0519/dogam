@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-19",
+  "checkedAt": "2026-10-20",
   "source": "https://www.dragonvillage.net/notice",
-  "totalCount": 3949,
-  "scannedCount": 3949,
+  "totalCount": 3950,
+  "scannedCount": 3950,
   "scannedIds": [
     283,
     284,
@@ -3953,9 +3953,25 @@
     21440,
     21441,
     21442,
-    21443
+    21443,
+    21444
   ],
   "notices": [
+    {
+      "id": 21444,
+      "title": "[공지] 더블 맥스 Lv+1 패키지 판매 안내",
+      "date": "2026-10-20",
+      "url": "https://www.dragonvillage.net/notice/21444",
+      "events": [],
+      "periods": [
+        {
+          "start": "2026-10-20",
+          "end": "2026-11-02",
+          "label": "더블 맥스 Lv+1 패키지 판매가 진행되어 안내 드립니다."
+        }
+      ],
+      "hasImages": true
+    },
     {
       "id": 21436,
       "title": "[공지] 10월 07일(수) 업데이트 안내",

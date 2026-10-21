@@ -1,0 +1,257 @@
+transcended.png
+size: 1938, 1014
+format: RGBA4444
+filter: Linear, Linear
+repeat: none
+dragon/3781/transcended/arm_l
+  rotate: false
+  xy: 1135, 620
+  size: 164, 224
+  orig: 166, 226
+  offset: 1, 1
+  index: -1
+dragon/3781/transcended/arm_r
+  rotate: false
+  xy: 1706, 533
+  size: 226, 186
+  orig: 228, 188
+  offset: 1, 1
+  index: -1
+dragon/3781/transcended/bird1
+  rotate: false
+  xy: 895, 491
+  size: 53, 45
+  orig: 55, 47
+  offset: 1, 1
+  index: -1
+dragon/3781/transcended/bird2
+  rotate: false
+  xy: 950, 491
+  size: 45, 40
+  orig: 47, 42
+  offset: 1, 1
+  index: -1
+dragon/3781/transcended/body
+  rotate: false
+  xy: 1339, 1
+  size: 388, 188
+  orig: 390, 190
+  offset: 1, 1
+  index: -1
+dragon/3781/transcended/body_fur
+  rotate: false
+  xy: 1339, 191
+  size: 320, 152
+  orig: 322, 154
+  offset: 1, 1
+  index: -1
+dragon/3781/transcended/bush1
+  rotate: false
+  xy: 1339, 345
+  size: 226, 231
+  orig: 228, 233
+  offset: 1, 1
+  index: -1
+dragon/3781/transcended/bush2
+  rotate: false
+  xy: 1524, 615
+  size: 164, 197
+  orig: 166, 199
+  offset: 1, 1
+  index: -1
+dragon/3781/transcended/bush3
+  rotate: false
+  xy: 1729, 118
+  size: 174, 128
+  orig: 176, 130
+  offset: 1, 1
+  index: -1
+dragon/3781/transcended/bush4
+  rotate: false
+  xy: 1378, 874
+  size: 116, 137
+  orig: 118, 139
+  offset: 1, 1
+  index: -1
+dragon/3781/transcended/circle1
+  rotate: false
+  xy: 363, 1
+  size: 530, 535
+  orig: 532, 537
+  offset: 1, 1
+  index: -1
+dragon/3781/transcended/eye
+  rotate: false
+  xy: 53, 985
+  size: 17, 16
+  orig: 19, 18
+  offset: 1, 1
+  index: -1
+dragon/3781/transcended/eyeback
+  rotate: false
+  xy: 1, 985
+  size: 50, 22
+  orig: 52, 24
+  offset: 1, 1
+  index: -1
+dragon/3781/transcended/feather1
+  rotate: false
+  xy: 1832, 875
+  size: 68, 97
+  orig: 70, 99
+  offset: 1, 1
+  index: -1
+dragon/3781/transcended/feather2
+  rotate: false
+  xy: 1661, 191
+  size: 50, 57
+  orig: 52, 59
+  offset: 1, 1
+  index: -1
+dragon/3781/transcended/glow1
+  rotate: false
+  xy: 1294, 846
+  size: 82, 155
+  orig: 84, 157
+  offset: 1, 1
+  index: -1
+dragon/3781/transcended/glow2
+  rotate: false
+  xy: 1722, 789
+  size: 108, 208
+  orig: 110, 210
+  offset: 1, 1
+  index: -1
+dragon/3781/transcended/hand_l
+  rotate: false
+  xy: 1713, 248
+  size: 221, 283
+  orig: 223, 285
+  offset: 1, 1
+  index: -1
+dragon/3781/transcended/head
+  rotate: false
+  xy: 1729, 1
+  size: 179, 115
+  orig: 181, 117
+  offset: 1, 1
+  index: -1
+dragon/3781/transcended/head_hear
+  rotate: false
+  xy: 1135, 491
+  size: 171, 127
+  orig: 173, 129
+  offset: 1, 1
+  index: -1
+dragon/3781/transcended/head_neck
+  rotate: false
+  xy: 1690, 721
+  size: 88, 66
+  orig: 90, 68
+  offset: 1, 1
+  index: -1
+dragon/3781/transcended/leg_l
+  rotate: false
+  xy: 1567, 476
+  size: 137, 137
+  orig: 139, 139
+  offset: 1, 1
+  index: -1
+dragon/3781/transcended/leg_r
+  rotate: false
+  xy: 1378, 718
+  size: 135, 154
+  orig: 137, 156
+  offset: 1, 1
+  index: -1
+dragon/3781/transcended/light1
+  rotate: false
+  xy: 687, 538
+  size: 446, 465
+  orig: 448, 467
+  offset: 1, 1
+  index: -1
+dragon/3781/transcended/line1
+  rotate: false
+  xy: 1, 549
+  size: 684, 434
+  orig: 686, 436
+  offset: 1, 1
+  index: -1
+dragon/3781/transcended/neck
+  rotate: false
+  xy: 1515, 814
+  size: 110, 187
+  orig: 112, 189
+  offset: 1, 1
+  index: -1
+dragon/3781/transcended/neck_fur
+  rotate: false
+  xy: 1135, 846
+  size: 157, 167
+  orig: 159, 169
+  offset: 1, 1
+  index: -1
+dragon/3781/transcended/s_wing_l
+  rotate: false
+  xy: 1567, 345
+  size: 92, 129
+  orig: 94, 131
+  offset: 1, 1
+  index: -1
+dragon/3781/transcended/s_wing_r
+  rotate: false
+  xy: 1301, 721
+  size: 68, 120
+  orig: 70, 122
+  offset: 1, 1
+  index: -1
+dragon/3781/transcended/shoulder_l
+  rotate: false
+  xy: 1627, 814
+  size: 93, 174
+  orig: 95, 176
+  offset: 1, 1
+  index: -1
+dragon/3781/transcended/shoulder_r
+  rotate: false
+  xy: 1661, 250
+  size: 40, 138
+  orig: 42, 140
+  offset: 1, 1
+  index: -1
+dragon/3781/transcended/tail
+  rotate: false
+  xy: 1308, 578
+  size: 214, 138
+  orig: 216, 140
+  offset: 1, 1
+  index: -1
+dragon/3781/transcended/thigh_l
+  rotate: false
+  xy: 1832, 721
+  size: 105, 152
+  orig: 107, 154
+  offset: 1, 1
+  index: -1
+dragon/3781/transcended/wing_l
+  rotate: false
+  xy: 1, 1
+  size: 360, 546
+  orig: 362, 548
+  offset: 1, 1
+  index: -1
+dragon/3781/transcended/wing_r1
+  rotate: false
+  xy: 895, 1
+  size: 220, 488
+  orig: 222, 490
+  offset: 1, 1
+  index: -1
+dragon/3781/transcended/wing_r2
+  rotate: false
+  xy: 1117, 1
+  size: 220, 488
+  orig: 222, 490
+  offset: 1, 1
+  index: -1

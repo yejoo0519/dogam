@@ -904,7 +904,7 @@ const ASSET_BASES = [
  'https://raw.githubusercontent.com/yejoo0519/img/main/dragon/',
 ];
 const LOCAL_ASSET_BASE = "./assets/aura-dragons/";
-const LOCAL_ASSETS = {"3778": ["child1", "child2", "adult", "transcended", "advent"], "3779": ["child1", "child2", "adult", "transcended", "advent"]};
+const LOCAL_ASSETS = {"3778": ["child1", "child2", "adult", "transcended", "advent"], "3779": ["child1", "child2", "adult", "transcended", "advent"], "3780": ["child1", "child2", "adult", "transcended", "advent"], "3781": ["child1", "child2", "adult", "transcended", "advent"]};
 let ASSET_BASE = ASSET_BASES[0]; // 매니페스트를 받은 주소로 확정됩니다
 
 // 아이콘·동굴 배경·오라는 기존 사이트에서 그대로 가져옵니다
@@ -985,7 +985,7 @@ const AURAS = [
 ];
 
 // 도감 아이콘 단계: 강림 8, 초월 7, 그 외 성체 4
-const ICON_SRC = (id, stage) =>(['717', '718'].includes(String(id)) ? './' : SITE_BASE) + 'dragon/' + id + '/profile/' + stage + '.png';
+const ICON_SRC = (id, stage) => (String(id)==='719'||String(id)==='720') ? LOCAL_ASSET_BASE + (String(id)==='719'?'3780':'3781') + '/profile/8.png' : ((['717', '718'].includes(String(id)) ? './' : SITE_BASE) + 'dragon/' + id + '/profile/' + stage + '.png');
 const ELEM_ICON = {
  '땅': 'icon/11.png', '물': 'icon/12.png', '불': 'icon/13.png',
  '바람': 'icon/14.png', '빛': 'icon/84.png', '어둠': 'icon/87.png',
@@ -1015,6 +1015,12 @@ const layerBack = document.getElementById('layerBack');
 const layerFront = document.getElementById('layerFront');
 const cv = document.getElementById('layerDragon');
 const ctx = cv.getContext('2d');
+
+// APK 6.35.0 preview additions; independent of calculator/stat records.
+Object.assign(ASSET_ID, {719:3780,720:3781});
+for(const row of [[719,'힐드','땅',1,8],[720,'크로마 힐드','땅',1,8]]){
+  if(!DEX_DRAGONS.some(d=>String(d[0])===String(row[0]))) DEX_DRAGONS.push(row);
+}
 
 const DRAGONS = DEX_DRAGONS.map(([id, name, elem, ad, stage]) =>({
  id: String(id), name, elem, advent: ad === 1, stage,

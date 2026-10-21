@@ -1,0 +1,138 @@
+adult.png
+size: 854, 510
+format: RGBA4444
+filter: Linear, Linear
+repeat: none
+dragon/3780/adult/arm_l
+  rotate: false
+  xy: 727, 274
+  size: 124, 109
+  orig: 126, 111
+  offset: 1, 1
+  index: -1
+dragon/3780/adult/arm_r
+  rotate: false
+  xy: 207, 185
+  size: 209, 208
+  orig: 211, 210
+  offset: 1, 1
+  index: -1
+dragon/3780/adult/body
+  rotate: false
+  xy: 207, 1
+  size: 239, 182
+  orig: 241, 184
+  offset: 1, 1
+  index: -1
+dragon/3780/adult/effect_back
+  rotate: false
+  xy: 606, 423
+  size: 155, 79
+  orig: 157, 81
+  offset: 1, 1
+  index: -1
+dragon/3780/adult/effect_front
+  rotate: false
+  xy: 448, 1
+  size: 268, 118
+  orig: 270, 120
+  offset: 1, 1
+  index: -1
+dragon/3780/adult/head
+  rotate: false
+  xy: 718, 1
+  size: 132, 180
+  orig: 134, 182
+  offset: 1, 1
+  index: -1
+dragon/3780/adult/leaf
+  rotate: false
+  xy: 383, 395
+  size: 27, 30
+  orig: 29, 32
+  offset: 1, 1
+  index: -1
+dragon/3780/adult/leg_r
+  rotate: false
+  xy: 207, 395
+  size: 114, 114
+  orig: 116, 116
+  offset: 1, 1
+  index: -1
+dragon/3780/adult/nest
+  rotate: false
+  xy: 700, 183
+  size: 138, 89
+  orig: 140, 91
+  offset: 1, 1
+  index: -1
+dragon/3780/adult/rock1
+  rotate: false
+  xy: 1, 464
+  size: 83, 33
+  orig: 85, 35
+  offset: 1, 1
+  index: -1
+dragon/3780/adult/rock2
+  rotate: false
+  xy: 418, 185
+  size: 28, 23
+  orig: 30, 25
+  offset: 1, 1
+  index: -1
+dragon/3780/adult/rock3
+  rotate: false
+  xy: 763, 461
+  size: 63, 33
+  orig: 65, 35
+  offset: 1, 1
+  index: -1
+dragon/3780/adult/shoulder_l
+  rotate: false
+  xy: 644, 121
+  size: 54, 110
+  orig: 56, 112
+  offset: 1, 1
+  index: -1
+dragon/3780/adult/shoulder_r
+  rotate: false
+  xy: 323, 395
+  size: 58, 107
+  orig: 60, 109
+  offset: 1, 1
+  index: -1
+dragon/3780/adult/spark1
+  rotate: false
+  xy: 606, 295
+  size: 119, 126
+  orig: 121, 128
+  offset: 1, 1
+  index: -1
+dragon/3780/adult/spark2
+  rotate: false
+  xy: 763, 385
+  size: 90, 74
+  orig: 92, 76
+  offset: 1, 1
+  index: -1
+dragon/3780/adult/tail
+  rotate: false
+  xy: 418, 295
+  size: 186, 142
+  orig: 188, 144
+  offset: 1, 1
+  index: -1
+dragon/3780/adult/wing_l
+  rotate: false
+  xy: 448, 121
+  size: 194, 172
+  orig: 196, 174
+  offset: 1, 1
+  index: -1
+dragon/3780/adult/wing_r
+  rotate: false
+  xy: 1, 1
+  size: 204, 461
+  orig: 206, 463
+  offset: 1, 1
+  index: -1

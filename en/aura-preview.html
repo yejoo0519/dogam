@@ -886,6 +886,8 @@ const ASSET_BASES = [
   'https://yejoo0519.github.io/img/dragon/',
   'https://raw.githubusercontent.com/yejoo0519/img/main/dragon/',
 ];
+const LOCAL_ASSET_BASE = '../assets/aura-dragons/';
+const LOCAL_ASSETS = {"3780": ["child1", "child2", "adult", "transcended", "advent"], "3781": ["child1", "child2", "adult", "transcended", "advent"]};
 let ASSET_BASE = ASSET_BASES[0];   // 매니페스트를 받은 주소로 확정됩니다
 
 // 아이콘·동굴 배경·오라는 기존 사이트에서 그대로 가져옵니다
@@ -967,7 +969,7 @@ const AURAS = [
 ];
 
 // 도감 아이콘 단계: 강림 8, 초월 7, 그 외 성체 4
-const ICON_SRC  = (id, stage) => SITE_BASE + 'dragon/' + id + '/profile/' + stage + '.png';
+const ICON_SRC = (id, stage) => (String(id)==='719'||String(id)==='720') ? LOCAL_ASSET_BASE + (String(id)==='719'?'3780':'3781') + '/profile/8.png' : (SITE_BASE + 'dragon/' + id + '/profile/' + stage + '.png');
 // 속성 표기 (내부 키는 한글 그대로, 화면에만 영어를 씁니다)
 const ELEM_EN = {
   '땅': 'Earth', '물': 'Water', '불': 'Fire',
@@ -1977,6 +1979,13 @@ const NAME_EN = {
   709:"Nubestella", 710:"Ophanim", 711:"Chroma Ophanim", 712:"Castigue",
 };
 
+// APK 6.35.0 preview additions; independent of calculator/stat records.
+Object.assign(ASSET_ID, {719:3780,720:3781});
+for(const row of [[719,'힐드','땅',1,8],[720,'크로마 힐드','땅',1,8]]){
+  if(!DEX_DRAGONS.some(d=>String(d[0])===String(row[0]))) DEX_DRAGONS.push(row);
+}
+Object.assign(NAME_EN, {719:'Hildr',720:'Chroma Hildr'});
+
 const DRAGONS = DEX_DRAGONS.map(([id, name, elem, ad, stage]) => ({
   id: String(id), name, elem, advent: ad === 1, stage,
   nameEn: NAME_EN[id] || '',
@@ -1988,7 +1997,7 @@ const DRAGONS = DEX_DRAGONS.map(([id, name, elem, ad, stage]) => ({
   key: ((NAME_EN[id] || '') + name).replace(/\s+/g, '').toLowerCase()
 }));
 
-let manifest = null;     // { 게임ID: [세트 이름들] }
+let manifest = { ...LOCAL_ASSETS };     // { 게임ID: [세트 이름들] }
 let skel = null;         // 본체 스켈레톤
 let fxBack = [], fxFront = [];  // 장식 이펙트 (드래곤 뒤 / 앞)
 let curAnim = null, t = 0, lastMs = 0, baseDPR = 1, drawBase = [1,0,0,-1,0,0];
@@ -2098,7 +2107,7 @@ function renderSetButtons(){
 
 /* ── 원격 로딩 ── */
 async function fetchSet(gameId, name){
-  const base = ASSET_BASE + gameId + '/' + name;
+  const base = (LOCAL_ASSETS[gameId] ? LOCAL_ASSET_BASE : ASSET_BASE) + gameId + '/' + name;
   const [jsonRes, atlasRes] = await Promise.all([fetch(base + '.json'), fetch(base + '.atlas')]);
   if(!jsonRes.ok || !atlasRes.ok) throw new Error(name + ' files not found');
   const [json, atlasText] = await Promise.all([jsonRes.json(), atlasRes.text()]);
@@ -2660,7 +2669,7 @@ async function loadManifest(){
     try{
       const res = await fetch(base + 'manifest.json');
       if(!res.ok) throw new Error('HTTP ' + res.status);
-      manifest = await res.json();
+      manifest = { ...(await res.json()), ...LOCAL_ASSETS };
       ASSET_BASE = base;
       resolveAssets();
         renderDragonGrid();

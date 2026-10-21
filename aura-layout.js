@@ -13,19 +13,11 @@
     const cy=(bounds.y0+bounds.y1)/2;
     return{x:-cx*worldScale,y:cy*worldScale};
   }
+  // 게임 화면 800×480 기준 1배 고정 + 드래곤(기준 모션 중심)을 무대 정중앙에 고정.
+  // 오라·모션이 화면보다 크면 인게임처럼 잘림.
   function fit(width,height,dragonWidth,dragonHeight,id,bounds,aura,worldScale=1,stage){
-    const offset=placement(id,bounds,worldScale),s=scale(id,stage);
-    // 오라가 있으면 줌 기준을 오라 프레임만으로 잡아 드래곤마다 오라 크기가 바뀌지 않게 함
-    const hasAura=!!(aura?.back?.frames?.length||aura?.front?.frames?.length);
-    let x0=hasAura?Infinity:-dragonWidth/2,x1=hasAura?-Infinity:dragonWidth/2,y0=hasAura?Infinity:-dragonHeight/2,y1=hasAura?-Infinity:dragonHeight/2;
-    for(const side of ['back','front'])for(const f of aura?.[side]?.frames||[]){
-      x0=Math.min(x0,offset.x+(-f.w/2+f.ox)*s);
-      x1=Math.max(x1,offset.x+(f.w/2+f.ox)*s);
-      y0=Math.min(y0,offset.y+(-f.h/2-f.oy)*s);
-      y1=Math.max(y1,offset.y+(f.h/2-f.oy)*s);
-    }
-    const zoom=Math.max(.01,Math.min(1,width/820,(width-24)/Math.max(1,x1-x0),(height-24)/Math.max(1,y1-y0)));
-    return{zoom,x:width/2-(x0+x1)/2*zoom,y:height/2-(y0+y1)/2*zoom,offset};
+    const offset=placement(id,bounds,worldScale);
+    return{zoom:Math.max(.01,width/800),x:width/2,y:height/2,offset};
   }
   root.AuraLayout=Object.freeze({profiles,scale,placement,fit});
 })(globalThis);

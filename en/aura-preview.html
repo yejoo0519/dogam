@@ -275,8 +275,30 @@
   .dragon-row.on .nm-kr { color: var(--accent); }
   @media (prefers-reduced-motion: reduce) { .dragon-row { transition: none; } }
 
+
+/* 무대 우상단 PNG 저장 버튼 */
+#shotBtn{position:absolute;top:8px;right:8px;z-index:6;background:rgba(20,18,28,.72);border:1px solid var(--line);color:var(--text);font-family:inherit;font-size:12px;padding:5px 10px;border-radius:8px;cursor:pointer}
+#shotBtn:hover{border-color:var(--sub)}
+#shotBtn:disabled{opacity:.35;cursor:not-allowed}
+/* 좁은 화면: 무대를 상단바 아래에 고정 (위쪽 #stage{position:relative} 가 기존 sticky 를 덮어써서 여기서 다시 지정) */
+@media(max-width:999px){
+  #stage{position:sticky;top:8px;z-index:10}
+}
+/* 모바일: 선택지마다 한 줄로 (안 들어가면 그 줄만 가로 스크롤) */
+@media(max-width:700px){
+  #dragonGrid{max-height:240px}
+  .ctrl-row{gap:10px 12px}
+  #secSet,#secDeco,#secMotion{min-width:0}
+  #secSet{flex:1 1 100%}
+  #secDeco{flex:1 1 0;min-width:0}
+  #secMotion{flex:0 0 auto}
+  .ctrl h2,.col-main>.section>h2{margin-bottom:5px}
+  .col-main .btn-row{flex-wrap:nowrap;overflow-x:auto;gap:5px;scrollbar-width:none}
+  .col-main .btn-row::-webkit-scrollbar{display:none}
+  .col-main .btn-row button,.ctrl .btn-row button{flex:1 0 auto;padding:6px 7px;font-size:12px;white-space:nowrap}
+}
 </style>
-<script src="../aura-layout.js?v=20261021-fit"></script>
+<script src="../aura-layout.js?v=20261021-x1"></script>
 </head>
 <body>
 
@@ -290,6 +312,7 @@
   <canvas id="layerBack"></canvas>
   <canvas id="layerDragon"></canvas>
   <canvas id="layerFront"></canvas>
+  <button type="button" id="shotBtn" disabled>Save PNG</button>
   <div id="stageMsg">Pick a dragon from the list to start</div>
 </div>
 
@@ -2678,6 +2701,43 @@ async function loadManifest(){
   }
   msg('Could not load the asset list (manifest.json).\n\n' + tried.join('\n'));
 }
+
+/* ── 현재 화면 PNG 저장 (배경+오라 뒤+드래곤+오라 앞, 800×480 기준 2배) ── */
+const SHOT_W = 1600, SHOT_H = 960;
+const shotBtn = document.getElementById('shotBtn');
+function saveShot(){
+ if(!skel || !cv.classList.contains('on')) return;
+ const sw = stage.clientWidth, sh = stage.clientHeight;
+ const out = document.createElement('canvas');
+ out.width = SHOT_W; out.height = SHOT_H;
+ const g = out.getContext('2d');
+ g.imageSmoothingEnabled = true; g.imageSmoothingQuality = 'high';
+ const kx = SHOT_W / sw, ky = SHOT_H / sh;
+ if(layerSkin.classList.contains('on') && layerSkin.complete && layerSkin.naturalWidth){
+  const iw = layerSkin.naturalWidth, ih = layerSkin.naturalHeight;
+  const s = Math.max(SHOT_W / iw, SHOT_H / ih); // object-fit: cover 와 동일
+  g.drawImage(layerSkin, (SHOT_W - iw * s) / 2, (SHOT_H - ih * s) / 2, iw * s, ih * s);
+ }
+ for(const el of [layerBack, cv, layerFront]){
+  if(!el.classList.contains('on') || !el.width) continue;
+  const w = parseFloat(el.style.width) * viewScale, h = parseFloat(el.style.height) * viewScale;
+  const x = parseFloat(el.style.left), y = parseFloat(el.style.top);
+  g.drawImage(el, (x - w / 2) * kx, (y - h / 2) * ky, w * kx, h * ky);
+ }
+ const file = [(curDragon.nameEn || curDragon.name), setName, curAura].filter(Boolean).join('_').replace(/[\\/:*?"<>|\s]+/g, '_') + '.png';
+ try{
+  out.toBlob(b =>{
+   if(!b){ alert('Could not save the image.'); return; }
+   const a = document.createElement('a');
+   a.href = URL.createObjectURL(b); a.download = file;
+   document.body.appendChild(a); a.click(); a.remove();
+   setTimeout(() =>URL.revokeObjectURL(a.href), 1000);
+  }, 'image/png');
+ }catch(e){ alert('Could not save the image.'); }
+}
+shotBtn.onclick = saveShot;
+new MutationObserver(() =>{ shotBtn.disabled = !cv.classList.contains('on'); })
+ .observe(cv, { attributes: true, attributeFilter: ['class'] });
 
 /* ── 시작 ── */
 updateViewScale();

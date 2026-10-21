@@ -15,7 +15,9 @@
   }
   function fit(width,height,dragonWidth,dragonHeight,id,bounds,aura,worldScale=1,stage){
     const offset=placement(id,bounds,worldScale),s=scale(id,stage);
-    let x0=-dragonWidth/2,x1=dragonWidth/2,y0=-dragonHeight/2,y1=dragonHeight/2;
+    // 오라가 있으면 줌 기준을 오라 프레임만으로 잡아 드래곤마다 오라 크기가 바뀌지 않게 함
+    const hasAura=!!(aura?.back?.frames?.length||aura?.front?.frames?.length);
+    let x0=hasAura?Infinity:-dragonWidth/2,x1=hasAura?-Infinity:dragonWidth/2,y0=hasAura?Infinity:-dragonHeight/2,y1=hasAura?-Infinity:dragonHeight/2;
     for(const side of ['back','front'])for(const f of aura?.[side]?.frames||[]){
       x0=Math.min(x0,offset.x+(-f.w/2+f.ox)*s);
       x1=Math.max(x1,offset.x+(f.w/2+f.ox)*s);

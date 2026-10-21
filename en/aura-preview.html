@@ -63,7 +63,7 @@
 
   #stage {
     position: relative;
-    height: 500px;
+    aspect-ratio: 800 / 480;
     background: var(--panel);
     border: 1px solid var(--line);
     border-radius: 14px;
@@ -77,9 +77,6 @@
     background-size: 22px 22px;
     background-position: 0 0, 11px 11px;
     background-color: #1a1725;
-  }
-  @media (max-width: 700px) {
-    #stage { height: 340px; }
   }
   #layerSkin {
     position: absolute; inset: 0; width: 100%; height: 100%;
@@ -279,7 +276,7 @@
   @media (prefers-reduced-motion: reduce) { .dragon-row { transition: none; } }
 
 </style>
-<script src="../aura-layout.js?v=20261021-apk"></script>
+<script src="../aura-layout.js?v=20261021-fit"></script>
 </head>
 <body>
 
@@ -2235,7 +2232,7 @@ const STAGE_REF_WIDTH = 820;
 let viewScale = 1;
 function updateViewScale(){
  const w = stage.clientWidth || STAGE_REF_WIDTH;
- const h = stage.clientHeight || 500;
+ const h = stage.clientHeight || Math.round(w * 480 / 800);
  const layout = AuraLayout.fit(w,h,parseFloat(cv.style.width)||0,parseFloat(cv.style.height)||0,curAura,skel?auraReferenceBounds:null,auraData,WORLD_SCALE,setName);
  viewScale = layout.zoom;
  cv.style.left = layout.x + 'px';

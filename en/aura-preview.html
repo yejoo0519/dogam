@@ -279,6 +279,7 @@
   @media (prefers-reduced-motion: reduce) { .dragon-row { transition: none; } }
 
 </style>
+<script src="../aura-layout.js?v=20261021-apk"></script>
 </head>
 <body>
 
@@ -961,6 +962,8 @@ const AURAS = [
   { id: 'item_aura2', name: 'Water' },
   { id: 'item_aura3', name: 'Fire' },
   { id: 'item_aura4', name: 'Wind' },
+ { id: 'item_aura5', name: 'Light' },
+ { id: 'item_aura6', name: 'Dark' },
 ];
 
 // 도감 아이콘 단계: 강림 8, 초월 7, 그 외 성체 4
@@ -2192,11 +2195,13 @@ function boundsOf(sk, names){
   return { x0, y0, x1, y1 };
 }
 
+let auraReferenceBounds = null;
 function setupCanvas(){
   baseDPR = Math.min(window.devicePixelRatio || 1, 2);
   const all = Object.keys(skel.animations);
   const ref = all.indexOf(REF_MOTION) !== -1 ? [REF_MOTION] : [all[0]];
   const rb = boundsOf(skel, ref);          // 기준 모션 - 중심 결정
+ auraReferenceBounds = { ...rb };
   const gb = boundsOf(skel, all);          // 전체 모션 - 크기 결정
   for(const n in allFx){                   // 이펙트도 잘리지 않게 포함
     const sk = allFx[n];
@@ -2213,21 +2218,25 @@ function setupCanvas(){
   cv.width = Math.round(CW * baseDPR);  cv.height = Math.round(CH * baseDPR);
   const S = WORLD_SCALE * baseDPR;
   drawBase = [ S, 0, 0, -S, cv.width / 2 - cx * S, cv.height / 2 + cy * S ];
-  updateViewScale();
+  if(auraData){ sizeAuraCanvas(layerBack,auraData.back); sizeAuraCanvas(layerFront,auraData.front); }
+ updateViewScale();
 }
 
 const STAGE_REF_WIDTH = 820;
 let viewScale = 1;
 function updateViewScale(){
-  const w = stage.clientWidth || STAGE_REF_WIDTH;
-  viewScale = Math.min(1, w / STAGE_REF_WIDTH);
-  cv.style.transform = 'translate(-50%, -50%) scale(' + viewScale + ')';
-  // 오라는 드래곤과 무관하게 무대의 같은 자리에 고정됩니다 (기존 오라 미리보기와 동일)
-  const drop = AURA_Y_ADJUST * viewScale;
-  for(const el of [layerBack, layerFront]){
-    el.style.top = 'calc(48.4% + ' + drop.toFixed(1) + 'px)';
-    el.style.transform = 'translate(-50%, -50%) scale(' + viewScale + ')';
-  }
+ const w = stage.clientWidth || STAGE_REF_WIDTH;
+ const h = stage.clientHeight || 500;
+ const layout = AuraLayout.fit(w,h,parseFloat(cv.style.width)||0,parseFloat(cv.style.height)||0,curAura,skel?auraReferenceBounds:null,auraData,WORLD_SCALE,setName);
+ viewScale = layout.zoom;
+ cv.style.left = layout.x + 'px';
+ cv.style.top = layout.y + 'px';
+ cv.style.transform = 'translate(-50%, -50%) scale(' + viewScale + ')';
+ for(const el of [layerBack, layerFront]){
+   el.style.left = (layout.x + layout.offset.x * viewScale) + 'px';
+   el.style.top = (layout.y + (layout.offset.y + AURA_Y_ADJUST) * viewScale) + 'px';
+   el.style.transform = 'translate(-50%, -50%) scale(' + viewScale + ')';
+ }
 }
 window.addEventListener('resize', updateViewScale);
 
@@ -2357,7 +2366,7 @@ function loadImg(src){
 }
 
 async function loadAuraSide(id, side){
-  const base = ASSET_BASE + id + '/' + side;
+  const base = (['item_aura5','item_aura6'].includes(id) ? '../assets/auras/' : ASSET_BASE) + id + '/' + side;
   const res = await fetch(base + '.plist');
   if(!res.ok) throw new Error('없음');
   const [xml, img] = await Promise.all([res.text(), loadImg(base + '.png')]);
@@ -2375,7 +2384,7 @@ function loadImg(src){
 }
 
 async function loadAuraSide(id, side){
-  const base = ASSET_BASE + id + '/' + side;
+  const base = (['item_aura5','item_aura6'].includes(id) ? '../assets/auras/' : ASSET_BASE) + id + '/' + side;
   const res = await fetch(base + '.plist');
   if(!res.ok) throw new Error('없음');
   const [xml, img] = await Promise.all([res.text(), loadImg(base + '.png')]);
@@ -2398,9 +2407,9 @@ async function loadAura(id){
 function sizeAuraCanvas(cv, data){
   if(!data){ cv.classList.remove('on'); return; }
   const f = data.frames[0];
-  const k = FX_BASE_SCALE * baseDPR;
-  cv.style.width  = (f.ow * FX_BASE_SCALE) + 'px';
-  cv.style.height = (f.oh * FX_BASE_SCALE) + 'px';
+  const k = AuraLayout.scale(curAura,setName) * baseDPR;
+  cv.style.width  = (f.ow * AuraLayout.scale(curAura,setName)) + 'px';
+  cv.style.height = (f.oh * AuraLayout.scale(curAura,setName)) + 'px';
   cv.width  = Math.round(f.ow * k);
   cv.height = Math.round(f.oh * k);
   cv.classList.add('on');
@@ -2409,7 +2418,7 @@ function sizeAuraCanvas(cv, data){
 function drawAuraFrame(ctx2, data, idx){
   if(!data) return;
   const f = data.frames[idx % data.frames.length];
-  const k = FX_BASE_SCALE * baseDPR;
+  const k = AuraLayout.scale(curAura,setName) * baseDPR;
   ctx2.setTransform(1, 0, 0, 1, 0, 0);
   ctx2.clearRect(0, 0, ctx2.canvas.width, ctx2.canvas.height);
   ctx2.imageSmoothingEnabled = true;
@@ -2442,11 +2451,13 @@ async function pickAura(id){
     auraData = null;
     layerBack.classList.remove('on');
     layerFront.classList.remove('on');
+    updateViewScale();
     return;
   }
   const data = await loadAura(curAura);
   if(token !== auraToken) return;
   auraData = data;
+ auraT = 0;
   sizeAuraCanvas(layerBack, data.back);
   sizeAuraCanvas(layerFront, data.front);
   updateViewScale();

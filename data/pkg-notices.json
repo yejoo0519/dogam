@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-23",
+  "checkedAt": "2026-10-24",
   "source": "https://www.dragonvillage.net/notice",
-  "totalCount": 3952,
-  "scannedCount": 3952,
+  "totalCount": 3953,
+  "scannedCount": 3953,
   "scannedIds": [
     283,
     284,
@@ -3956,9 +3956,35 @@
     21443,
     21444,
     21445,
-    21446
+    21446,
+    21447
   ],
   "notices": [
+    {
+      "id": 21447,
+      "title": "[이벤트] 호박 귀신이 사탕을 원해!! 이벤트 안내",
+      "date": "2026-10-23",
+      "url": "https://www.dragonvillage.net/notice/21447",
+      "events": [],
+      "periods": [
+        {
+          "start": "2026-10-26",
+          "end": "2026-11-08",
+          "label": "판매 일정"
+        },
+        {
+          "start": "2026-10-26",
+          "end": "2026-11-09",
+          "label": "사탕 수집 및 패키지 판매 : 2026.10.26(월) 00:00 ~ 11.08(일) 23:59"
+        },
+        {
+          "start": "2026-10-31",
+          "end": "2026-11-01",
+          "label": "사탕 패키지 판매"
+        }
+      ],
+      "hasImages": true
+    },
     {
       "id": 21444,
       "title": "[공지] 더블 맥스 Lv+1 패키지 판매 안내",

@@ -907,6 +907,7 @@ const ASSET_BASES = [
   'https://raw.githubusercontent.com/yejoo0519/img/main/dragon/',
 ];
 const LOCAL_ASSET_BASE = '../assets/aura-dragons/';
+const LOCAL_SET_OVERRIDES = {"438": ["advent"]};
 const LOCAL_ASSETS = {"3780": ["child1", "child2", "adult", "transcended", "advent"], "3781": ["child1", "child2", "adult", "transcended", "advent"]};
 let ASSET_BASE = ASSET_BASES[0];   // 매니페스트를 받은 주소로 확정됩니다
 
@@ -2045,7 +2046,7 @@ function resolveAssets(){
 /* ── 애니메이션 이름을 장식 × 모션으로 분해 ── */
 function splitAnim(name){
   const m = name.match(/^(acc\d*)(?:_(.+))?$/i);
-  if(m) return { deco: m[1].toLowerCase(), motion: m[2] ? m[2].toLowerCase() : 'wait' };
+  if(m) return { deco: (m[1].toLowerCase() === 'acc1' ? 'acc' : m[1].toLowerCase()), motion: m[2] ? m[2].toLowerCase() : 'wait' };
   return { deco: '', motion: name };
 }
 function decoLabel(d){
@@ -2127,7 +2128,7 @@ function renderSetButtons(){
 
 /* ── 원격 로딩 ── */
 async function fetchSet(gameId, name){
-  const base = (LOCAL_ASSETS[gameId] ? LOCAL_ASSET_BASE : ASSET_BASE) + gameId + '/' + name;
+  const base = ((LOCAL_ASSETS[gameId] || LOCAL_SET_OVERRIDES[gameId]?.includes(name)) ? LOCAL_ASSET_BASE : ASSET_BASE) + gameId + '/' + name;
   const [jsonRes, atlasRes] = await Promise.all([fetch(base + '.json'), fetch(base + '.atlas')]);
   if(!jsonRes.ok || !atlasRes.ok) throw new Error(name + ' files not found');
   const [json, atlasText] = await Promise.all([jsonRes.json(), atlasRes.text()]);

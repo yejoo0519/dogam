@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-27",
+  "checkedAt": "2026-10-28",
   "source": "https://www.dragonvillage.net/notice",
-  "totalCount": 3953,
-  "scannedCount": 3953,
+  "totalCount": 3954,
+  "scannedCount": 3954,
   "scannedIds": [
     283,
     284,
@@ -3957,9 +3957,25 @@
     21444,
     21445,
     21446,
-    21447
+    21447,
+    21448
   ],
   "notices": [
+    {
+      "id": 21448,
+      "title": "[공지] 10월 28일(수) 업데이트 안내",
+      "date": "2026-10-27",
+      "url": "https://www.dragonvillage.net/notice/21448",
+      "events": [],
+      "periods": [
+        {
+          "start": "2026-11-01",
+          "end": "2026-11-14",
+          "label": "이벤트 정령 패키지 판매"
+        }
+      ],
+      "hasImages": true
+    },
     {
       "id": 21447,
       "title": "[이벤트] 호박 귀신이 사탕을 원해!! 이벤트 안내",

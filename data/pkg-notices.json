@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-28",
+  "checkedAt": "2026-10-29",
   "source": "https://www.dragonvillage.net/notice",
-  "totalCount": 3954,
-  "scannedCount": 3954,
+  "totalCount": 3955,
+  "scannedCount": 3955,
   "scannedIds": [
     283,
     284,
@@ -3958,12 +3958,13 @@
     21445,
     21446,
     21447,
-    21448
+    21448,
+    21449
   ],
   "notices": [
     {
       "id": 21448,
-      "title": "[공지] 10월 28일(수) 업데이트 안내",
+      "title": "[공지] 10월 29일(목) 업데이트 안내",
       "date": "2026-10-27",
       "url": "https://www.dragonvillage.net/notice/21448",
       "events": [],

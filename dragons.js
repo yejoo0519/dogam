@@ -5281,7 +5281,7 @@
         grades: null,
       },
       description: {
-        ko: null,
+        ko: "태어날때부터 호랑이의 무늬와 비슷한 무늬를 가져 타이거 드래곤이라 불렀다. 이는 모든 드래곤들중 순발력이 가장 빠르고 경계심이 강하다.",
       },
       assets: {
         gameId: 50,
@@ -5385,7 +5385,7 @@
         grades: null,
       },
       description: {
-        ko: null,
+        ko: "삼족오라는 까마귀와 비슷해서 지어진 이름이다. 날개가 3개, 눈이 3개이다. 세 번째 눈은 어릴 때 감겨 있는데 성장하면서 세 번째 눈을 뜨면 엄청난 말썽꾸러기가 된다.",
       },
       assets: {
         gameId: 51,
@@ -5901,7 +5901,7 @@
         grades: null,
       },
       description: {
-        ko: null,
+        ko: "붕대가 몸을 감싸고 있고 뚜렷한 형태가 없다. 성장하면서 붕대로 자신의 형태를 만들어간다.",
       },
       assets: {
         gameId: 56,
@@ -8774,7 +8774,7 @@
         grades: null,
       },
       description: {
-        ko: null,
+        ko: "비밀 집단에서 암묵적으로 교육하여길러진 드래곤이다. 기습과 은신에 능하며 상대의 약점을 간파하여 공략하는 치밀함도 지녔다.주로 적의 후방을 급습한다. [ 획득가능: 미스터리 뽑기 ]",
       },
       assets: {
         gameId: 86,
@@ -16291,7 +16291,7 @@
         },
       },
       description: {
-        ko: null,
+        ko: "수정 날개를 지닌 신비의 드래곤. 신의 광물이라 불리는 디바인 스톤과 생김새가 유사하지만, 그 능력은 다르다. 가끔 털갈이를 할 때 귀한 수정을 얻을 수 있다. [ 획득가능: 미스터리 뽑기 ]",
       },
       assets: {
         gameId: 217,
@@ -16435,7 +16435,7 @@
         },
       },
       description: {
-        ko: null,
+        ko: "고대 악의 기운이 깃들여진 드래곤. 위협적이게 돋아난 흑색의 뿔은 마력을 잠재우는 힘을 지녔다. 만만히 보고 육성하다간 큰 화를 입으니 정신을 똑바로 차릴 것! [ 획득가능: 미스터리 뽑기 ]",
       },
       assets: {
         gameId: 218,
@@ -17155,7 +17155,7 @@
         },
       },
       description: {
-        ko: null,
+        ko: "매력적인 흑색 보석으로 몸이 이루어진 보옥형 드래곤. 이 신비한 보석은 상대방에게 두려움을 불러일으키는 힘을 지녔다. 단 자신보다 강한 상대에게는 아무런 효과가 없다. [ 획득가능: 미스터리 뽑기 ]",
       },
       assets: {
         gameId: 223,
@@ -17443,7 +17443,7 @@
         },
       },
       description: {
-        ko: null,
+        ko: "으스스한 모습의 언데드 드래곤. 미스트 드래곤은 다른 사물에 숨어들어 사물을 조종하거나 지배할 수 있다. 단 이 기술의 단점은 정신력이 강한 존재에게는 전혀 통하지 않는다는 점이다. [ 획득가능: 미스터리 뽑기 ]",
       },
       assets: {
         gameId: 225,
@@ -17587,7 +17587,7 @@
         },
       },
       description: {
-        ko: null,
+        ko: "특이한 성장 방식을 지닌 특이성 드래곤. 반드시 자신이 지나간 자리에 표시를 해두는 습관이 있다. 표시하는 행위는 일종의 스트레스 해소법으로 육성을 게을리했다면 빈도는 더 심해진다. [ 획득가능: 미스터리 뽑기 ]",
       },
       assets: {
         gameId: 226,
@@ -17704,7 +17704,7 @@
         grades: null,
       },
       description: {
-        ko: null,
+        ko: "사악한 것을 태우는 업화 드래곤. 말소자와 마찬가지로 악을 물리치는 숭고한 임무를 행하는 존재. 차분하고 냉철한 성격을 지녀 수준 높은 실력을 지닌 테이머들에게 큰 사랑을 받는다.",
       },
       assets: {
         gameId: 227,
@@ -21910,7 +21910,7 @@
         },
       },
       description: {
-        ko: null,
+        ko: "사람의 손이 닿지 않는 절벽 끝 단풍나무아래에서 태어나는 드래곤. 메이플이 날개짓을 하면 곡식이 풍성해진다. 숲의 수호자 엔트와 같이 자신의 숲을 지키는 드래곤으로써 숲을 사랑하고 지키는 드래곤이다.",
       },
       assets: {
         gameId: 345,
@@ -24249,7 +24249,7 @@
         grades: null,
       },
       description: {
-        ko: null,
+        ko: "불운한 실험을 통해 탄생한 언데드 드래곤. 드래곤 뿐만 아니라 다양한 종류의 생명을 혼합하여 만들었다고 추측된다. 낮에는 거의 활동하지 않으며, 해가 지는 밤에만 움직여 과거에는 언데드가 아닌 야행성 드래곤으로 분류했었다.",
       },
       assets: {
         gameId: 388,
@@ -74548,7 +74548,7 @@
         grades: null,
       },
       description: {
-        ko: null,
+        ko: "성체가 된 이후에는 악몽을 빼내고, 세탁 후 다시 넣는 것까지 가능해진다. 가끔씩 아이가 잠에서 깨면 당황하지 않고 망태에서 선물을 꺼내어 아이를 달랜다. 아이는 그 선물을 꿈속에서 실컷 만끽할 수 있지만, 아침이 되면 아무것도 기억하지 못한다. 낮에는 빛이 들어오지 않는 깊은 협곡에서 망태를 손질하거나 악몽의 찌꺼기를 먹어치운다.",
       },
       assets: {
         gameId: 3751,
@@ -75704,7 +75704,7 @@
         },
       },
       description: {
-        ko: null,
+        ko: "화염의 힘을 자유자재로 다루는 드래곤. 부화되기 이전부터 자신을 지켜주고 도와주는 에메랄드 스네이크와 함께 유타칸을 탐험한다고 한다. 다 자라도 자신을 해치로만 생각하는지, 먼저 나서는 에메랄드 스네이크에게 약간 불만도 있다고 한다. [ 획득가능: 2021 빛의 축제 이벤트 ]",
       },
       assets: {
         gameId: 3772,
@@ -75796,7 +75796,7 @@
         "grades": null
       },
       "description": {
-        "ko": null
+        "ko": "짙은 화염이 솟구치는 어둠을 만들어 모든 것을 끌어당긴다. 날갯짓으로 어둠을 생성한다. 어둠은 모든 물질을 끌어당기는 강력한 흡입력을 지녔다. 날갯짓의 기운에 따라 어둠의 크기와 흡입력이 달라진다. 작은 크기의 행성까지 집어삼킬 수 있을 만큼 어둠은 확장되기도 하며, 어둠 속에서는 보랏빛 화염이 요동치고 있어, 한 번 빨려 들어온 생명체는 소멸된다."
       },
       "assets": {
         "gameId": 3778,
@@ -75880,7 +75880,7 @@
         "grades": null
       },
       "description": {
-        "ko": null
+        "ko": "짙은 화염이 솟구치는 어둠을 만들어 모든 것을 끌어당긴다. 날갯짓으로 어둠을 생성한다. 어둠은 모든 물질을 끌어당기는 강력한 흡입력을 지녔다. 날갯짓의 기운에 따라 어둠의 크기와 흡입력이 달라진다. 작은 크기의 행성까지 집어삼킬 수 있을 만큼 어둠은 확장되기도 하며, 어둠 속에서는 보랏빛 화염이 요동치고 있어, 한 번 빨려 들어온 생명체는 소멸된다."
       },
       "assets": {
         "gameId": 3779,
@@ -75896,6 +75896,169 @@
         {
           "name": "크로마 블랙홀 드래곤",
           "element": "어둠",
+          "skill": null,
+          "statsRef": "regular",
+          "appearances": [
+            {
+              "page": "cham",
+              "tab": "SSS",
+              "levels": [
+                45,
+                21
+              ]
+            },
+            {
+              "page": "cham",
+              "tab": "SS",
+              "levels": [
+                45,
+                21
+              ]
+            }
+          ]
+        }
+      ],
+      "compatibility": {}
+    },
+    // 719 힐드
+    {
+      "id": 719,
+      "name": {
+        "ko": "힐드"
+      },
+      "aliases": {
+        "ko": []
+      },
+      "element": "땅",
+      "type": "공방",
+      "stages": {
+        "awakening": false,
+        "transcendence": true,
+        "advent": true
+      },
+      "canLevelUp": true,
+      "codeAvailability": "Yes",
+      "tier": {
+        "value": 7.0,
+        "status": "listed",
+        "source": "티어 카드"
+      },
+      "stats": {
+        "regular": {
+          "hp": [
+            208,
+            10
+          ],
+          "atk": [
+            25,
+            4
+          ],
+          "def": [
+            24,
+            4
+          ]
+        },
+        "grades": null
+      },
+      "description": {
+        "ko": "평상시에는 부드럽고 인자한 눈빛으로 초원을 응시하지만, 불길한 기운이 감돌면 눈빛이 예리하게 변하며 가장 선두로 나선다. 힐드가 날개를 모아 방패의 형상을 취하면 그 어떤 마법이나 물리적 타격도 뚫을 수 없는 '절대 방어 구역'이 형성된다."
+      },
+      "assets": {
+        "gameId": 3780,
+        "gradeFamilyId": null,
+        "familyMembers": null
+      },
+      "availability": {
+        "guildWarOriginal": true,
+        "guildWarNewbie": true,
+        "championshipExcluded": false
+      },
+      "rankingProfiles": [
+        {
+          "name": "힐드",
+          "element": "땅",
+          "skill": null,
+          "statsRef": "regular",
+          "appearances": [
+            {
+              "page": "cham",
+              "tab": "SSS",
+              "levels": [
+                45,
+                21
+              ]
+            },
+            {
+              "page": "cham",
+              "tab": "SS",
+              "levels": [
+                45,
+                21
+              ]
+            }
+          ]
+        }
+      ],
+      "compatibility": {}
+    },
+
+    // 720 크로마 힐드
+    {
+      "id": 720,
+      "name": {
+        "ko": "크로마 힐드"
+      },
+      "aliases": {
+        "ko": []
+      },
+      "element": "땅",
+      "type": "공방",
+      "stages": {
+        "awakening": false,
+        "transcendence": true,
+        "advent": true
+      },
+      "canLevelUp": true,
+      "codeAvailability": "Yes",
+      "tier": {
+        "value": 7.0,
+        "status": "listed",
+        "source": "티어 카드"
+      },
+      "stats": {
+        "regular": {
+          "hp": [
+            208,
+            10
+          ],
+          "atk": [
+            25,
+            4
+          ],
+          "def": [
+            24,
+            4
+          ]
+        },
+        "grades": null
+      },
+      "description": {
+        "ko": "평상시에는 부드럽고 인자한 눈빛으로 초원을 응시하지만, 불길한 기운이 감돌면 눈빛이 예리하게 변하며 가장 선두로 나선다. 힐드가 날개를 모아 방패의 형상을 취하면 그 어떤 마법이나 물리적 타격도 뚫을 수 없는 '절대 방어 구역'이 형성된다."
+      },
+      "assets": {
+        "gameId": 3781,
+        "gradeFamilyId": null,
+        "familyMembers": null
+      },
+      "availability": {
+        "guildWarOriginal": true,
+        "guildWarNewbie": true,
+        "championshipExcluded": false
+      },
+      "rankingProfiles": [
+        {
+          "name": "크로마 힐드",
+          "element": "땅",
           "skill": null,
           "statsRef": "regular",
           "appearances": [

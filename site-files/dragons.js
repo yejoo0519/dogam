@@ -75839,9 +75839,9 @@
       "canLevelUp": true,
       "codeAvailability": "Yes",
       "tier": {
-        "value": 7.0,
+        "value": 6.725,
         "status": "listed",
-        "source": "티어 카드"
+        "source": "초등 계산: 20레벨 공방형"
       },
       "stats": {
         "regular": {
@@ -75921,9 +75921,9 @@
       "canLevelUp": true,
       "codeAvailability": "Yes",
       "tier": {
-        "value": 7.0,
+        "value": 6.725,
         "status": "listed",
-        "source": "티어 카드"
+        "source": "초등 계산: 20레벨 공방형"
       },
       "stats": {
         "regular": {

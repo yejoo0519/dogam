@@ -3,7 +3,7 @@
   'use strict';
   const D=w.PeakData,keys=['hp','atk','def'];
   const INT=x=>Math.floor(x+1e-9);
-  function stat(B,G,P,AP,SP,PP,SL,SB,C,BU){return INT(INT(INT((B+G+P)*(1+AP))*(1+SP)+SL*(1+SP))*(1+PP))+SB+C+BU;}
+  function stat(B,G,P,AP,SP,PP,SL,SB,C,BU){return INT((INT(INT((B+G+P)*(1+AP))*(1+SP)+SL*(1+SP))+SB)*(1+PP))+C+BU;}
   function buffs(n){const out=[];for(let h=0;h<=n;h++)for(let a=0;a<=n-h;a++){const d=n-h-a;out.push({h,a,d,label:[...Array(h).fill('체'),...Array(a).fill('공'),...Array(d).fill('방')].join('+')||'버프 없음'});}return out;}
   function pendants(){const out=[];for(let h=0;h<=3;h++)for(let a=0;a<=3-h;a++)out.push({type:'태양',options:[...Array(h).fill('hp'),...Array(a).fill('atk'),...Array(3-h-a).fill('def')].map(stat=>({stat,val:6}))});return out;}
   function allocations(gems){
@@ -40,7 +40,7 @@
       for(const ac of accs)for(const enc of encs||[ac.enc])for(const pend of pends){
         const acc=D.ACC_DB[ac.index],pp={hp:0,atk:0,def:0};for(const o of pend?.options||[])pp[o.stat]+=o.val/100;
         for(const alloc of allocs){
-          const values=keys.map((s,i)=>stat(base[s],alloc[['h','a','d'][i]],[24,6,6][i],acc[s]+(enc===s?.21:0),pct[s],pp[s],plus[s],c.spirit.bonus===s?D.SP_BONUS[s]:0,[240,60,60][i],Math.floor(base[s]*buff[['h','a','d'][i]]*.2)));
+          const values=keys.map((s,i)=>stat(base[s],alloc[['h','a','d'][i]],[24,6,6][i],acc[s]+(enc===s?.21:0),pct[s],pp[s],plus[s],c.spirit.bonus===s?D.SP_BONUS[s]:0,[240,60,60][i],buff[['h','a','d'][i]]*Math.floor(base[s]*.2+1e-9)));
           const bv=values[0]*values[1]*values[2];tested++;
           if(top.length<10||bv>top[top.length-1].bv){
             const row={type,buff,accIndex:ac.index,enc,pend,alloc,values,bv,tar:typeof tarPercent==='function'?tarPercent(bv,type,{hp:buff.h,atk:buff.a,def:buff.d}):null,order:tested};

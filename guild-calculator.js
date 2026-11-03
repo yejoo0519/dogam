@@ -1721,16 +1721,16 @@ function mergeOptionGroups(groups,limit){
  *   A = base + gem + potion
  *   B = INT(A * (1 + acc% + enc%))
  *   C = INT(B * (1 + spirit%) + spiritPlus * (1 + spirit%))   ← 본체와 정령 고정값을 합쳐 한 번만 버림
- *   D = INT(C * (1 + pendant%))
- *   buf = INT(bufLevel * base * 0.20)
- *   finalStat = D + spiritBonus + collection + buf            ← 부가옵은 펜던트를 곱하지 않습니다
+ *   D = INT((C + spiritBonus) * (1 + pendant%))               ← 부가옵도 펜던트 %를 받습니다
+ *   buf = bufLevel * INT(base * 0.20)                          ← 단계마다 따로 버림
+ *   finalStat = D + collection + buf
  */
 const INT=x=>Math.floor(x+1e-9);
 function calcStat(B,G,P,AP,SP,PP,SL,SB,C,BU){
   const a=INT((B+G+P)*(1+AP));
   const b=INT(a*(1+SP)+SL*(1+SP));
-  const c=INT(b*(1+PP));
-  return c+SB+C+BU;
+  const c=INT((b+SB)*(1+PP));   // 정령 부가옵도 펜던트 %를 받는다 (인게임 검증)
+  return c+C+BU;
 }
 
 // 정령 상태를 스탯별 + / % / 부가옵 기여로 변환
@@ -2099,8 +2099,8 @@ async function doSimDeck(ownedAcc,dragons,excSun,onProgress=()=>{},encModeOverri
     const bs=BASE[dragon.grade][dragon.dtype];
     const bh=bs.hp,ba=bs.atk,bd=bs.def;
     const buff=getDragonBuffCounts(dragon),debuff=getDragonDebuffCounts(dragon);
-    const bufH=Math.floor(buff.hp*bh*.2),bufA=Math.floor(buff.atk*ba*.2),bufD=Math.floor(buff.def*bd*.2);
-    const debufH=Math.floor(debuff.hp*bh*.2),debufA=Math.floor(debuff.atk*ba*.2),debufD=Math.floor(debuff.def*bd*.2);
+    const bufH=buff.hp*Math.floor(bh*.2+1e-9),bufA=buff.atk*Math.floor(ba*.2+1e-9),bufD=buff.def*Math.floor(bd*.2+1e-9);
+    const debufH=debuff.hp*Math.floor(bh*.2+1e-9),debufA=debuff.atk*Math.floor(ba*.2+1e-9),debufD=debuff.def*Math.floor(bd*.2+1e-9);
     const netBufH=bufH-debufH,netBufA=bufA-debufA,netBufD=bufD-debufD;
     const options=[];
     for(const acc of ownedAcc){
@@ -2272,9 +2272,9 @@ function doSimTop(ownedAcc,bufCombos,excSun){
             let gH=0,gA=0,gD=0;
             for(let i=0;i<alloc.length;i++){gH+=alloc[i]*pool[i].h;gA+=alloc[i]*pool[i].a;gD+=alloc[i]*pool[i].d;}
             for(const buf of bufCombos){
-              const bufH=Math.floor(buf.h*bh*.2);
-              const bufA=Math.floor(buf.a*ba*.2);
-              const bufD=Math.floor(buf.d*bd*.2);
+              const bufH=buf.h*Math.floor(bh*.2+1e-9);
+              const bufA=buf.a*Math.floor(ba*.2+1e-9);
+              const bufD=buf.d*Math.floor(bd*.2+1e-9);
               const fH=calcStat(bh,gH,24,aH,sPct.hp,pH,sP.hp,sB.hp,coll.hp,bufH);
               const fA=calcStat(ba,gA,6,aA,sPct.atk,pA,sP.atk,sB.atk,coll.atk,bufA);
               const fD=calcStat(bd,gD,6,aD,sPct.def,pD,sP.def,sB.def,coll.def,bufD);
@@ -2311,9 +2311,9 @@ function doSimAvg(ownedAcc,bufCombos,excSun){
     const bufResults=[];
 
     for(const buf of bufCombos){
-      const bufH=Math.floor(buf.h*bh*.2);
-      const bufA=Math.floor(buf.a*ba*.2);
-      const bufD=Math.floor(buf.d*bd*.2);
+      const bufH=buf.h*Math.floor(bh*.2+1e-9);
+      const bufA=buf.a*Math.floor(ba*.2+1e-9);
+      const bufD=buf.d*Math.floor(bd*.2+1e-9);
       const top5=[];
       let minBV=-Infinity;
 

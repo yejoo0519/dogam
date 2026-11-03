@@ -1340,16 +1340,16 @@ function genAllocs(pool,slots){
  *   A = base + gem + potion
  *   B = INT(A * (1 + acc% + enc%))
  *   C = INT(B * (1 + spirit%) + spiritPlus * (1 + spirit%))   ← 본체와 정령 고정값을 합쳐 한 번만 버림
- *   D = INT(C * (1 + pendant%))
- *   buf = INT(bufLevel * base * 0.20)
- *   finalStat = D + spiritBonus + collection + buf            ← 부가옵은 펜던트를 곱하지 않습니다
+ *   D = INT((C + spiritBonus) * (1 + pendant%))               ← 부가옵도 펜던트 %를 받습니다
+ *   buf = bufLevel * INT(base * 0.20)                          ← 단계마다 따로 버림
+ *   finalStat = D + collection + buf
  */
 const INT=x=>Math.floor(x+1e-9);
 function calcStat(B,G,P,AP,SP,PP,SL,SB,C,BU){
   const a=INT((B+G+P)*(1+AP));
   const b=INT(a*(1+SP)+SL*(1+SP));
-  const c=INT(b*(1+PP));
-  return c+SB+C+BU;
+  const c=INT((b+SB)*(1+PP));   // 정령 부가옵도 펜던트 %를 받는다 (인게임 검증)
+  return c+C+BU;
 }
 
 // 정령 상태를 스탯별 + / % / 부가옵 기여로 변환

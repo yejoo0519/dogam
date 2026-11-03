@@ -197,7 +197,7 @@
           const base=BASE[grade][dt];
           let bestT=null;
           for(const buf of buffs){
-            const add={h:Math.floor(buf.h*base.hp*.2),a:Math.floor(buf.a*base.atk*.2),d:Math.floor(buf.d*base.def*.2)};
+            const add={h:buf.h*Math.floor(base.hp*.2+1e-9),a:buf.a*Math.floor(base.atk*.2+1e-9),d:buf.d*Math.floor(base.def*.2+1e-9)};
             let best=null;
             for(const acc of accs)for(const enc of encMode==='infinite'?['hp','atk','def']:[acc.enc])for(const pend of pends){
               const pp=calcPendPct(pend);

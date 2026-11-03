@@ -38,6 +38,19 @@ function tarPercent(bv,dtype,counts){
   const r=bv/M;
   return r<=1?Math.max(0,200*r-100):100*r;
 }
+// 이번 주 최대 비밸: 이번 주 버프를 2단계 다 받는 드래곤(버프 속성·타입 일치)이 낼 수 있는 만점
+function weekMaxBV(cfg){
+  if(!cfg||!TAR_M[cfg.type])return null;
+  const c={hp:0,atk:0,def:0};
+  if(c[cfg.stat1]!=null)c[cfg.stat1]++;
+  if(c[cfg.stat2]!=null)c[cfg.stat2]++;
+  return TAR_M[cfg.type][tarLabel(c)]||null;
+}
+// 이번 주 최대 비밸 대비 % (단순 비율)
+function weekPercent(bv,cfg){
+  const M=weekMaxBV(cfg);
+  return M&&bv?100*bv/M:null;
+}
 function fmtTar(bv,dtype,counts){
   const t=tarPercent(bv,dtype,counts);
   return t===null?'':t.toFixed(1);

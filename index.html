@@ -205,6 +205,11 @@
   .card:has(.icon-tile.amber) { border-left-color: var(--tone-amber); }
   .card:has(.icon-tile.rose) { border-left-color: var(--tone-rose); }
   .card:has(.icon-tile.emerald) { border-left-color: var(--tone-emerald); }
+  /* 묶음 카드 — 카드 1장에 하위 계산기 버튼 */
+  .card-split .card-subs { display: inline-flex; gap: 4px; margin-left: auto; flex-shrink: 0; }
+  .card-split .card-subs a { padding: 3px 10px; border: 1px solid var(--border); border-radius: 999px; font-size: 12px; font-weight: 600; color: var(--text2); background: var(--bg); }
+  .card-split .card-subs a:hover { color: var(--accent); border-color: var(--accent); }
+  .calc-groups .card-split:hover { background: var(--bg2); }
   .calc-group .card:has(.icon-tile.sky) { border-color: color-mix(in oklab, var(--tone-sky) 55%, var(--border)); }
   .calc-group .card:has(.icon-tile.violet) { border-color: color-mix(in oklab, var(--tone-violet) 55%, var(--border)); }
   .calc-group .card:has(.icon-tile.amber) { border-color: color-mix(in oklab, var(--tone-amber) 55%, var(--border)); }
@@ -482,7 +487,7 @@
       </section>
 
       <section class="category" id="cat-guide">
-        <div class="cat-head"><h3>공략 &amp; 가이드</h3><span class="meta">· 3개 메뉴</span></div>
+        <div class="cat-head"><h3>공략 &amp; 가이드</h3><span class="meta">· 4개 메뉴</span></div>
         <div class="cards">
           <a href="./guide.html?from=guide" class="card">
             <span class="icon-tile amber">팁게</span>
@@ -505,6 +510,13 @@
               <div class="card-desc">디데락 조합, 평르하 조합 · 자동 조합기능 제공</div>
             </div>
           </a>
+          <a href="./score-guide.html" class="card">
+            <span class="icon-tile violet">TAR</span>
+            <div class="card-body">
+              <div class="card-title">비밸·TAR 설명서</div>
+              <div class="card-desc">지표의 의미·계산법·추천 기준 선택 안내</div>
+            </div>
+          </a>
         </div>
       </section>
 
@@ -512,35 +524,25 @@
 
       <section class="category" id="cat-calculator">
         <div class="cat-head cat-head-row">
-          <div class="cat-head-inner"><h3>계산기</h3><span class="meta">· 10개 메뉴</span></div>
+          <div class="cat-head-inner"><h3>계산기</h3><span class="meta">· 6개 메뉴</span></div>
           <div class="calc-head-actions"><div class="calc-layout-toggle" role="group" aria-label="계산기 보기 방식"><button type="button" data-calc-layout="row" aria-pressed="true">가로</button><button type="button" data-calc-layout="col" aria-pressed="false">세로</button></div><a href="./my.html" class="my-spec-btn">👤 내 스펙 →</a></div>
         </div>
         <div class="calc-groups" id="calcGroups" data-layout="row">
           <div class="calc-group"><h4 class="cat-sub">단일 계산</h4><div class="cards">
           <a href="./calculator.html?from=calculator" class="card"><span class="icon-tile amber">정령</span><div class="card-body"><div class="card-title">정령 계산/배분</div><div class="card-desc">비밸·TAR 비교 · 보유 정령 타입 배분</div></div></a>
           <a href="./spirit-peak.html" class="card"><span class="icon-tile violet">고점</span><div class="card-body"><div class="card-title">정령 고점 계산기</div><div class="card-desc">보유 제한 없이 정령의 이론상 최고점 탐색</div></div></a>
-          <a href="./jorm.html" class="card"><span class="icon-tile sky">욜문</span><div class="card-body"><div class="card-title">요르문간드 계산기</div><div class="card-desc">탱커·딜러 세팅 최적화 · 일반/잠식 보스</div></div></a>
-          <a href="./score-guide.html" class="card"><span class="icon-tile emerald">TAR</span><div class="card-body"><div class="card-title">비밸·TAR 설명서</div><div class="card-desc">지표의 의미·계산법·추천 기준 선택 안내</div></div></a>
           </div></div>
           <div class="calc-group"><h4 class="cat-sub">길드전</h4><div class="cards">
           <a href="./pvp.html?from=calculator" class="card"><span class="icon-tile rose">길드</span><div class="card-body"><div class="card-title">길드전 계산기</div><div class="card-desc">오리지널·뉴비 모드 전환 · 비밸·TAR 추천</div></div></a>
           </div></div>
           <div class="calc-group"><h4 class="cat-sub">챔피언 대전</h4><div class="cards">
-          <a href="./cham_auto.html?from=calculator" class="card"><span class="icon-tile amber">챔대</span><div class="card-body"><div class="card-title">챔피언대전 계산기 (자동)</div><div class="card-desc">보유 드래곤과 장비로 세팅 계산</div></div></a>
-          <a href="./cham_manual.html?from=calculator" class="card">
-            <span class="icon-tile violet">챔대</span>
-            <div class="card-body">
-              <div class="card-title">챔피언대전 계산기<br>(수동)</div>
-              <div class="card-desc">3팀 × 3마리 · 최종 스탯 · EVAL · 비벨</div>
-            </div>
-          </a>
+          <div class="card card-split"><span class="icon-tile amber">챔대</span><div class="card-body"><div class="card-title">챔피언대전 계산기</div><div class="card-desc">자동 세팅 계산 · 3팀 수동 계산</div></div><span class="card-subs"><a href="./cham_auto.html?from=calculator">자동</a><a href="./cham_manual.html?from=calculator">수동</a></span></div>
           </div></div>
           <div class="calc-group"><h4 class="cat-sub">루키 대전</h4><div class="cards">
-          <a href="./rookie_auto.html?from=calculator" class="card"><span class="icon-tile sky">루키</span><div class="card-body"><div class="card-title">루키대전 계산기 (자동)</div><div class="card-desc">보유 드래곤과 루키 젬으로 세팅 계산</div></div></a>
-          <a href="./rookie_manual.html?from=calculator" class="card"><span class="icon-tile rose">루키</span><div class="card-body"><div class="card-title">루키대전 계산기 (수동)</div><div class="card-desc">SS·초월·성체 · 4성 정령 · 최종 스탯</div></div></a>
+          <div class="card card-split"><span class="icon-tile sky">루키</span><div class="card-body"><div class="card-title">루키대전 계산기</div><div class="card-desc">루키 젬 자동 세팅 · SS·초월·성체 수동 계산</div></div><span class="card-subs"><a href="./rookie_auto.html?from=calculator">자동</a><a href="./rookie_manual.html?from=calculator">수동</a></span></div>
           </div></div>
           <div class="calc-group"><h4 class="cat-sub">요새 계산기</h4><div class="cards">
-          <a href="./jorm-place.html" class="card"><span class="icon-tile emerald">요새</span><div class="card-body"><div class="card-title">잠욜문 배치 계산기</div><div class="card-desc">앞라인·관통·딜러 자리별 정령 배분</div></div></a>
+          <div class="card card-split"><span class="icon-tile emerald">욜문</span><div class="card-body"><div class="card-title">요르문간드 계산기</div><div class="card-desc">탱커·딜러 세팅 · 자리별 정령 배치</div></div><span class="card-subs"><a href="./jorm.html">세팅</a><a href="./jorm-place.html">배치</a></span></div>
           </div></div>
         </div>
       </section>

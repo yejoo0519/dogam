@@ -139,6 +139,49 @@
            grid-template-columns: repeat(2, 1fr); }
   .cards.tri { grid-template-columns: repeat(3, 1fr); }
 
+  /* 계산기 분류: 가로(줄별 버튼) · 세로(묶음 상자). 모바일은 가로 고정 */
+  .calc-head-actions { display: flex; align-items: center; gap: 8px; }
+  .calc-layout-toggle { display: inline-flex; border: 1px solid var(--border); border-radius: 20px; overflow: hidden; }
+  .calc-layout-toggle button { background: none; border: 0; color: var(--text3); font: inherit; font-size: 11px; font-weight: 600; padding: 5px 12px; cursor: pointer; }
+  .calc-layout-toggle button[aria-pressed=true] { background: var(--accent-bg); color: var(--accent); }
+  .calc-groups .cat-sub { font-size: 13px; font-weight: 700; color: var(--text2); margin: 0; }
+  .calc-groups .card-title { word-break: keep-all; margin: 0; }
+  .calc-groups .card-title br, .calc-groups .card-desc { display: none; }
+  .calc-groups .card { align-items: center; }
+  .calc-groups .icon-tile { width: 24px; height: 24px; font-size: 10px; }
+  .calc-group { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 12px; align-items: start; padding: 12px 0; border-top: 1px solid var(--border); }
+  .calc-group .cat-sub { margin-top: 8px; }
+  .calc-group .cards { display: flex; flex-wrap: wrap; gap: 8px; }
+  .calc-group .card { padding: 8px 14px 8px 10px; gap: 8px; border-radius: 20px; border-left-width: 1px; }
+  .calc-group .icon-tile { border-radius: 12px; }
+  .calc-group .card-title { font-size: 13px; white-space: nowrap; }
+  @media (min-width: 761px) {
+    .calc-groups[data-layout=col] { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+    .calc-groups[data-layout=col] .calc-group { display: flex; flex-direction: column; gap: 6px; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg2); }
+    .calc-groups[data-layout=col] .cat-sub { margin: 0 0 4px; }
+    .calc-groups[data-layout=col] .cards { flex-direction: column; flex-wrap: nowrap; gap: 6px; }
+    .calc-groups[data-layout=col] .card { padding: 8px 10px; border-radius: 6px; border-left-width: 2px; background: var(--bg); }
+    .calc-groups[data-layout=col] .icon-tile { border-radius: 6px; }
+    .calc-groups[data-layout=col] .card-title { white-space: normal; }
+  }
+  /* 계산기 설명: PC는 마우스 올리면 말풍선, 모바일은 이름 아래 한 줄 */
+  @media (hover: hover) and (min-width: 761px) {
+    .calc-groups .card { position: relative; }
+    .calc-groups .card:hover { z-index: 30; }
+    .calc-groups .card:hover .card-desc { display: block; position: absolute; left: 0; top: calc(100% + 6px); width: max-content; max-width: 260px; padding: 8px 10px; background: var(--bg3); color: var(--text); border: 1px solid var(--border); border-radius: 6px; font-size: 12px; line-height: 1.5; white-space: normal; box-shadow: 0 6px 18px rgba(0,0,0,.35); pointer-events: none; }
+  }
+  @media (max-width: 760px) {
+    .calc-groups .calc-group .cards { flex-direction: column; flex-wrap: nowrap; gap: 6px; }
+    .calc-groups .calc-group .card { border-radius: 10px; padding: 8px 12px 8px 10px; }
+    .calc-groups .card-title { white-space: normal; }
+    .calc-groups .card-desc { display: block; font-size: 11px; line-height: 1.4; margin-top: 2px; color: var(--text2); }
+  }
+  @media (max-width: 760px) {
+    .calc-layout-toggle { display: none; }
+    .calc-group { grid-template-columns: 1fr; gap: 6px; }
+    .calc-group .cat-sub { margin-top: 0; }
+  }
+
   /* 카드 — 좌측 액센트 보더 스타일 */
   .card { display: flex; gap: 12px; align-items: flex-start;
           padding: 18px 18px 18px 14px;
@@ -167,6 +210,12 @@
   .card:has(.icon-tile.amber) { border-left-color: var(--tone-amber); }
   .card:has(.icon-tile.rose) { border-left-color: var(--tone-rose); }
   .card:has(.icon-tile.emerald) { border-left-color: var(--tone-emerald); }
+  /* 묶음 카드 — 카드 1장에 하위 계산기 버튼 */
+  .card-split .card-subs { display: inline-flex; gap: 4px; margin-left: auto; flex-shrink: 0; }
+  .card-split .card-subs a { padding: 3px 10px; border: 1px solid var(--border); border-radius: 999px; font-size: 12px; font-weight: 600; color: var(--text2); background: var(--bg); }
+  .card-split .card-subs a:hover { color: var(--accent); border-color: var(--accent); }
+  .calc-groups .card-split:hover { background: var(--bg2); }
+  .calc-groups .icon-tile { width: auto; min-width: 24px; padding: 0 6px; font-size: 9.5px; }
   .calc-group .card:has(.icon-tile.sky) { border-color: color-mix(in oklab, var(--tone-sky) 55%, var(--border)); }
   .calc-group .card:has(.icon-tile.violet) { border-color: color-mix(in oklab, var(--tone-violet) 55%, var(--border)); }
   .calc-group .card:has(.icon-tile.amber) { border-color: color-mix(in oklab, var(--tone-amber) 55%, var(--border)); }
@@ -444,7 +493,7 @@
       </section>
 
       <section class="category" id="cat-guide">
-        <div class="cat-head"><h3>Guides</h3><span class="meta">· 3 pages</span></div>
+        <div class="cat-head"><h3>Guides</h3><span class="meta">· 4 pages</span></div>
         <div class="cards">
           <a href="../guide.html?from=guide" class="card">
             <span class="icon-tile amber">Tips</span>
@@ -467,6 +516,13 @@
               <div class="card-desc">Diderak and regular Arha teams · Automatic team builder</div>
             </div>
           </a>
+          <a href="./score-guide.html" class="card">
+            <span class="icon-tile violet">TAR</span>
+            <div class="card-body">
+              <div class="card-title">BV &amp; TAR guide</div>
+              <div class="card-desc">Meaning, formulas and choosing a comparison metric</div>
+            </div>
+          </a>
         </div>
       </section>
 
@@ -475,21 +531,19 @@
       <section class="category" id="cat-calculator">
         <div class="cat-head cat-head-row">
           <div class="cat-head-inner"><h3>Calculators</h3><span class="meta">· 4 pages</span></div>
-          <a href="./my.html" class="my-spec-btn">👤 👤 My Spec →</a>
+          <div class="calc-head-actions"><div class="calc-layout-toggle" role="group" aria-label="Calculator layout"><button type="button" data-calc-layout="row" aria-pressed="true">Rows</button><button type="button" data-calc-layout="col" aria-pressed="false">Columns</button></div><a href="./my.html" class="my-spec-btn">👤 My Spec →</a></div>
         </div>
-        <div class="cards tri">
+        <div class="calc-groups" id="calcGroups" data-layout="row">
+          <div class="calc-group"><h4 class="cat-sub">Single calc</h4><div class="cards">
           <a href="./calculator.html?from=calculator" class="card"><span class="icon-tile amber">Spirit</span><div class="card-body"><div class="card-title">Spirit Simulator</div><div class="card-desc">Compare B-Val and TAR · Optimize or set buffs</div></div></a>
-          <a href="./pvp.html?from=calculator" class="card"><span class="icon-tile rose">Guild</span><div class="card-body"><div class="card-title">Guild War Calculator</div><div class="card-desc">Original and Beginner modes · B-Val and TAR rankings</div></div></a>
-          <a href="./score-guide.html" class="card"><span class="icon-tile emerald">TAR</span><div class="card-body"><div class="card-title">BV &amp; TAR guide</div><div class="card-desc">Meaning, formulas and choosing a comparison metric</div></div></a>
           <a href="./spirit-peak.html" class="card"><span class="icon-tile violet">Peak</span><div class="card-body"><div class="card-title">Spirit Peak Calculator</div><div class="card-desc">Find your spirit’s theoretical peak without inventory limits</div></div></a>
-          <a href="./cham_auto.html?from=calculator" class="card"><span class="icon-tile amber">Champ</span><div class="card-body"><div class="card-title">Champion League Calculator (Auto)</div><div class="card-desc">Optimize your dragons and equipment</div></div></a>
-          <a href="./cham_manual.html?from=calculator" class="card">
-            <span class="icon-tile violet">Champ</span>
-            <div class="card-body">
-              <div class="card-title">Champion League Calculators<br>(Manual)</div>
-              <div class="card-desc">3 teams × 3 dragons · Final stats · EVAL · B-Val</div>
-            </div>
-          </a>
+          </div></div>
+          <div class="calc-group"><h4 class="cat-sub">Guild war</h4><div class="cards">
+          <a href="./pvp.html?from=calculator" class="card"><span class="icon-tile rose">Guild</span><div class="card-body"><div class="card-title">Guild War Calculator</div><div class="card-desc">Original and Beginner modes · B-Val and TAR rankings</div></div></a>
+          </div></div>
+          <div class="calc-group"><h4 class="cat-sub">Champion League</h4><div class="cards">
+          <div class="card card-split"><span class="icon-tile amber">Champ</span><div class="card-body"><div class="card-title">Champion League Calculator</div><div class="card-desc">Auto setup from your dragons · 3-team manual calc</div></div><span class="card-subs"><a href="./cham_auto.html?from=calculator">Auto</a><a href="./cham_manual.html?from=calculator">Manual</a></span></div>
+          </div></div>
         </div>
       </section>
 
@@ -807,6 +861,11 @@
     new MutationObserver(sync).observe(link, { attributes: true, attributeFilter: ['href'] });
     new MutationObserver(sync).observe(document.head, { childList: true, subtree: true, characterData: true });
   })();
+/* 계산기 분류 보기 방식 (PC 전용, 이 브라우저에 저장) */
+(function(){var box=document.getElementById('calcGroups');if(!box)return;var KEY='index-calc-layout';
+function set(v){box.dataset.layout=v;document.querySelectorAll('[data-calc-layout]').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.calcLayout===v));});}
+try{var saved=localStorage.getItem(KEY);if(saved==='row'||saved==='col')set(saved);}catch(e){}
+document.querySelectorAll('[data-calc-layout]').forEach(function(b){b.addEventListener('click',function(){set(b.dataset.calcLayout);try{localStorage.setItem(KEY,b.dataset.calcLayout);}catch(e){}});});})();
 </script>
 
 </body>

@@ -50,21 +50,30 @@
       ['pkg',     EN ? 'Packages'     : '패키지 복각',  'pkg.html']
     ] },
     { g: T.g_calc, items: [
-      ['score-guide', EN ? 'BV & TAR guide' : '비밸·TAR 설명서', 'score-guide.html'],
       ['calculator',  EN ? 'Spirit calc'  : '정령 계산/배분', 'calculator.html'],
       ['spirit-peak', EN ? 'Spirit peak' : '정령 고점', 'spirit-peak.html'],
       ['pvp',         EN ? 'Guild war'    : '길드전', 'pvp.html'],
       ...(EN ? [['noob','Guild (new)','noob.html']] : []),
-      ['cham_manual', EN ? 'Champ manual' : '챔대 수동',      'cham_manual.html'],
-      ['cham_auto',   EN ? 'Champ auto'   : '챔대 자동',      'cham_auto.html'],
-      ['rookie_manual', EN ? 'Rookie manual' : '루키 수동',  'rookie_manual.html'],
-      ['rookie_auto',   EN ? 'Rookie auto'   : '루키 자동',  'rookie_auto.html'],
-      ...(!EN ? [['jorm','요르문간드','jorm.html'],['jorm-place','요르문간드 배치','jorm-place.html']] : [])
+      ['cham', EN ? 'Champ' : '챔피언대전', null, null, [
+        ['cham_auto',   EN ? 'Auto' : '자동', 'cham_auto.html'],
+        ['cham_manual', EN ? 'Manual' : '수동', 'cham_manual.html']
+      ]],
+      ...(!EN ? [
+        ['rookie', '루키대전', null, null, [
+          ['rookie_auto', '자동', 'rookie_auto.html'],
+          ['rookie_manual', '수동', 'rookie_manual.html']
+        ]],
+        ['jorm', '요르문간드', null, null, [
+          ['jorm', '세팅', 'jorm.html'],
+          ['jorm-place', '배치', 'jorm-place.html']
+        ]]
+      ] : [])
     ] },
     { g: T.g_guide, items: [
       ['guide',     EN ? 'Guides'      : '공략 & 가이드', 'guide.html'],
       ['raid_info', EN ? 'Raid'        : '레이드 정보',   'raid_info.html'],
-      ['raid',      EN ? 'Arha gate'   : '아르하 입구',   'raid.html']
+      ['raid',      EN ? 'Arha gate'   : '아르하 입구',   'raid.html'],
+      ['score-guide', EN ? 'BV & TAR guide' : '비밸·TAR 설명서', 'score-guide.html']
     ] },
     { g: T.g_etc, items: [
       ['my',           EN ? 'My spec'  : '내 스펙 관리', 'my.html'],
@@ -88,6 +97,10 @@
   ];
 
   var TASK_GO = null;
+
+  function navHref(f) {
+    return (EN && ['score-guide.html','index.html','calculator.html','spirit-peak.html','pvp.html','noob.html','cham_auto.html','cham_manual.html','dex.html','tier.html','sss.html','cham.html','raid.html','raid_info.html','my.html','aura-preview.html','essence.html','patchnote.html'].includes(f) ? './' : UP) + f;
+  }
 
   function el(tag, cls, html) {
     var n = d.createElement(tag);
@@ -129,8 +142,24 @@
       (opt.nav || NAV).forEach(function (grp) {
         list.appendChild(el('div', 'u-side-grp', esc(grp.g)));
         grp.items.forEach(function (it) {
+          if (it[4]) {
+            /* 묶음 메뉴 — 한 줄에 이름 + 하위 페이지 버튼 */
+            var on = it[4].some(function (sub) { return sub[0] === opt.page; });
+            var row = el('div', 'u-nav-i u-nav-grp' + (on ? ' on' : ''));
+            row.appendChild(el('span', 'u-nav-gl', esc(it[1])));
+            var subs = el('span', 'u-nav-subs');
+            it[4].forEach(function (sub) {
+              var sa = el('a', sub[0] === opt.page ? 'on' : '', esc(sub[1]));
+              sa.href = navHref(sub[2]);
+              if (sub[0] === opt.page) sa.setAttribute('aria-current', 'page');
+              subs.appendChild(sa);
+            });
+            row.appendChild(subs);
+            list.appendChild(row);
+            return;
+          }
           var a = el('a', 'u-nav-i' + (it[0] === opt.page ? ' on' : ''));
-          a.href = (EN && ['score-guide.html','index.html','calculator.html','spirit-peak.html','pvp.html','noob.html','cham_auto.html','cham_manual.html','dex.html','tier.html','sss.html','cham.html','raid.html','raid_info.html','my.html','aura-preview.html','essence.html','patchnote.html'].includes(it[2]) ? './' : UP) + it[2];
+          a.href = navHref(it[2]);
           a.innerHTML = esc(it[1]) + (it[3] ? '<span class="n">' + esc(it[3]) + '</span>' : '');
           if (it[0] === opt.page) a.setAttribute('aria-current', 'page');
           list.appendChild(a);

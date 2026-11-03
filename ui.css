@@ -369,3 +369,10 @@ a.u-card:hover,.u-card.click:hover{border-color:var(--gold);background:var(--acc
   body.u{background:#fff;color:#000}
   .u-sec{break-inside:avoid}
 }
+/* 묶음 메뉴 (챔대·루키·요르문간드 등) */
+.u-nav-grp{cursor:default}
+.u-nav-grp .u-nav-gl{flex:1;min-width:0}
+.u-nav-subs{display:inline-flex;gap:4px;margin-left:auto}
+.u-nav-subs a{padding:3px 9px;border:1px solid var(--bd);border-radius:999px;font-size:12px;font-weight:500;color:var(--dim);line-height:1.4}
+.u-nav-subs a:hover{color:var(--text);background:var(--sf)}
+.u-nav-subs a.on{color:var(--gold);border-color:var(--gold);font-weight:600}

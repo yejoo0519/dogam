@@ -33,7 +33,7 @@
     d.documentElement.toggleAttribute('data-cham-auto-allowed',allowed);
     const category=d.querySelector('#cat-calculator');
     if(category){
-      const count=Array.from(category.querySelectorAll('a.card')).filter(a=>allowed||!a.getAttribute('href').includes('cham_auto.html')).length;
+      const count=Array.from(category.querySelectorAll('.card')).filter(a=>allowed||!(a.getAttribute('href')||'').includes('cham_auto.html')).length;
       const meta=category.querySelector('.meta');
       if(meta)meta.textContent=en?'· '+count+' pages':'· '+count+'개 메뉴';
     }

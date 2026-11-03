@@ -1803,9 +1803,9 @@ function runSim(){
         const fixedDeck=await doSimDeck(owned,filtered,excSun,(p,stage)=>CalcProgress.update(p*0.3,stage),'fixed');
         const infDeck=await doSimDeck(ownedAcc,filtered,excSun,(p,stage)=>CalcProgress.update(30+p*0.7,stage),'infinite');
         const score=r=>typeof guildScore==='function'?guildScore(r):r.bv;
-        const tot=d=>[d.reduce((t,o)=>t+score(o),0),d.reduce((t,o)=>t+o.bv,0)];
-        const [fs,fb]=tot(fixedDeck),[is,ib]=tot(infDeck);
-        deck=infDeck.length<3||(fixedDeck.length>=3&&(fs>is||(fs===is&&fb>ib)))?fixedDeck:infDeck;
+        const tot=d=>guildDistMode()==='focus'?[...d.map(o=>score(o)).sort((x,y)=>y-x),d.reduce((t,o)=>t+o.bv,0)]:[d.reduce((t,o)=>t+score(o),0),d.reduce((t,o)=>t+o.bv,0)];
+        const lexGt=(x,y)=>{for(let i=0;i<x.length;i++){if(x[i]>y[i])return true;if(x[i]<y[i])return false;}return false;};
+        deck=infDeck.length<3||(fixedDeck.length>=3&&lexGt(tot(fixedDeck),tot(infDeck)))?fixedDeck:infDeck;
       }else{
         deck=await doSimDeck(ownedAcc,filtered,excSun,(p,stage)=>CalcProgress.update(p,stage));
       }
@@ -1922,6 +1922,8 @@ function getDragonDebuffCounts(dragon){
 // 3) 남은 자리를 전부 상한으로 채워도 현재 1등을 못 넘을 때만 건너뛴다 → 1등이 될 수 있는 조합은 잘리지 않는다.
 // 후보 개수 상한이 없으므로 장신구·펜던트·젬을 추가해도 결과가 내려가지 않는다.
 // ================================================================
+// 분배 방식: even(균등분배, 3마리 합계 최대) / focus(몰빵, 1등→2등→3등 순서로 최대)
+const guildDistMode=()=>document.getElementById('guild-dist')?.value||'even';
 const GEM_SHAPES=(()=>{const r=[];for(let h=0;h<=5;h++)for(let a=0;a<=5-h;a++)r.push([h,a,5-h-a]);return r;})();
 
 // 스탯별 보유 젬을 높은 단계부터 15개까지 나열 (모자라면 폴백 젬으로 채움)
@@ -2060,6 +2062,73 @@ function guildTripleOk(a,b,c){
   return true;
 }
 
+// 몰빵: 1등 드래곤 점수를 최대로 → 그 안에서 2등 최대 → 3등 최대 (사전식).
+// 1등은 젬 주머니에서 가장 높은 젬부터 가져가고, 2등은 남은 것 중 가장 높은 것, 3등은 그 나머지를 쓴다.
+function focusDeck(sets,stock,score){
+  const take=(st,usage)=>{
+    // usage: [{s:0..2,k}] 이미 쓴 개수 → 남은 젬 목록과 누적합
+    const rest={};
+    SKEYS.forEach((s,si)=>{
+      const used=usage.reduce((t,u)=>t+u[si],0);
+      const items=stock[s].items.slice(used);
+      const pre=[0];items.forEach(g=>pre.push(pre[pre.length-1]+g.h+g.a+g.d));
+      rest[s]={items,pre};
+    });
+    return rest;
+  };
+  const evalWith=(o,rest)=>{
+    for(let si=0;si<3;si++)if(o.shape[si]>rest[SKEYS[si]].items.length)return null;
+    const r=guildOptStats(o._calc,rest.hp.pre[o.shape[0]],rest.atk.pre[o.shape[1]],rest.def.pre[o.shape[2]]);
+    return {r,sc:score(o,r.bv)};
+  };
+  const accOk=(o,picked)=>{
+    let a=1,p=1;
+    for(const q of picked){
+      if(q.accId===o.accId&&++a>o.accCnt)return false;
+      if(o.pendId!=null&&q.pendId===o.pendId&&++p>o.pendCnt)return false;
+    }
+    return true;
+  };
+  const better=(x,y)=>!y||x.sc>y.sc+1e-9||(Math.abs(x.sc-y.sc)<=1e-9&&x.r.bv>y.r.bv);
+  const same=(x,y)=>Math.abs(x.sc-y.sc)<=1e-9&&x.r.bv===y.r.bv;
+  // 한 단계: 아직 안 뽑힌 용들 중 최고 점수 후보 전부(동점 포함)
+  const bestStep=(picked,rest)=>{
+    let top=null,list=[];
+    const usedDragons=new Set(picked.map(p=>p.dragon));
+    for(const set of sets){
+      if(usedDragons.has(set.dragon))continue;
+      for(const o of set.options){
+        if(top&&o.ubS<top.sc-1e-9)break; // 상한이 현재 최고보다 낮으면 이 용은 더 볼 필요 없음
+        if(!accOk(o,picked))continue;
+        const v=evalWith(o,rest);if(!v)continue;
+        const cand={o,...v};
+        if(better(cand,top)){top=cand;list=[cand];}
+        else if(same(cand,top))list.push(cand);
+      }
+    }
+    return list;
+  };
+  let best=null;
+  const usageOf=o=>o.shape;
+  for(const c1 of bestStep([],take(stock,[]))){
+    const rest1=take(stock,[usageOf(c1.o)]);
+    for(const c2 of bestStep([c1.o],rest1)){
+      const rest2=take(stock,[usageOf(c1.o),usageOf(c2.o)]);
+      for(const c3 of bestStep([c1.o,c2.o],rest2)){
+        const key=[c1.sc,c2.sc,c3.sc],bvs=c1.r.bv+c2.r.bv+c3.r.bv;
+        const cmp=!best?1:(key[0]-best.key[0]||key[1]-best.key[1]||key[2]-best.key[2]||bvs-best.bvs);
+        if(cmp>1e-9)best={key,bvs,picks:[c1,c2,c3],rests:[take(stock,[]),rest1,rest2]};
+      }
+    }
+  }
+  if(!best)return [];
+  return best.picks.map((c,i)=>{
+    const rest=best.rests[i],items=[];
+    SKEYS.forEach((s,si)=>{for(let k=0;k<c.o.shape[si];k++)items.push(rest[s].items[k]);});
+    return {...c.o,...c.r,alloc:compressGemItems(items)};
+  });
+}
+
 async function doSimDeck(ownedAcc,dragons,excSun,onProgress=()=>{},encModeOverride=null){
   ownedAcc=groupOwnedAcc(ownedAcc);
   const stock=buildGemStock();
@@ -2131,6 +2200,7 @@ async function doSimDeck(ownedAcc,dragons,excSun,onProgress=()=>{},encModeOverri
   }
   sets.sort((x,y)=>y.options[0].ubS-x.options[0].ubS);
 
+  if(guildDistMode()==='focus'){onProgress(60,'1등부터 순서대로 배정');return focusDeck(sets,stock,score);}
   // 분기 한정 탐색
   let best=null;
   const beats=(s,b)=>!best||s>best.total||(s===best.total&&b>best.bvSum);

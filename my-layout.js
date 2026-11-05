@@ -5,7 +5,7 @@
     const host=document.querySelector('main .ti'),grid=host.querySelector('.spec-grid');
     const columns=[...grid.children].filter(el=>el.classList.contains('spec-col'));
     if(columns.length!==3)return;
-    const entries=[['base','기본 스펙'],['accessories','장신구'],['pendants','펜던트'],['dragons','드래곤'],['transfer','가져오기·내보내기']];
+    const entries=[['base','기본 스펙'],['accessories','장신구'],['pendants','펜던트'],['shot','스크린샷 등록'],['dragons','드래곤'],['transfer','가져오기·내보내기']];
     const nav=document.createElement('div');nav.className='my-tabs';nav.setAttribute('role','tablist');nav.setAttribute('aria-label','내 스펙 항목');
     const panels=new Map();
     for(const [id,label] of entries){
@@ -17,6 +17,7 @@
     panels.get('base').append(host.querySelector('.calc-shortcut'),columns[0]);
     panels.get('accessories').append(columns[1]);
     panels.get('pendants').append(columns[2]);
+    const shot=document.getElementById('shot-root');if(shot)panels.get('shot').append(shot);
     panels.get('dragons').append(document.getElementById('dragon-section').closest('.toggle-sec'));
     panels.get('accessories').append(document.getElementById('acc-section').closest('.toggle-sec'));
     panels.get('transfer').append(host.querySelector('.io-wrap'));

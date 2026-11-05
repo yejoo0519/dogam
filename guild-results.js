@@ -26,13 +26,20 @@
     const wcfg=S.settingBuffs?.buff,wMax=typeof weekMaxBV==='function'?weekMaxBV(wcfg):null;
     return {wMax,wPct:bv=>wMax?100*bv/wMax:null};
   }
-  function cardHtml(r,i,wMax,wPct){
+  // 예비 정령 카드: 이 정령이 원래 가장 잘 나오는 곳과 이번 주 이 용에 달았을 때 비교
+  function rsvOrigin(r,origin){
+    const o=r.dragon._rsv&&origin?origin[r.dragon._rsv]:null;
+    if(!o)return '';
+    const pct=o.bv?100*r.bv/o.bv:0;
+    return `<div class="sp-rsv-origin"><strong>예비 정령 · ${esc(r.dragon._rsvName)}</strong><span>원래 최적 <b>${esc(o.dtype)} · ${esc(o.label)}</b> 비밸 <b>${(o.bv/1e6).toFixed(1)}</b></span><span>이번 주 ${esc(r.dragon.name)} <b>${(r.bv/1e6).toFixed(1)}</b> (${pct.toFixed(1)}%)</span></div>`;
+  }
+  function cardHtml(r,i,wMax,wPct,origin){
       const acc=ACC_DB.find(a=>a.n===r.accN),tar=typeof tarPercent==='function'?tarPercent(r.bv,r.dragon.dtype,r.buff):null;
       const portrait=getDragonImgUrl(r.dragon.name);
       const identity=`<div class="sp-dragon-identity"><span class="sp-dragon-portrait">${portrait?`<img src="${esc(portrait)}" alt="${esc(r.dragon.name)}" onerror="this.hidden=true">`:''}</span><div class="sp-dragon-text"><strong>${esc(r.dragon.name)}</strong><span class="sp-dragon-attr">${r.dragon.attr?`<img src="${esc(elIcon(r.dragon.attr))}" alt="" onerror="this.hidden=true">${esc(r.dragon.attr)}`:'속성 미확인'}</span></div></div>`;
       return `<article class="sp-result-card"><header><div class="sp-card-label"><span class="sp-rank">${i+1}</span>${identity}<span class="sp-buff-tag">${esc(r.dragon.dtype)} · ${esc(r.dragon.growth)} ${esc(r.dragon.grade)}</span>${r.dragon._rsv?`<span class="sp-rsv-tag">예비 정령 ${r.dragon._hadSpirit?'교체':'추가'} · ${esc(r.dragon._rsvName)}</span>`:''}</div><div class="sp-metrics"><div class="${guildPriority==='bv'?'is-primary':''}"><small>비밸 · 백만</small><b>${(r.bv/1e6).toFixed(1)}</b></div><div title="이번 주 최대 비밸 ${wMax?(wMax/1e6).toFixed(1):'—'} 대비"><small>이번 주 최대 대비</small><b>${wMax?wPct(r.bv).toFixed(1)+'%':'—'}</b></div></div></header>
       <div class="sp-card-body"><div class="sp-equipment">${acc?.img?`<img src="${esc(acc.img)}" alt="">`:''}<div><small>장신구 / 인챈트</small><strong>${esc(r.accN)}</strong>${fmtAccEnc(r.enc)}</div></div><div><small>젬 배분</small><div class="gem-tags">${fmtGem(r.alloc)}</div></div><div><small>펜던트</small>${fmtPend(r.pend)}</div>${resultSpirit(r.dragon)}<div class="sp-final-stats">${[['체력',r.fH,'hp'],['공격',r.fA,'atk'],['방어',r.fD,'def']].map(([l,n,k])=>`<div class="stat-${k}"><small>${l}</small><strong>${n.toLocaleString('ko-KR')}</strong></div>`).join('')}</div></div>
-      <div class="sp-guild-effects">${fmtWeeklyBuff(r.buff,r.debuff)}${fmtWeeklyStats(r)}${fmtWeeklyDetails(r)}</div></article>`;
+      <div class="sp-guild-effects">${fmtWeeklyBuff(r.buff,r.debuff)}${fmtWeeklyStats(r)}${rsvOrigin(r,origin)}</div></article>`;
   }
   // 예비 정령 결과: 지금 추천(base)과 예비 정령까지 고려한 추천(info.deck)을 비교
   window.renderReserveDeck=function(base,info){
@@ -52,7 +59,7 @@
       const t0=t(base),t1=t(info.deck);
       tarLine=`<div>평균 TAR ${t0.toFixed(1)} → ${t1.toFixed(1)} <b class="rsv-up">${sign(t1-t0)}</b></div>`;
     }
-    el.innerHTML=`<div class="rsv-summary"><div>추천: ${picks}</div><div>평균 비밸 ${a0.toFixed(1)} → ${a1.toFixed(1)} <b class="rsv-up">${sign(diff)} (${sign(a0?100*diff/a0:0)}%)</b></div>${tarLine}</div><div class="sp-guild-cards">${info.deck.map((r,i)=>cardHtml(r,i,wMax,wPct)).join('')}</div>`;
+    el.innerHTML=`<div class="rsv-summary"><div>추천: ${picks}</div><div>평균 비밸 ${a0.toFixed(1)} → ${a1.toFixed(1)} <b class="rsv-up">${sign(diff)} (${sign(a0?100*diff/a0:0)}%)</b></div>${tarLine}</div><div class="sp-guild-cards">${info.deck.map((r,i)=>cardHtml(r,i,wMax,wPct,info.origin)).join('')}</div>`;
   };
   document.addEventListener('DOMContentLoaded',()=>{
     const select=document.getElementById('guild-priority');

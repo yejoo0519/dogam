@@ -47,7 +47,8 @@
       ['dex',     EN ? 'Dragon dex'   : '드래곤 도감',  'dex.html'],
       ['sss',     EN ? 'SSS ranking'  : 'SSS 랭킹',    'sss.html'],
       ['cham',    EN ? 'Champ ranking': '챔대 랭킹',    'cham.html'],
-      ['pkg',     EN ? 'Packages'     : '패키지 복각',  'pkg.html']
+      ['pkg',     EN ? 'Packages'     : '패키지 복각',  'pkg.html'],
+      ...(!EN ? [['item', '아이템 모음', 'item.html']] : [])
     ] },
     { g: T.g_calc, items: [
       ['calculator',  EN ? 'Spirit calc'  : '정령 계산/배분', 'calculator.html'],

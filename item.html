@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>아이템 모음 · 드래곤빌리지1 도감</title>
+  <meta name="description" content="드래곤빌리지1 아이템, 변신캡슐, 장식의 이름과 설명, 아이콘 모음">
+  <link id="theme-css" rel="stylesheet" href="./theme-dark.css">
+  <script src="./theme.js"></script>
+  <link rel="stylesheet" href="./ui.css">
+  <link rel="stylesheet" href="./item.css">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="u">
+  <div class="u-app">
+    <main class="u-wrap full">
+      <div class="it-wrap">
+        <header class="it-heading">
+          <div><p class="it-eyebrow">ITEM ARCHIVE</p><h1>아이템 모음</h1><p class="it-sub">게임 속 아이템의 이름과 설명을 한곳에서 찾아보세요.</p></div>
+        </header>
+        <section class="it-content">
+          <div class="it-toolbar">
+            <div class="it-tabs" id="tabs" role="tablist" aria-label="분류 선택">
+              <button data-tab="item" role="tab" aria-selected="true" class="on">아이템 <span></span></button>
+              <button data-tab="cap" role="tab" aria-selected="false" tabindex="-1">변신캡슐 <span></span></button>
+              <button data-tab="deco" role="tab" aria-selected="false" tabindex="-1">장식 <span></span></button>
+            </div>
+            <label class="it-search"><span class="it-sr">아이템 검색</span><input id="query" type="search" placeholder="이름 · 번호 · 설명 검색" autocomplete="off"></label>
+          </div>
+          <div class="it-filters">
+            <label class="it-sort">정렬 <select id="sort"><option value="id">번호순</option><option value="name">이름순</option></select></label>
+            <span id="resultCount" class="it-muted" aria-live="polite"></span>
+          </div>
+          <div id="results" class="it-grid" role="tabpanel"><div class="it-empty">아이템을 불러오는 중입니다.</div></div>
+        </section>
+        <p class="it-note">드래곤빌리지1 6.36.0 클라이언트 데이터 기준입니다. 장식 아이콘은 등급별 이미지 매칭 전이라 임시 아이콘으로 표시됩니다.</p>
+      </div>
+    </main>
+  </div>
+  <dialog id="detail" class="it-dialog" aria-labelledby="detailTitle"><div id="detailBody"></div></dialog>
+  <noscript><p>아이템 목록을 보려면 JavaScript를 활성화해 주세요.</p></noscript>
+  <script src="./item-data.js"></script>
+  <script src="./ui.js"></script>
+  <script>UI.shell({page:'item',title:'아이템 모음',sub:'아이템 · 변신캡슐 · 장식'});</script>
+  <script src="./item-app.js"></script>
+</body>
+</html>

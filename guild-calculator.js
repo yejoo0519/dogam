@@ -1837,15 +1837,16 @@ function runSim(){
           const d2=await runDeck([...keyed,...variants],55,100,deck);
           if(d2.length>=3&&d2.some(r=>r.dragon._rsv)&&lexGt(tot(d2),tot(deck)))rsvDeck=d2;
         }
-        // 예비 정령마다 '원래 최적': 9.0 · 내 장비로 6타입 × 2단계 버프 조합에 달았을 때 가장 높은 비밸
+        // 예비 정령마다 타입별 '원래 비밸': 9.0 · 내 장비로 6타입 × 2단계 버프 조합에 달았을 때 타입별 가장 높은 비밸
         // (한 마리만 계산하므로 가장 좋은 젬을 다 받은 값이 그대로 실제 최댓값이다)
         const origin={};
         if(rsvDeck){
           for(const r of reserves.filter(r=>rsvDeck.some(o=>o.dragon._rsv===r.uid))){
             const pseudo=DTYPES.flatMap(dtype=>getBufCombos(2).map(c=>({uid:'',name:'',attr:'',dtype,grade:'9.0',growth:'강림(축복)',opts:r.opts,bonus:r.bonus||'',_buff:{hp:c.h,atk:c.a,def:c.d},_lbl:c.label})));
             const res=await doSimDeck(ownedAcc,pseudo,excSun,()=>{},encMode,true);
-            const top=res.reduce((b,u)=>!b||u.ub>b.ub?u:b,null);
-            if(top)origin[r.uid]={dtype:top.dragon.dtype,label:top.dragon._lbl,bv:top.ub};
+            // 타입마다 가장 높은 버프 조합 하나씩
+            const byType=DTYPES.map(dtype=>res.filter(u=>u.dragon.dtype===dtype).reduce((b,u)=>!b||u.ub>b.ub?u:b,null)).filter(Boolean);
+            if(byType.length)origin[r.uid]=byType.map(u=>({dtype:u.dragon.dtype,label:u.dragon._lbl,bv:u.ub}));
           }
         }
         rsvInfo={deck:rsvDeck,checked:liveCount,total:keyed.length,origin};

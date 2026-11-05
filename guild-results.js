@@ -28,10 +28,11 @@
   }
   // 예비 정령 카드: 이 정령이 원래 가장 잘 나오는 곳과 이번 주 이 용에 달았을 때 비교
   function rsvOrigin(r,origin){
-    const o=r.dragon._rsv&&origin?origin[r.dragon._rsv]:null;
-    if(!o)return '';
-    const pct=o.bv?100*r.bv/o.bv:0;
-    return `<div class="sp-rsv-origin"><strong>예비 정령 · ${esc(r.dragon._rsvName)}</strong><span>원래 최적 <b>${esc(o.dtype)} · ${esc(o.label)}</b> 비밸 <b>${(o.bv/1e6).toFixed(1)}</b></span><span>이번 주 ${esc(r.dragon.name)} <b>${(r.bv/1e6).toFixed(1)}</b> (${pct.toFixed(1)}%)</span></div>`;
+    const list=r.dragon._rsv&&origin?origin[r.dragon._rsv]:null;
+    if(!list||!list.length)return '';
+    const max=Math.max(...list.map(o=>o.bv));
+    const cells=list.map(o=>`<span class="rsv-type${o.dtype===r.dragon.dtype?' is-cur':''}${o.bv===max?' is-max':''}"><small>${esc(o.dtype)} · ${esc(o.label)}</small><b>${(o.bv/1e6).toFixed(1)}</b></span>`).join('');
+    return `<div class="sp-rsv-origin"><div class="rsv-origin-hd"><strong>예비 정령 · ${esc(r.dragon._rsvName)}</strong><span>이번 주 ${esc(r.dragon.name)} <b>${(r.bv/1e6).toFixed(1)}</b></span></div><div class="rsv-types">${cells}</div></div>`;
   }
   function cardHtml(r,i,wMax,wPct,origin){
       const acc=ACC_DB.find(a=>a.n===r.accN),tar=typeof tarPercent==='function'?tarPercent(r.bv,r.dragon.dtype,r.buff):null;

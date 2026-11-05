@@ -1,0 +1,103 @@
+168.webp
+size: 1761, 249
+format: RGBA4444
+filter: Linear, Linear
+repeat: none
+monster/168/body1
+  rotate: false
+  xy: 1, 1
+  size: 307, 231
+  orig: 309, 233
+  offset: 1, 1
+  index: -1
+monster/168/body2
+  rotate: false
+  xy: 310, 1
+  size: 269, 214
+  orig: 273, 216
+  offset: 2, 1
+  index: -1
+monster/168/body3
+  rotate: false
+  xy: 1107, 1
+  size: 239, 157
+  orig: 239, 157
+  offset: 0, 0
+  index: -1
+monster/168/groud1
+  rotate: false
+  xy: 794, 183
+  size: 364, 65
+  orig: 366, 65
+  offset: 1, 0
+  index: -1
+monster/168/ground2
+  rotate: false
+  xy: 1160, 160
+  size: 378, 67
+  orig: 382, 67
+  offset: 2, 0
+  index: -1
+monster/168/head
+  rotate: false
+  xy: 581, 1
+  size: 211, 207
+  orig: 211, 207
+  offset: 0, 0
+  index: -1
+monster/168/leg1
+  rotate: false
+  xy: 1614, 106
+  size: 106, 102
+  orig: 106, 102
+  offset: 0, 0
+  index: -1
+monster/168/leg2
+  rotate: false
+  xy: 1595, 1
+  size: 117, 103
+  orig: 117, 103
+  offset: 0, 0
+  index: -1
+monster/168/mouse
+  rotate: false
+  xy: 1348, 1
+  size: 181, 150
+  orig: 181, 150
+  offset: 0, 0
+  index: -1
+monster/168/tooth1
+  rotate: false
+  xy: 1714, 1
+  size: 46, 47
+  orig: 46, 47
+  offset: 0, 0
+  index: -1
+monster/168/tooth2
+  rotate: false
+  xy: 1540, 119
+  size: 72, 113
+  orig: 72, 113
+  offset: 0, 0
+  index: -1
+monster/168/tooth3
+  rotate: false
+  xy: 794, 1
+  size: 172, 180
+  orig: 174, 182
+  offset: 1, 1
+  index: -1
+monster/168/tooth4
+  rotate: false
+  xy: 1531, 1
+  size: 62, 116
+  orig: 62, 118
+  offset: 0, 1
+  index: -1
+monster/168/tooth5
+  rotate: false
+  xy: 968, 1
+  size: 137, 166
+  orig: 139, 168
+  offset: 1, 1
+  index: -1

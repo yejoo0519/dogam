@@ -1,0 +1,124 @@
+119.webp
+size: 926, 1906
+format: RGBA4444
+filter: Linear, Linear
+repeat: none
+monster/119/raid_boss_tundra_30_body
+  rotate: false
+  xy: 1, 1293
+  size: 541, 342
+  orig: 800, 480
+  offset: 114, 38
+  index: -1
+monster/119/raid_boss_tundra_30_head
+  rotate: false
+  xy: 530, 1637
+  size: 135, 187
+  orig: 800, 480
+  offset: 340, 164
+  index: -1
+monster/119/raid_boss_tundra_att1
+  rotate: false
+  xy: 1, 1
+  size: 678, 467
+  orig: 800, 480
+  offset: 59, 13
+  index: -1
+monster/119/raid_boss_tundra_att2
+  rotate: false
+  xy: 1, 470
+  size: 599, 436
+  orig: 800, 480
+  offset: 132, 14
+  index: -1
+monster/119/raid_boss_tundra_body
+  rotate: false
+  xy: 602, 621
+  size: 278, 350
+  orig: 278, 350
+  offset: 0, 0
+  index: -1
+monster/119/raid_boss_tundra_eye
+  rotate: false
+  xy: 232, 1844
+  size: 80, 29
+  orig: 80, 29
+  offset: 0, 0
+  index: -1
+monster/119/raid_boss_tundra_groggy_body
+  rotate: false
+  xy: 544, 1309
+  size: 273, 309
+  orig: 289, 315
+  offset: 9, 0
+  index: -1
+monster/119/raid_boss_tundra_groggy_eye
+  rotate: false
+  xy: 232, 1875
+  size: 80, 20
+  orig: 80, 20
+  offset: 0, 0
+  index: -1
+monster/119/raid_boss_tundra_groggy_head
+  rotate: false
+  xy: 232, 1637
+  size: 147, 205
+  orig: 147, 205
+  offset: 0, 0
+  index: -1
+monster/119/raid_boss_tundra_groggy_tail
+  rotate: false
+  xy: 577, 973
+  size: 345, 166
+  orig: 345, 166
+  offset: 0, 0
+  index: -1
+monster/119/raid_boss_tundra_groggy_wing1
+  rotate: false
+  xy: 667, 1620
+  size: 226, 275
+  orig: 226, 275
+  offset: 0, 0
+  index: -1
+monster/119/raid_boss_tundra_groggy_wing2
+  rotate: false
+  xy: 1, 1637
+  size: 229, 268
+  orig: 229, 268
+  offset: 0, 0
+  index: -1
+monster/119/raid_boss_tundra_head
+  rotate: false
+  xy: 381, 1637
+  size: 147, 199
+  orig: 147, 199
+  offset: 0, 0
+  index: -1
+monster/119/raid_boss_tundra_hit
+  rotate: false
+  xy: 1, 908
+  size: 574, 383
+  orig: 800, 480
+  offset: 130, 14
+  index: -1
+monster/119/raid_boss_tundra_tail
+  rotate: false
+  xy: 577, 1141
+  size: 345, 166
+  orig: 345, 166
+  offset: 0, 0
+  index: -1
+monster/119/raid_boss_tundra_wing1
+  rotate: false
+  xy: 681, 308
+  size: 232, 311
+  orig: 236, 311
+  offset: 0, 0
+  index: -1
+monster/119/raid_boss_tundra_wing2
+  rotate: false
+  xy: 681, 1
+  size: 244, 305
+  orig: 244, 305
+  offset: 0, 0
+  index: -1

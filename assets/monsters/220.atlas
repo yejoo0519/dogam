@@ -1,0 +1,152 @@
+220.webp
+size: 1016, 1944
+format: RGBA4444
+filter: Linear, Linear
+repeat: none
+monster/220/arm1
+  rotate: false
+  xy: 883, 244
+  size: 124, 196
+  orig: 124, 196
+  offset: 0, 0
+  index: -1
+monster/220/arm2
+  rotate: false
+  xy: 883, 442
+  size: 94, 196
+  orig: 94, 196
+  offset: 0, 0
+  index: -1
+monster/220/arm11
+  rotate: false
+  xy: 821, 1759
+  size: 121, 102
+  orig: 121, 102
+  offset: 0, 0
+  index: -1
+monster/220/arm22
+  rotate: false
+  xy: 883, 142
+  size: 132, 100
+  orig: 132, 100
+  offset: 0, 0
+  index: -1
+monster/220/att1
+  rotate: false
+  xy: 1, 642
+  size: 726, 639
+  orig: 726, 639
+  offset: 0, 0
+  index: -1
+monster/220/att2
+  rotate: false
+  xy: 1, 1
+  size: 880, 639
+  orig: 880, 639
+  offset: 0, 0
+  index: -1
+monster/220/body
+  rotate: false
+  xy: 729, 642
+  size: 215, 384
+  orig: 215, 384
+  offset: 0, 0
+  index: -1
+monster/220/eye
+  rotate: false
+  xy: 740, 1881
+  size: 76, 44
+  orig: 76, 44
+  offset: 0, 0
+  index: -1
+monster/220/hand1
+  rotate: false
+  xy: 740, 1767
+  size: 79, 112
+  orig: 79, 112
+  offset: 0, 0
+  index: -1
+monster/220/hand2
+  rotate: false
+  xy: 308, 1789
+  size: 90, 111
+  orig: 90, 111
+  offset: 0, 0
+  index: -1
+monster/220/head
+  rotate: false
+  xy: 729, 1028
+  size: 280, 223
+  orig: 280, 223
+  offset: 0, 0
+  index: -1
+monster/220/leg1
+  rotate: false
+  xy: 883, 1
+  size: 132, 139
+  orig: 132, 139
+  offset: 0, 0
+  index: -1
+monster/220/leg2
+  rotate: false
+  xy: 1, 1789
+  size: 161, 138
+  orig: 161, 138
+  offset: 0, 0
+  index: -1
+monster/220/leg11
+  rotate: false
+  xy: 164, 1789
+  size: 142, 107
+  orig: 142, 107
+  offset: 0, 0
+  index: -1
+monster/220/leg22
+  rotate: false
+  xy: 792, 1253
+  size: 179, 185
+  orig: 179, 185
+  offset: 0, 0
+  index: -1
+monster/220/neck
+  rotate: false
+  xy: 792, 1440
+  size: 154, 170
+  orig: 154, 170
+  offset: 0, 0
+  index: -1
+monster/220/tail1
+  rotate: false
+  xy: 792, 1612
+  size: 130, 145
+  orig: 130, 145
+  offset: 0, 0
+  index: -1
+monster/220/tail2
+  rotate: false
+  xy: 400, 1767
+  size: 338, 173
+  orig: 338, 173
+  offset: 0, 0
+  index: -1
+monster/220/tail3
+  rotate: false
+  xy: 821, 1863
+  size: 111, 80
+  orig: 111, 80
+  offset: 0, 0
+  index: -1
+monster/220/wing1
+  rotate: false
+  xy: 1, 1283
+  size: 397, 504
+  orig: 397, 504
+  offset: 0, 0
+  index: -1
+monster/220/wing2
+  rotate: false
+  xy: 400, 1283
+  size: 390, 482
+  orig: 390, 482
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,138 @@
+123.webp
+size: 1782, 452
+format: RGBA4444
+filter: Linear, Linear
+repeat: none
+monster/123/m_angrywildboar_arm1
+  rotate: false
+  xy: 1686, 374
+  size: 51, 55
+  orig: 51, 55
+  offset: 0, 0
+  index: -1
+monster/123/m_angrywildboar_arm2
+  rotate: false
+  xy: 1281, 353
+  size: 84, 65
+  orig: 84, 65
+  offset: 0, 0
+  index: -1
+monster/123/m_angrywildboar_attack1
+  rotate: false
+  xy: 783, 1
+  size: 496, 441
+  orig: 800, 450
+  offset: 198, 9
+  index: -1
+monster/123/m_angrywildboar_attack2
+  rotate: false
+  xy: 1, 1
+  size: 780, 450
+  orig: 800, 450
+  offset: 9, 0
+  index: -1
+monster/123/m_angrywildboar_belt
+  rotate: false
+  xy: 1466, 259
+  size: 184, 67
+  orig: 184, 67
+  offset: 0, 0
+  index: -1
+monster/123/m_angrywildboar_body
+  rotate: false
+  xy: 1466, 328
+  size: 148, 114
+  orig: 148, 114
+  offset: 0, 0
+  index: -1
+monster/123/m_angrywildboar_eye
+  rotate: false
+  xy: 1281, 420
+  size: 73, 28
+  orig: 166, 256
+  offset: 25, 116
+  index: -1
+monster/123/m_angrywildboar_hair
+  rotate: false
+  xy: 1281, 208
+  size: 109, 143
+  orig: 109, 143
+  offset: 0, 0
+  index: -1
+monster/123/m_angrywildboar_head
+  rotate: false
+  xy: 1519, 1
+  size: 166, 256
+  orig: 166, 256
+  offset: 0, 0
+  index: -1
+monster/123/m_angrywildboar_head_eff
+  rotate: false
+  xy: 1466, 208
+  size: 46, 46
+  orig: 46, 46
+  offset: 0, 0
+  index: -1
+monster/123/m_angrywildboar_horn1
+  rotate: false
+  xy: 1687, 1
+  size: 71, 86
+  orig: 71, 86
+  offset: 0, 0
+  index: -1
+monster/123/m_angrywildboar_horn2
+  rotate: false
+  xy: 1392, 208
+  size: 72, 127
+  orig: 72, 127
+  offset: 0, 0
+  index: -1
+monster/123/m_angrywildboar_leftleg1
+  rotate: false
+  xy: 1687, 89
+  size: 72, 83
+  orig: 72, 83
+  offset: 0, 0
+  index: -1
+monster/123/m_angrywildboar_leftleg2
+  rotate: false
+  xy: 1687, 174
+  size: 46, 59
+  orig: 46, 59
+  offset: 0, 0
+  index: -1
+monster/123/m_angrywildboar_leg1
+  rotate: false
+  xy: 1392, 337
+  size: 72, 86
+  orig: 72, 86
+  offset: 0, 0
+  index: -1
+monster/123/m_angrywildboar_leg2
+  rotate: false
+  xy: 1616, 374
+  size: 68, 39
+  orig: 68, 39
+  offset: 0, 0
+  index: -1
+monster/123/m_angrywildboar_leg3
+  rotate: false
+  xy: 1735, 174
+  size: 46, 59
+  orig: 46, 59
+  offset: 0, 0
+  index: -1
+monster/123/m_angrywildboar_tail
+  rotate: false
+  xy: 1652, 259
+  size: 115, 113
+  orig: 115, 113
+  offset: 0, 0
+  index: -1
+monster/123/m_angrywildboar_wagon
+  rotate: false
+  xy: 1281, 1
+  size: 236, 205
+  orig: 236, 205
+  offset: 0, 0
+  index: -1

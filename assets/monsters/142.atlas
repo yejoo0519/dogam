@@ -1,0 +1,124 @@
+142.webp
+size: 1352, 981
+format: RGBA4444
+filter: Linear, Linear
+repeat: none
+monster/142/m_guardianknight_att1
+  rotate: false
+  xy: 1, 468
+  size: 783, 454
+  orig: 800, 480
+  offset: 16, 11
+  index: -1
+monster/142/m_guardianknight_att2
+  rotate: false
+  xy: 1, 1
+  size: 797, 465
+  orig: 800, 480
+  offset: 0, 15
+  index: -1
+monster/142/m_guardianknight_body1
+  rotate: false
+  xy: 800, 207
+  size: 309, 267
+  orig: 309, 267
+  offset: 0, 0
+  index: -1
+monster/142/m_guardianknight_body2
+  rotate: false
+  xy: 786, 706
+  size: 201, 260
+  orig: 309, 267
+  offset: 53, 3
+  index: -1
+monster/142/m_guardianknight_body_eff
+  rotate: false
+  xy: 786, 476
+  size: 279, 228
+  orig: 309, 267
+  offset: 1, 21
+  index: -1
+monster/142/m_guardianknight_cloth
+  rotate: false
+  xy: 1240, 829
+  size: 99, 84
+  orig: 99, 84
+  offset: 0, 0
+  index: -1
+monster/142/m_guardianknight_head
+  rotate: false
+  xy: 1111, 207
+  size: 227, 173
+  orig: 227, 173
+  offset: 0, 0
+  index: -1
+monster/142/m_guardianknight_head_eff
+  rotate: false
+  xy: 989, 848
+  size: 144, 132
+  orig: 227, 173
+  offset: 49, 7
+  index: -1
+monster/142/m_guardianknight_lefthand
+  rotate: false
+  xy: 1111, 382
+  size: 219, 240
+  orig: 219, 240
+  offset: 0, 0
+  index: -1
+monster/142/m_guardianknight_leg1
+  rotate: false
+  xy: 1270, 1
+  size: 81, 80
+  orig: 91, 97
+  offset: 0, 17
+  index: -1
+monster/142/m_guardianknight_leg2
+  rotate: false
+  xy: 1, 924
+  size: 58, 42
+  orig: 91, 97
+  offset: 33, 0
+  index: -1
+monster/142/m_guardianknight_rightarm1
+  rotate: false
+  xy: 1257, 624
+  size: 90, 89
+  orig: 90, 89
+  offset: 0, 0
+  index: -1
+monster/142/m_guardianknight_rightarm2
+  rotate: false
+  xy: 1135, 829
+  size: 103, 107
+  orig: 103, 107
+  offset: 0, 0
+  index: -1
+monster/142/m_guardianknight_rightarmor
+  rotate: false
+  xy: 1067, 624
+  size: 110, 61
+  orig: 110, 61
+  offset: 0, 0
+  index: -1
+monster/142/m_guardianknight_righthand
+  rotate: false
+  xy: 800, 1
+  size: 468, 204
+  orig: 468, 204
+  offset: 0, 0
+  index: -1
+monster/142/m_guardianknight_rightshoulder1
+  rotate: false
+  xy: 989, 706
+  size: 132, 140
+  orig: 132, 140
+  offset: 0, 0
+  index: -1
+monster/142/m_guardianknight_rightshoulder2
+  rotate: false
+  xy: 1123, 687
+  size: 132, 140
+  orig: 132, 140
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,82 @@
+227.webp
+size: 1966, 574
+format: RGBA4444
+filter: Linear, Linear
+repeat: none
+monster/227/at1
+  rotate: false
+  xy: 1, 1
+  size: 802, 482
+  orig: 802, 482
+  offset: 0, 0
+  index: -1
+monster/227/at2
+  rotate: false
+  xy: 805, 1
+  size: 802, 482
+  orig: 802, 482
+  offset: 0, 0
+  index: -1
+monster/227/m_aristar_body1
+  rotate: false
+  xy: 1609, 314
+  size: 296, 259
+  orig: 296, 259
+  offset: 0, 0
+  index: -1
+monster/227/m_aristar_body2
+  rotate: false
+  xy: 1609, 1
+  size: 356, 311
+  orig: 356, 311
+  offset: 0, 0
+  index: -1
+monster/227/m_aristar_eye1
+  rotate: false
+  xy: 119, 485
+  size: 152, 52
+  orig: 152, 52
+  offset: 0, 0
+  index: -1
+monster/227/m_aristar_eye2
+  rotate: false
+  xy: 1, 550
+  size: 151, 21
+  orig: 151, 21
+  offset: 0, 0
+  index: -1
+monster/227/m_aristar_ice1
+  rotate: false
+  xy: 60, 485
+  size: 57, 61
+  orig: 57, 61
+  offset: 0, 0
+  index: -1
+monster/227/m_aristar_ice2
+  rotate: false
+  xy: 154, 539
+  size: 29, 29
+  orig: 29, 29
+  offset: 0, 0
+  index: -1
+monster/227/m_aristar_ice3
+  rotate: false
+  xy: 1, 485
+  size: 57, 63
+  orig: 57, 63
+  offset: 0, 0
+  index: -1
+monster/227/m_aristar_ice4
+  rotate: false
+  xy: 185, 539
+  size: 29, 29
+  orig: 29, 29
+  offset: 0, 0
+  index: -1
+monster/227/m_aristar_mouth
+  rotate: false
+  xy: 216, 539
+  size: 73, 19
+  orig: 73, 19
+  offset: 0, 0
+  index: -1

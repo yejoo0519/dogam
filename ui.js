@@ -81,6 +81,7 @@
       ...(!EN ? [['guild-home','길드','guild-home.html']] : []),
       ['guild',        EN ? 'Guilds'   : '길드 홍보',   'guild.html'],
       ['aura-preview', EN ? 'Auras'    : '오라 미리보기', 'aura-preview.html'],
+      ...(!EN ? [['monster','보스·몬스터','monster.html']] : []),
       ['essence',      EN ? 'SSS essence' : '트스 정수량', 'essence.html'],
       ['patchnote',    EN ? 'Patch'    : '패치 노트',   'patchnote.html']
     ] }

@@ -1,0 +1,82 @@
+173.webp
+size: 1842, 482
+format: RGBA4444
+filter: Linear, Linear
+repeat: none
+monster/173/att1
+  rotate: false
+  xy: 803, 1
+  size: 602, 440
+  orig: 800, 480
+  offset: 0, 40
+  index: -1
+monster/173/att2
+  rotate: false
+  xy: 1, 1
+  size: 800, 480
+  orig: 800, 480
+  offset: 0, 0
+  index: -1
+monster/173/m_ghoul_body
+  rotate: false
+  xy: 1407, 267
+  size: 148, 161
+  orig: 148, 162
+  offset: 0, 0
+  index: -1
+monster/173/m_ghoul_body2
+  rotate: false
+  xy: 1625, 159
+  size: 178, 94
+  orig: 178, 94
+  offset: 0, 0
+  index: -1
+monster/173/m_ghoul_head
+  rotate: false
+  xy: 1407, 1
+  size: 216, 264
+  orig: 216, 265
+  offset: 0, 1
+  index: -1
+monster/173/m_ghoul_Larm1
+  rotate: false
+  xy: 1645, 255
+  size: 99, 150
+  orig: 99, 150
+  offset: 0, 0
+  index: -1
+monster/173/m_ghoul_Larm2
+  rotate: false
+  xy: 1625, 1
+  size: 141, 156
+  orig: 141, 156
+  offset: 0, 0
+  index: -1
+monster/173/m_ghoul_Lleg
+  rotate: false
+  xy: 1746, 378
+  size: 82, 90
+  orig: 82, 90
+  offset: 0, 0
+  index: -1
+monster/173/m_ghoul_Rarm1
+  rotate: false
+  xy: 1746, 255
+  size: 88, 121
+  orig: 88, 121
+  offset: 0, 0
+  index: -1
+monster/173/m_ghoul_Rarm2
+  rotate: false
+  xy: 1557, 267
+  size: 86, 153
+  orig: 86, 153
+  offset: 0, 0
+  index: -1
+monster/173/m_ghoul_Rleg
+  rotate: false
+  xy: 1768, 1
+  size: 73, 130
+  orig: 73, 130
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,96 @@
+226.webp
+size: 804, 1291
+format: RGBA4444
+filter: Linear, Linear
+repeat: none
+monster/226/at1
+  rotate: false
+  xy: 1, 485
+  size: 802, 444
+  orig: 802, 444
+  offset: 0, 0
+  index: -1
+monster/226/at2
+  rotate: false
+  xy: 1, 1
+  size: 802, 482
+  orig: 802, 482
+  offset: 0, 0
+  index: -1
+monster/226/m_doodamong_body
+  rotate: false
+  xy: 1, 931
+  size: 272, 245
+  orig: 272, 245
+  offset: 0, 0
+  index: -1
+monster/226/m_doodamong_head
+  rotate: false
+  xy: 275, 931
+  size: 178, 205
+  orig: 178, 205
+  offset: 0, 0
+  index: -1
+monster/226/m_doodamong_l_arm1
+  rotate: false
+  xy: 713, 1148
+  size: 82, 130
+  orig: 82, 130
+  offset: 0, 0
+  index: -1
+monster/226/m_doodamong_l_arm2
+  rotate: false
+  xy: 305, 1138
+  size: 128, 135
+  orig: 128, 135
+  offset: 0, 0
+  index: -1
+monster/226/m_doodamong_l_leg
+  rotate: false
+  xy: 1, 1178
+  size: 150, 112
+  orig: 150, 112
+  offset: 0, 0
+  index: -1
+monster/226/m_doodamong_light
+  rotate: false
+  xy: 455, 931
+  size: 182, 182
+  orig: 182, 182
+  offset: 0, 0
+  index: -1
+monster/226/m_doodamong_r_arm1
+  rotate: false
+  xy: 622, 1148
+  size: 89, 138
+  orig: 89, 138
+  offset: 0, 0
+  index: -1
+monster/226/m_doodamong_r_arm2
+  rotate: false
+  xy: 639, 931
+  size: 132, 132
+  orig: 132, 132
+  offset: 0, 0
+  index: -1
+monster/226/m_doodamong_r_leg
+  rotate: false
+  xy: 153, 1178
+  size: 150, 112
+  orig: 150, 112
+  offset: 0, 0
+  index: -1
+monster/226/m_doodamong_tail
+  rotate: false
+  xy: 639, 1065
+  size: 113, 81
+  orig: 113, 81
+  offset: 0, 0
+  index: -1
+monster/226/m_doodamong_towel
+  rotate: false
+  xy: 455, 1115
+  size: 165, 162
+  orig: 165, 162
+  offset: 0, 0
+  index: -1

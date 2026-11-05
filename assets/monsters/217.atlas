@@ -1,0 +1,54 @@
+217.webp
+size: 1930, 526
+format: RGBA4444
+filter: Linear, Linear
+repeat: none
+monster/217/att1
+  rotate: false
+  xy: 1, 1
+  size: 930, 524
+  orig: 930, 524
+  offset: 0, 0
+  index: -1
+monster/217/att2
+  rotate: false
+  xy: 933, 1
+  size: 763, 524
+  orig: 763, 524
+  offset: 0, 0
+  index: -1
+monster/217/body
+  rotate: false
+  xy: 1698, 1
+  size: 231, 216
+  orig: 231, 216
+  offset: 0, 0
+  index: -1
+monster/217/closeeye
+  rotate: false
+  xy: 1698, 463
+  size: 92, 22
+  orig: 92, 22
+  offset: 0, 0
+  index: -1
+monster/217/eye
+  rotate: false
+  xy: 1698, 415
+  size: 94, 46
+  orig: 94, 46
+  offset: 0, 0
+  index: -1
+monster/217/leaf1
+  rotate: false
+  xy: 1698, 321
+  size: 132, 92
+  orig: 132, 92
+  offset: 0, 0
+  index: -1
+monster/217/leaf2
+  rotate: false
+  xy: 1698, 219
+  size: 155, 100
+  orig: 155, 100
+  offset: 0, 0
+  index: -1

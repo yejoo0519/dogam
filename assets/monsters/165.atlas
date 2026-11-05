@@ -1,0 +1,89 @@
+165.webp
+size: 1161, 488
+format: RGBA4444
+filter: Linear, Linear
+repeat: none
+monster/165/eye
+  rotate: false
+  xy: 1, 340
+  size: 46, 45
+  orig: 46, 45
+  offset: 0, 0
+  index: -1
+monster/165/hand1
+  rotate: false
+  xy: 165, 1
+  size: 317, 297
+  orig: 323, 303
+  offset: 3, 3
+  index: -1
+monster/165/hand2
+  rotate: false
+  xy: 484, 1
+  size: 317, 296
+  orig: 323, 300
+  offset: 3, 2
+  index: -1
+monster/165/head
+  rotate: false
+  xy: 803, 225
+  size: 192, 241
+  orig: 198, 249
+  offset: 3, 4
+  index: -1
+monster/165/heart
+  rotate: false
+  xy: 803, 1
+  size: 220, 220
+  orig: 220, 220
+  offset: 0, 0
+  index: -1
+monster/165/heart2
+  rotate: false
+  xy: 437, 300
+  size: 213, 167
+  orig: 213, 167
+  offset: 0, 0
+  index: -1
+monster/165/light
+  rotate: false
+  xy: 165, 300
+  size: 176, 174
+  orig: 176, 174
+  offset: 0, 0
+  index: -1
+monster/165/mouth
+  rotate: false
+  xy: 997, 225
+  size: 156, 220
+  orig: 160, 226
+  offset: 2, 3
+  index: -1
+monster/165/spine1
+  rotate: false
+  xy: 343, 300
+  size: 92, 174
+  orig: 94, 182
+  offset: 1, 4
+  index: -1
+monster/165/spine2
+  rotate: false
+  xy: 652, 299
+  size: 93, 188
+  orig: 97, 200
+  offset: 2, 6
+  index: -1
+monster/165/spine3
+  rotate: false
+  xy: 1, 1
+  size: 162, 337
+  orig: 164, 345
+  offset: 1, 4
+  index: -1
+monster/165/spine4
+  rotate: false
+  xy: 1025, 1
+  size: 135, 222
+  orig: 139, 228
+  offset: 2, 3
+  index: -1

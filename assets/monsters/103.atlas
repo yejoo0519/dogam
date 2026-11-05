@@ -1,0 +1,61 @@
+103.webp
+size: 802, 2029
+format: RGBA4444
+filter: Linear, Linear
+repeat: none
+monster/103/remi_body
+  rotate: false
+  xy: 1, 1447
+  size: 623, 363
+  orig: 623, 363
+  offset: 0, 0
+  index: -1
+monster/103/remi_boss2
+  rotate: false
+  xy: 1, 965
+  size: 720, 480
+  orig: 800, 480
+  offset: 47, 0
+  index: -1
+monster/103/remi_boss3
+  rotate: false
+  xy: 1, 483
+  size: 743, 480
+  orig: 800, 480
+  offset: 10, 0
+  index: -1
+monster/103/remi_boss4
+  rotate: false
+  xy: 1, 1
+  size: 800, 480
+  orig: 800, 480
+  offset: 0, 0
+  index: -1
+monster/103/remi_eye
+  rotate: false
+  xy: 746, 483
+  size: 47, 94
+  orig: 47, 94
+  offset: 0, 0
+  index: -1
+monster/103/remi_hand_left
+  rotate: false
+  xy: 626, 1447
+  size: 94, 140
+  orig: 94, 140
+  offset: 0, 0
+  index: -1
+monster/103/remi_hand_right
+  rotate: false
+  xy: 460, 1812
+  size: 284, 77
+  orig: 284, 77
+  offset: 0, 0
+  index: -1
+monster/103/remi_tail
+  rotate: false
+  xy: 1, 1812
+  size: 457, 216
+  orig: 457, 216
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,131 @@
+180.webp
+size: 1013, 1405
+format: RGBA4444
+filter: Linear, Linear
+repeat: none
+monster/180/acc0
+  rotate: false
+  xy: 936, 1056
+  size: 76, 107
+  orig: 82, 122
+  offset: 2, 8
+  index: -1
+monster/180/acc1
+  rotate: false
+  xy: 792, 1188
+  size: 134, 83
+  orig: 148, 98
+  offset: 4, 8
+  index: -1
+monster/180/acc2
+  rotate: false
+  xy: 803, 372
+  size: 201, 105
+  orig: 216, 128
+  offset: 4, 15
+  index: -1
+monster/180/acc3
+  rotate: false
+  xy: 360, 1189
+  size: 152, 138
+  orig: 162, 147
+  offset: 3, 3
+  index: -1
+monster/180/acc4
+  rotate: false
+  xy: 936, 927
+  size: 60, 127
+  orig: 64, 129
+  offset: 2, 0
+  index: -1
+monster/180/acc5
+  rotate: false
+  xy: 792, 1273
+  size: 73, 93
+  orig: 78, 93
+  offset: 3, 0
+  index: -1
+monster/180/acc6
+  rotate: false
+  xy: 928, 1188
+  size: 84, 132
+  orig: 86, 133
+  offset: 2, 1
+  index: -1
+monster/180/att1
+  rotate: false
+  xy: 1, 483
+  size: 761, 464
+  orig: 800, 480
+  offset: 6, 16
+  index: -1
+monster/180/att2
+  rotate: false
+  xy: 1, 1
+  size: 800, 480
+  orig: 800, 480
+  offset: 0, 0
+  index: -1
+monster/180/body
+  rotate: false
+  xy: 1, 949
+  size: 357, 301
+  orig: 387, 325
+  offset: 15, 12
+  index: -1
+monster/180/eye
+  rotate: false
+  xy: 1, 1252
+  size: 311, 152
+  orig: 319, 156
+  offset: 4, 2
+  index: -1
+monster/180/leg0
+  rotate: false
+  xy: 803, 1
+  size: 170, 369
+  orig: 172, 377
+  offset: 1, 4
+  index: -1
+monster/180/leg1
+  rotate: false
+  xy: 360, 949
+  size: 286, 238
+  orig: 290, 242
+  offset: 2, 2
+  index: -1
+monster/180/leg2
+  rotate: false
+  xy: 648, 949
+  size: 286, 237
+  orig: 292, 242
+  offset: 3, 3
+  index: -1
+monster/180/leg3
+  rotate: false
+  xy: 764, 483
+  size: 226, 220
+  orig: 228, 222
+  offset: 1, 1
+  index: -1
+monster/180/leg4
+  rotate: false
+  xy: 764, 705
+  size: 226, 220
+  orig: 232, 226
+  offset: 3, 3
+  index: -1
+monster/180/leg5
+  rotate: false
+  xy: 514, 1189
+  size: 137, 126
+  orig: 139, 128
+  offset: 1, 1
+  index: -1
+monster/180/leg6
+  rotate: false
+  xy: 653, 1188
+  size: 137, 126
+  orig: 141, 130
+  offset: 2, 2
+  index: -1

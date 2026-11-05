@@ -1,0 +1,75 @@
+219.webp
+size: 950, 1016
+format: RGBA4444
+filter: Linear, Linear
+repeat: none
+monster/219/arm1
+  rotate: false
+  xy: 853, 166
+  size: 96, 162
+  orig: 96, 162
+  offset: 0, 0
+  index: -1
+monster/219/arm2
+  rotate: false
+  xy: 853, 1
+  size: 96, 163
+  orig: 96, 163
+  offset: 0, 0
+  index: -1
+monster/219/att1
+  rotate: false
+  xy: 1, 504
+  size: 682, 511
+  orig: 682, 511
+  offset: 0, 0
+  index: -1
+monster/219/att2
+  rotate: false
+  xy: 1, 1
+  size: 850, 501
+  orig: 850, 501
+  offset: 0, 0
+  index: -1
+monster/219/body
+  rotate: false
+  xy: 685, 713
+  size: 147, 101
+  orig: 147, 101
+  offset: 0, 0
+  index: -1
+monster/219/eye
+  rotate: false
+  xy: 820, 816
+  size: 123, 57
+  orig: 123, 57
+  offset: 0, 0
+  index: -1
+monster/219/head
+  rotate: false
+  xy: 685, 504
+  size: 211, 207
+  orig: 211, 207
+  offset: 0, 0
+  index: -1
+monster/219/leg
+  rotate: false
+  xy: 853, 330
+  size: 50, 71
+  orig: 50, 71
+  offset: 0, 0
+  index: -1
+monster/219/leg2
+  rotate: false
+  xy: 853, 403
+  size: 50, 71
+  orig: 50, 71
+  offset: 0, 0
+  index: -1
+monster/219/pelvis
+  rotate: false
+  xy: 685, 816
+  size: 133, 101
+  orig: 133, 101
+  offset: 0, 0
+  index: -1

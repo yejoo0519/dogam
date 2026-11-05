@@ -1,0 +1,53 @@
+.mo-wrap{max-width:1280px;margin:0 auto;padding-bottom:16px}
+.mo-heading{margin:4px 0 18px}
+.mo-heading h1{font-size:28px;letter-spacing:-1px;line-height:1.5;margin:0}
+.mo-heading p{margin:0}
+.mo-eyebrow{font:10px var(--u-mono);letter-spacing:1.8px;color:var(--accent);margin-bottom:5px!important}
+.mo-sub{color:var(--text3);font-size:13px}
+.mo-stage-box{border:1px solid var(--border);border-radius:10px;background:var(--bg2);overflow:hidden;margin-bottom:14px}
+.mo-stage{position:relative;height:420px;background:radial-gradient(ellipse at 50% 85%,var(--bg3),var(--bg2) 70%)}
+.mo-stage.checker{background:repeating-conic-gradient(var(--bg3) 0 25%,var(--bg2) 0 50%) 0 0/20px 20px}
+.mo-stage canvas{position:absolute;inset:0;width:100%;height:100%}
+.mo-msg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:13px;pointer-events:none;text-align:center;padding:20px}
+.mo-msg:empty{display:none}
+.mo-ctrl{border-top:1px solid var(--border);padding:12px 20px;display:flex;flex-direction:column;gap:10px}
+.mo-title{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.mo-title strong{font-size:16px;color:var(--text)}
+.mo-no{font:11px var(--u-mono);color:var(--text4)}
+.mo-type{font:10px var(--u-mono);color:var(--accent);background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:4px;padding:1px 6px}
+.mo-type:empty{display:none}
+.mo-anims,.mo-chips{display:flex;gap:5px;flex-wrap:wrap}
+.mo-anims button,.mo-chips button,.mo-opts button{font:11px var(--u-sans);padding:5px 11px;border:1px solid var(--border);border-radius:6px;background:var(--bg3);color:var(--text2);cursor:pointer}
+.mo-anims button.on,.mo-chips button.on{background:var(--accent-bg);border-color:var(--accent-border);color:var(--accent)}
+.mo-anims button:hover,.mo-chips button:hover,.mo-opts button:hover{color:var(--text);border-color:var(--border3)}
+.mo-opts{display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:11px;color:var(--text3)}
+.mo-opts label{display:flex;align-items:center;gap:6px}
+.mo-opts select{color:var(--text2);background:var(--bg2);border:1px solid var(--border);padding:4px 8px;border-radius:6px;font:11px var(--u-sans)}
+.mo-chk input{accent-color:var(--accent)}
+.mo-content{border:1px solid var(--border);border-radius:10px;background:var(--bg2);overflow:hidden}
+.mo-toolbar{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 20px;border-bottom:1px solid var(--border)}
+.mo-search input{width:240px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:7px;padding:8px 12px;font:12px var(--u-sans)}
+.mo-search input::placeholder{color:var(--text4)}
+.mo-search input:focus{outline:0;border-color:var(--accent-border)}
+.mo-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.mo-count{font-size:11px;color:var(--text3);padding:12px 20px 0;text-align:right}
+.mo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:8px;padding:10px 20px 20px}
+.mo-card{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 8px;border:1px solid var(--border2);border-radius:8px;background:var(--bg3);color:inherit;font:inherit;cursor:pointer;text-align:center;transition:border-color .15s}
+.mo-card:hover,.mo-card:focus-visible{border-color:var(--accent-border);outline:0}
+.mo-card.on{border-color:var(--accent);background:var(--accent-bg)}
+.mo-card img,.mo-ph{width:56px;height:56px;object-fit:contain;border-radius:8px}
+.mo-ph{background:var(--bg2);display:flex;align-items:center;justify-content:center;color:var(--text4);font:600 12px var(--u-mono)}
+.mo-card .mo-no{font-size:10px}
+.mo-card .mo-nm{font-size:12px;font-weight:600;color:var(--text);line-height:1.35;word-break:keep-all}
+.mo-empty{grid-column:1/-1;padding:54px 20px;text-align:center;color:var(--text3);font-size:13px}
+.mo-note{font-size:11px;color:var(--text3);line-height:1.9;margin:16px 2px 10px}
+@media(max-width:700px){
+  .mo-heading{margin:0 0 10px}.mo-heading h1{font-size:22px}.mo-eyebrow{display:none}.mo-sub{font-size:11px;line-height:1.6}
+  .mo-stage{height:300px}
+  .mo-ctrl{padding:10px 12px}
+  .mo-anims button,.mo-chips button,.mo-opts button{min-height:40px;padding:8px 12px;font-size:12px}
+  .mo-toolbar{flex-direction:column;align-items:stretch;gap:10px;padding:12px}
+  .mo-search input{width:100%;min-height:44px;font-size:16px}
+  .mo-count{padding:10px 12px 0}
+  .mo-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:6px;padding:8px 12px 14px}
+}

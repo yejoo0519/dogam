@@ -1,0 +1,124 @@
+128.webp
+size: 724, 864
+format: RGBA4444
+filter: Linear, Linear
+repeat: none
+monster/128/m_skeletonbird_att1
+  rotate: false
+  xy: 1, 414
+  size: 540, 449
+  orig: 800, 480
+  offset: 137, 11
+  index: -1
+monster/128/m_skeletonbird_att2
+  rotate: false
+  xy: 1, 1
+  size: 655, 411
+  orig: 800, 480
+  offset: 111, 58
+  index: -1
+monster/128/m_skeletonbird_body
+  rotate: false
+  xy: 658, 1
+  size: 65, 148
+  orig: 65, 148
+  offset: 0, 0
+  index: -1
+monster/128/m_skeletonbird_eye
+  rotate: false
+  xy: 543, 562
+  size: 98, 51
+  orig: 132, 189
+  offset: 8, 73
+  index: -1
+monster/128/m_skeletonbird_head
+  rotate: false
+  xy: 543, 414
+  size: 124, 146
+  orig: 132, 189
+  offset: 0, 0
+  index: -1
+monster/128/m_skeletonbird_head2
+  rotate: false
+  xy: 543, 615
+  size: 93, 97
+  orig: 132, 189
+  offset: 39, 12
+  index: -1
+monster/128/m_skeletonbird_headacc
+  rotate: false
+  xy: 631, 765
+  size: 74, 80
+  orig: 132, 189
+  offset: 22, 109
+  index: -1
+monster/128/m_skeletonbird_leftlegacc
+  rotate: false
+  xy: 658, 151
+  size: 56, 56
+  orig: 56, 56
+  offset: 0, 0
+  index: -1
+monster/128/m_skeletonbird_leg1
+  rotate: false
+  xy: 658, 367
+  size: 26, 27
+  orig: 26, 27
+  offset: 0, 0
+  index: -1
+monster/128/m_skeletonbird_leg2
+  rotate: false
+  xy: 658, 251
+  size: 38, 53
+  orig: 38, 53
+  offset: 0, 0
+  index: -1
+monster/128/m_skeletonbird_leg3
+  rotate: false
+  xy: 658, 306
+  size: 33, 59
+  orig: 33, 59
+  offset: 0, 0
+  index: -1
+monster/128/m_skeletonbird_leg4
+  rotate: false
+  xy: 543, 794
+  size: 73, 49
+  orig: 73, 49
+  offset: 0, 0
+  index: -1
+monster/128/m_skeletonbird_rib1
+  rotate: false
+  xy: 638, 692
+  size: 85, 71
+  orig: 86, 82
+  offset: 0, 11
+  index: -1
+monster/128/m_skeletonbird_rib2
+  rotate: false
+  xy: 543, 714
+  size: 86, 78
+  orig: 86, 82
+  offset: 0, 0
+  index: -1
+monster/128/m_skeletonbird_wing1
+  rotate: false
+  xy: 658, 209
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+monster/128/m_skeletonbird_wing2
+  rotate: false
+  xy: 693, 306
+  size: 29, 68
+  orig: 29, 68
+  offset: 0, 0
+  index: -1
+monster/128/m_skeletonbird_wing3
+  rotate: false
+  xy: 643, 562
+  size: 79, 128
+  orig: 79, 128
+  offset: 0, 0
+  index: -1

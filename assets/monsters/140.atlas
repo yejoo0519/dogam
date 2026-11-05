@@ -1,0 +1,124 @@
+140.webp
+size: 978, 900
+format: RGBA4444
+filter: Linear, Linear
+repeat: none
+monster/140/m_berserkerbear_arm1
+  rotate: false
+  xy: 855, 113
+  size: 122, 99
+  orig: 194, 189
+  offset: 72, 90
+  index: -1
+monster/140/m_berserkerbear_arm2
+  rotate: false
+  xy: 757, 267
+  size: 98, 81
+  orig: 194, 189
+  offset: 53, 56
+  index: -1
+monster/140/m_berserkerbear_arm3
+  rotate: false
+  xy: 855, 1
+  size: 116, 110
+  orig: 194, 189
+  offset: 0, 0
+  index: -1
+monster/140/m_berserkerbear_att1
+  rotate: false
+  xy: 1, 1
+  size: 549, 480
+  orig: 800, 480
+  offset: 66, 0
+  index: -1
+monster/140/m_berserkerbear_att2
+  rotate: false
+  xy: 1, 483
+  size: 743, 416
+  orig: 800, 480
+  offset: 13, 17
+  index: -1
+monster/140/m_berserkerbear_body
+  rotate: false
+  xy: 552, 1
+  size: 301, 264
+  orig: 301, 264
+  offset: 0, 0
+  index: -1
+monster/140/m_berserkerbear_bodyacc
+  rotate: false
+  xy: 746, 686
+  size: 183, 146
+  orig: 183, 146
+  offset: 0, 0
+  index: -1
+monster/140/m_berserkerbear_bodyacc2
+  rotate: false
+  xy: 552, 267
+  size: 203, 84
+  orig: 203, 84
+  offset: 0, 0
+  index: -1
+monster/140/m_berserkerbear_ear
+  rotate: false
+  xy: 772, 408
+  size: 42, 37
+  orig: 127, 111
+  offset: 75, 74
+  index: -1
+monster/140/m_berserkerbear_eye
+  rotate: false
+  xy: 855, 244
+  size: 84, 17
+  orig: 127, 111
+  offset: 21, 42
+  index: -1
+monster/140/m_berserkerbear_eye_eff
+  rotate: false
+  xy: 855, 214
+  size: 92, 28
+  orig: 127, 111
+  offset: 17, 37
+  index: -1
+monster/140/m_berserkerbear_head
+  rotate: false
+  xy: 839, 350
+  size: 127, 100
+  orig: 127, 111
+  offset: 0, 0
+  index: -1
+monster/140/m_berserkerbear_lefthand
+  rotate: false
+  xy: 746, 471
+  size: 181, 213
+  orig: 181, 213
+  offset: 0, 0
+  index: -1
+monster/140/m_berserkerbear_leg
+  rotate: false
+  xy: 552, 353
+  size: 145, 119
+  orig: 145, 119
+  offset: 0, 0
+  index: -1
+monster/140/m_berserkerbear_legacc1
+  rotate: false
+  xy: 699, 408
+  size: 71, 61
+  orig: 71, 61
+  offset: 0, 0
+  index: -1
+monster/140/m_berserkerbear_legacc2
+  rotate: false
+  xy: 699, 353
+  size: 138, 53
+  orig: 138, 53
+  offset: 0, 0
+  index: -1
+monster/140/m_berserkerbear_righthand
+  rotate: false
+  xy: 857, 263
+  size: 81, 79
+  orig: 81, 79
+  offset: 0, 0
+  index: -1

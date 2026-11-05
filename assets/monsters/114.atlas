@@ -1,0 +1,124 @@
+114.webp
+size: 968, 1962
+format: RGBA4444
+filter: Linear, Linear
+repeat: none
+monster/114/raid_boss_darkfall_30_body
+  rotate: false
+  xy: 1, 1026
+  size: 472, 434
+  orig: 800, 480
+  offset: 184, 24
+  index: -1
+monster/114/raid_boss_darkfall_30_head
+  rotate: false
+  xy: 1, 197
+  size: 415, 212
+  orig: 800, 480
+  offset: 237, 139
+  index: -1
+monster/114/raid_boss_darkfall_att1
+  rotate: false
+  xy: 475, 1034
+  size: 489, 445
+  orig: 800, 480
+  offset: 143, 35
+  index: -1
+monster/114/raid_boss_darkfall_att2
+  rotate: false
+  xy: 418, 1481
+  size: 549, 480
+  orig: 800, 480
+  offset: 114, 0
+  index: -1
+monster/114/raid_boss_darkfall_body
+  rotate: false
+  xy: 271, 708
+  size: 263, 316
+  orig: 263, 316
+  offset: 0, 0
+  index: -1
+monster/114/raid_boss_darkfall_eye
+  rotate: false
+  xy: 32, 1
+  size: 71, 28
+  orig: 71, 28
+  offset: 0, 0
+  index: -1
+monster/114/raid_boss_darkfall_groggy_body
+  rotate: false
+  xy: 1, 626
+  size: 268, 305
+  orig: 268, 305
+  offset: 0, 0
+  index: -1
+monster/114/raid_boss_darkfall_groggy_eye
+  rotate: false
+  xy: 1, 1
+  size: 29, 24
+  orig: 29, 24
+  offset: 0, 0
+  index: -1
+monster/114/raid_boss_darkfall_groggy_head
+  rotate: false
+  xy: 418, 208
+  size: 415, 212
+  orig: 415, 212
+  offset: 0, 0
+  index: -1
+monster/114/raid_boss_darkfall_groggy_tail
+  rotate: false
+  xy: 105, 1
+  size: 364, 194
+  orig: 364, 194
+  offset: 0, 0
+  index: -1
+monster/114/raid_boss_darkfall_groggy_wing1
+  rotate: false
+  xy: 536, 709
+  size: 213, 322
+  orig: 213, 322
+  offset: 0, 0
+  index: -1
+monster/114/raid_boss_darkfall_groggy_wing2
+  rotate: false
+  xy: 418, 422
+  size: 225, 284
+  orig: 225, 284
+  offset: 0, 0
+  index: -1
+monster/114/raid_boss_darkfall_head
+  rotate: false
+  xy: 1, 411
+  size: 415, 213
+  orig: 415, 213
+  offset: 0, 0
+  index: -1
+monster/114/raid_boss_darkfall_hit
+  rotate: false
+  xy: 1, 1462
+  size: 415, 448
+  orig: 800, 480
+  offset: 159, 30
+  index: -1
+monster/114/raid_boss_darkfall_tail
+  rotate: false
+  xy: 471, 1
+  size: 364, 205
+  orig: 364, 205
+  offset: 0, 0
+  index: -1
+monster/114/raid_boss_darkfall_wing1
+  rotate: false
+  xy: 751, 709
+  size: 215, 323
+  orig: 215, 323
+  offset: 0, 0
+  index: -1
+monster/114/raid_boss_darkfall_wing2
+  rotate: false
+  xy: 645, 422
+  size: 226, 285
+  orig: 226, 285
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,61 @@
+111.webp
+size: 1781, 456
+format: RGBA4444
+filter: Linear, Linear
+repeat: none
+monster/111/imo_face
+  rotate: false
+  xy: 1491, 171
+  size: 184, 152
+  orig: 184, 152
+  offset: 0, 0
+  index: -1
+monster/111/imo_foot_left
+  rotate: false
+  xy: 1677, 250
+  size: 103, 72
+  orig: 103, 72
+  offset: 0, 0
+  index: -1
+monster/111/imo_foot_right
+  rotate: false
+  xy: 1677, 171
+  size: 103, 77
+  orig: 103, 77
+  offset: 0, 0
+  index: -1
+monster/111/imo_hand_left
+  rotate: false
+  xy: 1491, 325
+  size: 99, 129
+  orig: 99, 129
+  offset: 0, 0
+  index: -1
+monster/111/imo_hand_right
+  rotate: false
+  xy: 1677, 324
+  size: 99, 131
+  orig: 99, 131
+  offset: 0, 0
+  index: -1
+monster/111/imo_monster2
+  rotate: false
+  xy: 689, 1
+  size: 800, 401
+  orig: 800, 480
+  offset: 0, 0
+  index: -1
+monster/111/imo_monster3
+  rotate: false
+  xy: 1, 1
+  size: 686, 454
+  orig: 800, 480
+  offset: 114, 26
+  index: -1
+monster/111/imo_mouth
+  rotate: false
+  xy: 1491, 1
+  size: 220, 168
+  orig: 220, 168
+  offset: 0, 0
+  index: -1

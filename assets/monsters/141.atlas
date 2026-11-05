@@ -1,0 +1,208 @@
+141.webp
+size: 1985, 1019
+format: RGBA4444
+filter: Linear, Linear
+repeat: none
+monster/141/m_megacobra_att1
+  rotate: false
+  xy: 803, 1
+  size: 779, 480
+  orig: 800, 480
+  offset: 21, 0
+  index: -1
+monster/141/m_megacobra_att2
+  rotate: false
+  xy: 1, 483
+  size: 798, 461
+  orig: 800, 480
+  offset: 0, 19
+  index: -1
+monster/141/m_megacobra_att3
+  rotate: false
+  xy: 1, 1
+  size: 800, 480
+  orig: 800, 480
+  offset: 0, 0
+  index: -1
+monster/141/m_megacobra_body
+  rotate: false
+  xy: 1584, 445
+  size: 241, 378
+  orig: 241, 378
+  offset: 0, 0
+  index: -1
+monster/141/m_megacobra_bracelet1
+  rotate: false
+  xy: 1882, 815
+  size: 102, 96
+  orig: 219, 245
+  offset: 88, 40
+  index: -1
+monster/141/m_megacobra_bracelet2
+  rotate: false
+  xy: 1098, 846
+  size: 128, 103
+  orig: 219, 245
+  offset: 62, 40
+  index: -1
+monster/141/m_megacobra_eye
+  rotate: false
+  xy: 258, 946
+  size: 120, 38
+  orig: 229, 180
+  offset: 54, 78
+  index: -1
+monster/141/m_megacobra_eye_eff
+  rotate: false
+  xy: 107, 946
+  size: 149, 63
+  orig: 229, 180
+  offset: 40, 65
+  index: -1
+monster/141/m_megacobra_face
+  rotate: false
+  xy: 1154, 664
+  size: 229, 180
+  orig: 229, 180
+  offset: 0, 0
+  index: -1
+monster/141/m_megacobra_hair1
+  rotate: false
+  xy: 801, 778
+  size: 295, 156
+  orig: 371, 303
+  offset: 0, 147
+  index: -1
+monster/141/m_megacobra_hair2
+  rotate: false
+  xy: 801, 483
+  size: 351, 293
+  orig: 371, 303
+  offset: 20, 0
+  index: -1
+monster/141/m_megacobra_head
+  rotate: false
+  xy: 1154, 483
+  size: 422, 179
+  orig: 422, 179
+  offset: 0, 0
+  index: -1
+monster/141/m_megacobra_jewel
+  rotate: false
+  xy: 1228, 846
+  size: 110, 125
+  orig: 110, 125
+  offset: 0, 0
+  index: -1
+monster/141/m_megacobra_jewel_eff
+  rotate: false
+  xy: 801, 936
+  size: 81, 82
+  orig: 110, 125
+  offset: 12, 22
+  index: -1
+monster/141/m_megacobra_leftarm2
+  rotate: false
+  xy: 1576, 825
+  size: 172, 175
+  orig: 219, 245
+  offset: 0, 70
+  index: -1
+monster/141/m_megacobra_lefthand
+  rotate: false
+  xy: 1750, 825
+  size: 130, 181
+  orig: 219, 245
+  offset: 89, 0
+  index: -1
+monster/141/m_megacobra_leg1
+  rotate: false
+  xy: 884, 936
+  size: 109, 62
+  orig: 117, 134
+  offset: 0, 72
+  index: -1
+monster/141/m_megacobra_leg2
+  rotate: false
+  xy: 1340, 864
+  size: 77, 90
+  orig: 117, 134
+  offset: 30, 24
+  index: -1
+monster/141/m_megacobra_leg3
+  rotate: false
+  xy: 995, 936
+  size: 85, 65
+  orig: 117, 134
+  offset: 32, 0
+  index: -1
+monster/141/m_megacobra_mouth
+  rotate: false
+  xy: 380, 946
+  size: 72, 37
+  orig: 72, 70
+  offset: 0, 30
+  index: -1
+monster/141/m_megacobra_rightarm1
+  rotate: false
+  xy: 1385, 664
+  size: 189, 198
+  orig: 189, 198
+  offset: 0, 0
+  index: -1
+monster/141/m_megacobra_rightarm3
+  rotate: false
+  xy: 1827, 709
+  size: 157, 104
+  orig: 157, 104
+  offset: 0, 0
+  index: -1
+monster/141/m_megacobra_rightfinger1
+  rotate: false
+  xy: 1882, 913
+  size: 84, 95
+  orig: 140, 95
+  offset: 0, 0
+  index: -1
+monster/141/m_megacobra_rightfinger2
+  rotate: false
+  xy: 1098, 778
+  size: 37, 45
+  orig: 140, 95
+  offset: 59, 4
+  index: -1
+monster/141/m_megacobra_righthand
+  rotate: false
+  xy: 1, 946
+  size: 104, 72
+  orig: 140, 95
+  offset: 36, 0
+  index: -1
+monster/141/m_megacobra_tail1
+  rotate: false
+  xy: 1827, 445
+  size: 155, 262
+  orig: 638, 262
+  offset: 217, 0
+  index: -1
+monster/141/m_megacobra_tail2
+  rotate: false
+  xy: 1584, 1
+  size: 367, 256
+  orig: 638, 262
+  offset: 271, 6
+  index: -1
+monster/141/m_megacobra_tail3
+  rotate: false
+  xy: 1584, 259
+  size: 347, 184
+  orig: 638, 262
+  offset: 0, 6
+  index: -1
+monster/141/m_megacobra_tongue
+  rotate: false
+  xy: 1953, 1
+  size: 29, 70
+  orig: 72, 70
+  offset: 18, 0
+  index: -1

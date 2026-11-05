@@ -1,0 +1,313 @@
+146.webp
+size: 1963, 1766
+format: RGBA4444
+filter: Linear, Linear
+repeat: none
+monster/146/m_skeletonswordman_att1_b
+  rotate: false
+  xy: 1, 870
+  size: 720, 430
+  orig: 720, 430
+  offset: 0, 0
+  index: -1
+monster/146/m_skeletonswordman_att1_g
+  rotate: false
+  xy: 1, 433
+  size: 722, 435
+  orig: 722, 435
+  offset: 0, 0
+  index: -1
+monster/146/m_skeletonswordman_att1_o
+  rotate: false
+  xy: 1, 1
+  size: 729, 430
+  orig: 729, 430
+  offset: 0, 0
+  index: -1
+monster/146/m_skeletonswordman_att1_r
+  rotate: false
+  xy: 732, 1
+  size: 724, 432
+  orig: 724, 432
+  offset: 0, 0
+  index: -1
+monster/146/m_skeletonswordman_att1_y
+  rotate: false
+  xy: 1, 1302
+  size: 716, 427
+  orig: 716, 427
+  offset: 0, 0
+  index: -1
+monster/146/m_skeletonswordman_att2_b
+  rotate: false
+  xy: 725, 822
+  size: 608, 381
+  orig: 608, 381
+  offset: 0, 0
+  index: -1
+monster/146/m_skeletonswordman_att2_g
+  rotate: false
+  xy: 725, 435
+  size: 606, 385
+  orig: 606, 385
+  offset: 0, 0
+  index: -1
+monster/146/m_skeletonswordman_att2_o
+  rotate: false
+  xy: 723, 1205
+  size: 617, 374
+  orig: 617, 374
+  offset: 0, 0
+  index: -1
+monster/146/m_skeletonswordman_att2_r
+  rotate: false
+  xy: 1333, 435
+  size: 609, 374
+  orig: 609, 374
+  offset: 0, 0
+  index: -1
+monster/146/m_skeletonswordman_att2_y
+  rotate: false
+  xy: 1335, 811
+  size: 602, 374
+  orig: 602, 374
+  offset: 0, 0
+  index: -1
+monster/146/m_skeletonswordman_body
+  rotate: false
+  xy: 1231, 1581
+  size: 94, 126
+  orig: 94, 126
+  offset: 0, 0
+  index: -1
+monster/146/m_skeletonswordman_clavicle_b
+  rotate: false
+  xy: 1827, 1504
+  size: 61, 49
+  orig: 61, 49
+  offset: 0, 0
+  index: -1
+monster/146/m_skeletonswordman_clavicle_g
+  rotate: false
+  xy: 1872, 371
+  size: 61, 49
+  orig: 61, 49
+  offset: 0, 0
+  index: -1
+monster/146/m_skeletonswordman_clavicle_o
+  rotate: false
+  xy: 1231, 1709
+  size: 61, 49
+  orig: 61, 49
+  offset: 0, 0
+  index: -1
+monster/146/m_skeletonswordman_clavicle_r
+  rotate: false
+  xy: 1327, 1581
+  size: 61, 49
+  orig: 61, 49
+  offset: 0, 0
+  index: -1
+monster/146/m_skeletonswordman_clavicle_y
+  rotate: false
+  xy: 1327, 1632
+  size: 61, 49
+  orig: 61, 49
+  offset: 0, 0
+  index: -1
+monster/146/m_skeletonswordman_eye_b
+  rotate: false
+  xy: 1, 1731
+  size: 95, 34
+  orig: 172, 183
+  offset: 39, 29
+  index: -1
+monster/146/m_skeletonswordman_eye_g
+  rotate: false
+  xy: 98, 1731
+  size: 95, 34
+  orig: 172, 183
+  offset: 39, 29
+  index: -1
+monster/146/m_skeletonswordman_eye_o
+  rotate: false
+  xy: 195, 1731
+  size: 95, 34
+  orig: 172, 183
+  offset: 39, 29
+  index: -1
+monster/146/m_skeletonswordman_eye_r
+  rotate: false
+  xy: 292, 1731
+  size: 95, 34
+  orig: 172, 183
+  offset: 39, 29
+  index: -1
+monster/146/m_skeletonswordman_eye_y
+  rotate: false
+  xy: 389, 1731
+  size: 95, 34
+  orig: 172, 183
+  offset: 39, 29
+  index: -1
+monster/146/m_skeletonswordman_hand
+  rotate: false
+  xy: 1067, 1581
+  size: 162, 179
+  orig: 162, 179
+  offset: 0, 0
+  index: -1
+monster/146/m_skeletonswordman_head_b
+  rotate: false
+  xy: 1769, 1
+  size: 172, 183
+  orig: 172, 183
+  offset: 0, 0
+  index: -1
+monster/146/m_skeletonswordman_head_g
+  rotate: false
+  xy: 1653, 1384
+  size: 172, 183
+  orig: 172, 183
+  offset: 0, 0
+  index: -1
+monster/146/m_skeletonswordman_head_o
+  rotate: false
+  xy: 1769, 186
+  size: 172, 183
+  orig: 172, 183
+  offset: 0, 0
+  index: -1
+monster/146/m_skeletonswordman_head_r
+  rotate: false
+  xy: 719, 1581
+  size: 172, 183
+  orig: 172, 183
+  offset: 0, 0
+  index: -1
+monster/146/m_skeletonswordman_head_y
+  rotate: false
+  xy: 893, 1581
+  size: 172, 183
+  orig: 172, 183
+  offset: 0, 0
+  index: -1
+monster/146/m_skeletonswordman_lefthand
+  rotate: false
+  xy: 1827, 1384
+  size: 120, 118
+  orig: 120, 118
+  offset: 0, 0
+  index: -1
+monster/146/m_skeletonswordman_leg
+  rotate: false
+  xy: 1519, 395
+  size: 32, 38
+  orig: 32, 38
+  offset: 0, 0
+  index: -1
+monster/146/m_skeletonswordman_leg2
+  rotate: false
+  xy: 1390, 1581
+  size: 52, 53
+  orig: 52, 53
+  offset: 0, 0
+  index: -1
+monster/146/m_skeletonswordman_mantle_b
+  rotate: false
+  xy: 1458, 1
+  size: 309, 195
+  orig: 309, 195
+  offset: 0, 0
+  index: -1
+monster/146/m_skeletonswordman_mantle_g
+  rotate: false
+  xy: 1458, 198
+  size: 309, 195
+  orig: 309, 195
+  offset: 0, 0
+  index: -1
+monster/146/m_skeletonswordman_mantle_o
+  rotate: false
+  xy: 1342, 1187
+  size: 309, 195
+  orig: 309, 195
+  offset: 0, 0
+  index: -1
+monster/146/m_skeletonswordman_mantle_r
+  rotate: false
+  xy: 1342, 1384
+  size: 309, 195
+  orig: 309, 195
+  offset: 0, 0
+  index: -1
+monster/146/m_skeletonswordman_mantle_y
+  rotate: false
+  xy: 1653, 1187
+  size: 309, 195
+  orig: 309, 195
+  offset: 0, 0
+  index: -1
+monster/146/m_skeletonswordman_mouth
+  rotate: false
+  xy: 1769, 371
+  size: 101, 62
+  orig: 101, 62
+  offset: 0, 0
+  index: -1
+monster/146/m_skeletonswordman_rib11
+  rotate: false
+  xy: 1458, 395
+  size: 59, 38
+  orig: 59, 43
+  offset: 0, 5
+  index: -1
+monster/146/m_skeletonswordman_rib12
+  rotate: false
+  xy: 1390, 1636
+  size: 40, 29
+  orig: 59, 43
+  offset: 19, 0
+  index: -1
+monster/146/m_skeletonswordman_rib21
+  rotate: false
+  xy: 1890, 1504
+  size: 53, 35
+  orig: 53, 40
+  offset: 0, 5
+  index: -1
+monster/146/m_skeletonswordman_rib22
+  rotate: false
+  xy: 1327, 1683
+  size: 45, 23
+  orig: 53, 40
+  offset: 8, 0
+  index: -1
+monster/146/m_skeletonswordman_rib31
+  rotate: false
+  xy: 1553, 395
+  size: 46, 30
+  orig: 46, 35
+  offset: 0, 5
+  index: -1
+monster/146/m_skeletonswordman_rib32
+  rotate: false
+  xy: 1490, 1581
+  size: 34, 23
+  orig: 46, 35
+  offset: 12, 0
+  index: -1
+monster/146/m_skeletonswordman_rightarm1
+  rotate: false
+  xy: 1444, 1581
+  size: 44, 58
+  orig: 44, 58
+  offset: 0, 0
+  index: -1
+monster/146/m_skeletonswordman_rightarm2
+  rotate: false
+  xy: 486, 1731
+  size: 26, 34
+  orig: 26, 34
+  offset: 0, 0
+  index: -1

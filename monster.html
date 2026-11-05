@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>보스·몬스터 미리보기 · 드래곤빌리지1 도감</title>
+  <meta name="description" content="드래곤빌리지1 레이드 보스와 몬스터의 Spine 애니메이션 미리보기">
+  <link id="theme-css" rel="stylesheet" href="./theme-dark.css">
+  <script src="./theme.js"></script>
+  <link rel="stylesheet" href="./ui.css">
+  <link rel="stylesheet" href="./monster.css">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="u">
+  <div class="u-app">
+    <main class="u-wrap full">
+      <div class="mo-wrap">
+        <header class="mo-heading">
+          <div><p class="mo-eyebrow">MONSTER ASSETS</p><h1>보스·몬스터 미리보기</h1><p class="mo-sub">레이드 보스와 몬스터의 움직임을 직접 확인해 보세요.</p></div>
+        </header>
+
+        <section class="mo-stage-box">
+          <div class="mo-stage" id="stage">
+            <canvas id="cv"></canvas>
+            <div class="mo-msg" id="msg">아래 목록에서 몬스터를 골라 주세요.</div>
+          </div>
+          <div class="mo-ctrl">
+            <div class="mo-title"><span class="mo-no" id="curNo"></span><strong id="curName">—</strong><span class="mo-type" id="curType"></span></div>
+            <div class="mo-anims" id="anims" role="group" aria-label="애니메이션"></div>
+            <div class="mo-opts">
+              <button type="button" id="play" aria-pressed="true">일시정지</button>
+              <label>속도 <select id="speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="1.5">1.5×</option><option value="2">2×</option></select></label>
+              <label class="mo-chk"><input type="checkbox" id="flip"> 좌우 반전</label>
+              <label class="mo-chk"><input type="checkbox" id="checker"> 투명 배경</label>
+              <button type="button" id="shot">PNG 저장</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="mo-content">
+          <div class="mo-toolbar">
+            <div class="mo-chips" id="chips" role="group" aria-label="분류"></div>
+            <label class="mo-search"><span class="mo-sr">몬스터 검색</span><input id="query" type="search" placeholder="이름 · 번호 검색" autocomplete="off"></label>
+          </div>
+          <div class="mo-count" id="count" aria-live="polite"></div>
+          <div class="mo-grid" id="grid"></div>
+        </section>
+        <p class="mo-note">드래곤빌리지1 6.36.0 클라이언트의 Spine 에셋 기준입니다. 웹용 간이 런타임으로 재생해서 실제 게임 화면과 효과가 조금 다를 수 있습니다.</p>
+      </div>
+    </main>
+  </div>
+  <noscript><p>미리보기를 보려면 JavaScript를 활성화해 주세요.</p></noscript>
+  <script src="./monster-data.js"></script>
+  <script src="./spine-mini.js"></script>
+  <script src="./ui.js"></script>
+  <script>UI.shell({page:'monster',title:'보스·몬스터 미리보기',sub:'Spine 애니메이션 에셋'});</script>
+  <script src="./monster-app.js"></script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+102.webp
+size: 476, 999
+format: RGBA4444
+filter: Linear, Linear
+repeat: none
+monster/102/harsa_body
+  rotate: false
+  xy: 1, 741
+  size: 378, 257
+  orig: 378, 257
+  offset: 0, 0
+  index: -1
+monster/102/harsa_eye
+  rotate: false
+  xy: 381, 741
+  size: 67, 21
+  orig: 67, 21
+  offset: 0, 0
+  index: -1
+monster/102/harsa_monster2
+  rotate: false
+  xy: 1, 376
+  size: 458, 363
+  orig: 800, 480
+  offset: 184, 53
+  index: -1
+monster/102/harsa_monster3
+  rotate: false
+  xy: 1, 1
+  size: 474, 373
+  orig: 800, 480
+  offset: 179, 41
+  index: -1

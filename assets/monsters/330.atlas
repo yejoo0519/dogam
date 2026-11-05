@@ -1,0 +1,187 @@
+330.webp
+size: 1681, 1686
+format: RGBA4444
+filter: Linear, Linear
+repeat: none
+monster/330/arm_l
+  rotate: false
+  xy: 1374, 1517
+  size: 140, 168
+  orig: 142, 170
+  offset: 1, 1
+  index: -1
+monster/330/arm_r
+  rotate: false
+  xy: 1515, 1305
+  size: 160, 175
+  orig: 162, 177
+  offset: 1, 1
+  index: -1
+monster/330/att1
+  rotate: false
+  xy: 696, 863
+  size: 676, 809
+  orig: 676, 809
+  offset: 0, 0
+  index: -1
+monster/330/att2
+  rotate: false
+  xy: 1, 1
+  size: 693, 879
+  orig: 693, 879
+  offset: 0, 0
+  index: -1
+monster/330/att3
+  rotate: false
+  xy: 696, 1
+  size: 674, 860
+  orig: 674, 860
+  offset: 0, 0
+  index: -1
+monster/330/chest
+  rotate: false
+  xy: 1, 1306
+  size: 247, 296
+  orig: 249, 298
+  offset: 1, 1
+  index: -1
+monster/330/eye_l
+  rotate: false
+  xy: 267, 1306
+  size: 14, 17
+  orig: 16, 19
+  offset: 1, 1
+  index: -1
+monster/330/eye_r
+  rotate: false
+  xy: 250, 1306
+  size: 15, 20
+  orig: 17, 22
+  offset: 1, 1
+  index: -1
+monster/330/eyesocket
+  rotate: false
+  xy: 1, 1604
+  size: 77, 59
+  orig: 79, 61
+  offset: 1, 1
+  index: -1
+monster/330/hair
+  rotate: false
+  xy: 1372, 552
+  size: 225, 236
+  orig: 227, 238
+  offset: 1, 1
+  index: -1
+monster/330/hand_l
+  rotate: false
+  xy: 1374, 1048
+  size: 185, 255
+  orig: 187, 257
+  offset: 1, 1
+  index: -1
+monster/330/hand_r
+  rotate: false
+  xy: 1372, 280
+  size: 274, 270
+  orig: 276, 272
+  offset: 1, 1
+  index: -1
+monster/330/hand_wing_l
+  rotate: false
+  xy: 1561, 1012
+  size: 86, 155
+  orig: 88, 157
+  offset: 1, 1
+  index: -1
+monster/330/head
+  rotate: false
+  xy: 565, 1525
+  size: 119, 159
+  orig: 121, 161
+  offset: 1, 1
+  index: -1
+monster/330/horn_l
+  rotate: false
+  xy: 1561, 1169
+  size: 98, 129
+  orig: 100, 131
+  offset: 1, 1
+  index: -1
+monster/330/horn_r
+  rotate: false
+  xy: 596, 1055
+  size: 62, 164
+  orig: 64, 166
+  offset: 1, 1
+  index: -1
+monster/330/leg_l
+  rotate: false
+  xy: 1374, 790
+  size: 136, 256
+  orig: 138, 258
+  offset: 1, 1
+  index: -1
+monster/330/leg_r
+  rotate: false
+  xy: 1512, 790
+  size: 156, 220
+  orig: 158, 222
+  offset: 1, 1
+  index: -1
+monster/330/neck
+  rotate: false
+  xy: 1374, 1305
+  size: 139, 210
+  orig: 141, 212
+  offset: 1, 1
+  index: -1
+monster/330/shoulder_l
+  rotate: false
+  xy: 596, 882
+  size: 78, 171
+  orig: 80, 173
+  offset: 1, 1
+  index: -1
+monster/330/shoulder_r
+  rotate: false
+  xy: 565, 1346
+  size: 74, 177
+  orig: 76, 179
+  offset: 1, 1
+  index: -1
+monster/330/tail
+  rotate: false
+  xy: 1372, 1
+  size: 308, 277
+  orig: 310, 279
+  offset: 1, 1
+  index: -1
+monster/330/tail_tip
+  rotate: false
+  xy: 1516, 1482
+  size: 120, 173
+  orig: 122, 175
+  offset: 1, 1
+  index: -1
+monster/330/wing_l
+  rotate: false
+  xy: 331, 882
+  size: 263, 462
+  orig: 265, 464
+  offset: 1, 1
+  index: -1
+monster/330/wing_r_back
+  rotate: false
+  xy: 1, 882
+  size: 328, 422
+  orig: 330, 424
+  offset: 1, 1
+  index: -1
+monster/330/wing_r_front
+  rotate: false
+  xy: 250, 1346
+  size: 313, 267
+  orig: 315, 269
+  offset: 1, 1
+  index: -1

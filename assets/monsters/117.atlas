@@ -1,0 +1,131 @@
+117.webp
+size: 1004, 1643
+format: RGBA4444
+filter: Linear, Linear
+repeat: none
+monster/117/raid_boss_orpheus_30_body
+  rotate: false
+  xy: 558, 641
+  size: 445, 349
+  orig: 800, 480
+  offset: 273, 56
+  index: -1
+monster/117/raid_boss_orpheus_30_head
+  rotate: false
+  xy: 571, 197
+  size: 381, 138
+  orig: 800, 480
+  offset: 333, 203
+  index: -1
+monster/117/raid_boss_orpheus_att1
+  rotate: false
+  xy: 1, 1
+  size: 568, 468
+  orig: 800, 480
+  offset: 223, 0
+  index: -1
+monster/117/raid_boss_orpheus_att2
+  rotate: false
+  xy: 1, 927
+  size: 544, 425
+  orig: 800, 480
+  offset: 239, 55
+  index: -1
+monster/117/raid_boss_orpheus_body
+  rotate: false
+  xy: 571, 337
+  size: 374, 302
+  orig: 374, 302
+  offset: 0, 0
+  index: -1
+monster/117/raid_boss_orpheus_eye
+  rotate: false
+  xy: 628, 1332
+  size: 81, 42
+  orig: 81, 42
+  offset: 0, 0
+  index: -1
+monster/117/raid_boss_orpheus_groggy_body
+  rotate: false
+  xy: 269, 1354
+  size: 357, 270
+  orig: 357, 270
+  offset: 0, 0
+  index: -1
+monster/117/raid_boss_orpheus_groggy_eye
+  rotate: false
+  xy: 547, 992
+  size: 75, 22
+  orig: 75, 22
+  offset: 0, 0
+  index: -1
+monster/117/raid_boss_orpheus_groggy_head
+  rotate: false
+  xy: 799, 1461
+  size: 171, 152
+  orig: 178, 152
+  offset: 0, 0
+  index: -1
+monster/117/raid_boss_orpheus_groggy_tail
+  rotate: false
+  xy: 711, 1360
+  size: 251, 99
+  orig: 251, 99
+  offset: 0, 0
+  index: -1
+monster/117/raid_boss_orpheus_groggy_tear
+  rotate: false
+  xy: 954, 197
+  size: 20, 9
+  orig: 20, 9
+  offset: 0, 0
+  index: -1
+monster/117/raid_boss_orpheus_groggy_wing1
+  rotate: false
+  xy: 547, 1205
+  size: 223, 125
+  orig: 223, 125
+  offset: 0, 0
+  index: -1
+monster/117/raid_boss_orpheus_groggy_wing2
+  rotate: false
+  xy: 1, 1354
+  size: 266, 288
+  orig: 266, 288
+  offset: 0, 0
+  index: -1
+monster/117/raid_boss_orpheus_head
+  rotate: false
+  xy: 628, 1461
+  size: 169, 160
+  orig: 169, 160
+  offset: 0, 0
+  index: -1
+monster/117/raid_boss_orpheus_hit
+  rotate: false
+  xy: 1, 471
+  size: 555, 454
+  orig: 800, 480
+  offset: 232, 20
+  index: -1
+monster/117/raid_boss_orpheus_tail
+  rotate: false
+  xy: 571, 1
+  size: 415, 194
+  orig: 415, 194
+  offset: 0, 0
+  index: -1
+monster/117/raid_boss_orpheus_wing1
+  rotate: false
+  xy: 772, 1205
+  size: 195, 153
+  orig: 195, 153
+  offset: 0, 0
+  index: -1
+monster/117/raid_boss_orpheus_wing2
+  rotate: false
+  xy: 628, 992
+  size: 314, 211
+  orig: 314, 211
+  offset: 0, 0
+  index: -1

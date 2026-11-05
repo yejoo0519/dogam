@@ -1,0 +1,208 @@
+229.webp
+size: 844, 1782
+format: RGBA4444
+filter: Linear, Linear
+repeat: none
+monster/229/att1
+  rotate: false
+  xy: 1, 1
+  size: 842, 605
+  orig: 842, 605
+  offset: 0, 0
+  index: -1
+monster/229/att2
+  rotate: false
+  xy: 1, 608
+  size: 841, 573
+  orig: 841, 573
+  offset: 0, 0
+  index: -1
+monster/229/igna_ad_body
+  rotate: false
+  xy: 705, 1183
+  size: 136, 149
+  orig: 136, 149
+  offset: 0, 0
+  index: -1
+monster/229/igna_ad_body_flame
+  rotate: false
+  xy: 565, 1410
+  size: 112, 134
+  orig: 112, 134
+  offset: 0, 0
+  index: -1
+monster/229/igna_ad_hair1
+  rotate: false
+  xy: 554, 1638
+  size: 97, 112
+  orig: 97, 112
+  offset: 0, 0
+  index: -1
+monster/229/igna_ad_hair2
+  rotate: false
+  xy: 565, 1546
+  size: 111, 90
+  orig: 111, 90
+  offset: 0, 0
+  index: -1
+monster/229/igna_ad_hair3
+  rotate: false
+  xy: 210, 1516
+  size: 85, 198
+  orig: 85, 198
+  offset: 0, 0
+  index: -1
+monster/229/igna_ad_head
+  rotate: false
+  xy: 547, 1183
+  size: 156, 225
+  orig: 156, 225
+  offset: 0, 0
+  index: -1
+monster/229/igna_ad_l_arm
+  rotate: false
+  xy: 397, 1625
+  size: 99, 95
+  orig: 99, 95
+  offset: 0, 0
+  index: -1
+monster/229/igna_ad_l_arm1
+  rotate: false
+  xy: 498, 1628
+  size: 54, 111
+  orig: 54, 111
+  offset: 0, 0
+  index: -1
+monster/229/igna_ad_l_arm_flame
+  rotate: false
+  xy: 781, 1729
+  size: 36, 46
+  orig: 36, 46
+  offset: 0, 0
+  index: -1
+monster/229/igna_ad_l_hair
+  rotate: false
+  xy: 267, 1716
+  size: 53, 61
+  orig: 53, 61
+  offset: 0, 0
+  index: -1
+monster/229/igna_ad_l_leg2
+  rotate: false
+  xy: 502, 1477
+  size: 61, 149
+  orig: 61, 149
+  offset: 0, 0
+  index: -1
+monster/229/igna_ad_l_leg_flame
+  rotate: false
+  xy: 443, 1722
+  size: 47, 54
+  orig: 47, 54
+  offset: 0, 0
+  index: -1
+monster/229/igna_ad_l_s_wing
+  rotate: false
+  xy: 322, 1722
+  size: 119, 54
+  orig: 119, 54
+  offset: 0, 0
+  index: -1
+monster/229/igna_ad_l_wing
+  rotate: false
+  xy: 327, 1183
+  size: 218, 292
+  orig: 218, 292
+  offset: 0, 0
+  index: -1
+monster/229/igna_ad_neck
+  rotate: false
+  xy: 297, 1516
+  size: 98, 174
+  orig: 98, 174
+  offset: 0, 0
+  index: -1
+monster/229/igna_ad_neck2
+  rotate: false
+  xy: 397, 1477
+  size: 103, 146
+  orig: 103, 146
+  offset: 0, 0
+  index: -1
+monster/229/igna_ad_r_arm1
+  rotate: false
+  xy: 705, 1334
+  size: 113, 77
+  orig: 113, 77
+  offset: 0, 0
+  index: -1
+monster/229/igna_ad_r_arm2_flame
+  rotate: false
+  xy: 762, 1555
+  size: 61, 77
+  orig: 61, 77
+  offset: 0, 0
+  index: -1
+monster/229/igna_ad_r_arm3
+  rotate: false
+  xy: 653, 1638
+  size: 70, 132
+  orig: 70, 132
+  offset: 0, 0
+  index: -1
+monster/229/igna_ad_r_hair
+  rotate: false
+  xy: 725, 1729
+  size: 54, 47
+  orig: 54, 47
+  offset: 0, 0
+  index: -1
+monster/229/igna_ad_r_leg1
+  rotate: false
+  xy: 679, 1413
+  size: 82, 139
+  orig: 82, 139
+  offset: 0, 0
+  index: -1
+monster/229/igna_ad_r_leg2
+  rotate: false
+  xy: 763, 1413
+  size: 61, 140
+  orig: 61, 140
+  offset: 0, 0
+  index: -1
+monster/229/igna_ad_r_leg_flame
+  rotate: false
+  xy: 678, 1554
+  size: 82, 74
+  orig: 82, 74
+  offset: 0, 0
+  index: -1
+monster/229/igna_ad_r_s_wing
+  rotate: false
+  xy: 1, 1717
+  size: 264, 64
+  orig: 264, 64
+  offset: 0, 0
+  index: -1
+monster/229/igna_ad_r_wing
+  rotate: false
+  xy: 1, 1183
+  size: 324, 331
+  orig: 324, 331
+  offset: 0, 0
+  index: -1
+monster/229/igna_ad_tail
+  rotate: false
+  xy: 1, 1516
+  size: 207, 199
+  orig: 207, 199
+  offset: 0, 0
+  index: -1
+monster/229/igna_ad_tail_flame
+  rotate: false
+  xy: 725, 1634
+  size: 95, 93
+  orig: 95, 93
+  offset: 0, 0
+  index: -1

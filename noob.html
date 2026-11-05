@@ -528,6 +528,17 @@ input[type=number]{appearance:textfield;-moz-appearance:textfield}
   <button class="gp-edit-btn" id="gp-edit-btn" onclick="goEditDragon()">수정하기</button>
 </div>
 
+<!-- ■ 예비 정령 탭 -->
+<div id="tab-reserve" class="tc"><div class="ti">
+  <div class="sec rsv-sec">
+    <div class="sec-hd">예비 정령</div>
+    <div class="sec-bd">
+      <p class="sp-help">남는 정령을 넣어두면 3vs3 세팅에서 계산할 때 모든 용에 달아보고, 3마리 결과가 오르면 결과 아래에 따로 보여줘요. 같은 예비 정령은 한 마리에만 써요.</p>
+      <div id="reserve-spirits"></div>
+    </div>
+  </div>
+</div></div>
+
 <!-- ■ 시뮬레이터 탭 -->
 <div id="tab-sim" class="tc"><div class="ti ti-sim">
 <div id="res-sec-empty">왼쪽에서 설정을 마치고 [시뮬레이션 실행]을 눌러주세요.</div>
@@ -539,10 +550,35 @@ input[type=number]{appearance:textfield;-moz-appearance:textfield}
     <button class="btn-gold" id="guild-send-btn" onclick="sendToGuild()">이번 주 셋팅 전송</button>
   </div>
 </div>
+  <div class="sec" id="res-reserve-sec" style="display:none">
+  <div class="sec-hd">예비 정령 결과</div>
+  <div class="res-wrap"><div id="res-body-reserve"></div></div>
+  </div>
 
 </div></div>
 
 <link rel="stylesheet" href="./spirit-input.css">
+<style>
+.rsv-item{border:1px solid var(--bd);border-radius:9px;margin-bottom:8px;background:var(--sf2);transition:border-color .15s}
+.rsv-item[open]{border-color:var(--gold)}
+.rsv-item>summary{display:flex;align-items:center;gap:8px;padding:10px 12px;cursor:pointer;font-size:13px;font-weight:800;list-style:none;border-radius:9px;user-select:none}
+.rsv-item>summary:hover{background:rgba(255,255,255,.04)}
+.rsv-item>summary::-webkit-details-marker{display:none}
+.rsv-item>summary .sp-chips{margin-left:auto}
+.rsv-item>summary::after{content:'펼치기 ▾';flex:none;padding:4px 10px;border:1px solid var(--bd);border-radius:999px;font-size:11px;font-weight:700;color:var(--dim);background:var(--sf)}
+.rsv-item>summary:hover::after{color:var(--text);border-color:var(--dim)}
+.rsv-item[open]>summary::after{content:'접기 ▴';color:var(--gold);border-color:var(--gold)}
+.rsv-item[open]>summary{border-bottom:1px solid var(--bd);border-radius:9px 9px 0 0;margin-bottom:10px}
+.rsv-body{padding:0 12px 12px}
+.rsv-hd{display:flex;gap:8px;margin-bottom:4px}
+.rsv-hd input{flex:1;min-width:0}
+.rsv-add{width:100%;margin-top:2px}
+.rsv-sec{max-width:760px}
+.rsv-summary{margin:14px 16px;padding:14px 16px;border:1px solid var(--green,#4ade80);border-radius:10px;background:rgba(74,222,128,.08);font-size:13px;line-height:1.9}
+.rsv-up{color:var(--green,#4ade80)}
+.rsv-none{padding:16px}
+.sp-rsv-tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:800;color:var(--green,#4ade80);border:1px solid var(--green,#4ade80);background:rgba(74,222,128,.08)}
+</style>
 <script src="./spirit-input.js"></script>
 <script src="./guild-calculator.js"></script>
 <script>if(!globalThis.DV1_GUILD_READY){document.addEventListener("DOMContentLoaded",function(){var e=document.createElement("div");e.setAttribute("role","alert");e.style.cssText="position:fixed;inset:0;z-index:2147483647;background:#171b25;color:white;padding:48px";e.textContent="계산기를 불러오지 못했습니다. 새로고침해 주세요.";document.body.appendChild(e);});}</script>
@@ -707,10 +743,10 @@ if (!globalThis.DV1_GUILD_READY) throw new Error("드래곤 데이터 로드 실
 
 document.getElementById('guild-mode').value=GUILD_MODE;
 UI.shell({page:'pvp',title:'길드전 · '+(GUILD_MODE==='noob'?'뉴비':'오리지널'),sub:'비벨 최적화 · 3vs3',tasks:{
-  on:'spec', items:[['spec','내 스펙'],['dragon','내 용 정보'],['sim','3vs3 세팅']],
+  on:'spec', items:[['spec','내 스펙'],['dragon','내 용 정보'],['reserve','예비 정령'],['sim','3vs3 세팅']],
   go:function(k){ if(typeof switchTab==='function') switchTab(k); }
 }});
-const initialGuildTab=['spec','dragon','sim'].includes(location.hash.slice(1))?location.hash.slice(1):'spec';
+const initialGuildTab=['spec','dragon','reserve','sim'].includes(location.hash.slice(1))?location.hash.slice(1):'spec';
 if(typeof switchTab==='function') switchTab(initialGuildTab);
 </script>
 <script src="./calculator-scroll.js"></script>

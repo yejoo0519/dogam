@@ -354,7 +354,8 @@ const mkState=()=>({
   spirit:{level:1,maxLvl:false,opts:[{stat:'',type:''},{stat:'',type:''},{stat:'',type:''},{stat:'',type:''}],bonus:''},
   coll:{hp:0,atk:0,def:0},
   dragonCards:mkDragonCards(),
-  settingBuffs:mkSettingBuffs()
+  settingBuffs:mkSettingBuffs(),
+  reserveSpirits:[]
 });
 
 let S=mkState();
@@ -457,7 +458,7 @@ function doLoad(){
     })();
     if(!r)return;
     const p=JSON.parse(r);
-    S={...mkState(),...p,accCards:p.accCards||[],gems:{...mkState().gems,...(p.gems||{})},spirit:{...mkState().spirit,...(p.spirit||{})},coll:{...mkState().coll,...(p.coll||{})},dragonCards:{...mkDragonCards(),...(p.dragonCards||{})},settingBuffs:{...mkSettingBuffs(),...(p.settingBuffs||{})}};
+    S={...mkState(),...p,accCards:p.accCards||[],gems:{...mkState().gems,...(p.gems||{})},spirit:{...mkState().spirit,...(p.spirit||{})},coll:{...mkState().coll,...(p.coll||{})},dragonCards:{...mkDragonCards(),...(p.dragonCards||{})},settingBuffs:{...mkSettingBuffs(),...(p.settingBuffs||{})},reserveSpirits:Array.isArray(p.reserveSpirits)?p.reserveSpirits:[]};
     while(S.spirit.opts.length<4)S.spirit.opts.push({stat:'',type:''});
     normalizeDragonCards();
     // ── 내 스펙 자동 적용 ──
@@ -1501,7 +1502,7 @@ function setFullCollection(){
 // ================================================================
 function switchTab(t){
   if(t==='spec'){try{renderSpecView();}catch(e){}}
-  ['spec','dragon','sim'].forEach(x=>{
+  ['spec','dragon','reserve','sim'].forEach(x=>{
     const c=document.getElementById('tab-'+x); if(c)c.classList.toggle('active',x===t);
     const bt=document.getElementById('tab-btn-'+x); if(bt)bt.classList.toggle('active',x===t);
   });
@@ -1795,22 +1796,55 @@ function runSim(){
       const filtered=includeDebuff?candidates:candidates.filter(d=>!isDebuffedDragon(d));
       if(!filtered.length)throw new Error('디버프를 받지 않는 용이 없습니다.');
       if(filtered.length<3)throw new Error('디버프 제외 후 계산 가능한 용이 3마리 미만입니다.');
-      let deck;
-      if(encMode==='infinite'){
-        // 승계 가능은 보유 인챈트를 그대로 쓰는 경우도 포함한다. 보유 인챈트 기준 결과도 함께 계산해
-        // 더 높은 쪽을 고르므로, 승계 가능 결과가 보유 인챈트 결과보다 낮게 나오지 않는다.
-        const owned=ownedAcc.map(a=>({...a,_enc:S.accCards[a._accId]?.enchant||'none'}));
-        const fixedDeck=await doSimDeck(owned,filtered,excSun,(p,stage)=>CalcProgress.update(p*0.3,stage),'fixed');
-        const infDeck=await doSimDeck(ownedAcc,filtered,excSun,(p,stage)=>CalcProgress.update(30+p*0.7,stage),'infinite');
-        const score=r=>typeof guildScore==='function'?guildScore(r):r.bv;
-        const tot=d=>guildDistMode()==='focus'?[...d.map(o=>score(o)).sort((x,y)=>y-x),d.reduce((t,o)=>t+o.bv,0)]:[d.reduce((t,o)=>t+score(o),0),d.reduce((t,o)=>t+o.bv,0)];
-        const lexGt=(x,y)=>{for(let i=0;i<x.length;i++){if(x[i]>y[i])return true;if(x[i]<y[i])return false;}return false;};
-        deck=infDeck.length<3||(fixedDeck.length>=3&&lexGt(tot(fixedDeck),tot(infDeck)))?fixedDeck:infDeck;
-      }else{
-        deck=await doSimDeck(ownedAcc,filtered,excSun,(p,stage)=>CalcProgress.update(p,stage));
-      }
+      const reserves=activeReserveSpirits();
+      const baseEnd=reserves.length?50:100;
+      const score=r=>typeof guildScore==='function'?guildScore(r):r.bv;
+      const tot=d=>guildDistMode()==='focus'?[...d.map(o=>score(o)).sort((x,y)=>y-x),d.reduce((t,o)=>t+o.bv,0)]:[d.reduce((t,o)=>t+score(o),0),d.reduce((t,o)=>t+o.bv,0)];
+      const lexGt=(x,y)=>{for(let i=0;i<x.length;i++){if(x[i]>y[i])return true;if(x[i]<y[i])return false;}return false;};
+      const runDeck=async(list,p0,p1,seed=null)=>{
+        const span=(p1-p0)/100;
+        if(encMode==='infinite'){
+          // 승계 가능은 보유 인챈트를 그대로 쓰는 경우도 포함한다. 보유 인챈트 기준 결과도 함께 계산해
+          // 더 높은 쪽을 고르므로, 승계 가능 결과가 보유 인챈트 결과보다 낮게 나오지 않는다.
+          const owned=ownedAcc.map(a=>({...a,_enc:S.accCards[a._accId]?.enchant||'none'}));
+          const fixedDeck=await doSimDeck(owned,list,excSun,(p,stage)=>CalcProgress.update(p0+p*0.3*span,stage),'fixed',false,seed);
+          const infDeck=await doSimDeck(ownedAcc,list,excSun,(p,stage)=>CalcProgress.update(p0+(30+p*0.7)*span,stage),'infinite',false,seed);
+          return infDeck.length<3||(fixedDeck.length>=3&&lexGt(tot(fixedDeck),tot(infDeck)))?fixedDeck:infDeck;
+        }
+        return doSimDeck(ownedAcc,list,excSun,(p,stage)=>CalcProgress.update(p0+p*span,stage),null,false,seed);
+      };
+      const deck=await runDeck(filtered,0,baseEnd);
       if(deck.length<3)throw new Error('장신구/펜던트/젬 중복 제한을 만족하는 3마리 조합을 찾지 못했습니다.');
+      // ── 예비 정령 ──
+      // 1) 지금 추천 3마리가 기준선. 2) 용 × 예비 정령마다 상한(가장 좋은 젬을 다 받았다고 친 값)만 빠르게 구하고,
+      //    상한으로도 기준선을 못 넘는 조합은 버린다. 3) 남은 조합만 넣어서 3마리 조합을 다시 탐색한다.
+      let rsvInfo=null;
+      if(reserves.length){
+        const keyed=filtered.map(d=>({...d,_dk:d.uid||`${d.attr}#${d.idx}`}));
+        const allVariants=keyed.flatMap(d=>reserves.map(r=>({...d,opts:r.opts.map(o=>({...o})),bonus:r.bonus||'',_rsv:r.uid,_rsvName:r.name,_hadSpirit:spiritHasOpt(d)})));
+        const ubs=await doSimDeck(ownedAcc,[...keyed,...allVariants],excSun,(p,stage)=>CalcProgress.update(50+p*0.05,'예비 정령 후보 거르기'),encMode,true);
+        const baseScores=deck.map(r=>score(r));
+        const T=baseScores.reduce((t,v)=>t+v,0),T3=Math.min(...baseScores);
+        const bestUB=new Map();
+        ubs.forEach(u=>bestUB.set(u.dragon._dk,Math.max(bestUB.get(u.dragon._dk)||-Infinity,u.ubS)));
+        const ubDesc=[...bestUB.entries()].sort((x,y)=>y[1]-x[1]);
+        const others2=dk=>ubDesc.filter(([k])=>k!==dk).slice(0,2).reduce((t,[,v])=>t+v,0);
+        const keep=new Set(ubs.filter(u=>u.dragon._rsv&&(guildDistMode()==='focus'?u.ubS>=T3-1e-9:u.ubS+others2(u.dragon._dk)>=T-1e-9)).map(u=>u.dragon));
+        const variants=allVariants.filter(v=>keep.has(v));
+        const liveCount=new Set(variants.map(v=>v._dk)).size;
+        let rsvDeck=null;
+        if(variants.length){
+          const d2=await runDeck([...keyed,...variants],55,100,deck);
+          if(d2.length>=3&&d2.some(r=>r.dragon._rsv)&&lexGt(tot(d2),tot(deck)))rsvDeck=d2;
+        }
+        rsvInfo={deck:rsvDeck,checked:liveCount,total:keyed.length};
+      }
       renderResDeck(deck,includeDebuff?0:candidates.length-filtered.length);
+      const rsec=document.getElementById('res-reserve-sec');
+      if(rsec){
+        rsec.style.display=rsvInfo?'':'none';
+        if(rsvInfo&&typeof renderReserveDeck==='function')renderReserveDeck(deck,rsvInfo);
+      }
       const rs=document.getElementById('res-sec');
       rs.style.display='';
       rs.scrollIntoView({behavior:'smooth',block:'start'});
@@ -2050,7 +2084,12 @@ function assignTripleGems(deck,stock,score,refineFloor=-Infinity){
   return {total,bvSum,out};
 }
 
+// 예비 정령 계산: 같은 용(원래 정령/예비 정령 버전)은 한 번만, 같은 예비 정령도 한 마리에만
+function sameDragonSlot(x,y){
+  return (!!x._dk&&x._dk===y._dk)||(!!x._rsv&&x._rsv===y._rsv);
+}
 function guildPairOk(a,b){
+  if(sameDragonSlot(a.dragon,b.dragon))return false;
   if(a.accId===b.accId&&a.accCnt<2)return false;
   if(a.pendId!=null&&a.pendId===b.pendId&&a.pendCnt<2)return false;
   return true;
@@ -2096,7 +2135,7 @@ function focusDeck(sets,stock,score){
     let top=null,list=[];
     const usedDragons=new Set(picked.map(p=>p.dragon));
     for(const set of sets){
-      if(usedDragons.has(set.dragon))continue;
+      if(usedDragons.has(set.dragon)||picked.some(p=>sameDragonSlot(p.dragon,set.dragon)))continue;
       for(const o of set.options){
         if(top&&o.ubS<top.sc-1e-9)break; // 상한이 현재 최고보다 낮으면 이 용은 더 볼 필요 없음
         if(!accOk(o,picked))continue;
@@ -2129,7 +2168,7 @@ function focusDeck(sets,stock,score){
   });
 }
 
-async function doSimDeck(ownedAcc,dragons,excSun,onProgress=()=>{},encModeOverride=null){
+async function doSimDeck(ownedAcc,dragons,excSun,onProgress=()=>{},encModeOverride=null,ubOnly=false,seedDeck=null){
   ownedAcc=groupOwnedAcc(ownedAcc);
   const stock=buildGemStock();
   const pends=getPends(excSun);
@@ -2199,16 +2238,19 @@ async function doSimDeck(ownedAcc,dragons,excSun,onProgress=()=>{},encModeOverri
     if(performance.now()-lastYield>=100){onProgress(20*(di+1)/dragons.length,'장비 조합 계산');await CalcProgress.yield();lastYield=performance.now();}
   }
   sets.sort((x,y)=>y.options[0].ubS-x.options[0].ubS);
+  if(ubOnly)return sets.map(s=>({dragon:s.dragon,ubS:s.options[0].ubS}));
 
   if(guildDistMode()==='focus'){onProgress(60,'1등부터 순서대로 배정');return focusDeck(sets,stock,score);}
   // 분기 한정 탐색
-  let best=null;
+  // seedDeck(예비 정령 계산 때 지금 추천 3마리)으로 시작하면 그보다 못한 조합은 처음부터 잘린다
+  let best=seedDeck&&seedDeck.length>=3?{total:seedDeck.reduce((t,o)=>t+score(o,o.bv),0),bvSum:seedDeck.reduce((t,o)=>t+o.bv,0),out:seedDeck.map(o=>({...o}))}:null;
   const beats=(s,b)=>!best||s>best.total||(s===best.total&&b>best.bvSum);
   const canBeat=(s,b)=>!best||s>best.total||(s===best.total&&b>best.bvSum);
   const n=sets.length,totalTriples=n*(n-1)*(n-2)/6;let done=0,steps=0;
   onProgress(20,'3마리 조합 탐색');
   for(let i=0;i<n-2;i++)for(let j=i+1;j<n-1;j++)for(let k=j+1;k<n;k++){
     done++;
+    if(sameDragonSlot(sets[i].dragon,sets[j].dragon)||sameDragonSlot(sets[i].dragon,sets[k].dragon)||sameDragonSlot(sets[j].dragon,sets[k].dragon))continue;
     const A=sets[i].options,B=sets[j].options,C=sets[k].options;
     if(!canBeat(A[0].ubS+B[0].ubS+C[0].ubS,A[0].ub+B[0].ub+C[0].ub))continue;
     for(const a of A){
@@ -2756,6 +2798,54 @@ function mountLowGemOpt(){
   const c=d.querySelector('#low-gem');c.checked=lowGemOn();
   c.addEventListener('change',()=>{try{localStorage.setItem(LOW_GEM_KEY,c.checked?'1':'0');}catch(e){}try{renderSpecView();}catch(e){}});
 }
+// ================================================================
+// UI - 예비 정령
+// ================================================================
+const RSV_OPEN=new Set();
+const newReserveUid=()=>`rsv-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,6)}`;
+function spiritHasOpt(sp){return (sp?.opts||[]).some(o=>o&&o.stat&&o.type)||!!sp?.bonus;}
+function normalizeReserves(){
+  if(!Array.isArray(S.reserveSpirits))S.reserveSpirits=[];
+  S.reserveSpirits=S.reserveSpirits.filter(Boolean).map(r=>{
+    const opts=(r.opts||[]).slice(0,4).map(o=>({stat:o?.stat||'',type:o?.type||''}));
+    while(opts.length<4)opts.push({stat:'',type:''});
+    return {uid:r.uid||newReserveUid(),name:r.name||'',opts,bonus:r.bonus||''};
+  });
+}
+function reserveLabel(r,i){return r.name||`예비 정령 ${i+1}`;}
+function activeReserveSpirits(){
+  normalizeReserves();
+  return S.reserveSpirits.map((r,i)=>({...r,name:reserveLabel(r,i)})).filter(spiritHasOpt);
+}
+function renderReserveSpirits(){
+  const el=document.getElementById('reserve-spirits');if(!el)return;
+  normalizeReserves();
+  el.innerHTML=S.reserveSpirits.map((r,i)=>`<details class="rsv-item" ${RSV_OPEN.has(r.uid)?'open':''} ontoggle="toggleReserve('${r.uid}',this.open)">
+      <summary><span class="rsv-name">${escHtml(reserveLabel(r,i))}</span>${gSpChips(r)}</summary>
+      <div class="rsv-body">
+        <div class="rsv-hd"><input type="text" value="${escHtml(r.name)}" placeholder="예비 정령 ${i+1}" aria-label="예비 정령 이름" onchange="onReserveName(${i},this.value)"><button class="btn-red" onclick="delReserveSpirit(${i})">삭제</button></div>
+        ${SpiritInput.options(r,'onReserveOpt',[i],fmtDragonSpVal)}
+        ${SpiritInput.bonus(r,'onReserveBonus',[i])}
+      </div>
+    </details>`).join('')+`<button class="btn-white rsv-add" onclick="addReserveSpirit()">+ 예비 정령 추가</button>`;
+}
+function toggleReserve(uid,open){if(open)RSV_OPEN.add(uid);else RSV_OPEN.delete(uid);}
+function addReserveSpirit(){
+  normalizeReserves();
+  const r={uid:newReserveUid(),name:'',opts:[{stat:'',type:''},{stat:'',type:''},{stat:'',type:''},{stat:'',type:''}],bonus:''};
+  S.reserveSpirits.push(r);RSV_OPEN.add(r.uid);
+  renderReserveSpirits();qSave();
+}
+function delReserveSpirit(i){
+  normalizeReserves();
+  const r=S.reserveSpirits[i];if(!r)return;
+  RSV_OPEN.delete(r.uid);S.reserveSpirits.splice(i,1);
+  renderReserveSpirits();qSave();
+}
+function onReserveName(i,val){normalizeReserves();if(!S.reserveSpirits[i])return;S.reserveSpirits[i].name=String(val||'').trim().slice(0,20);renderReserveSpirits();qSave();}
+function onReserveOpt(i,optIdx,field,val){normalizeReserves();const r=S.reserveSpirits[i];if(!r)return;r.opts[optIdx][field]=val;renderReserveSpirits();qSave();}
+function onReserveBonus(i,val){normalizeReserves();const r=S.reserveSpirits[i];if(!r)return;r.bonus=val;renderReserveSpirits();qSave();}
+
 function init(){
   try{doLoad();}catch(e){console.error('doLoad',e);}
   try{mountLowGemOpt();}catch(e){}
@@ -2765,6 +2855,7 @@ function init(){
   try{renderSpirit();}catch(e){}
   try{renderDragonInfo();}catch(e){}
   try{renderSettingBuffs();}catch(e){}
+  try{renderReserveSpirits();}catch(e){}
   try{populateColl();}catch(e){}
 }
 document.addEventListener('DOMContentLoaded',function(){init();try{renderSpecView();}catch(e){}});

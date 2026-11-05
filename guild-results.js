@@ -19,15 +19,40 @@
     const wcfg=S.settingBuffs?.buff,wMax=typeof weekMaxBV==='function'?weekMaxBV(wcfg):null;
     const wPct=bv=>wMax?100*bv/wMax:null;
     const avgWeek=wMax?wPct(avg):null;
-    const cards=results.map((r,i)=>{
+    const cards=results.map((r,i)=>cardHtml(r,i,wMax,wPct)).join('');
+    document.getElementById('res-body-avg').innerHTML=`<div class="sp-guild-summary"><div><small>추천 조합</small><strong>${results.length}마리</strong></div><div><small>평균 비밸 · 백만</small><strong>${(avg/1e6).toFixed(1)}</strong></div><div title="이번 주 최대 비밸 ${wMax?(wMax/1e6).toFixed(1):'—'} 대비"><small>평균 · 이번 주 최대 대비</small><strong>${avgWeek===null?'—':avgWeek.toFixed(1)+'%'}</strong></div></div><p class="sp-help">${lastResults.dist==='focus'?(guildPriority==='tar'?'1등 드래곤의 TAR을 최대로 맞춘 뒤 2등·3등 순서로 맞춘 추천입니다.':'1등 드래곤의 비밸을 최대로 맞춘 뒤 2등·3등 순서로 맞춘 추천입니다.'):(guildPriority==='tar'?'세 마리의 TAR 합계를 우선한 추천입니다.':'세 마리의 비밸 합계를 우선한 추천입니다.')} ${excludedCount?'디버프 대상 '+excludedCount+'마리를 제외했습니다.':''} 장신구·펜던트·젬 중복 제한을 적용하며, 더 좋은 조합이 있을 수 있습니다.</p><div class="sp-guild-cards">${cards}</div>`;
+  };
+  function weekCtx(){
+    const wcfg=S.settingBuffs?.buff,wMax=typeof weekMaxBV==='function'?weekMaxBV(wcfg):null;
+    return {wMax,wPct:bv=>wMax?100*bv/wMax:null};
+  }
+  function cardHtml(r,i,wMax,wPct){
       const acc=ACC_DB.find(a=>a.n===r.accN),tar=typeof tarPercent==='function'?tarPercent(r.bv,r.dragon.dtype,r.buff):null;
       const portrait=getDragonImgUrl(r.dragon.name);
       const identity=`<div class="sp-dragon-identity"><span class="sp-dragon-portrait">${portrait?`<img src="${esc(portrait)}" alt="${esc(r.dragon.name)}" onerror="this.hidden=true">`:''}</span><div class="sp-dragon-text"><strong>${esc(r.dragon.name)}</strong><span class="sp-dragon-attr">${r.dragon.attr?`<img src="${esc(elIcon(r.dragon.attr))}" alt="" onerror="this.hidden=true">${esc(r.dragon.attr)}`:'속성 미확인'}</span></div></div>`;
-      return `<article class="sp-result-card"><header><div class="sp-card-label"><span class="sp-rank">${i+1}</span>${identity}<span class="sp-buff-tag">${esc(r.dragon.dtype)} · ${esc(r.dragon.growth)} ${esc(r.dragon.grade)}</span></div><div class="sp-metrics"><div class="${guildPriority==='bv'?'is-primary':''}"><small>비밸 · 백만</small><b>${(r.bv/1e6).toFixed(1)}</b></div><div title="이번 주 최대 비밸 ${wMax?(wMax/1e6).toFixed(1):'—'} 대비"><small>이번 주 최대 대비</small><b>${wMax?wPct(r.bv).toFixed(1)+'%':'—'}</b></div></div></header>
+      return `<article class="sp-result-card"><header><div class="sp-card-label"><span class="sp-rank">${i+1}</span>${identity}<span class="sp-buff-tag">${esc(r.dragon.dtype)} · ${esc(r.dragon.growth)} ${esc(r.dragon.grade)}</span>${r.dragon._rsv?`<span class="sp-rsv-tag">예비 정령 ${r.dragon._hadSpirit?'교체':'추가'} · ${esc(r.dragon._rsvName)}</span>`:''}</div><div class="sp-metrics"><div class="${guildPriority==='bv'?'is-primary':''}"><small>비밸 · 백만</small><b>${(r.bv/1e6).toFixed(1)}</b></div><div title="이번 주 최대 비밸 ${wMax?(wMax/1e6).toFixed(1):'—'} 대비"><small>이번 주 최대 대비</small><b>${wMax?wPct(r.bv).toFixed(1)+'%':'—'}</b></div></div></header>
       <div class="sp-card-body"><div class="sp-equipment">${acc?.img?`<img src="${esc(acc.img)}" alt="">`:''}<div><small>장신구 / 인챈트</small><strong>${esc(r.accN)}</strong>${fmtAccEnc(r.enc)}</div></div><div><small>젬 배분</small><div class="gem-tags">${fmtGem(r.alloc)}</div></div><div><small>펜던트</small>${fmtPend(r.pend)}</div>${resultSpirit(r.dragon)}<div class="sp-final-stats">${[['체력',r.fH,'hp'],['공격',r.fA,'atk'],['방어',r.fD,'def']].map(([l,n,k])=>`<div class="stat-${k}"><small>${l}</small><strong>${n.toLocaleString('ko-KR')}</strong></div>`).join('')}</div></div>
       <div class="sp-guild-effects">${fmtWeeklyBuff(r.buff,r.debuff)}${fmtWeeklyStats(r)}${fmtWeeklyDetails(r)}</div></article>`;
-    }).join('');
-    document.getElementById('res-body-avg').innerHTML=`<div class="sp-guild-summary"><div><small>추천 조합</small><strong>${results.length}마리</strong></div><div><small>평균 비밸 · 백만</small><strong>${(avg/1e6).toFixed(1)}</strong></div><div title="이번 주 최대 비밸 ${wMax?(wMax/1e6).toFixed(1):'—'} 대비"><small>평균 · 이번 주 최대 대비</small><strong>${avgWeek===null?'—':avgWeek.toFixed(1)+'%'}</strong></div></div><p class="sp-help">${lastResults.dist==='focus'?(guildPriority==='tar'?'1등 드래곤의 TAR을 최대로 맞춘 뒤 2등·3등 순서로 맞춘 추천입니다.':'1등 드래곤의 비밸을 최대로 맞춘 뒤 2등·3등 순서로 맞춘 추천입니다.'):(guildPriority==='tar'?'세 마리의 TAR 합계를 우선한 추천입니다.':'세 마리의 비밸 합계를 우선한 추천입니다.')} ${excludedCount?'디버프 대상 '+excludedCount+'마리를 제외했습니다.':''} 장신구·펜던트·젬 중복 제한을 적용하며, 더 좋은 조합이 있을 수 있습니다.</p><div class="sp-guild-cards">${cards}</div>`;
+  }
+  // 예비 정령 결과: 지금 추천(base)과 예비 정령까지 고려한 추천(info.deck)을 비교
+  window.renderReserveDeck=function(base,info){
+    const el=document.getElementById('res-body-reserve');if(!el)return;
+    if(!info.deck){
+      el.innerHTML=`<p class="sp-help rsv-none">예비 정령을 달아도 지금 추천보다 오르는 조합이 없어요. (3위 안에 들 수 있는 용 ${info.checked}/${info.total}마리 확인)</p>`;
+      return;
+    }
+    const {wMax,wPct}=weekCtx();
+    const avg=d=>d.reduce((s,r)=>s+r.bv,0)/(d.length||1);
+    const a0=avg(base)/1e6,a1=avg(info.deck)/1e6,diff=a1-a0;
+    const sign=v=>(v>=0?'+':'')+v.toFixed(1);
+    const picks=info.deck.filter(r=>r.dragon._rsv).map(r=>`<b>${esc(r.dragon.name)}</b> 정령 ${r.dragon._hadSpirit?'교체':'추가'} ← ${esc(r.dragon._rsvName)}`).join(', ');
+    let tarLine='';
+    if(guildPriority==='tar'&&typeof tarPercent==='function'){
+      const t=d=>d.reduce((s,r)=>s+tarPercent(r.bv,r.dragon.dtype,r.buff),0)/(d.length||1);
+      const t0=t(base),t1=t(info.deck);
+      tarLine=`<div>평균 TAR ${t0.toFixed(1)} → ${t1.toFixed(1)} <b class="rsv-up">${sign(t1-t0)}</b></div>`;
+    }
+    el.innerHTML=`<div class="rsv-summary"><div>추천: ${picks}</div><div>평균 비밸 ${a0.toFixed(1)} → ${a1.toFixed(1)} <b class="rsv-up">${sign(diff)} (${sign(a0?100*diff/a0:0)}%)</b></div>${tarLine}</div><div class="sp-guild-cards">${info.deck.map((r,i)=>cardHtml(r,i,wMax,wPct)).join('')}</div>`;
   };
   document.addEventListener('DOMContentLoaded',()=>{
     const select=document.getElementById('guild-priority');

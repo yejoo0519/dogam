@@ -19,8 +19,17 @@
     '<div class="sec shot-sec">' +
       '<div class="sec-hd"><span>스크린샷으로 등록</span></div>' +
       '<div class="sec-bd">' +
-        '<p class="shot-help">게임에서 <b>장신구 · 펜던트 · 젬 목록 화면</b>을 캡처해서 올리면 자동으로 읽어요. 여러 장을 한 번에 올려도 되고, 붙여넣기(Ctrl+V)도 돼요.<br>' +
-        '이미지는 서버로 보내지 않고 이 브라우저 안에서만 처리돼요. 가로 화면 · 720p 이상 캡처를 권장해요.</p>' +
+        '<div class="shot-guide">' +
+          '<strong>캡처는 레무리아 입구 또는 아르하 입구에서 해 주세요</strong>' +
+          '<p>드래곤에게 <b>장착하지 않은 장신구 · 펜던트 · 젬</b>까지 전부 목록에 나오는 곳이 레무리아 입구 / 아르하 입구예요. 다른 화면에서 찍으면 빠지는 아이템이 생길 수 있어요.</p>' +
+          '<ol>' +
+            '<li>레무리아 입구나 아르하 입구에서 장신구 · 펜던트 · 젬 목록을 열어요.</li>' +
+            '<li>카드 10칸(5×2)이 잘리지 않게 한 화면씩 캡처해요. 반쯤 가려진 카드는 읽지 않아요.</li>' +
+            '<li>끝까지 내리면서 찍은 캡처를 여기에 한 번에 올려요.</li>' +
+          '</ol>' +
+          '<p class="shot-guide-note">같은 카드가 두 장에 겹쳐 찍히면 장신구 · 펜던트는 두 번 들어가니, 미리보기에서 체크를 풀어 주세요. (젬은 자동으로 한 번만 세요)</p>' +
+        '</div>' +
+        '<p class="shot-help">여러 장을 한 번에 올려도 되고, 붙여넣기(Ctrl+V)도 돼요. 이미지는 서버로 보내지 않고 이 브라우저 안에서만 처리돼요. 가로 화면 · 720p 이상 캡처를 권장해요.</p>' +
         '<label class="shot-drop" id="shot-drop"><input type="file" id="shot-file" accept="image/*" multiple hidden>' +
           '<strong>스크린샷 선택</strong><span>또는 여기로 끌어다 놓기</span></label>' +
         '<div id="shot-status" class="shot-status" role="status" aria-live="polite"></div>' +
@@ -31,6 +40,11 @@
   var css = document.createElement('style');
   css.textContent =
     '.shot-help{font-size:12px;color:var(--dim);line-height:1.7;margin:0 0 12px}' +
+    '.shot-guide{border:1px solid rgba(212,168,71,.35);background:rgba(212,168,71,.07);border-radius:9px;padding:12px 14px;margin:0 0 12px;font-size:12px;line-height:1.7;color:var(--text)}' +
+    '.shot-guide strong{display:block;font-size:13px;color:var(--gold);margin-bottom:4px}' +
+    '.shot-guide p{margin:0 0 6px;color:var(--dim)}.shot-guide b{color:var(--text)}' +
+    '.shot-guide ol{margin:4px 0 6px;padding-left:18px}.shot-guide li{margin:2px 0}' +
+    '.shot-guide .shot-guide-note{margin:0;font-size:11px}' +
     '.shot-drop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:1.5px dashed var(--bd);border-radius:10px;padding:26px 16px;cursor:pointer;background:var(--sf2);text-align:center}' +
     '.shot-drop:hover,.shot-drop.over{border-color:var(--gold)}' +
     '.shot-drop strong{font-size:14px;color:var(--text)}.shot-drop span{font-size:11px;color:var(--dim)}' +

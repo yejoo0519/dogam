@@ -68,7 +68,48 @@
         }
       }
     }
+    if (!out.length) out = findCardsCropped(im);
     out.sort(function (a, b) { return Math.abs(a.t - b.t) > 30 * a.k ? a.t - b.t : a.col - b.col; });
+    return out;
+  }
+  /* 잘라낸 캡처용: 화면 크기에 기대지 않고 카드 배경색이 가로로 이어진 길이(카드 폭 291)로 배율을 구해 카드를 찾습니다 */
+  function vRuns(im, x, k, left, col, out) {
+    var s = -1, gap = 0, lastOn = -1;
+    for (var y = 0; y <= im.h; y++) {
+      var on = y < im.h && isBg(im, x, y);
+      if (on) { if (s < 0) s = y; lastOn = y; gap = 0; continue; }
+      if (s >= 0 && y < im.h && ++gap <= 2) continue;
+      if (s >= 0) {
+        var hgt = lastOn + 1 - s;
+        if (Math.abs(hgt - 319 * k) <= 25 * k) out.push({ col: col, l: Math.round(left), t: s, k: k });
+        s = -1; gap = 0;
+      }
+    }
+  }
+  function findCardsCropped(im) {
+    var w = im.w, h = im.h, hist = {}, starts = [], y, x;
+    var ystep = Math.max(1, Math.floor(h / 600));
+    for (y = 0; y < h; y += ystep) {
+      x = 0;
+      while (x < w) {
+        if (!isBg(im, x, y)) { x++; continue; }
+        var s0 = x; while (x < w && isBg(im, x, y)) x++;
+        var len = x - s0;
+        if (len >= 60 && len <= w / 3) { var b = len >> 1; hist[b] = (hist[b] || 0) + 1; starts.push([s0, len]); }
+      }
+    }
+    var best = -1, bn = 0;
+    for (var key in hist) { var n = (hist[key] || 0) + (hist[+key - 1] || 0) + (hist[+key + 1] || 0); if (n > bn) { bn = n; best = +key; } }
+    if (best < 0 || bn < 10) return [];
+    var L = best * 2 + 1, k = L / 291, lefts = [];
+    starts.forEach(function (st) {
+      if (Math.abs(st[1] - L) > 4 * Math.max(1, k)) return;
+      for (var i = 0; i < lefts.length; i++) if (Math.abs(lefts[i][0] - st[0]) <= 3) { lefts[i][1]++; return; }
+      lefts.push([st[0], 1]);
+    });
+    lefts = lefts.filter(function (l) { return l[1] >= 3; }).sort(function (a, b) { return a[0] - b[0]; });
+    var out = [];
+    lefts.forEach(function (l, i) { var x0 = Math.round(l[0] + 7 * k); if (x0 < w) vRuns(im, x0, k, l[0], i, out); });
     return out;
   }
 

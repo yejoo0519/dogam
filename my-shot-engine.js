@@ -21,38 +21,30 @@
   Img.prototype.px = function (x, y) { var i = (y * this.w + x) * 4; return [this.d[i], this.d[i + 1], this.d[i + 2]]; };
 
   /* ---------- 영역 / 카드 ---------- */
-  /* 검은 여백(레터박스)을 뺀 게임 화면 영역. JPEG 번짐에 흔들리지 않게 줄/칸마다 밝은 픽셀 비율로 판단 */
+  /* 검은 여백(레터박스)과 폰 내비게이션 바를 뺀 게임 화면 영역.
+     줄/칸마다 '검지 않은 픽셀'이 20% 넘는 구간 중 가장 긴 구간을 고릅니다 (JPEG 번짐, 내비 버튼 아이콘 무시) */
   function contentRect(im) {
     var d = im.d, w = im.w, h = im.h, x, y, i;
     var step = Math.max(1, Math.floor(Math.min(w, h) / 360));
-    var colN = new Uint32Array(w), rowN = new Uint32Array(h), nx = 0, ny = 0;
-    for (y = 0; y < h; y += step) {
-      ny++;
-      for (x = 0; x < w; x += step) {
-        i = (y * w + x) * 4;
-        if (d[i] > 30 || d[i + 1] > 30 || d[i + 2] > 30) { colN[x]++; rowN[y]++; }
-      }
-    }
+    var colN = new Float32Array(w), rowN = new Float32Array(h), nx = 0, ny = 0;
+    function lit(p) { return d[p] > 18 || d[p + 1] > 18 || d[p + 2] > 18; }
+    for (y = 0; y < h; y += step) ny++;
     for (x = 0; x < w; x += step) nx++;
-    var cx = [], cy = [];
-    for (x = 0; x < w; x += step) if (colN[x] > ny * 0.03) cx.push(x);
-    for (y = 0; y < h; y += step) if (rowN[y] > nx * 0.03) cy.push(y);
-    if (!cx.length || !cy.length) return null;
-    // 경계는 step 단위로 잡혔으니 실제 경계를 1픽셀 단위로 다시 찾기
-    function edge(from, to, dir, isCol) {
-      for (var p = from; p !== to; p += dir) {
-        var n = 0, m = 0;
-        if (isCol) { for (y = 0; y < h; y += step) { m++; i = (y * w + p) * 4; if (d[i] > 30 || d[i + 1] > 30 || d[i + 2] > 30) n++; } }
-        else { for (x = 0; x < w; x += step) { m++; i = (p * w + x) * 4; if (d[i] > 30 || d[i + 1] > 30 || d[i + 2] > 30) n++; } }
-        if (n > m * 0.03) return p;
+    for (x = 0; x < w; x++) { var n = 0; for (y = 0; y < h; y += step) if (lit((y * w + x) * 4)) n++; colN[x] = n / ny; }
+    for (y = 0; y < h; y++) { var m = 0; for (x = 0; x < w; x += step) if (lit((y * w + x) * 4)) m++; rowN[y] = m / nx; }
+    function longest(arr, len) {
+      var bs = -1, be = -1, s0 = -1, last = -1, gapMax = Math.max(3, Math.round(len * 0.01));
+      for (var p = 0; p <= len; p++) {
+        var on = p < len && arr[p] > 0.2;
+        if (on) { if (s0 < 0) s0 = p; last = p; continue; }
+        if (s0 >= 0 && p < len && p - last <= gapMax) continue;   // 테두리 선 같은 얇은 어두운 줄은 이어 붙임
+        if (s0 >= 0) { if (last + 1 - s0 > be - bs) { bs = s0; be = last + 1; } s0 = -1; }
       }
-      return from;
+      return bs < 0 ? null : [bs, be];
     }
-    var x0 = edge(Math.max(0, cx[0] - step), cx[0] + 1, 1, true);
-    var x1 = edge(Math.min(w - 1, cx[cx.length - 1] + step), cx[cx.length - 1] - 1, -1, true) + 1;
-    var y0 = edge(Math.max(0, cy[0] - step), cy[0] + 1, 1, false);
-    var y1 = edge(Math.min(h - 1, cy[cy.length - 1] + step), cy[cy.length - 1] - 1, -1, false) + 1;
-    return { x0: x0, x1: x1, y0: y0, y1: y1 };
+    var cx = longest(colN, w), cy = longest(rowN, h);
+    if (!cx || !cy) return null;
+    return { x0: cx[0], x1: cx[1], y0: cy[0], y1: cy[1] };
   }
   function isBg(im, x, y) {
     var i = (y * im.w + x) * 4;

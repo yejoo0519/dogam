@@ -11861,7 +11861,7 @@
         {
           name: "열화의 발칸 SS",
           element: "불",
-          skill: "boom",
+          skill: null,
           statsRef: "grades.SS",
           appearances: [
             {
@@ -11895,13 +11895,13 @@
             name: "열화의 발칸 SS",
             level: 45,
             order: 554,
-            showSkill: true,
+            showSkill: false,
           },
           {
             name: "열화의 발칸 SS",
             level: 21,
             order: 739,
-            showSkill: true,
+            showSkill: false,
           },
         ],
         aura: {
@@ -12005,7 +12005,7 @@
         {
           name: "장벽의 에닉스 SS",
           element: "땅",
-          skill: "def",
+          skill: null,
           statsRef: "grades.SS",
           appearances: [
             {
@@ -12039,13 +12039,13 @@
             name: "장벽의 에닉스 SS",
             level: 45,
             order: 555,
-            showSkill: true,
+            showSkill: false,
           },
           {
             name: "장벽의 에닉스 SS",
             level: 21,
             order: 740,
-            showSkill: true,
+            showSkill: false,
           },
         ],
         aura: {
@@ -17189,7 +17189,7 @@
         {
           name: "스테고 드래곤 SS",
           element: "어둠",
-          skill: "def",
+          skill: null,
           statsRef: "grades.SS",
           appearances: [
             {
@@ -17223,13 +17223,13 @@
             name: "스테고 드래곤 SS",
             level: 45,
             order: 528,
-            showSkill: true,
+            showSkill: false,
           },
           {
             name: "스테고 드래곤 SS",
             level: 21,
             order: 707,
-            showSkill: true,
+            showSkill: false,
           },
         ],
         aura: {
@@ -17333,7 +17333,7 @@
         {
           name: "레텐토르 SS",
           element: "땅",
-          skill: "boom",
+          skill: null,
           statsRef: "grades.SS",
           appearances: [
             {
@@ -17367,13 +17367,13 @@
             name: "레텐토르 SS",
             level: 45,
             order: 521,
-            showSkill: true,
+            showSkill: false,
           },
           {
             name: "레텐토르 SS",
             level: 21,
             order: 711,
-            showSkill: true,
+            showSkill: false,
           },
         ],
         aura: {
@@ -17621,7 +17621,7 @@
         {
           name: "리쿠루 드래곤 SS",
           element: "물",
-          skill: "def",
+          skill: null,
           statsRef: "grades.SS",
           appearances: [
             {
@@ -17655,13 +17655,13 @@
             name: "리쿠루 드래곤 SS",
             level: 45,
             order: 545,
-            showSkill: true,
+            showSkill: false,
           },
           {
             name: "리쿠루 드래곤 SS",
             level: 21,
             order: 731,
-            showSkill: true,
+            showSkill: false,
           },
         ],
         aura: {
@@ -17982,7 +17982,7 @@
         {
           name: "밴시 SS",
           element: "어둠",
-          skill: "boom",
+          skill: null,
           statsRef: "grades.SS",
           appearances: [
             {
@@ -18016,13 +18016,13 @@
             name: "밴시 SS",
             level: 45,
             order: 535,
-            showSkill: true,
+            showSkill: false,
           },
           {
             name: "밴시 SS",
             level: 21,
             order: 726,
-            showSkill: true,
+            showSkill: false,
           },
         ],
         aura: {
@@ -19450,7 +19450,7 @@
         {
           name: "스쿠룸 SS",
           element: "불",
-          skill: "boom",
+          skill: null,
           statsRef: "grades.SS",
           appearances: [
             {
@@ -19484,13 +19484,13 @@
             name: "스쿠룸 SS",
             level: 45,
             order: 524,
-            showSkill: true,
+            showSkill: false,
           },
           {
             name: "스쿠룸 SS",
             level: 21,
             order: 729,
-            showSkill: true,
+            showSkill: false,
           },
         ],
         aura: {
@@ -21800,7 +21800,7 @@
         {
           name: "듀펜 SS",
           element: "땅",
-          skill: "boom",
+          skill: null,
           statsRef: "grades.SS",
           appearances: [
             {
@@ -21834,13 +21834,13 @@
             name: "듀펜 SS",
             level: 45,
             order: 497,
-            showSkill: true,
+            showSkill: false,
           },
           {
             name: "듀펜 SS",
             level: 21,
             order: 709,
-            showSkill: true,
+            showSkill: false,
           },
         ],
         aura: {
@@ -24062,7 +24062,7 @@
         {
           name: "위그드라실 SS",
           element: "땅",
-          skill: "def",
+          skill: null,
           statsRef: "grades.SS",
           appearances: [
             {
@@ -24096,13 +24096,13 @@
             name: "위그드라실 SS",
             level: 45,
             order: 514,
-            showSkill: true,
+            showSkill: false,
           },
           {
             name: "위그드라실 SS",
             level: 21,
             order: 698,
-            showSkill: true,
+            showSkill: false,
           },
         ],
         aura: {
@@ -24841,7 +24841,7 @@
         {
           name: "아틀란티스 SS",
           element: "물",
-          skill: "def",
+          skill: null,
           statsRef: "grades.SS",
           appearances: [
             {
@@ -24875,13 +24875,13 @@
             name: "아틀란티스 SS",
             level: 45,
             order: 526,
-            showSkill: true,
+            showSkill: false,
           },
           {
             name: "아틀란티스 SS",
             level: 21,
             order: 701,
-            showSkill: true,
+            showSkill: false,
           },
         ],
         aura: {
@@ -30822,7 +30822,7 @@
         {
           name: "페르마타 SS",
           element: "악몽",
-          skill: "def",
+          skill: null,
           statsRef: "grades.SS",
           appearances: [
             {
@@ -30856,13 +30856,13 @@
             name: "페르마타 SS",
             level: 45,
             order: 486,
-            showSkill: true,
+            showSkill: false,
           },
           {
             name: "페르마타 SS",
             level: 21,
             order: 695,
-            showSkill: true,
+            showSkill: false,
           },
         ],
         aura: {
@@ -32951,7 +32951,7 @@
         {
           name: "다크베인 SS",
           element: "불",
-          skill: "boom",
+          skill: null,
           statsRef: "grades.SS",
           appearances: [
             {
@@ -32985,13 +32985,13 @@
             name: "다크베인 SS",
             level: 45,
             order: 465,
-            showSkill: true,
+            showSkill: false,
           },
           {
             name: "다크베인 SS",
             level: 21,
             order: 675,
-            showSkill: true,
+            showSkill: false,
           },
         ],
         aura: {
@@ -33343,7 +33343,7 @@
         {
           name: "유리온 SS",
           element: "황혼",
-          skill: "def",
+          skill: null,
           statsRef: "grades.SS",
           appearances: [
             {
@@ -33377,13 +33377,13 @@
             name: "유리온 SS",
             level: 45,
             order: 534,
-            showSkill: true,
+            showSkill: false,
           },
           {
             name: "유리온 SS",
             level: 21,
             order: 676,
-            showSkill: true,
+            showSkill: false,
           },
         ],
         aura: {
@@ -34804,7 +34804,7 @@
         {
           name: "헬카이저 SS",
           element: "황혼",
-          skill: "boom",
+          skill: null,
           statsRef: "grades.SS",
           appearances: [
             {
@@ -34838,13 +34838,13 @@
             name: "헬카이저 SS",
             level: 45,
             order: 412,
-            showSkill: true,
+            showSkill: false,
           },
           {
             name: "헬카이저 SS",
             level: 21,
             order: 616,
-            showSkill: true,
+            showSkill: false,
           },
         ],
         aura: {
@@ -34948,7 +34948,7 @@
         {
           name: "레버넌트 SS",
           element: "악몽",
-          skill: "def",
+          skill: null,
           statsRef: "grades.SS",
           appearances: [
             {
@@ -34982,13 +34982,13 @@
             name: "레버넌트 SS",
             level: 45,
             order: 509,
-            showSkill: true,
+            showSkill: false,
           },
           {
             name: "레버넌트 SS",
             level: 21,
             order: 677,
-            showSkill: true,
+            showSkill: false,
           },
         ],
         aura: {
@@ -36657,7 +36657,7 @@
         {
           name: "엔더 드래곤 SS",
           element: "땅",
-          skill: "def",
+          skill: null,
           statsRef: "grades.SS",
           appearances: [
             {
@@ -36691,13 +36691,13 @@
             name: "엔더 드래곤 SS",
             level: 45,
             order: 385,
-            showSkill: true,
+            showSkill: false,
           },
           {
             name: "엔더 드래곤 SS",
             level: 21,
             order: 609,
-            showSkill: true,
+            showSkill: false,
           },
         ],
         aura: {
@@ -43045,7 +43045,7 @@
         {
           name: "허리케인 SS",
           element: "바람",
-          skill: "def",
+          skill: null,
           statsRef: "grades.SS",
           appearances: [
             {
@@ -43079,13 +43079,13 @@
             name: "허리케인 SS",
             level: 45,
             order: 456,
-            showSkill: true,
+            showSkill: false,
           },
           {
             name: "허리케인 SS",
             level: 21,
             order: 613,
-            showSkill: true,
+            showSkill: false,
           },
         ],
         aura: {
@@ -43189,7 +43189,7 @@
         {
           name: "하데스 SS",
           element: "어둠",
-          skill: "boom",
+          skill: null,
           statsRef: "grades.SS",
           appearances: [
             {
@@ -43223,13 +43223,13 @@
             name: "하데스 SS",
             level: 45,
             order: 442,
-            showSkill: true,
+            showSkill: false,
           },
           {
             name: "하데스 SS",
             level: 21,
             order: 626,
-            showSkill: true,
+            showSkill: false,
           },
         ],
         aura: {
@@ -51837,7 +51837,7 @@
         {
           name: "고귀한 다크베인 SS",
           element: "불",
-          skill: "boom",
+          skill: null,
           statsRef: "grades.SS",
           appearances: [
             {
@@ -51871,13 +51871,13 @@
             name: "고귀한 다크베인 SS",
             level: 45,
             order: 466,
-            showSkill: true,
+            showSkill: false,
           },
           {
             name: "고귀한 다크베인 SS",
             level: 21,
             order: 678,
-            showSkill: true,
+            showSkill: false,
           },
         ],
         aura: {
@@ -52935,7 +52935,7 @@
         {
           name: "고귀한 엔더 드래곤 SS",
           element: "땅",
-          skill: "def",
+          skill: null,
           statsRef: "grades.SS",
           appearances: [
             {
@@ -52969,13 +52969,13 @@
             name: "고귀한 엔더 드래곤 SS",
             level: 45,
             order: 386,
-            showSkill: true,
+            showSkill: false,
           },
           {
             name: "고귀한 엔더 드래곤 SS",
             level: 21,
             order: 610,
-            showSkill: true,
+            showSkill: false,
           },
         ],
         aura: {
@@ -54615,7 +54615,7 @@
         {
           name: "고귀한 아델라 SSS",
           element: "땅",
-          skill: "boom",
+          skill: null,
           statsRef: "grades.SSS",
           appearances: [
             {
@@ -54633,7 +54633,7 @@
         {
           name: "고귀한 아델라 SS",
           element: "땅",
-          skill: "boom",
+          skill: null,
           statsRef: "grades.SS",
           appearances: [
             {
@@ -54655,25 +54655,25 @@
             name: "고귀한 아델라 SSS",
             level: 45,
             order: 111,
-            showSkill: true,
+            showSkill: false,
           },
           {
             name: "고귀한 아델라 SSS",
             level: 21,
             order: 187,
-            showSkill: true,
+            showSkill: false,
           },
           {
             name: "고귀한 아델라 SS",
             level: 45,
             order: 446,
-            showSkill: true,
+            showSkill: false,
           },
           {
             name: "고귀한 아델라 SS",
             level: 21,
             order: 633,
-            showSkill: true,
+            showSkill: false,
           },
         ],
         aura: {
@@ -57058,7 +57058,7 @@
         {
           name: "고귀한 레버넌트 SS",
           element: "악몽",
-          skill: "def",
+          skill: null,
           statsRef: "grades.SS",
           appearances: [
             {
@@ -57092,13 +57092,13 @@
             name: "고귀한 레버넌트 SS",
             level: 45,
             order: 510,
-            showSkill: true,
+            showSkill: false,
           },
           {
             name: "고귀한 레버넌트 SS",
             level: 21,
             order: 679,
-            showSkill: true,
+            showSkill: false,
           },
         ],
         aura: {
@@ -62755,7 +62755,7 @@
         {
           name: "고귀한 디아누 SSS",
           element: "땅",
-          skill: "def",
+          skill: null,
           statsRef: "grades.SSS",
           appearances: [
             {
@@ -62773,7 +62773,7 @@
         {
           name: "고귀한 디아누 SS",
           element: "땅",
-          skill: "def",
+          skill: null,
           statsRef: "grades.SS",
           appearances: [
             {
@@ -62795,25 +62795,25 @@
             name: "고귀한 디아누 SSS",
             level: 45,
             order: 71,
-            showSkill: true,
+            showSkill: false,
           },
           {
             name: "고귀한 디아누 SSS",
             level: 21,
             order: 233,
-            showSkill: true,
+            showSkill: false,
           },
           {
             name: "고귀한 디아누 SS",
             level: 45,
             order: 429,
-            showSkill: true,
+            showSkill: false,
           },
           {
             name: "고귀한 디아누 SS",
             level: 21,
             order: 605,
-            showSkill: true,
+            showSkill: false,
           },
         ],
         aura: {
@@ -66495,7 +66495,7 @@
         {
           name: "거들테일 드래곤 SS",
           element: "땅",
-          skill: "boom",
+          skill: null,
           statsRef: "grades.SS",
           appearances: [
             {
@@ -66529,13 +66529,13 @@
             name: "거들테일 드래곤 SS",
             level: 45,
             order: 451,
-            showSkill: true,
+            showSkill: false,
           },
           {
             name: "거들테일 드래곤 SS",
             level: 21,
             order: 594,
-            showSkill: true,
+            showSkill: false,
           },
         ],
         aura: {
@@ -72769,7 +72769,7 @@
         {
           name: "고귀한 허리케인 SS",
           element: "바람",
-          skill: "def",
+          skill: null,
           statsRef: "grades.SS",
           appearances: [
             {
@@ -72803,13 +72803,13 @@
             name: "고귀한 허리케인 SS",
             level: 45,
             order: 457,
-            showSkill: true,
+            showSkill: false,
           },
           {
             name: "고귀한 허리케인 SS",
             level: 21,
             order: 615,
-            showSkill: true,
+            showSkill: false,
           },
         ],
         aura: {

@@ -195,17 +195,38 @@ const SS_ROWS=(()=>{
   return out;
 })();
 // 초월 · 성체: 도감 스탯(성체 기준, [1레벨, 성장폭])
+// 초월: 타입별 7.0 45레벨 풀초월 스탯 (dragonvillage.net/tip/42750)
+const TR_BASE={
+  '체력':{hp:1107,atk:157,def:157},
+  '공격':{hp:755,atk:245,def:157},
+  '방어':{hp:755,atk:157,def:245},
+  '체공':{hp:931,atk:245,def:113},
+  '체방':{hp:931,atk:113,def:245},
+  '공방':{hp:755,atk:201,def:201},
+};
 const REG_ROWS=DB.records.filter(r=>r.stats.regular).map(r=>({
-  ko:r.name.ko,did:r.id,elem:r.element,tr:!!r.stages.transcendence,st:r.stats.regular,aliases:r.aliases.ko||[]}));
-const KINDS={ss:'SS 등급용',reg:'초월 · 성체'};
+  ko:r.name.ko,did:r.id,elem:r.element,tr:!!(r.stages.transcendence&&TR_BASE[r.type]),type:r.type,st:r.stats.regular,aliases:r.aliases.ko||[]}));
+// 각성: 타입별 45레벨 스탯 + 각성 보너스(괄호 수치), 7.0 재료 기준 (dragonvillage.net/tip/41624)
+const AW_BASE={
+  '체력':{hp:857+72,atk:205+18,def:117+18},
+  '공격':{hp:329+72,atk:337+18,def:117+18},
+  '공방':{hp:329+72,atk:249+18,def:205+18},
+  '방어':{hp:329+72,atk:161+18,def:293+18},
+  '체공':{hp:681+72,atk:249+18,def:117+18},
+  '체방':{hp:681+72,atk:117+18,def:249+18},
+};
+const AW_ROWS=DB.records.filter(r=>r.stages.awakening&&AW_BASE[r.type]).map(r=>({
+  ko:r.name.ko,did:r.id,elem:r.element,type:r.type,aliases:r.aliases.ko||[]}));
+const KINDS={ss:'SS 등급용',aw:'각성',reg:'초월 · 성체'};
 
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const normName=n=>String(n||'').replace(/ 드래곤$/,'').replace(/\s+/g,'').toLowerCase();
 const fmt=n=>Number(n).toLocaleString();
 const ssOf=s=>SS_ROWS.find(d=>d.ko===s.name&&d.lv===s.ssLv&&d.elem===s.attr)||null;
 const regOf=s=>REG_ROWS.find(d=>d.ko===s.name&&d.elem===s.attr)||null;
-const dragonOf=s=>s.kind==='ss'?ssOf(s):regOf(s);
-const imgOf=(s,d)=>d?`${ASSET}dragon/${d.did}/profile/${s.kind==='reg'&&d.tr?7:4}.png`:'';
+const awOf=s=>AW_ROWS.find(d=>d.ko===s.name&&d.elem===s.attr)||null;
+const dragonOf=s=>s.kind==='ss'?ssOf(s):s.kind==='aw'?awOf(s):regOf(s);
+const imgOf=(s,d)=>d?`${ASSET}dragon/${d.did}/profile/${s.kind==='aw'?6:s.kind==='reg'&&d.tr?7:4}.png`:'';
 
 // ── 상태 ─────────────────────────────────────────────────────
 const mkSlot=()=>({kind:'ss',attr:'',name:'',ssLv:45,lv:45,
@@ -242,6 +263,8 @@ const INT=x=>Math.floor(x+1e-9);
 function baseOf(slot){
   const d=dragonOf(slot);if(!d)return null;
   if(slot.kind==='ss')return {hp:d.hp,atk:d.atk,def:d.def};
+  if(slot.kind==='aw')return {...AW_BASE[d.type]};
+  if(d.tr)return {...TR_BASE[d.type]};
   const lv=Math.max(1,Math.floor(Number(slot.lv)||1));
   return {hp:d.st.hp[0]+d.st.hp[1]*(lv-1),atk:d.st.atk[0]+d.st.atk[1]*(lv-1),def:d.st.def[0]+d.st.def[1]*(lv-1)};
 }
@@ -298,12 +321,13 @@ function cardHtml(ti,si){
   let title='드래곤 미선택',sub='',skill='';
   if(d){
     title=d.ko;
-    sub=slot.kind==='ss'?[slot.attr,'SS 등급용','Lv.'+slot.ssLv].join(' · '):[slot.attr,d.tr?'초월':'성체','Lv.'+slot.lv].join(' · ');
+    sub=slot.kind==='ss'?[slot.attr,'SS 등급용','Lv.'+slot.ssLv].join(' · '):slot.kind==='aw'?[slot.attr,'각성 '+d.type+'형','Lv.45'].join(' · '):(d.tr?[slot.attr,'초월 7.0 '+d.type+'형','Lv.45']:[slot.attr,'성체','Lv.'+slot.lv]).join(' · ');
     if(slot.kind==='ss'&&d.sk)skill=`<span class="skill">${esc(SKILL_LBL[d.sk]||d.sk)}</span>`;
   }
   const img=imgOf(slot,d);
   const lvCtl=slot.kind==='ss'
     ?`<select onchange="${P(ti,si)}.ssLv=+this.value;fixSS(${ti},${si});onChange(true)">${[45,21].map(l=>opt(l,'Lv.'+l,slot.ssLv)).join('')}</select>`
+    :slot.kind==='aw'||(d&&d.tr)?`<select disabled title="${slot.kind==='aw'?'각성':'초월'}은 45레벨 기준">${opt(45,'Lv.45',45)}</select>`
     :`<input type="number" min="1" step="1" value="${Number(slot.lv)||45}" title="레벨" oninput="${P(ti,si)}.lv=Math.max(1,parseInt(this.value)||1);onChange()">`;
   const pick=`<div class="f2">
       <select onchange="setKind(${ti},${si},this.value)">${Object.entries(KINDS).map(([k,v])=>opt(k,v,slot.kind)).join('')}</select>
@@ -396,6 +420,10 @@ function dsCandidates(ti,si,q){
   if(slot.kind==='ss'){
     return SS_ROWS.filter(d=>d.lv===slot.ssLv&&inAttr(d)&&hit([d.ko])).sort((a,b)=>b.ev-a.ev).slice(0,40)
       .map(d=>({d,img:imgOf(slot,d),meta:d.elem+' · '+d.ev}));
+  }
+  if(slot.kind==='aw'){
+    return AW_ROWS.filter(d=>inAttr(d)&&hit([d.ko,...d.aliases])).slice(0,40)
+      .map(d=>({d,img:`${ASSET}dragon/${d.did}/profile/6.png`,meta:d.elem+' · '+d.type+'형'}));
   }
   return REG_ROWS.filter(d=>inAttr(d)&&hit([d.ko,...d.aliases])).slice(0,40)
     .map(d=>({d,img:`${ASSET}dragon/${d.did}/profile/${d.tr?7:4}.png`,meta:d.elem+(d.tr?' · 초월':' · 성체')}));

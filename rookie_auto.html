@@ -484,9 +484,29 @@ const SS_ROWS=(()=>{
   }));
   return out;
 })();
+// 초월: 타입별 7.0 45레벨 풀초월 스탯 (dragonvillage.net/tip/42750)
+const TR_BASE={
+  '체력':{hp:1107,atk:157,def:157},
+  '공격':{hp:755,atk:245,def:157},
+  '방어':{hp:755,atk:157,def:245},
+  '체공':{hp:931,atk:245,def:113},
+  '체방':{hp:931,atk:113,def:245},
+  '공방':{hp:755,atk:201,def:201},
+};
 const REG_ROWS=DB.records.filter(r=>r.stats.regular).map(r=>({
-  ko:r.name.ko,did:r.id,elem:r.element,tr:!!r.stages.transcendence,st:r.stats.regular,aliases:r.aliases.ko||[]}));
-const KINDS={ss:'SS 등급용',reg:'초월 · 성체'};
+  ko:r.name.ko,did:r.id,elem:r.element,tr:!!(r.stages.transcendence&&TR_BASE[r.type]),type:r.type,st:r.stats.regular,aliases:r.aliases.ko||[]}));
+// 각성: 타입별 45레벨 스탯 + 각성 보너스(괄호 수치), 7.0 재료 기준 (dragonvillage.net/tip/41624)
+const AW_BASE={
+  '체력':{hp:857+72,atk:205+18,def:117+18},
+  '공격':{hp:329+72,atk:337+18,def:117+18},
+  '공방':{hp:329+72,atk:249+18,def:205+18},
+  '방어':{hp:329+72,atk:161+18,def:293+18},
+  '체공':{hp:681+72,atk:249+18,def:117+18},
+  '체방':{hp:681+72,atk:117+18,def:249+18},
+};
+const AW_ROWS=DB.records.filter(r=>r.stages.awakening&&AW_BASE[r.type]).map(r=>({
+  ko:r.name.ko,did:r.id,elem:r.element,type:r.type,aliases:r.aliases.ko||[]}));
+const KINDS={ss:'SS 등급용',aw:'각성',reg:'초월 · 성체'};
 
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=n=>Number(n).toLocaleString();
@@ -497,17 +517,21 @@ const rd=k=>{try{const r=localStorage.getItem(k);return r?JSON.parse(r):null;}ca
 const lvClamp=v=>Math.max(1,Math.min(99,parseInt(v)||1));
 function ssOf(en){return SS_ROWS.find(d=>d.ko===en.name&&d.lv===en.ssLv&&d.elem===en.attr)||null;}
 function regOf(en){return REG_ROWS.find(d=>d.ko===en.name&&d.elem===en.attr)||null;}
-function dragonOf(en){return en.kind==='ss'?ssOf(en):regOf(en);}
+function awOf(en){return AW_ROWS.find(d=>d.ko===en.name&&d.elem===en.attr)||null;}
+function dragonOf(en){return en.kind==='ss'?ssOf(en):en.kind==='aw'?awOf(en):regOf(en);}
 function baseOf(en){
   const d=dragonOf(en);if(!d)return null;
   if(en.kind==='ss')return {hp:d.hp,atk:d.atk,def:d.def};
+  if(en.kind==='aw')return {...AW_BASE[d.type]};
+  if(d.tr)return {...TR_BASE[d.type]};
   const lv=lvClamp(en.lv);
   return {hp:d.st.hp[0]+d.st.hp[1]*(lv-1),atk:d.st.atk[0]+d.st.atk[1]*(lv-1),def:d.st.def[0]+d.st.def[1]*(lv-1)};
 }
-function entryImg(en,d){return d?imgUrl(d.did,en.kind==='reg'&&d.tr?7:4):'';}
+function entryImg(en,d){return d?imgUrl(d.did,en.kind==='aw'?6:en.kind==='reg'&&d.tr?7:4):'';}
 function entrySub(en,d){
   if(!d)return '';
-  return en.kind==='ss'?'SS · Lv.'+en.ssLv+' · EVAL '+d.ev:(d.tr?'초월':'성체')+' · Lv.'+lvClamp(en.lv);
+  if(en.kind==='aw')return '각성 '+d.type+'형 · Lv.45';
+  return en.kind==='ss'?'SS · Lv.'+en.ssLv+' · EVAL '+d.ev:d.tr?'초월 7.0 '+d.type+'형 · Lv.45':'성체 · Lv.'+lvClamp(en.lv);
 }
 
 // ── 상태 ─────────────────────────────────────────────────────
@@ -1054,6 +1078,7 @@ function drEditHtml(ti,i){
   const kindSel=`<select onchange="setKind(${ti},${i},this.value)">${Object.entries(KINDS).map(([k,v])=>`<option value="${k}"${en.kind===k?' selected':''}>${v}</option>`).join('')}</select>`;
   const lvCtl=en.kind==='ss'
     ?`<select onchange="${P}.ssLv=+this.value;if(!ssOf(${P}))${P}.name='';onEdit()">${[45,21].map(l=>`<option value="${l}"${en.ssLv===l?' selected':''}>Lv.${l}</option>`).join('')}</select>`
+    :en.kind==='aw'||(d&&d.tr)?`<select disabled title="${en.kind==='aw'?'각성':'초월'}은 45레벨 기준"><option>Lv.45</option></select>`
     :`<input type="number" min="1" step="1" value="${lvClamp(en.lv)}" title="레벨" onchange="${P}.lv=lvClamp(this.value);onEdit()">`;
   const rows=en.sp.map((o,k)=>{
     const v=o.stat&&o.type?(o.type==='%'?'+'+Math.round(SP_PCT[k+1]*100)+'%':'+'+SP_PLUS[o.stat][k+1]):'';
@@ -1185,6 +1210,10 @@ function dsCandidates(ti,i,q){
   if(en.kind==='ss'){
     return SS_ROWS.filter(d=>d.lv===en.ssLv&&d.elem===en.attr&&hit([d.ko])).sort((a,b)=>b.ev-a.ev).slice(0,40)
       .map(d=>({d,img:imgUrl(d.did,4),meta:'EVAL '+d.ev}));
+  }
+  if(en.kind==='aw'){
+    return AW_ROWS.filter(d=>d.elem===en.attr&&hit([d.ko,...d.aliases])).slice(0,40)
+      .map(d=>({d,img:imgUrl(d.did,6),meta:d.type+'형'}));
   }
   return REG_ROWS.filter(d=>d.elem===en.attr&&hit([d.ko,...d.aliases])).slice(0,40)
     .map(d=>({d,img:imgUrl(d.did,d.tr?7:4),meta:d.tr?'초월':'성체'}));

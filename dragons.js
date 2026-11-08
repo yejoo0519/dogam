@@ -31065,7 +31065,7 @@
         {
           name: "옴므니아",
           element: "악몽",
-          skill: null,
+          skill: "boom",
           statsRef: "regular",
           appearances: [
             {
@@ -31138,7 +31138,7 @@
         {
           name: "코므니아",
           element: "황혼",
-          skill: null,
+          skill: "boom",
           statsRef: "regular",
           appearances: [
             {
@@ -31211,7 +31211,7 @@
         {
           name: "다므니아",
           element: "불",
-          skill: null,
+          skill: "boom",
           statsRef: "regular",
           appearances: [
             {
@@ -31284,7 +31284,7 @@
         {
           name: "드므니아",
           element: "바람",
-          skill: null,
+          skill: "boom",
           statsRef: "regular",
           appearances: [
             {
@@ -31357,7 +31357,7 @@
         {
           name: "맘므니아",
           element: "물",
-          skill: null,
+          skill: "boom",
           statsRef: "regular",
           appearances: [
             {
@@ -31430,7 +31430,7 @@
         {
           name: "흐므니아",
           element: "땅",
-          skill: null,
+          skill: "boom",
           statsRef: "regular",
           appearances: [
             {
@@ -42035,7 +42035,7 @@
         {
           name: "판므니아",
           element: "여명",
-          skill: null,
+          skill: "boom",
           statsRef: "regular",
           appearances: [
             {
@@ -42108,7 +42108,7 @@
         {
           name: "라므니아",
           element: "황혼",
-          skill: null,
+          skill: "boom",
           statsRef: "regular",
           appearances: [
             {
@@ -42181,7 +42181,7 @@
         {
           name: "닌므니아",
           element: "악몽",
-          skill: null,
+          skill: "boom",
           statsRef: "regular",
           appearances: [
             {

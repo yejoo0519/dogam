@@ -143,7 +143,7 @@ input[type=number]{width:100%}
     <div class="sec-bd">
       <div class="lbl">속성 버프 (해당 속성 드래곤에 적용) · 컬렉션은 풀컬(240/60/60) 고정</div>
       <div class="row3" style="max-width:560px" id="buff-row"></div>
-      <div class="lbl" style="margin-top:10px;font-weight:400">루키 제한: SS 등급용 · 초월 · 성체만 · 젬 31 이하 · 4성 정령 · 물약 5등급 이하 · 정령 50% 적용</div>
+      <div class="lbl" style="margin-top:10px;font-weight:400">루키 제한: 각성 · 초월 · 중립만 · 젬 31 이하 · 4성 정령 · 물약 5등급 이하 · 정령 50% 적용</div>
     </div>
   </div>
 </div>
@@ -184,7 +184,7 @@ const COLL={hp:240,atk:60,def:60};
 const TEAM_N=3;
 
 // ── 드래곤 목록 ────────────────────────────────────────────
-// SS 등급용: 루키 랭킹 데이터 (Lv.21 / Lv.45)
+// 중립: 루키 랭킹 데이터 (등급용 SS + 일반 드래곤 성체 버전, Lv.21 / Lv.45)
 const SS_ROWS=(()=>{
   const seen=new Set(),out=[];
   [45,21].forEach(lv=>DB.getRankingRows('cham','SS',lv).forEach(r=>{
@@ -194,7 +194,7 @@ const SS_ROWS=(()=>{
   }));
   return out;
 })();
-// 초월 · 성체: 도감 스탯(성체 기준, [1레벨, 성장폭])
+// 초월: 초월 가능 드래곤 (7.0 풀초월 스탯)
 // 초월: 타입별 7.0 45레벨 풀초월 스탯 (dragonvillage.net/tip/42750)
 const TR_BASE={
   '체력':{hp:1107,atk:157,def:157},
@@ -204,7 +204,7 @@ const TR_BASE={
   '체방':{hp:931,atk:113,def:245},
   '공방':{hp:755,atk:201,def:201},
 };
-const REG_ROWS=DB.records.filter(r=>r.stats.regular).map(r=>({
+const REG_ROWS=DB.records.filter(r=>r.stats.regular&&r.stages.transcendence&&TR_BASE[r.type]).map(r=>({
   ko:r.name.ko,did:r.id,elem:r.element,tr:!!(r.stages.transcendence&&TR_BASE[r.type]),type:r.type,st:r.stats.regular,aliases:r.aliases.ko||[]}));
 // 각성: 타입별 45레벨 스탯 + 각성 보너스(괄호 수치), 7.0 재료 기준 (dragonvillage.net/tip/41624)
 const AW_BASE={
@@ -217,7 +217,10 @@ const AW_BASE={
 };
 const AW_ROWS=DB.records.filter(r=>r.stages.awakening&&AW_BASE[r.type]).map(r=>({
   ko:r.name.ko,did:r.id,elem:r.element,type:r.type,aliases:r.aliases.ko||[]}));
-const KINDS={ss:'SS 등급용',aw:'각성',reg:'초월 · 성체'};
+const KINDS={aw:'각성',reg:'초월',ss:'중립'};
+// 예전 '초월 · 성체' 저장값 중 초월이 없는 드래곤 → 중립(성체 버전)
+const migKind=q=>{if(q&&q.kind==='reg'&&q.name&&!REG_ROWS.some(d=>d.ko===q.name&&d.elem===q.attr)){q.kind='ss';q.ssLv=45;}return q;};
+
 
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const normName=n=>String(n||'').replace(/ 드래곤$/,'').replace(/\s+/g,'').toLowerCase();
@@ -241,7 +244,7 @@ function load(){
     const p=JSON.parse(r);const base=mkState();
     S={...base,...p,buff:{...base.buff,...(p.buff||{})},
       teams:base.teams.map((t,ti)=>t.map((s,si)=>{
-        const q=(p.teams&&p.teams[ti]&&p.teams[ti][si])||{};
+        const q=migKind({...((p.teams&&p.teams[ti]&&p.teams[ti][si])||{})});
         return {...s,...q,pend:{...s.pend,...(q.pend||{})},enc:{...s.enc,...(q.enc||{})},
           gems:s.gems.map((g,i)=>({...g,...((q.gems||[])[i]||{})})),
           sp:s.sp.map((o,i)=>({...o,...((q.sp||[])[i]||{})}))};
@@ -321,7 +324,7 @@ function cardHtml(ti,si){
   let title='드래곤 미선택',sub='',skill='';
   if(d){
     title=d.ko;
-    sub=slot.kind==='ss'?[slot.attr,'SS 등급용','Lv.'+slot.ssLv].join(' · '):slot.kind==='aw'?[slot.attr,'각성 '+d.type+'형','Lv.45'].join(' · '):(d.tr?[slot.attr,'초월 7.0 '+d.type+'형','Lv.45']:[slot.attr,'성체','Lv.'+slot.lv]).join(' · ');
+    sub=slot.kind==='ss'?[slot.attr,'중립','Lv.'+slot.ssLv].join(' · '):slot.kind==='aw'?[slot.attr,'각성 '+d.type+'형','Lv.45'].join(' · '):(d.tr?[slot.attr,'초월 7.0 '+d.type+'형','Lv.45']:[slot.attr,'성체','Lv.'+slot.lv]).join(' · ');
     if(slot.kind==='ss'&&d.sk)skill=`<span class="skill">${esc(SKILL_LBL[d.sk]||d.sk)}</span>`;
   }
   const img=imgOf(slot,d);
@@ -426,7 +429,7 @@ function dsCandidates(ti,si,q){
       .map(d=>({d,img:`${ASSET}dragon/${d.did}/profile/6.png`,meta:d.elem+' · '+d.type+'형'}));
   }
   return REG_ROWS.filter(d=>inAttr(d)&&hit([d.ko,...d.aliases])).slice(0,40)
-    .map(d=>({d,img:`${ASSET}dragon/${d.did}/profile/${d.tr?7:4}.png`,meta:d.elem+(d.tr?' · 초월':' · 성체')}));
+    .map(d=>({d,img:`${ASSET}dragon/${d.did}/profile/${d.tr?7:4}.png`,meta:d.elem+' · 초월 '+d.type+'형'}));
 }
 function dsFilter(ti,si,q){
   const drop=document.getElementById(`ds-${ti}-${si}`);if(!drop)return;

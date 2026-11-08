@@ -433,7 +433,7 @@ input[type=number]{width:100%}
 <main class="u-main" id="mainpane">
 <div class="pane-top"><span class="save-msg" id="save-msg"></span></div>
   <div id="page-dragon">
-    <div class="sec"><div class="sec-bd" style="font-size:12px;color:var(--dim);line-height:1.7">루키대전에 쓸 드래곤을 팀별로 등록해두는 곳이에요. 챔대 계산기와는 <b>별도로 저장</b>되고, 4성 정령 옵션까지 입력해두면 자동 계산에 그대로 반영돼요.<br>루키 제한: SS 등급용 · 초월 · 성체만 사용 가능</div></div>
+    <div class="sec"><div class="sec-bd" style="font-size:12px;color:var(--dim);line-height:1.7">루키대전에 쓸 드래곤을 팀별로 등록해두는 곳이에요. 챔대 계산기와는 <b>별도로 저장</b>되고, 4성 정령 옵션까지 입력해두면 자동 계산에 그대로 반영돼요.<br>루키 제한: 각성 · 초월 · 중립만 사용 가능</div></div>
     <div id="dragon-teams"></div>
   </div>
   <div id="page-calc" style="display:none">
@@ -493,7 +493,7 @@ const TR_BASE={
   '체방':{hp:931,atk:113,def:245},
   '공방':{hp:755,atk:201,def:201},
 };
-const REG_ROWS=DB.records.filter(r=>r.stats.regular).map(r=>({
+const REG_ROWS=DB.records.filter(r=>r.stats.regular&&r.stages.transcendence&&TR_BASE[r.type]).map(r=>({
   ko:r.name.ko,did:r.id,elem:r.element,tr:!!(r.stages.transcendence&&TR_BASE[r.type]),type:r.type,st:r.stats.regular,aliases:r.aliases.ko||[]}));
 // 각성: 타입별 45레벨 스탯 + 각성 보너스(괄호 수치), 7.0 재료 기준 (dragonvillage.net/tip/41624)
 const AW_BASE={
@@ -506,7 +506,10 @@ const AW_BASE={
 };
 const AW_ROWS=DB.records.filter(r=>r.stages.awakening&&AW_BASE[r.type]).map(r=>({
   ko:r.name.ko,did:r.id,elem:r.element,type:r.type,aliases:r.aliases.ko||[]}));
-const KINDS={ss:'SS 등급용',aw:'각성',reg:'초월 · 성체'};
+const KINDS={aw:'각성',reg:'초월',ss:'중립'};
+// 예전 '초월 · 성체' 저장값 중 초월이 없는 드래곤 → 중립(성체 버전)
+const migKind=q=>{if(q&&q.kind==='reg'&&q.name&&!REG_ROWS.some(d=>d.ko===q.name&&d.elem===q.attr)){q.kind='ss';q.ssLv=45;}return q;};
+
 
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=n=>Number(n).toLocaleString();
@@ -531,7 +534,7 @@ function entryImg(en,d){return d?imgUrl(d.did,en.kind==='aw'?6:en.kind==='reg'&&
 function entrySub(en,d){
   if(!d)return '';
   if(en.kind==='aw')return '각성 '+d.type+'형 · Lv.45';
-  return en.kind==='ss'?'SS · Lv.'+en.ssLv+' · EVAL '+d.ev:d.tr?'초월 7.0 '+d.type+'형 · Lv.45':'성체 · Lv.'+lvClamp(en.lv);
+  return en.kind==='ss'?'중립 · Lv.'+en.ssLv+' · EVAL '+d.ev:d.tr?'초월 7.0 '+d.type+'형 · Lv.45':'성체 · Lv.'+lvClamp(en.lv);
 }
 
 // ── 상태 ─────────────────────────────────────────────────────
@@ -545,6 +548,7 @@ const mkGemInv=()=>({hp:{},atk:{},def:{}});
 const mkState=()=>({page:'dragon',dteam:0,round:0,rounds:mkRounds(),metric:'bv',pot:'crit',minst:mkMin(),gemInv:mkGemInv(),teams:Array.from({length:TEAM_N},()=>[])});
 function normEntry(q){
   const e=mkEntry();
+  q=migKind({...q});
   const out={...e,...q,uid:q.uid||e.uid};
   if(!KINDS[out.kind])out.kind='ss';
   if(out.ssLv!==21)out.ssLv=45;
@@ -1216,7 +1220,7 @@ function dsCandidates(ti,i,q){
       .map(d=>({d,img:imgUrl(d.did,6),meta:d.type+'형'}));
   }
   return REG_ROWS.filter(d=>d.elem===en.attr&&hit([d.ko,...d.aliases])).slice(0,40)
-    .map(d=>({d,img:imgUrl(d.did,d.tr?7:4),meta:d.tr?'초월':'성체'}));
+    .map(d=>({d,img:imgUrl(d.did,d.tr?7:4),meta:'초월 '+d.type+'형'}));
 }
 function dsFilter(ti,i,q){
   const drop=document.getElementById(`ds-${ti}-${i}`);if(!drop)return;

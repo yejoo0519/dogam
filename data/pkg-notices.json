@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-11-07",
+  "checkedAt": "2026-11-08",
   "source": "https://www.dragonvillage.net/notice",
-  "totalCount": 3960,
-  "scannedCount": 3960,
+  "totalCount": 3961,
+  "scannedCount": 3961,
   "scannedIds": [
     283,
     284,
@@ -3964,9 +3964,33 @@
     21451,
     21452,
     21453,
-    21454
+    21454,
+    21455
   ],
   "notices": [
+    {
+      "id": 21455,
+      "title": "[안내] 유니버스 패키지 판매 안내",
+      "date": "2026-11-07",
+      "url": "https://www.dragonvillage.net/notice/21455",
+      "events": [
+        {
+          "dragonId": 252,
+          "name": "유니버스",
+          "start": "2026-11-09",
+          "end": "2026-11-22",
+          "noticeId": 21455
+        }
+      ],
+      "periods": [
+        {
+          "start": "2026-11-09",
+          "end": "2026-11-22",
+          "label": "유니버스 패키지의 판매가 예정되어 안내드립니다."
+        }
+      ],
+      "hasImages": true
+    },
     {
       "id": 21451,
       "title": "[이벤트] 11월 1,2,3 이벤트 안내",

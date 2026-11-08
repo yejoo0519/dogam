@@ -126,7 +126,7 @@ function openGalleryPanel(cat,ci){
   const imgEl=document.getElementById('gp-img');
   if(url){imgEl.src=url;imgEl.style.display='';}
   else imgEl.style.display='none';
-  document.getElementById('gp-name').textContent=card.name||'(이름 없음)';
+  document.getElementById('gp-name').textContent=dragonDispName(card)||'(이름 없음)';
   document.getElementById('gp-type').textContent=(card.dtype||'')+(card.dtype&&card.growth?' · ':'')+((card.growth||''));
   const gradeLabel=card.growth==='진각'?'진각':card.grade||'-';
   document.getElementById('gp-rows').innerHTML=
@@ -361,10 +361,13 @@ const mkState=()=>({
 let S=mkState();
 let simGrade='9.0', simBuf=2;
 
-const SAVE_KEY='dv1sim_'+location.pathname.split('/').pop().replace(/\.[^.]+$/,'');
+// EN 페이지(/en/)는 영문판 저장 데이터(dv1simEN_)를 따로 사용
+const LS_PRE=/\/en\//.test(location.pathname)?'dv1simEN':'dv1sim';
+const SAVE_KEY=LS_PRE+'_'+location.pathname.split('/').pop().replace(/\.[^.]+$/,'');
 
 // ── [일회성 마이그레이션 v2] EN 키(dv1simEN_) 데이터 복구 + 드래곤 셋팅 보존/복원 ──
 (function(){
+  if(LS_PRE!=='dv1sim')return; // EN은 en-storage-migrate.js에서 이름 정규화
   try{
     var MIG_ACC={'Horn of light +18 (Crit/HP)':'빛뿔 (크/체) 18','Horn of light +18 (Crit/ATK)':'빛뿔 (크/공) 18','Horn of light +18 (Crit/DEF)':'빛뿔 (크/방) 18','Horn of light +20 (Crit/HP)':'빛뿔 (크/체) 20','Horn of light +20 (Crit/ATK)':'빛뿔 (크/공) 20','Horn of light +20 (Crit/DEF)':'빛뿔 (크/방) 20','Nightmare Orb +16 (HP)':'악몽 수호자의 보주 (악보) 16','Dusk Orb +16 (ATK)':'황혼 수호자의 보주 (황보) 16','Dawn Orb +16 (DEF)':'여명 수호자의 보주 (여보) 16','Horn of water +16 (HP/ATK)':'물뿔 (체/공) 16','Horn of water +16 (HP/DEF)':'물뿔 (체/방) 16','Horn of fire +16 (ATK/HP)':'불뿔 (공/체) 16','Horn of fire +16 (ATK/DEF)':'불뿔 (공/방) 16','Horn of earth +16 (DEF/HP)':'대뿔 (방/체) 16','Horn of earth +16 (DEF/ATK)':'대뿔 (방/공) 16','Horn of wind +16 (HP/DEF)':'바뿔 (체/방) 16','Horn of wind +16 (ATK/HP)':'바뿔 (공/체) 16','Horn of wind +16 (ATK/DEF)':'바뿔 (공/방) 16','Nightmare Orb +17 (HP)':'악몽 수호자의 보주 (악보) 17','Dusk Orb +17 (ATK)':'황혼 수호자의 보주 (황보) 17','Dawn Orb +17 (DEF)':'여명 수호자의 보주 (여보) 17','Horn of water +17 (HP/ATK)':'물뿔 (체/공) 17','Horn of water +17 (HP/DEF)':'물뿔 (체/방) 17','Horn of fire +17 (ATK/HP)':'불뿔 (공/체) 17','Horn of fire +17 (ATK/DEF)':'불뿔 (공/방) 17','Horn of earth +17 (DEF/HP)':'대뿔 (방/체) 17','Horn of earth +17 (DEF/ATK)':'대뿔 (방/공) 17','Horn of wind +17 (HP/DEF)':'바뿔 (체/방) 17','Horn of wind +17 (ATK/HP)':'바뿔 (공/체) 17','Horn of wind +17 (ATK/DEF)':'바뿔 (공/방) 17','Nightmare Orb +18 (HP)':'악몽 수호자의 보주 (악보) 18','Dusk Orb +18 (ATK)':'황혼 수호자의 보주 (황보) 18','Dawn Orb +18 (DEF)':'여명 수호자의 보주 (여보) 18','Horn of water +18 (HP/ATK)':'물뿔 (체/공) 18','Horn of water +18 (HP/DEF)':'물뿔 (체/방) 18','Horn of fire +18 (ATK/HP)':'불뿔 (공/체) 18','Horn of fire +18 (ATK/DEF)':'불뿔 (공/방) 18','Horn of earth +18 (DEF/HP)':'대뿔 (방/체) 18','Horn of earth +18 (DEF/ATK)':'대뿔 (방/공) 18','Horn of wind +18 (HP/DEF)':'바뿔 (체/방) 18','Horn of wind +18 (ATK/HP)':'바뿔 (공/체) 18','Horn of wind +18 (ATK/DEF)':'바뿔 (공/방) 18','Nightmare Orb +19 (HP)':'악몽 수호자의 보주 (악보) 19','Dusk Orb +19 (ATK)':'황혼 수호자의 보주 (황보) 19','Dawn Orb +19 (DEF)':'여명 수호자의 보주 (여보) 19','Horn of water +19 (HP/ATK)':'물뿔 (체/공) 19','Horn of water +19 (HP/DEF)':'물뿔 (체/방) 19','Horn of fire +19 (ATK/HP)':'불뿔 (공/체) 19','Horn of fire +19 (ATK/DEF)':'불뿔 (공/방) 19','Horn of earth +19 (DEF/HP)':'대뿔 (방/체) 19','Horn of earth +19 (DEF/ATK)':'대뿔 (방/공) 19','Horn of wind +19 (HP/DEF)':'바뿔 (체/방) 19','Horn of wind +19 (ATK/HP)':'바뿔 (공/체) 19','Horn of wind +19 (ATK/DEF)':'바뿔 (공/방) 19','Nightmare Orb +20 (HP)':'악몽 수호자의 보주 (악보) 20','Dusk Orb +20 (ATK)':'황혼 수호자의 보주 (황보) 20','Dawn Orb +20 (DEF)':'여명 수호자의 보주 (여보) 20','Horn of water +20 (HP/ATK)':'물뿔 (체/공) 20','Horn of water +20 (HP/DEF)':'물뿔 (체/방) 20','Horn of fire +20 (ATK/HP)':'불뿔 (공/체) 20','Horn of fire +20 (ATK/DEF)':'불뿔 (공/방) 20','Horn of earth +20 (DEF/HP)':'대뿔 (방/체) 20','Horn of earth +20 (DEF/ATK)':'대뿔 (방/공) 20','Horn of wind +20 (HP/DEF)':'바뿔 (체/방) 20','Horn of wind +20 (ATK/HP)':'바뿔 (공/체) 20','Horn of wind +20 (ATK/DEF)':'바뿔 (공/방) 20'};
     var MIG_DRG=DV1_DRAGON_VIEWS.savedNameMap(GUILD_MODE);
@@ -447,7 +450,7 @@ function doLoad(){
     // ── 내 스펙 자동 적용 ──
     (function(){
       try{
-        const _sr=localStorage.getItem('dv1sim_spec');
+        const _sr=localStorage.getItem(LS_PRE+'_spec');
         if(!_sr)return;
         const _sp=JSON.parse(_sr);
         if(_sp.accCards)S.accCards=_sp.accCards;
@@ -464,7 +467,7 @@ function doLoad(){
     // ── 내 스펙 자동 적용 ──
     (function(){
       try{
-        const _sr=localStorage.getItem('dv1sim_spec');
+        const _sr=localStorage.getItem(LS_PRE+'_spec');
         if(!_sr)return;
         const _sp=JSON.parse(_sr);
         if(_sp.accCards)S.accCards=_sp.accCards;
@@ -480,11 +483,11 @@ function saveDragonToSpec(){
   try{
     // S.dragonCards 직접 사용 (localStorage보다 최신 상태 보장)
     const dragonCards=S.dragonCards||{};
-    const specRaw=localStorage.getItem('dv1sim_spec');
+    const specRaw=localStorage.getItem(LS_PRE+'_spec');
     const spec=specRaw?JSON.parse(specRaw):{};
     spec.dragonCards=dragonCards;
-    localStorage.setItem('dv1sim_spec',JSON.stringify(spec));
-    localStorage.setItem('dv1sim_dragon_pending','1');
+    localStorage.setItem(LS_PRE+'_spec',JSON.stringify(spec));
+    localStorage.setItem(LS_PRE+'_dragon_pending','1');
     const t=document.createElement('div');
     t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--gold);color:#0a0c18;padding:10px 24px;border-radius:8px;font-weight:800;font-size:14px;z-index:9999;transition:opacity .3s';
     t.textContent='내 스펙에 드래곤 셋팅이 저장됐어요!';
@@ -1039,6 +1042,18 @@ function findDragonAttr(name){
   return'';
 }
 
+// 같은 이름 용이 여러 마리면 입력 순서대로 뒤에 번호를 붙여 표시 (계산은 카드 uid 기준이라 영향 없음)
+function dragonDispName(card){
+  const name=card?.name||'';const key=normDragonName(name);
+  if(!key)return name;
+  let n=0,tot=0;
+  DRAGON_CATS.forEach(c=>(S.dragonCards?.[c]||[]).forEach(o=>{
+    if(normDragonName(o.name)!==key)return;
+    tot++;if(o===card||(card.uid&&o.uid===card.uid))n=tot;
+  }));
+  return tot>1&&n?`${name} ${n}`:name;
+}
+
 function dragonIdentityKey(card){
   const nameKey=normDragonName(card?.name);
   return card?.dupe&&card?.uid?card.uid:nameKey;
@@ -1068,10 +1083,7 @@ function hasOtherDragonWithSameName(cat,idx){
 }
 
 function warnUncheckedDragonDuplicate(){
-  const group=findUncheckedDragonDuplicate();
-  if(!group)return;
-  const name=group[0].card.name;
-  alert(`동일한 용 이름 "${name}"이 입력되어 있습니다. 같은 개체가 아니라면 각 카드의 중복 여부를 체크해주세요.`);
+  // 중복 용은 자동 번호로 구분하므로 경고하지 않음
 }
 
 function syncDragonDupeGroupByName(name){
@@ -1126,8 +1138,8 @@ function gCardHtml(cat,ci){
                 <input class="dragon-name-input" type="text" value="${escHtml(card.name)}" placeholder="용 이름" oninput="onDragonNameInput('${cat}',${ci},this.value);filterDragonDrop('${cat}',${ci},this.value)" onchange="applyDragonNameType('${cat}',${ci})" onfocus="filterDragonDrop('${cat}',${ci},this.value)" onblur="setTimeout(()=>{const d=document.getElementById('dragon-drop-${cat}-${ci}');if(d)d.classList.remove('open');},200)">
                 <div class="dragon-drop" id="dragon-drop-${cat}-${ci}"></div>
               </div>
+              ${(()=>{const _d=dragonDispName(card);return _d!==card.name?`<span class="dragon-dup-no" style="flex-shrink:0;padding:2px 7px;border:1px solid var(--bd,#444);border-radius:5px;font-size:11px;opacity:.8">${_d.slice(card.name.length+1)}</span>`:'';})()}
             </div>
-            <label class="dragon-dupe-check">중복 여부 <input type="checkbox" ${card.dupe?'checked':''} onchange="onDragonDupe('${cat}',${ci},this.checked)"></label>
             <div class="readonly-field dragon-type-field">${escHtml(card.dtype||'타입')}</div>
             <select onchange="onDragonField('${cat}',${ci},'growth',this.value)">
               <option value="강림(축복)" ${card.growth==='강림(축복)'?'selected':''}>강림(축복)</option>
@@ -1219,14 +1231,13 @@ function renderDragonInfo(){
       cards.forEach((card,ci)=>{
         const open=G_EDIT&&G_EDIT.cat===cat&&G_EDIT.ci===ci;
         const url=getDragonImgUrl(card.name);
-        const nameTxt=card.name||'용 미선택';
+        const nameTxt=dragonDispName(card)||'용 미선택';
         const sub=[card.dtype||'', card.growth||'', (card.growth==='강림(축복)'?card.grade:'')].filter(Boolean).join(' · ');
         rows+=`<tr class="dr-row${open?' on':''}" onclick="gOpenEdit('${cat}',${ci})">
           <td class="c-bar" style="background:${EL_DOT[cat]}"></td>
           <td class="c-name"><span class="nw">
             ${url?`<img class="dr-img" src="${url}" onerror="this.style.visibility='hidden'" alt="">`:'<span class="dr-img"></span>'}
             <span class="t">${escHtml(nameTxt)}</span>
-            ${card.dupe?'<span class="dupe-i">중복</span>':''}
           </span></td>
           <td class="c-sub">${escHtml(sub)||'<span class="dim">—</span>'}</td>
           <td class="c-sp">${gSpChips(card)}${card.name&&!card.dtype?'<span class="warn-i">타입을 골라야 계산돼요</span>':''}</td>
@@ -1257,7 +1268,7 @@ function renderDragonInfo(){
         return `<button type="button" class="mo-row" onclick="gOpenEdit('${cat}',${ci})">
           <span class="bar" style="background:${EL_DOT[cat]}"></span>
           ${url?`<img class="dr-img" src="${url}" onerror="this.style.visibility='hidden'" alt="">`:'<span class="dr-img"></span>'}
-          <span class="tx"><span class="t">${escHtml(card.name||'용 미선택')}</span>
+          <span class="tx"><span class="t">${escHtml(dragonDispName(card)||'용 미선택')}</span>
             <span class="s">${escHtml(sub)||'타입을 골라야 계산돼요'}</span></span>
           ${gSpChips(card)}
         </button>`;
@@ -1279,7 +1290,7 @@ function renderDragonInfo(){
           <div class="dr-sheet-grab"></div>
           <div class="dr-sheet-hd">
             ${url?`<img class="dr-img" src="${url}" onerror="this.style.visibility='hidden'" alt="">`:'<span class="dr-img"></span>'}
-            <div><div class="t">${escHtml(card.name||'용 미선택')}</div><div class="s">${cat}</div></div>
+            <div><div class="t">${escHtml(dragonDispName(card)||'용 미선택')}</div><div class="s">${cat}</div></div>
             <button class="icon-btn red" title="삭제" onclick="delDragonCard('${cat}',${ci});gCloseEdit()">✕</button>
           </div>
           <div class="dr-sheet-bd">${gCardHtml(cat,ci)}</div>
@@ -2644,7 +2655,7 @@ function renderResDeck(results,excludedCount){
     html+=`<tr>
       <td class="td-pc">${rank}</td>
       <td class="td-pc">
-        <div style="font-weight:800">${escHtml(r.dragon.name)}${r.dragon.growth==='진각'?' <span style="font-size:10px;padding:1px 5px;border-radius:3px;background:rgba(167,139,250,.2);color:#a78bfa;font-weight:700;border:1px solid rgba(167,139,250,.4)">진각</span>':''}</div>
+        <div style="font-weight:800">${escHtml(dragonDispName(r.dragon))}${r.dragon.growth==='진각'?' <span style="font-size:10px;padding:1px 5px;border-radius:3px;background:rgba(167,139,250,.2);color:#a78bfa;font-weight:700;border:1px solid rgba(167,139,250,.4)">진각</span>':''}</div>
         ${spiritLines}
       </td>
       <td class="td-pc">
@@ -2669,7 +2680,7 @@ function renderResDeck(results,excludedCount){
         <div class="mob-row1">
           <span class="mob-rank">${rank}</span>
           <img src="${attrImg}" style="width:20px;height:20px;object-fit:contain">
-          <span class="mob-dname">${escHtml(r.dragon.name)}${r.dragon.growth==='진각'?' <span style="font-size:9px;color:#a78bfa;font-weight:700">진각</span>':''}</span>
+          <span class="mob-dname">${escHtml(dragonDispName(r.dragon))}${r.dragon.growth==='진각'?' <span style="font-size:9px;color:#a78bfa;font-weight:700">진각</span>':''}</span>
           <span class="dtype-b" style="color:${dc};border-color:${dc};font-size:11px">${r.dragon.dtype}</span>
           <span class="mob-bv">${(r.bv/1e6).toFixed(1)}${(()=>{if(typeof fmtTar!=='function')return '';const t=fmtTar(r.bv,r.dragon.dtype,r.buff);return t?`<small class="tar-v"> TAR ${t}</small>`:'';})()}</span>
         </div>

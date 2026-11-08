@@ -2,84 +2,102 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script src="../en-messages.js?v=20261108"></script>
+<script src="../en-extra-messages.js?v=20261108"></script>
+<script src="../en-locale.js?v=20261108"></script>
+<link rel="stylesheet" href="../en-locale.css?v=20261108">
+<script src="../dragons.js"></script>
+<script src="../cham-rules.js"></script>
+<script src="../dragon-views.js"></script>
+<script>
+if (!globalThis.DV1_DRAGON_VIEWS) {
+  document.addEventListener('DOMContentLoaded', function () {
+    var warning = document.createElement('div');
+    warning.setAttribute('role', 'alert');
+    warning.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:#171b25;color:#fff;padding:48px;font:18px/1.8 sans-serif';
+    warning.textContent = '드래곤 데이터를 불러오지 못해 페이지를 시작하지 않았습니다. 새로고침하거나 사이트 관리자에게 문의해 주세요.';
+    document.body.appendChild(warning);
+  });
+}
+</script>
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dragon Encyclopedia</title>
+<title>드래곤 도감</title>
 <link id="theme-css" rel="stylesheet" href="../theme-dark.css">
+<link rel="stylesheet" href="../ui.css">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="./theme.js"></script>
-<script src="../stat.js"></script>
 <style>
-[data-theme="dark"]{--bg:#0e1116;--bg2:#161a22;--bg3:#1c212c;--border:#23293a;--border2:#1b1f2a;--border3:#2d3447;--text:#eaecf2;--text2:#b3b9c7;--text3:#7d8597;--text4:#565d6e;--accent:#7aa2f7;--accent-bg:rgba(122,162,247,0.12);--accent-border:rgba(122,162,247,0.30)}
-[data-theme="light"]{--bg:#f7f7f8;--bg2:#ffffff;--bg3:#f1f2f4;--border:#e6e7ea;--border2:#eeeff2;--border3:#d4d6db;--text:#15171c;--text2:#4a4d57;--text3:#71757f;--text4:#9aa0aa;--accent:#2f6fed;--accent-bg:rgba(47,111,237,0.10);--accent-border:rgba(47,111,237,0.32)}
-[data-theme="beige"]{--bg:#f3ecdd;--bg2:#faf3e2;--bg3:#ebe0c7;--border:#d8caa8;--border2:#e1d4b3;--border3:#c0ad84;--text:#2a2316;--text2:#5a4e34;--text3:#837553;--text4:#a99971;--accent:#b06a1e;--accent-bg:rgba(176,106,30,0.10);--accent-border:rgba(176,106,30,0.32)}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
 /* 상단 바 */
-#top-bar{display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid var(--border);background:var(--bg2)}
-#back-btn{display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:7px;border:1px solid var(--border3);background:var(--bg3);color:var(--text2);font-size:12px;cursor:pointer;text-decoration:none;transition:all 0.12s;flex-shrink:0}
 #back-btn:hover{border-color:var(--accent-border);color:var(--text)}
-#top-title{font-size:14px;font-weight:600;color:var(--text2)}
 
 /* 필터 */
-#filter-section{padding:12px 0 10px;border-bottom:1px solid var(--border);margin-bottom:14px}
+#filter-section{padding:0 0 14px;border-bottom:1px solid var(--border);margin-bottom:14px}
 #search-row{margin-bottom:8px}
-#search-input{width:100%;padding:9px 14px;border:1px solid var(--border3);border-radius:8px;font-size:14px;background:var(--bg3);color:var(--text);outline:none}
-#search-input:focus{border-color:var(--accent-border)}
+#search-input{width:100%;padding:12px 15px;border:1px solid var(--bd2);border-radius:8px;font-size:15px;background:var(--sf2);color:var(--text);outline:none}
+#search-input:focus{border-color:var(--gold)}
 #search-input::placeholder{color:var(--text4)}
 #filter-row{display:flex;flex-direction:column;gap:6px}
 .filter-line{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
-.filter-label{font-size:11px;color:var(--text3);margin-right:2px;flex-shrink:0}
-.ftag{padding:4px 10px;border-radius:16px;font-size:11px;border:1px solid var(--border3);cursor:pointer;background:var(--bg3);color:var(--text2);transition:all 0.12s;display:flex;align-items:center;gap:4px}
-.ftag img{width:16px;height:16px;border-radius:3px;display:block}
-.ftag:hover{border-color:var(--accent-border);color:var(--text)}
-.ftag.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-.filter-sep{width:1px;height:16px;background:var(--border3);margin:0 4px;flex-shrink:0;align-self:center}
-#filter-count{font-size:12px;color:var(--text3);margin-top:7px}
+.filter-label{font-size:12px;color:var(--dimmer);font-weight:600;margin-right:2px;flex-shrink:0}
+.ftag{padding:7px 13px;border-radius:6px;font-size:12.5px;font-weight:600;border:1px solid var(--bd2);cursor:pointer;background:var(--sf);color:var(--dim);transition:all 0.12s;display:flex;align-items:center;gap:5px}
+.ftag img{width:18px;height:18px;max-width:none;border-radius:4px;display:block}
+.ftag:hover{border-color:var(--gold);color:var(--text)}
+.ftag.active{background:var(--accent-bg);color:var(--gold);border-color:var(--gold)}
+.filter-sep{width:1px;height:18px;background:var(--bd);margin:0 4px;flex-shrink:0;align-self:center}
+#filter-count{font-size:12.5px;color:var(--dimmer);margin-top:7px}
 #stat-filter-toggle-btn{margin-top:8px}
-#stat-filter-panel{display:none;margin-top:10px;padding:12px;border:1px solid var(--border3);border-radius:8px;background:var(--bg3)}
+#stat-filter-panel{display:none;margin-top:10px;padding:14px;border:1px solid var(--bd2);border-radius:8px;background:var(--sf2)}
 #stat-filter-panel.open{display:block}
-.sf-table{width:100%;border-collapse:collapse;font-size:11px}
-.sf-table th{padding:4px 6px;color:var(--text3);font-weight:500;text-align:center}
-.sf-table td{padding:4px 10px;text-align:center}
-.sf-table td.sf-row-label{text-align:left;color:var(--text2);font-weight:600;white-space:nowrap}
+.sf-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.sf-table th{padding:6px;color:var(--dimmer);font-weight:500;text-align:center}
+.sf-table td{padding:6px 10px;text-align:center}
+.sf-table td.sf-row-label{text-align:left;color:var(--text2);font-size:13px;font-weight:600;white-space:nowrap}
 .sf-pair{display:flex;justify-content:center;align-items:center;gap:4px}
-.sf-input{width:56px;padding:5px 6px;border:1px solid var(--border3);border-radius:6px;font-size:11px;background:var(--bg2);color:var(--text);text-align:center;outline:none}
-.sf-input:focus{border-color:var(--accent-border)}
+.sf-input{width:64px;padding:7px 8px;border:1px solid var(--bd2);border-radius:6px;font-size:12.5px;background:var(--sf);color:var(--text);text-align:center;outline:none}
+.sf-input:focus{border-color:var(--gold)}
 .sf-input::placeholder{color:var(--text4)}
 .sf-tilde{color:var(--text4);margin:0 3px}
-#stat-filter-reset{margin-top:10px;padding:5px 12px;border-radius:16px;font-size:11px;border:1px solid var(--border3);cursor:pointer;background:var(--bg2);color:var(--text2)}
-#stat-filter-reset:hover{border-color:var(--accent-border);color:var(--text)}
+#stat-filter-reset{margin-top:12px;padding:7px 13px;border-radius:6px;font-size:12.5px;font-weight:600;border:1px solid var(--bd2);cursor:pointer;background:var(--sf);color:var(--dim)}
+#stat-filter-reset:hover{border-color:var(--gold);color:var(--gold)}
 
 /* 메인 */
-#page{max-width:900px;margin:0 auto;padding:16px 16px 64px}
+#page{max-width:980px;margin:0 auto;padding:0 0 24px}
 
 /* 드래곤 엔트리 */
 #entries{animation:fadeIn 0.15s ease}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.dragon-entry{border:1px solid var(--border);border-radius:12px;background:var(--bg2);margin-bottom:16px;overflow:hidden}
+.dragon-entry{border:1px solid var(--bd);border-radius:10px;background:var(--sf);margin-bottom:14px;overflow:hidden}
 .entry-body{display:flex;gap:20px;padding:20px;align-items:flex-start}
 
 /* 이미지 박스 */
-.img-box{width:190px;flex-shrink:0;border:1px solid var(--border3);border-radius:10px;background:var(--bg3);display:flex;align-items:center;justify-content:center;min-height:190px;overflow:hidden}
-.main-img{width:170px;height:170px;object-fit:contain;display:block;cursor:zoom-in}
-#lightbox{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.82);align-items:center;justify-content:center;padding:24px;box-sizing:border-box}
-#lightbox.open{display:flex}
-#lightbox-img{max-width:92vw;max-height:88vh;object-fit:contain;border-radius:10px;box-shadow:0 8px 40px rgba(0,0,0,.5)}
-#lightbox-close{position:absolute;top:16px;right:20px;width:40px;height:40px;border:none;border-radius:50%;background:rgba(255,255,255,.14);color:#fff;font-size:26px;line-height:38px;cursor:pointer}
-#lightbox-close:hover{background:rgba(255,255,255,.28)}
-.dl-btn{padding:6px 10px;border-radius:8px;border:1px solid var(--border3);background:var(--bg3);color:var(--text2);font-size:13px;cursor:pointer;flex-shrink:0;transition:background 0.1s}
-.dl-btn:hover{background:var(--bg2)}
-#dl-menu{display:none;position:absolute;z-index:9000;min-width:150px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;box-shadow:0 6px 24px rgba(0,0,0,.25);padding:4px;flex-direction:column;gap:2px}
-#dl-menu.open{display:flex}
-#dl-menu button{display:block;width:100%;text-align:left;padding:8px 10px;border:none;border-radius:6px;background:transparent;color:var(--text);font-size:13px;cursor:pointer}
-#dl-menu button:hover{background:var(--bg3)}
-#dl-menu button:disabled{opacity:.55;cursor:default}
+.img-box{width:190px;flex-shrink:0;border:1px solid var(--bd2);border-radius:10px;background:var(--sf2);display:flex;align-items:center;justify-content:center;min-height:190px;overflow:hidden}
+.main-img{width:170px;height:170px;max-width:none;object-fit:contain;display:block;cursor:zoom-in}
 .main-img-ph{width:170px;height:170px;display:none;align-items:center;justify-content:center;color:var(--text4);font-size:12px}
+
+/* 라이트박스 (이미지 확대 보기) */
+#lightbox{position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;padding:24px;cursor:zoom-out;animation:fadeIn 0.15s}
+#lightbox.open{display:flex}
+#lightbox-img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:10px;cursor:default;box-shadow:0 8px 40px rgba(0,0,0,0.5)}
+#lightbox-close{position:absolute;top:18px;right:22px;width:42px;height:42px;border-radius:50%;border:none;background:rgba(255,255,255,0.14);color:#fff;font-size:24px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
+#lightbox-close:hover{background:rgba(255,255,255,0.28)}
+
+/* 다운로드 버튼 / 메뉴 */
+.strip-actions{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.dl-btn{width:36px;height:36px;padding:0;border-radius:8px;border:1px solid var(--bd2);background:var(--sf2);color:var(--dim);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.1s}
+.dl-btn:hover{background:var(--border);color:var(--text)}
+.dl-btn:disabled{opacity:0.5;cursor:default}
+#dl-menu{position:absolute;z-index:9998;display:none;flex-direction:column;background:var(--bg2);border:1px solid var(--border3);border-radius:8px;box-shadow:0 6px 24px rgba(0,0,0,0.3);overflow:hidden;min-width:150px}
+#dl-menu.open{display:flex}
+#dl-menu button{padding:11px 15px;border:none;background:none;color:var(--text2);font-size:13.5px;text-align:left;cursor:pointer;white-space:nowrap}
+#dl-menu button:hover{background:var(--bg3);color:var(--text)}
+#dl-menu button:not(:last-child){border-bottom:1px solid var(--border2)}
 
 /* 정보 패널 */
 .info-panel{flex:1;display:flex;flex-direction:column;gap:10px;min-width:0}
 .name-meta{display:flex;flex-direction:column;gap:6px}
-.dragon-name{font-size:22px;font-weight:700;color:var(--text)}
+.dragon-name{font-size:21px;font-weight:700;color:var(--text)}
 .meta-row{display:flex;align-items:center;font-size:13px;color:var(--text2);flex-shrink:0;flex-wrap:wrap;gap:2px}
 .meta-sep{color:var(--border3);margin:0 7px}
 .meta-label{color:var(--text3)}
@@ -112,11 +130,11 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
 .grade-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 
 /* 속성 배지 */
-.eb-Earth{background:#fff3e0;color:#e65100}.eb-Water{background:#e3f2fd;color:#1565c0}
-.eb-Fire{background:#fce4ec;color:#b71c1c}.eb-Wind{background:#e8f5e9;color:#1b5e20}
-.eb-Light{background:#fffde7;color:#f57f17}.eb-Dark{background:#ede7f6;color:#4a148c}
-.eb-Dusk{background:#fdf2f8;color:#880e4f}.eb-Dawn{background:#fff8e1;color:#6d4c41}
-.eb-Nightmare{background:#f3e5f5;color:#6a1b9a}
+.eb-땅{background:#fff3e0;color:#e65100}.eb-물{background:#e3f2fd;color:#1565c0}
+.eb-불{background:#fce4ec;color:#b71c1c}.eb-바람{background:#e8f5e9;color:#1b5e20}
+.eb-빛{background:#fffde7;color:#f57f17}.eb-어둠{background:#ede7f6;color:#4a148c}
+.eb-황혼{background:#fdf2f8;color:#880e4f}.eb-여명{background:#fff8e1;color:#6d4c41}
+.eb-악몽{background:#f3e5f5;color:#6a1b9a}
 
 /* 페이지네이션 */
 #pagination{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:center;align-items:center;gap:4px;padding:10px 16px;flex-wrap:nowrap;background:var(--bg2);border-top:1px solid var(--border);z-index:100}
@@ -138,797 +156,86 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
 }
 </style>
 </head>
-<body>
-
-<div id="top-bar">
-  <a id="back-btn" href="./index.html">← Back to Main</a>
-  <span id="top-title">Dragon Encyclopedia</span>
-</div>
+<body class="u">
+<div class="u-app">
+<main class="u-wrap full">
 
 <div id="page">
   <div id="filter-section">
     <div id="search-row">
-      <input id="search-input" type="text" placeholder="Search dragons..." oninput="onFilter()">
+      <input id="search-input" type="text" placeholder="드래곤 이름 검색..." oninput="onFilter()">
     </div>
     <div id="filter-row"></div>
-    <button id="stat-filter-toggle-btn" class="ftag" onclick="toggleStatFilterPanel()">Stat Filter ▼</button>
+    <button id="stat-filter-toggle-btn" class="ftag" onclick="toggleStatFilterPanel()">스탯 필터 ▼</button>
     <div id="stat-filter-panel">
       <table class="sf-table">
         <thead><tr>
           <th class="sf-row-label"></th>
           <th>Lv.1</th>
           <th>Lv.45</th>
-          <th>Growth</th>
+          <th>성장폭</th>
         </tr></thead>
         <tbody>
           <tr>
-            <td class="sf-row-label">HP</td>
-            <td><div class="sf-pair"><input class="sf-input" type="number" placeholder="min" data-stat="hp" data-field="l1min"><input class="sf-input" type="number" placeholder="max" data-stat="hp" data-field="l1max"></div></td>
-            <td><div class="sf-pair"><input class="sf-input" type="number" placeholder="min" data-stat="hp" data-field="l45min"><input class="sf-input" type="number" placeholder="max" data-stat="hp" data-field="l45max"></div></td>
-            <td><input class="sf-input" type="number" placeholder="exact" data-stat="hp" data-field="gexact"></td>
+            <td class="sf-row-label">체력</td>
+            <td><div class="sf-pair"><input class="sf-input" type="number" placeholder="이상" data-stat="hp" data-field="l1min"><input class="sf-input" type="number" placeholder="이하" data-stat="hp" data-field="l1max"></div></td>
+            <td><div class="sf-pair"><input class="sf-input" type="number" placeholder="이상" data-stat="hp" data-field="l45min"><input class="sf-input" type="number" placeholder="이하" data-stat="hp" data-field="l45max"></div></td>
+            <td><input class="sf-input" type="number" placeholder="정확값" data-stat="hp" data-field="gexact"></td>
           </tr>
           <tr>
-            <td class="sf-row-label">ATK</td>
-            <td><div class="sf-pair"><input class="sf-input" type="number" placeholder="min" data-stat="atk" data-field="l1min"><input class="sf-input" type="number" placeholder="max" data-stat="atk" data-field="l1max"></div></td>
-            <td><div class="sf-pair"><input class="sf-input" type="number" placeholder="min" data-stat="atk" data-field="l45min"><input class="sf-input" type="number" placeholder="max" data-stat="atk" data-field="l45max"></div></td>
-            <td><input class="sf-input" type="number" placeholder="exact" data-stat="atk" data-field="gexact"></td>
+            <td class="sf-row-label">공격</td>
+            <td><div class="sf-pair"><input class="sf-input" type="number" placeholder="이상" data-stat="atk" data-field="l1min"><input class="sf-input" type="number" placeholder="이하" data-stat="atk" data-field="l1max"></div></td>
+            <td><div class="sf-pair"><input class="sf-input" type="number" placeholder="이상" data-stat="atk" data-field="l45min"><input class="sf-input" type="number" placeholder="이하" data-stat="atk" data-field="l45max"></div></td>
+            <td><input class="sf-input" type="number" placeholder="정확값" data-stat="atk" data-field="gexact"></td>
           </tr>
           <tr>
-            <td class="sf-row-label">DEF</td>
-            <td><div class="sf-pair"><input class="sf-input" type="number" placeholder="min" data-stat="def" data-field="l1min"><input class="sf-input" type="number" placeholder="max" data-stat="def" data-field="l1max"></div></td>
-            <td><div class="sf-pair"><input class="sf-input" type="number" placeholder="min" data-stat="def" data-field="l45min"><input class="sf-input" type="number" placeholder="max" data-stat="def" data-field="l45max"></div></td>
-            <td><input class="sf-input" type="number" placeholder="exact" data-stat="def" data-field="gexact"></td>
+            <td class="sf-row-label">방어</td>
+            <td><div class="sf-pair"><input class="sf-input" type="number" placeholder="이상" data-stat="def" data-field="l1min"><input class="sf-input" type="number" placeholder="이하" data-stat="def" data-field="l1max"></div></td>
+            <td><div class="sf-pair"><input class="sf-input" type="number" placeholder="이상" data-stat="def" data-field="l45min"><input class="sf-input" type="number" placeholder="이하" data-stat="def" data-field="l45max"></div></td>
+            <td><input class="sf-input" type="number" placeholder="정확값" data-stat="def" data-field="gexact"></td>
           </tr>
         </tbody>
       </table>
-      <button id="stat-filter-reset" onclick="resetStatFilters()">Reset Filters</button>
+      <button id="stat-filter-reset" onclick="resetStatFilters()">필터 초기화</button>
     </div>
   </div>
   <div id="entries"></div>
   <div id="pagination"></div>
 </div>
 
+<div id="lightbox" onclick="closeLightbox()">
+  <button id="lightbox-close" onclick="closeLightbox()">&times;</button>
+  <img id="lightbox-img" src="" alt="" onclick="event.stopPropagation()">
+</div>
+
+<div id="dl-menu">
+  <button onclick="dlCurrent()">현재 단계</button>
+  <button onclick="dlAll()">전체 단계 (ZIP)</button>
+</div>
+
 <script>
-const dexKrNames={1:"고대신룡",2:"윈드 드래곤",3:"식스 레그 혼 드래곤",4:"청룡",5:"파이어 드래곤",6:"번개고룡",7:"라바 드래곤",8:"피닉스",9:"빙하고룡",10:"네시",11:"테일 드래곤",12:"수룡",13:"히드라곤",14:"파워 드래곤",15:"바위 드래곤",16:"지하땅굴 드래곤",17:"페어리 드래곤",18:"레이디 드래곤",19:"에그 드래곤",20:"헬 드래곤",21:"엔젤 드래곤",22:"에일리언 드래곤",23:"미니 드래곤",24:"스왐프 드래곤",25:"패트 드래곤",26:"스파이크 드래곤",27:"인섹트 드래곤",28:"리프 드래곤",29:"프로그 드래곤",30:"윙스 드래곤",31:"샌드 드래곤",32:"스마트 드래곤",33:"뮤직 드래곤",34:"흑룡",35:"에메랄드 드래곤",36:"라이곤",37:"카멜레용",38:"치킨헤드 드래곤",39:"캥거레빗 드래곤",40:"큐피트용",41:"골드 드래곤",42:"슬라임 드래곤",43:"블레이드 드래곤",44:"메탈 드래곤",45:"미이라곤",46:"뱃도치 드래곤",47:"스켈레곤",48:"서펀트 드래곤",49:"G네 드래곤",50:"타이거 드래곤",51:"금오 드래곤",52:"메탈 마그넷 드래곤",53:"다크닉스",54:"백룡",55:"히에나곤",56:"유니 드래곤",57:"골든혼",58:"샤크곤",59:"가디언",60:"크레센트",61:"레인보우",62:"타투",63:"스파인",64:"고대 주니어",65:"프로스티",66:"다크프로스티",67:"현무 드래곤",68:"크리마용",69:"데몽과가고일",70:"샴 드래곤",71:"본헤드",72:"베네지",73:"머스타 드해머",74:"레드와이번",75:"해태드래곤",76:"스콜피온 드래곤",77:"나이트 드래곤",78:"스파이시",79:"라파엘",80:"바알",81:"삐에로 드래곤",82:"파라오곤",83:"쉐도우 드래곤",84:"순둥곤",85:"프랑켄슈타곤",86:"닌자 드래곤",87:"드라고노이드",88:"볼케이노",89:"블루라이트닝",90:"윗치 드래곤",91:"퍼플립스 드래곤",92:"파이썬",93:"아이언 드래곤",94:"오로",95:"자룡",96:"배틀 드래곤",97:"데빌곤",98:"바이올렛 드래곤",99:"네온 드래곤",100:"플레임 드래곤",101:"블랙퀸",102:"시그마 드래곤",103:"램곤",104:"아르고 드래곤",105:"헤라클레스곤",106:"토템 드래곤",107:"말소자 드래곤",108:"팀버 드래곤",109:"코브라곤",110:"루피아 드래곤",111:"타이푼 드래곤",112:"스터드 드래곤",113:"플라워 드래곤",114:"해마곤",115:"클라우드 드래곤",116:"돌풍의 라이오스",117:"찬란한 바리안",118:"물결의 파프리온",119:"열화의 발칸",120:"장벽의 에닉스",121:"암흑의 발로드",122:"레드불 드래곤",123:"툰드라 드래곤",124:"메갈로돈",125:"오로라 드래곤",126:"캣츠곤",127:"이그니스",128:"타르타로스",129:"슈팅스타",130:"다크폴",131:"헝그리 드래곤",132:"아쿠아 드래곤",133:"오르페우스",134:"루미네스",135:"번네스",136:"깨비곤",137:"제트 드래곤",138:"마리노 드래곤",139:"투탕카",140:"머드 드래곤",141:"붐버 드래곤",142:"사나래",143:"타일런트",144:"청마룡",145:"너티빌런",146:"글래시어",147:"므네이아",148:"녹스O",149:"일리오스O",150:"코너투스",151:"스왈로우",152:"i곤",153:"블러디네이트",154:"피스 드래곤",155:"갤럭시",156:"페이퍼 드래곤",157:"하이페리곤",158:"모리카 드래곤",159:"베가본드 드래곤",160:"태엽 드래곤",161:"스플렌더 드래곤",162:"블랙티어 드래곤",163:"블랙아머 드래곤",164:"오렌지리프 드래곤",165:"핑크벨 드래곤",166:"쿠로이 드래곤",167:"포레스트 드래곤",168:"기간티스",169:"데모니오",170:"게스 드래곤",171:"베라 드래곤",172:"디요나",173:"콘라드",174:"파브레가스",175:"파이어퓨리",176:"스테고 드래곤",177:"레텐토르",178:"미스트 드래곤",179:"리쿠루 드래곤",180:"페트라 드래곤",181:"크룩커스",182:"밴시",183:"할로우",184:"루포",185:"데칼",186:"카오스",187:"일레마",188:"블랙코어",189:"오딘",190:"프리러너",191:"타임머신",192:"시타엘",193:"그라치아",194:"마가",195:"스쿠룸",196:"콜로서스",197:"원더 드래곤",198:"아이스 드레이크",199:"오미야콘",200:"니플하임",201:"루돌프 드래곤",202:"바르라아",203:"루틸루스",204:"청양 드래곤",205:"옵타툽",206:"아실리",207:"블랙찡또",208:"아폴로누스",209:"로루스",210:"러스트",211:"슬레이어",212:"파이어리 블랜드",213:"문라이트",214:"코랄",215:"아브밸리",216:"가이안",217:"오쿠러스",218:"위드미",219:"헤이즈",220:"라우아",221:"듀펜",222:"메이플 드래곤",223:"딜랑",224:"스트라이커",225:"가루다",226:"리베라",227:"티라노 드래곤",228:"파티 드래곤",229:"오르도",230:"세크레타",231:"푸투룸",232:"할리벨",233:"타아비레",234:"발라크",235:"베팔",236:"단탈리온",237:"자간",238:"어비스 엣지",239:"적오드래곤",240:"헬가스트",241:"마르바스",242:"칸",243:"위그드라실",244:"와일드 드래곤",245:"좀비 드래곤",246:"레이어스",247:"웨일 드래곤",248:"베놈 드래곤",249:"발라 드래곤",250:"루가르 드래곤",251:"아틀란티스",252:"유니버스",253:"빙설룡",254:"점프 드래곤",255:"아스티",256:"지마",257:"갤러스",258:"퓨미스",259:"베히모스",260:"스틸윙",261:"소울",262:"이슬룡",263:"데르",264:"렉몰",265:"화랑",266:"그레이탄",267:"미스틱티니",268:"다로스",269:"자루카",270:"다크혼",271:"스타에이스",272:"말로단",273:"아이가스",274:"포포모",275:"테디 드래곤",276:"나기",277:"그리핀",278:"블랙쇼커",279:"트리페어윙",280:"리바이어던",281:"스케어",282:"블루벨",283:"화이트스톰",284:"네펜데스",285:"아그나드",286:"버블 드래곤",287:"합라",288:"레블롭틴",289:"레인보우배트곤",290:"아라카",291:"라지카스",292:"미스틸테인",293:"시소르",294:"루",295:"플래그너",296:"셀마사",297:"청화풍",298:"카라선",299:"아쿠아리움",300:"일로스",301:"렉스톤",302:"포메쿨",303:"카르나",304:"아르주나",305:"마룡",306:"블랙혼",307:"얼티밋 드래곤",308:"매직스타 드래곤",309:"아르테미스 드래곤",310:"할루시",311:"페르마타",312:"앙그라",313:"옴므니아",314:"코므니아",315:"다므니아",316:"드므니아",317:"맘므니아",318:"흐므니아",319:"엠파이어",320:"루시페르",321:"네크로멘서",322:"지진",323:"니케",324:"아스트라이나",325:"하레스",326:"나이트메어",327:"스윗클라우드",328:"데네브",329:"박쥐곤",330:"우파룸",331:"부두룡",332:"화주사",333:"미트라",334:"보상이용",335:"다크베인",336:"블러디터스크",337:"포이즌리버",338:"유리온",339:"터들톰톰",340:"타이게타",341:"선인장 드래곤",342:"베르나",343:"룩소린",344:"혼",345:"나트론",346:"살라",347:"움브라",348:"솔라",349:"포폰",350:"제피로스",351:"드래곤 슬레이어",352:"헬카이저",353:"레버넌트",354:"이블 던",355:"디멘션 드래곤",356:"픽셀 드래곤",357:"그랑 세이버",358:"킨더 드래곤",359:"푸딩곤",360:"엔틱 드래곤",361:"트와일라잇",362:"플로리안",363:"라루스",364:"프로딘",365:"틸키",366:"이그나",367:"블리자드",368:"다크나이트",369:"엔더 드래곤",370:"거스트 드래곤",371:"샤프테일 드래곤",372:"화이트썬더 드래곤",373:"카루라",374:"간다르바",375:"호크아이",376:"루아셰아 드래곤",377:"루네라 드래곤",378:"미나스 드래곤",379:"헬스페로우",380:"쿠베라",381:"칼라빈카",382:"직소 드래곤",383:"카이저번",384:"골락",385:"렉몰 리버스",386:"앳지버",387:"센투라",388:"아프리트",389:"에트왈 드래곤",390:"넬로 드래곤",391:"썬더레인 드래곤",392:"즈믄",393:"리베티",394:"브리트라",395:"타크샤카",396:"슈넬 드래곤",397:"키갈",398:"아델라",399:"슬리즈 드래곤",400:"칸타카",401:"지타쿨라",402:"파고스 드래곤",403:"본샤스 드래곤",404:"갤럭시아 드래곤",405:"알리스 드래곤",406:"마브리카 드래곤",407:"소서러 드래곤",408:"아톤",409:"탈릿사",410:"쿠즈마라",411:"하리카",412:"톤톤",413:"아쿠아펄",414:"키리온",415:"애플칙",416:"트로페우스",417:"니케이",418:"니케다",419:"니케라이",420:"니케플로",421:"니케벤토",422:"니케테라",423:"판므니아",424:"라므니아",425:"닌므니아",426:"아스타테",427:"시리스",428:"엘더 드래곤",429:"수라 드래곤",430:"타로스",431:"익시아",432:"엔젤주니어",433:"허리케인",434:"하데스",435:"프레데터",436:"엔퓨",437:"가스트",438:"엔투라스",439:"액스칼리버",440:"일란",441:"코스모",442:"파베르",443:"앵커",444:"말덱",445:"스트라",446:"헤네스",447:"데스락",448:"애니마라",449:"설리반",450:"파프닐",451:"아비온",452:"아자크",453:"프로즌",454:"아비스",455:"차콜플레임",456:"궁니르",457:"루드오어",458:"스워드",459:"케이나인",460:"에이라",461:"스칼렛",462:"쉔",463:"베리스",464:"템페스트",465:"선셋 드래곤",466:"포말하우트",467:"마카라",468:"아누라다",469:"이클립스",470:"벨레드",471:"미티어",472:"카모플라쥬",473:"엘리고스",474:"범",475:"이모션",476:"미미르",477:"샬롯",478:"이지스",479:"레이징",480:"페이몬",481:"암두시아스",482:"백택곤",483:"레오벡터",484:"네비아",485:"썬더버드",486:"보레아스",487:"쿠알레",488:"코즈메키온",489:"화귀 드래곤",490:"헤카테",491:"밀라",492:"라울",493:"스탑튠",494:"다크스퀘어",495:"고귀한 헬카이저",496:"마소티스",497:"리치몬드",498:"크로마 리치몬드",499:"톡시닉",500:"이터널",501:"개틀링곤",502:"베른하르트",503:"로티스",504:"스노우볼",505:"고귀한 블러디터스크",506:"젤리피쉬",507:"펜리르",508:"티르",509:"아만타",510:"코멧",511:"화이트 디스트로이어",512:"피미루",513:"샤흐",514:"고귀한 다크베인",515:"에오스",516:"네뷸라",517:"레굴루스",518:"크로마 레굴루스",519:"알데바란",520:"강림 강화곤",521:"다르누스",522:"페트로아",523:"롱기누스",524:"고귀한 엔더 드래곤",525:"지바타르",526:"미스핏",527:"염화룡",528:"마니메칼라",529:"폴투누스",530:"세에레",531:"바르그",532:"마스테마",533:"카스티타스",534:"고귀한 이지스",535:"타나토스",536:"칼리시",537:"크로마 칼리시",538:"프라이드",539:"고귀한 아델라",540:"라스",541:"밀라타스",542:"크로마 밀라타스",543:"고귀한 넬로 드래곤",544:"토트",545:"인스트리아",546:"크로마 인스트리아",547:"네무스",548:"베네보렌티아",549:"크로마 베네보렌티아",550:"고귀한 갤러헤드",551:"고귀한 이블던",552:"뇌신",553:"크로마 뇌신",554:"크레바스",555:"라센티",556:"마문드",557:"고트",558:"고귀한 레버넌트",559:"파키",560:"호저리",561:"타라",562:"고귀한 카이저번",563:"피타야",564:"구미호",565:"루송",566:"아말테아",567:"니티",568:"케찰코아틀",569:"조화룡",570:"아바돈",571:"큐아네드",572:"고귀한 스트라",573:"마그나스",574:"크로마 벨레드",575:"포르타",576:"페로스",577:"디아누",578:"초림",579:"루드라",580:"고귀한 말덱",581:"강강",582:"술래",583:"차차웅",584:"데바",585:"그라노스",586:"스텔스",587:"코르투스",588:"레오파드",589:"고귀한 헤네스",590:"에피트",591:"스킨크 드래곤",592:"크레스티드 드래곤",593:"에그마용",594:"블루썬더",595:"크로마 블루썬더",596:"고귀한 페로스",597:"솔루카니스",598:"주작",599:"백호",600:"루살카",601:"베타라",602:"크로마 베타라",603:"루크바트",604:"카스룩스",605:"고귀한 디아누",606:"알투스",607:"에슈",608:"기린",609:"락샤사",610:"루민디스",611:"피데스",612:"비어디 드래곤",613:"불나래",614:"크로마 불나래",615:"유르카",616:"고귀한 아누라다",617:"쉴로시",618:"골디",619:"라키온",620:"옥타",621:"크로마 옥타",622:"커스리퍼",623:"울르",624:"엔젤캣",625:"아프로디테",626:"그리파르",627:"글라오네",628:"고귀한 루네라 드래곤",629:"블레이즈 드래곤",630:"애버네일",631:"토네스",632:"고귀한 익시아",633:"프로텍트 드래곤",634:"크로마 프로텍트 드래곤",635:"템피오스",636:"거들테일 드래곤",637:"진",638:"마카롱",639:"아르켈론",640:"고귀한 다크혼",641:"인베르소",642:"티키톡",643:"레베리",644:"리티오",645:"크로마 리티오",646:"페이렉스",647:"스카트",648:"알레샤",649:"크로마 알레샤",650:"야누스",651:"파이거",652:"크로마 파이거",653:"스카투스",654:"크로마 스카투스",655:"로키",656:"파프니르",657:"후긴",658:"무닌",659:"헤임달",660:"볼바",661:"토르",662:"요르문간드",663:"마누스",664:"잠식된 요르문간드",665:"야즈니르",666:"고귀한 설리반",667:"논",668:"플로레",669:"루시오",670:"장고",671:"레무레스",672:"아카이아",673:"크로마 아카이아",674:"티아매트",675:"리브로",676:"오벡스",677:"흐레스벨그",678:"호드",679:"슬레이프니르",680:"고귀한 펜리르",681:"하트샤",682:"꽁꽁이",683:"파루파루",684:"발레포르",685:"크로마 발레포르",686:"메라크",687:"레긴레이프",688:"크로마 레긴레이프",689:"적마룡",690:"고귀한 허리케인",691:"피싱테일 드래곤",692:"까마귀 드래곤",693:"까치 드래곤",694:"루루",695:"크로마 루루",696:"바스카",697:"블라드",698:"프레이야",699:"팡팡",700:"미스틱아츠",701:"고귀한 앙그라",702:"스쿨드",703:"크툴루",704:"크로마 크툴루",705:"망태곤",706:"운디네",707:"크로마 운디네",708:"세라핌",709:"누베스텔라",710:"오파님",711:"크로마 오파님",712:"카스티그",
-717:"블랙홀 드래곤",
-718:"크로마 블랙홀 드래곤",
-719:"힐드",
-720:"크로마 힐드"
-};
-const dexData=[
-{n:"God Dragon",e:"Light",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:1,tg:"-2.575",cd:"Yes",id:1},
-{n:"Wind Dragon",e:"Wind",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:1,tg:"-2.175",cd:"Yes",id:2},
-{n:"Six Legged Dragon",e:"Wind",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:1,tg:"-2.175",cd:"Yes",id:3},
-{n:"Blue Dragon",e:"Wind",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"-2.175",cd:"Yes",id:4},
-{n:"Fire Dragon",e:"Fire",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"-2.175",cd:"Yes",id:5},
-{n:"Lightning Dragon",e:"Fire",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:1,tg:"-1.275",cd:"Yes",id:6},
-{n:"Lava Dragon",e:"Fire",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:7},
-{n:"Phoenix",e:"Fire",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"-2.175",cd:"Yes",id:8},
-{n:"Frost Dragon",e:"Water",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"-1.275",cd:"Yes",id:9},
-{n:"Ness",e:"Water",t:"HP",t_kr:"HP",aw:1,ad:0,tr:1,lv:1,tg:"-2.175",cd:"Yes",id:10},
-{n:"Tail Dragon",e:"Water",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:11},
-{n:"Water Dragon",e:"Water",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:1,tg:"-3.275",cd:"Yes",id:12},
-{n:"Hydra Dragon",e:"Earth",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:1,tg:"-2.175",cd:"Yes",id:13},
-{n:"Power Dragon",e:"Earth",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"-1.275",cd:"Yes",id:14},
-{n:"Rock Dragon",e:"Earth",t:"DEF",t_kr:"DEF",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:15},
-{n:"Underground Dragon",e:"Earth",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:1,tg:"-2.175",cd:"Yes",id:16},
-{n:"Fairy Dragon",e:"Water",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"-2.175",cd:"Yes",id:17},
-{n:"Lady Dragon",e:"Wind",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:18},
-{n:"Egg Dragon",e:"Earth",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:1,tg:"-0.675",cd:"Yes",id:19},
-{n:"Hell Dragon",e:"Fire",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:20},
-{n:"Angel Dragon",e:"Light",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:1,tg:"-2.575",cd:"Yes",id:21},
-{n:"Alien Dragon",e:"Wind",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:22},
-{n:"Mini Dragon",e:"Water",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:23},
-{n:"Swamp Dragon",e:"Water",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:1,tg:"-0.675",cd:"Yes",id:24},
-{n:"Fat Dragon",e:"Earth",t:"HP",t_kr:"HP",aw:1,ad:0,tr:1,lv:1,tg:"-0.675",cd:"Yes",id:25},
-{n:"Spike Dragon",e:"Fire",t:"DEF",t_kr:"DEF",aw:1,ad:0,tr:1,lv:1,tg:"-0.675",cd:"Yes",id:26},
-{n:"Insect Dragon",e:"Fire",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:0,tr:1,lv:1,tg:"-0.275",cd:"Yes",id:27},
-{n:"Leaf Dragon",e:"Earth",t:"DEF",t_kr:"DEF",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:28},
-{n:"Frog Dragon",e:"Water",t:"DEF",t_kr:"DEF",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:29},
-{n:"Wing Dragon",e:"Wind",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:0,tr:1,lv:1,tg:"-0.275",cd:"Yes",id:30},
-{n:"Sand Dragon",e:"Fire",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:0,tr:1,lv:1,tg:"-0.275",cd:"Yes",id:31},
-{n:"Smart Dragon",e:"Earth",t:"DEF",t_kr:"DEF",aw:1,ad:0,tr:1,lv:1,tg:"-0.675",cd:"Yes",id:32},
-{n:"Music Dragon",e:"Wind",t:"HP",t_kr:"HP",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:33},
-{n:"Black Dragon",e:"Dark",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:1,tg:"-0.025",cd:"Yes",id:34},
-{n:"Emerald Dragon",e:"Light",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:0,tr:1,lv:1,tg:"-2.1",cd:"Yes",id:35},
-{n:"Ligon",e:"Light",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:1,lv:1,tg:"0.2",cd:"Yes",id:36},
-{n:"Cameleon Dragon",e:"Light",t:"HP",t_kr:"HP",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:37},
-{n:"Chickenhead Dragon",e:"Light",t:"HP-DEF",t_kr:"HP-DEF",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:38},
-{n:"Kanggarabbit Dragon",e:"Light",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:39},
-{n:"Cupid Dragon",e:"Light",t:"ATK",t_kr:"ATK",aw:1,ad:0,tr:1,lv:1,tg:"0.2",cd:"Yes",id:40},
-{n:"Gold Dragon",e:"Light",t:"HP-DEF",t_kr:"HP-DEF",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:41},
-{n:"Slime Dragon",e:"Water",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:0,tr:1,lv:1,tg:"-2.1",cd:"Yes",id:42},
-{n:"Blade Dragon",e:"Dark",t:"ATK",t_kr:"ATK",aw:1,ad:0,tr:1,lv:1,tg:"0.2",cd:"Yes",id:43},
-{n:"Metal Dragon",e:"Dark",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:1,lv:1,tg:"0.2",cd:"Yes",id:44},
-{n:"Mummy Dragon",e:"Dark",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:1,lv:1,tg:"0.2",cd:"Yes",id:45},
-{n:"Hedgebat Dragon",e:"Dark",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:0,tr:1,lv:1,tg:"0.2",cd:"Yes",id:46},
-{n:"Skelegon",e:"Dark",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:1,lv:1,tg:"0.2",cd:"Yes",id:47},
-{n:"Serpent Dragon",e:"Dark",t:"ATK",t_kr:"ATK",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:48},
-{n:"Contipede Dragon",e:"Dark",t:"ATK",t_kr:"ATK",aw:1,ad:0,tr:1,lv:1,tg:"0.2",cd:"Yes",id:49},
-{n:"Tiger Dragon",e:"Earth",t:"HP",t_kr:"HP",aw:1,ad:0,tr:1,lv:1,tg:"-0.675",cd:"Yes",id:50},
-{n:"Goldenfly Dragon",e:"Fire",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:51},
-{n:"Metal Magnet Dragon",e:"Wind",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:0,tr:1,lv:1,tg:"-0.275",cd:"Yes",id:52},
-{n:"Dark Nix",e:"Dark",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:0,tg:"1.6",cd:"Yes",id:53},
-{n:"White Dragon",e:"Light",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:1,tg:"-1.85",cd:"Yes",id:54},
-{n:"Hyena Dragon",e:"Dark",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:1,lv:1,tg:"1.05",cd:"Yes",id:55},
-{n:"Ghost Dragon",e:"Dark",t:"ATK",t_kr:"ATK",aw:1,ad:0,tr:1,lv:1,tg:"1.45",cd:"Yes",id:56},
-{n:"Golden Horn Dragon",e:"Earth",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:0,tr:1,lv:1,tg:"-0.85",cd:"Yes",id:57},
-{n:"Shark Dragon",e:"Water",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"1.45",cd:"Yes",id:58},
-{n:"Guardian",e:"Wind",t:"HP",t_kr:"HP",aw:1,ad:0,tr:1,lv:1,tg:"1.05",cd:"Yes",id:59},
-{n:"Crescent",e:"Dark",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:1,lv:1,tg:"1.05",cd:"Yes",id:60},
-{n:"Rainbow",e:"Light",t:"HP",t_kr:"HP",aw:1,ad:0,tr:1,lv:1,tg:"1.05",cd:"Yes",id:61},
-{n:"Tattoo",e:"Earth",t:"DEF",t_kr:"DEF",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:62},
-{n:"Spine",e:"Earth",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:0,tr:1,lv:1,tg:"1.45",cd:"Yes",id:63},
-{n:"God Jr.",e:"Light",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:1,tg:"1.45",cd:"Yes",id:64},
-{n:"Frosty",e:"Wind",t:"DEF",t_kr:"DEF",aw:1,ad:0,tr:1,lv:1,tg:"1.55",cd:"Yes",id:65},
-{n:"Dark Frosty",e:"Dark",t:"ATK",t_kr:"ATK",aw:1,ad:0,tr:1,lv:1,tg:"1.95",cd:"Yes",id:66},
-{n:"Snake Dragon",e:"Water",t:"DEF",t_kr:"DEF",aw:1,ad:0,tr:1,lv:1,tg:"1.55",cd:"Yes",id:67},
-{n:"Xmas Dragon",e:"Light",t:"DEF",t_kr:"DEF",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:68},
-{n:"Demong&Gargoyle",e:"Dark",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:0,tr:1,lv:1,tg:"1.95",cd:"Yes",id:69},
-{n:"Siamese Dragon",e:"Light",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:1,tg:"1.55",cd:"Yes",id:70},
-{n:"Bone Head",e:"Fire",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:71},
-{n:"Venezie",e:"Dark",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:1,tg:"1.55",cd:"Yes",id:72},
-{n:"Mustard Hammer",e:"Earth",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:1,tg:"-0.35",cd:"Yes",id:73},
-{n:"Red Wybern",e:"Fire",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"1.95",cd:"Yes",id:74},
-{n:"Haetai",e:"Wind",t:"DEF",t_kr:"DEF",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:75},
-{n:"Scorpion Dragon",e:"Earth",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:1,tg:"1.95",cd:"Yes",id:76},
-{n:"Knight Dragon",e:"Light",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:1,tg:"1.55",cd:"No",id:77},
-{n:"Spicy",e:"Light",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:1,tg:"1.55",cd:"No",id:78},
-{n:"Rafael",e:"Light",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:1,tg:"-0.35",cd:"No",id:79},
-{n:"Baal",e:"Dark",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:0,tg:"1.6",cd:"No",id:80},
-{n:"Pierrot Dragon",e:"Light",t:"HP",t_kr:"HP",aw:1,ad:0,tr:1,lv:0,tg:"2.0",cd:"Yes",id:81},
-{n:"Pharaogon",e:"Light",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:82},
-{n:"Shadow",e:"Dark",t:"ATK",t_kr:"ATK",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:83},
-{n:"Marshmallow Dragon",e:"Light",t:"DEF",t_kr:"DEF",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:84},
-{n:"Franken Dragon",e:"Dark",t:"HP",t_kr:"HP",aw:1,ad:0,tr:1,lv:0,tg:"2.0",cd:"Yes",id:85},
-{n:"Ninja Dragon",e:"Dark",t:"ATK",t_kr:"ATK",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:86},
-{n:"Dragonoid",e:"Dark",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:0,tr:1,lv:0,tg:"1.225",cd:"Yes",id:87},
-{n:"Volcano Dragon",e:"Fire",t:"ATK-DEF",t_kr:"ATK-DEF",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:88},
-{n:"Blue Lightning",e:"Water",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:89},
-{n:"Witch Dragon",e:"Dark",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:1,lv:0,tg:"-0.675",cd:"Yes",id:90},
-{n:"Purple Lips",e:"Water",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:0,tr:1,lv:0,tg:"1.225",cd:"Yes",id:91},
-{n:"Python",e:"Earth",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:0,tg:"-0.2",cd:"No",id:92},
-{n:"Iron",e:"Fire",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:0,tg:"2.0",cd:"No",id:93},
-{n:"Oro",e:"Wind",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:94},
-{n:"Jaryong",e:"Fire",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:0,tg:"0.7",cd:"Yes",id:95},
-{n:"Battle Dragon",e:"Fire",t:"ATK",t_kr:"ATK",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:96},
-{n:"Devilgon",e:"Earth",t:"ATK",t_kr:"ATK",aw:1,ad:0,tr:1,lv:0,tg:"2.1",cd:"Yes",id:97},
-{n:"Violet Dragon",e:"Water",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:1,lv:0,tg:"2.275",cd:"Yes",id:98},
-{n:"Neon Dragon",e:"Light",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:99},
-{n:"Flame Dragon",e:"Fire",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:100},
-{n:"Black Queen",e:"Dark",t:"ATK",t_kr:"ATK",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:101},
-{n:"Sigma Dragon",e:"Dark",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:0,tg:"1.8",cd:"No",id:102},
-{n:"Lambgon",e:"Earth",t:"HP",t_kr:"HP",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:103},
-{n:"Argo Dragon",e:"Light",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:0,tg:"2.0",cd:"No",id:104},
-{n:"Hercules Dragon",e:"Earth",t:"HP-DEF",t_kr:"HP-DEF",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:105},
-{n:"Totem",e:"Wind",t:"HP",t_kr:"HP",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:106},
-{n:"Malsoja",e:"Fire",t:"ATK",t_kr:"ATK",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:107},
-{n:"Timber",e:"Earth",t:"DEF",t_kr:"DEF",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:108},
-{n:"Cobra",e:"Dark",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:109},
-{n:"Rupia",e:"Water",t:"DEF",t_kr:"DEF",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:110},
-{n:"Tyfoon",e:"Wind",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:0,tr:1,lv:0,tg:"1.225",cd:"Yes",id:111},
-{n:"Stud",e:"Water",t:"DEF",t_kr:"DEF",aw:1,ad:0,tr:1,lv:0,tg:"2.0",cd:"Yes",id:112},
-{n:"Flower",e:"Earth",t:"DEF",t_kr:"DEF",aw:1,ad:0,tr:1,lv:0,tg:"2.0",cd:"Yes",id:113},
-{n:"Haema",e:"Water",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:114},
-{n:"Cloud",e:"Wind",t:"HP",t_kr:"HP",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:115},
-{n:"Lios",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:116},
-{n:"Barian",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:117},
-{n:"Paprion",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:118},
-{n:"Valcan",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:119},
-{n:"Enix",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:120},
-{n:"Balod",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:121},
-{n:"Redbull Dragon",e:"Fire",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:1,lv:0,tg:"-0.175",cd:"Yes",id:122},
-{n:"Tundra Dragon",e:"Water",t:"HP",t_kr:"HP",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:123},
-{n:"Megalodon",e:"Water",t:"ATK",t_kr:"ATK",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:124},
-{n:"Aurora Dragon",e:"Light",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:125},
-{n:"Catsgon",e:"Dark",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:126},
-{n:"Ignis",e:"Fire",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:127},
-{n:"Tartaros",e:"Dark",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:128},
-{n:"Shooting Star",e:"Light",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:129},
-{n:"Dark Fal",e:"Dark",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:0,tg:"-0.175",cd:"Yes",id:130},
-{n:"Hungry Dragon",e:"Earth",t:"HP",t_kr:"HP",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:131},
-{n:"Aqua Dragon",e:"Water",t:"ATK-DEF",t_kr:"ATK-DEF",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:132},
-{n:"Orpheus",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:133},
-{n:"Luminesce",e:"Water",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:0,tg:"3.2",cd:"No",id:134},
-{n:"Burnesce",e:"Fire",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:0,tg:"2.6",cd:"No",id:135},
-{n:"Goblin Dragon",e:"Light",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:136},
-{n:"Jet Dragon",e:"Wind",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:137},
-{n:"Marino Dragon",e:"Water",t:"HP-DEF",t_kr:"HP-DEF",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:138},
-{n:"Tutankha",e:"Dark",t:"DEF",t_kr:"DEF",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:139},
-{n:"Mud Dragon",e:"Earth",t:"HP",t_kr:"HP",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:140},
-{n:"Bomber Dragon",e:"Fire",t:"HP",t_kr:"HP",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:141},
-{n:"Sanare Dragon",e:"Light",t:"DEF",t_kr:"DEF",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:142},
-{n:"Tyrant",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:143},
-{n:"Blue Horse Dragon",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:144},
-{n:"Naughty Villan",e:"Fire",t:"DEF",t_kr:"DEF",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:145},
-{n:"Glacier",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:146},
-{n:"Mneia",e:"Fire",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:0,tg:"0.025",cd:"Yes",id:147},
-{n:"Knox",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:148},
-{n:"Illias",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:149},
-{n:"Cornatus",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:150},
-{n:"Swallow",e:"Wind",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:151},
-{n:"iGon",e:"Wind",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:0,tr:1,lv:0,tg:"2.025",cd:"Yes",id:152},
-{n:"Bloody Nate",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:153},
-{n:"Peace Dragon",e:"Wind",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:154},
-{n:"Galaxy",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:155},
-{n:"Paper Dragon",e:"Wind",t:"ATK",t_kr:"ATK",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:156},
-{n:"High Fairygon",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:157},
-{n:"Morika Dragon",e:"Light",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"2.7",cd:"Yes",id:158},
-{n:"Vegabond Dragon",e:"Earth",t:"ATK",t_kr:"ATK",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:159},
-{n:"Spring Dragon",e:"Wind",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:0,tg:"2.6",cd:"Yes",id:160},
-{n:"Splender Dragon",e:"Dark",t:"ATK",t_kr:"ATK",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:161},
-{n:"Black Tear Dragon",e:"Dark",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:0,tg:"3.55",cd:"Yes",id:162},
-{n:"Black Armor Dragon",e:"Dark",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:0,tg:"2.825",cd:"No",id:163},
-{n:"Orange Leaf Dragon",e:"Earth",t:"HP",t_kr:"HP",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:164},
-{n:"Pink Bell Dragon",e:"Wind",t:"HP",t_kr:"HP",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:165},
-{n:"Kuroy Dragon",e:"Dark",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:1,tg:"1.375",cd:"No",id:166},
-{n:"Forest Dragon",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:167},
-{n:"Gigantis",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:168},
-{n:"Demonio",e:"Fire",t:"ATK",t_kr:"ATK",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:169},
-{n:"Ges Dragon",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:170},
-{n:"Vera Dragon",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:171},
-{n:"Diyona",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:172},
-{n:"Conrad",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:173},
-{n:"Fabregas",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:174},
-{n:"Firefury",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:175},
-{n:"Stego Dragon",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:176},
-{n:"Retentor",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:177},
-{n:"Mist Dragon",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:178},
-{n:"Rekuru Dragon",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:179},
-{n:"Petra Dragon",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:180},
-{n:"Crookers",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:181},
-{n:"Banshee",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:182},
-{n:"Hollow",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:183},
-{n:"Rupo",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:184},
-{n:"Decal",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:185},
-{n:"Chaos",e:"Wind",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:0,tg:"2.6",cd:"No",id:186},
-{n:"Ilema",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:187},
-{n:"Blackcore",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:188},
-{n:"Odin",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:189},
-{n:"Freerunner",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:190},
-{n:"Time Machine",e:"Dark",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:0,tg:"3.2",cd:"Yes",id:191},
-{n:"Citael",e:"Light",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:0,tg:"3.8",cd:"No",id:192},
-{n:"Gracia",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-SS",id:193},
-{n:"Maga",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-SS",id:194},
-{n:"Skoorum",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-SS",id:195},
-{n:"Collosus",e:"Earth",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:0,tg:"1.875",cd:"No",id:196},
-{n:"Wonder Dragon",e:"Dark",t:"HP",t_kr:"HP",aw:0,ad:1,tr:1,lv:1,tg:"3.4",cd:"Yes",id:197},
-{n:"IceDrake",e:"Water",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:0,tg:"1.9",cd:"Yes",id:198},
-{n:"Omiyakon",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:199},
-{n:"Niplehayim",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:200},
-{n:"Rudolf Dragon",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:201},
-{n:"Bar'rah",e:"Light",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:0,tg:"2.8",cd:"No",id:202},
-{n:"Rutilus",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:203},
-{n:"Lunar Blue Dragon",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:204},
-{n:"Optatum",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:205},
-{n:"Asili",e:"Light",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:0,tg:"4.65",cd:"No",id:206},
-{n:"Black Jindo",e:"Dark",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:0,tg:"4.3",cd:"Yes",id:207},
-{n:"Apollonus",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:208},
-{n:"Roloce",e:"Light",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:0,tg:"2.1",cd:"Yes",id:209},
-{n:"Rust",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:210},
-{n:"Slayer",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:211},
-{n:"Fiery Blend",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:212},
-{n:"Moon Light",e:"Dark",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:0,tg:"4.175",cd:"Yes",id:213},
-{n:"Coral Dragon",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:214},
-{n:"Abvalle",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:215},
-{n:"Gaian",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:216},
-{n:"Oculus",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:217},
-{n:"Withme",e:"Water",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:1,tg:"3.05",cd:"No",id:218},
-{n:"Haze",e:"Light",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:1,tg:"3.525",cd:"No",id:219},
-{n:"Lauha",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:220},
-{n:"Dupen",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:221},
-{n:"Maple Dragon",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:222},
-{n:"Dilrang",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:223},
-{n:"Striker",e:"Wind",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"3.9",cd:"Yes",id:224},
-{n:"Garuda",e:"Fire",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:0,tg:"5.8",cd:"No",id:225},
-{n:"Libera",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:226},
-{n:"T.Rex",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:227},
-{n:"Party Dragon",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:228},
-{n:"Ordo",e:"Light",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:0,tg:"3.5",cd:"Yes",id:229},
-{n:"Secreta",e:"Water",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:0,tg:"4.9",cd:"Yes",id:230},
-{n:"Futurum",e:"Fire",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:0,tg:"4.0",cd:"Yes",id:231},
-{n:"Harleybell",e:"Dawn",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:0,tg:"1.8",cd:"Yes",id:232},
-{n:"Taabire",e:"Dawn",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:0,tg:"4.2",cd:"Yes",id:233},
-{n:"Ballack",e:"Dusk",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:0,tg:"1.9",cd:"Yes",id:234},
-{n:"Vefal",e:"Dusk",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:0,tg:"3.8",cd:"Yes",id:235},
-{n:"Dantalion",e:"Nightmare",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:0,tg:"4.4",cd:"Yes",id:236},
-{n:"Jagan",e:"Nightmare",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:0,tg:"4.7",cd:"Yes",id:237},
-{n:"Abyss edge",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:238},
-{n:"Red Raven",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:239},
-{n:"Hell Ghast",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:240},
-{n:"Marbas",e:"Dark",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:0,tg:"5.0",cd:"No",id:241},
-{n:"Khan",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:242},
-{n:"Yggdrasil",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:243},
-{n:"Wild Dragon",e:"Fire",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:0,tg:"4.9",cd:"No",id:244},
-{n:"Zombie Dragon",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:245},
-{n:"Layers",e:"Earth",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"4.3",cd:"No",id:246},
-{n:"Whale Dragon",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:247},
-{n:"Venom Dragon",e:"Water",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:1,tg:"4.0",cd:"No",id:248},
-{n:"Valla Dragon",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:249},
-{n:"Rugar Dragon",e:"Fire",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:0,tg:"4.5",cd:"No",id:250},
-{n:"Atlantis",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:251},
-{n:"Universe",e:"Dark",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:1,tg:"2.9",cd:"No",id:252},
-{n:"Arctica",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:253},
-{n:"Jump Dragon",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:254},
-{n:"Asti Dragon",e:"Wind",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:0,tg:"5.0",cd:"No",id:255},
-{n:"Jima Dragon",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:256},
-{n:"Gallus",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:257},
-{n:"Pumice",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:258},
-{n:"Behemoth",e:"Dark",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:0,tg:"5.1",cd:"No",id:259},
-{n:"Steelwing",e:"Wind",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:0,tg:"4.2",cd:"No",id:260},
-{n:"Soul",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:261},
-{n:"Waterdrop Dragon",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:262},
-{n:"Derr",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:263},
-{n:"Rekmall",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:264},
-{n:"Hwarang",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:265},
-{n:"Graytan",e:"Wind",t:"ATK-DEF",t_kr:"ATK-DEF",aw:0,ad:1,tr:1,lv:1,tg:"4.4",cd:"No",id:266},
-{n:"Mystictiny",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:267},
-{n:"Daros",e:"Earth",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:0,tg:"7.0",cd:"No",id:268},
-{n:"Jarukah",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:269},
-{n:"Dark Horn",e:"Dusk",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:270},
-{n:"Star Ace",e:"Light",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:0,tg:"4.1",cd:"No",id:271},
-{n:"Maloden",e:"Dark",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:0,tg:"5.4",cd:"No",id:272},
-{n:"Igas",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:273},
-{n:"Popomo",e:"Fire",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:0,tg:"5.3",cd:"Yes",id:274},
-{n:"Teddy Dragon",e:"Light",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:0,tg:"5.5",cd:"Yes",id:275},
-{n:"Nagi",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:276},
-{n:"Griffin",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:277},
-{n:"Blackshocker",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:278},
-{n:"Treefairwing",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:279},
-{n:"Leviathan",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:280},
-{n:"Scare",e:"Dark",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:281},
-{n:"Bluebell",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:282},
-{n:"Whitestorm",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:283},
-{n:"Nepenthes",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:284},
-{n:"Agnad",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:285},
-{n:"Bubble Dragon",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"C-S",id:286},
-{n:"Hapla",e:"Dawn",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"5.4",cd:"Yes",id:287},
-{n:"Revelloptin",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"C-S",id:288},
-{n:"Rainbowbatgon",e:"Wind",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:289},
-{n:"Araca",e:"Wind",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:0,tg:"5.675",cd:"No",id:290},
-{n:"Razikas",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:291},
-{n:"Mistilteinn",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:292},
-{n:"Scissor",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:293},
-{n:"Luu",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:294},
-{n:"Flagner",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:295},
-{n:"Selmasa",e:"Dawn",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:0,tg:"5.7",cd:"No",id:296},
-{n:"Bluefirewind",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:297},
-{n:"Characen",e:"Dusk",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"5.275",cd:"Yes",id:298},
-{n:"Aquarium",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:299},
-{n:"Eelos",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:300},
-{n:"Rexton",e:"Dusk",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"4.775",cd:"Yes",id:301},
-{n:"Pomekle",e:"Dusk",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:1,tg:"5.6",cd:"Yes",id:302},
-{n:"Karna",e:"Dark",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:0,tg:"5.0",cd:"No",id:303},
-{n:"Arjuna",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:304},
-{n:"Evil Dragon",e:"Fire",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:0,tg:"5.5",cd:"Yes",id:305},
-{n:"Blackhorn",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:306},
-{n:"Ultimate",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:307},
-{n:"Magic Star",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:308},
-{n:"Artemis Dragon",e:"Light",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:1,tg:"6.9",cd:"Yes",id:309},
-{n:"Hallucy",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:310},
-{n:"Perumata",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:311},
-{n:"Angra",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:312},
-{n:"Ohmunia",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:313},
-{n:"Kohmunia",e:"Dusk",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:314},
-{n:"Dahmunia",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:315},
-{n:"Doohmunia",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:316},
-{n:"Mamunia",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:317},
-{n:"Humunia",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:318},
-{n:"Empire",e:"Wind",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:0,tg:"5.1",cd:"Yes",id:319},
-{n:"Lucifer",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:320},
-{n:"Necromancer",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:321},
-{n:"Earthquake",e:"Earth",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:1,tg:"4.85",cd:"No",id:322},
-{n:"Nike",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:323},
-{n:"Astraina",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:324},
-{n:"Hailes",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:325},
-{n:"Nightmare",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:326},
-{n:"Sweetcloud",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:327},
-{n:"Deneb",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:328},
-{n:"Batdragon",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:329},
-{n:"Wooperum",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:330},
-{n:"Voodoogon",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:331},
-{n:"Hwajusa",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:332},
-{n:"Mithra",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:333},
-{n:"Reward Dragon",e:"Dawn",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:334},
-{n:"Dark Vein",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:335},
-{n:"Bloody Tusk",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:336},
-{n:"Poison River",e:"Earth",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:1,tg:"5.9",cd:"Yes",id:337},
-{n:"Retrieegon",e:"Dusk",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:338},
-{n:"Toddletomtom",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:339},
-{n:"Taygeta",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:340},
-{n:"Cactus Dragon",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:341},
-{n:"Berna",e:"Light",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:0,tg:"1.9",cd:"No",id:342},
-{n:"Luxorin",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:343},
-{n:"Spirit",e:"Wind",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:1,tg:"4.7",cd:"Yes",id:344},
-{n:"Natron",e:"Water",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:1,tg:"1.9",cd:"Yes",id:345},
-{n:"Sala",e:"Dusk",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:346},
-{n:"Umbra",e:"Nightmare",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:0,tr:0,lv:0,tg:"NI",cd:"Yes",id:347},
-{n:"Sola",e:"Light",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"5.9",cd:"Yes",id:348},
-{n:"Popon",e:"Earth",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:1,tg:"4.5",cd:"Yes",id:349},
-{n:"Zephyros",e:"Wind",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:1,tg:"3.4",cd:"Yes",id:350},
-{n:"Dragon Slayer",e:"Dark",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:1,tg:"6.075",cd:"Yes",id:351},
-{n:"Hell Kaiser",e:"Dusk",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:352},
-{n:"Revenant",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:353},
-{n:"Evil Dawn",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:354},
-{n:"Dimension Dragon",e:"Nightmare",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"5.5",cd:"Yes",id:355},
-{n:"Pixel Dragon",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:356},
-{n:"Grand Savior",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:357},
-{n:"Kinder Dragon",e:"Dawn",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:358},
-{n:"Puddinggon",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"C-SS",id:359},
-{n:"Antique Dragon",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:360},
-{n:"Twilight",e:"Dusk",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:361},
-{n:"Florian",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:362},
-{n:"Lalux",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:363},
-{n:"Frodin",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:364},
-{n:"Tilki",e:"Dusk",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"6.8",cd:"Yes",id:365},
-{n:"Igna",e:"Fire",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:1,tg:"4.7",cd:"Yes",id:366},
-{n:"Blizzard",e:"Water",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"6.25",cd:"Yes",id:367},
-{n:"Dark Knight",e:"Dark",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:1,tg:"4.3",cd:"Yes",id:368},
-{n:"Ender Dragon",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:369},
-{n:"Gust",e:"Wind",t:"ATK",t_kr:"ATK",aw:0,ad:1,tr:1,lv:1,tg:"5.1",cd:"Yes",id:370},
-{n:"Sharptale",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:371},
-{n:"Whitethunder",e:"Light",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:1,tg:"5.6",cd:"Yes",id:372},
-{n:"Karura",e:"Light",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:0,tg:"5.0",cd:"No",id:373},
-{n:"Gandharba",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:374},
-{n:"Hawk Eye",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:375},
-{n:"Lua Cheia Dragon",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:376},
-{n:"Lunera Dragon",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:377},
-{n:"Minas Dragon",e:"Light",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:1,tg:"5.35",cd:"Yes",id:378},
-{n:"Hell Sparrow",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:379},
-{n:"Kubera",e:"Dark",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:0,tg:"6.8",cd:"No",id:380},
-{n:"Kalavinka",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:381},
-{n:"Jigsaw Dragon",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:382},
-{n:"Kaiserburn",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:383},
-{n:"Golrock",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:384},
-{n:"Rekmall Reverse",e:"Dusk",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:1,tg:"5.25",cd:"Yes",id:385},
-{n:"Edgever",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:386},
-{n:"Centura",e:"Wind",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:0,tg:"6.075",cd:"No",id:387},
-{n:"Afrit",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:388},
-{n:"Etoile Dragon",e:"Wind",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes",id:389},
-{n:"Nello Dragon",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:390},
-{n:"Thunderrain Dragon",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:391},
-{n:"Zimon",e:"Earth",t:"ATK-DEF",t_kr:"ATK-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:392},
-{n:"Liberte",e:"Earth",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes",id:393},
-{n:"Vritra",e:"Water",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:0,tg:"2.925",cd:"No",id:394},
-{n:"Takchaka",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:395},
-{n:"Schnell Dragon",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:396},
-{n:"Kigal",e:"Wind",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes",id:397},
-{n:"Adela",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:398},
-{n:"Sleez Dragon",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:399},
-{n:"Kanthaka",e:"Earth",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:0,tg:"5.225",cd:"No",id:400},
-{n:"Zithakula",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:401},
-{n:"Phagos Dragon",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:402},
-{n:"Voncias Dragon",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:403},
-{n:"Galaxia Dragon",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:404},
-{n:"Alis Dragon",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:405},
-{n:"Mavrika Dragon",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:406},
-{n:"Sorcerer Dragon",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:407},
-{n:"Aton",e:"Light",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:408},
-{n:"Talissah",e:"Light",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:0,tg:"5.925",cd:"No",id:409},
-{n:"Kuzmara",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:410},
-{n:"Harika",e:"Dusk",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"4.25",cd:"Yes",id:411},
-{n:"Tonton",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:412},
-{n:"Aqua Pearl",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:413},
-{n:"Kirion",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:414},
-{n:"Appleche Dragon",e:"Earth",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:1,tg:"4.0",cd:"Yes",id:415},
-{n:"Tropheus",e:"Water",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:1,tg:"4.1",cd:"Yes",id:416},
-{n:"Nikei",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:417},
-{n:"Nikeda",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:418},
-{n:"Nikelie",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:419},
-{n:"Nikeflow",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:420},
-{n:"Nikevento",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:421},
-{n:"Niketerra",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:422},
-{n:"Panmunia",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:423},
-{n:"Ranmunia",e:"Dusk",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:424},
-{n:"Ninmunia",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:425},
-{n:"Astarte",e:"Earth",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:0,tg:"5.4",cd:"No",id:426},
-{n:"Siris",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:427},
-{n:"Elderly Dragon",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:428},
-{n:"Sura Dragon",e:"Fire",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes",id:429},
-{n:"Taros",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:430},
-{n:"Excir",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:431},
-{n:"Angel Jr.",e:"Light",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:1,tg:"6.2",cd:"Yes",id:432},
-{n:"Hurricane",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:433},
-{n:"Hades",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:434},
-{n:"Predator",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:435},
-{n:"Enfew",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:436},
-{n:"Ghast",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:437},
-{n:"Enturath",e:"Fire",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"6.0",cd:"Yes",id:438},
-{n:"Axcalibur",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:439},
-{n:"Illan",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:440},
-{n:"Cosmos",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:441},
-{n:"Pabereu",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:442},
-{n:"Anchor",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:443},
-{n:"Maldek",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:444},
-{n:"Stra",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:445},
-{n:"Henes",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:446},
-{n:"Deathlock",e:"Dusk",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:447},
-{n:"Animala",e:"Nightmare",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:1,tg:"5.8",cd:"Yes",id:448},
-{n:"Sullivan",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:449},
-{n:"Fafnir",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:450},
-{n:"Abion",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:451},
-{n:"Azak",e:"Dark",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:452},
-{n:"Frozen",e:"Water",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:1,tg:"6.2",cd:"Yes",id:453},
-{n:"Abies",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:454},
-{n:"Charcoal Flame",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:455},
-{n:"Gungnir",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:456},
-{n:"Rude Ore",e:"Nightmare",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:1,tg:"6.9",cd:"Yes",id:457},
-{n:"Sword",e:"Light",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes",id:458},
-{n:"Canine",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"C-SS",id:459},
-{n:"Aila",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:460},
-{n:"Scarlet",e:"Dusk",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:461},
-{n:"Shen",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:462},
-{n:"Berith",e:"Dawn",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:1,tg:"6.0",cd:"Yes",id:463},
-{n:"Tempest",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:464},
-{n:"Sunset",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:465},
-{n:"Fomalhaut",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:466},
-{n:"Makara",e:"Dark",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:1,tg:"6.9",cd:"No",id:467},
-{n:"Anurhada",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"C-SS",id:468},
-{n:"Eclipse",e:"Dusk",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes",id:469},
-{n:"Beleth",e:"Nightmare",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes",id:470},
-{n:"Meteor",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:471},
-{n:"Camouflage",e:"Dusk",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:472},
-{n:"Eligos",e:"Dawn",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:1,tg:"5.8",cd:"Yes",id:473},
-{n:"Beom",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:474},
-{n:"Emotion",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:475},
-{n:"Mimir",e:"Dawn",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes",id:476},
-{n:"Charlotte",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:477},
-{n:"Aegis",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:478},
-{n:"Razing",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:479},
-{n:"Paimon",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:480},
-{n:"Amdusias",e:"Dawn",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:481},
-{n:"Baektaekgon",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:482},
-{n:"Leo Vector",e:"Earth",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"6.0",cd:"Yes",id:483},
-{n:"Nebia",e:"Dawn",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:1,tg:"6.2",cd:"Yes",id:484},
-{n:"Thunderbird",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:485},
-{n:"Boreas",e:"Wind",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:1,tg:"6.0",cd:"Yes",id:486},
-{n:"Qualle",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:487},
-{n:"Kojeumkion",e:"Dusk",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:488},
-{n:"Hwa gui Dragon",e:"Fire",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:1,tg:"6.475",cd:"Yes",id:489},
-{n:"Hekate",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:490},
-{n:"Milla",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:491},
-{n:"Laul",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:492},
-{n:"Stoptune",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:493},
-{n:"Dark Square",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:494},
-{n:"Noble Hell Kaiser",e:"Dusk",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:495},
-{n:"Myosotis",e:"Water",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes",id:496},
-{n:"Lichmond",e:"Dark",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:1,tg:"6.9",cd:"Yes",id:497},
-{n:"Chroma Lichmond",e:"Dark",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:1,tg:"6.9",cd:"Yes",id:498},
-{n:"Toxinic",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:499},
-{n:"Eternal",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:500},
-{n:"Gautling-gon",e:"Light",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:1,tg:"6.9",cd:"Yes",id:501},
-{n:"Bernhard",e:"Water",t:"ATK",t_kr:"ATK",aw:1,ad:1,tr:1,lv:1,tg:"5.2",cd:"Yes",id:502},
-{n:"Rotis",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:503},
-{n:"Snowball",e:"Dusk",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:504},
-{n:"Noble Bloody Tusk",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:505},
-{n:"Jellyfish",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:506},
-{n:"Fenrir",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:507},
-{n:"Tyr",e:"Wind",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:1,tg:"6.675",cd:"Yes",id:508},
-{n:"Amanta",e:"Light",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:1,tg:"3.8",cd:"Yes",id:509},
-{n:"Comet",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:510},
-{n:"White Destroyer",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:511},
-{n:"Pimiru",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:512},
-{n:"Shah",e:"Light",t:"ATK-DEF",t_kr:"ATK-DEF",aw:1,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:513},
-{n:"Noble Dark Vein",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:514},
-{n:"Eos",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:515},
-{n:"Nebula",e:"Dusk",t:"HP-ATK",t_kr:"HP-ATK",aw:1,ad:1,tr:1,lv:1,tg:"6.1",cd:"Yes",id:516},
-{n:"Regulus",e:"Water",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:1,tg:"5.3",cd:"Yes",id:517},
-{n:"Chroma Regulus",e:"Water",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:1,tg:"5.3",cd:"Yes",id:518},
-{n:"Aldebaran",e:"Earth",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:1,tg:"6.0",cd:"Yes",id:519},
-{n:"Advent Evolgon",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"No",id:520},
-{n:"Darnus",e:"Dusk",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:521},
-{n:"Patroa",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:522},
-{n:"Longinus",e:"Nightmare",t:"HP-DEF",t_kr:"HP-DEF",aw:1,ad:1,tr:1,lv:1,tg:"6.075",cd:"Yes",id:523},
-{n:"Noble Ender Dragon",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:524},
-{n:"Zivatar",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:525},
-{n:"Mysfit",e:"Nightmare",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:526},
-{n:"Yeomhwa Dragon",e:"Fire",t:"HP",t_kr:"HP",aw:1,ad:1,tr:1,lv:1,tg:"6.15",cd:"Yes",id:527},
-{n:"Manimekalai",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:528},
-{n:"Portunus",e:"Water",t:"DEF",t_kr:"DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:529},
-{n:"Seere",e:"Dusk",t:"DEF",t_kr:"DEF",aw:0,ad:1,tr:1,lv:1,tg:"5.7",cd:"Yes",id:530},
-{n:"Vargr",e:"Light",t:"ATK",t_kr:"ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:531},
-{n:"Mastema",e:"Nightmare",t:"HP-DEF",t_kr:"HP-DEF",aw:0,ad:1,tr:1,lv:1,tg:"4.3",cd:"Yes",id:532},
-{n:"Castitas",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:533},
-{n:"Noble Aegis",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:534},
-{n:"Tanatos",e:"Fire",t:"HP-DEF",t_kr:"HP-DEF",aw:0,ad:1,tr:1,lv:1,tg:"4.4",cd:"Yes",id:535},
-{n:"Calici",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:536},
-{n:"Chroma Calici",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:537},
-{n:"Pride",e:"Dusk",t:"ATK-DEF",t_kr:"ATK-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.575",cd:"Yes",id:538},
-{n:"Noble Adela",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:539},
-{n:"Wrath",e:"Dawn",t:"DEF",t_kr:"DEF",aw:0,ad:1,tr:1,lv:1,tg:"5.7",cd:"Yes",id:540},
-{n:"Milatas",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:541},
-{n:"Chroma Milatas",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:542},
-{n:"Noble Nello Dragon",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:543},
-{n:"Thoth",e:"Fire",t:"DEF",t_kr:"DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.8",cd:"Yes",id:544},
-{n:"Instria",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:545},
-{n:"Chroma Instria",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:546},
-{n:"Nemus",e:"Nightmare",t:"HP",t_kr:"HP",aw:0,ad:1,tr:1,lv:1,tg:"6.1",cd:"Yes",id:547},
-{n:"Benevolentia",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:548},
-{n:"Chroma Benevolentia",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:549},
-{n:"Noble Galahad",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:550},
-{n:"Noble Evil Dawn",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:551},
-{n:"Thundergod",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:552},
-{n:"Chroma Thundergod",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:553},
-{n:"Crevasse",e:"Nightmare",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:554},
-{n:"Lancenti",e:"Fire",t:"ATK",t_kr:"ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes",id:555},
-{n:"Mamoond",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:556},
-{n:"Goat",e:"Dark",t:"HP-DEF",t_kr:"HP-DEF",aw:0,ad:1,tr:1,lv:1,tg:"4.2",cd:"Yes",id:557},
-{n:"Noble Revenant",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:558},
-{n:"Pachy",e:"Earth",t:"DEF",t_kr:"DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.8",cd:"Yes",id:559},
-{n:"Hosiery",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:560},
-{n:"Tara",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:561},
-{n:"Noble Kaiserburn",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:562},
-{n:"Pitaya",e:"Wind",t:"ATK-DEF",t_kr:"ATK-DEF",aw:0,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes",id:563},
-{n:"Ninetales",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:564},
-{n:"Lusong",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:565},
-{n:"Amaltheia",e:"Dawn",t:"HP",t_kr:"HP",aw:0,ad:1,tr:1,lv:1,tg:"6.2",cd:"Yes",id:566},
-{n:"Knitty",e:"Dusk",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:567},
-{n:"Quetzalcoatl",e:"Earth",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.3",cd:"Yes",id:568},
-{n:"Harmonious Dragon",e:"Dawn",t:"DEF",t_kr:"DEF",aw:0,ad:1,tr:1,lv:1,tg:"4.2",cd:"Yes",id:569},
-{n:"Abaddon",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:570},
-{n:"Cuanade",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:571},
-{n:"Noble Stra",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:572},
-{n:"Magnas",e:"Dark",t:"HP",t_kr:"HP",aw:0,ad:1,tr:1,lv:1,tg:"6.3",cd:"Yes",id:573},
-{n:"Chroma Beleth",e:"Nightmare",t:"DEF",t_kr:"DEF",aw:1,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes",id:574},
-{n:"Porta",e:"Dark",t:"DEF",t_kr:"DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes",id:575},
-{n:"Feros",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:576},
-{n:"Dianu",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:577},
-{n:"Chorim",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:578},
-{n:"Rudra",e:"Water",t:"ATK",t_kr:"ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes",id:579},
-{n:"Noble Maldek",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:580},
-{n:"Kangkang",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:581},
-{n:"Sullae",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:582},
-{n:"Chachawung",e:"Dusk",t:"DEF",t_kr:"DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.0",cd:"Yes",id:583},
-{n:"Deva",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:584},
-{n:"Granos",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:585},
-{n:"Stealth",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:586},
-{n:"Cortus",e:"Dawn",t:"ATK-DEF",t_kr:"ATK-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.875",cd:"Yes",id:587},
-{n:"Leopard",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:588},
-{n:"Noble Henes",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:589},
-{n:"Epit",e:"Dusk",t:"HP-DEF",t_kr:"HP-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes",id:590},
-{n:"Skink Dragon",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:591},
-{n:"Crested Dragon",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:592},
-{n:"Eggmayong",e:"Earth",t:"HP",t_kr:"HP",aw:0,ad:1,tr:1,lv:1,tg:"6.3",cd:"Yes",id:593},
-{n:"Blue Thunder",e:"Wind",t:"ATK",t_kr:"ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:594},
-{n:"Chroma Blue Thunder",e:"Wind",t:"ATK",t_kr:"ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:595},
-{n:"Noble Feros",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:596},
-{n:"Solucanis",e:"Light",t:"DEF",t_kr:"DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:597},
-{n:"Jujag",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:598},
-{n:"Baekho",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:599},
-{n:"Rusalka",e:"Water",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:600},
-{n:"Vetala",e:"Dark",t:"ATK",t_kr:"ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:601},
-{n:"Chroma Vetala",e:"Dark",t:"ATK",t_kr:"ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:602},
-{n:"Rukbat",e:"Dawn",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.3",cd:"Yes",id:603},
-{n:"Caslux",e:"Dark",t:"HP",t_kr:"HP",aw:0,ad:1,tr:1,lv:1,tg:"6.2",cd:"Yes",id:604},
-{n:"Noble Dianu",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:605},
-{n:"Atlus",e:"Light",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.15",cd:"Yes",id:606},
-{n:"Eshu",e:"Dusk",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:607},
-{n:"Kirin",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:608},
-{n:"Rakshasa",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:609},
-{n:"Lumindis",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:610},
-{n:"Fides",e:"Dark",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes",id:611},
-{n:"Bearded",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:612},
-{n:"Firetail",e:"Fire",t:"ATK-DEF",t_kr:"ATK-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:613},
-{n:"Chroma Firetail",e:"Fire",t:"ATK-DEF",t_kr:"ATK-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:614},
-{n:"Yurqa",e:"Water",t:"HP",t_kr:"HP",aw:0,ad:1,tr:1,lv:1,tg:"6.45",cd:"Yes",id:615},
-{n:"Noble Anurhada",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:616},
-{n:"Slosi",e:"Nightmare",t:"ATK",t_kr:"ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.2",cd:"Yes",id:617},
-{n:"Goldie",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:618},
-{n:"Lakion",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:619},
-{n:"Octa",e:"Water",t:"ATK-DEF",t_kr:"ATK-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.9",cd:"Yes",id:620},
-{n:"Chroma Octa",e:"Water",t:"ATK-DEF",t_kr:"ATK-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.9",cd:"Yes",id:621},
-{n:"Curse Reaper",e:"Nightmare",t:"ATK-DEF",t_kr:"ATK-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:622},
-{n:"Ullr",e:"Dawn",t:"ATK",t_kr:"ATK",aw:0,ad:1,tr:1,lv:1,tg:"5.6",cd:"Yes",id:623},
-{n:"Angel Cat",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:624},
-{n:"Aphrodite",e:"Dawn",t:"HP-DEF",t_kr:"HP-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:625},
-{n:"Griffar",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:626},
-{n:"Glaone",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:627},
-{n:"Noble Lunera Dragon",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:628},
-{n:"Blaze Dragon",e:"Fire",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:629},
-{n:"Avernale",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:630},
-{n:"Toarnesce",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:631},
-{n:"Noble Excir",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:632},
-{n:"Protect Dragon",e:"Light",t:"DEF",t_kr:"DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.575",cd:"Yes",id:633},
-{n:"Chroma Protect Dragon",e:"Light",t:"DEF",t_kr:"DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.575",cd:"Yes",id:634},
-{n:"Tempios",e:"Dusk",t:"HP",t_kr:"HP",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:635},
-{n:"Girdletail Dragon",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:636},
-{n:"Jin",e:"Nightmare",t:"ATK-DEF",t_kr:"ATK-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.775",cd:"Yes",id:637},
-{n:"Macaron Dragon",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:638},
-{n:"Archelon",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:639},
-{n:"Noble Dark Horn",e:"Dusk",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:640},
-{n:"Inverso",e:"Dusk",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.875",cd:"Yes",id:641},
-{n:"Tititok",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:642},
-{n:"Reverie",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:643},
-{n:"Litio",e:"Wind",t:"DEF",t_kr:"DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:644},
-{n:"Chroma Litio",e:"Wind",t:"DEF",t_kr:"DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:645},
-{n:"Feyrex",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:646},
-{n:"Skat",e:"Water",t:"DEF",t_kr:"DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.45",cd:"Yes",id:647},
-{n:"Alresch",e:"Water",t:"HP",t_kr:"HP",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:648},
-{n:"Chroma Alresch",e:"Water",t:"HP",t_kr:"HP",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:649},
-{n:"Janus",e:"Dawn",t:"HP",t_kr:"HP",aw:0,ad:1,tr:1,lv:1,tg:"6.8",cd:"Yes",id:650},
-{n:"Figar",e:"Fire",t:"HP",t_kr:"HP",aw:0,ad:1,tr:1,lv:1,tg:"6.825",cd:"Yes",id:651},
-{n:"Chroma Figar",e:"Fire",t:"HP",t_kr:"HP",aw:0,ad:1,tr:1,lv:1,tg:"6.825",cd:"Yes",id:652},
-{n:"Scartooth",e:"Fire",t:"DEF",t_kr:"DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:653},
-{n:"Chroma Scartooth",e:"Fire",t:"DEF",t_kr:"DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:654},
-{n:"Loki",e:"Water",t:"DEF",t_kr:"DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.575",cd:"Yes",id:655},
-{n:"Fafnir",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:656},
-{n:"Huginn",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:657},
-{n:"Muninn",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:658},
-{n:"Heimdallr",e:"Earth",t:"HP-DEF",t_kr:"HP-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:659},
-{n:"Volva",e:"Water",t:"HP",t_kr:"HP",aw:0,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes",id:660},
-{n:"Thor",e:"Wind",t:"ATK-DEF",t_kr:"ATK-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:661},
-{n:"Jormungandr",e:"Dark",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes",id:662},
-{n:"Manus",e:"Dusk",t:"HP-DEF",t_kr:"HP-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.8",cd:"Yes",id:663},
-{n:"Corrupted Jormungandr",e:"Nightmare",t:"ATK",t_kr:"ATK",aw:0,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes",id:664},
-{n:"Yajnir",e:"Light",t:"ATK",t_kr:"ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.325",cd:"Yes",id:665},
-{n:"Noble Sullivan",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:666},
-{n:"Non",e:"Earth",t:"HP-DEF",t_kr:"HP-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.675",cd:"Yes",id:667},
-{n:"Florea",e:"Dawn",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:668},
-{n:"Lucio",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:669},
-{n:"Jango",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:670},
-{n:"Lemures",e:"Nightmare",t:"ATK",t_kr:"ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.9",cd:"Yes",id:671},
-{n:"Acaia",e:"Earth",t:"ATK-DEF",t_kr:"ATK-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.35",cd:"Yes",id:672},
-{n:"Chroma Acaia",e:"Earth",t:"ATK-DEF",t_kr:"ATK-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.35",cd:"Yes",id:673},
-{n:"Tiamat",e:"Dark",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.425",cd:"Yes",id:674},
-{n:"Libro",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:675},
-{n:"Obex",e:"Dark",t:"ATK",t_kr:"ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes",id:676},
-{n:"Hresvelgr",e:"Dusk",t:"HP",t_kr:"HP",aw:0,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes",id:677},
-{n:"Hod",e:"Water",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:678},
-{n:"Sleipnir",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:679},
-{n:"Noble Fenrir",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:680},
-{n:"Hatshya",e:"Dark",t:"ATK-DEF",t_kr:"ATK-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.525",cd:"Yes",id:681},
-{n:"Brry",e:"Light",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:682},
-{n:"Paruparu",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:683},
-{n:"Valefor",e:"Nightmare",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:684},
-{n:"Chroma Valefor",e:"Nightmare",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:685},
-{n:"Merak",e:"Light",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:686},
-{n:"Reginleif",e:"Dusk",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.75",cd:"Yes",id:687},
-{n:"Chroma Reginleif",e:"Dusk",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.75",cd:"Yes",id:688},
-{n:"Red Horse Dragon",e:"Fire",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.7",cd:"Yes",id:689},
-{n:"Noble Hurricane",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:690},
-{n:"Fishing Tail Dragon",e:"Water",t:"ATK",t_kr:"ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.3",cd:"Yes",id:691},
-{n:"Raven Dragon",e:"Nightmare",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:692},
-{n:"Magpie Dragon",e:"Dark",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:693},
-{n:"Lulu",e:"Wind",t:"HP-DEF",t_kr:"HP-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.075",cd:"Yes",id:694},
-{n:"Chroma Lulu",e:"Wind",t:"HP-DEF",t_kr:"HP-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.075",cd:"Yes",id:695},
-{n:"Vaska",e:"Earth",t:"ATK",t_kr:"ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:696},
-{n:"Vlad",e:"Nightmare",t:"HP",t_kr:"HP",aw:0,ad:1,tr:1,lv:1,tg:"6.6",cd:"Yes",id:697},
-{n:"Freyja",e:"Dawn",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"7.0",cd:"Yes",id:698},
-{n:"Pangpang",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:699},
-{n:"Mystic Arts",e:"Earth",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:700},
-{n:"Noble Angra",e:"Wind",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"No",id:701},
-{n:"Skuld",e:"Fire",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:0,tg:"NI",cd:"C-S",id:702},
-{n:"Cthulhu",e:"Dark",t:"ATK",t_kr:"ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.8",cd:"Yes",id:703},
-{n:"Chroma Cthulhu",e:"Dark",t:"ATK",t_kr:"ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.8",cd:"Yes",id:704},
-{n:"Mangtaegon",e:"Nightmare",t:"HP",t_kr:"HP",aw:0,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:705},
-{n:"Undine",e:"Water",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.8",cd:"Yes",id:706},
-{n:"Chroma Undine",e:"Water",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.8",cd:"Yes",id:707},
-{n:"Seraphim",e:"Light",t:"HP",t_kr:"HP",aw:0,ad:1,tr:1,lv:1,tg:"6.4",cd:"Yes",id:708},
-{n:"Nubestella",e:"Dusk",t:"NEU",t_kr:"NEU",aw:0,ad:0,tr:0,lv:1,tg:"NI",cd:"Yes",id:709},
-{n:"Ophanim",e:"Wind",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.28",cd:"Yes",id:710},
-{n:"Chroma Ophanim",e:"Wind",t:"HP-ATK",t_kr:"HP-ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.28",cd:"Yes",id:711},
-{n:"Castigue",e:"Dusk",t:"ATK",t_kr:"ATK",aw:0,ad:1,tr:1,lv:1,tg:"6.5",cd:"Yes",id:712},
-{"n":"블랙홀 드래곤","e":"Dark","t":"HP-DEF","t_kr":"HP-DEF","aw":0,"ad":1,"tr":1,"lv":1,"tg":"6.2","cd":"Yes","id":717},
-{"n":"크로마 블랙홀 드래곤","e":"Dark","t":"HP-DEF","t_kr":"HP-DEF","aw":0,"ad":1,"tr":1,"lv":1,"tg":"6.2","cd":"Yes","id":718},
-{n:"Hildr",e:"Earth",t:"ATK-DEF",t_kr:"ATK-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.725",cd:"Yes",id:719},
-{n:"Chroma Hildr",e:"Earth",t:"ATK-DEF",t_kr:"ATK-DEF",aw:0,ad:1,tr:1,lv:1,tg:"6.725",cd:"Yes",id:720}
-];
+if (!globalThis.DV1_DRAGON_VIEWS) throw new Error("드래곤 데이터 로드 실패: 초기화 중단");
+
+const dexStatMap = DV1_DRAGON_VIEWS.statMap();
+const dexGradeStatMap = DV1_DRAGON_VIEWS.gradeStatMap();
+const dexDescMap = DV1_DRAGON_VIEWS.descriptionMap();
+const dexData=DV1_DRAGON_VIEWS.dexRows();
 
 const dexElemIcons={
-  "Earth":"../icon/11.png",
-  "Water":"../icon/12.png",
-  "Fire":"../icon/13.png",
-  "Wind":"../icon/14.png",
-  "Light":"../icon/84.png",
-  "Dark":"../icon/87.png",
-  "Dusk":"../icon/487.png",
-  "Dawn":"../icon/486.png",
-  "Nightmare":"../icon/488.png",
+  "땅":"../icon/11.png",
+  "물":"../icon/12.png",
+  "불":"../icon/13.png",
+  "바람":"../icon/14.png",
+  "빛":"../icon/84.png",
+  "어둠":"../icon/87.png",
+  "황혼":"../icon/487.png",
+  "여명":"../icon/486.png",
+  "악몽":"../icon/488.png",
 };
 
 const STAGES=[
-  {i:1,l:"Egg"},{i:2,l:"Hatch"},{i:3,l:"Hatchling"},{i:4,l:"Adult"},
-  {i:5,l:"Capsule"},{i:6,l:"Awakened"},{i:7,l:"Transcended"},{i:8,l:"Advent"}
+  {i:1,l:"알"},{i:2,l:"해치"},{i:3,l:"해츨링"},{i:4,l:"성체"},
+  {i:5,l:"캡슐"},{i:6,l:"각성"},{i:7,l:"초월"},{i:8,l:"강림"}
 ];
 
 // 단계 → 풀 이미지 파일명 매핑
@@ -946,8 +253,8 @@ const STAGE_FILES = {
 
 // 스텟 데이터 (나중에 채울 것)
 // 형식: "드래곤이름": { 단계인덱스: { atk:[lo,hi,max_lo,max_hi], def:[...], hp:[...] } }
-// dexStatMap → stat.js 에서 로드
-// dexDescMap → desc.js 에서 로드
+// 스탯·설명은 dragons.js에서 공통 변환
+
 
 
 
@@ -959,10 +266,10 @@ let curPageNum = Math.max(1, parseInt(params.get("p") || sessionStorage.getItem(
 let filterName = "";
 let filterElems = new Set();
 let filterTypes = new Set();
-const ELEMS = ["Earth","Water","Fire","Wind","Light","Dark","Dusk","Dawn","Nightmare"];
-const TYPES = ["HP","ATK","DEF","HP-ATK","HP-DEF","ATK-DEF","NEU"];
+const ELEMS = ["땅","물","불","바람","빛","어둠","황혼","여명","악몽"];
+const TYPES = ["체력","공격","방어","체공","체방","공방","중립"];
 
-// Stat filter state: Lv1/Lv45/growth min-max per stat (hp/atk/def)
+// 스탯 필터 상태: 각 스탯(hp/atk/def)별 Lv1/Lv45/성장폭 이상·이하
 let statFilters = {
   hp:  { l1min:null, l1max:null, l45min:null, l45max:null, gexact:null },
   atk: { l1min:null, l1max:null, l45min:null, l45max:null, gexact:null },
@@ -974,7 +281,7 @@ function toggleStatFilterPanel(){
   const btn = document.getElementById("stat-filter-toggle-btn");
   const isOpen = panel.classList.contains("open");
   panel.classList.toggle("open", !isOpen);
-  btn.textContent = isOpen ? "Stat Filter ▼" : "Stat Filter ▲";
+  btn.textContent = isOpen ? "스탯 필터 ▼" : "스탯 필터 ▲";
 }
 
 function applyStatFilters(){
@@ -1040,7 +347,7 @@ function buildFilterUI(){
     const s=document.createElement("span"); s.className="filter-label"; s.textContent=t; target.appendChild(s);
   };
 
-  lbl("Element", line1);
+  lbl("속성", line1);
   ELEMS.forEach(v => {
     const b=document.createElement("button");
     b.className="ftag"+(filterElems.has(v)?" active":"");
@@ -1051,7 +358,7 @@ function buildFilterUI(){
     line1.appendChild(b);
   });
 
-  lbl("Type", line2);
+  lbl("타입", line2);
   TYPES.forEach(v => {
     const b=document.createElement("button");
     b.className="ftag"+(filterTypes.has(v)?" active":"");
@@ -1074,7 +381,7 @@ function onFilter(){
 // 엔트리별 현재 선택 단계 저장
 const stageState = {};
 
-// Grade dragons - selected grade per entry
+// 등급 드래곤 - 엔트리별 현재 선택 등급 저장
 const GRADES = ["C","B","A","S","SS","SSS"];
 const gradeState = {};
 
@@ -1082,9 +389,10 @@ function gradeSetOf(d){
   return (typeof dexGradeStatMap !== "undefined" ? dexGradeStatMap[d.id] : null) || null;
 }
 
+function firstGrade(d){const g=gradeSetOf(d);return (g&&GRADES.find(x=>g[x]))||"C";}
 function gradeRowHtml(d, idx){
   if(!gradeSetOf(d)) return "";
-  const cur = gradeState[idx] || "C";
+  const cur = gradeState[idx] || firstGrade(d);
   return `<div class="grade-row" id="grade-${idx}">` + GRADES.map(g =>
     `<button class="grade-btn${g===cur?" active":""}" data-grade="${g}" onclick="selectGrade(${idx},'${g}')">${g}</button>`
   ).join("") + `</div>`;
@@ -1097,13 +405,11 @@ function selectGrade(idx, g){
   renderStat(dexData[idx], idx, stageState[idx] || 4);
 }
 
-function getN(key){
-  if(typeof key === "number") return String(key);
-  if(typeof key === "string" && /^\d+$/.test(key)) return key;
-  const d = dexData.find(x => x.n === key);
+function getN(name){
+  const d = dexData.find(x => x.n === name);
   return d && d.id ? String(d.id) : null;
 }
-const BASE = "..";
+const BASE = ".";
 
 // ── 이미지 로딩 안정화: 실패 시 백오프 재시도 후 placeholder ──
 function dexImgRetry(img,onGiveUp){
@@ -1142,7 +448,7 @@ function stageAvail(d, i){
   if(i===8 && !d.ad) return false;
   return true;
 }
-function highStage(d){ return d.ad?"Advent":d.tr?"Transcended":d.aw?"Awakened":"Adult"; }
+function highStage(d){ return d.ad?"강림":d.tr?"초월":d.aw?"각성":"성체"; }
 
 // ── 전체 렌더 ──
 function renderAll(){
@@ -1152,8 +458,8 @@ function renderAll(){
   curPageNum = Math.min(curPageNum, totalPages || 1);
   const pageData = filtered.slice((curPageNum-1)*PER_PAGE, curPageNum*PER_PAGE);
 
-  document.getElementById("top-title").textContent =
-    `Dragon Encyclopedia (${filtered.length})`;
+  window.__dexN = filtered.length;
+  if (window.UI && UI.sub) UI.sub(`검색 결과 ${filtered.length}마리`);
 
   const container = document.getElementById("entries");
   container.innerHTML = "";
@@ -1173,7 +479,7 @@ function buildEntry(d, idx){
   wrap.className = "dragon-entry";
   wrap.dataset.idx = idx;
 
-  const initFull = fullUrl(d.id, 4);
+  const initFull = fullUrl(d.n, 4);
 
   wrap.innerHTML = `
     <div class="entry-body">
@@ -1184,30 +490,31 @@ function buildEntry(d, idx){
           onclick="openLightbox(this)"
           loading="lazy" onerror="dexMainImgErr(this,${idx})"
           style="${initFull?'':'display:none'}">
-        <div class="main-img-ph" id="mph-${idx}" style="${initFull?'display:none':'display:flex'}">No Image</div>
+        <div class="main-img-ph" id="mph-${idx}" style="${initFull?'display:none':'display:flex'}">이미지 없음</div>
       </div>
       <div class="info-panel">
         <div class="name-meta">
           <div class="dragon-name">${d.n}</div>
           <div class="meta-row">
-            <span class="meta-label">Element</span>&nbsp;<span class="meta-val eb-${d.e}" style="padding:1px 6px;border-radius:4px;font-size:11px;display:inline-flex;align-items:center;gap:3px">${dexElemIcons[d.e]?`<img src="${dexElemIcons[d.e]}" style="width:14px;height:14px;border-radius:2px">`:''}${d.e}</span>
+            <span class="meta-label">속성</span>&nbsp;<span class="meta-val eb-${d.e}" style="padding:1px 6px;border-radius:4px;font-size:11px;display:inline-flex;align-items:center;gap:3px">${dexElemIcons[d.e]?`<img src="${dexElemIcons[d.e]}" style="width:14px;height:14px;border-radius:2px">`:''}${d.e}</span>
             <span class="meta-sep">|</span>
-            <span class="meta-label">Type</span>&nbsp;<span class="meta-val">${d.t_kr}</span>
+            <span class="meta-label">타입</span>&nbsp;<span class="meta-val">${d.t_kr}</span>
             <span class="meta-sep">|</span>
-            <span class="meta-label">Gen</span>&nbsp;<span class="meta-val">${d.gen||"1"}</span>
+            <span class="meta-label">세대</span>&nbsp;<span class="meta-val">${d.gen||"1"}</span>
             <span class="meta-sep">|</span>
-            <span class="meta-label">Stage</span>&nbsp;<span class="meta-val" id="mstage-${idx}">Adult</span>
+            <span class="meta-label">단계</span>&nbsp;<span class="meta-val" id="mstage-${idx}">성체</span>
             <span class="meta-sep">|</span>
-            <span class="meta-label">Level Up</span>&nbsp;<span class="meta-val">${d.lv?'Yes':'No'}</span>
+            <span class="meta-label">레벨업</span>&nbsp;<span class="meta-val">${d.lv?'가능':'불가'}</span>
             <span class="meta-sep">|</span>
-            <span class="meta-label">Codable</span>&nbsp;<span class="meta-val">${d.cd}</span>
+            <span class="meta-label">코드화</span>&nbsp;<span class="meta-val">${d.cd}</span>
           </div>
         </div>
+        <div class="desc-box" style="${(typeof dexDescMap!=='undefined'&&dexDescMap[d.n])||d.desc?'':'font-style:italic'}">${(typeof dexDescMap!=='undefined'&&dexDescMap[d.n])||d.desc||'(설명 데이터가 아직 없습니다)'}</div>
         <div class="strip-row">
           <div class="profile-strip" id="strip-${idx}"></div>
-          <div style="display:flex;gap:6px;align-items:center;flex-shrink:0">
-            <button class="dl-btn" id="dlbtn-${idx}" title="Download image" onclick="openDlMenu(event,this,${idx})">⬇</button>
-            <button class="state-btn" id="sbtn-${idx}" onclick="toggleStat(${idx})">Show Stats ▼</button>
+          <div class="strip-actions">
+            <button class="dl-btn" id="dlbtn-${idx}" onclick="openDlMenu(event, ${idx})" title="이미지 다운로드">⬇</button>
+            <button class="state-btn" id="sbtn-${idx}" onclick="toggleStat(${idx})">State펼치기 ▼</button>
           </div>
         </div>
       </div>
@@ -1218,9 +525,9 @@ function buildEntry(d, idx){
         <thead>
           <tr>
             <th class="row-label"></th>
-            <th>Lv.1</th>
-            <th>Lv.45</th>
-            <th>Growth</th>
+            <th>1레벨</th>
+            <th>45레벨</th>
+            <th>성장폭</th>
           </tr>
         </thead>
         <tbody id="stbody-${idx}"></tbody>
@@ -1232,8 +539,8 @@ function buildEntry(d, idx){
   STAGES.forEach(s => {
     const avail = stageAvail(d, s.i);
     if(!avail) return; // 미보유 단계는 표시하지 않음
-    const pUrl = profileUrl(d.id, s.i);
-    const fallbackUrl = profileUrl(d.id, 4); // 성체 프로필 폴백
+    const pUrl = profileUrl(d.n, s.i);
+    const fallbackUrl = profileUrl(d.n, 4); // 성체 프로필 폴백
     const thumbWrap = document.createElement("div");
     thumbWrap.className = "pthumb" + (avail ? "" : " unavail");
     thumbWrap.dataset.si = s.i;
@@ -1278,7 +585,7 @@ function selectStage(d, idx, si){
   // 큰 이미지 교체
   const mi = document.getElementById("mimg-" + idx);
   const mp = document.getElementById("mph-" + idx);
-  const fUrl = fullUrl(d.id, si);
+  const fUrl = fullUrl(d.n, si);
   if(fUrl){
     mi.src = fUrl; mi.style.display = "block"; mp.style.display = "none";
     mi.onerror = () => { mi.style.display = "none"; mp.style.display = "flex"; };
@@ -1300,19 +607,19 @@ function toggleStat(idx){
   const btn = document.getElementById("sbtn-" + idx);
   const isOpen = sec.style.display === "block";
   sec.style.display = isOpen ? "none" : "block";
-  btn.textContent = isOpen ? "Show Stats ▼" : "Hide Stats ▲";
+  btn.textContent = isOpen ? "State펼치기 ▼" : "State닫기 ▲";
   if(!isOpen) renderStat(d, idx, stageState[idx] || 4);
 }
 
 function renderStat(d, idx, si){
   const tbody = document.getElementById("stbody-" + idx);
   const gset = gradeSetOf(d);
-  const ss = gset ? (gset[gradeState[idx] || "C"] || null)
+  const ss = gset ? (gset[gradeState[idx] || firstGrade(d)] || null)
                   : ((typeof dexStatMap !== "undefined" ? dexStatMap[d.id] : null) || null);
   tbody.innerHTML = [
-    {label:"HP",  key:"hp"},
-    {label:"ATK", key:"atk"},
-    {label:"DEF", key:"def"},
+    {label:"체력",   key:"hp"},
+    {label:"공격력", key:"atk"},
+    {label:"방어력", key:"def"},
   ].map(r => {
     const s = ss ? ss[r.key] : null;
     if(!s) return `<tr>
@@ -1352,7 +659,7 @@ function buildPagination(total, totalPages){
   btn("»", totalPages, false, curPageNum === totalPages);
 }
 
-// Wire up stat filter input listeners
+// 스탯 필터 입력 이벤트 연결
 document.querySelectorAll("#stat-filter-panel .sf-input").forEach(inp => {
   inp.addEventListener("input", applyStatFilters);
 });
@@ -1372,93 +679,132 @@ document.querySelectorAll("#stat-filter-panel .sf-input").forEach(inp => {
   new MutationObserver(sync).observe(document.head,{childList:true,subtree:true,characterData:true});
 })();
 
-// ── Lightbox (click main image to enlarge) ──
+// ── 라이트박스 ──
 function openLightbox(img){
-  if(!img||img.style.display==="none"||!img.getAttribute("src"))return;
-  document.getElementById("lightbox-img").src=img.src;
-  document.getElementById("lightbox-img").alt=img.alt||"";
-  document.getElementById("lightbox").classList.add("open");
+  if(!img || img.style.display === "none" || !img.getAttribute("src")) return;
+  const lb = document.getElementById("lightbox");
+  const lbImg = document.getElementById("lightbox-img");
+  lbImg.src = img.src;
+  lbImg.alt = img.alt || "";
+  lb.classList.add("open");
 }
-function closeLightbox(){document.getElementById("lightbox").classList.remove("open");}
+function closeLightbox(){
+  document.getElementById("lightbox").classList.remove("open");
+}
+document.addEventListener("keydown", function(e){
+  if(e.key === "Escape"){ closeLightbox(); closeDlMenu(); }
+});
 
-// ── Download menu (current stage / all stages zip) ──
-let dlIdx=null;
-function openDlMenu(ev,btn,idx){
-  ev.stopPropagation();
-  dlIdx=idx;
-  const m=document.getElementById("dl-menu");
-  const r=btn.getBoundingClientRect();
-  m.style.top=(window.scrollY+r.bottom+4)+"px";
-  m.style.left=(window.scrollX+r.right-150)+"px";
-  m.classList.add("open");
+// ── 이미지 다운로드 ──
+let dlMenuIdx = null;
+function openDlMenu(e, idx){
+  e.stopPropagation();
+  dlMenuIdx = idx;
+  const menu = document.getElementById("dl-menu");
+  menu.classList.add("open");
+  const r = e.currentTarget.getBoundingClientRect();
+  const mw = menu.offsetWidth;
+  let left = r.left + window.scrollX;
+  const vw = document.documentElement.clientWidth;
+  if(r.left + mw > vw - 8) left = r.right + window.scrollX - mw;
+  if(left < window.scrollX + 8) left = window.scrollX + 8;
+  menu.style.left = left + "px";
+  menu.style.top = (r.bottom + window.scrollY + 4) + "px";
 }
-function closeDlMenu(){document.getElementById("dl-menu").classList.remove("open");}
-function sanitizeName(s){return String(s||"image").replace(/[\\/:*?"<>|]+/g,"_").trim();}
-function triggerDownload(url,name){
-  const a=document.createElement("a");
-  a.href=url; a.download=name;
+function closeDlMenu(){
+  document.getElementById("dl-menu").classList.remove("open");
+  dlMenuIdx = null;
+}
+document.addEventListener("click", function(e){
+  const menu = document.getElementById("dl-menu");
+  if(menu.classList.contains("open") && !menu.contains(e.target)) closeDlMenu();
+});
+
+async function saveBlob(url, filename){
+  const resp = await fetch(url);
+  if(!resp.ok) throw new Error("HTTP " + resp.status);
+  const blob = await resp.blob();
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
   document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1500);
 }
-async function saveImage(url,name){
-  try{
-    const r=await fetch(url); if(!r.ok)throw new Error("fetch failed");
-    const b=await r.blob();
-    const ou=URL.createObjectURL(b);
-    triggerDownload(ou,name);
-    setTimeout(()=>URL.revokeObjectURL(ou),1500);
-  }catch(e){ window.open(url,"_blank"); }
-}
+
 async function dlCurrent(){
-  const idx=dlIdx; closeDlMenu(); if(idx==null)return;
-  const d=dexData[idx]; const stage=stageState[idx]||4;
-  const st=STAGES.find(s=>s.i===stage); const lbl=st?st.l:String(stage);
-  const url=fullUrl(d.id,stage); if(!url)return;
-  await saveImage(url, `${sanitizeName(d.n)}_${lbl}.png`);
-}
-let _jszipLoading=null;
-function ensureJSZip(){
-  if(window.JSZip)return Promise.resolve();
-  if(_jszipLoading)return _jszipLoading;
-  _jszipLoading=new Promise((res,rej)=>{
-    const s=document.createElement("script");
-    s.src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js";
-    s.onload=res; s.onerror=()=>rej(new Error("JSZip load failed"));
-    document.head.appendChild(s);
-  });
-  return _jszipLoading;
-}
-async function dlAllZip(){
-  const idx=dlIdx; closeDlMenu(); if(idx==null)return;
-  const d=dexData[idx];
-  const btn=document.getElementById("dl-zip");
+  const idx = dlMenuIdx;
+  closeDlMenu();
+  if(idx === null) return;
+  const d = dexData[idx];
+  const si = stageState[idx] || 4;
+  const label = STAGES.find(s => s.i === si).l;
+  const url = fullUrl(d.n, si);
+  if(!url){ alert("받을 수 있는 이미지가 없습니다."); return; }
   try{
-    await ensureJSZip();
-    const zip=new JSZip();
-    let added=0;
-    for(const s of STAGES){
-      if(!stageAvail(d,s.i))continue;
-      const url=fullUrl(d.id,s.i); if(!url)continue;
-      try{ const r=await fetch(url); if(!r.ok)continue; const b=await r.blob(); zip.file(`${s.l}.png`,b); added++; }catch(e){}
-    }
-    if(!added){ window.alert("No images available to download."); return; }
-    const blob=await zip.generateAsync({type:"blob"});
-    const ou=URL.createObjectURL(blob);
-    triggerDownload(ou, `${sanitizeName(d.n)}.zip`);
-    setTimeout(()=>URL.revokeObjectURL(ou),2000);
-  }catch(e){ window.alert("Failed to build ZIP."); }
+    await saveBlob(url, `${d.n}_${label}.png`);
+  }catch(err){
+    alert("이미지를 받지 못했습니다. (해당 단계 이미지가 없을 수 있습니다)");
+  }
 }
-document.addEventListener("click",closeDlMenu);
-document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeLightbox();closeDlMenu();}});
+
+let _jszipLoad = null;
+function loadJSZip(){
+  if(window.JSZip) return Promise.resolve();
+  if(_jszipLoad) return _jszipLoad;
+  _jszipLoad = new Promise((res, rej) => {
+    const sc = document.createElement("script");
+    sc.src = "https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js";
+    sc.onload = res;
+    sc.onerror = () => rej(new Error("JSZip 로드 실패"));
+    document.head.appendChild(sc);
+  });
+  return _jszipLoad;
+}
+
+async function dlAll(){
+  const idx = dlMenuIdx;
+  closeDlMenu();
+  if(idx === null) return;
+  const d = dexData[idx];
+  const btn = document.getElementById("dlbtn-" + idx);
+  const stages = STAGES.filter(s => stageAvail(d, s.i));
+  try{
+    if(btn){ btn.disabled = true; btn.textContent = "…"; }
+    await loadJSZip();
+    const zip = new JSZip();
+    let added = 0;
+    for(const s of stages){
+      const url = fullUrl(d.n, s.i);
+      if(!url) continue;
+      try{
+        const resp = await fetch(url);
+        if(!resp.ok) continue;
+        zip.file(`${s.i}_${s.l}.png`, await resp.blob());
+        added++;
+      }catch(_){}
+    }
+    if(added === 0){ alert("받을 수 있는 이미지가 없습니다."); return; }
+    const content = await zip.generateAsync({type:"blob"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(content);
+    a.download = `${d.n}.zip`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1500);
+  }catch(err){
+    alert("ZIP 생성에 실패했습니다: " + err.message);
+  }finally{
+    if(btn){ btn.disabled = false; btn.textContent = "⬇"; }
+  }
+}
 
 renderAll();
 </script>
-<div id="lightbox" onclick="closeLightbox()">
-  <button id="lightbox-close" onclick="closeLightbox()" aria-label="Close">&times;</button>
-  <img id="lightbox-img" src="" alt="" onclick="event.stopPropagation()">
+</main>
 </div>
-<div id="dl-menu">
-  <button id="dl-cur" onclick="dlCurrent()">Current stage</button>
-  <button id="dl-zip" onclick="dlAllZip()">All stages (ZIP)</button>
-</div>
+<script src="../ui.js"></script>
+<script>
+if (!globalThis.DV1_DRAGON_VIEWS) throw new Error("드래곤 데이터 로드 실패: 초기화 중단");
+UI.shell({page:'dex',title:'드래곤 도감',sub:'전체 드래곤 정보 · 속성 · 타입 · 스탯 필터'});
+if(window.__dexN!=null) UI.sub(`검색 결과 ${window.__dexN}마리`);</script>
 </body>
 </html>

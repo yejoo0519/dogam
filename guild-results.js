@@ -32,12 +32,12 @@
     if(!list||!list.length)return '';
     const max=Math.max(...list.map(o=>o.bv));
     const cells=list.map(o=>`<span class="rsv-type${o.dtype===r.dragon.dtype?' is-cur':''}${o.bv===max?' is-max':''}"><small>${esc(o.dtype)} · ${esc(o.label)}</small><b>${(o.bv/1e6).toFixed(1)}</b></span>`).join('');
-    return `<div class="sp-rsv-origin"><div class="rsv-origin-hd"><strong>예비 정령 · ${esc(r.dragon._rsvName)}</strong><span>이번 주 ${esc(r.dragon.name)} <b>${(r.bv/1e6).toFixed(1)}</b></span></div><div class="rsv-types">${cells}</div></div>`;
+    return `<div class="sp-rsv-origin"><div class="rsv-origin-hd"><strong>예비 정령 · ${esc(r.dragon._rsvName)}</strong><span>이번 주 ${esc(dragonDispName(r.dragon))} <b>${(r.bv/1e6).toFixed(1)}</b></span></div><div class="rsv-types">${cells}</div></div>`;
   }
   function cardHtml(r,i,wMax,wPct,origin){
       const acc=ACC_DB.find(a=>a.n===r.accN),tar=typeof tarPercent==='function'?tarPercent(r.bv,r.dragon.dtype,r.buff):null;
       const portrait=getDragonImgUrl(r.dragon.name);
-      const identity=`<div class="sp-dragon-identity"><span class="sp-dragon-portrait">${portrait?`<img src="${esc(portrait)}" alt="${esc(r.dragon.name)}" onerror="this.hidden=true">`:''}</span><div class="sp-dragon-text"><strong>${esc(r.dragon.name)}</strong><span class="sp-dragon-attr">${r.dragon.attr?`<img src="${esc(elIcon(r.dragon.attr))}" alt="" onerror="this.hidden=true">${esc(r.dragon.attr)}`:'속성 미확인'}</span></div></div>`;
+      const identity=`<div class="sp-dragon-identity"><span class="sp-dragon-portrait">${portrait?`<img src="${esc(portrait)}" alt="${esc(dragonDispName(r.dragon))}" onerror="this.hidden=true">`:''}</span><div class="sp-dragon-text"><strong>${esc(dragonDispName(r.dragon))}</strong><span class="sp-dragon-attr">${r.dragon.attr?`<img src="${esc(elIcon(r.dragon.attr))}" alt="" onerror="this.hidden=true">${esc(r.dragon.attr)}`:'속성 미확인'}</span></div></div>`;
       return `<article class="sp-result-card"><header><div class="sp-card-label"><span class="sp-rank">${i+1}</span>${identity}<span class="sp-buff-tag">${esc(r.dragon.dtype)} · ${esc(r.dragon.growth)} ${esc(r.dragon.grade)}</span>${r.dragon._rsv?`<span class="sp-rsv-tag">예비 정령 ${r.dragon._hadSpirit?'교체':'추가'} · ${esc(r.dragon._rsvName)}</span>`:''}</div><div class="sp-metrics"><div class="${guildPriority==='bv'?'is-primary':''}"><small>비밸 · 백만</small><b>${(r.bv/1e6).toFixed(1)}</b></div><div title="이번 주 최대 비밸 ${wMax?(wMax/1e6).toFixed(1):'—'} 대비"><small>이번 주 최대 대비</small><b>${wMax?wPct(r.bv).toFixed(1)+'%':'—'}</b></div></div></header>
       <div class="sp-card-body"><div class="sp-equipment">${acc?.img?`<img src="${esc(acc.img)}" alt="">`:''}<div><small>장신구 / 인챈트</small><strong>${esc(r.accN)}</strong>${fmtAccEnc(r.enc)}</div></div><div><small>젬 배분</small><div class="gem-tags">${fmtGem(r.alloc)}</div></div><div><small>펜던트</small>${fmtPend(r.pend)}</div>${resultSpirit(r.dragon)}<div class="sp-final-stats">${[['체력',r.fH,'hp'],['공격',r.fA,'atk'],['방어',r.fD,'def']].map(([l,n,k])=>`<div class="stat-${k}"><small>${l}</small><strong>${n.toLocaleString('ko-KR')}</strong></div>`).join('')}</div></div>
       <div class="sp-guild-effects">${fmtWeeklyBuff(r.buff,r.debuff)}${fmtWeeklyStats(r)}${rsvOrigin(r,origin)}</div></article>`;
@@ -53,7 +53,7 @@
     const avg=d=>d.reduce((s,r)=>s+r.bv,0)/(d.length||1);
     const a0=avg(base)/1e6,a1=avg(info.deck)/1e6,diff=a1-a0;
     const sign=v=>(v>=0?'+':'')+v.toFixed(1);
-    const picks=info.deck.filter(r=>r.dragon._rsv).map(r=>`<b>${esc(r.dragon.name)}</b> 정령 ${r.dragon._hadSpirit?'교체':'추가'} ← ${esc(r.dragon._rsvName)}`).join(', ');
+    const picks=info.deck.filter(r=>r.dragon._rsv).map(r=>`<b>${esc(dragonDispName(r.dragon))}</b> 정령 ${r.dragon._hadSpirit?'교체':'추가'} ← ${esc(r.dragon._rsvName)}`).join(', ');
     let tarLine='';
     if(guildPriority==='tar'&&typeof tarPercent==='function'){
       const t=d=>d.reduce((s,r)=>s+tarPercent(r.bv,r.dragon.dtype,r.buff),0)/(d.length||1);

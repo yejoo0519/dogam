@@ -40,8 +40,45 @@
       const identity=`<div class="sp-dragon-identity"><span class="sp-dragon-portrait">${portrait?`<img src="${esc(portrait)}" alt="${esc(dragonDispName(r.dragon))}" onerror="this.hidden=true">`:''}</span><div class="sp-dragon-text"><strong>${esc(dragonDispName(r.dragon))}</strong><span class="sp-dragon-attr">${r.dragon.attr?`<img src="${esc(elIcon(r.dragon.attr))}" alt="" onerror="this.hidden=true">${esc(r.dragon.attr)}`:'속성 미확인'}</span></div></div>`;
       return `<article class="sp-result-card"><header><div class="sp-card-label"><span class="sp-rank">${i+1}</span>${identity}<span class="sp-buff-tag">${esc(r.dragon.dtype)} · ${esc(r.dragon.growth)} ${esc(r.dragon.grade)}</span>${r.dragon._rsv?`<span class="sp-rsv-tag">예비 정령 ${r.dragon._hadSpirit?'교체':'추가'} · ${esc(r.dragon._rsvName)}</span>`:''}</div><div class="sp-metrics"><div class="${guildPriority==='bv'?'is-primary':''}"><small>비밸 · 백만</small><b>${(r.bv/1e6).toFixed(1)}</b></div><div title="이번 주 최대 비밸 ${wMax?(wMax/1e6).toFixed(1):'—'} 대비"><small>이번 주 최대 대비</small><b>${wMax?wPct(r.bv).toFixed(1)+'%':'—'}</b></div></div></header>
       <div class="sp-card-body"><div class="sp-equipment">${acc?.img?`<img src="${esc(acc.img)}" alt="">`:''}<div><small>장신구 / 인챈트</small><strong>${esc(r.accN)}</strong>${fmtAccEnc(r.enc)}</div></div><div><small>젬 배분</small><div class="gem-tags">${fmtGem(r.alloc)}</div></div><div><small>펜던트</small>${fmtPend(r.pend)}</div>${resultSpirit(r.dragon)}<div class="sp-final-stats">${[['체력',r.fH,'hp'],['공격',r.fA,'atk'],['방어',r.fD,'def']].map(([l,n,k])=>`<div class="stat-${k}"><small>${l}</small><strong>${n.toLocaleString('ko-KR')}</strong></div>`).join('')}</div></div>
-      <div class="sp-guild-effects">${fmtWeeklyBuff(r.buff,r.debuff)}${fmtWeeklyStats(r)}${rsvOrigin(r,origin)}</div></article>`;
+      <div class="sp-guild-effects">${fmtWeeklyBuff(r.buff,r.debuff)}${fmtWeeklyStats(r)}${rsvOrigin(r,origin)}${origin&&r.dragon._rsv?`<div class="rsv-apply-row"><button type="button" class="btn-white" data-rsv-apply="${i}">이 정령 길드전 셋팅에 적용</button></div>`:''}</div></article>`;
   }
+  // 예비 정령 결과를 길드전 셋팅(내 용 정보)에 적용: 그 용의 정령을 예비 정령으로 바꾸고,
+  // 원래 달려 있던 정령은 예비 정령 목록으로 옮긴다 (잃어버리지 않게)
+  let lastRsv=null;
+  function applyReserve(list){
+    normalizeDragonCards();normalizeReserves();
+    const done=[];let moved=0;
+    list.forEach(r=>{
+      const d=r.dragon;if(!d._rsv)return;
+      const rsvIdx=S.reserveSpirits.findIndex(x=>x.uid===d._rsv);if(rsvIdx<0)return;
+      let card=null;
+      DRAGON_CATS.some(c=>(S.dragonCards[c]||[]).some((x,i)=>{if(x&&((x.uid&&x.uid===d._dk)||`${c}#${i}`===d._dk)){card=x;return true;}return false;}));
+      if(!card)return;
+      const rsv=S.reserveSpirits[rsvIdx];
+      const old=spiritHasOpt(card)?{uid:newReserveUid(),name:String((card.name||'')+' 기존 정령').slice(0,20),opts:(card.opts||[]).map(o=>({stat:o?.stat||'',type:o?.type||''})),bonus:card.bonus||''}:null;
+      card.opts=rsv.opts.map(o=>({...o}));card.bonus=rsv.bonus||'';
+      S.reserveSpirits.splice(rsvIdx,1);
+      if(old){S.reserveSpirits.push(old);moved++;}
+      done.push(dragonDispName(d));
+    });
+    if(!done.length)return 0;
+    renderDragonInfo();if(typeof renderReserveSpirits==='function')renderReserveSpirits();
+    doSave();
+    try{const k=LS_PRE+'_spec',sp=JSON.parse(localStorage.getItem(k)||'{}');sp.dragonCards=S.dragonCards;localStorage.setItem(k,JSON.stringify(sp));localStorage.setItem(LS_PRE+'_dragon_pending','1');}catch(e){}
+    const msg=`${done.join(', ')}에 예비 정령을 적용했어요.`+(moved?` 원래 정령 ${moved}개는 예비 정령으로 옮겼어요.`:'');
+    const t=document.createElement('div');
+    t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);max-width:90vw;background:var(--gold);color:#0a0c18;padding:10px 20px;border-radius:8px;font-weight:800;font-size:13px;z-index:9999;transition:opacity .3s;text-align:center';
+    t.textContent=msg;document.body.appendChild(t);
+    setTimeout(()=>{t.style.opacity='0';setTimeout(()=>t.remove(),300);},3200);
+    return done.length;
+  }
+  document.addEventListener('click',e=>{
+    const b=e.target.closest('[data-rsv-apply]');if(!b||!lastRsv)return;
+    const v=b.dataset.rsvApply,list=v==='all'?lastRsv:[lastRsv[+v]].filter(Boolean);
+    if(!applyReserve(list)){alert('이미 적용했거나 셋팅이 바뀌어서 적용하지 못했어요. 시뮬레이션을 다시 실행해 주세요.');return;}
+    const btns=v==='all'?document.querySelectorAll('#res-body-reserve [data-rsv-apply]'):[b];
+    btns.forEach(x=>{x.disabled=true;x.textContent='적용됨 ✓';});
+  });
   // 예비 정령 결과: 지금 추천(base)과 예비 정령까지 고려한 추천(info.deck)을 비교
   window.renderReserveDeck=function(base,info){
     const el=document.getElementById('res-body-reserve');if(!el)return;
@@ -60,7 +97,8 @@
       const t0=t(base),t1=t(info.deck);
       tarLine=`<div>평균 TAR ${t0.toFixed(1)} → ${t1.toFixed(1)} <b class="rsv-up">${sign(t1-t0)}</b></div>`;
     }
-    el.innerHTML=`<div class="rsv-summary"><div>추천: ${picks}</div><div>평균 비밸 ${a0.toFixed(1)} → ${a1.toFixed(1)} <b class="rsv-up">${sign(diff)} (${sign(a0?100*diff/a0:0)}%)</b></div>${tarLine}</div><div class="sp-guild-cards">${info.deck.map((r,i)=>cardHtml(r,i,wMax,wPct,info.origin)).join('')}</div>`;
+    lastRsv=info.deck;
+    el.innerHTML=`<div class="rsv-summary"><div>추천: ${picks}</div><div>평균 비밸 ${a0.toFixed(1)} → ${a1.toFixed(1)} <b class="rsv-up">${sign(diff)} (${sign(a0?100*diff/a0:0)}%)</b></div>${tarLine}<div class="rsv-apply-row"><button type="button" class="btn-gold" data-rsv-apply="all">추천대로 길드전 셋팅에 전부 적용</button></div></div><div class="sp-guild-cards">${info.deck.map((r,i)=>cardHtml(r,i,wMax,wPct,info.origin)).join('')}</div>`;
   };
   document.addEventListener('DOMContentLoaded',()=>{
     const select=document.getElementById('guild-priority');

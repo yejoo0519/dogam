@@ -141,9 +141,8 @@
             }).join('') + '</select>';
         }
         if (i.kind === 'spirit') {
-          var drs = window.GuildLink ? GuildLink.dragons() : [];
           enc = '<select data-dest="' + i.id + '" aria-label="보낼 곳"><option value="rsv"' + (i.data.dest === 'rsv' ? ' selected' : '') + '>길드전 예비 정령</option>' +
-            drs.map(function (d, n) { return '<option value="d' + n + '"' + (i.data.dest === 'd' + n ? ' selected' : '') + '>귀속 → ' + esc(GuildLink.label(d)) + '</option>'; }).join('') + '</select>';
+            (window.GuildLink ? GuildLink.catalogOptions(/^\d+$/.test(i.data.dest) ? i.data.dest : '') : '') + '</select>';
         }
         html += '<label class="shot-it' + (i.ok ? (i.on ? '' : ' off') : ' bad') + '">' +
           '<input type="checkbox" data-id="' + i.id + '"' + (i.on ? ' checked' : '') + (i.ok ? '' : ' disabled') + '>' +
@@ -153,8 +152,7 @@
       html += '</div></div>';
     });
     if (items.some(function (i) { return i.kind === 'spirit'; })) {
-      html += '<p class="shot-help" style="margin-top:8px">정령은 옵션을 풀강 기준으로 넣고 부가옵은 비워요. 정령마다 <b>길드전 예비 정령</b>으로 보낼지, 길드전에 등록된 드래곤에 <b>귀속</b>할지 골라 주세요.' +
-        ((window.GuildLink && GuildLink.dragons().length) ? '' : ' (길드전 계산기에 등록된 드래곤이 없어서 지금은 예비 정령으로만 보낼 수 있어요)') + '</p>';
+      html += '<p class="shot-help" style="margin-top:8px">정령은 옵션을 풀강 기준으로 넣고 부가옵은 비워요. 정령마다 <b>길드전 예비 정령</b>으로 보내거나, <b>드래곤을 골라</b> 그 정령을 단 드래곤으로 길드전 계산기 [내 용 정보]에 등록해요. (등급 9.0 · 강림(축복)으로 들어가니 길드전 계산기에서 맞게 바꿔 주세요)</p>';
     }
     var others = items.filter(function (i) { return i.kind === 'none'; }).length;
     if (others) html += '<p class="shot-help" style="margin-top:12px">정보를 못 읽은 칸 ' + others + '개는 뺐어요.</p>';
@@ -206,16 +204,15 @@
     if (gn) msg.push('젬 ' + gn + '칸');
     var sps = sel.filter(function (i) { return i.kind === 'spirit'; });
     if (sps.length && window.GuildLink) {
-      var drs = GuildLink.dragons(), rsv = [], bind = [], used = {};
+      var cat = GuildLink.catalog(), rsv = [], add = [];
       sps.forEach(function (i) {
-        var m = /^d(\d+)$/.exec(i.data.dest), d = m ? drs[+m[1]] : null;
-        if (d) { used[m[1]] = (used[m[1]] || 0) + 1; bind.push({ ref: d, opts: i.data.opts, bonus: '' }); }
+        var d = /^\d+$/.test(i.data.dest) ? cat[+i.data.dest] : null;
+        if (d) add.push({ attr: d.attr, name: d.name, dtype: d.dtype, opts: i.data.opts, bonus: '' });
         else rsv.push({ name: '', opts: i.data.opts, bonus: '' });
       });
-      if (Object.keys(used).some(function (k) { return used[k] > 1; }) && !confirm('같은 드래곤에 정령을 2개 이상 귀속하려고 해요. 마지막 정령만 남아요. 계속할까요?')) return;
-      var nb = bind.length ? GuildLink.setSpirits(bind) : 0, nr = GuildLink.addReserves(rsv);
+      var nb = GuildLink.addDragons(add), nr = GuildLink.addReserves(rsv);
       if (nr) msg.push('예비 정령 ' + nr + '개');
-      if (nb) msg.push('드래곤 귀속 ' + nb + '마리');
+      if (nb) msg.push('길드전 드래곤 ' + nb + '마리 등록');
     }
     if (typeof renderAll === 'function') renderAll();
     if (typeof qSave === 'function') qSave();

@@ -285,25 +285,20 @@
       </div>
     </details>`;
   }
-  // 길드전 셋팅으로 전송: 고른 드래곤에 이 정령을 귀속 (guild-link.js)
+  // 길드전 셋팅으로 전송: 드래곤을 골라 이 정령을 단 드래곤으로 길드전 [내 용 정보]에 등록 (guild-link.js)
   function sendHtml(row){
     if(!window.GuildLink)return '';
-    const drs=GuildLink.dragons();
-    if(!drs.length)return `<div class="spx-send"><small>길드전 전송</small><span class="sp-help" style="margin:0">길드전 계산기에 등록된 드래곤이 없어요.</span></div>`;
-    const want=row.best.dt;
-    const opts=drs.map((d,n)=>`<option value="${n}"${d.dtype===want&&!drs.slice(0,n).some(x=>x.dtype===want)?' selected':''}>${esc(GuildLink.label(d))}</option>`).join('');
-    return `<div class="spx-send"><small>길드전 전송</small><select data-spx-dr="${row.j}" aria-label="귀속할 드래곤">${opts}</select><button type="button" class="btn-white" data-spx-send="${row.j}">이 드래곤에 귀속</button></div>`;
+    return `<div class="spx-send"><small>길드전 셋팅으로 전송</small><select data-spx-dr="${row.j}" aria-label="등록할 드래곤"><option value="">드래곤 선택</option>${GuildLink.catalogOptions('')}</select><button type="button" class="btn-white" data-spx-send="${row.j}">길드전에 등록</button></div>`;
   }
   function onResClick(e){
     const b=e.target.closest('[data-spx-send]');if(!b||!last||!window.GuildLink)return;
     const j=+b.dataset.spxSend,row=last.rows.find(r=>r.j===j);if(!row)return;
-    const sel=document.querySelector(`[data-spx-dr="${j}"]`),d=GuildLink.dragons()[+(sel&&sel.value)];
-    if(!d)return;
-    if(!confirm(`${GuildLink.label(d)}의 정령을 이 정령(#${j+1}${row.x.memo?' '+row.x.memo:''})으로 바꿀까요?`))return;
-    const n=GuildLink.setSpirits([{ref:d,opts:row.x.opts,bonus:row.x.bonus}]);
-    const msg=n?`${d.name}에 귀속했어요. 길드전 계산기에서 확인해 주세요.`:'드래곤을 찾지 못했어요. 길드전 계산기를 한 번 열어 주세요.';
+    const sel=document.querySelector(`[data-spx-dr="${j}"]`),d=sel&&sel.value!==''?GuildLink.catalog()[+sel.value]:null;
+    if(!d){alert('등록할 드래곤을 골라 주세요.');return;}
+    const n=GuildLink.addDragons([{attr:d.attr,name:d.name,dtype:d.dtype,opts:row.x.opts,bonus:row.x.bonus}]);
+    const msg=n?`${d.attr} · ${d.name}을(를) 이 정령으로 길드전 계산기에 등록했어요.`:'등록하지 못했어요.';
     if(typeof showToast==='function')showToast(msg);else alert(msg);
-    b.textContent=n?'귀속됨 ✓':'실패';
+    if(n)b.textContent='등록됨 ✓';
   }
   function renderResult(){
     if(!last)return;

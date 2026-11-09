@@ -45,6 +45,7 @@
 .member-meta{font-size:11px;color:var(--dim);margin-top:3px}
 .badge{display:inline-block;padding:1px 7px;border-radius:20px;font-size:10px;font-weight:800}
 .badge-admin{background:rgba(167,139,250,.15);color:#a78bfa;border:1px solid rgba(167,139,250,.3)}
+.badge-cham{background:var(--accent-bg);color:var(--gold);border:1px solid var(--accent-border)}
 .badge-ban{background:rgba(248,113,113,.12);color:var(--red);border:1px solid rgba(248,113,113,.25)}
 .member-actions{display:flex;gap:6px;flex-shrink:0}
 .btn-sm{padding:5px 12px;border-radius:5px;border:none;cursor:pointer;font-family:'Malgun Gothic',sans-serif;font-size:12px;font-weight:700;transition:all .15s}
@@ -117,6 +118,7 @@
  <button class="filter-btn active" id="f-all" onclick="setFilter('all',this)">전체</button>
  <button class="filter-btn" id="f-banned" onclick="setFilter('banned',this)">정지됨</button>
  <button class="filter-btn" id="f-admin" onclick="setFilter('admin',this)">어드민</button>
+ <button class="filter-btn" id="f-cham" onclick="setFilter('cham',this)">챔대 셋팅</button>
  <button class="btn-reload" onclick="loadMembers()"></button>
  </div>
 
@@ -133,6 +135,7 @@
 
 <script>'use strict';
 const PAGE=20;
+let chamMap=null;
 let allMembers=[], filtered=[], curPage=0, curFilter='all', curQ='';
 
 // ── 진입 ─────────────────────────────────────────────────────
@@ -148,6 +151,7 @@ let allMembers=[], filtered=[], curPage=0, curFilter='all', curQ='';
 
 // ── 회원 로드 ─────────────────────────────────────────────────
 async function loadMembers(){
+ chamMap=null;
  const list=document.getElementById('member-list');
  list.innerHTML='<div class="empty">불러오는 중...</div>';
  try{
@@ -165,8 +169,12 @@ async function loadMembers(){
 }
 
 // ── 필터 / 검색 ───────────────────────────────────────────────
-function setFilter(f,btn){
+async function setFilter(f,btn){
  curFilter=f; curPage=0;
+ if(f==='cham'&&!chamMap){
+  document.getElementById('member-list').innerHTML='<div class="empty">챔대 셋팅 확인 중...</div>';
+  try{await loadChamMap();}catch(e){document.getElementById('member-list').innerHTML=`<div class="empty" style="color:var(--red)">오류: ${x(e.message||'다시 시도해주세요.')}</div>`;return;}
+ }
  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
  btn.classList.add('active');
  applyFilter();
@@ -180,6 +188,7 @@ function applyFilter(){
  filtered=allMembers.filter(u=>{
  if(curFilter==='banned'&&!u.is_banned)return false;
  if(curFilter==='admin'&&!u.is_admin)return false;
+ if(curFilter==='cham'&&!(chamMap&&chamMap[String(u.id)]))return false;
  if(curQ){
  const nick=(u.nickname||'').toLowerCase();
  const uname=(u.username||'').toLowerCase();
@@ -213,6 +222,7 @@ function render(){
  <div class="member-name">${x(u.nickname||u.username)}
  ${u.is_admin?'<span class="badge badge-admin">어드민</span>':''}
  ${u.is_banned?'<span class="badge badge-ban">정지</span>':''}
+ ${chamMap&&chamMap[String(u.id)]?`<span class="badge badge-cham">${chamMap[String(u.id)]==='0'?'챔대 정령만':'챔대 '+chamMap[String(u.id)]+'마리'}</span>`:''}
  ${isMe?'<span style="font-size:10px;color:var(--dim)">(나)</span>':''}
  </div>
  <div class="member-meta">@${x(u.username)} · 친구코드: ${x(u.friend_code||'—')} · ID: ${u.id}</div>
@@ -267,6 +277,29 @@ async function toggleChamAccess(button){
    applyFilter();
    await ChamAccess.refresh();
  }catch(e){alert('권한 변경 실패: '+e.message);button.disabled=false;}
+}
+
+// 챔대 셋팅이 저장된 계정 찾기 (등록 드래곤 또는 보유 정령이 있는 경우)
+function chamCount(raw){
+ if(typeof raw==='string'){try{raw=JSON.parse(raw);}catch(_){return 0;}}
+ if(!raw||!raw.cham||typeof raw.cham!=='object')return 0;
+ let best=0;
+ Object.values(raw.cham).forEach(c=>{
+  if(!c)return;
+  const n=(c.teams||[]).reduce((a,t)=>a+((t||[]).filter(e=>e&&e.name).length),0);
+  const sp=((c.spx&&c.spx.list)||[]).length;
+  if(n>best)best=n; else if(!best&&sp)best=-1;
+ });
+ return best;
+}
+async function loadChamMap(){
+ if(!await ChamAccess.isAdmin())throw new Error('관리자 권한을 확인할 수 없습니다.');
+ let rows;
+ try{rows=await supabase('GET','users',null,'?select=id,spec_data&spec_data=like.*cham*');}
+ catch(_){rows=await supabase('GET','users',null,'?select=id,spec_data');}
+ chamMap={};
+ (rows||[]).forEach(r=>{const n=chamCount(r.spec_data);if(n)chamMap[String(r.id)]=n>0?n:0;});
+ Object.keys(chamMap).forEach(k=>{if(chamMap[k]===0)chamMap[k]='0';});
 }
 
 // ── 챔대 자동 계산기 저장 셋팅 보기 (관리자 전용) ─────────────

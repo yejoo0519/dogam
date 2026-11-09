@@ -59,6 +59,22 @@
 .pg-btn{padding:5px 12px;border-radius:5px;border:1px solid var(--bd);background:var(--sf2);color:var(--dim);cursor:pointer;font-size:12px;font-family:'Malgun Gothic',sans-serif}
 .pg-btn.active{background:var(--accent-bg);border-color:var(--accent-border);color:var(--gold);font-weight:700}
 
+/* ── 챔대 셋팅 보기 ── */
+.btn-view{background:var(--accent-bg);border:1px solid var(--accent-border);color:var(--gold)}
+.cs-ov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;display:flex;align-items:flex-start;justify-content:center;padding:40px 12px;overflow:auto}
+.cs-box{background:var(--sf);border:1px solid var(--bd);border-radius:10px;width:100%;max-width:760px;padding:18px 18px 22px;position:relative}
+.cs-x{position:absolute;top:10px;right:12px;background:none;border:none;color:var(--dim);font-size:18px;cursor:pointer}
+.cs-t{font-size:15px;font-weight:800;margin-bottom:4px}
+.cs-sub{font-size:11px;color:var(--dim);margin-bottom:12px}
+.cs-pr{border-top:1px solid var(--bd);padding-top:12px;margin-top:12px}
+.cs-pr h4{font-size:13px;margin:0 0 8px;color:var(--gold)}
+.cs-kv{font-size:12px;color:var(--text2);margin:3px 0}
+.cs-kv b{color:var(--dim);font-weight:600;margin-right:6px}
+.cs-tbl{width:100%;border-collapse:collapse;font-size:12px;margin:6px 0 10px}
+.cs-tbl th,.cs-tbl td{border:1px solid var(--bd);padding:4px 6px;text-align:left;vertical-align:top}
+.cs-tbl th{background:var(--sf2);color:var(--dim);font-weight:700;white-space:nowrap}
+.cs-none{font-size:12px;color:var(--dimmer);padding:10px 0}
+
 /* ── 빈 상태 ── */
 .empty{text-align:center;padding:40px;color:var(--dimmer);font-size:13px}
 
@@ -201,7 +217,7 @@ function render(){
  </div>
  <div class="member-meta">@${x(u.username)} · 친구코드: ${x(u.friend_code||'—')} · ID: ${u.id}</div>
  </div>
- <div class="member-actions"><button class="btn-sm ${u.can_cham_auto?'btn-ban':'btn-unban'}" data-cham-id="${x(u.id)}" onclick="toggleChamAccess(this)">${u.can_cham_auto?'자동계산기 권한 회수':'자동계산기 권한 부여'}</button>${!u.is_admin&&!isMe
+ <div class="member-actions"><button class="btn-sm btn-view" onclick="viewCham(${u.id})">챔대 셋팅</button><button class="btn-sm ${u.can_cham_auto?'btn-ban':'btn-unban'}" data-cham-id="${x(u.id)}" onclick="toggleChamAccess(this)">${u.can_cham_auto?'자동계산기 권한 회수':'자동계산기 권한 부여'}</button>${!u.is_admin&&!isMe
  ? u.is_banned
  ? `<button class="btn-sm btn-unban" onclick="toggleBan(${u.id},true,'${x(u.nickname||u.username)}')">정지 해제</button>`
  : `<button class="btn-sm btn-ban" onclick="toggleBan(${u.id},false,'${x(u.nickname||u.username)}')">계정 정지</button>`
@@ -251,6 +267,58 @@ async function toggleChamAccess(button){
    applyFilter();
    await ChamAccess.refresh();
  }catch(e){alert('권한 변경 실패: '+e.message);button.disabled=false;}
+}
+
+// ── 챔대 자동 계산기 저장 셋팅 보기 (관리자 전용) ─────────────
+const CS_STAT={hp:'체',atk:'공',def:'방'};
+function csSp(sp,bonus){
+ const t=(sp||[]).map(o=>o&&o.stat?CS_STAT[o.stat]+(o.type==='+'?'+':'%'):'—').join(' · ');
+ return t+(bonus?` / 부가 ${CS_STAT[bonus]||bonus}`:'');
+}
+function csBuff(b){return ['hp','atk','def'].map(k=>b&&b[k]?`${CS_STAT[k]} ${x(b[k])}`:'').filter(Boolean).join(', ')||'없음';}
+function csPreset(name,active,c){
+ if(!c)return `<div class="cs-pr"><h4>${x(name)}${active?' (사용 중)':''}</h4><div class="cs-none">저장된 챔대 셋팅 없음</div></div>`;
+ const TEAM=['1팀 (강림)','2팀 (등급용 21)','3팀 (등급용 45)'];
+ const rounds=Array.isArray(c.rounds)?c.rounds:[];
+ const ri=+c.round||0;
+ const rd=rounds[ri]||{};
+ const gp=c.gprio||{};
+ const mins=(c.minst||[]).map((m,i)=>m&&m.on?`${i+1}팀 체${m.hp||0}/공${m.atk||0}/방${m.def||0}`:'').filter(Boolean).join(', ')||'꺼짐';
+ let h=`<div class="cs-pr"><h4>${x(name)}${active?' (사용 중)':''}</h4>`;
+ h+=`<div class="cs-kv"><b>현재 라운드</b>${x(rd.name||'—')} · 버프 ${csBuff(rd.buff)}</div>`;
+ h+=`<div class="cs-kv"><b>라운드별 버프</b>${rounds.map(r=>`${x(r.name)}: ${csBuff(r.buff)}`).join(' / ')||'—'}</div>`;
+ h+=`<div class="cs-kv"><b>조건</b>최적화 ${c.metric==='eval'?'EVAL':'비벨 최대'} · 역상성 제외 ${c.anti?'켬':'끔'} · 젬 배치 ${gp.mode==='prio'?'우선순위 ('+(gp.order||[]).map(t=>t+1+'팀').join('>')+')':'균등분배'} · 최소 스탯 ${mins}</div>`;
+ (c.teams||[]).forEach((tm,ti)=>{
+  h+=`<table class="cs-tbl"><tr><th colspan="5">${TEAM[ti]||ti+1+'팀'} · ${(tm||[]).length}마리</th></tr>`;
+  if(!(tm||[]).length)h+=`<tr><td colspan="5" class="cs-none">없음</td></tr>`;
+  else h+=`<tr><th>속성</th><th>드래곤</th><th>타입</th><th>등급</th><th>정령</th></tr>`+(tm||[]).map(e=>`<tr><td>${x(e.attr)}</td><td>${x(e.name||'—')}</td><td>${x(e.dtype||'—')}</td><td>${ti===0?x(e.grade||''):'—'}</td><td>${csSp(e.sp,e.bonus)}</td></tr>`).join('');
+  h+='</table>';
+ });
+ const sl=(c.spx&&c.spx.list)||[];
+ h+=`<table class="cs-tbl"><tr><th colspan="2">정령 배분 · 보유 정령 ${sl.length}개 (대상: ${c.spx&&c.spx.target==='all'?'전체 드래곤':'내 드래곤'})</th></tr>`;
+ h+=sl.length?sl.map((q,i)=>`<tr><td>#${i+1} ${x(q.memo||'')}</td><td>${csSp(q.sp,q.bonus)}</td></tr>`).join(''):`<tr><td colspan="2" class="cs-none">없음</td></tr>`;
+ h+='</table></div>';
+ return h;
+}
+async function viewCham(id){
+ const m=allMembers.find(u=>u.id==id)||{};
+ const ov=document.createElement('div');ov.className='cs-ov';
+ ov.onclick=e=>{if(e.target===ov)ov.remove();};
+ ov.innerHTML=`<div class="cs-box"><button class="cs-x" onclick="this.closest('.cs-ov').remove()">✕</button>
+ <div class="cs-t">${x(m.nickname||m.username||'')} · 챔대 자동 계산기 셋팅</div>
+ <div class="cs-sub">@${x(m.username||'')} · 로그인 상태로 저장된 값만 보여요</div><div class="cs-body"><div class="cs-none">불러오는 중...</div></div></div>`;
+ document.body.appendChild(ov);
+ const body=ov.querySelector('.cs-body');
+ try{
+  if(!await ChamAccess.isAdmin())throw new Error('관리자 권한을 확인할 수 없습니다.');
+  const rows=await supabase('GET','users',null,'?id=eq.'+encodeURIComponent(id)+'&select=spec_data');
+  let raw=rows&&rows[0]&&rows[0].spec_data;
+  if(typeof raw==='string'){try{raw=JSON.parse(raw);}catch(_){raw=null;}}
+  if(!raw||raw.v!==2||!Array.isArray(raw.presets)||!raw.cham){body.innerHTML='<div class="cs-none">저장된 챔대 셋팅이 없어요.</div>';return;}
+  const names=raw.presets.map(p=>({id:p.id,name:p.name||p.id}));
+  Object.keys(raw.cham).forEach(k=>{if(!names.some(n=>n.id===k))names.push({id:k,name:k});});
+  body.innerHTML=names.map(p=>csPreset(p.name,p.id===raw.activeId,raw.cham[p.id])).join('');
+ }catch(e){body.innerHTML=`<div class="cs-none" style="color:var(--red)">불러오기 실패: ${x(e.message||'다시 시도해주세요.')}</div>`;}
 }
 
 function x(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}

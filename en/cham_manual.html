@@ -135,6 +135,18 @@ input[type=number]{width:100%}
   .u-setpane .sp2-row .chip{padding:5px 4px}
 }
 @media(max-width:980px){.u-setpane .sec{margin-bottom:16px}}
+
+/* 고귀한 드래곤: 금색 테두리 + 은은한 광택 */
+@keyframes nobleShine{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+@keyframes nobleGlow{0%,100%{box-shadow:0 0 0 1px rgba(255,214,102,.55),0 0 12px rgba(255,196,64,.25)}50%{box-shadow:0 0 0 1px rgba(255,230,140,.9),0 0 22px rgba(255,200,70,.45)}}
+.noble-img{border-radius:10px;outline:2px solid #f5c542;outline-offset:1px;box-shadow:0 0 10px rgba(255,200,70,.55);background:radial-gradient(circle,rgba(255,215,100,.22),transparent 70%)}
+.noble-tag{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:999px;font-size:10.5px;font-weight:900;letter-spacing:.02em;color:#3a2600;vertical-align:middle;
+  background:linear-gradient(90deg,#b8860b,#ffe08a,#f5c542,#fff3c4,#b8860b);background-size:200% 100%;animation:nobleShine 2.4s linear infinite;box-shadow:0 0 6px rgba(255,200,70,.5)}
+.card.noble{border:1.5px solid #f5c542!important;animation:nobleGlow 2.6s ease-in-out infinite}
+.card.noble .card-hd{background-image:linear-gradient(135deg,rgba(245,197,66,.16),rgba(245,197,66,0) 60%)}
+.card.noble .card-name{color:#ffd76a;text-shadow:0 0 8px rgba(255,200,70,.35)}
+.ds-item.noble span:first-of-type{color:#ffd76a;font-weight:800}
+.ds-item.noble img{outline:1.5px solid #f5c542;border-radius:6px}
 </style>
 </head>
 <body class="u">
@@ -213,8 +225,9 @@ const SPIRIT_W=0.5; // 챔대 정령 적용 비율
 
 const ELEM_ALIAS={'Earth':'땅','Water':'물','Fire':'불','Wind':'바람','Light':'빛','Dark':'어둠','Dusk':'황혼','Dawn':'여명','Nightmare':'악몽'};
 D.GRADE.forEach(g=>{g.elem=ELEM_ALIAS[g.elem]||g.elem;});
-// '고귀한(Noble) X'는 원본과 스탯이 같은 중복이라 목록에서 제외
-D.GRADE=D.GRADE.filter(g=>!/^고귀한\s/.test(g.ko));
+// '고귀한(Noble) X'는 원본과 스탯이 같지만 따로 보유하는 드래곤이라 목록에 넣고 금색으로 표시
+const isNoble=d=>!!d&&/^고귀한\s/.test(d.ko||'');
+const nobleTag=d=>isNoble(d)?`<span class="noble-tag">${IS_EN?'NOBLE':'고귀'}</span>`:'';
 
 // ── 이름/타입 조회 ────────────────────────────────────────────
 const nm=o=>o?(IS_EN?o.en:o.ko):'';
@@ -333,7 +346,7 @@ function setTab(i){S.tab=i;renderTabs();renderCards();save();}
 
 function cardHtml(ti,si){
   const slot=S.teams[ti][si];const team=TEAMS[ti];
-  let img='',title=L.no_dragon,sub='',skill='';
+  let img='',title=L.no_dragon,sub='',skill='',noble=false;
   let pick='';
   if(team.kind==='gang'){
     const g=gangOf(slot);
@@ -348,7 +361,7 @@ function cardHtml(ti,si){
       </div>`;
   }else{
     const g=gradeOf(slot,team.lv);
-    if(g){img=imgUrl(g.did,4);title=nm(g);sub=attrLbl(slot.attr)+' · Lv.'+team.lv;if(g.sk)skill=`<span class="skill">${esc(L.skill[g.sk]||g.sk)}</span>`;}
+    if(g){img=imgUrl(g.did,4);title=nm(g);noble=isNoble(g);sub=attrLbl(slot.attr)+' · Lv.'+team.lv;if(g.sk)skill=`<span class="skill">${esc(L.skill[g.sk]||g.sk)}</span>`;}
     pick=`<div class="f1">
         <select onchange="setAttr(${ti},${si},this.value)">${attrOpts(slot.attr)}</select>
         ${searchBox(ti,si,g?nm(g):'')}
@@ -381,10 +394,10 @@ function cardHtml(ti,si){
   const bonus=`<div class="sp-row" style="grid-template-columns:40px 1fr"><span class="k">${L.bonus}</span>
       <select onchange="S.teams[${ti}][${si}].bonus=this.value;onChange()">${opt('','—',slot.bonus)}${STATS.map(s=>opt(s,statLbl(s)+' (+'+SP_BONUS[s]+')',slot.bonus)).join('')}</select></div>`;
 
-  return `<div class="card">
+  return `<div class="card${noble?' noble':''}">
     <div class="card-hd">
-      ${img?`<img class="card-img" src="${esc(img)}" onerror="this.style.visibility='hidden'" alt="">`:`<div class="card-img"></div>`}
-      <div><div class="card-name">${esc(title)}${skill}</div><div class="card-sub">${esc(sub)}</div></div>
+      ${img?`<img class="card-img${noble?' noble-img':''}" src="${esc(img)}" onerror="this.style.visibility='hidden'" alt="">`:`<div class="card-img"></div>`}
+      <div><div class="card-name">${esc(title)}${skill}${noble?nobleTag({ko:'고귀한 '}):''}</div><div class="card-sub">${esc(sub)}</div></div>
       <div class="card-slot">${L.slot(si+1)}</div>
     </div>
     <div class="card-bd">
@@ -453,8 +466,8 @@ function dsCandidates(ti,si,q){
 function dsFilter(ti,si,q){
   const drop=document.getElementById(`ds-${ti}-${si}`);if(!drop)return;
   const list=dsCandidates(ti,si,q);
-  drop.innerHTML=list.length?list.map(x=>`<div class="ds-item" onmousedown="event.preventDefault();dsPick(${ti},${si},'${esc(x.attr)}','${esc(x.d.ko).replace(/'/g,"\\'")}')">
-      <img src="${esc(x.img)}" onerror="this.style.visibility='hidden'" alt=""><span>${esc(nm(x.d))}</span><span class="m">${esc(x.meta)}</span></div>`).join('')
+  drop.innerHTML=list.length?list.map(x=>`<div class="ds-item${isNoble(x.d)?' noble':''}" onmousedown="event.preventDefault();dsPick(${ti},${si},'${esc(x.attr)}','${esc(x.d.ko).replace(/'/g,"\\'")}')">
+      <img src="${esc(x.img)}" onerror="this.style.visibility='hidden'" alt=""><span>${esc(nm(x.d))}</span>${nobleTag(x.d)}<span class="m">${esc(x.meta)}</span></div>`).join('')
     :`<div class="ds-empty">${L.no_result}</div>`;
   drop.classList.add('open');
 }

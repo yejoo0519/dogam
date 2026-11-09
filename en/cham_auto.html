@@ -401,6 +401,21 @@ input[type=number]{width:100%}
   .u-setpane .sp2-row .chip{padding:5px 4px}
 }
 @media(max-width:980px){.u-setpane .sec{margin-bottom:16px}}
+
+/* 고귀한 드래곤: 금색 테두리 + 은은한 광택 */
+@keyframes nobleShine{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+@keyframes nobleGlow{0%,100%{box-shadow:0 0 0 1px rgba(255,214,102,.55),0 0 10px rgba(255,196,64,.25)}50%{box-shadow:0 0 0 1px rgba(255,230,140,.9),0 0 18px rgba(255,200,70,.45)}}
+.noble-img{border-radius:10px;outline:2px solid #f5c542;outline-offset:1px;box-shadow:0 0 10px rgba(255,200,70,.55);background:radial-gradient(circle,rgba(255,215,100,.22),transparent 70%)}
+.noble-tag{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:999px;font-size:10.5px;font-weight:900;letter-spacing:.02em;color:#3a2600;vertical-align:middle;
+  background:linear-gradient(90deg,#b8860b,#ffe08a,#f5c542,#fff3c4,#b8860b);background-size:200% 100%;animation:nobleShine 2.4s linear infinite;box-shadow:0 0 6px rgba(255,200,70,.5)}
+tr.dr-row.noble{outline:1.5px solid #f5c542;outline-offset:-1.5px;background:linear-gradient(90deg,rgba(245,197,66,.16),rgba(245,197,66,.03) 60%)!important;animation:nobleGlow 2.6s ease-in-out infinite}
+tr.dr-row.noble td:not(.c-bar){background:transparent!important}
+tr.dr-row.noble .t{color:#ffd76a;text-shadow:0 0 8px rgba(255,200,70,.35)}
+.mo-row.noble,.card.noble,.dr-sheet.noble .dr-sheet-hd{position:relative;border:1.5px solid #f5c542!important;animation:nobleGlow 2.6s ease-in-out infinite;background-image:linear-gradient(135deg,rgba(245,197,66,.13),rgba(245,197,66,0) 55%)}
+.mo-row.noble .t,.card.noble .card-name,.dr-sheet.noble .t{color:#ffd76a}
+.dr-sheet.noble .dr-sheet-hd{border-radius:12px}
+.ds-item.noble span:first-of-type{color:#ffd76a;font-weight:800}
+.ds-item.noble img{outline:1.5px solid #f5c542;border-radius:6px}
 </style>
 </head>
 <body class="u">
@@ -577,8 +592,9 @@ const OPT_LIMIT=60;
 
 const ELEM_ALIAS={'Earth':'땅','Water':'물','Fire':'불','Wind':'바람','Light':'빛','Dark':'어둠','Dusk':'황혼','Dawn':'여명','Nightmare':'악몽'};
 D.GRADE.forEach(g=>{g.elem=ELEM_ALIAS[g.elem]||g.elem;});
-// '고귀한 ~'은 원본과 스탯이 같은 중복 항목이라 목록에서 제외
-D.GRADE=D.GRADE.filter(g=>!/^고귀한\s/.test(g.ko));
+// '고귀한 ~'은 원본과 스탯이 같지만 따로 보유하는 드래곤이라 목록에 넣고 금색으로 표시
+const isNoble=d=>!!d&&/^고귀한\s/.test(d.ko||d.name||'');
+const nobleTag=d=>isNoble(d)?`<span class="noble-tag">${IS_EN?'NOBLE':'고귀'}</span>`:'';
 
 const nm=o=>o?(IS_EN?o.en:o.ko):'';
 // 스킬 아이콘 (sss.html과 동일한 icon/ 경로 사용)
@@ -1410,10 +1426,11 @@ function cardHtml(opt){
   const pend=opt.pend?`${L.pend_t[opt.pend.type]||opt.pend.type} ${(opt.pend.options||[]).slice(0,opt.pend.type==='태양'?3:opt.pend.type==='달'?2:1).map(o=>statLbl(o.stat)+o.val+'%').join('/')}`:L.none;
   const sp=c.spLabel!=null?c.spLabel:spiritText(c.entry);
   const kv=(k,v)=>`<div class="kv"><span class="k">${k}</span><span class="v">${esc(v)}</span></div>`;
-  return `<div class="card">
+  const nb=/^고귀한\s/.test(c.name||'');
+  return `<div class="card${nb?' noble':''}">
     <div class="card-hd">
-      ${c.img?`<img class="card-img" src="${esc(imgUrl(c.img,c.imgStage))}" onerror="this.style.visibility='hidden'" alt="">`:`<div class="card-img"></div>`}
-      <div><div class="card-name">${esc(nm({ko:c.name,en:c.en||c.name}))}${skillIcon(c.sk)}</div>
+      ${c.img?`<img class="card-img${nb?' noble-img':''}" src="${esc(imgUrl(c.img,c.imgStage))}" onerror="this.style.visibility='hidden'" alt="">`:`<div class="card-img"></div>`}
+      <div><div class="card-name">${esc(nm({ko:c.name,en:c.en||c.name}))}${skillIcon(c.sk)}${nobleTag({ko:c.name})}</div>
       <div class="card-sub">${esc(c.sub)}</div></div>
     </div>
     <div class="card-bd">
@@ -1608,7 +1625,7 @@ function drInfo(ti,i){
     img=imgUrl(d.did,4);title=nm(d);sub='Lv.'+t.lv+' · EVAL '+d.ev;
     if(d.sk)skill=skillIcon(d.sk);
   }
-  return {en,d,valid,img,title,sub,skill};
+  return {en,d,valid,img,title,sub,skill,noble:isNoble(d)};
 }
 // 정령 옵션을 작은 칩으로
 function spChips(en){
@@ -1704,11 +1721,11 @@ function renderDragonTeams(){
       idxs.forEach(i=>{
         const f=drInfo(ti,i);
         const open=EDIT_UID===f.en.uid;
-        rows+=`<tr class="dr-row${open?' on':''}" onclick="openEdit('${f.en.uid}')">
+        rows+=`<tr class="dr-row${open?' on':''}${f.noble?' noble':''}" onclick="openEdit('${f.en.uid}')">
           <td class="c-bar" style="background:${EL_DOT[attr]}"></td>
           <td class="c-name"><span class="nw">
-            ${f.img?`<img class="dr-img" src="${esc(f.img)}" onerror="this.style.visibility='hidden'" alt="">`:`<span class="dr-img"></span>`}
-            <span class="t">${esc(f.title)}${f.skill}</span>
+            ${f.img?`<img class="dr-img${f.noble?' noble-img':''}" src="${esc(f.img)}" onerror="this.style.visibility='hidden'" alt="">`:`<span class="dr-img"></span>`}
+            <span class="t">${esc(f.title)}${f.skill}${nobleTag(f.d)}</span>
           </span></td>
           <td class="c-sub">${esc(f.sub)||'<span class="dim">—</span>'}</td>
           <td class="c-sp">${f.d?spChips(f.en):'<span class="dim">—</span>'}${!f.valid&&f.d?`<span class="warn-i">${L.need_type}</span>`:''}</td>
@@ -1737,10 +1754,10 @@ function renderDragonTeams(){
         <button class="btn" onclick="addEntry(${ti},'${attr}')">＋</button></div>`;
       mo+=`<div class="mo-list">`+idxs.map(i=>{
         const f=drInfo(ti,i);
-        return `<button type="button" class="mo-row" onclick="openEdit('${f.en.uid}')">
+        return `<button type="button" class="mo-row${f.noble?' noble':''}" onclick="openEdit('${f.en.uid}')">
           <span class="bar" style="background:${EL_DOT[attr]}"></span>
-          ${f.img?`<img class="dr-img" src="${esc(f.img)}" onerror="this.style.visibility='hidden'" alt="">`:`<span class="dr-img"></span>`}
-          <span class="tx"><span class="t">${esc(f.title)}${f.skill}</span>
+          ${f.img?`<img class="dr-img${f.noble?' noble-img':''}" src="${esc(f.img)}" onerror="this.style.visibility='hidden'" alt="">`:`<span class="dr-img"></span>`}
+          <span class="tx"><span class="t">${esc(f.title)}${f.skill}${nobleTag(f.d)}</span>
             <span class="s">${esc(f.sub)||(f.valid?'':L.need_type)}</span></span>
           ${f.d?spChips(f.en):''}
         </button>`;
@@ -1757,11 +1774,11 @@ function renderDragonTeams(){
     if(i>=0){
       const f=drInfo(ti,i);
       sheet=`<div class="dr-scrim" onclick="closeEdit()"></div>
-        <div class="dr-sheet">
+        <div class="dr-sheet${f.noble?' noble':''}">
           <div class="dr-sheet-grab"></div>
           <div class="dr-sheet-hd">
             ${f.img?`<img class="dr-img" src="${esc(f.img)}" onerror="this.style.visibility='hidden'" alt="">`:`<span class="dr-img"></span>`}
-            <div><div class="t">${esc(f.title)}${f.skill}</div><div class="s">${esc(L.team(ti+1))} · ${esc(attrLbl(f.en.attr))}</div></div>
+            <div><div class="t">${esc(f.title)}${f.skill}${nobleTag(f.d)}</div><div class="s">${esc(L.team(ti+1))} · ${esc(attrLbl(f.en.attr))}</div></div>
             <button class="icon-btn red" title="${esc(L.del)}" onclick="delEntry(${ti},${i});closeEdit()">✕</button>
           </div>
           <div class="dr-sheet-bd">${drEditHtml(ti,i)}</div>
@@ -1816,8 +1833,8 @@ function dsCandidates(ti,i,q){
 function dsFilter(ti,i,q){
   const drop=document.getElementById(`ds-${ti}-${i}`);if(!drop)return;
   const list=dsCandidates(ti,i,q);
-  drop.innerHTML=list.length?list.map(x=>`<div class="ds-item" onmousedown="event.preventDefault();dsPick(${ti},${i},'${esc(x.attr)}','${esc(x.d.ko).replace(/'/g,"\\'")}')">
-      <img src="${esc(x.img)}" onerror="this.style.visibility='hidden'" alt=""><span>${esc(nm(x.d))}</span><span class="m">${esc(x.meta)}</span></div>`).join('')
+  drop.innerHTML=list.length?list.map(x=>`<div class="ds-item${isNoble(x.d)?' noble':''}" onmousedown="event.preventDefault();dsPick(${ti},${i},'${esc(x.attr)}','${esc(x.d.ko).replace(/'/g,"\\'")}')">
+      <img src="${esc(x.img)}" onerror="this.style.visibility='hidden'" alt=""><span>${esc(nm(x.d))}</span>${nobleTag(x.d)}<span class="m">${esc(x.meta)}</span></div>`).join('')
     :`<div class="ds-empty">${L.no_result_s}</div>`;
   drop.classList.add('open');
 }

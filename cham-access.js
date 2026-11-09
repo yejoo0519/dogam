@@ -54,11 +54,9 @@
   function refresh(){
     if(pending)return pending;
     pending=(async()=>{
-      let allowed=false;
-      const u=user();const uid=u&&u.id!=null?String(u.id):null;
-      try{const row=await readMember();allowed=!!row&&row.can_cham_auto===true&&row.is_banned!==true;}
-      catch(_){/* 네트워크·타임아웃 오류: 같은 계정으로 이미 확인된 권한은 유지, 첫 확인이면 거부 */allowed=lastAllowed&&uid!==null&&uid===lastUid;}
-      lastAllowed=allowed;lastUid=uid;
+      /* 챔대 자동 계산기 전체 공개: 권한 확인 없이 항상 허용 */
+      const allowed=true;
+      const u=user();lastAllowed=true;lastUid=u&&u.id!=null?String(u.id):null;
       apply(allowed);return allowed;
     })().finally(()=>{pending=null;});
     return pending;
@@ -66,11 +64,11 @@
   w.ChamAccess={refresh,requireAccess:refresh,isAdmin:async()=>{
     try{const row=await readMember();return !!row&&row.is_admin===true&&row.is_banned!==true;}catch(_){return false;}
   }};
-  const start=()=>{apply(false);refresh();};
+  d.documentElement.setAttribute('data-cham-auto-allowed','');
+  const start=()=>{apply(true);refresh();};
   if(d.readyState==='loading')d.addEventListener('DOMContentLoaded',start,{once:true});else start();
-  w.addEventListener('storage',e=>{if(e.key==='community_user'||e.key===null){apply(false);refresh();}});
-  w.addEventListener('pageshow',()=>{apply(false);refresh();});
+  w.addEventListener('storage',e=>{if(e.key==='community_user'||e.key===null){refresh();}});
+  w.addEventListener('pageshow',()=>{refresh();});
   w.addEventListener('focus',refresh);
   d.addEventListener('visibilitychange',()=>{if(!d.hidden)refresh();});
-  setInterval(()=>{if(!d.hidden)refresh();},15000);
 })(window,document);

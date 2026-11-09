@@ -217,7 +217,7 @@ function render(){
  </div>
  <div class="member-meta">@${x(u.username)} · 친구코드: ${x(u.friend_code||'—')} · ID: ${u.id}</div>
  </div>
- <div class="member-actions"><button class="btn-sm btn-view" onclick="viewCham(${u.id})">챔대 셋팅</button><button class="btn-sm ${u.can_cham_auto?'btn-ban':'btn-unban'}" data-cham-id="${x(u.id)}" onclick="toggleChamAccess(this)">${u.can_cham_auto?'자동계산기 권한 회수':'자동계산기 권한 부여'}</button>${!u.is_admin&&!isMe
+ <div class="member-actions"><button type="button" class="btn-sm btn-view" data-cs-id="${x(u.id)}" onclick="viewCham(this.dataset.csId)">챔대 셋팅</button><button class="btn-sm ${u.can_cham_auto?'btn-ban':'btn-unban'}" data-cham-id="${x(u.id)}" onclick="toggleChamAccess(this)">${u.can_cham_auto?'자동계산기 권한 회수':'자동계산기 권한 부여'}</button>${!u.is_admin&&!isMe
  ? u.is_banned
  ? `<button class="btn-sm btn-unban" onclick="toggleBan(${u.id},true,'${x(u.nickname||u.username)}')">정지 해제</button>`
  : `<button class="btn-sm btn-ban" onclick="toggleBan(${u.id},false,'${x(u.nickname||u.username)}')">계정 정지</button>`
@@ -301,7 +301,7 @@ function csPreset(name,active,c){
  return h;
 }
 async function viewCham(id){
- const m=allMembers.find(u=>u.id==id)||{};
+ id=String(id);const m=allMembers.find(u=>String(u.id)===id)||{};
  const ov=document.createElement('div');ov.className='cs-ov';
  ov.onclick=e=>{if(e.target===ov)ov.remove();};
  ov.innerHTML=`<div class="cs-box"><button class="cs-x" onclick="this.closest('.cs-ov').remove()">✕</button>

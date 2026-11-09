@@ -108,6 +108,23 @@
     });
     return html;
   }
+  /* 2단 선택용: 드래곤이 있는 속성 목록 */
+  function attrOptions(selected) {
+    var cat = catalog();
+    return CATS.filter(function (c) { return cat.some(function (d) { return d.attr === c; }); }).map(function (c) {
+      return '<option value="' + c + '"' + (c === selected ? ' selected' : '') + '>' + c + '</option>';
+    }).join('');
+  }
+  /* 2단 선택용: 한 속성의 드래곤 목록. prefType이 있으면 그 타입을 위에 따로 묶는다 */
+  function dragonOptions(attr, selected, prefType) {
+    var cat = catalog(), items = [];
+    cat.forEach(function (d, i) { if (d.attr === attr) items.push([d, i]); });
+    function opt(p) { var d = p[0]; return '<option value="' + p[1] + '"' + (String(p[1]) === String(selected) ? ' selected' : '') + '>' + d.name + (d.dtype ? ' (' + d.dtype + ')' : '') + '</option>'; }
+    if (!prefType) return items.map(opt).join('');
+    var mine = items.filter(function (p) { return p[0].dtype === prefType; }), rest = items.filter(function (p) { return p[0].dtype !== prefType; });
+    return (mine.length ? '<optgroup label="' + prefType + '">' + mine.map(opt).join('') + '</optgroup>' : '') +
+      (rest.length ? '<optgroup label="다른 타입">' + rest.map(opt).join('') + '</optgroup>' : '');
+  }
   /* 길드전 계산기 [내 용 정보]에 새 드래곤으로 등록: items = [{attr, name, dtype, opts, bonus}] */
   function addDragons(items) {
     if (!items.length) return 0;
@@ -122,5 +139,5 @@
     return items.length;
   }
 
-  w.GuildLink = { dragons: dragons, setSpirits: setSpirits, addReserves: addReserves, label: label, catalog: catalog, catalogOptions: catalogOptions, addDragons: addDragons };
+  w.GuildLink = { dragons: dragons, setSpirits: setSpirits, addReserves: addReserves, label: label, catalog: catalog, catalogOptions: catalogOptions, attrOptions: attrOptions, dragonOptions: dragonOptions, addDragons: addDragons };
 })(window);

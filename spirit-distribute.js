@@ -288,7 +288,14 @@
   // 길드전 셋팅으로 전송: 드래곤을 골라 이 정령을 단 드래곤으로 길드전 [내 용 정보]에 등록 (guild-link.js)
   function sendHtml(row){
     if(!window.GuildLink)return '';
-    return `<div class="spx-send"><small>길드전 셋팅으로 전송</small><select data-spx-dr="${row.j}" aria-label="등록할 드래곤"><option value="">드래곤 선택</option>${GuildLink.catalogOptions('')}</select><button type="button" class="btn-white" data-spx-send="${row.j}">길드전에 등록</button></div>`;
+    return `<div class="spx-send"><small>길드전 셋팅으로 전송</small><select data-spx-attr="${row.j}" aria-label="속성"><option value="">속성</option>${GuildLink.attrOptions('')}</select><select data-spx-dr="${row.j}" data-spx-pt="${esc(last.fix||row.best.dt||'')}" aria-label="등록할 드래곤" disabled><option value="">드래곤 선택</option></select><button type="button" class="btn-white" data-spx-send="${row.j}">길드전에 등록</button></div>`;
+  }
+  // 속성을 고르면 그 속성 드래곤만 보여주고, 이 정령이 귀속된 타입 드래곤을 위에 묶는다
+  function onResChange(e){
+    const a=e.target.closest('[data-spx-attr]');if(!a||!window.GuildLink)return;
+    const dr=document.querySelector(`[data-spx-dr="${a.dataset.spxAttr}"]`);if(!dr)return;
+    dr.innerHTML='<option value="">드래곤 선택</option>'+(a.value?GuildLink.dragonOptions(a.value,'',dr.dataset.spxPt||''):'');
+    dr.disabled=!a.value;
   }
   function onResClick(e){
     const b=e.target.closest('[data-spx-send]');if(!b||!last||!window.GuildLink)return;
@@ -327,7 +334,7 @@
     window.runSim=function(){return S.calcMode==='dist'?run():(typeof calcRun==='function'?calcRun():undefined);};
     document.querySelectorAll('[data-calc-mode]').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.calcMode)));
     const cfg=$('spx-cfg');if(cfg)cfg.addEventListener('click',onCfgClick);
-    const res=$('spx-res');if(res)res.addEventListener('click',onResClick);
+    const res=$('spx-res');if(res){res.addEventListener('click',onResClick);res.addEventListener('change',onResChange);}
     const list=$('spx-wrap');
     if(list)['click','input'].forEach(t=>list.addEventListener(t,onListEvent));
     const pane=$('setpane');

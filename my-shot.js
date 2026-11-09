@@ -60,7 +60,7 @@
     '.shot-it .nm{flex:1;min-width:0;line-height:1.45;word-break:keep-all}' +
     '.shot-it .sub{display:block;font-size:11px;color:var(--dim)}' +
     '.shot-it input[type=checkbox]{accent-color:var(--gold);width:16px;height:16px;flex-shrink:0}' +
-    '.shot-it select{font-size:11px;padding:3px 6px;margin-top:3px}' +
+    '.shot-it select{font-size:11px;padding:3px 6px;margin-top:3px;display:block;width:100%;max-width:220px}' +
     '.shot-opts{display:flex;flex-wrap:wrap;gap:8px 16px;margin:16px 0 10px;font-size:12px;color:var(--dim)}' +
     '.shot-opts label{display:flex;align-items:center;gap:6px;cursor:pointer}.shot-opts input{accent-color:var(--gold)}' +
     '.shot-actions{display:flex;gap:8px;flex-wrap:wrap}.shot-actions button{width:auto;flex:0 0 auto}';
@@ -141,8 +141,10 @@
             }).join('') + '</select>';
         }
         if (i.kind === 'spirit') {
-          enc = '<select data-dest="' + i.id + '" aria-label="보낼 곳"><option value="rsv"' + (i.data.dest === 'rsv' ? ' selected' : '') + '>길드전 예비 정령</option>' +
-            (window.GuildLink ? GuildLink.catalogOptions(/^\d+$/.test(i.data.dest) ? i.data.dest : '') : '') + '</select>';
+          var at = i.data.attr || '';
+          enc = '<select data-dest="' + i.id + '" aria-label="보낼 곳"><option value="rsv"' + (!at ? ' selected' : '') + '>길드전 예비 정령</option>' +
+            (window.GuildLink ? '<optgroup label="드래곤 속성">' + GuildLink.attrOptions(at) + '</optgroup>' : '') + '</select>';
+          if (at && window.GuildLink) enc += '<select data-drg="' + i.id + '" aria-label="드래곤"><option value="">드래곤 선택</option>' + GuildLink.dragonOptions(at, /^\d+$/.test(i.data.dest) ? i.data.dest : '') + '</select>';
         }
         html += '<label class="shot-it' + (i.ok ? (i.on ? '' : ' off') : ' bad') + '">' +
           '<input type="checkbox" data-id="' + i.id + '"' + (i.on ? ' checked' : '') + (i.ok ? '' : ' disabled') + '>' +
@@ -169,7 +171,8 @@
     var t = e.target;
     if (t.dataset.id) { var it = items.find(function (i) { return i.id === +t.dataset.id; }); if (it) { it.on = t.checked; render(); } }
     if (t.dataset.enc) { var a = items.find(function (i) { return i.id === +t.dataset.enc; }); if (a) a.data.enchant = t.value; }
-    if (t.dataset.dest) { var sp = items.find(function (i) { return i.id === +t.dataset.dest; }); if (sp) sp.data.dest = t.value; }
+    if (t.dataset.dest) { var sp = items.find(function (i) { return i.id === +t.dataset.dest; }); if (sp) { sp.data.attr = t.value === 'rsv' ? '' : t.value; sp.data.dest = t.value === 'rsv' ? 'rsv' : ''; render(); } }
+    if (t.dataset.drg) { var sd = items.find(function (i) { return i.id === +t.dataset.drg; }); if (sd) sd.data.dest = t.value; }
   });
   result.addEventListener('click', function (e) {
     if (e.target.id === 'shot-clear') { items = []; render(); status.textContent = ''; }
@@ -178,6 +181,7 @@
 
   function apply() {
     var sel = items.filter(function (i) { return i.on && i.ok; });
+    if (sel.some(function (i) { return i.kind === 'spirit' && i.data.attr && !/^\d+$/.test(i.data.dest); })) { alert('속성을 고른 정령은 드래곤까지 골라 주세요.'); return; }
     if (!sel.length) { alert('반영할 항목을 골라 주세요.'); return; }
     var msg = [];
     var acc = sel.filter(function (i) { return i.kind === 'acc'; }).map(function (i) { return { name: i.data.name, enchant: i.data.enchant }; });

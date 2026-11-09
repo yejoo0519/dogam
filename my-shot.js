@@ -1,4 +1,5 @@
-/* 내 스펙 — 스크린샷으로 장신구 · 펜던트 · 젬 등록 (UI)
+/* 내 스펙 — 스크린샷으로 장신구 · 펜던트 · 젬 · 정령 등록 (UI)
+   정령은 풀강 기준(옵션 스탯 · %/+ 만 읽음, 부가옵 없음)으로 길드전 예비 정령에 넣거나 길드전 드래곤에 귀속합니다.
    인식은 my-shot-engine.js. 결과는 미리보기로 보여주고, 확인을 눌러야 S에 반영합니다. */
 (function () {
   'use strict';
@@ -11,7 +12,7 @@
   /* 게임 젬 수치 → 사이트 젬 칸 (35·36은 뉴비용 칸, 38~44는 기존 37~40 칸) */
   var GEM_KEY = { 35: 35, 36: 36, 38: 37, 40: 38, 42: 39, 44: 40 };
   var items = [];   // {id, kind, label, ok, on, data, thumb, shot}
-  var seq = 0;
+  var seq = 0, spSeq = 0;
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
 
@@ -27,6 +28,7 @@
             '<li>카드 10칸(5×2)이 잘리지 않게 한 화면씩 캡처해요. 반쯤 가려진 카드는 읽지 않아요.</li>' +
             '<li>끝까지 내리면서 찍은 캡처를 여기에 한 번에 올려요.</li>' +
           '</ol>' +
+          '<p style="margin:6px 0"><b>정령</b>도 정령 목록 화면을 같은 방식으로 캡처해서 올리면 돼요. 옵션은 풀강 기준으로 읽어요.</p>' +
           '<p class="shot-guide-note">같은 카드가 두 장에 겹쳐 찍히면 장신구 · 펜던트는 두 번 들어가니, 미리보기에서 체크를 풀어 주세요. (젬은 자동으로 한 번만 세요)</p>' +
         '</div>' +
         '<p class="shot-help">여러 장을 한 번에 올려도 되고, 붙여넣기(Ctrl+V)도 돼요. 이미지는 서버로 보내지 않고 이 브라우저 안에서만 처리돼요. 가로 화면 · 720p 이상 캡처를 권장해요.</p>' +
@@ -109,6 +111,11 @@
         var a = matchAcc(r.lines);
         if (!a) { it.ok = false; it.label = '목록에 없는 장신구예요'; it.sub = statTxt(r.lines); }
         else { it.data = { name: a.n, enchant: r.enchant || 'none' }; it.label = a.n; it.sub = statTxt(r.lines); }
+      } else if (r.kind === 'spirit') {
+        it.data = { opts: r.opts, dest: 'rsv' };
+        spSeq++;
+        it.label = '정령 ' + spSeq;
+        it.sub = r.opts.map(function (o) { return '<span style="color:' + SCOL[o.stat] + '">' + SKN[o.stat] + o.type + '</span>'; }).join(' ');
       } else { it.ok = false; it.label = '읽을 수 있는 정보가 없어요'; it.sub = ''; }
       if (!it.ok) it.on = false;
       return it;
@@ -116,7 +123,7 @@
   }
 
   /* ---------- 화면 ---------- */
-  var GROUPS = [['acc', '장신구'], ['pend', '펜던트'], ['gem', '젬']];
+  var GROUPS = [['acc', '장신구'], ['pend', '펜던트'], ['gem', '젬'], ['spirit', '정령']];
   function render() {
     if (!items.length) { result.innerHTML = ''; return; }
     var html = '';
@@ -133,6 +140,11 @@
               return '<option value="' + o[0] + '"' + (i.data.enchant === o[0] ? ' selected' : '') + '>' + o[1] + '</option>';
             }).join('') + '</select>';
         }
+        if (i.kind === 'spirit') {
+          var drs = window.GuildLink ? GuildLink.dragons() : [];
+          enc = '<select data-dest="' + i.id + '" aria-label="보낼 곳"><option value="rsv"' + (i.data.dest === 'rsv' ? ' selected' : '') + '>길드전 예비 정령</option>' +
+            drs.map(function (d, n) { return '<option value="d' + n + '"' + (i.data.dest === 'd' + n ? ' selected' : '') + '>귀속 → ' + esc(GuildLink.label(d)) + '</option>'; }).join('') + '</select>';
+        }
         html += '<label class="shot-it' + (i.ok ? (i.on ? '' : ' off') : ' bad') + '">' +
           '<input type="checkbox" data-id="' + i.id + '"' + (i.on ? ' checked' : '') + (i.ok ? '' : ' disabled') + '>' +
           '<img src="' + i.thumb + '" alt="">' +
@@ -140,6 +152,10 @@
       });
       html += '</div></div>';
     });
+    if (items.some(function (i) { return i.kind === 'spirit'; })) {
+      html += '<p class="shot-help" style="margin-top:8px">정령은 옵션을 풀강 기준으로 넣고 부가옵은 비워요. 정령마다 <b>길드전 예비 정령</b>으로 보낼지, 길드전에 등록된 드래곤에 <b>귀속</b>할지 골라 주세요.' +
+        ((window.GuildLink && GuildLink.dragons().length) ? '' : ' (길드전 계산기에 등록된 드래곤이 없어서 지금은 예비 정령으로만 보낼 수 있어요)') + '</p>';
+    }
     var others = items.filter(function (i) { return i.kind === 'none'; }).length;
     if (others) html += '<p class="shot-help" style="margin-top:12px">정보를 못 읽은 칸 ' + others + '개는 뺐어요.</p>';
     html += '<div class="shot-opts">' +
@@ -155,6 +171,7 @@
     var t = e.target;
     if (t.dataset.id) { var it = items.find(function (i) { return i.id === +t.dataset.id; }); if (it) { it.on = t.checked; render(); } }
     if (t.dataset.enc) { var a = items.find(function (i) { return i.id === +t.dataset.enc; }); if (a) a.data.enchant = t.value; }
+    if (t.dataset.dest) { var sp = items.find(function (i) { return i.id === +t.dataset.dest; }); if (sp) sp.data.dest = t.value; }
   });
   result.addEventListener('click', function (e) {
     if (e.target.id === 'shot-clear') { items = []; render(); status.textContent = ''; }
@@ -164,6 +181,7 @@
   function apply() {
     var sel = items.filter(function (i) { return i.on && i.ok; });
     if (!sel.length) { alert('반영할 항목을 골라 주세요.'); return; }
+    var msg = [];
     var acc = sel.filter(function (i) { return i.kind === 'acc'; }).map(function (i) { return { name: i.data.name, enchant: i.data.enchant }; });
     var pend = sel.filter(function (i) { return i.kind === 'pend'; }).map(function (i) { return JSON.parse(JSON.stringify(i.data)); });
     var gemSum = {};
@@ -177,7 +195,6 @@
       gemSum[k] = (gemSum[k] || 0) + i.data.count;
     });
     var repAcc = document.getElementById('shot-rep-acc').checked, repPend = document.getElementById('shot-rep-pend').checked;
-    var msg = [];
     if (acc.length) { if (repAcc) S.accCards = []; S.accCards.unshift.apply(S.accCards, acc); msg.push('장신구 ' + acc.length + '개'); }
     if (pend.length) { if (repPend) S.pendants = []; S.pendants.unshift.apply(S.pendants, pend); msg.push('펜던트 ' + pend.length + '개'); }
     var gn = 0;
@@ -187,6 +204,19 @@
       S.gems[p[0]][p[1]] = gemSum[k]; gn++;
     });
     if (gn) msg.push('젬 ' + gn + '칸');
+    var sps = sel.filter(function (i) { return i.kind === 'spirit'; });
+    if (sps.length && window.GuildLink) {
+      var drs = GuildLink.dragons(), rsv = [], bind = [], used = {};
+      sps.forEach(function (i) {
+        var m = /^d(\d+)$/.exec(i.data.dest), d = m ? drs[+m[1]] : null;
+        if (d) { used[m[1]] = (used[m[1]] || 0) + 1; bind.push({ ref: d, opts: i.data.opts, bonus: '' }); }
+        else rsv.push({ name: '', opts: i.data.opts, bonus: '' });
+      });
+      if (Object.keys(used).some(function (k) { return used[k] > 1; }) && !confirm('같은 드래곤에 정령을 2개 이상 귀속하려고 해요. 마지막 정령만 남아요. 계속할까요?')) return;
+      var nb = bind.length ? GuildLink.setSpirits(bind) : 0, nr = GuildLink.addReserves(rsv);
+      if (nr) msg.push('예비 정령 ' + nr + '개');
+      if (nb) msg.push('드래곤 귀속 ' + nb + '마리');
+    }
     if (typeof renderAll === 'function') renderAll();
     if (typeof qSave === 'function') qSave();
     items = []; render();

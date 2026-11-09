@@ -1,5 +1,5 @@
 /* 내 스펙 스크린샷 인식 엔진
-   게임 인벤토리 팝업(5열 카드) 스크린샷에서 장신구 · 펜던트 · 젬을 읽습니다.
+   게임 인벤토리 팝업(5열 카드) 스크린샷에서 장신구 · 펜던트 · 젬 · 정령을 읽습니다.
    - 카드 위치: 화면 중앙과 높이 기준 고정 배치 + 세로 스크롤만 탐색
    - 스탯 종류: 숫자 글자색 (노랑=체, 빨강=공, 하늘=방, 초록/보라=기타)
    - 숫자: 게임 폰트에서 뽑은 템플릿과 모양 비교
@@ -289,10 +289,59 @@
     return red > blue ? 'atk' : 'def';
   }
 
+
+  /* 정령 카드: 그림 오른쪽 4줄 (아이콘 + 수치). 줄 글자색으로 스탯(노랑=체, 빨강=공, 하늘=방),
+     마지막 글자 높이로 %/+ 를 구분 ('+'는 숫자보다 키가 작음). 수치는 쓰지 않는다 (풀강 기준으로 넣음) */
+  var SP_ROWS = [182, 218, 254, 290];
+  function readSpirit(im, card) {
+    var k = card.k, opts = [];
+    for (var r = 0; r < SP_ROWS.length; r++) {
+      var cy = SP_ROWS[r], rg = region(im, card, 226, 293, cy - 17, cy + 17), best = null, bn = 0;
+      ['hp', 'atk', 'def'].forEach(function (key) { var M = maskOf(im, rg, CLS[key]); if (M.n > bn) { bn = M.n; best = { key: key, M: M }; } });
+      if (!best || bn < 60 * k * k) return null;
+      var bx = segment(best.M, 6 * k);
+      if (!bx.length || (bx.length < 2 && bx[0][1] - bx[0][0] <= 30 * k)) return null;
+      var top = 1e9, bot = -1;
+      bx.forEach(function (b) { if (b[2] < top) top = b[2]; if (b[3] > bot) bot = b[3]; });
+      var textH = bot - top;
+      if (textH < 14 * k || textH > 30 * k) return null;
+      var last = bx[bx.length - 1], s = last[0], e = last[1];
+      if (e - s > 30 * k) s = e - Math.round(11 * k);      // 숫자와 붙어 버린 '+' : 오른쪽 끝 한 글자 폭만
+      else if (e - s < 7 * k) return null;
+      var g0 = -1, g1 = -1;
+      for (var y = 0; y < best.M.h; y++) for (var x = s; x < e; x++) if (best.M.m[y * best.M.w + x]) { if (g0 < 0) g0 = y; g1 = y + 1; break; }
+      if (g0 < 0) return null;
+      opts.push({ stat: best.key, type: (g1 - g0) / textH < 0.8 ? '+' : '%' });
+    }
+    return opts;
+  }
+  /* 정령 화면: 한 줄에 몇 칸만 찾혔으면(그림이 카드 테두리를 가린 경우) 같은 줄 나머지 칸도 정령인지 확인 */
+  function spiritCards(im, cards) {
+    if (!cards.length) return cards;
+    var k = cards[0].k, rows = [];
+    cards.forEach(function (c) { if (!rows.some(function (t) { return Math.abs(t - c.t) <= 6 * k; })) rows.push(c.t); });
+    var r = contentRect(im); if (!r) return cards;
+    var cx = (r.x0 + r.x1) / 2, out = cards.slice();
+    rows.forEach(function (t) {
+      for (var c = 0; c < 5; c++) {
+        if (out.some(function (o) { return o.col === c && Math.abs(o.t - t) <= 6 * k; })) continue;
+        var card = { col: c, l: Math.round(cx + k * (-805.5 + 330 * c)), t: t, k: k, inferred: true };
+        if (readSpirit(im, card)) out.push(card);
+      }
+    });
+    out.sort(function (a, b) { return Math.abs(a.t - b.t) > 30 * a.k ? a.t - b.t : a.col - b.col; });
+    return out;
+  }
+
   /* 한 장 해석 → 카드별 결과 */
   function analyze(im) {
-    return findCards(im).map(function (card) {
+    var cards = findCards(im);
+    if (cards.some(function (c) { return readSpirit(im, c); })) cards = spiritCards(im, cards);
+    return cards.map(function (card) {
       var res = { card: card };
+      var sp = readSpirit(im, card);
+      if (sp) { res.kind = 'spirit'; res.opts = sp; return res; }
+      if (card.inferred) { res.kind = 'none'; return res; }
       var cnt = readCount(im, card);
       if (cnt) {
         var tl = readTitleLevel(im, card), lv = tl ? tl.n : null;

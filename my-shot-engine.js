@@ -335,13 +335,13 @@
 
   /* 한 장 해석 → 카드별 결과 */
   function analyze(im) {
-    var cards = findCards(im);
-    if (cards.some(function (c) { return readSpirit(im, c); })) cards = spiritCards(im, cards);
+    var cards = findCards(im), spiritShot = cards.some(function (c) { return readSpirit(im, c); });
+    if (spiritShot) cards = spiritCards(im, cards);
     return cards.map(function (card) {
       var res = { card: card };
       var sp = readSpirit(im, card);
       if (sp) { res.kind = 'spirit'; res.opts = sp; return res; }
-      if (card.inferred) { res.kind = 'none'; return res; }
+      if (card.inferred || spiritShot) { res.kind = 'none'; return res; }   // 정령 화면의 못 읽은 칸(옵션 3줄 이하 등)은 장비로 보지 않음
       var cnt = readCount(im, card);
       if (cnt) {
         var tl = readTitleLevel(im, card), lv = tl ? tl.n : null;

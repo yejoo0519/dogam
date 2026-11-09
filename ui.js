@@ -74,7 +74,8 @@
       ['guide',     EN ? 'Guides'      : '공략 & 가이드', 'guide.html'],
       ['raid_info', EN ? 'Raid'        : '레이드 정보',   'raid_info.html'],
       ['raid',      EN ? 'Arha gate'   : '아르하 입구',   'raid.html'],
-      ['score-guide', EN ? 'BV & TAR guide' : '비밸·TAR 설명서', 'score-guide.html']
+      ['score-guide', EN ? 'BV & TAR guide' : '비밸·TAR 설명서', 'score-guide.html'],
+      ...(!EN ? [['manual','사용설명서','manual.html']] : [])
     ] },
     { g: T.g_etc, items: [
       ['my',           EN ? 'My spec'  : '내 스펙 관리', 'my.html'],

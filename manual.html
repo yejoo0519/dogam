@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>사용설명서</title>
+<script>
+location.replace('./manual/dbryong-manual-' + (matchMedia('(max-width: 768px)').matches ? 'mobile' : 'pc') + '.pdf');
+</script>
+</head>
+<body>
+<noscript><a href="./manual/dbryong-manual-pc.pdf">PC용 PDF</a> · <a href="./manual/dbryong-manual-mobile.pdf">모바일용 PDF</a></noscript>
+</body>
+</html>

@@ -1,4 +1,5 @@
 /* 정령 계산/배분 — [정령 배분] 모드: 보유 정령을 하나씩 계산해 가장 잘 맞는 타입(버프+버프)에 귀속시킨다.
+ * [타입 고정]이면 고른 타입 하나로만 계산해 그 타입에 귀속시킨다.
  * 등급·버프 설정·추천 기준은 [정령 계산] 모드의 설정 패널 값을 그대로 쓰고, 장비는 내 스펙 보유분 기준
  * (정령마다 따로 계산 — 정령 계산 모드에서 그 정령 하나를 돌린 결과와 같다).
  * 보유 정령 목록은 이 페이지 저장값(S)에만 들어간다. */
@@ -25,6 +26,8 @@
     });
     if(!['calc','dist'].includes(S.calcMode))S.calcMode='calc';
     S.spxFold=!!S.spxFold;
+    if(S.spxSplit!=='fix')S.spxSplit='split';
+    if(!DTYPES.includes(S.spxFixType))S.spxFixType=DTYPES[0];
   }
   function save(){if(typeof qSave==='function')qSave();}
 
@@ -125,7 +128,14 @@
     const warns=[];
     if(!S.accCards.length)warns.push('내 스펙에 장신구가 없어요.');
     if(!S.spxList.some(spValid))warns.push('보유 정령을 하나 이상 입력해주세요. (내 스펙 탭)');
-    host.innerHTML=`<p class="sp-help" style="margin:0">입력한 정령마다 아래 등급·버프 설정으로 6타입을 모두 계산해서, 추천 기준이 가장 높은 타입(버프+버프)에 귀속시켜요.</p>${warns.length?`<div class="spx-warn">${warns.map(esc).join('<br>')}</div>`:''}`;
+    const fix=S.spxSplit==='fix';
+    host.innerHTML=`<div><div class="cfg-lbl">배분 방식</div>
+        <div class="sp-priority" role="group" aria-label="배분 방식"><button type="button" data-spx-split="split" aria-pressed="${!fix}">타입 분할</button><button type="button" data-spx-split="fix" aria-pressed="${fix}">타입 고정</button></div></div>
+      ${fix?`<div><div class="cfg-lbl">고정할 타입</div><div class="btn-grp spx-types">${DTYPES.map(dt=>`<button type="button" data-spx-type="${esc(dt)}" class="${dt===S.spxFixType?'active':''}">${esc(dt)}</button>`).join('')}</div></div>`:''}
+      <p class="sp-help" style="margin:0">${fix
+        ?`모든 정령을 <b style="color:${DCOLORS[S.spxFixType]}">${esc(S.spxFixType)}</b>에만 귀속시켜서 미리 보여줘요. 버프는 아래 버프 설정(버프 최적화 0·1·2버프 / 버프 직접 지정)대로 계산해요.`
+        :'입력한 정령마다 아래 등급·버프 설정으로 6타입을 모두 계산해서, 추천 기준이 가장 높은 타입(버프+버프)에 귀속시켜요.'}</p>
+      ${warns.length?`<div class="spx-warn">${warns.map(esc).join('<br>')}</div>`:''}`;
   }
 
   // ── 모드 전환 ───────────────────────────────────────────
@@ -142,6 +152,14 @@
     const st=$('spirit-status');
     if(st&&!busy)st.textContent=dist?(last?'배분 결과가 있어요. 설정을 바꾸면 다시 실행해 주세요.':'보유 정령과 설정을 확인한 뒤 [정령 배분 실행]을 눌러주세요.'):'버프와 추천 기준을 선택한 뒤 내 세팅을 비교해 보세요.';
     if(dist){renderList();renderCfg();}
+  }
+  function onCfgClick(e){
+    if(busy)return;
+    const sb=e.target.closest('[data-spx-split]'),tb=e.target.closest('[data-spx-type]');
+    if(sb){const v=sb.dataset.spxSplit==='fix'?'fix':'split';if(S.spxSplit===v)return;S.spxSplit=v;}
+    else if(tb&&DTYPES.includes(tb.dataset.spxType)){if(S.spxFixType===tb.dataset.spxType)return;S.spxFixType=tb.dataset.spxType;}
+    else return;
+    save();renderCfg();markDirty();
   }
   function markDirty(){
     if(!last||S.calcMode!=='dist'||busy)return;
@@ -174,7 +192,9 @@
     const lock=[...document.querySelectorAll('[data-calc-mode],#sim-btn')];
     lock.forEach(el=>el.disabled=true);
     const prog=p=>{if(btn)btn.textContent='배분 중 '+Math.max(0,Math.min(99,Math.floor(p)))+'%';};
-    say('정령마다 6타입을 계산하고 있어요.');prog(0);
+    const fixT=S.spxSplit==='fix'?S.spxFixType:null;
+    const types=fixT?[fixT]:DTYPES;
+    say(fixT?`정령마다 ${fixT}로 계산하고 있어요.`:'정령마다 6타입을 계산하고 있어요.');prog(0);
     try{
       await yieldNow();
       // 정령 계산 모드와 같은 입력: 등급·젬 풀·펜던트·컬렉션·인챈트
@@ -189,13 +209,13 @@
       const hVals=[...new Set(allocs.map(a=>a.h))],aVals=[...new Set(allocs.map(a=>a.a))],dVals=[...new Set(allocs.map(a=>a.d))];
       const pends=JSON.parse(JSON.stringify(getPends($('exc-sun-pend')?.checked??false)));
       const rows=[];
-      const totalJobs=spirits.length*DTYPES.length;let job=0,lastY=performance.now();
+      const totalJobs=spirits.length*types.length;let job=0,lastY=performance.now();
       for(const s of spirits){
         const sp=spProc(s.x);
         const perType=[];
-        for(const dt of DTYPES){
+        for(const dt of types){
           const base=BASE[grade][dt];
-          let bestT=null;
+          let bestT=null;const alts=[];
           for(const buf of buffs){
             const add={h:buf.h*Math.floor(base.hp*.2+1e-9),a:buf.a*Math.floor(base.atk*.2+1e-9),d:buf.d*Math.floor(base.def*.2+1e-9)};
             let best=null;
@@ -212,8 +232,10 @@
             }
             const r={...best,dt,buf,add,tar:tarOf(best.bv,dt,buf)};
             r.score=pri==='tar'?(r.tar??-Infinity):r.bv;
+            alts.push(r);
             if(!bestT||r.score>bestT.score||(r.score===bestT.score&&r.bv>bestT.bv))bestT=r;
           }
+          alts.sort((a,b)=>b.score-a.score||b.bv-a.bv);bestT.alts=alts;
           perType.push(bestT);
           job++;
           if(performance.now()-lastY>=80){prog(100*job/totalJobs);await yieldNow();lastY=performance.now();}
@@ -221,9 +243,9 @@
         perType.sort((a,b)=>b.score-a.score||b.bv-a.bv);
         rows.push({j:s.j,x:JSON.parse(JSON.stringify(s.x)),best:perType[0],perType});
       }
-      last={rows,grade,pri,labels:buffs.map(b=>b.label)};
+      last={rows,grade,pri,fix:fixT,labels:buffs.map(b=>b.label)};
       renderResult();
-      say('배분 완료. 정령마다 가장 잘 맞는 타입(버프+버프)을 보여줘요.');
+      say(fixT?`배분 완료. 모든 정령을 ${fixT}에 고정해서 보여줘요.`:'배분 완료. 정령마다 가장 잘 맞는 타입(버프+버프)을 보여줘요.');
     }catch(e){console.error(e);say('계산하지 못했어요: '+e.message);}
     finally{
       busy=false;lock.forEach(el=>el.disabled=false);
@@ -242,7 +264,9 @@
   const fmtScore=(r,pri)=>pri==='tar'?(r.tar==null?'—':r.tar.toFixed(1)):(r.bv/1e6).toFixed(1);
   function rowHtml(row){
     const r=row.best,pri=last.pri;
-    const others=row.perType.slice(1).map(o=>`<span><b style="color:${DCOLORS[o.dt]}">${esc(o.dt)}</b> ${esc(o.buf.label)} ${fmtScore(o,pri)}</span>`).join('');
+    const others=last.fix
+      ?(r.alts||[]).slice(1).map(o=>`<span>${esc(o.buf.label)} ${fmtScore(o,pri)}</span>`).join('')
+      :row.perType.slice(1).map(o=>`<span><b style="color:${DCOLORS[o.dt]}">${esc(o.dt)}</b> ${esc(o.buf.label)} ${fmtScore(o,pri)}</span>`).join('');
     return `<details class="spx-row"><summary>
         <span class="spx-r-no">#${row.j+1}</span>
         <span class="spx-r-name">${row.x.memo?esc(row.x.memo):''}</span>
@@ -256,7 +280,7 @@
         <div><small>펜던트</small>${pendText(r.pend)}</div>
         <div><small>젬</small><span class="gem-tags">${fmtGem(r.alloc)}</span></div>
         <div><small>최종 스탯</small><span style="color:var(--hpc)">${num(r.fH)}</span> / <span style="color:var(--atc)">${num(r.fA)}</span> / <span style="color:var(--dfc)">${num(r.fD)}</span></div>
-        <div class="spx-r-others"><small>다른 타입 (${pri==='tar'?'TAR':'비밸'})</small>${others}</div>
+        ${others?`<div class="spx-r-others"><small>${last.fix?'다른 버프':'다른 타입'} (${pri==='tar'?'TAR':'비밸'})</small>${others}</div>`:''}
       </div>
     </details>`;
   }
@@ -272,7 +296,7 @@
       </section>`;
     }).join('');
     sec.innerHTML=`<header class="sp-workspace-head"><div><h2>정령 배분 결과</h2>
-        <p>${esc(last.grade)} 등급 · ${last.pri==='tar'?'TAR':'비밸'} 기준 · 정령 ${last.rows.length}개 · 줄을 누르면 장비와 스탯이 보여요</p></div></header>
+        <p>${last.fix?`<b style="color:${DCOLORS[last.fix]}">${esc(last.fix)} 고정</b> · `:''}${esc(last.grade)} 등급 · ${last.pri==='tar'?'TAR':'비밸'} 기준 · 정령 ${last.rows.length}개 · 줄을 누르면 장비와 스탯이 보여요</p></div></header>
       <div class="spx-cols"><span>정령</span><span>옵션</span><span>버프</span><span>비밸(백만)</span><span>TAR</span></div>
       ${blocks}`;
     sec.hidden=false;if(empty)empty.hidden=true;
@@ -286,6 +310,7 @@
     const calcRun=window.runSim;
     window.runSim=function(){return S.calcMode==='dist'?run():(typeof calcRun==='function'?calcRun():undefined);};
     document.querySelectorAll('[data-calc-mode]').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.calcMode)));
+    const cfg=$('spx-cfg');if(cfg)cfg.addEventListener('click',onCfgClick);
     const list=$('spx-wrap');
     if(list)['click','input'].forEach(t=>list.addEventListener(t,onListEvent));
     const pane=$('setpane');

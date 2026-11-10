@@ -76083,6 +76083,355 @@
       ],
       "compatibility": {}
     },
+    // 721 에레보스 — https://www.dragonvillage.net/notice/21456
+    {
+      "id": 721,
+      "name": {
+        "ko": "에레보스"
+      },
+      "aliases": {
+        "ko": []
+      },
+      "element": "어둠",
+      "type": "공격",
+      "stages": {
+        "awakening": false,
+        "transcendence": true,
+        "advent": true
+      },
+      "canLevelUp": true,
+      "codeAvailability": "Yes",
+      "tier": {
+        "value": 6.8,
+        "status": "listed",
+        "source": "초등계산기.html:20레벨 공격형 계산"
+      },
+      "stats": {
+        "regular": {
+          "hp": [
+            230,
+            9
+          ],
+          "atk": [
+            43,
+            4
+          ],
+          "def": [
+            25,
+            3
+          ]
+        },
+        "grades": null
+      },
+      "description": {
+        "ko": "보라색과 검은색이 뒤섞인 소거의 불꽃을 다루는 지옥 드래곤. 네 개의 붉은 눈과 거대한 뿔이 특징이며, 불꽃에 닿은 존재에게 극심한 부정적 감정을 일으켜 영원한 어둠에 가둔다. [획득처: 월드 레이드]"
+      },
+      "assets": {
+        "gameId": null,
+        "gradeFamilyId": null,
+        "familyMembers": null
+      },
+      "availability": {
+        "guildWarOriginal": true,
+        "guildWarNewbie": true,
+        "championshipExcluded": false
+      },
+      "rankingProfiles": [
+        {
+          "name": "에레보스",
+          "element": "어둠",
+          "skill": null,
+          "statsRef": "regular",
+          "appearances": [
+            {
+              "page": "cham",
+              "tab": "SSS",
+              "levels": [
+                45,
+                21
+              ]
+            },
+            {
+              "page": "cham",
+              "tab": "SS",
+              "levels": [
+                45,
+                21
+              ]
+            }
+          ]
+        }
+      ],
+      "compatibility": {}
+    },
+
+    // 722 크로마 에레보스 — https://www.dragonvillage.net/notice/21456
+    {
+      "id": 722,
+      "name": {
+        "ko": "크로마 에레보스"
+      },
+      "aliases": {
+        "ko": []
+      },
+      "element": "어둠",
+      "type": "공격",
+      "stages": {
+        "awakening": false,
+        "transcendence": true,
+        "advent": true
+      },
+      "canLevelUp": true,
+      "codeAvailability": "Yes",
+      "tier": {
+        "value": 6.8,
+        "status": "listed",
+        "source": "초등계산기.html:20레벨 공격형 계산"
+      },
+      "stats": {
+        "regular": {
+          "hp": [
+            230,
+            9
+          ],
+          "atk": [
+            43,
+            4
+          ],
+          "def": [
+            25,
+            3
+          ]
+        },
+        "grades": null
+      },
+      "description": {
+        "ko": "보라색과 검은색이 뒤섞인 소거의 불꽃을 다루는 지옥 드래곤. 네 개의 붉은 눈과 거대한 뿔이 특징이며, 불꽃에 닿은 존재에게 극심한 부정적 감정을 일으켜 영원한 어둠에 가둔다. [획득처: 월드 레이드]"
+      },
+      "assets": {
+        "gameId": null,
+        "gradeFamilyId": null,
+        "familyMembers": null
+      },
+      "availability": {
+        "guildWarOriginal": true,
+        "guildWarNewbie": true,
+        "championshipExcluded": false
+      },
+      "rankingProfiles": [
+        {
+          "name": "크로마 에레보스",
+          "element": "어둠",
+          "skill": null,
+          "statsRef": "regular",
+          "appearances": [
+            {
+              "page": "cham",
+              "tab": "SSS",
+              "levels": [
+                45,
+                21
+              ]
+            },
+            {
+              "page": "cham",
+              "tab": "SS",
+              "levels": [
+                45,
+                21
+              ]
+            }
+          ]
+        }
+      ],
+      "compatibility": {}
+    },
+
+    // 723 클리드 — https://www.dragonvillage.net/notice/21456
+    {
+      "id": 723,
+      "name": {
+        "ko": "클리드"
+      },
+      "aliases": {
+        "ko": []
+      },
+      "element": "황혼",
+      "type": "중립",
+      "stages": {
+        "awakening": false,
+        "transcendence": false,
+        "advent": false
+      },
+      "canLevelUp": false,
+      "codeAvailability": "C-S",
+      "tier": {
+        "value": null,
+        "status": "NI",
+        "source": "https://www.dragonvillage.net/notice/21456"
+      },
+      "stats": {
+        "regular": null,
+        "grades": {
+          "C": null,
+          "B": null,
+          "A": null,
+          "S": null,
+          "SS": null,
+          "SSS": {
+            "hp": [
+              184,
+              9
+            ],
+            "atk": [
+              32,
+              5
+            ],
+            "def": [
+              32,
+              5
+            ]
+          }
+        }
+      },
+      "description": {
+        "ko": "죄인을 심판하고 기록하는 드래곤. 순수한 외모와 달리 죄인에게는 냉정하며, 꼬리의 노란 가루로 영원한 잠에 빠뜨린다. 심판하지 않을 때는 깊이 잠들기도 하며 카스티그가 옮겨준다. [획득처: 챔피언 대전]"
+      },
+      "assets": {
+        "gameId": null,
+        "gradeFamilyId": null,
+        "familyMembers": null
+      },
+      "availability": {
+        "guildWarOriginal": false,
+        "guildWarNewbie": false,
+        "championshipExcluded": false
+      },
+      "rankingProfiles": [
+        {
+          "name": "클리드 SSS",
+          "element": "황혼",
+          "skill": null,
+          "statsRef": "grades.SSS",
+          "appearances": [
+            {
+              "page": "sss",
+              "tab": "SSS",
+              "levels": [
+                45,
+                21
+              ]
+            },
+            {
+              "page": "cham",
+              "tab": "SSS",
+              "levels": [
+                45,
+                21
+              ]
+            }
+          ]
+        }
+      ],
+      "compatibility": {
+        "chamGrade": [
+          {
+            "name": "클리드 SSS",
+            "level": 45,
+            "order": 100768,
+            "showSkill": false
+          },
+          {
+            "name": "클리드 SSS",
+            "level": 21,
+            "order": 100744,
+            "showSkill": false
+          }
+        ]
+      }
+    },
+
+    // 724 말카르티스 — https://www.dragonvillage.net/notice/21456
+    {
+      "id": 724,
+      "name": {
+        "ko": "말카르티스"
+      },
+      "aliases": {
+        "ko": []
+      },
+      "element": "어둠",
+      "type": "공격",
+      "stages": {
+        "awakening": false,
+        "transcendence": true,
+        "advent": true
+      },
+      "canLevelUp": true,
+      "codeAvailability": "Yes",
+      "tier": {
+        "value": 6.3,
+        "status": "listed",
+        "source": "초등계산기.html:20레벨 공격형 계산"
+      },
+      "stats": {
+        "regular": {
+          "hp": [
+            217,
+            10
+          ],
+          "atk": [
+            37,
+            4
+          ],
+          "def": [
+            26,
+            3
+          ]
+        },
+        "grades": null
+      },
+      "description": {
+        "ko": "오랜 세월 마계를 지배해 온 군주. 보름달을 붉게 바꾸어 세계를 왜곡하고 모든 존재를 두려움에 떨게 한다. 오랜 지혜와 압도적인 권능으로 마계 전체를 자신의 뜻에 따라 다스린다. [획득처: 패키지]"
+      },
+      "assets": {
+        "gameId": null,
+        "gradeFamilyId": null,
+        "familyMembers": null
+      },
+      "availability": {
+        "guildWarOriginal": true,
+        "guildWarNewbie": true,
+        "championshipExcluded": false
+      },
+      "rankingProfiles": [
+        {
+          "name": "말카르티스",
+          "element": "어둠",
+          "skill": null,
+          "statsRef": "regular",
+          "appearances": [
+            {
+              "page": "cham",
+              "tab": "SSS",
+              "levels": [
+                45,
+                21
+              ]
+            },
+            {
+              "page": "cham",
+              "tab": "SS",
+              "levels": [
+                45,
+                21
+              ]
+            }
+          ]
+        }
+      ],
+      "compatibility": {}
+    },
   ];
 
   // 아래는 공통 조회·계산 함수입니다. 드래곤을 추가할 때 수정할 필요가 없습니다.

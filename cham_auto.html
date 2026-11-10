@@ -567,6 +567,8 @@ const OPT_LIMIT=60;
 const ELEM_ALIAS={'Earth':'땅','Water':'물','Fire':'불','Wind':'바람','Light':'빛','Dark':'어둠','Dusk':'황혼','Dawn':'여명','Nightmare':'악몽'};
 D.GRADE.forEach(g=>{g.elem=ELEM_ALIAS[g.elem]||g.elem;});
 // '고귀한 ~'은 원본과 스탯이 같지만 따로 보유하는 드래곤이라 목록에 넣고 금색으로 표시
+// 챔피언대전 등급용은 SSS만 쓴다
+D.GRADE=D.GRADE.filter(g=>/ SSS$/.test(g.ko));
 const isNoble=d=>!!d&&/^고귀한\s/.test(d.ko||d.name||'');
 const nobleTag=d=>isNoble(d)?`<span class="noble-tag">${IS_EN?'NOBLE':'고귀'}</span>`:'';
 

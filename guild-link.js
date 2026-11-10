@@ -71,10 +71,33 @@
     /* 이 페이지가 드래곤 셋팅을 메모리에 들고 있으면(내 스펙) 같이 바꿔서 오래된 값으로 덮어쓰지 않게 한다 */
     try { if (typeof S !== 'undefined' && S && S.dragonCards) S.dragonCards = JSON.parse(JSON.stringify(dc)); } catch (e) {}
   }
-  function addReserves(list) {
+
+  /* 예비 정령은 계정(로그인 계정 + 내 스펙 계정 프리셋)마다 따로 보관한다.
+     계정이 바뀌면 지금 목록은 이전 계정 몫으로 넣어 두고, 새 계정의 목록을 꺼낸다. */
+  function rsvOwnerKey(pre){
+    var u='guest',p='p1';
+    try{var cu=JSON.parse(localStorage.getItem('community_user')||'null');if(cu)u=String(cu.id||cu.username||cu.nickname||'user');}catch(e){}
+    try{var P=JSON.parse(localStorage.getItem(pre+'_spec_presets')||'null');if(P&&P.activeId)p=String(P.activeId);}catch(e){}
+    return u+':'+p;
+  }
+  function rsvOwnerSync(pre,storeKey,o){
+    var own=rsvOwnerKey(pre);
+    if(!Array.isArray(o.reserveSpirits))o.reserveSpirits=[];
+    if(o.reserveOwner===own)return false;
+    if(o.reserveOwner===undefined){o.reserveOwner=own;return true;}   // 처음: 지금 목록을 현재 계정 것으로
+    var SK=pre+'_rsv_stash',st={};
+    try{st=JSON.parse(localStorage.getItem(SK)||'{}')||{};}catch(e){}
+    st[storeKey+'|'+o.reserveOwner]=o.reserveSpirits;
+    o.reserveSpirits=Array.isArray(st[storeKey+'|'+own])?st[storeKey+'|'+own]:[];
+    delete st[storeKey+'|'+own];
+    o.reserveOwner=own;
+    try{localStorage.setItem(SK,JSON.stringify(st));}catch(e){}
+    return true;
+  }
+    function addReserves(list) {
     if (!list.length) return 0;
     var o = rd(K.pvp) || {};
-    if (!Array.isArray(o.reserveSpirits)) o.reserveSpirits = [];
+    rsvOwnerSync(K.pvp.replace(/_pvp$/, ''), K.pvp, o);
     list.forEach(function (r) {
       o.reserveSpirits.push({ uid: uid('rsv'), name: String(r.name || '').slice(0, 30), opts: normOpts(r.opts), bonus: ['hp', 'atk', 'def'].indexOf(r.bonus) >= 0 ? r.bonus : '' });
     });

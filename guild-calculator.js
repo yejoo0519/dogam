@@ -364,6 +364,29 @@ let simGrade='9.0', simBuf=2;
 // EN 페이지(/en/)는 영문판 저장 데이터(dv1simEN_)를 따로 사용
 const LS_PRE=/\/en\//.test(location.pathname)?'dv1simEN':'dv1sim';
 const SAVE_KEY=LS_PRE+'_'+location.pathname.split('/').pop().replace(/\.[^.]+$/,'');
+/* 예비 정령은 계정(로그인 계정 + 내 스펙 계정 프리셋)마다 따로 보관한다.
+   계정이 바뀌면 지금 목록은 이전 계정 몫으로 넣어 두고, 새 계정의 목록을 꺼낸다. */
+function rsvOwnerKey(pre){
+  var u='guest',p='p1';
+  try{var cu=JSON.parse(localStorage.getItem('community_user')||'null');if(cu)u=String(cu.id||cu.username||cu.nickname||'user');}catch(e){}
+  try{var P=JSON.parse(localStorage.getItem(pre+'_spec_presets')||'null');if(P&&P.activeId)p=String(P.activeId);}catch(e){}
+  return u+':'+p;
+}
+function rsvOwnerSync(pre,storeKey,o){
+  var own=rsvOwnerKey(pre);
+  if(!Array.isArray(o.reserveSpirits))o.reserveSpirits=[];
+  if(o.reserveOwner===own)return false;
+  if(o.reserveOwner===undefined){o.reserveOwner=own;return true;}   // 처음: 지금 목록을 현재 계정 것으로
+  var SK=pre+'_rsv_stash',st={};
+  try{st=JSON.parse(localStorage.getItem(SK)||'{}')||{};}catch(e){}
+  st[storeKey+'|'+o.reserveOwner]=o.reserveSpirits;
+  o.reserveSpirits=Array.isArray(st[storeKey+'|'+own])?st[storeKey+'|'+own]:[];
+  delete st[storeKey+'|'+own];
+  o.reserveOwner=own;
+  try{localStorage.setItem(SK,JSON.stringify(st));}catch(e){}
+  return true;
+}
+
 
 // ── [일회성 마이그레이션 v2] EN 키(dv1simEN_) 데이터 복구 + 드래곤 셋팅 보존/복원 ──
 (function(){
@@ -461,6 +484,7 @@ function doLoad(){
     })();
     if(!r)return;
     const p=JSON.parse(r);
+    if(rsvOwnerSync(LS_PRE,SAVE_KEY,p)){try{localStorage.setItem(SAVE_KEY,JSON.stringify(p));}catch(_e){}}
     S={...mkState(),...p,accCards:p.accCards||[],gems:{...mkState().gems,...(p.gems||{})},spirit:{...mkState().spirit,...(p.spirit||{})},coll:{...mkState().coll,...(p.coll||{})},dragonCards:{...mkDragonCards(),...(p.dragonCards||{})},settingBuffs:{...mkSettingBuffs(),...(p.settingBuffs||{})},reserveSpirits:Array.isArray(p.reserveSpirits)?p.reserveSpirits:[]};
     while(S.spirit.opts.length<4)S.spirit.opts.push({stat:'',type:''});
     normalizeDragonCards();

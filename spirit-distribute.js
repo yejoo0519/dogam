@@ -65,6 +65,7 @@
       <div class="spx-hd">
         <span class="spx-no">#${j+1}</span>
         <input type="text" class="spx-memo" maxlength="30" placeholder="메모 (구분용, 선택)" value="${esc(x.memo)}" data-act="memo" data-j="${j}">
+        ${spValid(x)&&window.GuildLink?`<button type="button" class="spx-rsv${x.rsvSent?' done':''}" title="길드전 계산기 예비 정령으로 보내기" data-act="rsv" data-j="${j}">${x.rsvSent?'예비 ✓':'예비로'}</button>`:''}
         <button type="button" class="icon-btn" title="복제" data-act="dup" data-j="${j}">⧉</button>
         <button type="button" class="icon-btn red" title="삭제" data-act="del" data-j="${j}">✕</button>
       </div>
@@ -83,13 +84,14 @@
       ?'<div class="spx-empty">등록된 정령이 없어요. [＋ 정령 추가]로 보유 정령을 입력해주세요.</div>'
       :fold?foldHtml(list):`<div class="spx-grid">${list.map(cardHtml).join('')}</div>`;
     host.innerHTML=`<div class="sec">
-      <div class="sec-hd" data-act="fold" style="cursor:pointer"><span>${esc(title)}</span><span style="display:flex;gap:6px;align-items:center"><button type="button" class="btn" data-act="fold">${fold?'▸ 펼치기':'▾ 접기'}</button><button type="button" class="btn" data-act="add">＋ 정령 추가</button></span></div>
+      <div class="sec-hd" data-act="fold" style="cursor:pointer"><span>${esc(title)}</span><span style="display:flex;gap:6px;align-items:center"><button type="button" class="btn" data-act="fold">${fold?'▸ 펼치기':'▾ 접기'}</button>${ok&&window.GuildLink?'<button type="button" class="btn" data-act="rsvall">전부 예비 정령으로</button>':''}<button type="button" class="btn" data-act="add">＋ 정령 추가</button></span></div>
       <div class="sec-bd">
         ${fold?'':'<div class="spx-note">가지고 있는 정령을 전부 입력하면 길드전 3마리에 어느 정령을 넣는 게 좋은지 장비와 함께 자동으로 배분해서 보여줘요. 결과는 미리보기라 길드전 계산기에는 저장되지 않아요. (입력한 정령 목록은 저장돼요)</div>'}
         ${body}
       </div>
     </div>`;
   }
+  function rsvToast(msg){if(typeof showToast==='function')showToast(msg);else alert(msg);}
   function onListEvent(e){
     const el=e.target.closest('[data-act]');if(!el||busy)return;
     const act=el.dataset.act,j=+el.dataset.j,x=S.spxList[j];
@@ -98,9 +100,21 @@
       x.memo=el.value.slice(0,30);save();markDirty();return;
     }
     if(e.type!=='click'||act==='memo')return;
+    if(act==='rsv'||act==='rsvall'){
+      const pick=(act==='rsv'?[x]:S.spxList.filter(y=>!y.rsvSent)).filter(y=>y&&spValid(y));
+      if(!pick.length){rsvToast('보낼 정령이 없어요. (이미 보냈거나 옵션이 비어 있어요)');return;}
+      if(act==='rsv'&&x.rsvSent&&!confirm('이미 예비 정령으로 보낸 정령이에요. 한 번 더 보낼까요?'))return;
+      if(act==='rsvall'&&!confirm(`정령 ${pick.length}개를 길드전 계산기 예비 정령으로 보낼까요?`))return;
+      const n=GuildLink.addReserves(pick.map(y=>({name:y.memo||'정령 배분 #'+(S.spxList.indexOf(y)+1),opts:y.opts,bonus:y.bonus})));
+      if(n)pick.forEach(y=>{y.rsvSent=true;});
+      renderList();save();
+      rsvToast(n?`정령 ${n}개를 길드전 예비 정령으로 보냈어요.`:'보내지 못했어요.');
+      return;
+    }
+    if(['preset','stat','type','bonus'].includes(act)&&x)x.rsvSent=false;
     if(act==='fold'){S.spxFold=!S.spxFold;}
     else if(act==='add'){S.spxFold=false;S.spxList.push(mkSp());}
-    else if(act==='dup'&&x){const cp=JSON.parse(JSON.stringify(x));cp.uid=newUid();S.spxList.splice(j+1,0,cp);}
+    else if(act==='dup'&&x){const cp=JSON.parse(JSON.stringify(x));cp.uid=newUid();cp.rsvSent=false;S.spxList.splice(j+1,0,cp);}
     else if(act==='del'&&x){S.spxList.splice(j,1);}
     else if(act==='preset'&&x){const p=el.dataset.p;if(!SPX_PATS.includes(p))return;x.opts.forEach((o,k)=>{o.type=p[k];});}
     else if(act==='stat'&&x){const o=x.opts[+el.dataset.i],s=el.dataset.s;o.stat=o.stat===s?'':s;}

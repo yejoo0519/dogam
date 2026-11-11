@@ -1,0 +1,152 @@
+adult.pvr.ccz
+size: 1358, 507
+format: RGBA4444
+filter: Linear, Linear
+repeat: none
+dragon/3782/adult/arm_l
+  rotate: false
+  xy: 827, 367
+  size: 78, 136
+  orig: 78, 136
+  offset: 0, 0
+  index: -1
+dragon/3782/adult/arm_r
+  rotate: false
+  xy: 1071, 215
+  size: 166, 136
+  orig: 166, 136
+  offset: 0, 0
+  index: -1
+dragon/3782/adult/body
+  rotate: false
+  xy: 1, 1
+  size: 228, 294
+  orig: 228, 294
+  offset: 0, 0
+  index: -1
+dragon/3782/adult/effect01
+  rotate: false
+  xy: 1027, 353
+  size: 122, 142
+  orig: 122, 142
+  offset: 0, 0
+  index: -1
+dragon/3782/adult/effect02
+  rotate: false
+  xy: 1, 297
+  size: 193, 161
+  orig: 193, 161
+  offset: 0, 0
+  index: -1
+dragon/3782/adult/effect03
+  rotate: false
+  xy: 1283, 1
+  size: 61, 105
+  orig: 61, 105
+  offset: 0, 0
+  index: -1
+dragon/3782/adult/effect04
+  rotate: false
+  xy: 440, 281
+  size: 164, 147
+  orig: 164, 147
+  offset: 0, 0
+  index: -1
+dragon/3782/adult/hand_l
+  rotate: false
+  xy: 907, 367
+  size: 118, 130
+  orig: 118, 130
+  offset: 0, 0
+  index: -1
+dragon/3782/adult/head
+  rotate: false
+  xy: 606, 252
+  size: 219, 248
+  orig: 219, 248
+  offset: 0, 0
+  index: -1
+dragon/3782/adult/leg_l
+  rotate: false
+  xy: 1239, 231
+  size: 118, 134
+  orig: 118, 134
+  offset: 0, 0
+  index: -1
+dragon/3782/adult/leg_r
+  rotate: false
+  xy: 196, 297
+  size: 112, 157
+  orig: 112, 157
+  offset: 0, 0
+  index: -1
+dragon/3782/adult/shoulder_l
+  rotate: false
+  xy: 827, 238
+  size: 144, 104
+  orig: 144, 104
+  offset: 0, 0
+  index: -1
+dragon/3782/adult/tail
+  rotate: false
+  xy: 231, 1
+  size: 327, 278
+  orig: 327, 278
+  offset: 0, 0
+  index: -1
+dragon/3782/adult/thigh_l
+  rotate: false
+  xy: 1243, 108
+  size: 88, 121
+  orig: 88, 121
+  offset: 0, 0
+  index: -1
+dragon/3782/adult/wing_l1
+  rotate: false
+  xy: 1071, 91
+  size: 170, 122
+  orig: 170, 122
+  offset: 0, 0
+  index: -1
+dragon/3782/adult/wing_l2
+  rotate: false
+  xy: 560, 1
+  size: 246, 249
+  orig: 246, 249
+  offset: 0, 0
+  index: -1
+dragon/3782/adult/wing_m_l
+  rotate: false
+  xy: 1071, 1
+  size: 210, 88
+  orig: 210, 88
+  offset: 0, 0
+  index: -1
+dragon/3782/adult/wing_m_r
+  rotate: false
+  xy: 1151, 367
+  size: 145, 83
+  orig: 145, 83
+  offset: 0, 0
+  index: -1
+dragon/3782/adult/wing_r1
+  rotate: false
+  xy: 310, 281
+  size: 128, 151
+  orig: 128, 151
+  offset: 0, 0
+  index: -1
+dragon/3782/adult/wing_r2
+  rotate: false
+  xy: 310, 434
+  size: 181, 72
+  orig: 181, 72
+  offset: 0, 0
+  index: -1
+dragon/3782/adult/wing_r3
+  rotate: false
+  xy: 808, 1
+  size: 261, 235
+  orig: 261, 235
+  offset: 0, 0
+  index: -1

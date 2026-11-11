@@ -1,0 +1,341 @@
+child2.pvr.ccz
+size: 511, 1016
+format: RGBA4444
+filter: Linear, Linear
+repeat: none
+dragon/3784/child2/arm l cloth
+  rotate: false
+  xy: 225, 695
+  size: 74, 119
+  orig: 74, 119
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/arm l
+  rotate: false
+  xy: 453, 530
+  size: 53, 69
+  orig: 53, 69
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/arm r cloth b
+  rotate: false
+  xy: 243, 581
+  size: 90, 112
+  orig: 90, 112
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/arm r cloth
+  rotate: false
+  xy: 338, 673
+  size: 73, 112
+  orig: 73, 112
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/arm r
+  rotate: false
+  xy: 255, 819
+  size: 67, 81
+  orig: 67, 81
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/body
+  rotate: false
+  xy: 375, 273
+  size: 126, 153
+  orig: 126, 153
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/body2
+  rotate: false
+  xy: 243, 425
+  size: 84, 154
+  orig: 84, 154
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/ear r
+  rotate: false
+  xy: 413, 696
+  size: 92, 68
+  orig: 92, 68
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/effec3
+  rotate: false
+  xy: 225, 816
+  size: 27, 12
+  orig: 27, 12
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/effect
+  rotate: false
+  xy: 301, 695
+  size: 35, 122
+  orig: 35, 122
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/effect2 1
+  rotate: false
+  xy: 215, 972
+  size: 27, 42
+  orig: 27, 42
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/effect2 2
+  rotate: false
+  xy: 149, 972
+  size: 33, 33
+  orig: 33, 33
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/effect2 3
+  rotate: false
+  xy: 244, 974
+  size: 33, 23
+  orig: 33, 23
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/effect2
+  rotate: false
+  xy: 412, 825
+  size: 87, 62
+  orig: 87, 62
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/effect3 1
+  rotate: false
+  xy: 49, 972
+  size: 60, 21
+  orig: 60, 21
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/effect3 2
+  rotate: false
+  xy: 493, 955
+  size: 17, 23
+  orig: 17, 23
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/effect3 3
+  rotate: false
+  xy: 462, 428
+  size: 25, 100
+  orig: 25, 100
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/effect3 4
+  rotate: false
+  xy: 1, 972
+  size: 46, 36
+  orig: 46, 36
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/effect3 5
+  rotate: false
+  xy: 503, 261
+  size: 7, 23
+  orig: 7, 23
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/effect3 6
+  rotate: false
+  xy: 456, 955
+  size: 35, 59
+  orig: 35, 59
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/effect4 1
+  rotate: false
+  xy: 338, 787
+  size: 72, 47
+  orig: 72, 47
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/effect4 2
+  rotate: false
+  xy: 184, 972
+  size: 29, 43
+  orig: 29, 43
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/effect4 3
+  rotate: false
+  xy: 111, 972
+  size: 36, 25
+  orig: 36, 25
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/effect4 4
+  rotate: false
+  xy: 1, 832
+  size: 252, 138
+  orig: 252, 138
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/effect4 5
+  rotate: false
+  xy: 252, 215
+  size: 219, 56
+  orig: 219, 56
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/effect4
+  rotate: false
+  xy: 413, 766
+  size: 91, 57
+  orig: 91, 57
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/effect5 2
+  rotate: false
+  xy: 240, 273
+  size: 133, 150
+  orig: 133, 150
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/effect5
+  rotate: false
+  xy: 456, 889
+  size: 54, 64
+  orig: 54, 64
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/eye
+  rotate: false
+  xy: 49, 995
+  size: 26, 20
+  orig: 26, 20
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/foot l
+  rotate: false
+  xy: 377, 963
+  size: 49, 52
+  orig: 49, 52
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/foot r
+  rotate: false
+  xy: 396, 899
+  size: 58, 62
+  orig: 58, 62
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/hat
+  rotate: false
+  xy: 1, 241
+  size: 237, 229
+  orig: 237, 229
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/hat2
+  rotate: false
+  xy: 325, 963
+  size: 50, 48
+  orig: 50, 48
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/head
+  rotate: false
+  xy: 329, 428
+  size: 131, 99
+  orig: 131, 99
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/head2
+  rotate: false
+  xy: 325, 899
+  size: 69, 62
+  orig: 69, 62
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/head3
+  rotate: false
+  xy: 473, 215
+  size: 31, 44
+  orig: 31, 44
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/horn l
+  rotate: false
+  xy: 335, 606
+  size: 99, 65
+  orig: 99, 65
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/horn r
+  rotate: false
+  xy: 428, 963
+  size: 26, 44
+  orig: 26, 44
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/leg l
+  rotate: false
+  xy: 436, 606
+  size: 74, 88
+  orig: 74, 88
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/leg r
+  rotate: false
+  xy: 324, 836
+  size: 74, 61
+  orig: 74, 61
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/ring wing l
+  rotate: false
+  xy: 503, 286
+  size: 7, 20
+  orig: 7, 20
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/ring wing r
+  rotate: false
+  xy: 279, 974
+  size: 24, 23
+  orig: 24, 23
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/ring
+  rotate: false
+  xy: 335, 529
+  size: 116, 75
+  orig: 116, 75
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/sheep1
+  rotate: false
+  xy: 252, 1
+  size: 245, 212
+  orig: 245, 212
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/sheep2
+  rotate: false
+  xy: 1, 1
+  size: 249, 238
+  orig: 249, 238
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/sheep3
+  rotate: false
+  xy: 1, 669
+  size: 222, 161
+  orig: 222, 161
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/tail
+  rotate: false
+  xy: 1, 472
+  size: 240, 195
+  orig: 240, 195
+  offset: 0, 0
+  index: -1
+dragon/3784/child2/wing
+  rotate: false
+  xy: 255, 902
+  size: 68, 70
+  orig: 68, 70
+  offset: 0, 0
+  index: -1

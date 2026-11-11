@@ -1,0 +1,138 @@
+child1.pvr.ccz
+size: 481, 1264
+format: RGBA4444
+filter: Linear, Linear
+repeat: none
+dragon/3790/child1/body
+  rotate: false
+  xy: 298, 468
+  size: 93, 99
+  orig: 95, 101
+  offset: 1, 1
+  index: -1
+dragon/3790/child1/effect1
+  rotate: false
+  xy: 1, 1
+  size: 288, 291
+  orig: 290, 293
+  offset: 1, 1
+  index: -1
+dragon/3790/child1/effect2
+  rotate: false
+  xy: 291, 1
+  size: 189, 139
+  orig: 191, 141
+  offset: 1, 1
+  index: -1
+dragon/3790/child1/effect3
+  rotate: false
+  xy: 1, 846
+  size: 273, 273
+  orig: 275, 275
+  offset: 1, 1
+  index: -1
+dragon/3790/child1/effect4
+  rotate: false
+  xy: 282, 569
+  size: 192, 261
+  orig: 194, 263
+  offset: 1, 1
+  index: -1
+dragon/3790/child1/effect5
+  rotate: false
+  xy: 1, 294
+  size: 295, 273
+  orig: 297, 275
+  offset: 1, 1
+  index: -1
+dragon/3790/child1/effect6
+  rotate: false
+  xy: 1, 1121
+  size: 271, 142
+  orig: 273, 144
+  offset: 1, 1
+  index: -1
+dragon/3790/child1/effect7
+  rotate: false
+  xy: 298, 259
+  size: 176, 207
+  orig: 178, 209
+  offset: 1, 1
+  index: -1
+dragon/3790/child1/effect8
+  rotate: false
+  xy: 1, 569
+  size: 279, 275
+  orig: 281, 277
+  offset: 1, 1
+  index: -1
+dragon/3790/child1/hair
+  rotate: false
+  xy: 276, 1014
+  size: 136, 89
+  orig: 138, 91
+  offset: 1, 1
+  index: -1
+dragon/3790/child1/hand_l
+  rotate: false
+  xy: 377, 1207
+  size: 64, 41
+  orig: 66, 43
+  offset: 1, 1
+  index: -1
+dragon/3790/child1/hand_r
+  rotate: false
+  xy: 393, 519
+  size: 64, 47
+  orig: 66, 49
+  offset: 1, 1
+  index: -1
+dragon/3790/child1/head
+  rotate: false
+  xy: 291, 142
+  size: 121, 115
+  orig: 123, 116
+  offset: 1, 0
+  index: -1
+dragon/3790/child1/tail
+  rotate: false
+  xy: 393, 468
+  size: 71, 49
+  orig: 73, 51
+  offset: 1, 1
+  index: -1
+dragon/3790/child1/wing1
+  rotate: false
+  xy: 377, 1105
+  size: 96, 100
+  orig: 98, 102
+  offset: 1, 1
+  index: -1
+dragon/3790/child1/wing2
+  rotate: false
+  xy: 274, 1121
+  size: 101, 122
+  orig: 103, 124
+  offset: 1, 1
+  index: -1
+dragon/3790/child1/wing3
+  rotate: false
+  xy: 414, 142
+  size: 55, 83
+  orig: 57, 85
+  offset: 1, 1
+  index: -1
+dragon/3790/child1/wing4
+  rotate: false
+  xy: 414, 1014
+  size: 58, 51
+  orig: 60, 53
+  offset: 1, 1
+  index: -1
+dragon/3790/child1/wing5
+  rotate: false
+  xy: 282, 832
+  size: 194, 180
+  orig: 196, 182
+  offset: 1, 1
+  index: -1

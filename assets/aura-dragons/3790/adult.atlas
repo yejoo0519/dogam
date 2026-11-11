@@ -1,0 +1,96 @@
+adult.pvr.ccz
+size: 1015, 1920
+format: RGBA4444
+filter: Linear, Linear
+repeat: none
+dragon/3790/adult/arm_r
+  rotate: false
+  xy: 725, 1
+  size: 160, 395
+  orig: 162, 397
+  offset: 1, 1
+  index: -1
+dragon/3790/adult/belt
+  rotate: false
+  xy: 887, 1
+  size: 117, 344
+  orig: 119, 346
+  offset: 1, 1
+  index: -1
+dragon/3790/adult/body
+  rotate: false
+  xy: 1, 1130
+  size: 318, 430
+  orig: 320, 431
+  offset: 1, 1
+  index: -1
+dragon/3790/adult/cepter
+  rotate: false
+  xy: 585, 557
+  size: 355, 690
+  orig: 357, 692
+  offset: 1, 1
+  index: -1
+dragon/3790/adult/collar
+  rotate: false
+  xy: 887, 347
+  size: 92, 72
+  orig: 94, 74
+  offset: 1, 1
+  index: -1
+dragon/3790/adult/crown
+  rotate: false
+  xy: 350, 1743
+  size: 153, 136
+  orig: 155, 138
+  offset: 1, 1
+  index: -1
+dragon/3790/adult/extra_effect
+  rotate: false
+  xy: 321, 1249
+  size: 672, 492
+  orig: 674, 494
+  offset: 1, 1
+  index: -1
+dragon/3790/adult/hair
+  rotate: false
+  xy: 725, 398
+  size: 153, 149
+  orig: 155, 151
+  offset: 1, 1
+  index: -1
+dragon/3790/adult/head
+  rotate: false
+  xy: 175, 1743
+  size: 173, 176
+  orig: 175, 178
+  offset: 1, 1
+  index: -1
+dragon/3790/adult/moon
+  rotate: false
+  xy: 1, 546
+  size: 582, 582
+  orig: 584, 584
+  offset: 1, 1
+  index: -1
+dragon/3790/adult/moon2
+  rotate: false
+  xy: 880, 421
+  size: 134, 134
+  orig: 136, 136
+  offset: 1, 1
+  index: -1
+dragon/3790/adult/tail
+  rotate: false
+  xy: 1, 1562
+  size: 172, 278
+  orig: 174, 280
+  offset: 1, 1
+  index: -1
+dragon/3790/adult/wing
+  rotate: false
+  xy: 1, 1
+  size: 722, 543
+  orig: 724, 545
+  offset: 1, 1
+  index: -1

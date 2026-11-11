@@ -318,6 +318,7 @@ body.u{--panel:var(--bg2);--panel-2:var(--bg3);--line:var(--border);
 .sk-card .sk-cv{display:flex;align-items:center;justify-content:center;min-height:110px;border-radius:8px}
 .sk-card canvas,.sk-play canvas{max-width:100%;height:auto;image-rendering:auto}
 .sk-card .nm{font-size:11px;color:var(--sub);margin-top:6px;font-family:'IBM Plex Mono',monospace;word-break:break-all}
+.sk-bar{display:flex;gap:8px;justify-content:center;margin:-2px 0 10px}.sk-bar button{border:1px solid var(--line);background:var(--panel);color:var(--text,inherit);border-radius:8px;padding:6px 14px;font-size:13px;cursor:pointer}.sk-group details{margin-top:4px}.sk-group summary{cursor:pointer;color:var(--sub);font-size:13px;margin-bottom:8px}
 .sk-card.on{border-color:var(--gold,#f5c542)}
 .sk-card a{display:inline-block;margin-top:4px;font-size:11px;color:var(--accent-2);text-decoration:none}
 .checker-bg{background-image:linear-gradient(45deg,rgba(128,128,128,.18) 25%,transparent 25%),linear-gradient(-45deg,rgba(128,128,128,.18) 25%,transparent 25%),linear-gradient(45deg,transparent 75%,rgba(128,128,128,.18) 75%),linear-gradient(-45deg,transparent 75%,rgba(128,128,128,.18) 75%);background-size:16px 16px;background-position:0 0,0 8px,8px -8px,-8px 0}
@@ -1809,6 +1810,7 @@ loadManifest();
  const pane = document.getElementById('skillPane');
  const hideInSkill = ['stage', 'secAura'].map(id => document.getElementById(id)).concat([document.querySelector('.ctrl-row')]);
  const GROUP = { adv: 'PvE 스킬샷 (모험)', col: 'PvP 스킬샷 (콜로세움)' };
+ const PVP_LABEL = 'PvP 스킬샷 (콜로세움)';
  function groupOf(n){ const m = n.match(/^(adv|col)_/); return m ? m[1] : 'etc'; }
  function frameCanvas(tex, f, scale){
   const c = document.createElement('canvas');
@@ -1859,6 +1861,34 @@ loadManifest();
   ['adv', 'col'].concat(seqs, ['etc']).forEach(k => {
    const list = groups[k]; if(!list) return;
    const sec = document.createElement('div'); sec.className = 'sk-group';
+   if(seqs.includes(k)){                       // PvP: 프레임을 이어서 움짤처럼 재생
+    list.sort((x, y) => +(x.short.match(/\d+$/) || [0])[0] - +(y.short.match(/\d+$/) || [0])[0]);
+    sec.innerHTML = '<h3>' + (seqs.length > 1 ? PVP_LABEL + ' ' + (seqs.indexOf(k) + 1) : PVP_LABEL) + '<small>' + list.length + '장</small></h3>';
+    const stage = document.createElement('div'); stage.className = 'sk-play checker-bg';
+    const cv = document.createElement('canvas'); cv.width = list[0].ow * 2; cv.height = list[0].oh * 2; stage.appendChild(cv); sec.appendChild(stage);
+    const g = cv.getContext('2d'); let i = 0;
+    const draw = n => { i = n % list.length; g.clearRect(0, 0, cv.width, cv.height); g.drawImage(frameCanvas(tex, list[i], 2), 0, 0); grid.querySelectorAll('.sk-card').forEach((x, j) => x.classList.toggle('on', j === i)); };
+    const P = { t: null };
+    const bar = document.createElement('div'); bar.className = 'sk-bar';
+    const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'btn';
+    const run = on => { clearInterval(P.t); P.t = on ? setInterval(() => draw(i + 1), 70) : null; btn.textContent = on ? '⏸ 일시정지' : '▶ 재생'; };
+    btn.onclick = () => run(!P.t);
+    bar.appendChild(btn); sec.appendChild(bar);
+    const det = document.createElement('details'); det.innerHTML = '<summary>프레임 보기</summary>';
+    const grid = document.createElement('div'); grid.className = 'sk-grid';
+    list.forEach((f, j) => {
+     const card = document.createElement('div'); card.className = 'sk-card'; card.style.cursor = 'pointer'; card.title = '눌러서 이 프레임 보기';
+     const wrap = document.createElement('div'); wrap.className = 'sk-cv checker-bg'; wrap.appendChild(frameCanvas(tex, f, 1));
+     const a = document.createElement('a'); a.textContent = 'PNG'; a.href = '#';
+     a.onclick = ev => { ev.preventDefault(); ev.stopPropagation(); const l = document.createElement('a'); l.download = (dr.name + '_' + f.short).replace(/[\\/:*?"<>|\s]+/g, '_') + '.png'; l.href = frameCanvas(tex, f, 2).toDataURL('image/png'); l.click(); };
+     card.appendChild(wrap); card.insertAdjacentHTML('beforeend', '<div class="nm">' + f.short + '</div>'); card.appendChild(a);
+     card.onclick = () => { run(false); draw(j); };
+     grid.appendChild(card);
+    });
+    det.appendChild(grid); sec.appendChild(det); body.appendChild(sec);
+    draw(0); run(true); players.push(P);
+    return;
+   }
    const actions = list.filter(f => /_action\d+$/.test(f.short)).sort((a, b) => +a.short.match(/\d+$/)[0] - +b.short.match(/\d+$/)[0]);
    if(!actions.length) actions.push(list[0]);
    sec.innerHTML = '<h3>' + (seqs.includes(k) ? 'PvP 스킬샷 (콜로세움)' + (seqs.length > 1 ? ' ' + (seqs.indexOf(k) + 1) : '') : GROUP[k] || '기타') + '<small>' + list.length + '장</small></h3>';

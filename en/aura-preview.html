@@ -308,6 +308,22 @@ body.u{--panel:var(--bg2);--panel-2:var(--bg3);--line:var(--border);
   .col-main .btn-row::-webkit-scrollbar{display:none}
   .col-main .btn-row button,.ctrl .btn-row button{flex:1 0 auto;padding:6px 7px;font-size:12px;white-space:nowrap}
 }
+/* 스킬샷 탭 */
+#skillPane .sk-note{font-size:13px;color:var(--sub);margin:4px 0 12px;line-height:1.6}
+.sk-group{margin-bottom:22px}
+.sk-group h3{font-size:13px;font-weight:700;margin:0 0 10px;color:var(--text)}
+.sk-group h3 small{font-weight:500;color:var(--sub);margin-left:6px}
+.sk-bar{display:flex;justify-content:center;margin:-2px 0 12px}
+.sk-bar button{padding:6px 14px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--text);cursor:pointer;font:inherit;font-size:12px}
+.sk-play{display:flex;justify-content:center;align-items:center;min-height:180px;border:1px solid var(--line);border-radius:12px;margin-bottom:10px;background-color:var(--panel-2)}
+.sk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.sk-card{border:1px solid var(--line);border-radius:10px;padding:8px;text-align:center;background:var(--panel)}
+.sk-card .sk-cv{display:flex;align-items:center;justify-content:center;min-height:110px;border-radius:8px}
+.sk-card canvas,.sk-play canvas{max-width:100%;height:auto;image-rendering:auto}
+.sk-card .nm{font-size:11px;color:var(--sub);margin-top:6px;font-family:'IBM Plex Mono',monospace;word-break:break-all}
+.sk-card.on{border-color:var(--gold,#f5c542)}
+.sk-card a{display:inline-block;margin-top:4px;font-size:11px;color:var(--accent-2);text-decoration:none}
+.checker-bg{background-image:linear-gradient(45deg,rgba(128,128,128,.18) 25%,transparent 25%),linear-gradient(-45deg,rgba(128,128,128,.18) 25%,transparent 25%),linear-gradient(45deg,transparent 75%,rgba(128,128,128,.18) 75%),linear-gradient(-45deg,transparent 75%,rgba(128,128,128,.18) 75%);background-size:16px 16px;background-position:0 0,0 8px,8px -8px,-8px 0}
 </style>
 <script src="../aura-layout.js?v=20261021-x1"></script>
 </head>
@@ -326,6 +342,14 @@ body.u{--panel:var(--bg2);--panel-2:var(--bg3);--line:var(--border);
  <canvas id="layerFront"></canvas>
  <button type="button" id="shotBtn" disabled>PNG 저장</button>
  <div id="stageMsg">아래에서 드래곤을 선택해 주세요</div>
+</div>
+
+<div id="skillPane" hidden>
+ <div class="section">
+  <h2 id="skillTitle">Skill shots</h2>
+  <div class="sk-note" id="skillNote">Pick a dragon on the right.</div>
+  <div id="skillBody"></div>
+ </div>
 </div>
 
 <div class="section ctrl-row">
@@ -359,7 +383,7 @@ body.u{--panel:var(--bg2);--panel-2:var(--bg3);--line:var(--border);
 
 </div>
 
-<div class="section">
+<div class="section" id="secAura">
  <h2>오라</h2>
  <div class="btn-row" id="auraBtns"></div>
 </div>
@@ -929,7 +953,7 @@ const ASSET_BASES = [
 ];
 const LOCAL_ASSET_BASE = "../assets/aura-dragons/";
 const LOCAL_SET_OVERRIDES = {"438": ["advent"]};
-const LOCAL_ASSETS = {"3778": ["child1", "child2", "adult", "transcended", "advent"], "3779": ["child1", "child2", "adult", "transcended", "advent"], "3780": ["child1", "child2", "adult", "transcended", "advent"], "3781": ["child1", "child2", "adult", "transcended", "advent"]};
+const LOCAL_ASSETS = {"3778": ["child1", "child2", "adult", "transcended", "advent"], "3779": ["child1", "child2", "adult", "transcended", "advent"], "3780": ["child1", "child2", "adult", "transcended", "advent"], "3781": ["child1", "child2", "adult", "transcended", "advent"], "3782": ["child1", "child2", "adult", "transcended", "advent"], "3783": ["child1", "child2", "adult", "transcended", "advent"], "3784": ["child1", "child2", "adult"], "3790": ["child1", "child2", "adult", "transcended", "advent"]};
 let ASSET_BASE = ASSET_BASES[0]; // 매니페스트를 받은 주소로 확정됩니다
 
 // 아이콘·동굴 배경·오라는 기존 사이트에서 그대로 가져옵니다
@@ -1010,7 +1034,7 @@ const AURAS = [
 ];
 
 // 도감 아이콘 단계: 강림 8, 초월 7, 그 외 성체 4
-const ICON_SRC = (id, stage) => (String(id)==='719'||String(id)==='720') ? LOCAL_ASSET_BASE + (String(id)==='719'?'3780':'3781') + '/profile/8.png' : ((['717', '718'].includes(String(id)) ? '../' : SITE_BASE) + 'dragon/' + id + '/profile/' + stage + '.png');
+const ICON_SRC = (id, stage) => ['3782','3783','3784','3790'].includes(String(ASSET_ID[id])) ? LOCAL_ASSET_BASE + ASSET_ID[id] + '/profile/' + stage + '.png' : (String(id)==='719'||String(id)==='720') ? LOCAL_ASSET_BASE + (String(id)==='719'?'3780':'3781') + '/profile/8.png' : ((['717', '718'].includes(String(id)) ? '../' : SITE_BASE) + 'dragon/' + id + '/profile/' + stage + '.png');
 const ELEM_ICON = {
  '땅': 'icon/11.png', '물': 'icon/12.png', '불': 'icon/13.png',
  '바람': 'icon/14.png', '빛': 'icon/84.png', '어둠': 'icon/87.png',
@@ -1779,9 +1803,101 @@ loadManifest();
 </script>
 </main>
 </div>
+<script>
+/* ── 스킬샷 탭: dragon/<게임ID>/effect.plist + effect.png ── */
+(function(){
+ let MODE = 'aura', skTimer = null, skTok = 0, skPlayers = [];
+ const stopAll = () => { skPlayers.forEach(p => { clearInterval(p.t); p.t = null; }); skPlayers = []; };
+ const pane = document.getElementById('skillPane');
+ const hideInSkill = ['stage', 'secAura'].map(id => document.getElementById(id)).concat([document.querySelector('.ctrl-row')]);
+ const GROUP = { adv: 'Advent skill shots', col: 'Skill shots' };
+ function groupOf(n){ const m = n.match(/^(adv|col)_/); return m ? m[1] : 'etc'; }
+ function frameCanvas(tex, f, scale){
+  const c = document.createElement('canvas');
+  c.width = f.ow * scale; c.height = f.oh * scale;
+  const g = c.getContext('2d');
+  const dx = (f.ow - f.w) / 2 + f.ox, dy = (f.oh - f.h) / 2 - f.oy;
+  g.scale(scale, scale);
+  if(f.rot){
+   g.save(); g.translate(dx, dy + f.h); g.rotate(-Math.PI / 2);
+   g.drawImage(tex, f.x, f.y, f.h, f.w, 0, 0, f.h, f.w); g.restore();
+  } else g.drawImage(tex, f.x, f.y, f.w, f.h, dx, dy, f.w, f.h);
+  return c;
+ }
+ async function loadSkill(dr){
+  const tok = ++skTok; stopAll();
+  const body = document.getElementById('skillBody'), note = document.getElementById('skillNote');
+  document.getElementById('skillTitle').textContent = dr.name + ' · Skill shots';
+  body.innerHTML = ''; note.textContent = 'Loading…';
+  const base = (LOCAL_ASSETS[dr.asset] ? LOCAL_ASSET_BASE : ASSET_BASE) + dr.asset + '/effect';
+  let frames, tex;
+  try{
+   const res = await fetch(base + '.plist');
+   if(!res.ok) throw new Error('none');
+   const [xml, img] = await Promise.all([res.text(), loadImg(base + '.png')]);
+   frames = plistFrames(xml); tex = img;
+  }catch(e){
+   if(tok === skTok) note.textContent = 'No skill shot assets for this dragon.';
+   return;
+  }
+  if(tok !== skTok) return;
+  if(!frames.length){ note.textContent = 'No skill shot assets for this dragon.'; return; }
+  frames.forEach(f => f.short = f.name.split('/').pop());
+  note.textContent = 'Skill shot images from the game resources (effect). Click a picture to view it large; [PNG] saves it.';
+  const groups = {};
+  frames.forEach(f => (groups[groupOf(f.short)] = groups[groupOf(f.short)] || []).push(f));
+  const players = [];
+  ['adv', 'col', 'etc'].forEach(k => {
+   const list = groups[k]; if(!list) return;
+   const sec = document.createElement('div'); sec.className = 'sk-group';
+   const actions = list.filter(f => /_action\d+$/.test(f.short)).sort((a, b) => +a.short.match(/\d+$/)[0] - +b.short.match(/\d+$/)[0]);
+   if(!actions.length) actions.push(list[0]);
+   sec.innerHTML = '<h3>' + (GROUP[k] || 'Other') + '<small>' + list.length + ' images</small></h3>';
+   var play = null;
+   if(actions.length){
+    // 큰 칸: 아래 그림을 누르면 그 그림을 크게 보여준다 (자동 전환 없음)
+    var play = document.createElement('div'); play.className = 'sk-play checker-bg';
+    play.appendChild(frameCanvas(tex, actions[0], 2)); sec.appendChild(play);
+   }
+   const grid = document.createElement('div'); grid.className = 'sk-grid';
+   list.forEach(f => {
+    const card = document.createElement('div'); card.className = 'sk-card';
+    const wrap = document.createElement('div'); wrap.className = 'sk-cv checker-bg';
+    const c = frameCanvas(tex, f, 1); wrap.appendChild(c);
+    const a = document.createElement('a'); a.textContent = 'PNG'; a.href = '#';
+    a.onclick = ev => { ev.preventDefault(); const big = frameCanvas(tex, f, 2); const l = document.createElement('a'); l.download = (dr.name + '_' + f.short).replace(/[\\/:*?"<>|\s]+/g, '_') + '.png'; l.href = big.toDataURL('image/png'); l.click(); };
+    card.appendChild(wrap);
+    card.insertAdjacentHTML('beforeend', '<div class="nm">' + f.short + '</div>');
+    card.appendChild(a); grid.appendChild(card);
+    if(play){
+     card.classList.toggle('on', f === actions[0]);
+     card.style.cursor = 'pointer'; card.title = 'Click to view large';
+     card.onclick = ev => { if(ev.target === a) return; play.replaceChildren(frameCanvas(tex, f, 2)); grid.querySelectorAll('.sk-card').forEach(x => x.classList.toggle('on', x === card)); };
+    }
+   });
+   sec.appendChild(grid); body.appendChild(sec);
+  });
+  skPlayers = players;
+ }
+ function setMode(m){
+  MODE = m;
+  pane.hidden = m !== 'skill';
+  hideInSkill.forEach(el => { if(el) el.style.display = m === 'skill' ? 'none' : ''; });
+  if(m !== 'skill') stopAll();
+  if(m === 'skill' && curDragon) loadSkill(curDragon);
+  else if(m === 'aura' && curDragon) _load(curDragon);
+ }
+ const _load = loadDragon;
+ loadDragon = function(dr){
+  if(MODE === 'skill'){ curDragon = dr; return loadSkill(dr); }
+  return _load.apply(this, arguments);
+ };
+ window.AuraSkillMode = setMode;
+})();
+</script>
 <script src="../ui.js"></script>
 <script>
 if (!globalThis.DV1_DRAGON_VIEWS) throw new Error("드래곤 데이터 로드 실패: 초기화 중단");
-UI.shell({page:'aura-preview',title:'오라 미리보기',sub:'드래곤 오라 이펙트 모음'});</script>
+UI.shell({page:'aura-preview',title:'오라 미리보기',sub:'드래곤 오라 · 스킬샷 이펙트 모음',tasks:{on:'aura',items:[['aura','Aura'],['skill','Skill shots']],go:function(k){AuraSkillMode(k);}}});</script>
 </body>
 </html>

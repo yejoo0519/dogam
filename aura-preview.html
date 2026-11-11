@@ -318,6 +318,7 @@ body.u{--panel:var(--bg2);--panel-2:var(--bg3);--line:var(--border);
 .sk-card .sk-cv{display:flex;align-items:center;justify-content:center;min-height:110px;border-radius:8px}
 .sk-card canvas,.sk-play canvas{max-width:100%;height:auto;image-rendering:auto}
 .sk-card .nm{font-size:11px;color:var(--sub);margin-top:6px;font-family:'IBM Plex Mono',monospace;word-break:break-all}
+.sk-card.on{border-color:var(--gold,#f5c542)}
 .sk-card a{display:inline-block;margin-top:4px;font-size:11px;color:var(--accent-2);text-decoration:none}
 .checker-bg{background-image:linear-gradient(45deg,rgba(128,128,128,.18) 25%,transparent 25%),linear-gradient(-45deg,rgba(128,128,128,.18) 25%,transparent 25%),linear-gradient(45deg,transparent 75%,rgba(128,128,128,.18) 75%),linear-gradient(-45deg,transparent 75%,rgba(128,128,128,.18) 75%);background-size:16px 16px;background-position:0 0,0 8px,8px -8px,-8px 0}
 </style>
@@ -1847,23 +1848,13 @@ loadManifest();
    const list = groups[k]; if(!list) return;
    const sec = document.createElement('div'); sec.className = 'sk-group';
    const actions = list.filter(f => /_action\d+$/.test(f.short)).sort((a, b) => +a.short.match(/\d+$/)[0] - +b.short.match(/\d+$/)[0]);
+   if(!actions.length) actions.push(list[0]);
    sec.innerHTML = '<h3>' + (GROUP[k] || '기타') + '<small>' + list.length + '장</small></h3>';
-   if(actions.length > 1){
-    // 자동 재생하지 않음 (번쩍임). [재생]을 눌렀을 때만 천천히 넘긴다
-    const play = document.createElement('div'); play.className = 'sk-play checker-bg';
-    const cvs = actions.map(f => frameCanvas(tex, f, 2));
-    cvs.forEach((c, i) => { c.style.display = i ? 'none' : ''; play.appendChild(c); });
-    const bar = document.createElement('div'); bar.className = 'sk-bar';
-    const btn = document.createElement('button'); btn.type = 'button'; btn.textContent = '▶ 재생';
-    const st = { cvs, i: 0, t: null };
-    const show = i => { st.i = i; cvs.forEach((c, j) => { c.style.display = j === i ? '' : 'none'; }); };
-    btn.onclick = () => {
-     if(st.t){ clearInterval(st.t); st.t = null; btn.textContent = '▶ 재생'; return; }
-     btn.textContent = '■ 정지';
-     st.t = setInterval(() => show((st.i + 1) % cvs.length), 600);
-    };
-    players.push(st);
-    bar.appendChild(btn); sec.appendChild(play); sec.appendChild(bar);
+   var play = null;
+   if(actions.length){
+    // 큰 칸: 아래 그림을 누르면 그 그림을 크게 보여준다 (자동 전환 없음)
+    var play = document.createElement('div'); play.className = 'sk-play checker-bg';
+    play.appendChild(frameCanvas(tex, actions[0], 2)); sec.appendChild(play);
    }
    const grid = document.createElement('div'); grid.className = 'sk-grid';
    list.forEach(f => {
@@ -1875,6 +1866,11 @@ loadManifest();
     card.appendChild(wrap);
     card.insertAdjacentHTML('beforeend', '<div class="nm">' + f.short + '</div>');
     card.appendChild(a); grid.appendChild(card);
+    if(play){
+     card.classList.toggle('on', f === actions[0]);
+     card.style.cursor = 'pointer'; card.title = '눌러서 크게 보기';
+     card.onclick = ev => { if(ev.target === a) return; play.replaceChildren(frameCanvas(tex, f, 2)); grid.querySelectorAll('.sk-card').forEach(x => x.classList.toggle('on', x === card)); };
+    }
    });
    sec.appendChild(grid); body.appendChild(sec);
   });

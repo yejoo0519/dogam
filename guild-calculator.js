@@ -524,6 +524,7 @@ let saveT=null;
 function doSave(){
   clearTimeout(saveT);
   localStorage.setItem(SAVE_KEY,JSON.stringify(S));
+  try{rsvCloudPush();}catch(_e){}
   const el=document.getElementById('save-msg');
   if(el){el.textContent='저장됨';setTimeout(()=>el.textContent='',2000);}
 }
@@ -2908,5 +2909,45 @@ function init(){
   try{populateColl();}catch(e){}
 }
 document.addEventListener('DOMContentLoaded',function(){init();try{renderSpecView();}catch(e){}});
+
+/* 예비 정령 클라우드 동기화 — 로그인하면 같은 계정(+내 스펙 계정 프리셋)끼리 기기·브라우저가 달라도 같은 목록.
+   users.calc_settings['rsv:<저장키>:<프리셋>'] = {data:[...], t} (다른 계산기 값은 건드리지 않음) */
+function rsvCloudReady(){try{const u=getUser();return !!(u&&u.id&&typeof supabase==='function');}catch(e){return false;}}
+function rsvCloudKey(){const own=rsvOwnerKey(LS_PRE);return 'rsv:'+SAVE_KEY+':'+own.slice(own.indexOf(':')+1);}
+function rsvMetaKey(){return SAVE_KEY+'_rsvsync|'+rsvOwnerKey(LS_PRE);}
+function rsvMeta(){try{return JSON.parse(localStorage.getItem(rsvMetaKey())||'null')||{t:0,h:''};}catch(e){return {t:0,h:''};}}
+function rsvHash(){return JSON.stringify((S.reserveSpirits||[]).map(r=>[r.uid,r.name||'',r.bonus||'',r.opts]));}
+async function rsvCloudAll(){const u=getUser();const rows=await supabase('GET','users',null,'?id=eq.'+u.id+'&select=calc_settings');let v=rows&&rows[0]?rows[0].calc_settings:null;if(typeof v==='string'){try{v=JSON.parse(v||'{}');}catch(e){v={};}}return v&&typeof v==='object'?v:{};}
+let rsvPushT=null;
+function rsvCloudPush(){
+  if(!rsvCloudReady())return;
+  const h=rsvHash(),m=rsvMeta();if(h===m.h)return;      // 예비 정령이 안 바뀌었으면 업로드 안 함
+  const t=Date.now(),key=rsvCloudKey(),mk=rsvMetaKey(),data=JSON.parse(JSON.stringify(S.reserveSpirits||[]));
+  try{localStorage.setItem(mk,JSON.stringify({t,h}));}catch(e){}
+  clearTimeout(rsvPushT);
+  rsvPushT=setTimeout(async()=>{try{const all=await rsvCloudAll();all[key]={data,t};await supabase('PATCH','users',{calc_settings:all},'?id=eq.'+getUser().id);}catch(e){console.warn('[rsv-cloud] save failed',e);}},1500);
+}
+async function rsvCloudPull(){
+  if(!rsvCloudReady())return;
+  try{
+    const e=(await rsvCloudAll())[rsvCloudKey()],m=rsvMeta();
+    const localNew=rsvHash()!==m.h;                        // 이 기기에서 바뀜 (정령 배분 등 다른 페이지 포함)
+    if(e&&Array.isArray(e.data)&&e.t>m.t){
+      if(localNew){                                        // 양쪽 다 바뀜 → 합치기
+        const have=new Set(e.data.map(r=>r.uid));
+        S.reserveSpirits=e.data.concat((S.reserveSpirits||[]).filter(r=>r&&!have.has(r.uid)));
+      }else S.reserveSpirits=e.data;
+      const merged=localNew&&S.reserveSpirits.length>e.data.length;
+      try{localStorage.setItem(SAVE_KEY,JSON.stringify(S));localStorage.setItem(rsvMetaKey(),JSON.stringify({t:e.t,h:merged?'':rsvHash()}));}catch(_e){}
+      try{renderReserveSpirits();}catch(_e){}
+      if(merged)rsvCloudPush();
+    }else if(localNew){
+      if(!e&&!(S.reserveSpirits||[]).length)return;
+      rsvCloudPush();
+    }
+  }catch(err){console.warn('[rsv-cloud] load failed',err);}
+}
+document.addEventListener('DOMContentLoaded',function(){setTimeout(rsvCloudPull,300);});
+document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')rsvCloudPull();});
 
 globalThis.DV1_GUILD_READY=true;

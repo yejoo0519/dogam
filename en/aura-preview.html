@@ -1811,7 +1811,7 @@ loadManifest();
  const stopAll = () => { skPlayers.forEach(p => { clearInterval(p.t); p.t = null; }); skPlayers = []; };
  const pane = document.getElementById('skillPane');
  const hideInSkill = ['stage', 'secAura'].map(id => document.getElementById(id)).concat([document.querySelector('.ctrl-row')]);
- const GROUP = { adv: 'Advent skill shots', col: 'Skill shots' };
+ const GROUP = { adv: 'PvE skill shots (Adventure)', col: 'PvP skill shots (Colosseum)' };
  function groupOf(n){ const m = n.match(/^(adv|col)_/); return m ? m[1] : 'etc'; }
  function frameCanvas(tex, f, scale){
   const c = document.createElement('canvas');
@@ -1830,29 +1830,27 @@ loadManifest();
   const body = document.getElementById('skillBody'), note = document.getElementById('skillNote');
   document.getElementById('skillTitle').textContent = dr.name + ' · Skill shots';
   body.innerHTML = ''; note.textContent = 'Loading…';
-  const subs = SKILL_LOCAL[dr.asset] || null;
-  const base = ((subs || LOCAL_ASSETS[dr.asset]) ? LOCAL_ASSET_BASE : ASSET_BASE) + dr.asset + '/effect';
-  let frames, tex;
-  try{
-   const res = await fetch(base + '.plist');
-   if(!res.ok) throw new Error('none');
-   const [xml, img] = await Promise.all([res.text(), loadImg(base + '.png')]);
-   frames = plistFrames(xml); tex = img;
-   // 신규 드래곤: 스킬샷이 effect/col_actionNN.plist 에 따로 들어 있음 (프레임별 그림)
-   if(subs){
-    const more = await Promise.all(subs.map(async n => {
-     try{
-      const r = await fetch(base + '/' + n + '.plist'); if(!r.ok) return [];
-      const [x, im] = await Promise.all([r.text(), loadImg(base + '/' + n + '.png')]);
-      return plistFrames(x).map(f => Object.assign(f, { tex: im, name: n + '_' + f.name.split('/').pop().replace(/\.png$/, ''), seq: n }));
-     }catch(e){ return []; }
-    }));
-    more.forEach(l => frames = frames.concat(l));
-   }
-  }catch(e){
-   if(tok === skTok) note.textContent = 'No skill shot assets for this dragon.';
-   return;
-  }
+  // PvE(모험) = effect.plist 의 adv_action · PvP(콜로세움) = effect/col_actionNN.plist (프레임별 그림)
+  const subs = SKILL_LOCAL[dr.asset] || ['col_action10', 'col_action20'];
+  const base = ((SKILL_LOCAL[dr.asset] || LOCAL_ASSETS[dr.asset]) ? LOCAL_ASSET_BASE : ASSET_BASE) + dr.asset + '/effect';
+  let frames = [], tex = null;
+  const pve = (async () => {
+   try{
+    const res = await fetch(base + '.plist'); if(!res.ok) return;
+    const [xml, img] = await Promise.all([res.text(), loadImg(base + '.png')]);
+    frames = frames.concat(plistFrames(xml).map(f => Object.assign(f, { tex: img }))); tex = img;
+   }catch(e){}
+  })();
+  const pvp = Promise.all(subs.map(async n => {
+   try{
+    const r = await fetch(base + '/' + n + '.plist'); if(!r.ok) return [];
+    const [x, im] = await Promise.all([r.text(), loadImg(base + '/' + n + '.png')]);
+    return plistFrames(x).map(f => Object.assign(f, { tex: im, name: n + '_' + f.name.split('/').pop().replace(/\.png$/, ''), seq: n }));
+   }catch(e){ return []; }
+  }));
+  const [, more] = await Promise.all([pve, pvp]);
+  more.forEach(l => frames = frames.concat(l));
+  if(frames.length && !tex) tex = frames[0].tex;
   if(tok !== skTok) return;
   if(!frames.length){ note.textContent = 'No skill shot assets for this dragon.'; return; }
   frames.forEach(f => f.short = f.name.split('/').pop());
@@ -1866,7 +1864,7 @@ loadManifest();
    const sec = document.createElement('div'); sec.className = 'sk-group';
    const actions = list.filter(f => /_action\d+$/.test(f.short)).sort((a, b) => +a.short.match(/\d+$/)[0] - +b.short.match(/\d+$/)[0]);
    if(!actions.length) actions.push(list[0]);
-   sec.innerHTML = '<h3>' + (seqs.includes(k) ? 'Skill shot ' + (seqs.indexOf(k) + 1) : GROUP[k] || 'Other') + '<small>' + list.length + ' images</small></h3>';
+   sec.innerHTML = '<h3>' + (seqs.includes(k) ? 'PvP skill shots (Colosseum)' + (seqs.length > 1 ? ' ' + (seqs.indexOf(k) + 1) : '') : GROUP[k] || 'Other') + '<small>' + list.length + ' images</small></h3>';
    var play = null;
    if(actions.length){
     // 큰 칸: 아래 그림을 누르면 그 그림을 크게 보여준다 (자동 전환 없음)

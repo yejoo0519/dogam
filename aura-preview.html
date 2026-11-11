@@ -310,6 +310,8 @@ body.u{--panel:var(--bg2);--panel-2:var(--bg3);--line:var(--border);
 .sk-group{margin-bottom:22px}
 .sk-group h3{font-size:13px;font-weight:700;margin:0 0 10px;color:var(--text)}
 .sk-group h3 small{font-weight:500;color:var(--sub);margin-left:6px}
+.sk-bar{display:flex;justify-content:center;margin:-2px 0 12px}
+.sk-bar button{padding:6px 14px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--text);cursor:pointer;font:inherit;font-size:12px}
 .sk-play{display:flex;justify-content:center;align-items:center;min-height:180px;border:1px solid var(--line);border-radius:12px;margin-bottom:10px;background-color:var(--panel-2)}
 .sk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
 .sk-card{border:1px solid var(--line);border-radius:10px;padding:8px;text-align:center;background:var(--panel)}
@@ -1800,7 +1802,8 @@ loadManifest();
 <script>
 /* ── 스킬샷 탭: dragon/<게임ID>/effect.plist + effect.png ── */
 (function(){
- let MODE = 'aura', skTimer = null, skTok = 0;
+ let MODE = 'aura', skTimer = null, skTok = 0, skPlayers = [];
+ const stopAll = () => { skPlayers.forEach(p => { clearInterval(p.t); p.t = null; }); skPlayers = []; };
  const pane = document.getElementById('skillPane');
  const hideInSkill = ['stage', 'secAura'].map(id => document.getElementById(id)).concat([document.querySelector('.ctrl-row')]);
  const GROUP = { adv: '강림 스킬샷', col: '스킬샷' };
@@ -1818,7 +1821,7 @@ loadManifest();
   return c;
  }
  async function loadSkill(dr){
-  const tok = ++skTok; clearInterval(skTimer);
+  const tok = ++skTok; stopAll();
   const body = document.getElementById('skillBody'), note = document.getElementById('skillNote');
   document.getElementById('skillTitle').textContent = dr.name + ' · 스킬샷';
   body.innerHTML = ''; note.textContent = '불러오는 중…';
@@ -1846,10 +1849,21 @@ loadManifest();
    const actions = list.filter(f => /_action\d+$/.test(f.short)).sort((a, b) => +a.short.match(/\d+$/)[0] - +b.short.match(/\d+$/)[0]);
    sec.innerHTML = '<h3>' + (GROUP[k] || '기타') + '<small>' + list.length + '장</small></h3>';
    if(actions.length > 1){
+    // 자동 재생하지 않음 (번쩍임). [재생]을 눌렀을 때만 천천히 넘긴다
     const play = document.createElement('div'); play.className = 'sk-play checker-bg';
     const cvs = actions.map(f => frameCanvas(tex, f, 2));
-    play.appendChild(cvs[0]); sec.appendChild(play);
-    players.push({ play, cvs, i: 0 });
+    cvs.forEach((c, i) => { c.style.display = i ? 'none' : ''; play.appendChild(c); });
+    const bar = document.createElement('div'); bar.className = 'sk-bar';
+    const btn = document.createElement('button'); btn.type = 'button'; btn.textContent = '▶ 재생';
+    const st = { cvs, i: 0, t: null };
+    const show = i => { st.i = i; cvs.forEach((c, j) => { c.style.display = j === i ? '' : 'none'; }); };
+    btn.onclick = () => {
+     if(st.t){ clearInterval(st.t); st.t = null; btn.textContent = '▶ 재생'; return; }
+     btn.textContent = '■ 정지';
+     st.t = setInterval(() => show((st.i + 1) % cvs.length), 600);
+    };
+    players.push(st);
+    bar.appendChild(btn); sec.appendChild(play); sec.appendChild(bar);
    }
    const grid = document.createElement('div'); grid.className = 'sk-grid';
    list.forEach(f => {
@@ -1864,13 +1878,13 @@ loadManifest();
    });
    sec.appendChild(grid); body.appendChild(sec);
   });
-  if(players.length) skTimer = setInterval(() => players.forEach(p => { p.i = (p.i + 1) % p.cvs.length; p.play.replaceChildren(p.cvs[p.i]); }), 140);
+  skPlayers = players;
  }
  function setMode(m){
   MODE = m;
   pane.hidden = m !== 'skill';
   hideInSkill.forEach(el => { if(el) el.style.display = m === 'skill' ? 'none' : ''; });
-  if(m !== 'skill') clearInterval(skTimer);
+  if(m !== 'skill') stopAll();
   if(m === 'skill' && curDragon) loadSkill(curDragon);
   else if(m === 'aura' && curDragon) _load(curDragon);
  }

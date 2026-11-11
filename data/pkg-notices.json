@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-11-10",
+  "checkedAt": "2026-11-11",
   "source": "https://www.dragonvillage.net/notice",
-  "totalCount": 3961,
-  "scannedCount": 3961,
+  "totalCount": 3963,
+  "scannedCount": 3963,
   "scannedIds": [
     283,
     284,
@@ -3965,9 +3965,34 @@
     21452,
     21453,
     21454,
-    21455
+    21455,
+    21456,
+    21457
   ],
   "notices": [
+    {
+      "id": 21456,
+      "title": "[공지] (내용 추가)11월 11일(수) 업데이트 안내",
+      "date": "2026-11-10",
+      "url": "https://www.dragonvillage.net/notice/21456",
+      "events": [
+        {
+          "dragonId": 724,
+          "name": "말카르티스",
+          "start": "2026-11-14",
+          "end": "2026-11-27",
+          "noticeId": 21456
+        }
+      ],
+      "periods": [
+        {
+          "start": "2026-11-14",
+          "end": "2026-11-27",
+          "label": "신규 드래곤 말카르티스를 획득할 수 있는 패키지가 기간 한정으로 판매됩니다."
+        }
+      ],
+      "hasImages": true
+    },
     {
       "id": 21455,
       "title": "[안내] (품목 정정)유니버스 패키지 판매 안내",

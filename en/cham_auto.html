@@ -2330,6 +2330,7 @@ function bestAccNotOwned(){
   const owned=new Set(SPEC.accCards.map(a=>a.ko));
   let best=null,bv=-1;
   D.ACC.forEach(a=>{
+    if(owned.has(a.ko))return;
     const v=a.hp+a.atk+a.def;
     if(v>bv){bv=v;best=a;}
   });
@@ -2752,6 +2753,7 @@ if (!globalThis.DV1_DRAGON_VIEWS) throw new Error("드래곤 데이터 로드 �
 <script src="../my-shot-data.js"></script>
 <script src="../my-shot-engine.js"></script>
 <script src="../cham-spx-shot.js"></script>
+<script src="../cham-spec-sync.js"></script>
 <script>
 if (!globalThis.DV1_DRAGON_VIEWS) throw new Error("드래곤 데이터 로드 실패: 초기화 중단");
 

@@ -1874,8 +1874,10 @@ loadManifest();
     const P = { t: null };
     const bar = document.createElement('div'); bar.className = 'sk-bar';
     const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'btn';
-    const run = on => { clearInterval(P.t); P.t = on ? setInterval(() => draw(i + 1), 70) : null; btn.textContent = on ? '⏸ Pause' : '▶ Play'; };
+    const run = on => { if(on) players.forEach(q => { if(q !== P && q.stop) q.stop(); }); clearInterval(P.t); P.t = on ? setInterval(() => draw(i + 1), 70) : null; btn.textContent = on ? '⏸ Pause' : '▶ Play'; };
     btn.onclick = () => run(!P.t);
+    P.stop = () => run(false);
+    stage.style.cursor = 'pointer'; stage.title = 'Click to play / pause'; stage.onclick = () => run(!P.t);
     bar.appendChild(btn); sec.appendChild(bar);
     const det = document.createElement('details'); det.innerHTML = '<summary>Show frames</summary>';
     const grid = document.createElement('div'); grid.className = 'sk-grid';
@@ -1889,7 +1891,7 @@ loadManifest();
      grid.appendChild(card);
     });
     det.appendChild(grid); sec.appendChild(det); body.appendChild(sec);
-    draw(0); run(true); players.push(P);
+    players.push(P); draw(Math.floor(list.length / 2)); run(false);   // 자동 재생 없음: 고른 것만 재생
     return;
    }
    const actions = list.filter(f => /_action\d+$/.test(f.short)).sort((a, b) => +a.short.match(/\d+$/)[0] - +b.short.match(/\d+$/)[0]);

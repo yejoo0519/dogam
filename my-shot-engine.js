@@ -315,27 +315,44 @@
     }
     return opts;
   }
-  /* 정령 화면: 한 줄에 몇 칸만 찾혔으면(그림이 카드 테두리를 가린 경우) 같은 줄 나머지 칸도 정령인지 확인 */
+  /* 카드 위치가 조금 어긋나도(잘라낸 캡처 등) 주변을 조금씩 옮겨 보며 정령을 읽는다 */
+  function readSpiritNear(im, card) {
+    var k = card.k, D = [0, -4, 4, -8, 8, -12, 12, -16, 16];
+    for (var i = 0; i < D.length; i++) for (var j = 0; j < 5; j++) {
+      var c = { col: card.col, l: Math.round(card.l + D[i] * k), t: Math.round(card.t + D[j] * k), k: k, inferred: card.inferred };
+      var sp = readSpirit(im, c);
+      if (sp) return { card: c, opts: sp };
+    }
+    return null;
+  }
+  /* 정령 화면: 읽힌 카드로 칸 간격(가로 330)을 맞춰 격자를 다시 만들고, 칸마다 정령을 찾는다.
+     (그림이 카드 테두리를 가려 못 찾은 칸, 잘라낸 캡처에서 위치가 어긋난 칸까지) */
   function spiritCards(im, cards) {
-    if (!cards.length) return cards;
-    var k = cards[0].k, rows = [];
-    cards.forEach(function (c) { if (!rows.some(function (t) { return Math.abs(t - c.t) <= 6 * k; })) rows.push(c.t); });
-    var r = contentRect(im); if (!r) return cards;
-    var cx = (r.x0 + r.x1) / 2, out = cards.slice();
-    rows.forEach(function (t) {
-      for (var c = 0; c < 5; c++) {
-        if (out.some(function (o) { return o.col === c && Math.abs(o.t - t) <= 6 * k; })) continue;
-        var card = { col: c, l: Math.round(cx + k * (-805.5 + 330 * c)), t: t, k: k, inferred: true };
-        if (readSpirit(im, card)) out.push(card);
+    if (!cards.length) return [];
+    var k = cards[0].k, P = 330 * k, W = 291 * k;
+    var anchors = [];
+    cards.forEach(function (c) { var r = readSpiritNear(im, c); if (r) anchors.push(r.card); });
+    if (!anchors.length) return [];
+    var rows = [];
+    cards.concat(anchors).forEach(function (c) { if (!rows.some(function (t) { return Math.abs(t - c.t) <= 20 * k; })) rows.push(c.t); });
+    // 가로 기준점: 읽힌 카드들의 왼쪽 위치를 간격으로 나눈 나머지의 평균
+    var a0 = anchors[0].l, sum = 0;
+    anchors.forEach(function (c) { var d = c.l - a0; d -= Math.round(d / P) * P; sum += d; });
+    var base = a0 + sum / anchors.length; base -= Math.floor((base + W * 0.35) / P) * P;
+    var out = [];
+    rows.sort(function (x, y) { return x - y; }).forEach(function (t) {
+      for (var l = base, c = 0; l + W * 0.65 <= im.w; l += P, c++) {
+        var r = readSpiritNear(im, { col: c, l: Math.round(l), t: t, k: k, inferred: true });
+        if (r && !out.some(function (o) { return Math.abs(o.l - r.card.l) < P / 2 && Math.abs(o.t - r.card.t) < 100 * k; })) out.push(r.card);
       }
     });
-    out.sort(function (a, b) { return Math.abs(a.t - b.t) > 30 * a.k ? a.t - b.t : a.col - b.col; });
+    out.sort(function (x, y) { return Math.abs(x.t - y.t) > 30 * k ? x.t - y.t : x.l - y.l; });
     return out;
   }
 
   /* 한 장 해석 → 카드별 결과 */
   function analyze(im) {
-    var cards = findCards(im), spiritShot = cards.some(function (c) { return readSpirit(im, c); });
+    var cards = findCards(im), spiritShot = cards.some(function (c) { return readSpiritNear(im, c); });
     if (spiritShot) cards = spiritCards(im, cards);
     return cards.map(function (card) {
       var res = { card: card };

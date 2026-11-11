@@ -304,6 +304,20 @@ body.u{--panel:var(--bg2);--panel-2:var(--bg3);--line:var(--border);
   .col-main .btn-row::-webkit-scrollbar{display:none}
   .col-main .btn-row button,.ctrl .btn-row button{flex:1 0 auto;padding:6px 7px;font-size:12px;white-space:nowrap}
 }
+
+/* 스킬샷 탭 */
+#skillPane .sk-note{font-size:13px;color:var(--sub);margin:4px 0 12px;line-height:1.6}
+.sk-group{margin-bottom:22px}
+.sk-group h3{font-size:13px;font-weight:700;margin:0 0 10px;color:var(--text)}
+.sk-group h3 small{font-weight:500;color:var(--sub);margin-left:6px}
+.sk-play{display:flex;justify-content:center;align-items:center;min-height:180px;border:1px solid var(--line);border-radius:12px;margin-bottom:10px;background-color:var(--panel-2)}
+.sk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.sk-card{border:1px solid var(--line);border-radius:10px;padding:8px;text-align:center;background:var(--panel)}
+.sk-card .sk-cv{display:flex;align-items:center;justify-content:center;min-height:110px;border-radius:8px}
+.sk-card canvas,.sk-play canvas{max-width:100%;height:auto;image-rendering:auto}
+.sk-card .nm{font-size:11px;color:var(--sub);margin-top:6px;font-family:'IBM Plex Mono',monospace;word-break:break-all}
+.sk-card a{display:inline-block;margin-top:4px;font-size:11px;color:var(--accent-2);text-decoration:none}
+.checker-bg{background-image:linear-gradient(45deg,rgba(128,128,128,.18) 25%,transparent 25%),linear-gradient(-45deg,rgba(128,128,128,.18) 25%,transparent 25%),linear-gradient(45deg,transparent 75%,rgba(128,128,128,.18) 75%),linear-gradient(-45deg,transparent 75%,rgba(128,128,128,.18) 75%);background-size:16px 16px;background-position:0 0,0 8px,8px -8px,-8px 0}
 </style>
 <script src="./aura-layout.js?v=20261021-x1"></script>
 </head>
@@ -322,6 +336,14 @@ body.u{--panel:var(--bg2);--panel-2:var(--bg3);--line:var(--border);
  <canvas id="layerFront"></canvas>
  <button type="button" id="shotBtn" disabled>PNG 저장</button>
  <div id="stageMsg">아래에서 드래곤을 선택해 주세요</div>
+</div>
+
+<div id="skillPane" hidden>
+ <div class="section">
+  <h2 id="skillTitle">스킬샷</h2>
+  <div class="sk-note" id="skillNote">오른쪽에서 드래곤을 선택해 주세요.</div>
+  <div id="skillBody"></div>
+ </div>
 </div>
 
 <div class="section ctrl-row">
@@ -355,7 +377,7 @@ body.u{--panel:var(--bg2);--panel-2:var(--bg3);--line:var(--border);
 
 </div>
 
-<div class="section">
+<div class="section" id="secAura">
  <h2>오라</h2>
  <div class="btn-row" id="auraBtns"></div>
 </div>
@@ -1775,9 +1797,94 @@ loadManifest();
 </script>
 </main>
 </div>
+<script>
+/* ── 스킬샷 탭: dragon/<게임ID>/effect.plist + effect.png ── */
+(function(){
+ let MODE = 'aura', skTimer = null, skTok = 0;
+ const pane = document.getElementById('skillPane');
+ const hideInSkill = ['stage', 'secAura'].map(id => document.getElementById(id)).concat([document.querySelector('.ctrl-row')]);
+ const GROUP = { adv: '강림 스킬샷', col: '스킬샷' };
+ function groupOf(n){ const m = n.match(/^(adv|col)_/); return m ? m[1] : 'etc'; }
+ function frameCanvas(tex, f, scale){
+  const c = document.createElement('canvas');
+  c.width = f.ow * scale; c.height = f.oh * scale;
+  const g = c.getContext('2d');
+  const dx = (f.ow - f.w) / 2 + f.ox, dy = (f.oh - f.h) / 2 - f.oy;
+  g.scale(scale, scale);
+  if(f.rot){
+   g.save(); g.translate(dx, dy + f.h); g.rotate(-Math.PI / 2);
+   g.drawImage(tex, f.x, f.y, f.h, f.w, 0, 0, f.h, f.w); g.restore();
+  } else g.drawImage(tex, f.x, f.y, f.w, f.h, dx, dy, f.w, f.h);
+  return c;
+ }
+ async function loadSkill(dr){
+  const tok = ++skTok; clearInterval(skTimer);
+  const body = document.getElementById('skillBody'), note = document.getElementById('skillNote');
+  document.getElementById('skillTitle').textContent = dr.name + ' · 스킬샷';
+  body.innerHTML = ''; note.textContent = '불러오는 중…';
+  const base = ASSET_BASE + dr.asset + '/effect';
+  let frames, tex;
+  try{
+   const res = await fetch(base + '.plist');
+   if(!res.ok) throw new Error('none');
+   const [xml, img] = await Promise.all([res.text(), loadImg(base + '.png')]);
+   frames = plistFrames(xml); tex = img;
+  }catch(e){
+   if(tok === skTok) note.textContent = '이 드래곤은 스킬샷 에셋이 없어요.';
+   return;
+  }
+  if(tok !== skTok) return;
+  if(!frames.length){ note.textContent = '이 드래곤은 스킬샷 에셋이 없어요.'; return; }
+  frames.forEach(f => f.short = f.name.split('/').pop());
+  note.textContent = '게임 리소스(effect)에 들어 있는 스킬샷 이미지예요. 각 그림의 [PNG]로 저장할 수 있어요.';
+  const groups = {};
+  frames.forEach(f => (groups[groupOf(f.short)] = groups[groupOf(f.short)] || []).push(f));
+  const players = [];
+  ['adv', 'col', 'etc'].forEach(k => {
+   const list = groups[k]; if(!list) return;
+   const sec = document.createElement('div'); sec.className = 'sk-group';
+   const actions = list.filter(f => /_action\d+$/.test(f.short)).sort((a, b) => +a.short.match(/\d+$/)[0] - +b.short.match(/\d+$/)[0]);
+   sec.innerHTML = '<h3>' + (GROUP[k] || '기타') + '<small>' + list.length + '장</small></h3>';
+   if(actions.length > 1){
+    const play = document.createElement('div'); play.className = 'sk-play checker-bg';
+    const cvs = actions.map(f => frameCanvas(tex, f, 2));
+    play.appendChild(cvs[0]); sec.appendChild(play);
+    players.push({ play, cvs, i: 0 });
+   }
+   const grid = document.createElement('div'); grid.className = 'sk-grid';
+   list.forEach(f => {
+    const card = document.createElement('div'); card.className = 'sk-card';
+    const wrap = document.createElement('div'); wrap.className = 'sk-cv checker-bg';
+    const c = frameCanvas(tex, f, 1); wrap.appendChild(c);
+    const a = document.createElement('a'); a.textContent = 'PNG'; a.href = '#';
+    a.onclick = ev => { ev.preventDefault(); const big = frameCanvas(tex, f, 2); const l = document.createElement('a'); l.download = (dr.name + '_' + f.short).replace(/[\\/:*?"<>|\s]+/g, '_') + '.png'; l.href = big.toDataURL('image/png'); l.click(); };
+    card.appendChild(wrap);
+    card.insertAdjacentHTML('beforeend', '<div class="nm">' + f.short + '</div>');
+    card.appendChild(a); grid.appendChild(card);
+   });
+   sec.appendChild(grid); body.appendChild(sec);
+  });
+  if(players.length) skTimer = setInterval(() => players.forEach(p => { p.i = (p.i + 1) % p.cvs.length; p.play.replaceChildren(p.cvs[p.i]); }), 140);
+ }
+ function setMode(m){
+  MODE = m;
+  pane.hidden = m !== 'skill';
+  hideInSkill.forEach(el => { if(el) el.style.display = m === 'skill' ? 'none' : ''; });
+  if(m !== 'skill') clearInterval(skTimer);
+  if(m === 'skill' && curDragon) loadSkill(curDragon);
+  else if(m === 'aura' && curDragon) _load(curDragon);
+ }
+ const _load = loadDragon;
+ loadDragon = function(dr){
+  if(MODE === 'skill'){ curDragon = dr; return loadSkill(dr); }
+  return _load.apply(this, arguments);
+ };
+ window.AuraSkillMode = setMode;
+})();
+</script>
 <script src="./ui.js"></script>
 <script>
 if (!globalThis.DV1_DRAGON_VIEWS) throw new Error("드래곤 데이터 로드 실패: 초기화 중단");
-UI.shell({page:'aura-preview',title:'오라 미리보기',sub:'드래곤 오라 이펙트 모음'});</script>
+UI.shell({page:'aura-preview',title:'오라 미리보기',sub:'드래곤 오라 · 스킬샷 이펙트 모음',tasks:{on:'aura',items:[['aura','오라'],['skill','스킬샷']],go:function(k){AuraSkillMode(k);}}});</script>
 </body>
 </html>

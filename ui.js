@@ -48,7 +48,7 @@
       ['sss',     EN ? 'SSS ranking'  : 'SSS 랭킹',    'sss.html'],
       ['cham',    EN ? 'Champ ranking': '챔대 랭킹',    'cham.html'],
       ['pkg',     EN ? 'Packages'     : '패키지 복각',  'pkg.html'],
-      ...(!EN ? [['item', '아이템 모음', 'item.html']] : [])
+      ...(!EN ? [['item', '아이템 모음', 'item.html'], ['raid_reward', '레이드 보상 정리', 'raid_reward.html']] : [])
     ] },
     { g: T.g_calc, items: [
       ['calculator',  EN ? 'Spirit calc'  : '정령 계산/배분', 'calculator.html'],

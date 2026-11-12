@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>레이드 보상 정리</title>
+<link id="theme-css" rel="stylesheet" href="./theme-dark.css">
+<link rel="stylesheet" href="./ui.css">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="./theme.js"></script>
+<style>
+/* ── 페이지 전용 ── */
+.pick{position:sticky;top:var(--pick-top,0px);z-index:30;background:var(--bg);padding:10px 0 12px;margin-bottom:6px;border-bottom:1px solid var(--bd)}
+.g-row{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+.g{display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:9px 11px;border:1px solid var(--bd2);border-radius:8px;background:var(--sf);color:var(--dim);text-align:left;min-width:0}
+.g b{font-size:13.5px;font-weight:700;color:var(--text2);white-space:nowrap}
+.g span{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;font-family:var(--u-mono)}
+.g:hover b{color:var(--text)}
+.g.on{border-color:var(--gold);background:var(--accent-bg)}
+.g.on b,.g.on span{color:var(--gold)}
+.d-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.d-row .u-chip{padding:6px 11px;font-size:12.5px}
+#detail .u-sec:first-child{margin-top:12px}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.head .nm{font-size:20px;font-weight:700;letter-spacing:-.015em}
+.head .meta{font-size:12px;color:var(--dim);margin-top:2px}
+.head .ap{text-align:right}
+.head .ap .k{font-size:11px;letter-spacing:.1em;color:var(--dimmer);font-weight:600}
+.head .ap .v{font-family:var(--u-mono);font-size:19px;font-weight:600}
+
+.keys{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:6px;margin-top:12px}
+.key{display:flex;align-items:center;gap:10px;padding:7px 12px 7px 8px;border:1px solid var(--accent-border);border-radius:var(--u-r);background:var(--accent-bg)}
+.ki{position:relative;flex:0 0 34px;width:34px;height:34px;display:flex;align-items:center;justify-content:center}
+.ki img{width:34px;height:34px;object-fit:contain}
+.ki em{position:absolute;right:-4px;bottom:-2px;font-style:normal;font-family:var(--u-mono);font-size:9.5px;font-weight:700;background:var(--gold);color:var(--bg);border-radius:3px;padding:0 4px;line-height:14px}
+.kb{flex:1;min-width:0}
+.key .t{font-size:13px;font-weight:600;color:var(--text2);line-height:1.35}
+.key .e{font-size:11px;color:var(--dim);line-height:1.35}
+.key .p{font-family:var(--u-mono);font-size:17px;font-weight:600;color:var(--gold);white-space:nowrap}
+
+.hl{display:flex;gap:12px;align-items:center}
+.hegg{width:44px;height:44px;object-fit:contain;border-radius:8px;background:var(--sf2);padding:3px}
+.dc{display:inline-flex;align-items:center;gap:5px;justify-content:flex-end}
+.dc img{width:22px;height:22px;object-fit:contain}
+.mi{display:inline-flex;align-items:center;gap:8px}
+.mi img{width:24px;height:24px;object-fit:contain}
+.d-row .u-chip{display:inline-flex;align-items:center;gap:5px}
+.d-row .u-chip img{width:20px;height:20px;object-fit:contain;margin:-3px 0}
+.d-row .u-chip.cr::before{display:none}
+.all .ii{position:relative;flex:0 0 30px;width:30px;height:30px;display:inline-flex;align-items:center;justify-content:center}
+.all .ii img{width:30px;height:30px;object-fit:contain}
+.all .ii em{position:absolute;right:-5px;bottom:-3px;font-style:normal;font-family:var(--u-mono);font-size:9.5px;font-weight:700;background:var(--gold);color:var(--bg);border-radius:3px;padding:0 3px;line-height:13px}
+.all .mi{gap:10px}
+.all tr.exr td{background:var(--accent-bg)}
+.all tr.exr:hover td{background:var(--accent-bg)}
+.dream td.l b{font-weight:700}
+.dream .hpv{color:var(--dim);font-size:12px;margin-left:4px}
+.dream td.up{font-weight:600}
+.dream td.up::after{content:"▲";font-size:9px;color:var(--gold);margin-left:3px;vertical-align:1px}
+.bar{height:6px;border-radius:99px;background:var(--gold);opacity:.75;min-width:2px}
+
+
+@media (max-width:860px){
+  .g-row{display:flex;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:0 16px}
+  .g-row::-webkit-scrollbar,.d-row::-webkit-scrollbar{display:none}
+  .g{flex:0 0 auto}
+  .d-row{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:8px -16px 0;padding:0 16px}
+  .d-row .u-chip{flex:0 0 auto;padding:8px 12px;font-size:13px}
+}
+@media (max-width:760px){
+  .u-tabs{margin:4px 0 10px}
+  .u-tbl{font-size:13px}
+  .u-tbl th,.u-tbl td{padding:9px 6px}
+  .head .nm{font-size:18px}
+  .keys{grid-template-columns:1fr}
+  .dream .hpv{display:block;margin-left:0;font-size:11px}
+  .dream td{font-size:12px}
+  .all .u-badge{font-size:9.5px;padding:1px 4px;margin-left:4px}
+  .all .ii,.all .ii img{width:26px;height:26px;flex-basis:26px}
+  .dc{gap:3px}
+  .dc img{width:16px;height:16px}
+  .hegg{width:44px;height:44px}
+  .dream td.up::after{font-size:8px;margin-left:1px}
+  .head{flex-direction:column;align-items:flex-start;gap:6px}
+  .head .ap{text-align:left;display:flex;gap:8px;align-items:baseline}
+  .head .ap .v{font-size:18px}
+}
+</style>
+</head>
+<body class="u">
+<div class="u-app">
+<main class="u-wrap">
+  <div class="u-page-t">
+    <h1>레이드 보상 정리</h1>
+    <span class="s">일반 · 로키 · 길드 레이드 · 공지 #21461 (26.11.12)</span>
+  </div>
+
+  <nav class="u-tabs">
+    <button class="u-tab on" data-v="dragon">드래곤별 보상</button>
+    <button class="u-tab" data-v="appear">등장 확률</button>
+    <button class="u-tab" data-v="rule">발견 · 보상 개수</button>
+  </nav>
+
+  <!-- 드래곤별 -->
+  <section id="v-dragon">
+    <div class="pick">
+      <div class="g-row" id="gRow"></div>
+      <div class="d-row" id="dRow"></div>
+    </div>
+    <div id="detail"></div>
+  </section>
+
+  <!-- 등장 확률 -->
+  <section id="v-appear" class="u-hide">
+    <div class="u-sec"><div class="u-sec-hd">일반 레이드 등장 확률<span class="s">39종</span></div>
+      <div class="u-sec-bd"><div class="u-tbl-wrap"><table class="u-tbl" id="t-gen"></table></div>
+      <div class="u-note" style="margin-top:8px">표시값 합계는 반올림 때문에 100.0004%</div></div></div>
+    <div class="u-sec"><div class="u-sec-hd">길드 레이드 등장 확률<span class="s">5종</span></div>
+      <div class="u-sec-bd"><div class="u-tbl-wrap"><table class="u-tbl" id="t-guild"></table></div>
+      <div class="u-note" style="margin-top:8px">표시값 합계는 반올림 때문에 99.9999%</div></div></div>
+  </section>
+
+  <!-- 규칙 -->
+  <section id="v-rule" class="u-hide">
+    <div class="u-sec"><div class="u-sec-hd">일반 레이드 발견 확률</div><div class="u-sec-bd">
+      <table class="u-tbl"><thead><tr><th class="l">조건</th><th>발견 확률</th></tr></thead><tbody>
+      <tr><td class="l">기본</td><td class="u-num">0.1%</td></tr>
+      <tr><td class="l">레이드 프리미엄 구매 시</td><td class="u-num">0.2%</td></tr></tbody></table></div></div>
+    <div class="u-sec"><div class="u-sec-hd">일반 레이드 보상 개수</div><div class="u-sec-bd">
+      <table class="u-tbl"><thead><tr><th class="l">조건</th><th>보상</th></tr></thead><tbody>
+      <tr><td class="l">기여도 1,000점 이상</td><td>기본 1개</td></tr>
+      <tr><td class="l">내가 시작한 레이드</td><td>+1개</td></tr>
+      <tr><td class="l">기여도 1위</td><td>+1개</td></tr>
+      <tr><td class="l">순위 1위</td><td>+3개</td></tr>
+      <tr><td class="l">순위 2위</td><td>+2개</td></tr>
+      <tr><td class="l">순위 3위</td><td>+1개</td></tr></tbody></table>
+      <div class="u-note" style="margin-top:10px">충족한 조건은 전부 합산. 기여도 1,000↑ + 내가 시작 + 기여도 1위 + 순위 1위 = <b style="color:var(--gold)">6개</b> (최대)</div></div></div>
+    <div class="u-sec"><div class="u-sec-hd">유의사항</div><div class="u-sec-bd u-note">
+      · 보상은 매번 독립적으로 추첨되며 특정 보상이 보장되지 않음<br>
+      · 꿈의 장비 확률은 공통 보상과 전용 보상을 합친 실제 확률 (반올림 전 값 기준이라 ±0.0001 차이 가능)<br>
+      · "평균 N회"는 1 ÷ 확률로 계산한 참고값 (보상 1개 = 1회)</div></div>
+  </section>
+</main>
+</div>
+
+<script>
+// ---------- 데이터 (공지 #21461) ----------
+const POT=["공격력물약6","체력물약6","방어력물약6","크리물약6","회피물약6"];
+function mkCommon(lv5,lv10,h5,h10,lm3,lm6,pot,d29,d30,d31,d32,ham,a33,d33,h132){
+  return {misc:[["Lv + 1",5,lv5],["Lv + 1",10,lv10],["치료제",5,h5],["치료제",10,h10],["Lv - 1",3,lm3],["Lv - 1",6,lm6],
+    ...POT.map(p=>[p,3,pot]),["강철의 망치",1,ham]],
+    dream:{29:[d29,d29,d29],30:[d30,d30,d30],31:[d31,d31,d31],32:[d32,d32,d32],33:[a33,d33,h132]}};
+}
+const C_STD=mkCommon(11.404,1.14,5.7,0.57,2.85,0.285,2.4,4.8,3.8,3.0,2.2,1.0,1.0,1.0,1.65);
+const C_LOKI=mkCommon(12.6713,1.2667,6.3334,0.6333,3.1667,0.3167,2.6667,5.3334,4.2223,3.3334,2.4445,1.1111,1.1111,1.1111,1.8334);
+const C_ALE=mkCommon(11.4041,1.14,5.7001,0.57,2.85,0.285,2.4,4.8,3.8,3.0,2.2,1.0,1.0,1.0,1.65);
+const tri=v=>[v,v,v];
+const EX={
+ A:{split:"공통 79.999% · 전용 20.001%",common:C_STD,key:[["해당 드래곤의 알",0.501,"","egg"]],
+    dream:{29:tri(7.3),30:tri(5.7),31:tri(4.3),32:tri(2.85),34:tri(0.15)}},
+ B:{split:"공통 79.999% · 전용 20.001%",common:C_STD,key:[["해당 드래곤의 알 C",10.15,"","egg","C"],["해당 드래곤의 알 B",4.0,"","egg","B"],["해당 드래곤의 알 A",1.5,"","egg","A"]],
+    dream:{33:[2.0,2.0,2.65],34:[0.451,0.45,0.45]}},
+ C:{split:"공통 79.999% · 전용 20.001%",common:C_STD,key:[["해당 드래곤의 알 소환서",10.0,"","scroll"],["해당 드래곤의 알",0.25,"","egg"],["해당 크로마 드래곤의 알",0.001,"","chroma"]],
+    dream:{29:tri(5.44),30:tri(4.28),31:tri(3.32),32:tri(2.36),33:[2.0,2.0,2.65],34:tri(0.65)}},
+ D:{split:"공통 79.999% · 전용 20.001%",common:C_STD,key:[["해당 드래곤의 알 소환서",14.051,"크로마 아닌 일반 드래곤 소환서","scroll"],["해당 크로마 드래곤의 알",1.0,"","chroma"]],
+    dream:{33:[2.0,2.0,2.65],34:tri(0.65)}},
+ LOKI:{split:"공통 88.8888% · 전용 11.1112% (별도 확률표)",common:C_LOKI,key:[["해당 드래곤의 알",0.2778,"","egg"]],
+    dream:{29:tri(6.0445),30:tri(4.7556),31:tri(3.6889),32:tri(2.6223),33:[2.2222,2.2222,2.9445],34:tri(0.7222)}},
+ ALE:{split:"공통 79.9998% · 전용 20.0002% (별도 확률표)",common:C_ALE,key:[["해당 드래곤의 알",0.2,"","egg"]],
+    dream:{29:tri(7.3001),30:tri(5.7001),31:tri(4.3),32:tri(2.85),34:tri(0.25)}}
+};
+const CR=["리치몬드","레굴루스","벨레드","블루썬더","베타라","불나래","옥타","프로텍트 드래곤","리티오","스카투스","아카이아","루루","크툴루","오파님"];
+const GEN=[["블랙홀 드래곤",8.5409,"C"],["리치몬드",4.2705,"C"],["펜리르",4.2705,"B"],["레굴루스",4.2705,"C"],["벨레드",4.2705,"C"],["카모플라쥬",4.2705,"B"],["블루썬더",4.2705,"C"],["베타라",4.2705,"C"],["불나래",4.2705,"C"],["옥타",4.2705,"C"],["프로텍트 드래곤",4.2705,"C"],["리티오",4.2705,"C"],["스카투스",4.2705,"C"],["아카이아",4.2705,"C"],["루루",4.2705,"C"],["크툴루",4.2705,"C"],["오파님",4.2705,"C"],["지바타르",4.0671,"B"],["포포모",3.241,"A"],["테디 드래곤",3.241,"A"],["움브라",3.241,"A"],["엘리고스",3.241,"A"],["파프니르",2.847,"B"],["로키",2.847,"LOKI"],
+ ["크로마 블랙홀 드래곤",0.0508,"D"],...CR.map(n=>["크로마 "+n,0.0254,"D"])];
+const GUILD=[["엔젤주니어",24.8756,"A"],["템페스트",24.8756,"B"],["선셋",24.8756,"B"],["알레샤",24.8756,"ALE"],["크로마 알레샤",0.4975,"ALE"]];
+// ---------- 이미지 (저장소 경로: assets/items/*.webp, dragon/{id}/profile/1.png = 알) ----------
+const IMG_BASE="./";            // 사이트에 올릴 때 경로 기준
+const IMG_DATA={};
+const img=p=>IMG_DATA[p]||IMG_BASE+p;
+const ITEM=c=>`assets/items/${c}.webp`;
+const DID={"블랙홀 드래곤":717,"크로마 블랙홀 드래곤":718,"리치몬드":497,"크로마 리치몬드":498,"펜리르":507,"레굴루스":517,"크로마 레굴루스":518,"벨레드":470,"크로마 벨레드":574,"카모플라쥬":472,"블루썬더":594,"크로마 블루썬더":595,"베타라":601,"크로마 베타라":602,"불나래":613,"크로마 불나래":614,"옥타":620,"크로마 옥타":621,"프로텍트 드래곤":633,"크로마 프로텍트 드래곤":634,"리티오":644,"크로마 리티오":645,"스카투스":653,"크로마 스카투스":654,"아카이아":672,"크로마 아카이아":673,"루루":694,"크로마 루루":695,"크툴루":703,"크로마 크툴루":704,"오파님":710,"크로마 오파님":711,"지바타르":525,"포포모":274,"테디 드래곤":275,"움브라":347,"엘리고스":473,"파프니르":656,"로키":655,"엔젤주니어":432,"템페스트":464,"선셋":465,"알레샤":648,"크로마 알레샤":649};
+const EGG=n=>DID[n]?`dragon/${DID[n]}/profile/1.png`:null;
+// 알 소환서 아이콘 코드 (item-data.js 기준)
+const SCROLL={"블랙홀 드래곤":1462,"리치몬드":972,"레굴루스":1042,"벨레드":1156,"블루썬더":1208,"베타라":1222,"불나래":1235,"옥타":1254,"프로텍트 드래곤":1291,"리티오":1339,"스카투스":1357,"아카이아":1392,"루루":1420,"크툴루":1440,"오파님":1469};
+const MISC_ICON={"Lv + 1":17,"치료제":16,"Lv - 1":40,"공격력물약6":637,"체력물약6":638,"방어력물약6":639,"크리물약6":640,"회피물약6":641,"강철의 망치":580};
+// 꿈의 장비 아이콘 [공,방,체]: +29~30 / +31~33 / +34
+const DREAM_ICON=t=>t<=30?[499,510,521]:t<=33?[502,513,524]:[505,516,527];
+const base=n=>n.replace(/^크로마 /,"");
+function keyImg(k,name){
+  const t=k[3];
+  if(t==="egg")return EGG(name);
+  if(t==="chroma")return EGG(name.startsWith("크로마 ")?name:"크로마 "+name);
+  if(t==="scroll"){const c=SCROLL[base(name)];return c?ITEM(c):EGG(base(name));}  // 소환서 이미지 없으면 알 이미지 + 표시
+  return null;
+}
+const GLABEL={A:"A그룹",B:"B그룹",C:"C그룹",D:"D그룹",LOKI:"로키",ALE:"알레샤"};
+// 선택 그룹: [id, 라벨, 힌트, raid, 필터]
+const GROUPS=[
+ ["A","일반 A","알 0.501%","gen",d=>d[2]==="A"],
+ ["B","일반 B","알C 10.15%","gen",d=>d[2]==="B"],
+ ["C","일반 C","소환서 10%","gen",d=>d[2]==="C"],
+ ["D","크로마","크로마알 1%","gen",d=>d[2]==="D"],
+ ["LOKI","로키","알 0.2778%","gen",d=>d[2]==="LOKI"],
+ ["G","길드","5종","guild",()=>true]];
+// ---------- 유틸 ----------
+const f=v=>(+v.toFixed(4)).toString()+"%";
+const avg=p=>{const n=100/p;return n>=1000?Math.round(n).toLocaleString()+"회":n>=10?Math.round(n)+"회":n.toFixed(1)+"회"};
+const $=s=>document.querySelector(s);
+const listOf=r=>r==="gen"?GEN:GUILD;
+
+// ---------- 선택 ----------
+let cur={g:"C",raid:"gen",name:"블랙홀 드래곤"};
+function setCur(raid,name){
+  const d=listOf(raid).find(x=>x[0]===name);
+  cur={g:raid==="guild"?"G":d[2],raid,name};drawPicker();detail();
+}
+function drawPicker(){
+  $("#gRow").innerHTML=GROUPS.map(g=>`<button class="g${cur.g===g[0]?" on":""}" data-g="${g[0]}"><b>${g[1]}</b><span>${g[2]}</span></button>`).join("");
+  const G=GROUPS.find(g=>g[0]===cur.g);
+  const items=listOf(G[3]).filter(G[4]);
+  $("#dRow").innerHTML=items.map(d=>`<button class="u-chip${d[0].startsWith("크로마")?" cr":""}${cur.name===d[0]?" on":""}" data-n="${d[0]}">${EGG(d[0])?`<img src="${img(EGG(d[0]))}" alt="">`:""}${G[0]==="D"?d[0].replace("크로마 ",""):d[0]}</button>`).join("");
+  $("#gRow").querySelectorAll(".g").forEach(b=>b.onclick=()=>{
+    const g=GROUPS.find(x=>x[0]===b.dataset.g);if(g[0]===cur.g)return;
+    setCur(g[3],listOf(g[3]).filter(g[4])[0][0]);});
+  $("#dRow").querySelectorAll(".u-chip").forEach(b=>b.onclick=()=>setCur(G[3],b.dataset.n));
+  const on=$("#dRow .on");if(on)on.scrollIntoView({block:"nearest",inline:"nearest"});
+}
+
+// ---------- 상세 ----------
+function detail(){
+  const d=listOf(cur.raid).find(x=>x[0]===cur.name);const g=EX[d[2]];
+  const raidName=cur.raid==="gen"?"일반 레이드":"길드 레이드";
+  let h=`<div class="u-sec"><div class="u-sec-bd">
+    <div class="head"><div class="hl">${EGG(d[0])?`<img class="hegg" src="${img(EGG(d[0]))}" alt="">`:""}<div><div class="nm">${d[0]}</div><div class="meta">${raidName} · ${GLABEL[d[2]]} · ${g.split}</div></div></div>
+    <div class="ap"><div class="k">등장 확률</div><div class="v">${f(d[1])}</div></div></div>
+    <div class="keys">`+g.key.map(k=>{const im=keyImg(k,d[0]);return `<div class="key"><div class="ki">${im?`<img src="${img(im)}" alt="">`:""}${k[4]?`<em>${k[4]}</em>`:""}</div><div class="kb"><div class="t">${k[0].replace("해당 ","")}</div><div class="e">평균 ${avg(k[1])}에 1번${k[2]?` · ${k[2]}`:""}</div></div><div class="p">${f(k[1])}</div></div>`}).join("")+`</div></div></div>`;
+
+  // ── 전체 아이템 목록 (확률 높은 순) ──
+  const B=base(d[0]),all=[];
+  g.key.forEach(k=>{
+    const nm=k[3]==="scroll"?`알 소환서(${B})`:k[3]==="chroma"?`크로마 ${B}의 알`:`${d[0]}의 알${k[4]?" "+k[4]:""}`;
+    all.push({nm,q:1,p:k[1],im:keyImg(k,d[0]),tag:"ex",em:k[4]||""});
+  });
+  const SN=["공격","방어","체력"],SC=["u-atk","u-def","u-hp"],LV={29:[29,116],30:[30,120],31:[31,124],32:[32,128],33:[33,132],34:[34,136]};
+  [29,30,31,32,33,34].forEach(t=>{
+    const ex=g.dream[t],cm=g.common.dream[t],v=ex||cm;if(!v)return;
+    v.forEach((x,i)=>all.push({nm:`꿈의 ${SN[i]} +${i===2?LV[t][1]:LV[t][0]}`,cls:SC[i],q:1,p:x,im:ITEM(DREAM_ICON(t)[i]),tag:ex&&cm?"up":ex?"ex":""}));
+  });
+  g.common.misc.forEach(m=>all.push({nm:m[0],q:m[1],p:m[2],im:ITEM(MISC_ICON[m[0]]),tag:""}));
+  all.sort((a,b)=>a.p-b.p);
+  const sum=all.reduce((a,x)=>a+x.p,0);
+  h+=`<div class="u-sec"><div class="u-sec-hd">등장하는 모든 아이템<span class="s">${all.length}종 · 합계 ${(+sum.toFixed(4))}%</span></div><div class="u-sec-bd">
+    <div class="u-tbl-wrap"><table class="u-tbl all"><thead><tr><th class="l">아이템</th><th>수량</th><th>확률</th></tr></thead><tbody>`+
+    all.map(x=>`<tr${x.tag==="ex"?' class="exr"':""}><td class="l"><span class="mi"><span class="ii">${x.im?`<img src="${img(x.im)}" alt="">`:""}${x.em?`<em>${x.em}</em>`:""}</span><span class="${x.cls||""}">${x.nm}</span>${x.tag==="ex"?'<span class="u-badge gold">전용</span>':x.tag==="up"?'<span class="u-badge">공통+전용</span>':""}</span></td><td class="u-num">×${x.q}</td><td class="u-num">${f(x.p)}</td></tr>`).join("")+
+    `</tbody></table></div>
+    <div class="u-note" style="margin-top:8px">확률 낮은 순 · <span class="u-badge gold" style="margin:0">전용</span> 이 레이드 전용 보상 · <span class="u-badge" style="margin:0">공통+전용</span> 공통·전용 양쪽에 있어 합산된 확률</div></div></div>`;
+
+  const lbl={29:[29,116],30:[30,120],31:[31,124],32:[32,128],33:[33,132],34:[34,136]};
+  let rows="",tot=0;
+  [29,30,31,32,33,34].forEach(t=>{
+    const ex=g.dream[t],v=ex||g.common.dream[t];if(!v)return;
+    tot+=v[0]+v[1]+v[2];
+    const c=ex&&g.common.dream[t]?" up":"";
+    rows+=`<tr><td class="l"><b>+${lbl[t][0]}</b> <span class="hpv">/ 체 +${lbl[t][1]}</span>${t===34?'<span class="u-badge gold">전용</span>':""}</td>`+
+      v.map((x,i)=>`<td class="u-num${c}"><span class="dc"><img src="${img(ITEM(DREAM_ICON(t)[i]))}" alt="">${f(x)}</span></td>`).join("")+`</tr>`;
+  });
+  h+=`<div class="u-sec"><div class="u-sec-hd">꿈의 장비<span class="s">공통+전용 합산 · 합계 ${tot.toFixed(2)}%</span></div><div class="u-sec-bd">
+    <div class="u-tbl-wrap"><table class="u-tbl dream"><thead><tr><th class="l">단계</th><th class="u-atk">공격</th><th class="u-def">방어</th><th class="u-hp">체력</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <div class="u-note" style="margin-top:8px"><span style="color:var(--gold)">▲</span> 전용 보상으로 확률이 올라간 칸</div></div></div>`;
+
+  $("#detail").innerHTML=h;
+}
+
+// ---------- 등장 확률 ----------
+function appear(sel,list,raid){
+  const max=Math.max(...list.map(x=>x[1]));
+  $(sel).innerHTML=`<thead><tr><th class="l">드래곤</th><th class="l">그룹</th><th>확률</th><th style="width:28%"></th></tr></thead><tbody>`+
+   list.map(d=>`<tr data-r="${raid}" data-n="${d[0]}" style="cursor:pointer"><td class="l"><span class="mi"><img src="${img(EGG(d[0]))}" alt="">${d[0]}</span></td><td class="l" style="color:var(--dim);font-size:12px">${GLABEL[d[2]]}</td><td class="u-num">${f(d[1])}</td><td><div class="bar" style="width:${Math.max(2,d[1]/max*100)}%"></div></td></tr>`).join("")+`</tbody>`;
+  $(sel).querySelectorAll("tr[data-n]").forEach(tr=>tr.onclick=()=>{setCur(tr.dataset.r,tr.dataset.n);show("dragon");scrollTo(0,0);});
+}
+
+// ---------- 탭 ----------
+function show(v){document.querySelectorAll(".u-tab").forEach(t=>t.classList.toggle("on",t.dataset.v===v));["dragon","appear","rule"].forEach(x=>$("#v-"+x).classList.toggle("u-hide",x!==v));}
+document.querySelectorAll(".u-tab").forEach(t=>t.onclick=()=>show(t.dataset.v));
+
+drawPicker();detail();appear("#t-gen",GEN,"gen");appear("#t-guild",GUILD,"guild");
+
+// 모바일 상단바 아래에 선택 바 고정
+function pickTop(){const tb=document.querySelector(".u-topbar");const h=tb&&getComputedStyle(tb).display!=="none"?tb.offsetHeight:0;document.documentElement.style.setProperty("--pick-top",h+"px");}
+addEventListener("resize",pickTop);
+</script>
+<script src="./ui.js"></script>
+<script>UI.shell({page:'raid_reward',title:'레이드 보상 정리',sub:'공지 #21461 · 26.11.12'});pickTop();</script>
+</body>
+</html>

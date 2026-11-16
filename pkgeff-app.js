@@ -1,7 +1,7 @@
 (function(root){
   'use strict';
   const GENERIC=/다이아|골드|Lv|레벨업|부화기|정수|보석|결정|망치|합성석|꿈의 (공격|방어|체력)|강림|뽑기권|얼음 조각|사탕|물약|정기|치료제|스톤|해제권|뿔|장식|정령|토벌권|티켓|루비|확정권|변환권|스크롤|수정/;
-  const DEFAULT_RATES={shop:{dia:22,gold:30},market:{dia:8,gold:7.43}},DEFAULT_EVT=12.22;
+  const DEFAULT_RATES={shop:{dia:22,gold:30},market:{dia:8,gold:7.43}},DEFAULT_EVT=12;
   // 같은 드래곤은 표기(알/드래곤 알/의 알)가 달라도 하나의 시세 키로 묶는다.
   function eggKey(name){
     return name.replace(/\(알\)/g,'').replace(/\s*드래곤의?\s*알$/,'').replace(/의\s*알$/,'').replace(/\s*알$/,'').replace(/\s+/g,' ').trim().replace(/^블랙 아머$/,'블랙아머');
@@ -54,7 +54,7 @@
       }
       if(saved.basis==='shop'||saved.basis==='market') state.basis=saved.basis;
       for(const k of ['shop','market']) for(const f of ['dia','gold']){const v=Number(saved.rates?.[k]?.[f]);if(v>=0&&Number.isFinite(v)) state.rates[k][f]=v;}
-      if(num(saved.evt)) state.evt=num(saved.evt);
+      if(num(saved.evt)&&num(saved.evt)!==12.22) state.evt=num(saved.evt);
       for(const [k,v] of Object.entries(saved.eggs||{})) if(num(v)) state.eggs[k]=num(v);
       for(const [k,p] of Object.entries(saved.prices||{})) if(num(p?.v)) state.prices[k]={v:num(p.v),u:unit(p.u)};
       if(Array.isArray(saved.custom)) state.custom=saved.custom.filter(p=>p&&typeof p.name==='string'&&num(p.price)&&Array.isArray(p.items)).map(p=>({

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>패키지 효율 · 드래곤빌리지1 도감</title>
+  <meta name="robots" content="noindex">
+  <meta name="description" content="드래곤빌리지 패키지 가격과 구성품을 기준 단가와 알 시세로 환산해 이득%를 계산합니다">
+  <link id="theme-css" rel="stylesheet" href="./theme-dark.css">
+  <script src="./theme.js"></script>
+  <link rel="stylesheet" href="./ui.css">
+  <link rel="stylesheet" href="./pkg.css">
+  <link rel="stylesheet" href="./pkgeff.css">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="u">
+  <div class="u-app">
+    <main class="u-wrap full">
+      <div class="pkg-wrap" id="pkgeffRoot" hidden>
+        <header class="pkg-heading">
+          <div><p class="pkg-eyebrow">PACKAGE VALUE</p><h1>패키지 효율</h1><p class="pkg-sub">구성품을 원화로 환산해, 가격 대비 이득을 살펴보세요.</p></div>
+          <a class="pkg-button" href="./pkg.html">패키지 복각 →</a>
+        </header>
+        <div id="syncStatus" class="pkg-sync" aria-live="polite">패키지 기록을 불러오는 중…</div>
+        <section class="pkg-content pe-base" aria-label="환산 기준">
+          <div class="pkg-chips" id="basis" aria-label="기준 단가 선택">
+            <button data-basis="shop" class="on" aria-pressed="true">상점 충전 기준</button>
+            <button data-basis="market" aria-pressed="false">유저 거래 시세 기준</button>
+          </div>
+          <label class="pe-field">다이아 1개 <input id="rateDia" type="number" min="0" step="0.01" inputmode="decimal"> 원</label>
+          <label class="pe-field">황금 다이아 1개 <input id="rateGold" type="number" min="0" step="0.01" inputmode="decimal"> 원</label>
+          <button id="resetEggs" class="pkg-button" type="button">알 시세 초기화</button>
+        </section>
+        <section class="pkg-content">
+          <div class="pkg-filters">
+            <label class="pkg-search"><span class="pkg-sr">패키지 또는 드래곤 검색</span><input id="query" type="search" placeholder="패키지 · 드래곤 검색" autocomplete="off"></label>
+            <label class="pkg-sort">정렬 <select id="sort"><option value="recent" selected>최근 공지순</option><option value="pct">이득% 높은순</option><option value="price">가격 낮은순</option></select></label>
+            <label class="pe-check"><input id="onlyEgg" type="checkbox"> 알 시세 입력한 것만</label>
+            <span id="resultCount" class="pkg-muted" aria-live="polite"></span>
+          </div>
+          <div id="results"><div class="pkg-empty">기록을 불러오는 중입니다.</div></div>
+        </section>
+        <p class="pkg-note">이득%는 (다이아·황금 다이아 환산액 + 입력한 알 시세) ÷ 패키지 가격입니다. 레벨업·부화기·정수 등 나머지 구성품은 아직 환산에 포함하지 않습니다. 알 시세는 같은 드래곤이면 모든 회차에 함께 적용되며, 이 기기 브라우저에만 저장됩니다. 가격과 구성은 공식 공지의 구성표에서 확인한 값입니다.</p>
+      </div>
+    </main>
+  </div>
+  <noscript><p>패키지 효율을 보려면 JavaScript를 활성화해 주세요.</p></noscript>
+  <script src="./ui.js"></script>
+  <script>UI.shell({page:'pkg',title:'패키지 효율',sub:'가격 대비 구성품 가치'});</script>
+  <script src="./sb_config.js"></script>
+  <script>
+  /* 관리자 전용: 로그인 정보의 관리자 표시를 서버 기록으로 한 번 더 확인한 뒤에만 화면을 연다. */
+  (async function(){
+    function deny(){ alert('관리자만 접근 가능합니다.'); location.href = './community.html'; }
+    const user = getUser();
+    if(!user || user.id == null || !user.is_admin) return deny();
+    try{
+      const rows = await supabase('GET','users',null,'?id=eq.'+encodeURIComponent(user.id)+'&select=id,is_admin,is_banned');
+      if(!Array.isArray(rows) || rows.length !== 1 || !rows[0].is_admin || rows[0].is_banned) return deny();
+    }catch(error){ console.error('Package value: 관리자 확인 실패', error); return deny(); }
+    document.getElementById('pkgeffRoot').hidden = false;
+    const app = document.createElement('script'); app.src = './pkgeff-app.js'; document.body.appendChild(app);
+  })();
+  </script>
+</body>
+</html>

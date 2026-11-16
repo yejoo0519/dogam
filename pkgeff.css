@@ -1,0 +1,31 @@
+.pe-base{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;padding:14px 18px;margin-bottom:14px}
+.pe-field,.pe-check{font-size:12px;color:var(--text2);display:flex;align-items:center;gap:6px;white-space:nowrap}
+.pe-field input,.pe-egg input{background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:7px;padding:7px 9px;font:12px var(--u-mono,monospace);text-align:right}
+.pe-field input{width:84px}
+.pe-egg input{width:104px}
+.pe-field input:focus,.pe-egg input:focus{outline:0;border-color:var(--accent)}
+#resetEggs{margin-left:auto}
+.pe-list{display:block}
+.pe-row{display:grid;grid-template-columns:minmax(200px,1.5fr) minmax(190px,1.2fr) minmax(150px,1fr) 110px;gap:8px 18px;align-items:center;padding:13px 18px;border-top:1px solid var(--border2)}
+.pe-row:first-child{border-top:0}
+.pe-title{font:600 13px var(--u-sans);color:var(--text);overflow-wrap:anywhere}
+.pe-title a{color:inherit;text-decoration:none}
+.pe-title a:hover{color:var(--accent)}
+.pe-meta{font-size:11px;color:var(--text3);margin-top:3px;line-height:1.6}
+.pe-items{font-size:11px;color:var(--text3);margin-top:4px;line-height:1.6}
+.pe-eggs{display:flex;flex-direction:column;gap:5px}
+.pe-egg{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;color:var(--text2)}
+.pe-egg span{min-width:0;overflow-wrap:anywhere}
+.pe-sum{font-size:11px;color:var(--text3);line-height:1.7}
+.pe-sum b{color:var(--text);font:600 12px var(--u-mono,monospace)}
+.pe-pct{font:700 18px var(--u-mono,monospace);text-align:right;color:var(--text)}
+.pe-pct.good{color:var(--accent)}
+.pe-pct small{display:block;font:400 10px var(--u-sans);color:var(--text3);margin-top:2px}
+@media(max-width:860px){
+.pe-row{grid-template-columns:1fr auto;padding:14px 12px}
+.pe-row>.pe-main{grid-column:1}.pe-row>.pe-pct{grid-column:2;grid-row:1}
+.pe-row>.pe-eggs,.pe-row>.pe-sum{grid-column:1/-1}
+.pe-egg input,.pe-field input{min-height:40px;font-size:16px}
+.pe-egg input{width:130px}
+#resetEggs{margin-left:0}
+}

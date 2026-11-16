@@ -1,0 +1,9292 @@
+{
+ "schemaVersion": 1,
+ "checkedAt": "2026-11-16",
+ "source": "https://www.dragonvillage.net/notice (공지 구성표 이미지 수동 판독)",
+ "currency": "KRW",
+ "packages": [
+  {
+   "noticeIds": [
+    21456
+   ],
+   "noticeDate": "2026-11-10",
+   "url": "https://www.dragonvillage.net/notice/21456",
+   "name": "말카르티스 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "말카르티스",
+     "start": "2026-11-14",
+     "end": "2026-11-27"
+    }
+   ],
+   "items": [
+    {
+     "name": "말카르티스",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1200
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "초월의 보석",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 정수(최상급)",
+     "qty": 5
+    },
+    {
+     "name": "상급 초월의 정수(옐로우)",
+     "qty": 3
+    },
+    {
+     "name": "상급 초월의 정수(레드)",
+     "qty": 3
+    },
+    {
+     "name": "상급 초월의 정수(블루)",
+     "qty": 3
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 100
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 44400.0,
+    "currencyPct": 134.5,
+    "sangchoValue": 4500.0,
+    "knownPct": 148.2,
+    "marketCurrencyValue": 14059,
+    "marketCurrencyPct": 42.6
+   }
+  },
+  {
+   "noticeIds": [
+    21455
+   ],
+   "noticeDate": "2026-11-07",
+   "url": "https://www.dragonvillage.net/notice/21455",
+   "name": "유니버스 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "유니버스",
+     "start": "2026-11-09",
+     "end": "2026-11-22"
+    }
+   ],
+   "items": [
+    {
+     "name": "유니버스",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1200
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "페르시온 결정",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "최상급 강화의 정수",
+     "qty": 3
+    },
+    {
+     "name": "상급 초월의 정수(옐로우)",
+     "qty": 3
+    },
+    {
+     "name": "상급 초월의 정수(레드)",
+     "qty": 3
+    },
+    {
+     "name": "상급 초월의 정수(블루)",
+     "qty": 3
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 100
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 44400.0,
+    "currencyPct": 134.5,
+    "sangchoValue": 4500.0,
+    "knownPct": 148.2,
+    "marketCurrencyValue": 14059,
+    "marketCurrencyPct": 42.6
+   }
+  },
+  {
+   "noticeIds": [
+    21427
+   ],
+   "noticeDate": "2026-09-15",
+   "url": "https://www.dragonvillage.net/notice/21427",
+   "name": "레오벡터 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "레오벡터",
+     "start": "2026-09-17",
+     "end": "2026-09-30"
+    }
+   ],
+   "items": [
+    {
+     "name": "레오벡터",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1200
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 100
+    },
+    {
+     "name": "페르시온 결정",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "초월의 보석",
+     "qty": 1
+    },
+    {
+     "name": "최상급 강화의 정수",
+     "qty": 3
+    },
+    {
+     "name": "상급 초월의 정수(옐로우)",
+     "qty": 3
+    },
+    {
+     "name": "상급 초월의 정수(레드)",
+     "qty": 3
+    },
+    {
+     "name": "상급 초월의 정수(블루)",
+     "qty": 3
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 44400.0,
+    "currencyPct": 134.5,
+    "sangchoValue": 4500.0,
+    "knownPct": 148.2,
+    "marketCurrencyValue": 14059,
+    "marketCurrencyPct": 42.6
+   }
+  },
+  {
+   "noticeIds": [
+    21418
+   ],
+   "noticeDate": "2026-09-03",
+   "url": "https://www.dragonvillage.net/notice/21418",
+   "name": "허리케인 패키지",
+   "price": 22000,
+   "limit": "5",
+   "noticeSalePeriods": [
+    {
+     "dragon": "허리케인",
+     "start": "2026-09-04",
+     "end": "2026-09-16"
+    }
+   ],
+   "items": [
+    {
+     "name": "허리케인 A",
+     "qty": 7
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 60
+    },
+    {
+     "name": "프리미엄 Lv+1",
+     "qty": 100
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 2
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 40000.0,
+    "currencyPct": 181.8,
+    "sangchoValue": 0.0,
+    "knownPct": 181.8,
+    "marketCurrencyValue": 12459,
+    "marketCurrencyPct": 56.6
+   }
+  },
+  {
+   "noticeIds": [
+    21412
+   ],
+   "noticeDate": "2026-08-25",
+   "url": "https://www.dragonvillage.net/notice/21412",
+   "name": "미스핏 패키지",
+   "price": 49000,
+   "limit": "1",
+   "noticeSalePeriods": [
+    {
+     "dragon": "미스핏",
+     "start": "2026-08-28",
+     "end": "2026-09-10"
+    }
+   ],
+   "items": [
+    {
+     "name": "미스핏",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1500
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 1000
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 100
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 3
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "강림 강화곤",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 63000.0,
+    "currencyPct": 128.6,
+    "sangchoValue": 4500.0,
+    "knownPct": 137.8,
+    "marketCurrencyValue": 19432,
+    "marketCurrencyPct": 39.7
+   }
+  },
+  {
+   "noticeIds": [
+    21412
+   ],
+   "noticeDate": "2026-08-25",
+   "url": "https://www.dragonvillage.net/notice/21412",
+   "name": "망치 패키지",
+   "price": 33000,
+   "limit": "주간 2",
+   "noticeSalePeriods": [
+    {
+     "dragon": "미스핏",
+     "start": "2026-08-28",
+     "end": "2026-09-10"
+    }
+   ],
+   "items": [
+    {
+     "name": "디트의 망치",
+     "qty": 30
+    },
+    {
+     "name": "합성석",
+     "qty": 200
+    },
+    {
+     "name": "골드",
+     "qty": 10000000
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 0.0,
+    "currencyPct": 0.0,
+    "sangchoValue": 0.0,
+    "knownPct": 0.0,
+    "marketCurrencyValue": 0,
+    "marketCurrencyPct": 0.0
+   }
+  },
+  {
+   "noticeIds": [
+    21406
+   ],
+   "noticeDate": "2026-08-18",
+   "url": "https://www.dragonvillage.net/notice/21406",
+   "name": "유르카 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "유르카",
+     "start": "2026-08-21",
+     "end": "2026-09-03"
+    }
+   ],
+   "items": [
+    {
+     "name": "유르카",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1200
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 100
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 3
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 정수(최상급)",
+     "qty": 5
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 44400.0,
+    "currencyPct": 134.5,
+    "sangchoValue": 4500.0,
+    "knownPct": 148.2,
+    "marketCurrencyValue": 14059,
+    "marketCurrencyPct": 42.6
+   }
+  },
+  {
+   "noticeIds": [
+    21400
+   ],
+   "noticeDate": "2026-08-11",
+   "url": "https://www.dragonvillage.net/notice/21400",
+   "name": "카스티그 패키지",
+   "price": 49000,
+   "limit": "2",
+   "noticeSalePeriods": [
+    {
+     "dragon": "카스티그",
+     "start": "2026-08-13",
+     "end": "2026-08-26"
+    }
+   ],
+   "items": [
+    {
+     "name": "카스티그(알)",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1500
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 1000
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 100
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 3
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "강림 강화곤",
+     "qty": 1
+    },
+    {
+     "name": "심판자 카스티그(강림 전용 장식)",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 63000.0,
+    "currencyPct": 128.6,
+    "sangchoValue": 4500.0,
+    "knownPct": 137.8,
+    "marketCurrencyValue": 19432,
+    "marketCurrencyPct": 39.7
+   }
+  },
+  {
+   "noticeIds": [
+    21370
+   ],
+   "noticeDate": "2026-07-06",
+   "url": "https://www.dragonvillage.net/notice/21370",
+   "name": "암두시아스 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "암두시아스",
+     "start": "2026-07-07",
+     "end": "2026-07-20"
+    }
+   ],
+   "items": [
+    {
+     "name": "암두시아스",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1200
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 100
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "초월의 보석",
+     "qty": 1
+    },
+    {
+     "name": "최상급 강화의 정수",
+     "qty": 3
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 3
+    },
+    {
+     "name": "페르시온 결정",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 44400.0,
+    "currencyPct": 134.5,
+    "sangchoValue": 4500.0,
+    "knownPct": 148.2,
+    "marketCurrencyValue": 14059,
+    "marketCurrencyPct": 42.6
+   }
+  },
+  {
+   "noticeIds": [
+    21363,
+    21362
+   ],
+   "noticeDate": "2026-06-15",
+   "url": "https://www.dragonvillage.net/notice/21363",
+   "name": "망태곤 패키지",
+   "price": 22000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "망태곤",
+     "start": "2026-06-15",
+     "end": "2026-06-28"
+    },
+    {
+     "dragon": "망태곤",
+     "start": "2026-06-15",
+     "end": "2026-06-28"
+    }
+   ],
+   "items": [
+    {
+     "name": "망태곤",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 60
+    },
+    {
+     "name": "프리미엄 Lv+1",
+     "qty": 100
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 2
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 40000.0,
+    "currencyPct": 181.8,
+    "sangchoValue": 3000.0,
+    "knownPct": 195.5,
+    "marketCurrencyValue": 12459,
+    "marketCurrencyPct": 56.6
+   }
+  },
+  {
+   "noticeIds": [
+    21341
+   ],
+   "noticeDate": "2026-05-19",
+   "url": "https://www.dragonvillage.net/notice/21341",
+   "name": "블랙아머 패키지",
+   "price": 22000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "블랙아머 드래곤",
+     "start": "2026-05-21",
+     "end": "2026-06-03"
+    }
+   ],
+   "items": [
+    {
+     "name": "블랙아머",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 60
+    },
+    {
+     "name": "프리미엄 Lv+1",
+     "qty": 100
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 2
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 40000.0,
+    "currencyPct": 181.8,
+    "sangchoValue": 3000.0,
+    "knownPct": 195.5,
+    "marketCurrencyValue": 12459,
+    "marketCurrencyPct": 56.6
+   }
+  },
+  {
+   "noticeIds": [
+    21337
+   ],
+   "noticeDate": "2026-05-15",
+   "url": "https://www.dragonvillage.net/notice/21337",
+   "name": "셀마사 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "셀마사",
+     "start": "2026-05-15",
+     "end": "2026-05-28"
+    }
+   ],
+   "items": [
+    {
+     "name": "셀마사",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1200
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 100
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "초월의 보석",
+     "qty": 1
+    },
+    {
+     "name": "최상급 강화의 정수",
+     "qty": 3
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 3
+    },
+    {
+     "name": "페르시온 결정",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 44400.0,
+    "currencyPct": 134.5,
+    "sangchoValue": 4500.0,
+    "knownPct": 148.2,
+    "marketCurrencyValue": 14059,
+    "marketCurrencyPct": 42.6
+   }
+  },
+  {
+   "noticeIds": [
+    21324
+   ],
+   "noticeDate": "2026-04-28",
+   "url": "https://www.dragonvillage.net/notice/21324",
+   "name": "프라이드 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "프라이드",
+     "start": "2026-04-29",
+     "end": "2026-05-12"
+    }
+   ],
+   "items": [
+    {
+     "name": "프라이드",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1200
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 100
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "초월의 보석",
+     "qty": 1
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 3
+    },
+    {
+     "name": "꿈의 정수(최상급)",
+     "qty": 5
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 44400.0,
+    "currencyPct": 134.5,
+    "sangchoValue": 4500.0,
+    "knownPct": 148.2,
+    "marketCurrencyValue": 14059,
+    "marketCurrencyPct": 42.6
+   }
+  },
+  {
+   "noticeIds": [
+    21315
+   ],
+   "noticeDate": "2026-04-13",
+   "url": "https://www.dragonvillage.net/notice/21315",
+   "name": "루살카 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "루살카",
+     "start": "2026-04-14",
+     "end": "2026-04-27"
+    }
+   ],
+   "items": [
+    {
+     "name": "루살카",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1200
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 100
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "초월의 보석",
+     "qty": 1
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 3
+    },
+    {
+     "name": "꿈의 정수(최상급)",
+     "qty": 5
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 44400.0,
+    "currencyPct": 134.5,
+    "sangchoValue": 4500.0,
+    "knownPct": 148.2,
+    "marketCurrencyValue": 14059,
+    "marketCurrencyPct": 42.6
+   }
+  },
+  {
+   "noticeIds": [
+    21301
+   ],
+   "noticeDate": "2026-03-27",
+   "url": "https://www.dragonvillage.net/notice/21301",
+   "name": "바스카 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "바스카",
+     "start": "2026-03-30",
+     "end": "2026-04-12"
+    }
+   ],
+   "items": [
+    {
+     "name": "바스카",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1200
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 100
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "초월의 보석",
+     "qty": 1
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 3
+    },
+    {
+     "name": "꿈의 정수(최상급)",
+     "qty": 5
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 44400.0,
+    "currencyPct": 134.5,
+    "sangchoValue": 4500.0,
+    "knownPct": 148.2,
+    "marketCurrencyValue": 14059,
+    "marketCurrencyPct": 42.6
+   }
+  },
+  {
+   "noticeIds": [
+    21299
+   ],
+   "noticeDate": "2026-03-25",
+   "url": "https://www.dragonvillage.net/notice/21299",
+   "name": "찬란한 태양 패키지",
+   "price": 22000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "솔라",
+     "start": "2026-03-26",
+     "end": "2026-04-08"
+    },
+    {
+     "dragon": "포폰",
+     "start": "2026-03-26",
+     "end": "2026-04-08"
+    },
+    {
+     "dragon": "제피로스",
+     "start": "2026-03-26",
+     "end": "2026-04-08"
+    }
+   ],
+   "items": [
+    {
+     "name": "솔라",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 60
+    },
+    {
+     "name": "프리미엄 Lv+1",
+     "qty": 100
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 2
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 40000.0,
+    "currencyPct": 181.8,
+    "sangchoValue": 3000.0,
+    "knownPct": 195.5,
+    "marketCurrencyValue": 12459,
+    "marketCurrencyPct": 56.6
+   }
+  },
+  {
+   "noticeIds": [
+    21299
+   ],
+   "noticeDate": "2026-03-25",
+   "url": "https://www.dragonvillage.net/notice/21299",
+   "name": "신속의 날개 패키지",
+   "price": 22000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "솔라",
+     "start": "2026-03-26",
+     "end": "2026-04-08"
+    },
+    {
+     "dragon": "포폰",
+     "start": "2026-03-26",
+     "end": "2026-04-08"
+    },
+    {
+     "dragon": "제피로스",
+     "start": "2026-03-26",
+     "end": "2026-04-08"
+    }
+   ],
+   "items": [
+    {
+     "name": "제피로스",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 60
+    },
+    {
+     "name": "프리미엄 Lv+1",
+     "qty": 100
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 2
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 40000.0,
+    "currencyPct": 181.8,
+    "sangchoValue": 3000.0,
+    "knownPct": 195.5,
+    "marketCurrencyValue": 12459,
+    "marketCurrencyPct": 56.6
+   }
+  },
+  {
+   "noticeIds": [
+    21299
+   ],
+   "noticeDate": "2026-03-25",
+   "url": "https://www.dragonvillage.net/notice/21299",
+   "name": "평온의 대지 패키지",
+   "price": 22000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "솔라",
+     "start": "2026-03-26",
+     "end": "2026-04-08"
+    },
+    {
+     "dragon": "포폰",
+     "start": "2026-03-26",
+     "end": "2026-04-08"
+    },
+    {
+     "dragon": "제피로스",
+     "start": "2026-03-26",
+     "end": "2026-04-08"
+    }
+   ],
+   "items": [
+    {
+     "name": "포폰",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 60
+    },
+    {
+     "name": "프리미엄 Lv+1",
+     "qty": 100
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 2
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 40000.0,
+    "currencyPct": 181.8,
+    "sangchoValue": 3000.0,
+    "knownPct": 195.5,
+    "marketCurrencyValue": 12459,
+    "marketCurrencyPct": 56.6
+   }
+  },
+  {
+   "noticeIds": [
+    21289
+   ],
+   "noticeDate": "2026-03-13",
+   "url": "https://www.dragonvillage.net/notice/21289",
+   "name": "베리스 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "베리스",
+     "start": "2026-03-16",
+     "end": "2026-03-29"
+    }
+   ],
+   "items": [
+    {
+     "name": "베리스",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1200
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 100
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "초월의 보석",
+     "qty": 1
+    },
+    {
+     "name": "최상급 강화의 정수",
+     "qty": 3
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 3
+    },
+    {
+     "name": "페르시온 결정",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 44400.0,
+    "currencyPct": 134.5,
+    "sangchoValue": 4500.0,
+    "knownPct": 148.2,
+    "marketCurrencyValue": 14059,
+    "marketCurrencyPct": 42.6
+   }
+  },
+  {
+   "noticeIds": [
+    21241
+   ],
+   "noticeDate": "2026-01-23",
+   "url": "https://www.dragonvillage.net/notice/21241",
+   "name": "신년맞이 패키지 2",
+   "price": 22000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "그레이탄",
+     "start": "2026-01-26",
+     "end": "2026-02-08"
+    }
+   ],
+   "items": [
+    {
+     "name": "그레이탄",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 500
+    },
+    {
+     "name": "골드",
+     "qty": 200000
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "합성석",
+     "qty": 100
+    },
+    {
+     "name": "강철의 망치",
+     "qty": 3
+    },
+    {
+     "name": "마법의 망치",
+     "qty": 3
+    },
+    {
+     "name": "디트의 망치",
+     "qty": 2
+    },
+    {
+     "name": "꿈의 공격 +34",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 방어 +34",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 체력 +136",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 37000.0,
+    "currencyPct": 168.2,
+    "sangchoValue": 0.0,
+    "knownPct": 168.2,
+    "marketCurrencyValue": 11716,
+    "marketCurrencyPct": 53.3
+   }
+  },
+  {
+   "noticeIds": [
+    21231
+   ],
+   "noticeDate": "2026-01-12",
+   "url": "https://www.dragonvillage.net/notice/21231",
+   "name": "메라크 패키지",
+   "price": 22000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "메라크",
+     "start": "2026-01-18",
+     "end": "2026-01-31"
+    }
+   ],
+   "items": [
+    {
+     "name": "메라크",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 800
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 500
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "Lv+1",
+     "qty": 100
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 60
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 2
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 32600.0,
+    "currencyPct": 148.2,
+    "sangchoValue": 3000.0,
+    "knownPct": 161.8,
+    "marketCurrencyValue": 10116,
+    "marketCurrencyPct": 46.0
+   }
+  },
+  {
+   "noticeIds": [
+    21202
+   ],
+   "noticeDate": "2025-12-08",
+   "url": "https://www.dragonvillage.net/notice/21202",
+   "name": "종합 선물 패키지",
+   "price": 12000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "지진",
+     "start": "2025-12-10",
+     "end": "2025-12-23"
+    }
+   ],
+   "items": [
+    {
+     "name": "지진",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 500
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 100
+    },
+    {
+     "name": "골드",
+     "qty": 200000
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "페르시온 결정",
+     "qty": 1
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "합성석",
+     "qty": 50
+    },
+    {
+     "name": "강철의 망치",
+     "qty": 3
+    },
+    {
+     "name": "마법의 망치",
+     "qty": 2
+    },
+    {
+     "name": "디트의 망치",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 공격 +34",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 방어 +34",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 체력 +136",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 14000.0,
+    "currencyPct": 116.7,
+    "sangchoValue": 0.0,
+    "knownPct": 116.7,
+    "marketCurrencyValue": 4743,
+    "marketCurrencyPct": 39.5
+   }
+  },
+  {
+   "noticeIds": [
+    21187
+   ],
+   "noticeDate": "2025-11-24",
+   "url": "https://www.dragonvillage.net/notice/21187",
+   "name": "오벡스 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "오벡스",
+     "start": "2025-11-27",
+     "end": "2025-12-10"
+    }
+   ],
+   "items": [
+    {
+     "name": "오벡스",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "프리미엄 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 2
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 40000.0,
+    "currencyPct": 121.2,
+    "sangchoValue": 3000.0,
+    "knownPct": 130.3,
+    "marketCurrencyValue": 12459,
+    "marketCurrencyPct": 37.8
+   }
+  },
+  {
+   "noticeIds": [
+    21185
+   ],
+   "noticeDate": "2025-11-17",
+   "url": "https://www.dragonvillage.net/notice/21185",
+   "name": "네뷸라 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "네뷸라",
+     "start": "2025-11-19",
+     "end": "2025-12-02"
+    }
+   ],
+   "items": [
+    {
+     "name": "네뷸라",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1200
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 100
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 3
+    },
+    {
+     "name": "최상급 강화의 정수",
+     "qty": 3
+    },
+    {
+     "name": "초월의 보석",
+     "qty": 1
+    },
+    {
+     "name": "페르시온 결정",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 44400.0,
+    "currencyPct": 134.5,
+    "sangchoValue": 4500.0,
+    "knownPct": 148.2,
+    "marketCurrencyValue": 14059,
+    "marketCurrencyPct": 42.6
+   }
+  },
+  {
+   "noticeIds": [
+    21159
+   ],
+   "noticeDate": "2025-10-13",
+   "url": "https://www.dragonvillage.net/notice/21159",
+   "name": "강림 패키지1",
+   "price": 55000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "블랙티어 드래곤",
+     "start": "2025-10-18",
+     "end": "2025-10-31"
+    }
+   ],
+   "items": [
+    {
+     "name": "아르하의 정수(속성별)",
+     "qty": 500
+    },
+    {
+     "name": "강림의 돌",
+     "qty": 150
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "강림 강화곤",
+     "qty": 2
+    },
+    {
+     "name": "더블 맥스 레벨업",
+     "qty": 20
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 22000.0,
+    "currencyPct": 40.0,
+    "sangchoValue": 0.0,
+    "knownPct": 40.0,
+    "marketCurrencyValue": 8000,
+    "marketCurrencyPct": 14.5
+   }
+  },
+  {
+   "noticeIds": [
+    21159
+   ],
+   "noticeDate": "2025-10-13",
+   "url": "https://www.dragonvillage.net/notice/21159",
+   "name": "강림 패키지2",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "블랙티어 드래곤",
+     "start": "2025-10-18",
+     "end": "2025-10-31"
+    }
+   ],
+   "items": [
+    {
+     "name": "아르하의 정수(속성별)",
+     "qty": 500
+    },
+    {
+     "name": "강림의 돌",
+     "qty": 150
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "더블 맥스 레벨업",
+     "qty": 20
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 22000.0,
+    "currencyPct": 66.7,
+    "sangchoValue": 0.0,
+    "knownPct": 66.7,
+    "marketCurrencyValue": 8000,
+    "marketCurrencyPct": 24.2
+   }
+  },
+  {
+   "noticeIds": [
+    21159
+   ],
+   "noticeDate": "2025-10-13",
+   "url": "https://www.dragonvillage.net/notice/21159",
+   "name": "블랙티어 패키지",
+   "price": 22000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "블랙티어 드래곤",
+     "start": "2025-10-18",
+     "end": "2025-10-31"
+    }
+   ],
+   "items": [
+    {
+     "name": "블랙티어",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 60
+    },
+    {
+     "name": "프리미엄 Lv+1",
+     "qty": 100
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 2
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 40000.0,
+    "currencyPct": 181.8,
+    "sangchoValue": 3000.0,
+    "knownPct": 195.5,
+    "marketCurrencyValue": 12459,
+    "marketCurrencyPct": 56.6
+   }
+  },
+  {
+   "noticeIds": [
+    21142
+   ],
+   "noticeDate": "2025-09-23",
+   "url": "https://www.dragonvillage.net/notice/21142",
+   "name": "카닐 패키지",
+   "price": 22000,
+   "limit": "5",
+   "noticeSalePeriods": [
+    {
+     "dragon": "혼",
+     "start": "2025-09-24",
+     "end": "2025-10-31"
+    }
+   ],
+   "items": [
+    {
+     "name": "카닐",
+     "qty": 50
+    },
+    {
+     "name": "축복의 보석",
+     "qty": 1
+    },
+    {
+     "name": "골드",
+     "qty": 30000000
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 0.0,
+    "currencyPct": 0.0,
+    "sangchoValue": 0.0,
+    "knownPct": 0.0,
+    "marketCurrencyValue": 0,
+    "marketCurrencyPct": 0.0
+   }
+  },
+  {
+   "noticeIds": [
+    21142
+   ],
+   "noticeDate": "2025-09-23",
+   "url": "https://www.dragonvillage.net/notice/21142",
+   "name": "컬렉션 패키지1",
+   "price": 12000,
+   "limit": "1",
+   "noticeSalePeriods": [
+    {
+     "dragon": "혼",
+     "start": "2025-09-24",
+     "end": "2025-10-31"
+    }
+   ],
+   "items": [
+    {
+     "name": "다이아",
+     "qty": 800
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 200
+    },
+    {
+     "name": "프리미엄 Lv+1",
+     "qty": 300
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "축복 받은 부화기",
+     "qty": 10
+    },
+    {
+     "name": "자룡",
+     "qty": 1
+    },
+    {
+     "name": "헤라클레스곤",
+     "qty": 1
+    },
+    {
+     "name": "배틀 드래곤",
+     "qty": 1
+    },
+    {
+     "name": "베네지",
+     "qty": 1
+    },
+    {
+     "name": "본헤드",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 23600.0,
+    "currencyPct": 196.7,
+    "sangchoValue": 0.0,
+    "knownPct": 196.7,
+    "marketCurrencyValue": 7886,
+    "marketCurrencyPct": 65.7
+   }
+  },
+  {
+   "noticeIds": [
+    21142
+   ],
+   "noticeDate": "2025-09-23",
+   "url": "https://www.dragonvillage.net/notice/21142",
+   "name": "컬렉션 패키지2",
+   "price": 12000,
+   "limit": "1",
+   "noticeSalePeriods": [
+    {
+     "dragon": "혼",
+     "start": "2025-09-24",
+     "end": "2025-10-31"
+    }
+   ],
+   "items": [
+    {
+     "name": "다이아",
+     "qty": 800
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 200
+    },
+    {
+     "name": "프리미엄 Lv+1",
+     "qty": 300
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "축복 받은 부화기",
+     "qty": 10
+    },
+    {
+     "name": "스쿠룸 S",
+     "qty": 2
+    },
+    {
+     "name": "그라치아 S",
+     "qty": 2
+    },
+    {
+     "name": "마가 S",
+     "qty": 2
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 23600.0,
+    "currencyPct": 196.7,
+    "sangchoValue": 0.0,
+    "knownPct": 196.7,
+    "marketCurrencyValue": 7886,
+    "marketCurrencyPct": 65.7
+   }
+  },
+  {
+   "noticeIds": [
+    21142
+   ],
+   "noticeDate": "2025-09-23",
+   "url": "https://www.dragonvillage.net/notice/21142",
+   "name": "종합 선물 패키지",
+   "price": 12000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "혼",
+     "start": "2025-09-24",
+     "end": "2025-10-31"
+    }
+   ],
+   "items": [
+    {
+     "name": "혼",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 500
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 100
+    },
+    {
+     "name": "골드",
+     "qty": 200000
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "페르시온 결정",
+     "qty": 1
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "합성석",
+     "qty": 50
+    },
+    {
+     "name": "강철의 망치",
+     "qty": 3
+    },
+    {
+     "name": "마법의 망치",
+     "qty": 2
+    },
+    {
+     "name": "디트의 망치",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 공격 +34",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 방어 +34",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 체력 +136",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 14000.0,
+    "currencyPct": 116.7,
+    "sangchoValue": 0.0,
+    "knownPct": 116.7,
+    "marketCurrencyValue": 4743,
+    "marketCurrencyPct": 39.5
+   }
+  },
+  {
+   "noticeIds": [
+    21121
+   ],
+   "noticeDate": "2025-09-09",
+   "url": "https://www.dragonvillage.net/notice/21121",
+   "name": "화이트썬더 패키지",
+   "price": 79000,
+   "limit": "1",
+   "noticeSalePeriods": [
+    {
+     "dragon": "화이트썬더 드래곤",
+     "start": "2025-09-10",
+     "end": "2025-09-23"
+    }
+   ],
+   "items": [
+    {
+     "name": "화이트썬더",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 2000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 1000
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 100
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 2
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "강림 강화곤",
+     "qty": 1
+    },
+    {
+     "name": "정령 10+1 뽑기권",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 74000.0,
+    "currencyPct": 93.7,
+    "sangchoValue": 3000.0,
+    "knownPct": 97.5,
+    "marketCurrencyValue": 23432,
+    "marketCurrencyPct": 29.7
+   }
+  },
+  {
+   "noticeIds": [
+    21106
+   ],
+   "noticeDate": "2025-08-22",
+   "url": "https://www.dragonvillage.net/notice/21106",
+   "name": "시타엘 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "시타엘",
+     "start": "2025-08-23",
+     "end": "2025-09-05"
+    }
+   ],
+   "items": [
+    {
+     "name": "시타엘",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1200
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 100
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "초월의 보석",
+     "qty": 1
+    },
+    {
+     "name": "최상급 강화의 정수",
+     "qty": 3
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 3
+    },
+    {
+     "name": "페르시온 결정",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 44400.0,
+    "currencyPct": 134.5,
+    "sangchoValue": 4500.0,
+    "knownPct": 148.2,
+    "marketCurrencyValue": 14059,
+    "marketCurrencyPct": 42.6
+   }
+  },
+  {
+   "noticeIds": [
+    21091
+   ],
+   "noticeDate": "2025-07-31",
+   "url": "https://www.dragonvillage.net/notice/21091",
+   "name": "루드라 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "루드라",
+     "start": "2025-08-01",
+     "end": "2025-08-14"
+    }
+   ],
+   "items": [
+    {
+     "name": "루드라",
+     "qty": 1
+    },
+    {
+     "name": "얼음 조각",
+     "qty": 1200
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 60
+    },
+    {
+     "name": "프리미엄 Lv+1",
+     "qty": 100
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 2
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 18000.0,
+    "currencyPct": 54.5,
+    "sangchoValue": 3000.0,
+    "knownPct": 63.6,
+    "marketCurrencyValue": 4459,
+    "marketCurrencyPct": 13.5
+   }
+  },
+  {
+   "noticeIds": [
+    21084
+   ],
+   "noticeDate": "2025-07-23",
+   "url": "https://www.dragonvillage.net/notice/21084",
+   "name": "바르라아 패키지",
+   "price": 22000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "바르라아",
+     "start": "2025-07-24",
+     "end": "2025-08-06"
+    }
+   ],
+   "items": [
+    {
+     "name": "바르라아",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 60
+    },
+    {
+     "name": "프리미엄 Lv+1",
+     "qty": 100
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 2
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 40000.0,
+    "currencyPct": 181.8,
+    "sangchoValue": 3000.0,
+    "knownPct": 195.5,
+    "marketCurrencyValue": 12459,
+    "marketCurrencyPct": 56.6
+   }
+  },
+  {
+   "noticeIds": [
+    21080
+   ],
+   "noticeDate": "2025-07-14",
+   "url": "https://www.dragonvillage.net/notice/21080",
+   "name": "야누스 패키지",
+   "price": 49000,
+   "limit": "2",
+   "noticeSalePeriods": [
+    {
+     "dragon": "야누스",
+     "start": "2025-07-15",
+     "end": "2025-07-28"
+    }
+   ],
+   "items": [
+    {
+     "name": "야누스",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1500
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 1000
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 100
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 3
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "강림 강화곤",
+     "qty": 1
+    },
+    {
+     "name": "강림 전용 장식",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 63000.0,
+    "currencyPct": 128.6,
+    "sangchoValue": 4500.0,
+    "knownPct": 137.8,
+    "marketCurrencyValue": 19432,
+    "marketCurrencyPct": 39.7
+   }
+  },
+  {
+   "noticeIds": [
+    21068
+   ],
+   "noticeDate": "2025-06-23",
+   "url": "https://www.dragonvillage.net/notice/21068",
+   "name": "라루스 패키지",
+   "price": 22000,
+   "limit": "5",
+   "noticeSalePeriods": [
+    {
+     "dragon": "라루스",
+     "start": "2025-06-23",
+     "end": "2025-07-06"
+    }
+   ],
+   "items": [
+    {
+     "name": "라루스 A",
+     "qty": 7
+    },
+    {
+     "name": "다이아",
+     "qty": 500
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 500
+    },
+    {
+     "name": "Lv-1",
+     "qty": 60
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "프리미엄 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 2
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 26000.0,
+    "currencyPct": 118.2,
+    "sangchoValue": 0.0,
+    "knownPct": 118.2,
+    "marketCurrencyValue": 7716,
+    "marketCurrencyPct": 35.1
+   }
+  },
+  {
+   "noticeIds": [
+    21067
+   ],
+   "noticeDate": "2025-06-17",
+   "url": "https://www.dragonvillage.net/notice/21067",
+   "name": "베히모스 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "베히모스",
+     "start": "2025-06-19",
+     "end": "2025-07-02"
+    }
+   ],
+   "items": [
+    {
+     "name": "베히모스",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "초월의 보석",
+     "qty": 1
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 2
+    },
+    {
+     "name": "최상급 강화의 정수",
+     "qty": 2
+    },
+    {
+     "name": "페르시온 결정",
+     "qty": 1
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 40000.0,
+    "currencyPct": 121.2,
+    "sangchoValue": 3000.0,
+    "knownPct": 130.3,
+    "marketCurrencyValue": 12459,
+    "marketCurrencyPct": 37.8
+   }
+  },
+  {
+   "noticeIds": [
+    21043
+   ],
+   "noticeDate": "2025-05-14",
+   "url": "https://www.dragonvillage.net/notice/21043",
+   "name": "아톤 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "아톤",
+     "start": "2025-05-15",
+     "end": "2025-05-28"
+    }
+   ],
+   "items": [
+    {
+     "name": "아톤",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 2
+    },
+    {
+     "name": "초월의 보석",
+     "qty": 1
+    },
+    {
+     "name": "페르시온 결정",
+     "qty": 1
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "최상급 강화의 정수",
+     "qty": 2
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 40000.0,
+    "currencyPct": 121.2,
+    "sangchoValue": 3000.0,
+    "knownPct": 130.3,
+    "marketCurrencyValue": 12459,
+    "marketCurrencyPct": 37.8
+   }
+  },
+  {
+   "noticeIds": [
+    21032
+   ],
+   "noticeDate": "2025-04-27",
+   "url": "https://www.dragonvillage.net/notice/21032",
+   "name": "설리반 패키지",
+   "price": 22000,
+   "limit": "5",
+   "noticeSalePeriods": [
+    {
+     "dragon": "설리반",
+     "start": "2025-04-28",
+     "end": "2025-05-11"
+    }
+   ],
+   "items": [
+    {
+     "name": "설리반 A",
+     "qty": 7
+    },
+    {
+     "name": "다이아",
+     "qty": 600
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "Lv-1",
+     "qty": 60
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "프리미엄 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 2
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 31200.0,
+    "currencyPct": 141.8,
+    "sangchoValue": 0.0,
+    "knownPct": 141.8,
+    "marketCurrencyValue": 9259,
+    "marketCurrencyPct": 42.1
+   }
+  },
+  {
+   "noticeIds": [
+    21030
+   ],
+   "noticeDate": "2025-04-23",
+   "url": "https://www.dragonvillage.net/notice/21030",
+   "name": "말덱 패키지",
+   "price": 22000,
+   "limit": "5",
+   "noticeSalePeriods": [
+    {
+     "dragon": "말덱",
+     "start": "2025-04-24",
+     "end": "2025-05-07"
+    }
+   ],
+   "items": [
+    {
+     "name": "말덱 A",
+     "qty": 7
+    },
+    {
+     "name": "다이아",
+     "qty": 600
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "Lv-1",
+     "qty": 60
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "프리미엄 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 2
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 31200.0,
+    "currencyPct": 141.8,
+    "sangchoValue": 0.0,
+    "knownPct": 141.8,
+    "marketCurrencyValue": 9259,
+    "marketCurrencyPct": 42.1
+   }
+  },
+  {
+   "noticeIds": [
+    21025
+   ],
+   "noticeDate": "2025-04-14",
+   "url": "https://www.dragonvillage.net/notice/21025",
+   "name": "아말테아 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "아말테아",
+     "start": "2025-04-15",
+     "end": "2025-04-29"
+    }
+   ],
+   "items": [
+    {
+     "name": "아말테아",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "프리미엄 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 2
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 40000.0,
+    "currencyPct": 121.2,
+    "sangchoValue": 3000.0,
+    "knownPct": 130.3,
+    "marketCurrencyValue": 12459,
+    "marketCurrencyPct": 37.8
+   }
+  },
+  {
+   "noticeIds": [
+    21024
+   ],
+   "noticeDate": "2025-04-08",
+   "url": "https://www.dragonvillage.net/notice/21024",
+   "name": "스트라 패키지",
+   "price": 22000,
+   "limit": "5",
+   "noticeSalePeriods": [
+    {
+     "dragon": "스트라",
+     "start": "2025-04-09",
+     "end": "2025-04-22"
+    }
+   ],
+   "items": [
+    {
+     "name": "스트라 A",
+     "qty": 7
+    },
+    {
+     "name": "다이아",
+     "qty": 500
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 500
+    },
+    {
+     "name": "Lv-1",
+     "qty": 60
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "프리미엄 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 2
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 26000.0,
+    "currencyPct": 118.2,
+    "sangchoValue": 0.0,
+    "knownPct": 118.2,
+    "marketCurrencyValue": 7716,
+    "marketCurrencyPct": 35.1
+   }
+  },
+  {
+   "noticeIds": [
+    21016
+   ],
+   "noticeDate": "2025-03-24",
+   "url": "https://www.dragonvillage.net/notice/21016",
+   "name": "렉스톤 패키지",
+   "price": 55000,
+   "limit": "1",
+   "noticeSalePeriods": [
+    {
+     "dragon": "렉스톤",
+     "start": "2025-03-25",
+     "end": "2025-04-08"
+    }
+   ],
+   "items": [
+    {
+     "name": "렉스톤",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1500
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 1000
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "Lv+1",
+     "qty": 100
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 2
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "강림 강화곤",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 63000.0,
+    "currencyPct": 114.5,
+    "sangchoValue": 3000.0,
+    "knownPct": 120.0,
+    "marketCurrencyValue": 19432,
+    "marketCurrencyPct": 35.3
+   }
+  },
+  {
+   "noticeIds": [
+    21011
+   ],
+   "noticeDate": "2025-03-11",
+   "url": "https://www.dragonvillage.net/notice/21011",
+   "name": "아자크 패키지",
+   "price": 33000,
+   "limit": "1",
+   "noticeSalePeriods": [
+    {
+     "dragon": "아자크",
+     "start": "2025-03-12",
+     "end": "2025-03-25"
+    }
+   ],
+   "items": [
+    {
+     "name": "아자크 알",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "프리미엄 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 2
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 40000.0,
+    "currencyPct": 121.2,
+    "sangchoValue": 3000.0,
+    "knownPct": 130.3,
+    "marketCurrencyValue": 12459,
+    "marketCurrencyPct": 37.8
+   }
+  },
+  {
+   "noticeIds": [
+    20998
+   ],
+   "noticeDate": "2025-02-18",
+   "url": "https://www.dragonvillage.net/notice/20998",
+   "name": "청양 패키지",
+   "price": 22000,
+   "limit": "5",
+   "noticeSalePeriods": [
+    {
+     "dragon": "청양 드래곤",
+     "start": "2025-02-18",
+     "end": "2025-03-03"
+    }
+   ],
+   "items": [
+    {
+     "name": "청양 A",
+     "qty": 7
+    },
+    {
+     "name": "다이아",
+     "qty": 500
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 500
+    },
+    {
+     "name": "Lv-1",
+     "qty": 60
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "프리미엄 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 2
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 26000.0,
+    "currencyPct": 118.2,
+    "sangchoValue": 0.0,
+    "knownPct": 118.2,
+    "marketCurrencyValue": 7716,
+    "marketCurrencyPct": 35.1
+   }
+  },
+  {
+   "noticeIds": [
+    20976
+   ],
+   "noticeDate": "2025-01-14",
+   "url": "https://www.dragonvillage.net/notice/20976",
+   "name": "신년맞이 패키지 2",
+   "price": 22000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "그레이탄",
+     "start": "2025-01-15",
+     "end": "2025-02-11"
+    }
+   ],
+   "items": [
+    {
+     "name": "그레이탄",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 500
+    },
+    {
+     "name": "골드",
+     "qty": 200000
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "강철의 망치",
+     "qty": 3
+    },
+    {
+     "name": "마법의 망치",
+     "qty": 3
+    },
+    {
+     "name": "디트의 망치",
+     "qty": 2
+    },
+    {
+     "name": "합성석",
+     "qty": 100
+    },
+    {
+     "name": "꿈의 공격 +34",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 방어 +34",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 체력 +136",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 37000.0,
+    "currencyPct": 168.2,
+    "sangchoValue": 0.0,
+    "knownPct": 168.2,
+    "marketCurrencyValue": 11716,
+    "marketCurrencyPct": 53.3
+   }
+  },
+  {
+   "noticeIds": [
+    20965
+   ],
+   "noticeDate": "2024-12-13",
+   "url": "https://www.dragonvillage.net/notice/20965",
+   "name": "유니버스 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "유니버스",
+     "start": "2024-12-16",
+     "end": "2024-12-28"
+    }
+   ],
+   "items": [
+    {
+     "name": "유니버스",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "프리미엄 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "상급 초월의 정수(옐로우)",
+     "qty": 2
+    },
+    {
+     "name": "상급 초월의 정수(레드)",
+     "qty": 2
+    },
+    {
+     "name": "상급 초월의 정수(블루)",
+     "qty": 2
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 40000.0,
+    "currencyPct": 121.2,
+    "sangchoValue": 3000.0,
+    "knownPct": 130.3,
+    "marketCurrencyValue": 12459,
+    "marketCurrencyPct": 37.8
+   }
+  },
+  {
+   "noticeIds": [
+    20962
+   ],
+   "noticeDate": "2024-12-06",
+   "url": "https://www.dragonvillage.net/notice/20962",
+   "name": "종합 선물 패키지2",
+   "price": 12000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "지진",
+     "start": "2024-12-09",
+     "end": "2025-01-05"
+    }
+   ],
+   "items": [
+    {
+     "name": "지진",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 500
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 100
+    },
+    {
+     "name": "골드",
+     "qty": 200000
+    },
+    {
+     "name": "페르시온 결정",
+     "qty": 1
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "강철의 망치",
+     "qty": 3
+    },
+    {
+     "name": "마법의 망치",
+     "qty": 2
+    },
+    {
+     "name": "디트의 망치",
+     "qty": 1
+    },
+    {
+     "name": "합성석",
+     "qty": 50
+    },
+    {
+     "name": "꿈의 공격 +33",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 방어 +33",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 체력 +132",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 14000.0,
+    "currencyPct": 116.7,
+    "sangchoValue": 0.0,
+    "knownPct": 116.7,
+    "marketCurrencyValue": 4743,
+    "marketCurrencyPct": 39.5
+   }
+  },
+  {
+   "noticeIds": [
+    20961
+   ],
+   "noticeDate": "2024-12-04",
+   "url": "https://www.dragonvillage.net/notice/20961",
+   "name": "라루스 패키지",
+   "price": 22000,
+   "limit": "5",
+   "noticeSalePeriods": [
+    {
+     "dragon": "라루스",
+     "start": "2024-12-05",
+     "end": "2024-12-18"
+    }
+   ],
+   "items": [
+    {
+     "name": "라루스 A",
+     "qty": 7
+    },
+    {
+     "name": "다이아",
+     "qty": 500
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 500
+    },
+    {
+     "name": "Lv-1",
+     "qty": 60
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "프리미엄 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 2
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 26000.0,
+    "currencyPct": 118.2,
+    "sangchoValue": 0.0,
+    "knownPct": 118.2,
+    "marketCurrencyValue": 7716,
+    "marketCurrencyPct": 35.1
+   }
+  },
+  {
+   "noticeIds": [
+    20953
+   ],
+   "noticeDate": "2024-11-20",
+   "url": "https://www.dragonvillage.net/notice/20953",
+   "name": "와일드 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "와일드 드래곤",
+     "start": "2024-11-21",
+     "end": "2024-12-04"
+    }
+   ],
+   "items": [
+    {
+     "name": "와일드",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "상급 초월의 정수(옐로우)",
+     "qty": 3
+    },
+    {
+     "name": "상급 초월의 정수(레드)",
+     "qty": 3
+    },
+    {
+     "name": "상급 초월의 정수(블루)",
+     "qty": 3
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "페르시온 결정",
+     "qty": 1
+    },
+    {
+     "name": "중급 강화의 정수",
+     "qty": 3
+    },
+    {
+     "name": "상급 강화의 정수",
+     "qty": 3
+    },
+    {
+     "name": "최상급 강화의 정수",
+     "qty": 2
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 40000.0,
+    "currencyPct": 121.2,
+    "sangchoValue": 4500.0,
+    "knownPct": 134.8,
+    "marketCurrencyValue": 12459,
+    "marketCurrencyPct": 37.8
+   }
+  },
+  {
+   "noticeIds": [
+    20946
+   ],
+   "noticeDate": "2024-11-08",
+   "url": "https://www.dragonvillage.net/notice/20946",
+   "name": "라센티 패키지",
+   "price": 49000,
+   "limit": "1",
+   "noticeSalePeriods": [
+    {
+     "dragon": "라센티",
+     "start": "2024-11-09",
+     "end": "2024-11-22"
+    }
+   ],
+   "items": [
+    {
+     "name": "라센티",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1500
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 1000
+    },
+    {
+     "name": "Lv-1",
+     "qty": 150
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 100
+    },
+    {
+     "name": "상급 초월의 정수(옐로우)",
+     "qty": 2
+    },
+    {
+     "name": "상급 초월의 정수(레드)",
+     "qty": 2
+    },
+    {
+     "name": "상급 초월의 정수(블루)",
+     "qty": 2
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "강림 강화곤",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 63000.0,
+    "currencyPct": 128.6,
+    "sangchoValue": 3000.0,
+    "knownPct": 134.7,
+    "marketCurrencyValue": 19432,
+    "marketCurrencyPct": 39.7
+   }
+  },
+  {
+   "noticeIds": [
+    20938
+   ],
+   "noticeDate": "2024-10-24",
+   "url": "https://www.dragonvillage.net/notice/20938",
+   "name": "허리케인 패키지",
+   "price": 22000,
+   "limit": "제한 없음",
+   "noticeSalePeriods": [
+    {
+     "dragon": "허리케인",
+     "start": "2024-10-25",
+     "end": "2024-11-07"
+    }
+   ],
+   "items": [
+    {
+     "name": "황금 다이아",
+     "qty": 500
+    },
+    {
+     "name": "다이아",
+     "qty": 500
+    },
+    {
+     "name": "허리케인 A",
+     "qty": 5
+    },
+    {
+     "name": "Lv-1",
+     "qty": 60
+    },
+    {
+     "name": "프리미엄 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 2
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 26000.0,
+    "currencyPct": 118.2,
+    "sangchoValue": 0.0,
+    "knownPct": 118.2,
+    "marketCurrencyValue": 7716,
+    "marketCurrencyPct": 35.1
+   }
+  },
+  {
+   "noticeIds": [
+    20925
+   ],
+   "noticeDate": "2024-09-23",
+   "url": "https://www.dragonvillage.net/notice/20925",
+   "name": "고트 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "고트",
+     "start": "2024-09-24",
+     "end": "2024-10-07"
+    }
+   ],
+   "items": [
+    {
+     "name": "고트",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "프리미엄 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "상급 초월의 정수(옐로우)",
+     "qty": 2
+    },
+    {
+     "name": "상급 초월의 정수(레드)",
+     "qty": 2
+    },
+    {
+     "name": "상급 초월의 정수(블루)",
+     "qty": 2
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 40000.0,
+    "currencyPct": 121.2,
+    "sangchoValue": 3000.0,
+    "knownPct": 130.3,
+    "marketCurrencyValue": 12459,
+    "marketCurrencyPct": 37.8
+   }
+  },
+  {
+   "noticeIds": [
+    20915
+   ],
+   "noticeDate": "2024-09-02",
+   "url": "https://www.dragonvillage.net/notice/20915",
+   "name": "레오벡터 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "레오벡터",
+     "start": "2024-09-03",
+     "end": "2024-09-16"
+    }
+   ],
+   "items": [
+    {
+     "name": "레오벡터",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "프리미엄 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "상급 초월의 정수(옐로우)",
+     "qty": 2
+    },
+    {
+     "name": "상급 초월의 정수(레드)",
+     "qty": 2
+    },
+    {
+     "name": "상급 초월의 정수(블루)",
+     "qty": 2
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 40000.0,
+    "currencyPct": 121.2,
+    "sangchoValue": 3000.0,
+    "knownPct": 130.3,
+    "marketCurrencyValue": 12459,
+    "marketCurrencyPct": 37.8
+   }
+  },
+  {
+   "noticeIds": [
+    20911
+   ],
+   "noticeDate": "2024-08-27",
+   "url": "https://www.dragonvillage.net/notice/20911",
+   "name": "미스핏 패키지",
+   "price": 49000,
+   "limit": "1",
+   "noticeSalePeriods": [
+    {
+     "dragon": "미스핏",
+     "start": "2024-08-28",
+     "end": "2024-09-10"
+    }
+   ],
+   "items": [
+    {
+     "name": "미스핏",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1500
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 1000
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "강림 강화곤",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "상급 초월의 정수(옐로우)",
+     "qty": 2
+    },
+    {
+     "name": "상급 초월의 정수(레드)",
+     "qty": 2
+    },
+    {
+     "name": "상급 초월의 정수(블루)",
+     "qty": 2
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 63000.0,
+    "currencyPct": 128.6,
+    "sangchoValue": 3000.0,
+    "knownPct": 134.7,
+    "marketCurrencyValue": 19432,
+    "marketCurrencyPct": 39.7
+   }
+  },
+  {
+   "noticeIds": [
+    20910
+   ],
+   "noticeDate": "2024-08-16",
+   "url": "https://www.dragonvillage.net/notice/20910",
+   "name": "유르카 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "유르카",
+     "start": "2024-08-21",
+     "end": "2024-09-03"
+    }
+   ],
+   "items": [
+    {
+     "name": "유르카",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "프리미엄 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "상급 초월의 정수(옐로우)",
+     "qty": 2
+    },
+    {
+     "name": "상급 초월의 정수(레드)",
+     "qty": 2
+    },
+    {
+     "name": "상급 초월의 정수(블루)",
+     "qty": 2
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 40000.0,
+    "currencyPct": 121.2,
+    "sangchoValue": 3000.0,
+    "knownPct": 130.3,
+    "marketCurrencyValue": 12459,
+    "marketCurrencyPct": 37.8
+   }
+  },
+  {
+   "noticeIds": [
+    20907
+   ],
+   "noticeDate": "2024-08-09",
+   "url": "https://www.dragonvillage.net/notice/20907",
+   "name": "암두시아스 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "암두시아스",
+     "start": "2024-08-12",
+     "end": "2024-08-25"
+    }
+   ],
+   "items": [
+    {
+     "name": "암두시아스",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "초월의 보석",
+     "qty": 1
+    },
+    {
+     "name": "상급 초월의 정수(옐로우)",
+     "qty": 2
+    },
+    {
+     "name": "상급 초월의 정수(레드)",
+     "qty": 2
+    },
+    {
+     "name": "상급 초월의 정수(블루)",
+     "qty": 2
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "페르시온 결정",
+     "qty": 1
+    },
+    {
+     "name": "최상급 강화의 정수",
+     "qty": 2
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 40000.0,
+    "currencyPct": 121.2,
+    "sangchoValue": 3000.0,
+    "knownPct": 130.3,
+    "marketCurrencyValue": 12459,
+    "marketCurrencyPct": 37.8
+   }
+  },
+  {
+   "noticeIds": [
+    20876
+   ],
+   "noticeDate": "2024-06-05",
+   "url": "https://www.dragonvillage.net/notice/20876",
+   "name": "찬란한 태양 패키지",
+   "price": 22000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "솔라",
+     "start": "2024-06-06",
+     "end": "2024-06-26"
+    },
+    {
+     "dragon": "포폰",
+     "start": "2024-06-06",
+     "end": "2024-06-26"
+    },
+    {
+     "dragon": "제피로스",
+     "start": "2024-06-06",
+     "end": "2024-06-26"
+    }
+   ],
+   "items": [
+    {
+     "name": "솔라",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 500
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 500
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "프리미엄 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "상급 초월의 정수(옐로우)",
+     "qty": 2
+    },
+    {
+     "name": "상급 초월의 정수(레드)",
+     "qty": 2
+    },
+    {
+     "name": "상급 초월의 정수(블루)",
+     "qty": 2
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 26000.0,
+    "currencyPct": 118.2,
+    "sangchoValue": 3000.0,
+    "knownPct": 131.8,
+    "marketCurrencyValue": 7716,
+    "marketCurrencyPct": 35.1
+   }
+  },
+  {
+   "noticeIds": [
+    20876
+   ],
+   "noticeDate": "2024-06-05",
+   "url": "https://www.dragonvillage.net/notice/20876",
+   "name": "평온의 대지 패키지",
+   "price": 22000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "솔라",
+     "start": "2024-06-06",
+     "end": "2024-06-26"
+    },
+    {
+     "dragon": "포폰",
+     "start": "2024-06-06",
+     "end": "2024-06-26"
+    },
+    {
+     "dragon": "제피로스",
+     "start": "2024-06-06",
+     "end": "2024-06-26"
+    }
+   ],
+   "items": [
+    {
+     "name": "포폰",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 500
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 500
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "프리미엄 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "상급 초월의 정수(옐로우)",
+     "qty": 2
+    },
+    {
+     "name": "상급 초월의 정수(레드)",
+     "qty": 2
+    },
+    {
+     "name": "상급 초월의 정수(블루)",
+     "qty": 2
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 26000.0,
+    "currencyPct": 118.2,
+    "sangchoValue": 3000.0,
+    "knownPct": 131.8,
+    "marketCurrencyValue": 7716,
+    "marketCurrencyPct": 35.1
+   }
+  },
+  {
+   "noticeIds": [
+    20876
+   ],
+   "noticeDate": "2024-06-05",
+   "url": "https://www.dragonvillage.net/notice/20876",
+   "name": "신속의 날개 패키지",
+   "price": 22000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "솔라",
+     "start": "2024-06-06",
+     "end": "2024-06-26"
+    },
+    {
+     "dragon": "포폰",
+     "start": "2024-06-06",
+     "end": "2024-06-26"
+    },
+    {
+     "dragon": "제피로스",
+     "start": "2024-06-06",
+     "end": "2024-06-26"
+    }
+   ],
+   "items": [
+    {
+     "name": "제피로스",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 500
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 500
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "프리미엄 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "상급 초월의 정수(옐로우)",
+     "qty": 2
+    },
+    {
+     "name": "상급 초월의 정수(레드)",
+     "qty": 2
+    },
+    {
+     "name": "상급 초월의 정수(블루)",
+     "qty": 2
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 26000.0,
+    "currencyPct": 118.2,
+    "sangchoValue": 3000.0,
+    "knownPct": 131.8,
+    "marketCurrencyValue": 7716,
+    "marketCurrencyPct": 35.1
+   }
+  },
+  {
+   "noticeIds": [
+    20863
+   ],
+   "noticeDate": "2024-05-13",
+   "url": "https://www.dragonvillage.net/notice/20863",
+   "name": "셀마사 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "셀마사",
+     "start": "2024-05-15",
+     "end": "2024-05-31"
+    }
+   ],
+   "items": [
+    {
+     "name": "셀마사",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "프리미엄 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "상급 초월의 정수(옐로우)",
+     "qty": 2
+    },
+    {
+     "name": "상급 초월의 정수(레드)",
+     "qty": 2
+    },
+    {
+     "name": "상급 초월의 정수(블루)",
+     "qty": 2
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "페르시온 결정",
+     "qty": 1
+    },
+    {
+     "name": "중급 강화의 정수",
+     "qty": 3
+    },
+    {
+     "name": "상급 강화의 정수",
+     "qty": 3
+    },
+    {
+     "name": "최상급 강화의 정수",
+     "qty": 2
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 40000.0,
+    "currencyPct": 121.2,
+    "sangchoValue": 3000.0,
+    "knownPct": 130.3,
+    "marketCurrencyValue": 12459,
+    "marketCurrencyPct": 37.8
+   }
+  },
+  {
+   "noticeIds": [
+    20852
+   ],
+   "noticeDate": "2024-04-24",
+   "url": "https://www.dragonvillage.net/notice/20852",
+   "name": "블랙아머 패키지",
+   "price": 22000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "블랙아머 드래곤",
+     "start": "2024-04-25",
+     "end": "2024-05-08"
+    }
+   ],
+   "items": [
+    {
+     "name": "블랙아머",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 500
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 500
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "프리미엄 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "상급 초월의 정수(옐로우)",
+     "qty": 2
+    },
+    {
+     "name": "상급 초월의 정수(레드)",
+     "qty": 2
+    },
+    {
+     "name": "상급 초월의 정수(블루)",
+     "qty": 2
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 26000.0,
+    "currencyPct": 118.2,
+    "sangchoValue": 3000.0,
+    "knownPct": 131.8,
+    "marketCurrencyValue": 7716,
+    "marketCurrencyPct": 35.1
+   }
+  },
+  {
+   "noticeIds": [
+    20848
+   ],
+   "noticeDate": "2024-04-16",
+   "url": "https://www.dragonvillage.net/notice/20848",
+   "name": "프라이드 패키지",
+   "price": 33000,
+   "limit": "2",
+   "noticeSalePeriods": [
+    {
+     "dragon": "프라이드",
+     "start": "2024-04-17",
+     "end": "2024-04-30"
+    }
+   ],
+   "items": [
+    {
+     "name": "프라이드",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "프리미엄 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "상급 초월의 정수(옐로우)",
+     "qty": 2
+    },
+    {
+     "name": "상급 초월의 정수(레드)",
+     "qty": 2
+    },
+    {
+     "name": "상급 초월의 정수(블루)",
+     "qty": 2
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 40000.0,
+    "currencyPct": 121.2,
+    "sangchoValue": 3000.0,
+    "knownPct": 130.3,
+    "marketCurrencyValue": 12459,
+    "marketCurrencyPct": 37.8
+   }
+  },
+  {
+   "noticeIds": [
+    20840
+   ],
+   "noticeDate": "2024-03-21",
+   "url": "https://www.dragonvillage.net/notice/20840",
+   "name": "베리스 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "베리스",
+     "start": "2024-03-23",
+     "end": "2024-04-05"
+    }
+   ],
+   "items": [
+    {
+     "name": "베리스",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "프리미엄 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "상급 초월의 정수(옐로우)",
+     "qty": 2
+    },
+    {
+     "name": "상급 초월의 정수(레드)",
+     "qty": 2
+    },
+    {
+     "name": "상급 초월의 정수(블루)",
+     "qty": 2
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "페르시온 결정",
+     "qty": 1
+    },
+    {
+     "name": "중급 강화의 정수",
+     "qty": 3
+    },
+    {
+     "name": "상급 강화의 정수",
+     "qty": 3
+    },
+    {
+     "name": "최상급 강화의 정수",
+     "qty": 2
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 40000.0,
+    "currencyPct": 121.2,
+    "sangchoValue": 3000.0,
+    "knownPct": 130.3,
+    "marketCurrencyValue": 12459,
+    "marketCurrencyPct": 37.8
+   }
+  },
+  {
+   "noticeIds": [
+    20828
+   ],
+   "noticeDate": "2024-03-11",
+   "url": "https://www.dragonvillage.net/notice/20828",
+   "name": "루살카 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "루살카",
+     "start": "2024-03-15",
+     "end": "2024-03-31"
+    }
+   ],
+   "items": [
+    {
+     "name": "루살카",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "프리미엄 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "상급 초월의 정수(옐로우)",
+     "qty": 2
+    },
+    {
+     "name": "상급 초월의 정수(레드)",
+     "qty": 2
+    },
+    {
+     "name": "상급 초월의 정수(블루)",
+     "qty": 2
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 40000.0,
+    "currencyPct": 121.2,
+    "sangchoValue": 3000.0,
+    "knownPct": 130.3,
+    "marketCurrencyValue": 12459,
+    "marketCurrencyPct": 37.8
+   }
+  },
+  {
+   "noticeIds": [
+    20811
+   ],
+   "noticeDate": "2024-02-08",
+   "url": "https://www.dragonvillage.net/notice/20811",
+   "name": "신년 맞이 패키지1",
+   "price": 12000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "청화풍",
+     "start": "2024-02-13",
+     "end": "2024-02-29"
+    },
+    {
+     "dragon": "플로리안",
+     "start": "2024-02-13",
+     "end": "2024-02-29"
+    },
+    {
+     "dragon": "앳지버",
+     "start": "2024-02-13",
+     "end": "2024-02-29"
+    },
+    {
+     "dragon": "소서러 드래곤",
+     "start": "2024-02-13",
+     "end": "2024-02-29"
+    },
+    {
+     "dragon": "아비온",
+     "start": "2024-02-13",
+     "end": "2024-02-29"
+    },
+    {
+     "dragon": "그레이탄",
+     "start": "2024-02-13",
+     "end": "2024-02-29"
+    }
+   ],
+   "items": [
+    {
+     "name": "청화풍 알",
+     "qty": 1
+    },
+    {
+     "name": "플로리안 알",
+     "qty": 1
+    },
+    {
+     "name": "엣지버 알",
+     "qty": 1
+    },
+    {
+     "name": "소서러 알",
+     "qty": 1
+    },
+    {
+     "name": "아비온 알",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 500
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 100
+    },
+    {
+     "name": "골드",
+     "qty": 200000
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 2
+    },
+    {
+     "name": "강철의 망치",
+     "qty": 3
+    },
+    {
+     "name": "마법의 망치",
+     "qty": 2
+    },
+    {
+     "name": "디트의 망치",
+     "qty": 1
+    },
+    {
+     "name": "합성석",
+     "qty": 50
+    },
+    {
+     "name": "꿈의 공격 +34",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 방어 +34",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 체력 +136",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 14000.0,
+    "currencyPct": 116.7,
+    "sangchoValue": 0.0,
+    "knownPct": 116.7,
+    "marketCurrencyValue": 4743,
+    "marketCurrencyPct": 39.5
+   }
+  },
+  {
+   "noticeIds": [
+    20811
+   ],
+   "noticeDate": "2024-02-08",
+   "url": "https://www.dragonvillage.net/notice/20811",
+   "name": "신년 맞이 패키지2",
+   "price": 22000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "청화풍",
+     "start": "2024-02-13",
+     "end": "2024-02-29"
+    },
+    {
+     "dragon": "플로리안",
+     "start": "2024-02-13",
+     "end": "2024-02-29"
+    },
+    {
+     "dragon": "앳지버",
+     "start": "2024-02-13",
+     "end": "2024-02-29"
+    },
+    {
+     "dragon": "소서러 드래곤",
+     "start": "2024-02-13",
+     "end": "2024-02-29"
+    },
+    {
+     "dragon": "아비온",
+     "start": "2024-02-13",
+     "end": "2024-02-29"
+    },
+    {
+     "dragon": "그레이탄",
+     "start": "2024-02-13",
+     "end": "2024-02-29"
+    }
+   ],
+   "items": [
+    {
+     "name": "그레이탄 알",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 500
+    },
+    {
+     "name": "골드",
+     "qty": 200000
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "강철의 망치",
+     "qty": 3
+    },
+    {
+     "name": "마법의 망치",
+     "qty": 3
+    },
+    {
+     "name": "디트의 망치",
+     "qty": 2
+    },
+    {
+     "name": "합성석",
+     "qty": 100
+    },
+    {
+     "name": "꿈의 공격 +34",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 방어 +34",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 체력 +136",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 37000.0,
+    "currencyPct": 168.2,
+    "sangchoValue": 0.0,
+    "knownPct": 168.2,
+    "marketCurrencyValue": 11716,
+    "marketCurrencyPct": 53.3
+   }
+  },
+  {
+   "noticeIds": [
+    20767
+   ],
+   "noticeDate": "2023-12-08",
+   "url": "https://www.dragonvillage.net/notice/20767",
+   "name": "종합 선물 패키지",
+   "price": 12000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "혼",
+     "start": "2023-12-09",
+     "end": "2024-01-07"
+    }
+   ],
+   "items": [
+    {
+     "name": "혼",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 500
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 100
+    },
+    {
+     "name": "골드",
+     "qty": 200000
+    },
+    {
+     "name": "합성석",
+     "qty": 50
+    },
+    {
+     "name": "페르시온 결정",
+     "qty": 1
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 공격 +33",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 방어 +33",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 체력 +132",
+     "qty": 1
+    },
+    {
+     "name": "강철의 망치",
+     "qty": 3
+    },
+    {
+     "name": "마법의 망치",
+     "qty": 2
+    },
+    {
+     "name": "디트의 망치",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 14000.0,
+    "currencyPct": 116.7,
+    "sangchoValue": 0.0,
+    "knownPct": 116.7,
+    "marketCurrencyValue": 4743,
+    "marketCurrencyPct": 39.5
+   }
+  },
+  {
+   "noticeIds": [
+    20757
+   ],
+   "noticeDate": "2023-11-13",
+   "url": "https://www.dragonvillage.net/notice/20757",
+   "name": "쿠로이 패키지",
+   "price": 22000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "쿠로이 드래곤",
+     "start": "2023-11-14",
+     "end": "2023-11-30"
+    },
+    {
+     "dragon": "거스트 드래곤",
+     "start": "2023-11-14",
+     "end": "2023-11-30"
+    }
+   ],
+   "items": [
+    {
+     "name": "쿠로이의 알",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "Lv-1",
+     "qty": 30
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 3
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 500
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 37000.0,
+    "currencyPct": 168.2,
+    "sangchoValue": 4500.0,
+    "knownPct": 188.6,
+    "marketCurrencyValue": 11716,
+    "marketCurrencyPct": 53.3
+   }
+  },
+  {
+   "noticeIds": [
+    20757
+   ],
+   "noticeDate": "2023-11-13",
+   "url": "https://www.dragonvillage.net/notice/20757",
+   "name": "거스트 패키지",
+   "price": 22000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "쿠로이 드래곤",
+     "start": "2023-11-14",
+     "end": "2023-11-30"
+    },
+    {
+     "dragon": "거스트 드래곤",
+     "start": "2023-11-14",
+     "end": "2023-11-30"
+    }
+   ],
+   "items": [
+    {
+     "name": "거스트의 알",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "Lv-1",
+     "qty": 30
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 3
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 500
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 37000.0,
+    "currencyPct": 168.2,
+    "sangchoValue": 4500.0,
+    "knownPct": 188.6,
+    "marketCurrencyValue": 11716,
+    "marketCurrencyPct": 53.3
+   }
+  },
+  {
+   "noticeIds": [
+    20749
+   ],
+   "noticeDate": "2023-10-27",
+   "url": "https://www.dragonvillage.net/notice/20749",
+   "name": "네뷸라 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "네뷸라",
+     "start": "2023-11-01",
+     "end": "2023-11-14"
+    }
+   ],
+   "items": [
+    {
+     "name": "네뷸라",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "초월의 보석",
+     "qty": 1
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 2
+    },
+    {
+     "name": "페르시온 결정",
+     "qty": 1
+    },
+    {
+     "name": "최상급 강화의 정수",
+     "qty": 2
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 40000.0,
+    "currencyPct": 121.2,
+    "sangchoValue": 3000.0,
+    "knownPct": 130.3,
+    "marketCurrencyValue": 12459,
+    "marketCurrencyPct": 37.8
+   }
+  },
+  {
+   "noticeIds": [
+    20728
+   ],
+   "noticeDate": "2023-09-13",
+   "url": "https://www.dragonvillage.net/notice/20728",
+   "name": "베히모스 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "베히모스",
+     "start": "2023-09-14",
+     "end": "2023-09-27"
+    }
+   ],
+   "items": [
+    {
+     "name": "베히모스",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "초월의 보석",
+     "qty": 1
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 2
+    },
+    {
+     "name": "페르시온 결정",
+     "qty": 1
+    },
+    {
+     "name": "최상급 강화의 정수",
+     "qty": 2
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 40000.0,
+    "currencyPct": 121.2,
+    "sangchoValue": 3000.0,
+    "knownPct": 130.3,
+    "marketCurrencyValue": 12459,
+    "marketCurrencyPct": 37.8
+   }
+  },
+  {
+   "noticeIds": [
+    20722
+   ],
+   "noticeDate": "2023-08-31",
+   "url": "https://www.dragonvillage.net/notice/20722",
+   "name": "시타엘 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "시타엘",
+     "start": "2023-09-01",
+     "end": "2023-09-20"
+    }
+   ],
+   "items": [
+    {
+     "name": "시타엘 알",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "초월의 보석",
+     "qty": 1
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 2
+    },
+    {
+     "name": "페르시온 결정",
+     "qty": 1
+    },
+    {
+     "name": "최상급 강화의 정수",
+     "qty": 2
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 40000.0,
+    "currencyPct": 121.2,
+    "sangchoValue": 3000.0,
+    "knownPct": 130.3,
+    "marketCurrencyValue": 12459,
+    "marketCurrencyPct": 37.8
+   }
+  },
+  {
+   "noticeIds": [
+    20716
+   ],
+   "noticeDate": "2023-08-18",
+   "url": "https://www.dragonvillage.net/notice/20716",
+   "name": "아톤 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "아톤",
+     "start": "2023-08-21",
+     "end": "2023-09-03"
+    }
+   ],
+   "items": [
+    {
+     "name": "아톤",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "초월의 보석",
+     "qty": 1
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 2
+    },
+    {
+     "name": "페르시온 결정",
+     "qty": 1
+    },
+    {
+     "name": "최상급 강화의 정수",
+     "qty": 2
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 40000.0,
+    "currencyPct": 121.2,
+    "sangchoValue": 3000.0,
+    "knownPct": 130.3,
+    "marketCurrencyValue": 12459,
+    "marketCurrencyPct": 37.8
+   }
+  },
+  {
+   "noticeIds": [
+    20715
+   ],
+   "noticeDate": "2023-08-11",
+   "url": "https://www.dragonvillage.net/notice/20715",
+   "name": "이터널 패키지",
+   "price": 22000,
+   "limit": "5",
+   "noticeSalePeriods": [
+    {
+     "dragon": "이터널",
+     "start": "2023-08-12",
+     "end": "2023-08-25"
+    }
+   ],
+   "items": [
+    {
+     "name": "이터널 A",
+     "qty": 7
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 300
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 31000.0,
+    "currencyPct": 140.9,
+    "sangchoValue": 0.0,
+    "knownPct": 140.9,
+    "marketCurrencyValue": 10230,
+    "marketCurrencyPct": 46.5
+   }
+  },
+  {
+   "noticeIds": [
+    20704
+   ],
+   "noticeDate": "2023-07-24",
+   "url": "https://www.dragonvillage.net/notice/20704",
+   "name": "루드라 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "루드라",
+     "start": "2023-08-01",
+     "end": "2023-08-14"
+    }
+   ],
+   "items": [
+    {
+     "name": "루드라 드래곤 알",
+     "qty": 1
+    },
+    {
+     "name": "얼음 조각",
+     "qty": 1200
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 3
+    },
+    {
+     "name": "초월의 보석",
+     "qty": 1
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 500
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 15000.0,
+    "currencyPct": 45.5,
+    "sangchoValue": 4500.0,
+    "knownPct": 59.1,
+    "marketCurrencyValue": 3716,
+    "marketCurrencyPct": 11.3
+   }
+  },
+  {
+   "noticeIds": [
+    20680
+   ],
+   "noticeDate": "2023-06-13",
+   "url": "https://www.dragonvillage.net/notice/20680",
+   "name": "설리반 패키지",
+   "price": 22000,
+   "limit": "5",
+   "noticeSalePeriods": [
+    {
+     "dragon": "라루스",
+     "start": "2023-06-14",
+     "end": "2023-06-27"
+    },
+    {
+     "dragon": "설리반",
+     "start": "2023-06-14",
+     "end": "2023-06-27"
+    }
+   ],
+   "items": [
+    {
+     "name": "설리반 A",
+     "qty": 7
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 300
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 31000.0,
+    "currencyPct": 140.9,
+    "sangchoValue": 0.0,
+    "knownPct": 140.9,
+    "marketCurrencyValue": 10230,
+    "marketCurrencyPct": 46.5
+   }
+  },
+  {
+   "noticeIds": [
+    20680
+   ],
+   "noticeDate": "2023-06-13",
+   "url": "https://www.dragonvillage.net/notice/20680",
+   "name": "라루스 패키지",
+   "price": 22000,
+   "limit": "5",
+   "noticeSalePeriods": [
+    {
+     "dragon": "라루스",
+     "start": "2023-06-14",
+     "end": "2023-06-27"
+    },
+    {
+     "dragon": "설리반",
+     "start": "2023-06-14",
+     "end": "2023-06-27"
+    }
+   ],
+   "items": [
+    {
+     "name": "라루스 A",
+     "qty": 7
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 300
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 31000.0,
+    "currencyPct": 140.9,
+    "sangchoValue": 0.0,
+    "knownPct": 140.9,
+    "marketCurrencyValue": 10230,
+    "marketCurrencyPct": 46.5
+   }
+  },
+  {
+   "noticeIds": [
+    20676
+   ],
+   "noticeDate": "2023-05-30",
+   "url": "https://www.dragonvillage.net/notice/20676",
+   "name": "화이트썬더 패키지",
+   "price": 79000,
+   "limit": "1",
+   "noticeSalePeriods": [
+    {
+     "dragon": "화이트썬더 드래곤",
+     "start": "2023-06-01",
+     "end": "2023-06-14"
+    }
+   ],
+   "items": [
+    {
+     "name": "화이트썬더 알",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 2000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 1000
+    },
+    {
+     "name": "강림 강화곤",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 100
+    },
+    {
+     "name": "정령 10+1 뽑기권",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 74000.0,
+    "currencyPct": 93.7,
+    "sangchoValue": 0.0,
+    "knownPct": 93.7,
+    "marketCurrencyValue": 23432,
+    "marketCurrencyPct": 29.7
+   }
+  },
+  {
+   "noticeIds": [
+    20669
+   ],
+   "noticeDate": "2023-05-17",
+   "url": "https://www.dragonvillage.net/notice/20669",
+   "name": "암두시아스 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "암두시아스",
+     "start": "2023-05-18",
+     "end": "2023-05-31"
+    }
+   ],
+   "items": [
+    {
+     "name": "암두시아스의 알",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "초월의 보석",
+     "qty": 1
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 2
+    },
+    {
+     "name": "페르시온 결정",
+     "qty": 1
+    },
+    {
+     "name": "최상급 강화의 정수",
+     "qty": 2
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 40000.0,
+    "currencyPct": 121.2,
+    "sangchoValue": 3000.0,
+    "knownPct": 130.3,
+    "marketCurrencyValue": 12459,
+    "marketCurrencyPct": 37.8
+   }
+  },
+  {
+   "noticeIds": [
+    20646
+   ],
+   "noticeDate": "2023-03-29",
+   "url": "https://www.dragonvillage.net/notice/20646",
+   "name": "스타터 패키지",
+   "price": 4400,
+   "limit": "1",
+   "noticeSalePeriods": [
+    {
+     "dragon": "아자크",
+     "start": "2023-03-30",
+     "end": "2023-04-12"
+    }
+   ],
+   "items": [],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 0.0,
+    "currencyPct": 0.0,
+    "sangchoValue": 0.0,
+    "knownPct": 0.0,
+    "marketCurrencyValue": 0,
+    "marketCurrencyPct": 0.0
+   }
+  },
+  {
+   "noticeIds": [
+    20646
+   ],
+   "noticeDate": "2023-03-29",
+   "url": "https://www.dragonvillage.net/notice/20646",
+   "name": "초보자 패키지",
+   "price": 33000,
+   "limit": "1",
+   "noticeSalePeriods": [
+    {
+     "dragon": "아자크",
+     "start": "2023-03-30",
+     "end": "2023-04-12"
+    }
+   ],
+   "items": [],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 0.0,
+    "currencyPct": 0.0,
+    "sangchoValue": 0.0,
+    "knownPct": 0.0,
+    "marketCurrencyValue": 0,
+    "marketCurrencyPct": 0.0
+   }
+  },
+  {
+   "noticeIds": [
+    20644
+   ],
+   "noticeDate": "2023-03-16",
+   "url": "https://www.dragonvillage.net/notice/20644",
+   "name": "유니버스 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "유니버스",
+     "start": "2023-03-21",
+     "end": "2023-04-03"
+    }
+   ],
+   "items": [
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "초월의 보석",
+     "qty": 1
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 2
+    },
+    {
+     "name": "페르시온 결정",
+     "qty": 1
+    },
+    {
+     "name": "최상급 강화의 정수",
+     "qty": 2
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "유니버스 드래곤 알",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 40000.0,
+    "currencyPct": 121.2,
+    "sangchoValue": 3000.0,
+    "knownPct": 130.3,
+    "marketCurrencyValue": 12459,
+    "marketCurrencyPct": 37.8
+   }
+  },
+  {
+   "noticeIds": [
+    20640
+   ],
+   "noticeDate": "2023-03-07",
+   "url": "https://www.dragonvillage.net/notice/20640",
+   "name": "아말테아 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "아말테아",
+     "start": "2023-03-11",
+     "end": "2023-03-24"
+    }
+   ],
+   "items": [
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 500
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "최고급 정령 뽑기권",
+     "qty": 3
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "아말테아 드래곤 알",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 37000.0,
+    "currencyPct": 112.1,
+    "sangchoValue": 0.0,
+    "knownPct": 112.1,
+    "marketCurrencyValue": 11716,
+    "marketCurrencyPct": 35.5
+   }
+  },
+  {
+   "noticeIds": [
+    20638
+   ],
+   "noticeDate": "2023-03-06",
+   "url": "https://www.dragonvillage.net/notice/20638",
+   "name": "스트라 패키지",
+   "price": 22000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "말덱",
+     "start": "2023-03-07",
+     "end": "2023-03-20"
+    },
+    {
+     "dragon": "스트라",
+     "start": "2023-03-07",
+     "end": "2023-03-20"
+    }
+   ],
+   "items": [
+    {
+     "name": "다이아",
+     "qty": 1500
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "스트라 A알",
+     "qty": 7
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 33000.0,
+    "currencyPct": 150.0,
+    "sangchoValue": 0.0,
+    "knownPct": 150.0,
+    "marketCurrencyValue": 12000,
+    "marketCurrencyPct": 54.5
+   }
+  },
+  {
+   "noticeIds": [
+    20638
+   ],
+   "noticeDate": "2023-03-06",
+   "url": "https://www.dragonvillage.net/notice/20638",
+   "name": "말덱 패키지",
+   "price": 22000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "말덱",
+     "start": "2023-03-07",
+     "end": "2023-03-20"
+    },
+    {
+     "dragon": "스트라",
+     "start": "2023-03-07",
+     "end": "2023-03-20"
+    }
+   ],
+   "items": [
+    {
+     "name": "다이아",
+     "qty": 1500
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "말덱 A알",
+     "qty": 7
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 33000.0,
+    "currencyPct": 150.0,
+    "sangchoValue": 0.0,
+    "knownPct": 150.0,
+    "marketCurrencyValue": 12000,
+    "marketCurrencyPct": 54.5
+   }
+  },
+  {
+   "noticeIds": [
+    20628
+   ],
+   "noticeDate": "2023-02-10",
+   "url": "https://www.dragonvillage.net/notice/20628",
+   "name": "와일드 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "와일드 드래곤",
+     "start": "2023-02-11",
+     "end": "2023-02-24"
+    }
+   ],
+   "items": [
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 500
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "초월의 보석",
+     "qty": 1
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 3
+    },
+    {
+     "name": "페르시온 결정",
+     "qty": 1
+    },
+    {
+     "name": "최상급 강화의 정수",
+     "qty": 2
+    },
+    {
+     "name": "상급 강화의 정수",
+     "qty": 3
+    },
+    {
+     "name": "중급 강화의 정수",
+     "qty": 3
+    },
+    {
+     "name": "와일드 드래곤 알",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 37000.0,
+    "currencyPct": 112.1,
+    "sangchoValue": 4500.0,
+    "knownPct": 125.8,
+    "marketCurrencyValue": 11716,
+    "marketCurrencyPct": 35.5
+   }
+  },
+  {
+   "noticeIds": [
+    20625
+   ],
+   "noticeDate": "2023-01-31",
+   "url": "https://www.dragonvillage.net/notice/20625",
+   "name": "렉스톤 패키지",
+   "price": 55000,
+   "limit": "1",
+   "noticeSalePeriods": [
+    {
+     "dragon": "렉스톤",
+     "start": "2023-02-02",
+     "end": "2023-02-15"
+    }
+   ],
+   "items": [
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 1000
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "렉스톤 드래곤 알",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 52000.0,
+    "currencyPct": 94.5,
+    "sangchoValue": 0.0,
+    "knownPct": 94.5,
+    "marketCurrencyValue": 15432,
+    "marketCurrencyPct": 28.1
+   }
+  },
+  {
+   "noticeIds": [
+    20605
+   ],
+   "noticeDate": "2022-12-29",
+   "url": "https://www.dragonvillage.net/notice/20605",
+   "name": "신년맞이 패키지1",
+   "price": 12000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "청화풍",
+     "start": "2023-01-01",
+     "end": "2023-01-31"
+    },
+    {
+     "dragon": "플로리안",
+     "start": "2023-01-01",
+     "end": "2023-01-31"
+    },
+    {
+     "dragon": "앳지버",
+     "start": "2023-01-01",
+     "end": "2023-01-31"
+    },
+    {
+     "dragon": "소서러 드래곤",
+     "start": "2023-01-01",
+     "end": "2023-01-31"
+    },
+    {
+     "dragon": "아비온",
+     "start": "2023-01-01",
+     "end": "2023-01-31"
+    },
+    {
+     "dragon": "그레이탄",
+     "start": "2023-01-09",
+     "end": "2023-02-07"
+    }
+   ],
+   "items": [
+    {
+     "name": "다이아",
+     "qty": 500
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 100
+    },
+    {
+     "name": "골드",
+     "qty": 200000
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 2
+    },
+    {
+     "name": "강철의 망치",
+     "qty": 3
+    },
+    {
+     "name": "마법의 망치",
+     "qty": 2
+    },
+    {
+     "name": "디트의 망치",
+     "qty": 1
+    },
+    {
+     "name": "합성석",
+     "qty": 50
+    },
+    {
+     "name": "꿈의 공격 +32",
+     "qty": 2
+    },
+    {
+     "name": "꿈의 방어 +32",
+     "qty": 2
+    },
+    {
+     "name": "꿈의 체력 +128",
+     "qty": 2
+    },
+    {
+     "name": "청화풍 드래곤 알",
+     "qty": 1
+    },
+    {
+     "name": "플로리안 드래곤 알",
+     "qty": 1
+    },
+    {
+     "name": "엣지버 드래곤 알",
+     "qty": 1
+    },
+    {
+     "name": "소서러 드래곤 알",
+     "qty": 1
+    },
+    {
+     "name": "아비온 드래곤 알",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 14000.0,
+    "currencyPct": 116.7,
+    "sangchoValue": 0.0,
+    "knownPct": 116.7,
+    "marketCurrencyValue": 4743,
+    "marketCurrencyPct": 39.5
+   }
+  },
+  {
+   "noticeIds": [
+    20605
+   ],
+   "noticeDate": "2022-12-29",
+   "url": "https://www.dragonvillage.net/notice/20605",
+   "name": "신년맞이 패키지2",
+   "price": 22000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "청화풍",
+     "start": "2023-01-01",
+     "end": "2023-01-31"
+    },
+    {
+     "dragon": "플로리안",
+     "start": "2023-01-01",
+     "end": "2023-01-31"
+    },
+    {
+     "dragon": "앳지버",
+     "start": "2023-01-01",
+     "end": "2023-01-31"
+    },
+    {
+     "dragon": "소서러 드래곤",
+     "start": "2023-01-01",
+     "end": "2023-01-31"
+    },
+    {
+     "dragon": "아비온",
+     "start": "2023-01-01",
+     "end": "2023-01-31"
+    },
+    {
+     "dragon": "그레이탄",
+     "start": "2023-01-09",
+     "end": "2023-02-07"
+    }
+   ],
+   "items": [
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 500
+    },
+    {
+     "name": "골드",
+     "qty": 200000
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "합성석",
+     "qty": 100
+    },
+    {
+     "name": "디트의 망치",
+     "qty": 2
+    },
+    {
+     "name": "강철의 망치",
+     "qty": 3
+    },
+    {
+     "name": "마법의 망치",
+     "qty": 3
+    },
+    {
+     "name": "꿈의 공격 +32",
+     "qty": 2
+    },
+    {
+     "name": "꿈의 방어 +32",
+     "qty": 2
+    },
+    {
+     "name": "꿈의 체력 +128",
+     "qty": 2
+    },
+    {
+     "name": "그레이탄 드래곤 알",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 37000.0,
+    "currencyPct": 168.2,
+    "sangchoValue": 0.0,
+    "knownPct": 168.2,
+    "marketCurrencyValue": 11716,
+    "marketCurrencyPct": 53.3
+   }
+  },
+  {
+   "noticeIds": [
+    20597
+   ],
+   "noticeDate": "2022-12-16",
+   "url": "https://www.dragonvillage.net/notice/20597",
+   "name": "프라이드 패키지",
+   "price": 33000,
+   "limit": "2",
+   "noticeSalePeriods": [
+    {
+     "dragon": "프라이드",
+     "start": "2022-12-17",
+     "end": "2022-12-31"
+    }
+   ],
+   "items": [
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "페르시온 결정",
+     "qty": 1
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 3
+    },
+    {
+     "name": "중급 강화의 정수",
+     "qty": 3
+    },
+    {
+     "name": "상급 강화의 정수",
+     "qty": 3
+    },
+    {
+     "name": "최상급 강화의 정수",
+     "qty": 2
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "초월의 보석",
+     "qty": 2
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "프라이드 드래곤 알",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 22000.0,
+    "currencyPct": 66.7,
+    "sangchoValue": 4500.0,
+    "knownPct": 80.3,
+    "marketCurrencyValue": 8000,
+    "marketCurrencyPct": 24.2
+   }
+  },
+  {
+   "noticeIds": [
+    20596
+   ],
+   "noticeDate": "2022-12-13",
+   "url": "https://www.dragonvillage.net/notice/20596",
+   "name": "셀마사 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "셀마사",
+     "start": "2022-12-15",
+     "end": "2022-12-31"
+    }
+   ],
+   "items": [
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "초월의 보석",
+     "qty": 1
+    },
+    {
+     "name": "페르시온 결정",
+     "qty": 1
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 3
+    },
+    {
+     "name": "중급 강화의 정수",
+     "qty": 3
+    },
+    {
+     "name": "상급 강화의 정수",
+     "qty": 3
+    },
+    {
+     "name": "최상급 강화의 정수",
+     "qty": 2
+    },
+    {
+     "name": "셀마사 드래곤 알",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 22000.0,
+    "currencyPct": 66.7,
+    "sangchoValue": 4500.0,
+    "knownPct": 80.3,
+    "marketCurrencyValue": 8000,
+    "marketCurrencyPct": 24.2
+   }
+  },
+  {
+   "noticeIds": [
+    20595
+   ],
+   "noticeDate": "2022-12-06",
+   "url": "https://www.dragonvillage.net/notice/20595",
+   "name": "종합 선물 패키지 1",
+   "price": 12000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "혼",
+     "start": "2022-12-08",
+     "end": "2023-01-10"
+    },
+    {
+     "dragon": "지진",
+     "start": "2022-12-15",
+     "end": "2023-01-17"
+    }
+   ],
+   "items": [
+    {
+     "name": "다이아",
+     "qty": 500
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 100
+    },
+    {
+     "name": "골드",
+     "qty": 200000
+    },
+    {
+     "name": "페르시온 결정",
+     "qty": 1
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "강철의 망치",
+     "qty": 3
+    },
+    {
+     "name": "디트의 망치",
+     "qty": 1
+    },
+    {
+     "name": "합성석",
+     "qty": 50
+    },
+    {
+     "name": "꿈의 공격 +33",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 방어 +33",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 체력 +132",
+     "qty": 1
+    },
+    {
+     "name": "혼 드래곤 알",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 14000.0,
+    "currencyPct": 116.7,
+    "sangchoValue": 0.0,
+    "knownPct": 116.7,
+    "marketCurrencyValue": 4743,
+    "marketCurrencyPct": 39.5
+   }
+  },
+  {
+   "noticeIds": [
+    20595
+   ],
+   "noticeDate": "2022-12-06",
+   "url": "https://www.dragonvillage.net/notice/20595",
+   "name": "종합 선물 패키지 2",
+   "price": 12000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "혼",
+     "start": "2022-12-08",
+     "end": "2023-01-10"
+    },
+    {
+     "dragon": "지진",
+     "start": "2022-12-15",
+     "end": "2023-01-17"
+    }
+   ],
+   "items": [
+    {
+     "name": "다이아",
+     "qty": 500
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 100
+    },
+    {
+     "name": "골드",
+     "qty": 200000
+    },
+    {
+     "name": "페르시온 결정",
+     "qty": 1
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "강철의 망치",
+     "qty": 3
+    },
+    {
+     "name": "디트의 망치",
+     "qty": 1
+    },
+    {
+     "name": "합성석",
+     "qty": 50
+    },
+    {
+     "name": "꿈의 공격 +33",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 방어 +33",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 체력 +132",
+     "qty": 1
+    },
+    {
+     "name": "지진 드래곤 알",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 14000.0,
+    "currencyPct": 116.7,
+    "sangchoValue": 0.0,
+    "knownPct": 116.7,
+    "marketCurrencyValue": 4743,
+    "marketCurrencyPct": 39.5
+   }
+  },
+  {
+   "noticeIds": [
+    20586
+   ],
+   "noticeDate": "2022-10-26",
+   "url": "https://www.dragonvillage.net/notice/20586",
+   "name": "라센티 패키지",
+   "price": 49000,
+   "limit": "1",
+   "noticeSalePeriods": [
+    {
+     "dragon": "라센티",
+     "start": "2022-11-01",
+     "end": "2022-11-14"
+    }
+   ],
+   "items": [
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "초월의 보석",
+     "qty": 1
+    },
+    {
+     "name": "강림 강화곤",
+     "qty": 1
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 1
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "최고급 정령 뽑기권",
+     "qty": 5
+    },
+    {
+     "name": "라센티 드래곤 알",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 22000.0,
+    "currencyPct": 44.9,
+    "sangchoValue": 1500.0,
+    "knownPct": 48.0,
+    "marketCurrencyValue": 8000,
+    "marketCurrencyPct": 16.3
+   }
+  },
+  {
+   "noticeIds": [
+    20584
+   ],
+   "noticeDate": "2022-10-18",
+   "url": "https://www.dragonvillage.net/notice/20584",
+   "name": "레오벡터 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "허리케인",
+     "start": "2022-10-18",
+     "end": "2022-10-31"
+    },
+    {
+     "dragon": "레오벡터",
+     "start": "2022-10-18",
+     "end": "2022-10-31"
+    }
+   ],
+   "items": [
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "초월의 보석",
+     "qty": 1
+    },
+    {
+     "name": "페르시온 결정",
+     "qty": 1
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 3
+    },
+    {
+     "name": "중급 강화의 정수",
+     "qty": 3
+    },
+    {
+     "name": "상급 강화의 정수",
+     "qty": 3
+    },
+    {
+     "name": "최상급 강화의 정수",
+     "qty": 2
+    },
+    {
+     "name": "레오벡터 드래곤 알",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 22000.0,
+    "currencyPct": 66.7,
+    "sangchoValue": 4500.0,
+    "knownPct": 80.3,
+    "marketCurrencyValue": 8000,
+    "marketCurrencyPct": 24.2
+   }
+  },
+  {
+   "noticeIds": [
+    20582
+   ],
+   "noticeDate": "2022-10-06",
+   "url": "https://www.dragonvillage.net/notice/20582",
+   "name": "돌아온 블랙 아머 패키지",
+   "price": 22000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "블랙아머 드래곤",
+     "start": "2022-10-07",
+     "end": "2022-10-20"
+    }
+   ],
+   "items": [
+    {
+     "name": "다이아",
+     "qty": 2000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 1000
+    },
+    {
+     "name": "골드",
+     "qty": 10000000
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "블랙 아머 드래곤 알",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 74000.0,
+    "currencyPct": 336.4,
+    "sangchoValue": 0.0,
+    "knownPct": 336.4,
+    "marketCurrencyValue": 23432,
+    "marketCurrencyPct": 106.5
+   }
+  },
+  {
+   "noticeIds": [
+    20570
+   ],
+   "noticeDate": "2022-08-30",
+   "url": "https://www.dragonvillage.net/notice/20570",
+   "name": "베리스 패키지",
+   "price": 33000,
+   "limit": "2",
+   "noticeSalePeriods": [
+    {
+     "dragon": "베리스",
+     "start": "2022-09-01",
+     "end": "2022-09-07"
+    },
+    {
+     "dragon": "미스핏",
+     "start": "2022-09-01",
+     "end": "2022-09-07"
+    }
+   ],
+   "items": [
+    {
+     "name": "베리스",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "페르시온 결정",
+     "qty": 1
+    },
+    {
+     "name": "중급 강화의 정수",
+     "qty": 3
+    },
+    {
+     "name": "상급 강화의 정수",
+     "qty": 3
+    },
+    {
+     "name": "최상급 강화의 정수",
+     "qty": 2
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 3
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "초월의 보석",
+     "qty": 2
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 22000.0,
+    "currencyPct": 66.7,
+    "sangchoValue": 4500.0,
+    "knownPct": 80.3,
+    "marketCurrencyValue": 8000,
+    "marketCurrencyPct": 24.2
+   }
+  },
+  {
+   "noticeIds": [
+    20570
+   ],
+   "noticeDate": "2022-08-30",
+   "url": "https://www.dragonvillage.net/notice/20570",
+   "name": "미스핏 패키지",
+   "price": 49000,
+   "limit": "1",
+   "noticeSalePeriods": [
+    {
+     "dragon": "베리스",
+     "start": "2022-09-01",
+     "end": "2022-09-07"
+    },
+    {
+     "dragon": "미스핏",
+     "start": "2022-09-01",
+     "end": "2022-09-07"
+    }
+   ],
+   "items": [
+    {
+     "name": "미스핏",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "강림 강화곤",
+     "qty": 1
+    },
+    {
+     "name": "상급 초월의 정수 세트",
+     "qty": 3
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "초월의 보석",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 22000.0,
+    "currencyPct": 44.9,
+    "sangchoValue": 4500.0,
+    "knownPct": 54.1,
+    "marketCurrencyValue": 8000,
+    "marketCurrencyPct": 16.3
+   }
+  },
+  {
+   "noticeIds": [
+    20567
+   ],
+   "noticeDate": "2022-08-19",
+   "url": "https://www.dragonvillage.net/notice/20567",
+   "name": "신속의 날개 패키지",
+   "price": 22000,
+   "limit": null,
+   "noticeSalePeriods": [
+    {
+     "dragon": "솔라",
+     "start": "2022-08-19",
+     "end": "2022-09-05"
+    },
+    {
+     "dragon": "포폰",
+     "start": "2022-08-19",
+     "end": "2022-09-05"
+    },
+    {
+     "dragon": "제피로스",
+     "start": "2022-08-19",
+     "end": "2022-09-05"
+    }
+   ],
+   "items": [
+    {
+     "name": "제피로스",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 2
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "캡슐 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "Lv-1",
+     "qty": 30
+    },
+    {
+     "name": "각성 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "다이아",
+     "qty": 500
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 500
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 26000.0,
+    "currencyPct": 118.2,
+    "sangchoValue": 0.0,
+    "knownPct": 118.2,
+    "marketCurrencyValue": 7716,
+    "marketCurrencyPct": 35.1
+   }
+  },
+  {
+   "noticeIds": [
+    20567
+   ],
+   "noticeDate": "2022-08-19",
+   "url": "https://www.dragonvillage.net/notice/20567",
+   "name": "찬란한 태양 패키지",
+   "price": 22000,
+   "limit": null,
+   "noticeSalePeriods": [
+    {
+     "dragon": "솔라",
+     "start": "2022-08-19",
+     "end": "2022-09-05"
+    },
+    {
+     "dragon": "포폰",
+     "start": "2022-08-19",
+     "end": "2022-09-05"
+    },
+    {
+     "dragon": "제피로스",
+     "start": "2022-08-19",
+     "end": "2022-09-05"
+    }
+   ],
+   "items": [
+    {
+     "name": "솔라",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 2
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "캡슐 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "Lv-1",
+     "qty": 30
+    },
+    {
+     "name": "각성 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "다이아",
+     "qty": 500
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 500
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 26000.0,
+    "currencyPct": 118.2,
+    "sangchoValue": 0.0,
+    "knownPct": 118.2,
+    "marketCurrencyValue": 7716,
+    "marketCurrencyPct": 35.1
+   }
+  },
+  {
+   "noticeIds": [
+    20567
+   ],
+   "noticeDate": "2022-08-19",
+   "url": "https://www.dragonvillage.net/notice/20567",
+   "name": "평온의 대지 패키지",
+   "price": 22000,
+   "limit": null,
+   "noticeSalePeriods": [
+    {
+     "dragon": "솔라",
+     "start": "2022-08-19",
+     "end": "2022-09-05"
+    },
+    {
+     "dragon": "포폰",
+     "start": "2022-08-19",
+     "end": "2022-09-05"
+    },
+    {
+     "dragon": "제피로스",
+     "start": "2022-08-19",
+     "end": "2022-09-05"
+    }
+   ],
+   "items": [
+    {
+     "name": "포폰",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 2
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "캡슐 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "Lv-1",
+     "qty": 30
+    },
+    {
+     "name": "각성 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "다이아",
+     "qty": 500
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 500
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 26000.0,
+    "currencyPct": 118.2,
+    "sangchoValue": 0.0,
+    "knownPct": 118.2,
+    "marketCurrencyValue": 7716,
+    "marketCurrencyPct": 35.1
+   }
+  },
+  {
+   "noticeIds": [
+    20412
+   ],
+   "noticeDate": "2021-06-15",
+   "url": "https://www.dragonvillage.net/notice/20412",
+   "name": "쿠로이 패키지",
+   "price": 22000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "쿠로이 드래곤",
+     "start": null,
+     "end": null
+    },
+    {
+     "dragon": "그레이탄",
+     "start": null,
+     "end": null
+    },
+    {
+     "dragon": "미스핏",
+     "start": null,
+     "end": null
+    }
+   ],
+   "items": [
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "초월의 보석",
+     "qty": 1
+    },
+    {
+     "name": "상급 초월의 정수(옐로우)",
+     "qty": 3
+    },
+    {
+     "name": "상급 초월의 정수(레드)",
+     "qty": 3
+    },
+    {
+     "name": "상급 초월의 정수(블루)",
+     "qty": 3
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "쿠로이 드래곤의 알",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 22000.0,
+    "currencyPct": 100.0,
+    "sangchoValue": 4500.0,
+    "knownPct": 120.5,
+    "marketCurrencyValue": 8000,
+    "marketCurrencyPct": 36.4
+   }
+  },
+  {
+   "noticeIds": [
+    20412
+   ],
+   "noticeDate": "2021-06-15",
+   "url": "https://www.dragonvillage.net/notice/20412",
+   "name": "그레이탄 패키지",
+   "price": 22000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "쿠로이 드래곤",
+     "start": null,
+     "end": null
+    },
+    {
+     "dragon": "그레이탄",
+     "start": null,
+     "end": null
+    },
+    {
+     "dragon": "미스핏",
+     "start": null,
+     "end": null
+    }
+   ],
+   "items": [
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "초월의 보석",
+     "qty": 1
+    },
+    {
+     "name": "상급 초월의 정수(옐로우)",
+     "qty": 3
+    },
+    {
+     "name": "상급 초월의 정수(레드)",
+     "qty": 3
+    },
+    {
+     "name": "상급 초월의 정수(블루)",
+     "qty": 3
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "그레이탄의 알",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 22000.0,
+    "currencyPct": 100.0,
+    "sangchoValue": 4500.0,
+    "knownPct": 120.5,
+    "marketCurrencyValue": 8000,
+    "marketCurrencyPct": 36.4
+   }
+  },
+  {
+   "noticeIds": [
+    20412
+   ],
+   "noticeDate": "2021-06-15",
+   "url": "https://www.dragonvillage.net/notice/20412",
+   "name": "미스핏 패키지",
+   "price": 49000,
+   "limit": "1",
+   "noticeSalePeriods": [
+    {
+     "dragon": "쿠로이 드래곤",
+     "start": null,
+     "end": null
+    },
+    {
+     "dragon": "그레이탄",
+     "start": null,
+     "end": null
+    },
+    {
+     "dragon": "미스핏",
+     "start": null,
+     "end": null
+    }
+   ],
+   "items": [
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "강림 강화곤의 알",
+     "qty": 1
+    },
+    {
+     "name": "미스핏의 알",
+     "qty": 1
+    },
+    {
+     "name": "상급 초월의 정수(옐로우)",
+     "qty": 3
+    },
+    {
+     "name": "상급 초월의 정수(레드)",
+     "qty": 3
+    },
+    {
+     "name": "상급 초월의 정수(블루)",
+     "qty": 3
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "초월의 보석",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 22000.0,
+    "currencyPct": 44.9,
+    "sangchoValue": 4500.0,
+    "knownPct": 54.1,
+    "marketCurrencyValue": 8000,
+    "marketCurrencyPct": 16.3
+   }
+  },
+  {
+   "noticeIds": [
+    20404
+   ],
+   "noticeDate": "2021-05-31",
+   "url": "https://www.dragonvillage.net/notice/20404",
+   "name": "렉몰리버스 패키지",
+   "price": 33000,
+   "limit": "1",
+   "noticeSalePeriods": [
+    {
+     "dragon": "렉몰 리버스",
+     "start": "2021-06-01",
+     "end": "2021-06-07"
+    }
+   ],
+   "items": [],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 0.0,
+    "currencyPct": 0.0,
+    "sangchoValue": 0.0,
+    "knownPct": 0.0,
+    "marketCurrencyValue": 0,
+    "marketCurrencyPct": 0.0
+   }
+  },
+  {
+   "noticeIds": [
+    20377
+   ],
+   "noticeDate": "2021-03-31",
+   "url": "https://www.dragonvillage.net/notice/20377",
+   "name": "아자크 패키지",
+   "price": 33000,
+   "limit": "1",
+   "noticeSalePeriods": [
+    {
+     "dragon": "아자크",
+     "start": "2021-04-01",
+     "end": "2021-04-07"
+    }
+   ],
+   "items": [],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 0.0,
+    "currencyPct": 0.0,
+    "sangchoValue": 0.0,
+    "knownPct": 0.0,
+    "marketCurrencyValue": 0,
+    "marketCurrencyPct": 0.0
+   }
+  },
+  {
+   "noticeIds": [
+    20372
+   ],
+   "noticeDate": "2021-03-22",
+   "url": "https://www.dragonvillage.net/notice/20372",
+   "name": "강림 강화곤 패키지",
+   "price": 22000,
+   "limit": "월 1",
+   "noticeSalePeriods": [
+    {
+     "dragon": "강림 강화곤",
+     "start": null,
+     "end": null
+    }
+   ],
+   "items": [
+    {
+     "name": "강림 강화곤",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "Lv+1",
+     "qty": 45
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 0.0,
+    "currencyPct": 0.0,
+    "sangchoValue": 0.0,
+    "knownPct": 0.0,
+    "marketCurrencyValue": 0,
+    "marketCurrencyPct": 0.0
+   }
+  },
+  {
+   "noticeIds": [
+    20372
+   ],
+   "noticeDate": "2021-03-22",
+   "url": "https://www.dragonvillage.net/notice/20372",
+   "name": "더블 강림 강화곤 패키지",
+   "price": 33000,
+   "limit": "월 1",
+   "noticeSalePeriods": [
+    {
+     "dragon": "강림 강화곤",
+     "start": null,
+     "end": null
+    }
+   ],
+   "items": [
+    {
+     "name": "강림 강화곤",
+     "qty": 2
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 2
+    },
+    {
+     "name": "Lv+1",
+     "qty": 90
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 0.0,
+    "currencyPct": 0.0,
+    "sangchoValue": 0.0,
+    "knownPct": 0.0,
+    "marketCurrencyValue": 0,
+    "marketCurrencyPct": 0.0
+   }
+  },
+  {
+   "noticeIds": [
+    20372
+   ],
+   "noticeDate": "2021-03-22",
+   "url": "https://www.dragonvillage.net/notice/20372",
+   "name": "정령 귀속 해제 패키지",
+   "price": 15000,
+   "limit": "주 2",
+   "noticeSalePeriods": [
+    {
+     "dragon": "강림 강화곤",
+     "start": null,
+     "end": null
+    }
+   ],
+   "items": [
+    {
+     "name": "최고급 정령 뽑기권",
+     "qty": 5
+    },
+    {
+     "name": "디바인 스톤",
+     "qty": 1500
+    },
+    {
+     "name": "드래곤 정령 해제권",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 0.0,
+    "currencyPct": 0.0,
+    "sangchoValue": 0.0,
+    "knownPct": 0.0,
+    "marketCurrencyValue": 0,
+    "marketCurrencyPct": 0.0
+   }
+  },
+  {
+   "noticeIds": [
+    20362
+   ],
+   "noticeDate": "2021-03-08",
+   "url": "https://www.dragonvillage.net/notice/20362",
+   "name": "단계추가패키지 베놈드래곤",
+   "price": 22000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "베놈 드래곤",
+     "start": "2021-03-10",
+     "end": "2021-03-16"
+    },
+    {
+     "dragon": "베히모스",
+     "start": "2021-03-10",
+     "end": "2021-03-16"
+    }
+   ],
+   "items": [],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 0.0,
+    "currencyPct": 0.0,
+    "sangchoValue": 0.0,
+    "knownPct": 0.0,
+    "marketCurrencyValue": 0,
+    "marketCurrencyPct": 0.0
+   }
+  },
+  {
+   "noticeIds": [
+    20362
+   ],
+   "noticeDate": "2021-03-08",
+   "url": "https://www.dragonvillage.net/notice/20362",
+   "name": "단계추가패키지 베히모스",
+   "price": 22000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "베놈 드래곤",
+     "start": "2021-03-10",
+     "end": "2021-03-16"
+    },
+    {
+     "dragon": "베히모스",
+     "start": "2021-03-10",
+     "end": "2021-03-16"
+    }
+   ],
+   "items": [],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 0.0,
+    "currencyPct": 0.0,
+    "sangchoValue": 0.0,
+    "knownPct": 0.0,
+    "marketCurrencyValue": 0,
+    "marketCurrencyPct": 0.0
+   }
+  },
+  {
+   "noticeIds": [
+    20359
+   ],
+   "noticeDate": "2021-02-28",
+   "url": "https://www.dragonvillage.net/notice/20359",
+   "name": "베리스 패키지",
+   "price": null,
+   "limit": null,
+   "noticeSalePeriods": [
+    {
+     "dragon": "베리스",
+     "start": "2021-03-01",
+     "end": "2021-03-06"
+    }
+   ],
+   "items": [
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "페르시온 결정",
+     "qty": 1
+    },
+    {
+     "name": "중급 강화의 정수",
+     "qty": 3
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "최상급 강화의 정수",
+     "qty": 2
+    },
+    {
+     "name": "상급 강화의 정수",
+     "qty": 3
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "상급 초월의 정수(옐로우)",
+     "qty": 3
+    },
+    {
+     "name": "상급 초월의 정수(레드)",
+     "qty": 3
+    },
+    {
+     "name": "상급 초월의 정수(블루)",
+     "qty": 3
+    },
+    {
+     "name": "베리스",
+     "qty": 1
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "초월의 보석",
+     "qty": 2
+    }
+   ],
+   "nameUncertain": false
+  },
+  {
+   "noticeIds": [
+    20118
+   ],
+   "noticeDate": "2020-05-11",
+   "url": "https://www.dragonvillage.net/notice/20118",
+   "name": "(문라이트/바르라아/히드라곤)",
+   "price": null,
+   "limit": null,
+   "noticeSalePeriods": [
+    {
+     "dragon": "문라이트",
+     "start": "2020-05-13",
+     "end": "2020-05-19"
+    }
+   ],
+   "items": [
+    {
+     "name": "문라이트 알",
+     "qty": 1
+    },
+    {
+     "name": "바르라아 알",
+     "qty": 1
+    },
+    {
+     "name": "히드라곤 알",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "다이아",
+     "qty": 2000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 1000
+    },
+    {
+     "name": "골드",
+     "qty": 10000000
+    }
+   ],
+   "nameUncertain": true
+  },
+  {
+   "noticeIds": [
+    20070
+   ],
+   "noticeDate": "2020-03-27",
+   "url": "https://www.dragonvillage.net/notice/20070",
+   "name": "(엘리고스)",
+   "price": null,
+   "limit": null,
+   "noticeSalePeriods": [
+    {
+     "dragon": "엘리고스",
+     "start": "2020-03-31",
+     "end": "2020-04-06"
+    }
+   ],
+   "items": [
+    {
+     "name": "엘리고스의 알",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "더블 맥스 레벨업",
+     "qty": 10
+    },
+    {
+     "name": "프리미엄 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 20
+    },
+    {
+     "name": "Lv-1",
+     "qty": 40
+    },
+    {
+     "name": "다이아",
+     "qty": 500
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 200
+    }
+   ],
+   "nameUncertain": true
+  },
+  {
+   "noticeIds": [
+    20058
+   ],
+   "noticeDate": "2020-03-17",
+   "url": "https://www.dragonvillage.net/notice/20058",
+   "name": "(지진/루미네스/번네스)",
+   "price": null,
+   "limit": null,
+   "noticeSalePeriods": [
+    {
+     "dragon": "지진",
+     "start": "2020-03-18",
+     "end": "2020-03-24"
+    },
+    {
+     "dragon": "루미네스",
+     "start": "2020-03-18",
+     "end": "2020-03-24"
+    },
+    {
+     "dragon": "번네스",
+     "start": "2020-03-18",
+     "end": "2020-03-24"
+    }
+   ],
+   "items": [
+    {
+     "name": "지진의 알",
+     "qty": 1
+    },
+    {
+     "name": "루미네스의 알",
+     "qty": 1
+    },
+    {
+     "name": "번네스의 알",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "다이아",
+     "qty": 2000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 1000
+    },
+    {
+     "name": "골드",
+     "qty": 10000000
+    }
+   ],
+   "nameUncertain": true
+  },
+  {
+   "noticeIds": [
+    20031
+   ],
+   "noticeDate": "2020-02-25",
+   "url": "https://www.dragonvillage.net/notice/20031",
+   "name": "(베리스)",
+   "price": null,
+   "limit": null,
+   "noticeSalePeriods": [
+    {
+     "dragon": "베리스",
+     "start": "2020-02-26",
+     "end": "2020-03-03"
+    }
+   ],
+   "items": [
+    {
+     "name": "베리스의 알",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "상급 초월의 정수(옐로우)",
+     "qty": 3
+    },
+    {
+     "name": "상급 초월의 정수(레드)",
+     "qty": 3
+    },
+    {
+     "name": "상급 초월의 정수(블루)",
+     "qty": 3
+    },
+    {
+     "name": "상급 강화의 정수",
+     "qty": 3
+    },
+    {
+     "name": "최상급 강화의 정수",
+     "qty": 2
+    },
+    {
+     "name": "초월의 보석",
+     "qty": 1
+    },
+    {
+     "name": "페르시온 결정",
+     "qty": 1
+    },
+    {
+     "name": "골드",
+     "qty": 10000000
+    }
+   ],
+   "nameUncertain": true
+  },
+  {
+   "noticeIds": [
+    19988
+   ],
+   "noticeDate": "2020-01-19",
+   "url": "https://www.dragonvillage.net/notice/19988",
+   "name": "(백룡/흑룡/카오스/가루다)",
+   "price": null,
+   "limit": null,
+   "noticeSalePeriods": [
+    {
+     "dragon": "카오스",
+     "start": "2020-01-22",
+     "end": "2020-01-27"
+    },
+    {
+     "dragon": "가루다",
+     "start": "2020-01-22",
+     "end": "2020-01-27"
+    }
+   ],
+   "items": [
+    {
+     "name": "백룡의 알",
+     "qty": 1
+    },
+    {
+     "name": "흑룡의 알",
+     "qty": 1
+    },
+    {
+     "name": "카오스의 알",
+     "qty": 1
+    },
+    {
+     "name": "가루다의 알",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "다이아",
+     "qty": 2000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 1000
+    },
+    {
+     "name": "골드",
+     "qty": 10000000
+    }
+   ],
+   "nameUncertain": true
+  },
+  {
+   "noticeIds": [
+    19899
+   ],
+   "noticeDate": "2019-11-22",
+   "url": "https://www.dragonvillage.net/notice/19899",
+   "name": "애니마라 패키지",
+   "price": 33000,
+   "limit": null,
+   "noticeSalePeriods": [
+    {
+     "dragon": "애니마라",
+     "start": "2019-11-27",
+     "end": "2019-12-03"
+    },
+    {
+     "dragon": "설리반",
+     "start": "2019-11-27",
+     "end": "2019-12-03"
+    }
+   ],
+   "items": [
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "상급 초월의 정수(옐로우)",
+     "qty": 3
+    },
+    {
+     "name": "상급 초월의 정수(레드)",
+     "qty": 3
+    },
+    {
+     "name": "상급 초월의 정수(블루)",
+     "qty": 3
+    },
+    {
+     "name": "중급 강화의 정수",
+     "qty": 3
+    },
+    {
+     "name": "상급 강화의 정수",
+     "qty": 3
+    },
+    {
+     "name": "최상급 강화의 정수",
+     "qty": 2
+    },
+    {
+     "name": "페르시온 결정",
+     "qty": 1
+    },
+    {
+     "name": "초월의 보석",
+     "qty": 1
+    },
+    {
+     "name": "애니마라",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 0.0,
+    "currencyPct": 0.0,
+    "sangchoValue": 4500.0,
+    "knownPct": 13.6,
+    "marketCurrencyValue": 0,
+    "marketCurrencyPct": 0.0
+   }
+  },
+  {
+   "noticeIds": [
+    19899
+   ],
+   "noticeDate": "2019-11-22",
+   "url": "https://www.dragonvillage.net/notice/19899",
+   "name": "설리반 패키지",
+   "price": 22000,
+   "limit": null,
+   "noticeSalePeriods": [
+    {
+     "dragon": "애니마라",
+     "start": "2019-11-27",
+     "end": "2019-12-03"
+    },
+    {
+     "dragon": "설리반",
+     "start": "2019-11-27",
+     "end": "2019-12-03"
+    }
+   ],
+   "items": [
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "설리반 A",
+     "qty": 5
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 40000.0,
+    "currencyPct": 181.8,
+    "sangchoValue": 0.0,
+    "knownPct": 181.8,
+    "marketCurrencyValue": 12459,
+    "marketCurrencyPct": 56.6
+   }
+  },
+  {
+   "noticeIds": [
+    19833
+   ],
+   "noticeDate": "2019-10-04",
+   "url": "https://www.dragonvillage.net/notice/19833",
+   "name": "(아델리?)",
+   "price": null,
+   "limit": null,
+   "noticeSalePeriods": [
+    {
+     "dragon": "므네이아",
+     "start": "2019-10-08",
+     "end": "2019-10-14"
+    },
+    {
+     "dragon": "아실리",
+     "start": "2019-10-08",
+     "end": "2019-10-14"
+    },
+    {
+     "dragon": "위드미",
+     "start": "2019-10-08",
+     "end": "2019-10-14"
+    },
+    {
+     "dragon": "엔투라스",
+     "start": "2019-10-15",
+     "end": "2019-10-21"
+    }
+   ],
+   "items": [
+    {
+     "name": "다이아",
+     "qty": 2000
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 1000
+    },
+    {
+     "name": "골드",
+     "qty": 10000000
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "알(이름 판독 불가)",
+     "qty": 1
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    }
+   ],
+   "nameUncertain": true
+  },
+  {
+   "noticeIds": [
+    19833
+   ],
+   "noticeDate": "2019-10-04",
+   "url": "https://www.dragonvillage.net/notice/19833",
+   "name": "(위드미?)",
+   "price": null,
+   "limit": null,
+   "noticeSalePeriods": [
+    {
+     "dragon": "므네이아",
+     "start": "2019-10-08",
+     "end": "2019-10-14"
+    },
+    {
+     "dragon": "아실리",
+     "start": "2019-10-08",
+     "end": "2019-10-14"
+    },
+    {
+     "dragon": "위드미",
+     "start": "2019-10-08",
+     "end": "2019-10-14"
+    },
+    {
+     "dragon": "엔투라스",
+     "start": "2019-10-15",
+     "end": "2019-10-21"
+    }
+   ],
+   "items": [
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "페르시온 결정",
+     "qty": 1
+    },
+    {
+     "name": "초월의 보석",
+     "qty": 1
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "알(이름 판독 불가)",
+     "qty": 1
+    },
+    {
+     "name": "Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "캡슐 Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "각성 Lv+1",
+     "qty": 50
+    }
+   ],
+   "nameUncertain": true
+  },
+  {
+   "noticeIds": [
+    19833
+   ],
+   "noticeDate": "2019-10-04",
+   "url": "https://www.dragonvillage.net/notice/19833",
+   "name": "(앱투라스?)",
+   "price": null,
+   "limit": null,
+   "noticeSalePeriods": [
+    {
+     "dragon": "므네이아",
+     "start": "2019-10-08",
+     "end": "2019-10-14"
+    },
+    {
+     "dragon": "아실리",
+     "start": "2019-10-08",
+     "end": "2019-10-14"
+    },
+    {
+     "dragon": "위드미",
+     "start": "2019-10-08",
+     "end": "2019-10-14"
+    },
+    {
+     "dragon": "엔투라스",
+     "start": "2019-10-15",
+     "end": "2019-10-21"
+    }
+   ],
+   "items": [
+    {
+     "name": "다이아",
+     "qty": 1000
+    },
+    {
+     "name": "골드",
+     "qty": 30000000
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "알(이름 판독 불가)",
+     "qty": 1
+    },
+    {
+     "name": "달의 정수",
+     "qty": 300
+    },
+    {
+     "name": "불의 정수",
+     "qty": 300
+    },
+    {
+     "name": "물의 정수",
+     "qty": 300
+    },
+    {
+     "name": "땅의 정수",
+     "qty": 300
+    },
+    {
+     "name": "태양의 정수",
+     "qty": 300
+    }
+   ],
+   "nameUncertain": true
+  },
+  {
+   "noticeIds": [
+    19833
+   ],
+   "noticeDate": "2019-10-04",
+   "url": "https://www.dragonvillage.net/notice/19833",
+   "name": "(모네이아?)",
+   "price": null,
+   "limit": null,
+   "noticeSalePeriods": [
+    {
+     "dragon": "므네이아",
+     "start": "2019-10-08",
+     "end": "2019-10-14"
+    },
+    {
+     "dragon": "아실리",
+     "start": "2019-10-08",
+     "end": "2019-10-14"
+    },
+    {
+     "dragon": "위드미",
+     "start": "2019-10-08",
+     "end": "2019-10-14"
+    },
+    {
+     "dragon": "엔투라스",
+     "start": "2019-10-15",
+     "end": "2019-10-21"
+    }
+   ],
+   "items": [
+    {
+     "name": "알(이름 판독 불가)",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "상급 초월의 정수(옐로우)",
+     "qty": 3
+    },
+    {
+     "name": "상급 초월의 정수(레드)",
+     "qty": 3
+    },
+    {
+     "name": "상급 초월의 정수(블루)",
+     "qty": 3
+    },
+    {
+     "name": "중급 강화의 정수",
+     "qty": 3
+    },
+    {
+     "name": "상급 강화의 정수",
+     "qty": 3
+    },
+    {
+     "name": "최상급 강화의 정수",
+     "qty": 2
+    },
+    {
+     "name": "페르시온 결정",
+     "qty": 1
+    },
+    {
+     "name": "초월의 보석",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": true
+  },
+  {
+   "noticeIds": [
+    19822,
+    19813
+   ],
+   "noticeDate": "2019-09-26",
+   "url": "https://www.dragonvillage.net/notice/19822",
+   "name": "허리케인 패키지",
+   "price": null,
+   "limit": null,
+   "noticeSalePeriods": [
+    {
+     "dragon": "허리케인",
+     "start": "2019-09-26",
+     "end": "2019-10-02"
+    },
+    {
+     "dragon": "허리케인",
+     "start": "2019-09-26",
+     "end": "2019-10-02"
+    }
+   ],
+   "items": [
+    {
+     "name": "허리케인 A의 알",
+     "qty": 5
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 2
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "다이아",
+     "qty": 500
+    },
+    {
+     "name": "Lv-1",
+     "qty": 40
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 500
+    }
+   ],
+   "nameUncertain": false
+  },
+  {
+   "noticeIds": [
+    19550
+   ],
+   "noticeDate": "2018-12-17",
+   "url": "https://www.dragonvillage.net/notice/19550",
+   "name": "(드래곤 알 묶음)",
+   "price": 33000,
+   "limit": null,
+   "noticeSalePeriods": [
+    {
+     "dragon": "지진",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    },
+    {
+     "dragon": "니케",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    },
+    {
+     "dragon": "데네브",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    },
+    {
+     "dragon": "트와일라잇",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    },
+    {
+     "dragon": "부두룡",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    },
+    {
+     "dragon": "스윗클라우드",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    },
+    {
+     "dragon": "나이트메어",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    },
+    {
+     "dragon": "화주사",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    },
+    {
+     "dragon": "우파룸",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    },
+    {
+     "dragon": "호크아이",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    }
+   ],
+   "items": [
+    {
+     "name": "지진",
+     "qty": 1
+    },
+    {
+     "name": "니케",
+     "qty": 1
+    },
+    {
+     "name": "아스트라이나",
+     "qty": 1
+    },
+    {
+     "name": "데네브",
+     "qty": 1
+    },
+    {
+     "name": "박쥐곤",
+     "qty": 1
+    },
+    {
+     "name": "엔틱 드래곤",
+     "qty": 1
+    },
+    {
+     "name": "트와일라잇",
+     "qty": 1
+    },
+    {
+     "name": "하레스",
+     "qty": 1
+    },
+    {
+     "name": "부두룡",
+     "qty": 1
+    },
+    {
+     "name": "스윗클라우드",
+     "qty": 1
+    },
+    {
+     "name": "나이트메어",
+     "qty": 1
+    },
+    {
+     "name": "화주사",
+     "qty": 1
+    },
+    {
+     "name": "우파룸",
+     "qty": 1
+    },
+    {
+     "name": "호크아이",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": true,
+   "calc": {
+    "currencyValue": 0.0,
+    "currencyPct": 0.0,
+    "sangchoValue": 0.0,
+    "knownPct": 0.0,
+    "marketCurrencyValue": 0,
+    "marketCurrencyPct": 0.0
+   }
+  },
+  {
+   "noticeIds": [
+    19550
+   ],
+   "noticeDate": "2018-12-17",
+   "url": "https://www.dragonvillage.net/notice/19550",
+   "name": "(정기 묶음 A)",
+   "price": 3900,
+   "limit": null,
+   "noticeSalePeriods": [
+    {
+     "dragon": "지진",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    },
+    {
+     "dragon": "니케",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    },
+    {
+     "dragon": "데네브",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    },
+    {
+     "dragon": "트와일라잇",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    },
+    {
+     "dragon": "부두룡",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    },
+    {
+     "dragon": "스윗클라우드",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    },
+    {
+     "dragon": "나이트메어",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    },
+    {
+     "dragon": "화주사",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    },
+    {
+     "dragon": "우파룸",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    },
+    {
+     "dragon": "호크아이",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    }
+   ],
+   "items": [
+    {
+     "name": "다이아",
+     "qty": 300
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 100
+    },
+    {
+     "name": "골드",
+     "qty": 500000
+    },
+    {
+     "name": "Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "속성 정기 각",
+     "qty": 50
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1,
+     "note": "(일부 가려짐)"
+    }
+   ],
+   "nameUncertain": true,
+   "calc": {
+    "currencyValue": 9600.0,
+    "currencyPct": 246.2,
+    "sangchoValue": 0.0,
+    "knownPct": 246.2,
+    "marketCurrencyValue": 3143,
+    "marketCurrencyPct": 80.6
+   }
+  },
+  {
+   "noticeIds": [
+    19550
+   ],
+   "noticeDate": "2018-12-17",
+   "url": "https://www.dragonvillage.net/notice/19550",
+   "name": "(정기 묶음 B)",
+   "price": 3900,
+   "limit": null,
+   "noticeSalePeriods": [
+    {
+     "dragon": "지진",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    },
+    {
+     "dragon": "니케",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    },
+    {
+     "dragon": "데네브",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    },
+    {
+     "dragon": "트와일라잇",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    },
+    {
+     "dragon": "부두룡",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    },
+    {
+     "dragon": "스윗클라우드",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    },
+    {
+     "dragon": "나이트메어",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    },
+    {
+     "dragon": "화주사",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    },
+    {
+     "dragon": "우파룸",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    },
+    {
+     "dragon": "호크아이",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    }
+   ],
+   "items": [
+    {
+     "name": "속성 정기 각",
+     "qty": 50
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "축복 받은 부화기",
+     "qty": 10
+    },
+    {
+     "name": "치료제",
+     "qty": 10
+    },
+    {
+     "name": "엣지버",
+     "qty": 1,
+     "note": "(일부 가려짐)"
+    }
+   ],
+   "nameUncertain": true,
+   "calc": {
+    "currencyValue": 0.0,
+    "currencyPct": 0.0,
+    "sangchoValue": 0.0,
+    "knownPct": 0.0,
+    "marketCurrencyValue": 0,
+    "marketCurrencyPct": 0.0
+   }
+  },
+  {
+   "noticeIds": [
+    19550
+   ],
+   "noticeDate": "2018-12-17",
+   "url": "https://www.dragonvillage.net/notice/19550",
+   "name": "(렉몰 리버스 묶음)",
+   "price": 33000,
+   "limit": null,
+   "noticeSalePeriods": [
+    {
+     "dragon": "지진",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    },
+    {
+     "dragon": "니케",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    },
+    {
+     "dragon": "데네브",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    },
+    {
+     "dragon": "트와일라잇",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    },
+    {
+     "dragon": "부두룡",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    },
+    {
+     "dragon": "스윗클라우드",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    },
+    {
+     "dragon": "나이트메어",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    },
+    {
+     "dragon": "화주사",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    },
+    {
+     "dragon": "우파룸",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    },
+    {
+     "dragon": "호크아이",
+     "start": "2018-12-19",
+     "end": "2019-01-01"
+    }
+   ],
+   "items": [
+    {
+     "name": "다이아",
+     "qty": 2500
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 1000
+    },
+    {
+     "name": "렉몰 리버스",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 2
+    },
+    {
+     "name": "아르하의 뿔+14",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 공격 +33",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 방어 +33",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 체력 +132",
+     "qty": 1
+    },
+    {
+     "name": "공격력물약6",
+     "qty": 15
+    },
+    {
+     "name": "체력물약6",
+     "qty": 15
+    },
+    {
+     "name": "방어력/크리/회피물약6",
+     "qty": 15,
+     "note": "각 (추정)"
+    }
+   ],
+   "nameUncertain": true,
+   "calc": {
+    "currencyValue": 85000.0,
+    "currencyPct": 257.6,
+    "sangchoValue": 0.0,
+    "knownPct": 257.6,
+    "marketCurrencyValue": 27432,
+    "marketCurrencyPct": 83.1
+   }
+  },
+  {
+   "noticeIds": [
+    19399
+   ],
+   "noticeDate": "2018-07-23",
+   "url": "https://www.dragonvillage.net/notice/19399",
+   "name": "(폴리저드?)",
+   "price": 22000,
+   "limit": null,
+   "noticeSalePeriods": [
+    {
+     "dragon": "다크나이트",
+     "start": null,
+     "end": null
+    },
+    {
+     "dragon": "엔더 드래곤",
+     "start": null,
+     "end": null
+    },
+    {
+     "dragon": "블리자드",
+     "start": null,
+     "end": null
+    }
+   ],
+   "items": [
+    {
+     "name": "황금 다이아",
+     "qty": 500
+    },
+    {
+     "name": "알(이름 판독 불가)",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 10
+    },
+    {
+     "name": "Lv+1",
+     "qty": 20
+    },
+    {
+     "name": "Lv-1",
+     "qty": 20
+    },
+    {
+     "name": "캡슐 Lv+1",
+     "qty": 20
+    },
+    {
+     "name": "각성 Lv+1",
+     "qty": 20
+    }
+   ],
+   "nameUncertain": true,
+   "calc": {
+    "currencyValue": 15000.0,
+    "currencyPct": 68.2,
+    "sangchoValue": 0.0,
+    "knownPct": 68.2,
+    "marketCurrencyValue": 3716,
+    "marketCurrencyPct": 16.9
+   }
+  },
+  {
+   "noticeIds": [
+    19272
+   ],
+   "noticeDate": "2018-03-27",
+   "url": "https://www.dragonvillage.net/notice/19272",
+   "name": "움브라 패키지",
+   "price": 33000,
+   "limit": null,
+   "noticeSalePeriods": [
+    {
+     "dragon": "움브라",
+     "start": "2018-03-30",
+     "end": "2018-04-05"
+    }
+   ],
+   "items": [
+    {
+     "name": "다이아",
+     "qty": 500
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 200
+    },
+    {
+     "name": "움브라",
+     "qty": 1
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "프리미엄 Lv+1",
+     "qty": 20
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 10
+    },
+    {
+     "name": "Lv-1",
+     "qty": 30
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 17000.0,
+    "currencyPct": 51.5,
+    "sangchoValue": 0.0,
+    "knownPct": 51.5,
+    "marketCurrencyValue": 5486,
+    "marketCurrencyPct": 16.6
+   }
+  },
+  {
+   "noticeIds": [
+    19246
+   ],
+   "noticeDate": "2018-03-14",
+   "url": "https://www.dragonvillage.net/notice/19246",
+   "name": "(혼)",
+   "price": 3300,
+   "limit": null,
+   "noticeSalePeriods": [
+    {
+     "dragon": "혼",
+     "start": null,
+     "end": null
+    },
+    {
+     "dragon": "나트론",
+     "start": null,
+     "end": null
+    }
+   ],
+   "items": [
+    {
+     "name": "다이아",
+     "qty": 100
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 50
+    },
+    {
+     "name": "혼",
+     "qty": 1
+    },
+    {
+     "name": "Lv+1",
+     "qty": 20
+    },
+    {
+     "name": "Lv-1",
+     "qty": 20
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": true,
+   "calc": {
+    "currencyValue": 3700.0,
+    "currencyPct": 112.1,
+    "sangchoValue": 0.0,
+    "knownPct": 112.1,
+    "marketCurrencyValue": 1172,
+    "marketCurrencyPct": 35.5
+   }
+  },
+  {
+   "noticeIds": [
+    19246
+   ],
+   "noticeDate": "2018-03-14",
+   "url": "https://www.dragonvillage.net/notice/19246",
+   "name": "(니트론?)",
+   "price": 5500,
+   "limit": null,
+   "noticeSalePeriods": [
+    {
+     "dragon": "혼",
+     "start": null,
+     "end": null
+    },
+    {
+     "dragon": "나트론",
+     "start": null,
+     "end": null
+    }
+   ],
+   "items": [
+    {
+     "name": "다이아",
+     "qty": 200
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 100
+    },
+    {
+     "name": "알(이름 판독 불가)",
+     "qty": 1
+    },
+    {
+     "name": "Lv+1",
+     "qty": 30
+    },
+    {
+     "name": "Lv-1",
+     "qty": 30
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": true,
+   "calc": {
+    "currencyValue": 7400.0,
+    "currencyPct": 134.5,
+    "sangchoValue": 0.0,
+    "knownPct": 134.5,
+    "marketCurrencyValue": 2343,
+    "marketCurrencyPct": 42.6
+   }
+  },
+  {
+   "noticeIds": [
+    18970
+   ],
+   "noticeDate": "2017-08-10",
+   "url": "https://www.dragonvillage.net/notice/18970",
+   "name": "렉스톤 패키지",
+   "price": 55000,
+   "limit": null,
+   "noticeSalePeriods": [
+    {
+     "dragon": "렉스톤",
+     "start": "2017-08-11",
+     "end": "2017-08-31"
+    }
+   ],
+   "items": [
+    {
+     "name": "렉스톤의 알",
+     "qty": 1
+    },
+    {
+     "name": "Lv+1",
+     "qty": 50
+    },
+    {
+     "name": "Lv-1",
+     "qty": 50
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1000
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "currencyValue": 22000.0,
+    "currencyPct": 40.0,
+    "sangchoValue": 0.0,
+    "knownPct": 40.0,
+    "marketCurrencyValue": 8000,
+    "marketCurrencyPct": 14.5
+   }
+  }
+ ],
+ "iceExchange": {
+  "noticeId": 21091,
+  "url": "https://www.dragonvillage.net/notice/21091",
+  "note": "루드라 패키지의 얼음 조각으로 교환하는 이벤트 상점. 아이템 간 상대 가치 참고용",
+  "items": [
+   {
+    "name": "렉몰 리버스",
+    "maxExchange": 1,
+    "icePrice": 3500
+   },
+   {
+    "name": "초림",
+    "maxExchange": 1,
+    "icePrice": 2000
+   },
+   {
+    "name": "정령 뽑기권 10+1",
+    "maxExchange": 1,
+    "icePrice": 2500
+   },
+   {
+    "name": "정령 최고급 뽑기권",
+    "maxExchange": 3,
+    "icePrice": 300
+   },
+   {
+    "name": "꿈의 공격 +36",
+    "maxExchange": 3,
+    "icePrice": 1600
+   },
+   {
+    "name": "꿈의 방어 +36",
+    "maxExchange": 3,
+    "icePrice": 1600
+   },
+   {
+    "name": "꿈의 체력 +144",
+    "maxExchange": 3,
+    "icePrice": 1600
+   },
+   {
+    "name": "꿈의 공격 +35",
+    "maxExchange": 3,
+    "icePrice": 800
+   },
+   {
+    "name": "꿈의 방어 +35",
+    "maxExchange": 3,
+    "icePrice": 800
+   },
+   {
+    "name": "꿈의 체력 +140",
+    "maxExchange": 3,
+    "icePrice": 800
+   },
+   {
+    "name": "마가 A",
+    "maxExchange": 3,
+    "icePrice": 500
+   },
+   {
+    "name": "스쿠룸 A",
+    "maxExchange": 3,
+    "icePrice": 500
+   },
+   {
+    "name": "그라치아 A",
+    "maxExchange": 3,
+    "icePrice": 500
+   },
+   {
+    "name": "더블 맥스 레벨업",
+    "maxExchange": 50,
+    "icePrice": 50
+   },
+   {
+    "name": "디트의 망치",
+    "maxExchange": 10,
+    "icePrice": 100
+   },
+   {
+    "name": "강림의 돌",
+    "maxExchange": 50,
+    "icePrice": 20
+   },
+   {
+    "name": "태양/달/땅/불/물의 정수",
+    "maxExchange": 200,
+    "icePrice": 3
+   },
+   {
+    "name": "꿈의 부화기 +1",
+    "maxExchange": 3,
+    "icePrice": 100
+   },
+   {
+    "name": "페르시온 결정",
+    "maxExchange": 3,
+    "icePrice": 150
+   },
+   {
+    "name": "이계 수정 [블랙]/[퍼플]",
+    "maxExchange": 999,
+    "icePrice": 2
+   },
+   {
+    "name": "꿈의 정수(최상급)",
+    "maxExchange": 5,
+    "icePrice": 50
+   },
+   {
+    "name": "강화의 정수(최상급)",
+    "maxExchange": 3,
+    "icePrice": 100
+   },
+   {
+    "name": "초월의 정수(옐로/레드/블루)",
+    "maxExchange": 5,
+    "icePrice": 40
+   },
+   {
+    "name": "상급 초월의 정수(레드/블루/옐로우)",
+    "maxExchange": 3,
+    "icePrice": 80
+   },
+   {
+    "name": "토벌권",
+    "maxExchange": null,
+    "icePrice": 5
+   },
+   {
+    "name": "스페셜 레벨업",
+    "maxExchange": null,
+    "icePrice": 50
+   },
+   {
+    "name": "프리미엄 레벨업",
+    "maxExchange": null,
+    "icePrice": 30
+   },
+   {
+    "name": "레벨 업",
+    "maxExchange": null,
+    "icePrice": 10
+   },
+   {
+    "name": "레벨 다운",
+    "maxExchange": null,
+    "icePrice": 10
+   },
+   {
+    "name": "치료제",
+    "maxExchange": null,
+    "icePrice": 10
+   }
+  ]
+ },
+ "saleReference": {
+  "noticeId": 20018,
+  "url": "https://www.dragonvillage.net/notice/20018",
+  "note": "할인 행사 공지의 원가→할인가 표. 다이아/황다 상점 가격대만 확인됨(지급 수량 미확인)",
+  "diamondShopTiers": [
+   [
+    11000,
+    7500
+   ],
+   [
+    22000,
+    15000
+   ],
+   [
+    33000,
+    23000
+   ],
+   [
+    55000,
+    37000
+   ],
+   [
+    109000,
+    75000
+   ]
+  ]
+ },
+ "shops": {
+  "checkedAt": "2026-11-16",
+  "source": "인게임 상점 스크린샷",
+  "diamond": [
+   {
+    "price": 109000,
+    "qty": 5000,
+    "wonPerUnit": 21.8
+   },
+   {
+    "price": 55000,
+    "qty": 2500,
+    "wonPerUnit": 22.0
+   },
+   {
+    "price": 33000,
+    "qty": 1500,
+    "wonPerUnit": 22.0
+   },
+   {
+    "price": 12000,
+    "qty": 500,
+    "wonPerUnit": 24.0
+   },
+   {
+    "price": 6000,
+    "qty": 250,
+    "wonPerUnit": 24.0
+   },
+   {
+    "price": 1500,
+    "qty": 50,
+    "wonPerUnit": 30.0
+   }
+  ],
+  "goldDiamond": [
+   {
+    "price": 109000,
+    "qty": 3700,
+    "wonPerUnit": 29.46
+   },
+   {
+    "price": 55000,
+    "qty": 1850,
+    "wonPerUnit": 29.73
+   },
+   {
+    "price": 33000,
+    "qty": 1100,
+    "wonPerUnit": 30.0
+   },
+   {
+    "price": 12000,
+    "qty": 360,
+    "wonPerUnit": 33.33
+   },
+   {
+    "price": 6000,
+    "qty": 190,
+    "wonPerUnit": 31.58
+   },
+   {
+    "price": 1500,
+    "qty": 35,
+    "wonPerUnit": 42.86
+   }
+  ],
+  "daily": [
+   {
+    "price": 1500,
+    "limit": "일 1회",
+    "items": [
+     {
+      "name": "치료제",
+      "qty": 50
+     },
+     {
+      "name": "토벌권",
+      "qty": 100
+     },
+     {
+      "name": "Lv-1",
+      "qty": 50
+     }
+    ]
+   },
+   {
+    "price": 3000,
+    "limit": "일 1회",
+    "items": [
+     {
+      "name": "상급 초월의 정수(블루)",
+      "qty": 2
+     },
+     {
+      "name": "상급 초월의 정수(레드)",
+      "qty": 2
+     },
+     {
+      "name": "상급 초월의 정수(옐로우)",
+      "qty": 2
+     }
+    ]
+   },
+   {
+    "price": 4400,
+    "limit": "일 1회",
+    "items": [
+     {
+      "name": "다이아",
+      "qty": 500
+     }
+    ]
+   }
+  ]
+ },
+ "baseline": {
+  "wonPerDiamond": 22.0,
+  "wonPerGoldDiamond": 30.0,
+  "basis": "33,000원 충전 상품 단가",
+  "wonPerSangchoSet": 1500.0,
+  "setBasis": "일일 패키지 3,000원 = 색별 2개"
+ },
+ "marketBaseline": {
+  "wonPerDiamond": 8.0,
+  "wonPerGoldDiamond": 7.43,
+  "basis": "유저 간 거래 시세: 다이아 100개당 800원, 황금 다이아 쿠폰 7,400개 55,000원",
+  "checkedAt": "2026-11-16"
+ }
+}

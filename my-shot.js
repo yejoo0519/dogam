@@ -1,5 +1,6 @@
 /* 내 스펙 — 스크린샷으로 장신구 · 펜던트 · 젬 · 정령 등록 (UI)
    정령은 풀강 기준(옵션 스탯 · %/+ 만 읽음, 부가옵 없음)으로 길드전 예비 정령에 넣거나 길드전 드래곤에 귀속합니다.
+   챔대 정령 배분으로 보낸 정령은 받은함(…_cham_spx_inbox)에 넣어 두고, 챔대 자동 계산기가 열릴 때 보유 정령에 합칩니다.
    인식은 my-shot-engine.js. 결과는 미리보기로 보여주고, 확인을 눌러야 S에 반영합니다. */
 (function () {
   'use strict';
@@ -11,6 +12,19 @@
   var SCOL = { hp: 'var(--hpc)', atk: 'var(--atc)', def: 'var(--dfc)' };
   /* 게임 젬 수치 → 사이트 젬 칸 (35·36은 뉴비용 칸, 38~44는 기존 37~40 칸) */
   var GEM_KEY = { 35: 35, 36: 36, 38: 37, 40: 38, 42: 39, 44: 40 };
+  var CHAM_DEST = [['cham', '챔대 정령 배분'], ['cham1', '챔대 정령 배분 · 1라'], ['cham2', '챔대 정령 배분 · 2라'], ['cham3', '챔대 정령 배분 · 3라']];
+  var CHAM_INBOX = (/\/en\//.test(location.pathname) ? 'dv1simEN' : 'dv1sim') + '_cham_spx_inbox';
+  function isCham(v) { return /^cham[123]?$/.test(v || ''); }
+  /* 챔대 자동 계산기 정령 배분으로 보내기: list = [{opts, rd(0~2 또는 null)}] */
+  function chamSend(list) {
+    if (!list.length) return 0;
+    var box = [];
+    try { box = JSON.parse(localStorage.getItem(CHAM_INBOX) || '[]'); } catch (e) {}
+    if (!Array.isArray(box)) box = [];
+    list.forEach(function (r) { box.push({ sp: r.opts.map(function (o) { return { stat: o.stat, type: o.type }; }), rd: r.rd, memo: /_cham/.test(CHAM_INBOX) && /^dv1simEN/.test(CHAM_INBOX) ? 'Shot' : '스샷' }); });
+    try { localStorage.setItem(CHAM_INBOX, JSON.stringify(box)); } catch (e) { return 0; }
+    return list.length;
+  }
   var items = [];   // {id, kind, label, ok, on, data, thumb, shot}
   var seq = 0, spSeq = 0;
 
@@ -142,7 +156,8 @@
         }
         if (i.kind === 'spirit') {
           var at = i.data.attr || '';
-          enc = '<select data-dest="' + i.id + '" aria-label="보낼 곳"><option value="rsv"' + (!at ? ' selected' : '') + '>길드전 예비 정령</option>' +
+          enc = '<select data-dest="' + i.id + '" aria-label="보낼 곳"><option value="rsv"' + (!at && !isCham(i.data.dest) ? ' selected' : '') + '>길드전 예비 정령</option>' +
+            '<optgroup label="챔피언대전">' + CHAM_DEST.map(function (o) { return '<option value="' + o[0] + '"' + (i.data.dest === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</optgroup>' +
             (window.GuildLink ? '<optgroup label="드래곤 속성">' + GuildLink.attrOptions(at) + '</optgroup>' : '') + '</select>';
           if (at && window.GuildLink) enc += '<select data-drg="' + i.id + '" aria-label="드래곤"><option value="">드래곤 선택</option>' + GuildLink.dragonOptions(at, /^\d+$/.test(i.data.dest) ? i.data.dest : '') + '</select>';
         }
@@ -154,7 +169,7 @@
       html += '</div></div>';
     });
     if (items.some(function (i) { return i.kind === 'spirit'; })) {
-      html += '<p class="shot-help" style="margin-top:8px">정령은 옵션을 풀강 기준으로 넣고 부가옵은 비워요. 정령마다 <b>길드전 예비 정령</b>으로 보내거나, <b>드래곤을 골라</b> 그 정령을 단 드래곤으로 길드전 계산기 [내 용 정보]에 등록해요. (등급 9.0 · 강림(축복)으로 들어가니 길드전 계산기에서 맞게 바꿔 주세요)</p>';
+      html += '<p class="shot-help" style="margin-top:8px">정령은 옵션을 풀강 기준으로 넣고 부가옵은 비워요. 정령마다 <b>길드전 예비 정령</b>으로 보내거나, <b>드래곤을 골라</b> 그 정령을 단 드래곤으로 길드전 계산기 [내 용 정보]에 등록해요. (등급 9.0 · 강림(축복)으로 들어가니 길드전 계산기에서 맞게 바꿔 주세요) <b>챔대 정령 배분</b>을 고르면 챔피언대전 자동 계산기 [정령 배분] 탭의 보유 정령에 추가돼요. 1라 · 2라 · 3라를 고르면 라운드별 배분의 그 라운드로 들어가요.</p>';
     }
     var others = items.filter(function (i) { return i.kind === 'none'; }).length;
     if (others) html += '<p class="shot-help" style="margin-top:12px">정보를 못 읽은 칸 ' + others + '개는 뺐어요.</p>';
@@ -171,7 +186,7 @@
     var t = e.target;
     if (t.dataset.id) { var it = items.find(function (i) { return i.id === +t.dataset.id; }); if (it) { it.on = t.checked; render(); } }
     if (t.dataset.enc) { var a = items.find(function (i) { return i.id === +t.dataset.enc; }); if (a) a.data.enchant = t.value; }
-    if (t.dataset.dest) { var sp = items.find(function (i) { return i.id === +t.dataset.dest; }); if (sp) { sp.data.attr = t.value === 'rsv' ? '' : t.value; sp.data.dest = t.value === 'rsv' ? 'rsv' : ''; render(); } }
+    if (t.dataset.dest) { var sp = items.find(function (i) { return i.id === +t.dataset.dest; }); if (sp) { var plain = t.value === 'rsv' || isCham(t.value); sp.data.attr = plain ? '' : t.value; sp.data.dest = plain ? t.value : ''; render(); } }
     if (t.dataset.drg) { var sd = items.find(function (i) { return i.id === +t.dataset.drg; }); if (sd) sd.data.dest = t.value; }
   });
   result.addEventListener('click', function (e) {
@@ -206,7 +221,10 @@
       S.gems[p[0]][p[1]] = gemSum[k]; gn++;
     });
     if (gn) msg.push('젬 ' + gn + '칸');
-    var sps = sel.filter(function (i) { return i.kind === 'spirit'; });
+    var chams = sel.filter(function (i) { return i.kind === 'spirit' && isCham(i.data.dest); });
+    var nc = chamSend(chams.map(function (i) { var m = /^cham([123])$/.exec(i.data.dest); return { opts: i.data.opts, rd: m ? +m[1] - 1 : null }; }));
+    if (nc) msg.push('챔대 정령 배분 ' + nc + '개');
+    var sps = sel.filter(function (i) { return i.kind === 'spirit' && !isCham(i.data.dest); });
     if (sps.length && window.GuildLink) {
       var cat = GuildLink.catalog(), rsv = [], add = [];
       sps.forEach(function (i) {

@@ -18,8 +18,8 @@
     <main class="u-wrap full">
       <div class="pkg-wrap" id="pkgeffRoot" hidden>
         <header class="pkg-heading">
-          <div><p class="pkg-eyebrow">PACKAGE VALUE</p><h1>패키지 효율</h1><p class="pkg-sub">구성품을 원화로 환산해, 가격 대비 이득을 살펴보세요.</p></div>
-          <a class="pkg-button" href="./pkg.html">패키지 복각 →</a>
+          <div><p class="pkg-eyebrow">PACKAGE VALUE</p><h1>패키지 효율</h1><p class="pkg-sub">구성품과 알 시세를 넣으면, 재화 가치와 이득률을 정리해 드려요.</p></div>
+          <button id="openRegister" class="pkg-button pe-primary" type="button">+ 등록하기</button>
         </header>
         <div id="syncStatus" class="pkg-sync" aria-live="polite">패키지 기록을 불러오는 중…</div>
         <section class="pkg-content pe-base" aria-label="환산 기준">
@@ -29,21 +29,55 @@
           </div>
           <label class="pe-field">다이아 1개 <input id="rateDia" type="number" min="0" step="0.01" inputmode="decimal"> 원</label>
           <label class="pe-field">황금 다이아 1개 <input id="rateGold" type="number" min="0" step="0.01" inputmode="decimal"> 원</label>
-          <button id="resetEggs" class="pkg-button" type="button">알 시세 초기화</button>
+          <button id="openPrices" class="pkg-button" type="button">아이템 단가 설정</button>
         </section>
         <section class="pkg-content">
           <div class="pkg-filters">
-            <label class="pkg-search"><span class="pkg-sr">패키지 또는 드래곤 검색</span><input id="query" type="search" placeholder="패키지 · 드래곤 검색" autocomplete="off"></label>
-            <label class="pkg-sort">정렬 <select id="sort"><option value="recent" selected>최근 공지순</option><option value="pct">이득% 높은순</option><option value="price">가격 낮은순</option></select></label>
-            <label class="pe-check"><input id="onlyEgg" type="checkbox"> 알 시세 입력한 것만</label>
+            <div class="pkg-chips" id="sortChips" aria-label="정렬">
+              <button data-sort="recent" class="on" aria-pressed="true">최신순</button>
+              <button data-sort="gain" aria-pressed="false">효율순</button>
+              <button data-sort="price" aria-pressed="false">가격순</button>
+            </div>
+            <div class="pkg-chips" id="saleChips" aria-label="판매 상태">
+              <button data-sale="all" class="on" aria-pressed="true">전체</button>
+              <button data-sale="on" aria-pressed="false">판매중</button>
+              <button data-sale="mine" aria-pressed="false">직접 등록</button>
+            </div>
+            <label class="pkg-search"><span class="pkg-sr">패키지 또는 구성품 검색</span><input id="query" type="search" placeholder="패키지 · 구성품 검색" autocomplete="off"></label>
             <span id="resultCount" class="pkg-muted" aria-live="polite"></span>
           </div>
-          <div id="results"><div class="pkg-empty">기록을 불러오는 중입니다.</div></div>
+          <div id="results" class="pe-cards"><div class="pkg-empty">기록을 불러오는 중입니다.</div></div>
+          <div class="pe-more" id="moreWrap" hidden><button id="more" class="pkg-button" type="button">더 보기</button></div>
         </section>
-        <p class="pkg-note">이득%는 (다이아·황금 다이아 환산액 + 입력한 알 시세) ÷ 패키지 가격입니다. 레벨업·부화기·정수 등 나머지 구성품은 아직 환산에 포함하지 않습니다. 알 시세는 같은 드래곤이면 모든 회차에 함께 적용되며, 이 기기 브라우저에만 저장됩니다. 가격과 구성은 공식 공지의 구성표에서 확인한 값입니다.</p>
+        <p class="pkg-note">구성품 가치는 각 구성품 수량 × 단가의 합이고, 이득률은 (구성품 가치 ÷ 패키지 가격 − 1)입니다. 단가가 없는 구성품은 0원으로 계산하고 카드에 미환산으로 표시합니다. 아이템 단가·알 시세·직접 등록한 패키지는 이 기기 브라우저에만 저장됩니다. 기본 목록의 가격과 구성은 공식 공지의 구성표에서 확인한 값입니다.</p>
       </div>
     </main>
   </div>
+  <dialog id="registerDialog" class="pkg-dialog" aria-labelledby="registerTitle">
+    <form id="registerForm" method="dialog">
+      <header class="pkg-detail-head"><div><p class="pkg-eyebrow">NEW PACKAGE</p><h2 id="registerTitle">패키지 등록</h2></div><button type="button" data-close>닫기</button></header>
+      <div class="pkg-detail-content pe-form">
+        <label class="pe-form-row">패키지 이름 <input id="regName" type="text" maxlength="40" placeholder="예: 말카르티스 패키지" required></label>
+        <label class="pe-form-row">가격(원) <input id="regPrice" type="number" min="1" step="100" inputmode="numeric" placeholder="33000" required></label>
+        <h3>구성품</h3>
+        <div id="regItems" class="pe-lines"></div>
+        <button type="button" id="regAddItem" class="pkg-button">+ 구성품 추가</button>
+        <h3>알</h3>
+        <div id="regEggs" class="pe-lines"></div>
+        <button type="button" id="regAddEgg" class="pkg-button">+ 알 추가</button>
+        <div id="regPreview" class="pe-result" aria-live="polite"></div>
+        <div class="pe-form-actions"><button type="submit" class="pkg-button pe-primary">등록</button></div>
+      </div>
+    </form>
+    <datalist id="itemNames"></datalist><datalist id="eggNames"></datalist>
+  </dialog>
+  <dialog id="priceDialog" class="pkg-dialog" aria-labelledby="priceTitle">
+    <header class="pkg-detail-head"><div><p class="pkg-eyebrow">ITEM PRICES</p><h2 id="priceTitle">아이템 단가</h2></div><button type="button" data-close>닫기</button></header>
+    <div class="pkg-detail-content">
+      <p class="pkg-muted pe-hint">1개 기준 단가입니다. 단위가 다이아면 위의 다이아 단가를 곱해 원화로 환산합니다. 비워 두면 미환산으로 둡니다.</p>
+      <div id="priceList" class="pe-lines"></div>
+    </div>
+  </dialog>
   <noscript><p>패키지 효율을 보려면 JavaScript를 활성화해 주세요.</p></noscript>
   <script src="./ui.js"></script>
   <script>UI.shell({page:'pkg',title:'패키지 효율',sub:'가격 대비 구성품 가치'});</script>

@@ -15,9 +15,11 @@
     if(isEgg(item)){const v=Number(ctx.eggs[eggKey(item.name)]);return v>0?v:null;}
     if(item.name==='다이아') return ctx.rates.dia;
     if(item.name==='황금 다이아') return ctx.rates.gold;
+    if(item.name==='골드') return ctx.goldWon>0?ctx.goldWon/1e8:null;
     const p=ctx.prices[item.name];
     if(!p||!(Number(p.v)>0)) return null;
-    // 단위: won=원, dia=다이아
+    // 단위: won=원, dia=다이아, gold=골드(골드 1억당 원 시세로 환산)
+    if(p.u==='gold') return ctx.goldWon>0?Number(p.v)*ctx.goldWon/1e8:null;
     return p.u==='won'?Number(p.v):Number(p.v)*ctx.rates.dia;
   }
   function calc(pkg,ctx){
@@ -39,10 +41,10 @@
   const won=value=>Math.round(value).toLocaleString('ko-KR')+'원';
   const pretty=value=>value?value.replaceAll('-','.'):'—';
   const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
-  const state={basis:'shop',rates:{shop:{...DEFAULT_RATES.shop},market:{...DEFAULT_RATES.market}},eggs:{},prices:{},custom:[],query:'',sort:'recent',sale:'all',shown:PAGE};
+  const state={basis:'shop',rates:{shop:{...DEFAULT_RATES.shop},market:{...DEFAULT_RATES.market}},goldWon:0,eggs:{},prices:{},custom:[],query:'',sort:'recent',sale:'all',shown:PAGE};
   let official=[],defaults={};
   const num=value=>{const n=Number(value);return Number.isFinite(n)&&n>0?n:0;};
-  const unit=value=>value==='won'?'won':'dia';
+  const unit=value=>value==='won'||value==='gold'?value:'dia';
   function load(){
     try{
       const saved=JSON.parse(localStorage.getItem(STORE)||'null');
@@ -53,6 +55,7 @@
         return;
       }
       if(saved.basis==='shop'||saved.basis==='market') state.basis=saved.basis;
+      if(num(saved.goldWon)) state.goldWon=num(saved.goldWon);
       for(const k of ['shop','market']) for(const f of ['dia','gold']){const v=Number(saved.rates?.[k]?.[f]);if(v>=0&&Number.isFinite(v)) state.rates[k][f]=v;}
       for(const [k,v] of Object.entries(saved.eggs||{})) if(num(v)) state.eggs[k]=num(v);
       for(const [k,p] of Object.entries(saved.prices||{})) if(num(p?.v)&&p.u!=='evt') state.prices[k]={v:num(p.v),u:unit(p.u)};
@@ -63,12 +66,12 @@
     }catch(error){console.warn('Package value: 저장된 값을 읽지 못했습니다',error);}
   }
   function save(){
-    try{localStorage.setItem(STORE,JSON.stringify({basis:state.basis,rates:state.rates,eggs:state.eggs,prices:state.prices,custom:state.custom}));}
+    try{localStorage.setItem(STORE,JSON.stringify({basis:state.basis,rates:state.rates,goldWon:state.goldWon,eggs:state.eggs,prices:state.prices,custom:state.custom}));}
     catch(error){/* 저장이 막힌 환경에서는 이번 방문에만 유지 */}
   }
   // 직접 넣은 단가가 데이터의 기본 단가보다 우선한다.
   const prices=()=>({...defaults,...state.prices});
-  const ctx=()=>({rates:state.rates[state.basis],eggs:state.eggs,prices:prices()});
+  const ctx=()=>({rates:state.rates[state.basis],goldWon:state.goldWon,eggs:state.eggs,prices:prices()});
   const all=()=>state.custom.concat(official);
   function onSale(pkg){return !pkg.custom&&(pkg.always||pkg.noticeSalePeriods.some(p=>p.start&&p.end&&p.start<=today&&p.end>=today));}
   function period(pkg){
@@ -121,7 +124,7 @@
   }
   function syncBasis(){
     document.querySelectorAll('[data-basis]').forEach(b=>{const on=b.dataset.basis===state.basis;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on);});
-    $('rateDia').value=state.rates[state.basis].dia;$('rateGold').value=state.rates[state.basis].gold;
+    $('rateDia').value=state.rates[state.basis].dia;$('rateGold').value=state.rates[state.basis].gold;$('rateGoldCoin').value=state.goldWon||'';
   }
   function chipGroup(id,attr,key){
     $(id).addEventListener('click',e=>{
@@ -132,6 +135,7 @@
     });
   }
   $('basis').addEventListener('click',e=>{const b=e.target.closest('[data-basis]');if(!b)return;state.basis=b.dataset.basis;syncBasis();save();render();});
+  $('rateGoldCoin').addEventListener('input',e=>{state.goldWon=num(e.target.value);save();render();});
   for(const [id,field] of [['rateDia','dia'],['rateGold','gold']]) $(id).addEventListener('input',e=>{const v=Number(e.target.value);state.rates[state.basis][field]=v>=0&&Number.isFinite(v)?v:0;save();render();});
   chipGroup('sortChips','sort','sort');chipGroup('saleChips','sale','sale');
   $('query').addEventListener('input',e=>{state.query=e.target.value;state.shown=PAGE;render();});
@@ -162,7 +166,7 @@
   $('openPrices').addEventListener('click',()=>{
     $('priceList').innerHTML=itemNames().map(name=>{
       const p=state.prices[name]||defaults[name];
-      return `<label class="pe-line"><span>${escape(name)}</span><input type="number" min="0" step="any" inputmode="decimal" data-price="${escape(name)}" value="${p?p.v:''}" placeholder="단가"><select data-unit="${escape(name)}" aria-label="${escape(name)} 단가 단위"><option value="dia"${!p||p.u==='dia'?' selected':''}>다이아</option><option value="won"${p?.u==='won'?' selected':''}>원</option></select></label>`;
+      return `<label class="pe-line"><span>${escape(name)}</span><input type="number" min="0" step="any" inputmode="decimal" data-price="${escape(name)}" value="${p?p.v:''}" placeholder="단가"><select data-unit="${escape(name)}" aria-label="${escape(name)} 단가 단위"><option value="dia"${!p||p.u==='dia'?' selected':''}>다이아</option><option value="won"${p?.u==='won'?' selected':''}>원</option><option value="gold"${p?.u==='gold'?' selected':''}>골드</option></select></label>`;
     }).join('');
     $('priceDialog').showModal();
   });
@@ -227,7 +231,7 @@
       if(!response.ok)throw Error('HTTP '+response.status);
       const source=await response.json();
       if(source.schemaVersion!==1||!Array.isArray(source.packages))throw Error('지원하지 않는 데이터 형식');
-      for(const [name,v] of Object.entries(source.itemPrices?.items||{})) if(num(v)) defaults[name]={v:num(v),u:unit(source.itemPrices.unit)};
+      for(const [name,v] of Object.entries(source.itemPrices?.items||{})) {const val=typeof v==='object'&&v?v.v:v,u=typeof v==='object'&&v?v.u:source.itemPrices.unit;if(num(val)) defaults[name]={v:num(val),u:unit(u)};}
       official=source.packages.filter(p=>Number.isFinite(p.price)&&p.price>0&&Array.isArray(p.items)&&p.items.length)
         .map((p,i)=>({...p,id:'n'+p.noticeIds.join('-')+'-'+i,noticeSalePeriods:p.noticeSalePeriods||[]}));
       $('syncStatus').textContent=`패키지 ${official.length.toLocaleString('ko-KR')}개 · 마지막 확인 ${pretty(source.checkedAt)}`;

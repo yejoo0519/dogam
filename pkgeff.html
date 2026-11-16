@@ -29,6 +29,7 @@
           </div>
           <label class="pe-field">다이아 1개 <input id="rateDia" type="number" min="0" step="0.01" inputmode="decimal"> 원</label>
           <label class="pe-field">황금 다이아 1개 <input id="rateGold" type="number" min="0" step="0.01" inputmode="decimal"> 원</label>
+          <label class="pe-field">골드 1억 <input id="rateGoldCoin" type="number" min="0" step="1" inputmode="numeric" placeholder="미입력"> 원</label>
           <button id="openPrices" class="pkg-button" type="button">아이템 단가 설정</button>
         </section>
         <section class="pkg-content">
@@ -49,7 +50,7 @@
           <div id="results" class="pe-cards"><div class="pkg-empty">기록을 불러오는 중입니다.</div></div>
           <div class="pe-more" id="moreWrap" hidden><button id="more" class="pkg-button" type="button">더 보기</button></div>
         </section>
-        <p class="pkg-note">구성품 가치는 각 구성품 수량 × 단가의 합이고, 이득률은 (구성품 가치 ÷ 패키지 가격 − 1)입니다. 아이템 기본 단가는 상시 판매 패키지 중 구성품 하나만 들어 있는 패키지의 가격에서 계산한 값입니다. 단가가 없는 구성품은 0원으로 계산하고 카드에 미환산으로 표시합니다. 아이템 단가·알 시세·직접 등록한 패키지는 이 기기 브라우저에만 저장됩니다. 기본 목록의 가격과 구성은 공식 공지의 구성표에서 확인한 값입니다.</p>
+        <p class="pkg-note">구성품 가치는 각 구성품 수량 × 단가의 합이고, 이득률은 (구성품 가치 ÷ 패키지 가격 − 1)입니다. 아이템 기본 단가는 유저 거래 시세(꿈의 젬·망치·꿈의 부화기)와 상시 패키지 가격(상급 초월의 정수·더블 맥스 레벨업)에서 잡은 값입니다. 골드와 합성석은 골드 1억당 원화 시세를 넣어야 환산됩니다. 단가가 없는 구성품은 0원으로 계산하고 카드에 미환산으로 표시합니다. 아이템 단가·알 시세·직접 등록한 패키지는 이 기기 브라우저에만 저장됩니다. 기본 목록의 가격과 구성은 공식 공지의 구성표에서 확인한 값입니다.</p>
       </div>
     </main>
   </div>
@@ -74,7 +75,7 @@
   <dialog id="priceDialog" class="pkg-dialog" aria-labelledby="priceTitle">
     <header class="pkg-detail-head"><div><p class="pkg-eyebrow">ITEM PRICES</p><h2 id="priceTitle">아이템 단가</h2></div><button type="button" data-close>닫기</button></header>
     <div class="pkg-detail-content">
-      <p class="pkg-muted pe-hint">1개 기준 단가입니다. 단위가 다이아면 위의 다이아 단가를 곱해 원화로 환산합니다. 기본값은 상시 패키지 가격에서 계산한 값이며, 값을 고치면 이 기기에서만 바뀌고 비우면 기본값으로 돌아갑니다.</p>
+      <p class="pkg-muted pe-hint">1개 기준 단가입니다. 단위가 다이아면 위의 다이아 단가를 곱해 원화로 환산합니다. 기본값은 유저 거래 시세와 상시 패키지 가격에서 잡은 값이며, 값을 고치면 이 기기에서만 바뀌고 비우면 기본값으로 돌아갑니다.</p>
       <div id="priceList" class="pe-lines"></div>
     </div>
   </dialog>

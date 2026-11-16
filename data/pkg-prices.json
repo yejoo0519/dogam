@@ -48,14 +48,22 @@
    "note": "구매 제한 횟수는 화면에서 확인 못 함(2025.07 공지 기준 주 3회)",
    "calc": {
     "shop": {
-     "value": 103200,
-     "gainPct": 369.1
+     "value": 0,
+     "gainPct": -100.0
     },
     "market": {
-     "value": 103200,
-     "gainPct": 369.1
+     "value": 0,
+     "gainPct": -100.0
     },
-    "unpriced": []
+    "unpriced": [
+     "강철의 망치",
+     "꿈의 공격 +35",
+     "꿈의 방어 +35",
+     "꿈의 체력 +140",
+     "디트의 망치",
+     "마법의 망치",
+     "합성석"
+    ]
    }
   },
   {
@@ -105,19 +113,22 @@
    "source": "인게임 상점 화면(2026-11-16)",
    "calc": {
     "shop": {
-     "value": 9000,
-     "gainPct": -59.1
+     "value": 0,
+     "gainPct": -100.0
     },
     "market": {
-     "value": 9000,
-     "gainPct": -59.1
+     "value": 0,
+     "gainPct": -100.0
     },
     "unpriced": [
-     "골드",
-     "캡슐 Lv+1",
      "각성 Lv+1",
+     "골드",
+     "꿈의 부화기 +1",
+     "상급 강화의 정수",
      "중급 강화의 정수",
-     "상급 강화의 정수"
+     "최상급 강화의 정수",
+     "캡슐 Lv+1",
+     "페르시온 결정"
     ]
    }
   },
@@ -176,15 +187,21 @@
    "source": "인게임 상점 화면(2026-11-16)",
    "calc": {
     "shop": {
-     "value": 38400,
-     "gainPct": 74.5
+     "value": 3000,
+     "gainPct": -86.4
     },
     "market": {
-     "value": 38400,
-     "gainPct": 74.5
+     "value": 3000,
+     "gainPct": -86.4
     },
     "unpriced": [
-     "골드"
+     "골드",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "초월의 보석",
+     "초월의 정수(레드)",
+     "초월의 정수(블루)",
+     "초월의 정수(옐로우)"
     ]
    }
   },
@@ -223,14 +240,20 @@
    "source": "인게임 상점 화면(2026-11-16)",
    "calc": {
     "shop": {
-     "value": 114000,
-     "gainPct": 850.0
+     "value": 0,
+     "gainPct": -100.0
     },
     "market": {
-     "value": 114000,
-     "gainPct": 850.0
+     "value": 0,
+     "gainPct": -100.0
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv+1",
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "프리미엄 Lv+1"
+    ]
    }
   },
   {
@@ -260,16 +283,17 @@
    "source": "인게임 상점 화면(2026-11-16)",
    "calc": {
     "shop": {
-     "value": 90000,
-     "gainPct": 172.7
+     "value": 0,
+     "gainPct": -100.0
     },
     "market": {
-     "value": 90000,
-     "gainPct": 172.7
+     "value": 0,
+     "gainPct": -100.0
     },
     "unpriced": [
      "고급 정령 뽑기권",
-     "디바인 스톤"
+     "디바인 스톤",
+     "정령 10+1 뽑기권"
     ]
    }
   },
@@ -324,18 +348,19 @@
    "source": "인게임 상점 화면(2026-11-16)",
    "calc": {
     "shop": {
-     "value": 150000,
-     "gainPct": 172.7
+     "value": 60000,
+     "gainPct": 9.1
     },
     "market": {
-     "value": 104865,
-     "gainPct": 90.7
+     "value": 14865,
+     "gainPct": -73.0
     },
     "unpriced": [
      "고급 정령 뽑기권",
-     "정령 5성 확정권",
      "공격력물약8",
      "방어력물약8",
+     "정령 10+1 뽑기권",
+     "정령 5성 확정권",
      "체력물약8",
      "크리물약8",
      "회피물약8"
@@ -382,8 +407,8 @@
     },
     "unpriced": [
      "골드",
-     "루비",
-     "디바인 스톤"
+     "디바인 스톤",
+     "루비"
     ]
    }
   },
@@ -419,14 +444,17 @@
    "note": "즉시 지급 + 매일 지급 28일분 합산. 즉시: 다이아 500·황다 200·스페셜 20·Lv-1 60 / 매일: 다이아 60·황다 15·스페셜 5·Lv-1 6",
    "calc": {
     "shop": {
-     "value": 189920,
-     "gainPct": 1482.7
+     "value": 66560,
+     "gainPct": 454.7
     },
     "market": {
-     "value": 145408,
-     "gainPct": 1111.7
+     "value": 22048,
+     "gainPct": 83.7
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "스페셜 Lv+1"
+    ]
    }
   },
   {
@@ -461,14 +489,15 @@
    "note": "즉시 지급 + 매일 지급 28일분 합산. 지급 기간 28일은 프리미엄 월정액과 같다고 가정",
    "calc": {
     "shop": {
-     "value": 50640,
-     "gainPct": 744.0
+     "value": 36960,
+     "gainPct": 516.0
     },
     "market": {
-     "value": 25743,
-     "gainPct": 329.1
+     "value": 12063,
+     "gainPct": 101.1
     },
     "unpriced": [
+     "Lv-1",
      "골드"
     ]
    }
@@ -500,14 +529,18 @@
    "source": "인게임 상점 화면(2026-11-16)",
    "calc": {
     "shop": {
-     "value": 18000,
-     "gainPct": 1100.0
+     "value": 0,
+     "gainPct": -100.0
     },
     "market": {
-     "value": 18000,
-     "gainPct": 1100.0
+     "value": 0,
+     "gainPct": -100.0
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "치료제",
+     "토벌권"
+    ]
    }
   },
   {
@@ -537,12 +570,12 @@
    "source": "인게임 상점 화면(2026-11-16)",
    "calc": {
     "shop": {
-     "value": 10800,
-     "gainPct": 260.0
+     "value": 3000,
+     "gainPct": 0.0
     },
     "market": {
-     "value": 10800,
-     "gainPct": 260.0
+     "value": 3000,
+     "gainPct": 0.0
     },
     "unpriced": []
    }
@@ -641,14 +674,20 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 144000,
-     "gainPct": 336.4
+     "value": 48900,
+     "gainPct": 48.2
     },
     "market": {
-     "value": 113659,
-     "gainPct": 244.4
+     "value": 18559,
+     "gainPct": -43.8
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "꿈의 정수(최상급)",
+     "스페셜 Lv+1",
+     "초월의 보석"
+    ]
    }
   },
   {
@@ -716,14 +755,20 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 144000,
-     "gainPct": 336.4
+     "value": 48900,
+     "gainPct": 48.2
     },
     "market": {
-     "value": 113659,
-     "gainPct": 244.4
+     "value": 18559,
+     "gainPct": -43.8
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "최상급 강화의 정수",
+     "페르시온 결정"
+    ]
    }
   },
   {
@@ -747,12 +792,12 @@
    "source": "공지 구성표",
    "calc": {
     "shop": {
-     "value": 90000,
-     "gainPct": 309.1
+     "value": 22000,
+     "gainPct": 0.0
     },
     "market": {
-     "value": 90000,
-     "gainPct": 309.1
+     "value": 22000,
+     "gainPct": 0.0
     },
     "unpriced": []
    }
@@ -826,14 +871,21 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 145800,
-     "gainPct": 341.8
+     "value": 48900,
+     "gainPct": 48.2
     },
     "market": {
-     "value": 115459,
-     "gainPct": 249.9
+     "value": 18559,
+     "gainPct": -43.8
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "초월의 보석",
+     "최상급 강화의 정수",
+     "페르시온 결정"
+    ]
    }
   },
   {
@@ -885,14 +937,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 128800,
-     "gainPct": 485.5
+     "value": 40000,
+     "gainPct": 81.8
     },
     "market": {
-     "value": 101259,
-     "gainPct": 360.3
+     "value": 12459,
+     "gainPct": -43.4
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "프리미엄 Lv+1"
+    ]
    }
   },
   {
@@ -948,15 +1005,18 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 153600,
-     "gainPct": 213.5
+     "value": 67500,
+     "gainPct": 37.8
     },
     "market": {
-     "value": 110032,
-     "gainPct": 124.6
+     "value": 23932,
+     "gainPct": -51.2
     },
     "unpriced": [
-     "강림 강화곤"
+     "Lv-1",
+     "강림 강화곤",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1"
     ]
    }
   },
@@ -993,15 +1053,17 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 192000,
-     "gainPct": 481.8
+     "value": 0,
+     "gainPct": -100.0
     },
     "market": {
-     "value": 192000,
-     "gainPct": 481.8
+     "value": 0,
+     "gainPct": -100.0
     },
     "unpriced": [
-     "골드"
+     "골드",
+     "디트의 망치",
+     "합성석"
     ]
    },
    "always": true
@@ -1059,14 +1121,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 142200,
-     "gainPct": 330.9
+     "value": 48900,
+     "gainPct": 48.2
     },
     "market": {
-     "value": 111859,
-     "gainPct": 239.0
+     "value": 18559,
+     "gainPct": -43.8
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "꿈의 정수(최상급)",
+     "스페셜 Lv+1"
+    ]
    }
   },
   {
@@ -1126,15 +1193,18 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 153600,
-     "gainPct": 213.5
+     "value": 67500,
+     "gainPct": 37.8
     },
     "market": {
-     "value": 110032,
-     "gainPct": 124.6
+     "value": 23932,
+     "gainPct": -51.2
     },
     "unpriced": [
+     "Lv-1",
      "강림 강화곤",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
      "심판자 카스티그(강림 전용 장식)"
     ]
    }
@@ -1200,14 +1270,21 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 145800,
-     "gainPct": 341.8
+     "value": 48900,
+     "gainPct": 48.2
     },
     "market": {
-     "value": 115459,
-     "gainPct": 249.9
+     "value": 18559,
+     "gainPct": -43.8
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "초월의 보석",
+     "최상급 강화의 정수",
+     "페르시온 결정"
+    ]
    }
   },
   {
@@ -1237,16 +1314,17 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 90000,
-     "gainPct": 172.7
+     "value": 0,
+     "gainPct": -100.0
     },
     "market": {
-     "value": 90000,
-     "gainPct": 172.7
+     "value": 0,
+     "gainPct": -100.0
     },
     "unpriced": [
      "고급 정령 뽑기권",
-     "디바인 스톤"
+     "디바인 스톤",
+     "정령 10+1 뽑기권"
     ]
    }
   },
@@ -1309,14 +1387,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 137200,
-     "gainPct": 523.6
+     "value": 43000,
+     "gainPct": 95.5
     },
     "market": {
-     "value": 109659,
-     "gainPct": 398.5
+     "value": 15459,
+     "gainPct": -29.7
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "프리미엄 Lv+1"
+    ]
    }
   },
   {
@@ -1372,14 +1455,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 137200,
-     "gainPct": 523.6
+     "value": 43000,
+     "gainPct": 95.5
     },
     "market": {
-     "value": 109659,
-     "gainPct": 398.5
+     "value": 15459,
+     "gainPct": -29.7
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "프리미엄 Lv+1"
+    ]
    }
   },
   {
@@ -1443,14 +1531,21 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 145800,
-     "gainPct": 341.8
+     "value": 48900,
+     "gainPct": 48.2
     },
     "market": {
-     "value": 115459,
-     "gainPct": 249.9
+     "value": 18559,
+     "gainPct": -43.8
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "초월의 보석",
+     "최상급 강화의 정수",
+     "페르시온 결정"
+    ]
    }
   },
   {
@@ -1510,14 +1605,20 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 144000,
-     "gainPct": 336.4
+     "value": 48900,
+     "gainPct": 48.2
     },
     "market": {
-     "value": 113659,
-     "gainPct": 244.4
+     "value": 18559,
+     "gainPct": -43.8
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "꿈의 정수(최상급)",
+     "스페셜 Lv+1",
+     "초월의 보석"
+    ]
    }
   },
   {
@@ -1577,14 +1678,20 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 144000,
-     "gainPct": 336.4
+     "value": 48900,
+     "gainPct": 48.2
     },
     "market": {
-     "value": 113659,
-     "gainPct": 244.4
+     "value": 18559,
+     "gainPct": -43.8
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "꿈의 정수(최상급)",
+     "스페셜 Lv+1",
+     "초월의 보석"
+    ]
    }
   },
   {
@@ -1644,14 +1751,20 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 144000,
-     "gainPct": 336.4
+     "value": 48900,
+     "gainPct": 48.2
     },
     "market": {
-     "value": 113659,
-     "gainPct": 244.4
+     "value": 18559,
+     "gainPct": -43.8
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "꿈의 정수(최상급)",
+     "스페셜 Lv+1",
+     "초월의 보석"
+    ]
    }
   },
   {
@@ -1717,14 +1830,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 137200,
-     "gainPct": 523.6
+     "value": 43000,
+     "gainPct": 95.5
     },
     "market": {
-     "value": 109659,
-     "gainPct": 398.5
+     "value": 15459,
+     "gainPct": -29.7
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "프리미엄 Lv+1"
+    ]
    }
   },
   {
@@ -1790,14 +1908,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 137200,
-     "gainPct": 523.6
+     "value": 43000,
+     "gainPct": 95.5
     },
     "market": {
-     "value": 109659,
-     "gainPct": 398.5
+     "value": 15459,
+     "gainPct": -29.7
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "프리미엄 Lv+1"
+    ]
    }
   },
   {
@@ -1863,14 +1986,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 137200,
-     "gainPct": 523.6
+     "value": 43000,
+     "gainPct": 95.5
     },
     "market": {
-     "value": 109659,
-     "gainPct": 398.5
+     "value": 15459,
+     "gainPct": -29.7
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "프리미엄 Lv+1"
+    ]
    }
   },
   {
@@ -1934,14 +2062,21 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 145800,
-     "gainPct": 341.8
+     "value": 48900,
+     "gainPct": 48.2
     },
     "market": {
-     "value": 115459,
-     "gainPct": 249.9
+     "value": 18559,
+     "gainPct": -43.8
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "초월의 보석",
+     "최상급 강화의 정수",
+     "페르시온 결정"
+    ]
    }
   },
   {
@@ -2021,18 +2156,25 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 116920,
-     "gainPct": 431.5
+     "value": 37000,
+     "gainPct": 68.2
     },
     "market": {
-     "value": 91636,
-     "gainPct": 316.5
+     "value": 11716,
+     "gainPct": -46.7
     },
     "unpriced": [
+     "Lv-1",
+     "강철의 망치",
      "골드",
      "꿈의 공격 +34",
      "꿈의 방어 +34",
-     "꿈의 체력 +136"
+     "꿈의 부화기 +1",
+     "꿈의 체력 +136",
+     "디트의 망치",
+     "마법의 망치",
+     "스페셜 Lv+1",
+     "합성석"
     ]
    }
   },
@@ -2089,14 +2231,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 105800,
-     "gainPct": 380.9
+     "value": 35600,
+     "gainPct": 61.8
     },
     "market": {
-     "value": 83316,
-     "gainPct": 278.7
+     "value": 13116,
+     "gainPct": -40.4
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv+1",
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1"
+    ]
    }
   },
   {
@@ -2180,18 +2327,26 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 65120,
-     "gainPct": 442.7
+     "value": 14000,
+     "gainPct": 16.7
     },
     "market": {
-     "value": 55863,
-     "gainPct": 365.5
+     "value": 4743,
+     "gainPct": -60.5
     },
     "unpriced": [
+     "Lv-1",
+     "강철의 망치",
      "골드",
      "꿈의 공격 +34",
      "꿈의 방어 +34",
-     "꿈의 체력 +136"
+     "꿈의 부화기 +1",
+     "꿈의 체력 +136",
+     "디트의 망치",
+     "마법의 망치",
+     "스페셜 Lv+1",
+     "페르시온 결정",
+     "합성석"
     ]
    }
   },
@@ -2248,14 +2403,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 95200,
-     "gainPct": 188.5
+     "value": 43000,
+     "gainPct": 30.3
     },
     "market": {
-     "value": 67659,
-     "gainPct": 105.0
+     "value": 15459,
+     "gainPct": -53.2
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "프리미엄 Lv+1"
+    ]
    }
   },
   {
@@ -2319,14 +2479,21 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 145800,
-     "gainPct": 341.8
+     "value": 48900,
+     "gainPct": 48.2
     },
     "market": {
-     "value": 115459,
-     "gainPct": 249.9
+     "value": 18559,
+     "gainPct": -43.8
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "초월의 보석",
+     "최상급 강화의 정수",
+     "페르시온 결정"
+    ]
    }
   },
   {
@@ -2370,16 +2537,17 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 94000,
-     "gainPct": 70.9
+     "value": 30800,
+     "gainPct": -44.0
     },
     "market": {
-     "value": 80000,
-     "gainPct": 45.5
+     "value": 16800,
+     "gainPct": -69.5
     },
     "unpriced": [
-     "아르하의 정수(속성별)",
-     "강림 강화곤"
+     "강림 강화곤",
+     "강림의 돌",
+     "아르하의 정수(속성별)"
     ]
    }
   },
@@ -2420,14 +2588,15 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 94000,
-     "gainPct": 184.8
+     "value": 30800,
+     "gainPct": -6.7
     },
     "market": {
-     "value": 80000,
-     "gainPct": 142.4
+     "value": 16800,
+     "gainPct": -49.1
     },
     "unpriced": [
+     "강림의 돌",
      "아르하의 정수(속성별)"
     ]
    }
@@ -2485,14 +2654,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 137200,
-     "gainPct": 523.6
+     "value": 43000,
+     "gainPct": 95.5
     },
     "market": {
-     "value": 109659,
-     "gainPct": 398.5
+     "value": 15459,
+     "gainPct": -29.7
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "프리미엄 Lv+1"
+    ]
    }
   },
   {
@@ -2536,8 +2710,8 @@
      "gainPct": -100.0
     },
     "unpriced": [
-     "축복의 보석",
-     "골드"
+     "골드",
+     "축복의 보석"
     ]
    }
   },
@@ -2602,15 +2776,17 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 143600,
-     "gainPct": 1096.7
+     "value": 23600,
+     "gainPct": 96.7
     },
     "market": {
-     "value": 127886,
-     "gainPct": 965.7
+     "value": 7886,
+     "gainPct": -34.3
     },
     "unpriced": [
-     "축복 받은 부화기"
+     "Lv-1",
+     "축복 받은 부화기",
+     "프리미엄 Lv+1"
     ]
    }
   },
@@ -2667,15 +2843,17 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 143600,
-     "gainPct": 1096.7
+     "value": 23600,
+     "gainPct": 96.7
     },
     "market": {
-     "value": 127886,
-     "gainPct": 965.7
+     "value": 7886,
+     "gainPct": -34.3
     },
     "unpriced": [
-     "축복 받은 부화기"
+     "Lv-1",
+     "축복 받은 부화기",
+     "프리미엄 Lv+1"
     ]
    }
   },
@@ -2760,18 +2938,26 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 65120,
-     "gainPct": 442.7
+     "value": 14000,
+     "gainPct": 16.7
     },
     "market": {
-     "value": 55863,
-     "gainPct": 365.5
+     "value": 4743,
+     "gainPct": -60.5
     },
     "unpriced": [
+     "Lv-1",
+     "강철의 망치",
      "골드",
      "꿈의 공격 +34",
      "꿈의 방어 +34",
-     "꿈의 체력 +136"
+     "꿈의 부화기 +1",
+     "꿈의 체력 +136",
+     "디트의 망치",
+     "마법의 망치",
+     "스페셜 Lv+1",
+     "페르시온 결정",
+     "합성석"
     ]
    }
   },
@@ -2832,15 +3018,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 189200,
-     "gainPct": 139.5
+     "value": 77000,
+     "gainPct": -2.5
     },
     "market": {
-     "value": 138632,
-     "gainPct": 75.5
+     "value": 26432,
+     "gainPct": -66.5
     },
     "unpriced": [
-     "강림 강화곤"
+     "Lv-1",
+     "강림 강화곤",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "정령 10+1 뽑기권"
     ]
    }
   },
@@ -2905,14 +3095,21 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 145800,
-     "gainPct": 341.8
+     "value": 48900,
+     "gainPct": 48.2
     },
     "market": {
-     "value": 115459,
-     "gainPct": 249.9
+     "value": 18559,
+     "gainPct": -43.8
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "초월의 보석",
+     "최상급 강화의 정수",
+     "페르시온 결정"
+    ]
    }
   },
   {
@@ -2968,14 +3165,20 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 129600,
-     "gainPct": 292.7
+     "value": 21000,
+     "gainPct": -36.4
     },
     "market": {
-     "value": 116059,
-     "gainPct": 251.7
+     "value": 7459,
+     "gainPct": -77.4
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "얼음 조각",
+     "프리미엄 Lv+1"
+    ]
    }
   },
   {
@@ -3031,14 +3234,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 137200,
-     "gainPct": 523.6
+     "value": 43000,
+     "gainPct": 95.5
     },
     "market": {
-     "value": 109659,
-     "gainPct": 398.5
+     "value": 15459,
+     "gainPct": -29.7
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "프리미엄 Lv+1"
+    ]
    }
   },
   {
@@ -3098,16 +3306,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 153600,
-     "gainPct": 213.5
+     "value": 67500,
+     "gainPct": 37.8
     },
     "market": {
-     "value": 110032,
-     "gainPct": 124.6
+     "value": 23932,
+     "gainPct": -51.2
     },
     "unpriced": [
+     "Lv-1",
      "강림 강화곤",
-     "강림 전용 장식"
+     "강림 전용 장식",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1"
     ]
    }
   },
@@ -3160,14 +3371,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 74000,
-     "gainPct": 236.4
+     "value": 26000,
+     "gainPct": 18.2
     },
     "market": {
-     "value": 55716,
-     "gainPct": 153.3
+     "value": 7716,
+     "gainPct": -64.9
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "프리미엄 Lv+1"
+    ]
    }
   },
   {
@@ -3231,14 +3447,21 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 85600,
-     "gainPct": 159.4
+     "value": 43000,
+     "gainPct": 30.3
     },
     "market": {
-     "value": 58059,
-     "gainPct": 75.9
+     "value": 15459,
+     "gainPct": -53.2
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "초월의 보석",
+     "최상급 강화의 정수",
+     "페르시온 결정"
+    ]
    }
   },
   {
@@ -3302,14 +3525,21 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 85600,
-     "gainPct": 159.4
+     "value": 43000,
+     "gainPct": 30.3
     },
     "market": {
-     "value": 58059,
-     "gainPct": 75.9
+     "value": 15459,
+     "gainPct": -53.2
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "초월의 보석",
+     "최상급 강화의 정수",
+     "페르시온 결정"
+    ]
    }
   },
   {
@@ -3361,14 +3591,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 79200,
-     "gainPct": 260.0
+     "value": 31200,
+     "gainPct": 41.8
     },
     "market": {
-     "value": 57259,
-     "gainPct": 160.3
+     "value": 9259,
+     "gainPct": -57.9
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "프리미엄 Lv+1"
+    ]
    }
   },
   {
@@ -3420,14 +3655,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 79200,
-     "gainPct": 260.0
+     "value": 31200,
+     "gainPct": 41.8
     },
     "market": {
-     "value": 57259,
-     "gainPct": 160.3
+     "value": 9259,
+     "gainPct": -57.9
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "프리미엄 Lv+1"
+    ]
    }
   },
   {
@@ -3483,14 +3723,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 95200,
-     "gainPct": 188.5
+     "value": 43000,
+     "gainPct": 30.3
     },
     "market": {
-     "value": 67659,
-     "gainPct": 105.0
+     "value": 15459,
+     "gainPct": -53.2
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "프리미엄 Lv+1"
+    ]
    }
   },
   {
@@ -3542,14 +3787,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 74000,
-     "gainPct": 236.4
+     "value": 26000,
+     "gainPct": 18.2
     },
     "market": {
-     "value": 55716,
-     "gainPct": 153.3
+     "value": 7716,
+     "gainPct": -64.9
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "프리미엄 Lv+1"
+    ]
    }
   },
   {
@@ -3609,16 +3859,20 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 130200,
-     "gainPct": 136.7
+     "value": 66000,
+     "gainPct": 20.0
     },
     "market": {
-     "value": 86632,
-     "gainPct": 57.5
+     "value": 22432,
+     "gainPct": -59.2
     },
     "unpriced": [
+     "Lv+1",
+     "Lv-1",
+     "강림 강화곤",
+     "꿈의 부화기 +1",
      "렉스톤",
-     "강림 강화곤"
+     "스페셜 Lv+1"
     ]
    }
   },
@@ -3675,14 +3929,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 95200,
-     "gainPct": 188.5
+     "value": 43000,
+     "gainPct": 30.3
     },
     "market": {
-     "value": 67659,
-     "gainPct": 105.0
+     "value": 15459,
+     "gainPct": -53.2
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "프리미엄 Lv+1"
+    ]
    }
   },
   {
@@ -3734,14 +3993,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 74000,
-     "gainPct": 236.4
+     "value": 26000,
+     "gainPct": 18.2
     },
     "market": {
-     "value": 55716,
-     "gainPct": 153.3
+     "value": 7716,
+     "gainPct": -64.9
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "프리미엄 Lv+1"
+    ]
    }
   },
   {
@@ -3821,18 +4085,25 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 116920,
-     "gainPct": 431.5
+     "value": 37000,
+     "gainPct": 68.2
     },
     "market": {
-     "value": 91636,
-     "gainPct": 316.5
+     "value": 11716,
+     "gainPct": -46.7
     },
     "unpriced": [
+     "Lv-1",
+     "강철의 망치",
      "골드",
      "꿈의 공격 +34",
      "꿈의 방어 +34",
-     "꿈의 체력 +136"
+     "꿈의 부화기 +1",
+     "꿈의 체력 +136",
+     "디트의 망치",
+     "마법의 망치",
+     "스페셜 Lv+1",
+     "합성석"
     ]
    }
   },
@@ -3897,14 +4168,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 95200,
-     "gainPct": 188.5
+     "value": 43000,
+     "gainPct": 30.3
     },
     "market": {
-     "value": 67659,
-     "gainPct": 105.0
+     "value": 15459,
+     "gainPct": -53.2
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "프리미엄 Lv+1"
+    ]
    }
   },
   {
@@ -3988,18 +4264,26 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 65120,
-     "gainPct": 442.7
+     "value": 14000,
+     "gainPct": 16.7
     },
     "market": {
-     "value": 55863,
-     "gainPct": 365.5
+     "value": 4743,
+     "gainPct": -60.5
     },
     "unpriced": [
+     "Lv-1",
+     "강철의 망치",
      "골드",
      "꿈의 공격 +33",
      "꿈의 방어 +33",
-     "꿈의 체력 +132"
+     "꿈의 부화기 +1",
+     "꿈의 체력 +132",
+     "디트의 망치",
+     "마법의 망치",
+     "스페셜 Lv+1",
+     "페르시온 결정",
+     "합성석"
     ]
    }
   },
@@ -4052,14 +4336,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 74000,
-     "gainPct": 236.4
+     "value": 26000,
+     "gainPct": 18.2
     },
     "market": {
-     "value": 55716,
-     "gainPct": 153.3
+     "value": 7716,
+     "gainPct": -64.9
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "프리미엄 Lv+1"
+    ]
    }
   },
   {
@@ -4135,16 +4424,21 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 89200,
-     "gainPct": 170.3
+     "value": 44500,
+     "gainPct": 34.8
     },
     "market": {
-     "value": 61659,
-     "gainPct": 86.8
+     "value": 16959,
+     "gainPct": -48.6
     },
     "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "상급 강화의 정수",
+     "스페셜 Lv+1",
      "중급 강화의 정수",
-     "상급 강화의 정수"
+     "최상급 강화의 정수",
+     "페르시온 결정"
     ]
    }
   },
@@ -4209,15 +4503,18 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 154200,
-     "gainPct": 214.7
+     "value": 66000,
+     "gainPct": 34.7
     },
     "market": {
-     "value": 110632,
-     "gainPct": 125.8
+     "value": 22432,
+     "gainPct": -54.2
     },
     "unpriced": [
-     "강림 강화곤"
+     "Lv-1",
+     "강림 강화곤",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1"
     ]
    }
   },
@@ -4270,14 +4567,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 74000,
-     "gainPct": 236.4
+     "value": 26000,
+     "gainPct": 18.2
     },
     "market": {
-     "value": 55716,
-     "gainPct": 153.3
+     "value": 7716,
+     "gainPct": -64.9
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "프리미엄 Lv+1"
+    ]
    }
   },
   {
@@ -4341,14 +4643,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 95200,
-     "gainPct": 188.5
+     "value": 43000,
+     "gainPct": 30.3
     },
     "market": {
-     "value": 67659,
-     "gainPct": 105.0
+     "value": 15459,
+     "gainPct": -53.2
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "프리미엄 Lv+1"
+    ]
    }
   },
   {
@@ -4412,14 +4719,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 95200,
-     "gainPct": 188.5
+     "value": 43000,
+     "gainPct": 30.3
     },
     "market": {
-     "value": 67659,
-     "gainPct": 105.0
+     "value": 15459,
+     "gainPct": -53.2
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "프리미엄 Lv+1"
+    ]
    }
   },
   {
@@ -4483,15 +4795,18 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 118200,
-     "gainPct": 141.2
+     "value": 66000,
+     "gainPct": 34.7
     },
     "market": {
-     "value": 74632,
-     "gainPct": 52.3
+     "value": 22432,
+     "gainPct": -54.2
     },
     "unpriced": [
-     "강림 강화곤"
+     "Lv-1",
+     "강림 강화곤",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1"
     ]
    }
   },
@@ -4556,14 +4871,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 95200,
-     "gainPct": 188.5
+     "value": 43000,
+     "gainPct": 30.3
     },
     "market": {
-     "value": 67659,
-     "gainPct": 105.0
+     "value": 15459,
+     "gainPct": -53.2
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "프리미엄 Lv+1"
+    ]
    }
   },
   {
@@ -4635,14 +4955,21 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 85600,
-     "gainPct": 159.4
+     "value": 43000,
+     "gainPct": 30.3
     },
     "market": {
-     "value": 58059,
-     "gainPct": 75.9
+     "value": 15459,
+     "gainPct": -53.2
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "초월의 보석",
+     "최상급 강화의 정수",
+     "페르시온 결정"
+    ]
    }
   },
   {
@@ -4716,14 +5043,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 81200,
-     "gainPct": 269.1
+     "value": 29000,
+     "gainPct": 31.8
     },
     "market": {
-     "value": 62916,
-     "gainPct": 186.0
+     "value": 10716,
+     "gainPct": -51.3
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "프리미엄 Lv+1"
+    ]
    }
   },
   {
@@ -4797,14 +5129,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 81200,
-     "gainPct": 269.1
+     "value": 29000,
+     "gainPct": 31.8
     },
     "market": {
-     "value": 62916,
-     "gainPct": 186.0
+     "value": 10716,
+     "gainPct": -51.3
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "프리미엄 Lv+1"
+    ]
    }
   },
   {
@@ -4878,14 +5215,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 81200,
-     "gainPct": 269.1
+     "value": 29000,
+     "gainPct": 31.8
     },
     "market": {
-     "value": 62916,
-     "gainPct": 186.0
+     "value": 10716,
+     "gainPct": -51.3
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "프리미엄 Lv+1"
+    ]
    }
   },
   {
@@ -4965,16 +5307,22 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 101800,
-     "gainPct": 208.5
+     "value": 43000,
+     "gainPct": 30.3
     },
     "market": {
-     "value": 74259,
-     "gainPct": 125.0
+     "value": 15459,
+     "gainPct": -53.2
     },
     "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "상급 강화의 정수",
+     "스페셜 Lv+1",
      "중급 강화의 정수",
-     "상급 강화의 정수"
+     "최상급 강화의 정수",
+     "페르시온 결정",
+     "프리미엄 Lv+1"
     ]
    }
   },
@@ -5039,14 +5387,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 81200,
-     "gainPct": 269.1
+     "value": 29000,
+     "gainPct": 31.8
     },
     "market": {
-     "value": 62916,
-     "gainPct": 186.0
+     "value": 10716,
+     "gainPct": -51.3
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "프리미엄 Lv+1"
+    ]
    }
   },
   {
@@ -5110,14 +5463,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 95200,
-     "gainPct": 188.5
+     "value": 43000,
+     "gainPct": 30.3
     },
     "market": {
-     "value": 67659,
-     "gainPct": 105.0
+     "value": 15459,
+     "gainPct": -53.2
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "프리미엄 Lv+1"
+    ]
    }
   },
   {
@@ -5197,16 +5555,22 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 101800,
-     "gainPct": 208.5
+     "value": 43000,
+     "gainPct": 30.3
     },
     "market": {
-     "value": 74259,
-     "gainPct": 125.0
+     "value": 15459,
+     "gainPct": -53.2
     },
     "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "상급 강화의 정수",
+     "스페셜 Lv+1",
      "중급 강화의 정수",
-     "상급 강화의 정수"
+     "최상급 강화의 정수",
+     "페르시온 결정",
+     "프리미엄 Lv+1"
     ]
    }
   },
@@ -5271,14 +5635,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 95200,
-     "gainPct": 188.5
+     "value": 43000,
+     "gainPct": 30.3
     },
     "market": {
-     "value": 67659,
-     "gainPct": 105.0
+     "value": 15459,
+     "gainPct": -53.2
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "프리미엄 Lv+1"
+    ]
    }
   },
   {
@@ -5399,18 +5768,25 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 65720,
-     "gainPct": 447.7
+     "value": 14000,
+     "gainPct": 16.7
     },
     "market": {
-     "value": 56463,
-     "gainPct": 370.5
+     "value": 4743,
+     "gainPct": -60.5
     },
     "unpriced": [
+     "Lv-1",
+     "강철의 망치",
      "골드",
      "꿈의 공격 +34",
      "꿈의 방어 +34",
-     "꿈의 체력 +136"
+     "꿈의 부화기 +1",
+     "꿈의 체력 +136",
+     "디트의 망치",
+     "마법의 망치",
+     "스페셜 Lv+1",
+     "합성석"
     ]
    }
   },
@@ -5516,18 +5892,25 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 116920,
-     "gainPct": 431.5
+     "value": 37000,
+     "gainPct": 68.2
     },
     "market": {
-     "value": 91636,
-     "gainPct": 316.5
+     "value": 11716,
+     "gainPct": -46.7
     },
     "unpriced": [
+     "Lv-1",
+     "강철의 망치",
      "골드",
      "꿈의 공격 +34",
      "꿈의 방어 +34",
-     "꿈의 체력 +136"
+     "꿈의 부화기 +1",
+     "꿈의 체력 +136",
+     "디트의 망치",
+     "마법의 망치",
+     "스페셜 Lv+1",
+     "합성석"
     ]
    }
   },
@@ -5612,18 +5995,26 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 65120,
-     "gainPct": 442.7
+     "value": 14000,
+     "gainPct": 16.7
     },
     "market": {
-     "value": 55863,
-     "gainPct": 365.5
+     "value": 4743,
+     "gainPct": -60.5
     },
     "unpriced": [
+     "Lv-1",
+     "강철의 망치",
      "골드",
      "꿈의 공격 +33",
      "꿈의 방어 +33",
-     "꿈의 체력 +132"
+     "꿈의 부화기 +1",
+     "꿈의 체력 +132",
+     "디트의 망치",
+     "마법의 망치",
+     "스페셜 Lv+1",
+     "페르시온 결정",
+     "합성석"
     ]
    }
   },
@@ -5681,14 +6072,18 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 77200,
-     "gainPct": 250.9
+     "value": 41500,
+     "gainPct": 88.6
     },
     "market": {
-     "value": 51916,
-     "gainPct": 136.0
+     "value": 16216,
+     "gainPct": -26.3
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1"
+    ]
    }
   },
   {
@@ -5745,14 +6140,18 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 77200,
-     "gainPct": 250.9
+     "value": 41500,
+     "gainPct": 88.6
     },
     "market": {
-     "value": 51916,
-     "gainPct": 136.0
+     "value": 16216,
+     "gainPct": -26.3
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1"
+    ]
    }
   },
   {
@@ -5816,14 +6215,21 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 85600,
-     "gainPct": 159.4
+     "value": 43000,
+     "gainPct": 30.3
     },
     "market": {
-     "value": 58059,
-     "gainPct": 75.9
+     "value": 15459,
+     "gainPct": -53.2
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "초월의 보석",
+     "최상급 강화의 정수",
+     "페르시온 결정"
+    ]
    }
   },
   {
@@ -5887,14 +6293,21 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 85600,
-     "gainPct": 159.4
+     "value": 43000,
+     "gainPct": 30.3
     },
     "market": {
-     "value": 58059,
-     "gainPct": 75.9
+     "value": 15459,
+     "gainPct": -53.2
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "초월의 보석",
+     "최상급 강화의 정수",
+     "페르시온 결정"
+    ]
    }
   },
   {
@@ -5958,14 +6371,21 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 85600,
-     "gainPct": 159.4
+     "value": 43000,
+     "gainPct": 30.3
     },
     "market": {
-     "value": 58059,
-     "gainPct": 75.9
+     "value": 15459,
+     "gainPct": -53.2
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "초월의 보석",
+     "최상급 강화의 정수",
+     "페르시온 결정"
+    ]
    }
   },
   {
@@ -6029,14 +6449,21 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 85600,
-     "gainPct": 159.4
+     "value": 43000,
+     "gainPct": 30.3
     },
     "market": {
-     "value": 58059,
-     "gainPct": 75.9
+     "value": 15459,
+     "gainPct": -53.2
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "초월의 보석",
+     "최상급 강화의 정수",
+     "페르시온 결정"
+    ]
    }
   },
   {
@@ -6084,14 +6511,18 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 75400,
-     "gainPct": 242.7
+     "value": 31000,
+     "gainPct": 40.9
     },
     "market": {
-     "value": 54630,
-     "gainPct": 148.3
+     "value": 10230,
+     "gainPct": -53.5
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1"
+    ]
    }
   },
   {
@@ -6147,14 +6578,20 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 73800,
-     "gainPct": 123.6
+     "value": 19500,
+     "gainPct": -40.9
     },
     "market": {
-     "value": 62516,
-     "gainPct": 89.4
+     "value": 8216,
+     "gainPct": -75.1
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "얼음 조각",
+     "초월의 보석"
+    ]
    }
   },
   {
@@ -6207,14 +6644,18 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 75400,
-     "gainPct": 242.7
+     "value": 31000,
+     "gainPct": 40.9
     },
     "market": {
-     "value": 54630,
-     "gainPct": 148.3
+     "value": 10230,
+     "gainPct": -53.5
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1"
+    ]
    }
   },
   {
@@ -6267,14 +6708,18 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 75400,
-     "gainPct": 242.7
+     "value": 31000,
+     "gainPct": 40.9
     },
     "market": {
-     "value": 54630,
-     "gainPct": 148.3
+     "value": 10230,
+     "gainPct": -53.5
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1"
+    ]
    }
   },
   {
@@ -6330,15 +6775,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 178400,
-     "gainPct": 125.8
+     "value": 74000,
+     "gainPct": -6.3
     },
     "market": {
-     "value": 127832,
-     "gainPct": 61.8
+     "value": 23432,
+     "gainPct": -70.3
     },
     "unpriced": [
-     "강림 강화곤"
+     "Lv-1",
+     "강림 강화곤",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "정령 10+1 뽑기권"
     ]
    }
   },
@@ -6403,14 +6852,21 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 85600,
-     "gainPct": 159.4
+     "value": 43000,
+     "gainPct": 30.3
     },
     "market": {
-     "value": 58059,
-     "gainPct": 75.9
+     "value": 15459,
+     "gainPct": -53.2
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "초월의 보석",
+     "최상급 강화의 정수",
+     "페르시온 결정"
+    ]
    }
   },
   {
@@ -6528,14 +6984,21 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 85600,
-     "gainPct": 159.4
+     "value": 43000,
+     "gainPct": 30.3
     },
     "market": {
-     "value": 58059,
-     "gainPct": 75.9
+     "value": 15459,
+     "gainPct": -53.2
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "초월의 보석",
+     "최상급 강화의 정수",
+     "페르시온 결정"
+    ]
    }
   },
   {
@@ -6587,14 +7050,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 74200,
-     "gainPct": 124.8
+     "value": 37000,
+     "gainPct": 12.1
     },
     "market": {
-     "value": 48916,
-     "gainPct": 48.2
+     "value": 11716,
+     "gainPct": -64.5
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "최고급 정령 뽑기권"
+    ]
    }
   },
   {
@@ -6643,14 +7111,18 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 77400,
-     "gainPct": 251.8
+     "value": 33000,
+     "gainPct": 50.0
     },
     "market": {
-     "value": 56400,
-     "gainPct": 156.4
+     "value": 12000,
+     "gainPct": -45.5
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1"
+    ]
    }
   },
   {
@@ -6699,14 +7171,18 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 77400,
-     "gainPct": 251.8
+     "value": 33000,
+     "gainPct": 50.0
     },
     "market": {
-     "value": 56400,
-     "gainPct": 156.4
+     "value": 12000,
+     "gainPct": -45.5
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1"
+    ]
    }
   },
   {
@@ -6778,16 +7254,22 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 88000,
-     "gainPct": 166.7
+     "value": 41500,
+     "gainPct": 25.8
     },
     "market": {
-     "value": 62716,
-     "gainPct": 90.0
+     "value": 16216,
+     "gainPct": -50.9
     },
     "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
      "상급 강화의 정수",
-     "중급 강화의 정수"
+     "스페셜 Lv+1",
+     "중급 강화의 정수",
+     "초월의 보석",
+     "최상급 강화의 정수",
+     "페르시온 결정"
     ]
    }
   },
@@ -6840,15 +7322,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 96400,
-     "gainPct": 75.3
+     "value": 52000,
+     "gainPct": -5.5
     },
     "market": {
-     "value": 59832,
-     "gainPct": 8.8
+     "value": 15432,
+     "gainPct": -71.9
     },
     "unpriced": [
-     "렉스톤 드래곤 알"
+     "Lv+1",
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "렉스톤 드래곤 알",
+     "스페셜 Lv+1"
     ]
    }
   },
@@ -6970,18 +7456,25 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 65720,
-     "gainPct": 447.7
+     "value": 14000,
+     "gainPct": 16.7
     },
     "market": {
-     "value": 56463,
-     "gainPct": 370.5
+     "value": 4743,
+     "gainPct": -60.5
     },
     "unpriced": [
+     "Lv-1",
+     "강철의 망치",
      "골드",
      "꿈의 공격 +32",
      "꿈의 방어 +32",
-     "꿈의 체력 +128"
+     "꿈의 부화기 +1",
+     "꿈의 체력 +128",
+     "디트의 망치",
+     "마법의 망치",
+     "스페셜 Lv+1",
+     "합성석"
     ]
    }
   },
@@ -7087,18 +7580,25 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 116920,
-     "gainPct": 431.5
+     "value": 37000,
+     "gainPct": 68.2
     },
     "market": {
-     "value": 91636,
-     "gainPct": 316.5
+     "value": 11716,
+     "gainPct": -46.7
     },
     "unpriced": [
+     "Lv-1",
+     "강철의 망치",
      "골드",
      "꿈의 공격 +32",
      "꿈의 방어 +32",
-     "꿈의 체력 +128"
+     "꿈의 부화기 +1",
+     "꿈의 체력 +128",
+     "디트의 망치",
+     "마법의 망치",
+     "스페셜 Lv+1",
+     "합성석"
     ]
    }
   },
@@ -7167,16 +7667,22 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 74800,
-     "gainPct": 126.7
+     "value": 26500,
+     "gainPct": -19.7
     },
     "market": {
-     "value": 60800,
-     "gainPct": 84.2
+     "value": 12500,
+     "gainPct": -62.1
     },
     "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "상급 강화의 정수",
+     "스페셜 Lv+1",
      "중급 강화의 정수",
-     "상급 강화의 정수"
+     "초월의 보석",
+     "최상급 강화의 정수",
+     "페르시온 결정"
     ]
    }
   },
@@ -7237,16 +7743,20 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 49000,
-     "gainPct": 48.5
+     "value": 26500,
+     "gainPct": -19.7
     },
     "market": {
-     "value": 35000,
-     "gainPct": 6.1
+     "value": 12500,
+     "gainPct": -62.1
     },
     "unpriced": [
+     "꿈의 부화기 +1",
+     "상급 강화의 정수",
      "중급 강화의 정수",
-     "상급 강화의 정수"
+     "초월의 보석",
+     "최상급 강화의 정수",
+     "페르시온 결정"
     ]
    }
   },
@@ -7332,18 +7842,25 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 61520,
-     "gainPct": 412.7
+     "value": 14000,
+     "gainPct": 16.7
     },
     "market": {
-     "value": 52263,
-     "gainPct": 335.5
+     "value": 4743,
+     "gainPct": -60.5
     },
     "unpriced": [
+     "Lv-1",
+     "강철의 망치",
      "골드",
      "꿈의 공격 +33",
      "꿈의 방어 +33",
-     "꿈의 체력 +132"
+     "꿈의 부화기 +1",
+     "꿈의 체력 +132",
+     "디트의 망치",
+     "스페셜 Lv+1",
+     "페르시온 결정",
+     "합성석"
     ]
    }
   },
@@ -7429,18 +7946,25 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 61520,
-     "gainPct": 412.7
+     "value": 14000,
+     "gainPct": 16.7
     },
     "market": {
-     "value": 52263,
-     "gainPct": 335.5
+     "value": 4743,
+     "gainPct": -60.5
     },
     "unpriced": [
+     "Lv-1",
+     "강철의 망치",
      "골드",
      "꿈의 공격 +33",
      "꿈의 방어 +33",
-     "꿈의 체력 +132"
+     "꿈의 부화기 +1",
+     "꿈의 체력 +132",
+     "디트의 망치",
+     "스페셜 Lv+1",
+     "페르시온 결정",
+     "합성석"
     ]
    }
   },
@@ -7501,15 +8025,20 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 73600,
-     "gainPct": 50.2
+     "value": 23500,
+     "gainPct": -52.0
     },
     "market": {
-     "value": 59600,
-     "gainPct": 21.6
+     "value": 9500,
+     "gainPct": -80.6
     },
     "unpriced": [
-     "강림 강화곤"
+     "Lv-1",
+     "강림 강화곤",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "초월의 보석",
+     "최고급 정령 뽑기권"
     ]
    }
   },
@@ -7575,16 +8104,20 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 49000,
-     "gainPct": 48.5
+     "value": 26500,
+     "gainPct": -19.7
     },
     "market": {
-     "value": 35000,
-     "gainPct": 6.1
+     "value": 12500,
+     "gainPct": -62.1
     },
     "unpriced": [
+     "꿈의 부화기 +1",
+     "상급 강화의 정수",
      "중급 강화의 정수",
-     "상급 강화의 정수"
+     "초월의 보석",
+     "최상급 강화의 정수",
+     "페르시온 결정"
     ]
    }
   },
@@ -7637,15 +8170,18 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 118400,
-     "gainPct": 438.2
+     "value": 74000,
+     "gainPct": 236.4
     },
     "market": {
-     "value": 67832,
-     "gainPct": 208.3
+     "value": 23432,
+     "gainPct": 6.5
     },
     "unpriced": [
-     "골드"
+     "Lv-1",
+     "골드",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1"
     ]
    }
   },
@@ -7719,16 +8255,22 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 74800,
-     "gainPct": 126.7
+     "value": 26500,
+     "gainPct": -19.7
     },
     "market": {
-     "value": 60800,
-     "gainPct": 84.2
+     "value": 12500,
+     "gainPct": -62.1
     },
     "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "상급 강화의 정수",
+     "스페셜 Lv+1",
      "중급 강화의 정수",
-     "상급 강화의 정수"
+     "초월의 보석",
+     "최상급 강화의 정수",
+     "페르시온 결정"
     ]
    }
   },
@@ -7790,15 +8332,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 66400,
-     "gainPct": 35.5
+     "value": 26500,
+     "gainPct": -45.9
     },
     "market": {
-     "value": 52400,
-     "gainPct": 6.9
+     "value": 12500,
+     "gainPct": -74.5
     },
     "unpriced": [
-     "강림 강화곤"
+     "Lv-1",
+     "강림 강화곤",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "초월의 보석"
     ]
    }
   },
@@ -7865,16 +8411,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 52400,
-     "gainPct": 138.2
+     "value": 26000,
+     "gainPct": 18.2
     },
     "market": {
-     "value": 34116,
-     "gainPct": 55.1
+     "value": 7716,
+     "gainPct": -64.9
     },
     "unpriced": [
-     "캡슐 Lv+1",
-     "각성 Lv+1"
+     "Lv-1",
+     "각성 Lv+1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "캡슐 Lv+1"
     ]
    }
   },
@@ -7941,16 +8490,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 52400,
-     "gainPct": 138.2
+     "value": 26000,
+     "gainPct": 18.2
     },
     "market": {
-     "value": 34116,
-     "gainPct": 55.1
+     "value": 7716,
+     "gainPct": -64.9
     },
     "unpriced": [
-     "캡슐 Lv+1",
-     "각성 Lv+1"
+     "Lv-1",
+     "각성 Lv+1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "캡슐 Lv+1"
     ]
    }
   },
@@ -8017,16 +8569,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 52400,
-     "gainPct": 138.2
+     "value": 26000,
+     "gainPct": 18.2
     },
     "market": {
-     "value": 34116,
-     "gainPct": 55.1
+     "value": 7716,
+     "gainPct": -64.9
     },
     "unpriced": [
-     "캡슐 Lv+1",
-     "각성 Lv+1"
+     "Lv-1",
+     "각성 Lv+1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "캡슐 Lv+1"
     ]
    }
   },
@@ -8097,14 +8652,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 66400,
-     "gainPct": 201.8
+     "value": 26500,
+     "gainPct": 20.5
     },
     "market": {
-     "value": 52400,
-     "gainPct": 138.2
+     "value": 12500,
+     "gainPct": -43.2
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "초월의 보석"
+    ]
    }
   },
   {
@@ -8174,14 +8734,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 66400,
-     "gainPct": 201.8
+     "value": 26500,
+     "gainPct": 20.5
     },
     "market": {
-     "value": 52400,
-     "gainPct": 138.2
+     "value": 12500,
+     "gainPct": -43.2
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "초월의 보석"
+    ]
    }
   },
   {
@@ -8255,15 +8820,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 66400,
-     "gainPct": 35.5
+     "value": 26500,
+     "gainPct": -45.9
     },
     "market": {
-     "value": 52400,
-     "gainPct": 6.9
+     "value": 12500,
+     "gainPct": -74.5
     },
     "unpriced": [
-     "강림 강화곤의 알"
+     "Lv-1",
+     "강림 강화곤의 알",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "초월의 보석"
     ]
    }
   },
@@ -8354,15 +8923,17 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 7800,
-     "gainPct": -64.5
+     "value": 0,
+     "gainPct": -100.0
     },
     "market": {
-     "value": 7800,
-     "gainPct": -64.5
+     "value": 0,
+     "gainPct": -100.0
     },
     "unpriced": [
-     "강림 강화곤"
+     "Lv+1",
+     "강림 강화곤",
+     "꿈의 부화기 +1"
     ]
    }
   },
@@ -8399,15 +8970,17 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 15600,
-     "gainPct": -52.7
+     "value": 0,
+     "gainPct": -100.0
     },
     "market": {
-     "value": 15600,
-     "gainPct": -52.7
+     "value": 0,
+     "gainPct": -100.0
     },
     "unpriced": [
-     "강림 강화곤"
+     "Lv+1",
+     "강림 강화곤",
+     "꿈의 부화기 +1"
     ]
    }
   },
@@ -8444,16 +9017,17 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 18000,
-     "gainPct": 20.0
+     "value": 0,
+     "gainPct": -100.0
     },
     "market": {
-     "value": 18000,
-     "gainPct": 20.0
+     "value": 0,
+     "gainPct": -100.0
     },
     "unpriced": [
+     "드래곤 정령 해제권",
      "디바인 스톤",
-     "드래곤 정령 해제권"
+     "최고급 정령 뽑기권"
     ]
    }
   },
@@ -8958,16 +9532,20 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 27000,
-     "gainPct": -18.2
+     "value": 4500,
+     "gainPct": -86.4
     },
     "market": {
-     "value": 27000,
-     "gainPct": -18.2
+     "value": 4500,
+     "gainPct": -86.4
     },
     "unpriced": [
+     "꿈의 부화기 +1",
+     "상급 강화의 정수",
      "중급 강화의 정수",
-     "상급 강화의 정수"
+     "초월의 보석",
+     "최상급 강화의 정수",
+     "페르시온 결정"
     ]
    }
   },
@@ -9021,14 +9599,18 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 84400,
-     "gainPct": 283.6
+     "value": 40000,
+     "gainPct": 81.8
     },
     "market": {
-     "value": 56859,
-     "gainPct": 158.5
+     "value": 12459,
+     "gainPct": -43.4
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1"
+    ]
    }
   },
   {
@@ -9588,15 +10170,18 @@
    "nameUncertain": true,
    "calc": {
     "shop": {
-     "value": 24000,
-     "gainPct": 515.4
+     "value": 9600,
+     "gainPct": 146.2
     },
     "market": {
-     "value": 17543,
-     "gainPct": 349.8
+     "value": 3143,
+     "gainPct": -19.4
     },
     "unpriced": [
+     "Lv+1",
+     "Lv-1",
      "골드",
+     "꿈의 부화기 +1",
      "속성 정기 각"
     ]
    }
@@ -9688,16 +10273,18 @@
    "nameUncertain": true,
    "calc": {
     "shop": {
-     "value": 3600,
-     "gainPct": -7.7
+     "value": 0,
+     "gainPct": -100.0
     },
     "market": {
-     "value": 3600,
-     "gainPct": -7.7
+     "value": 0,
+     "gainPct": -100.0
     },
     "unpriced": [
+     "꿈의 부화기 +1",
      "속성 정기 각",
-     "축복 받은 부화기"
+     "축복 받은 부화기",
+     "치료제"
     ]
    }
   },
@@ -9812,21 +10399,22 @@
    "nameUncertain": true,
    "calc": {
     "shop": {
-     "value": 89800,
-     "gainPct": 172.1
+     "value": 85000,
+     "gainPct": 157.6
     },
     "market": {
-     "value": 32232,
-     "gainPct": -2.3
+     "value": 27432,
+     "gainPct": -16.9
     },
     "unpriced": [
-     "아르하의 뿔+14",
+     "공격력물약6",
      "꿈의 공격 +33",
      "꿈의 방어 +33",
+     "꿈의 부화기 +1",
      "꿈의 체력 +132",
-     "공격력물약6",
-     "체력물약6",
-     "방어력/크리/회피물약6"
+     "방어력/크리/회피물약6",
+     "아르하의 뿔+14",
+     "체력물약6"
     ]
    }
   },
@@ -9893,16 +10481,20 @@
    "nameUncertain": true,
    "calc": {
     "shop": {
-     "value": 28200,
-     "gainPct": 28.2
+     "value": 15000,
+     "gainPct": -31.8
     },
     "market": {
-     "value": 16916,
-     "gainPct": -23.1
+     "value": 3716,
+     "gainPct": -83.1
     },
     "unpriced": [
-     "캡슐 Lv+1",
-     "각성 Lv+1"
+     "Lv+1",
+     "Lv-1",
+     "각성 Lv+1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "캡슐 Lv+1"
     ]
    }
   },
@@ -9955,14 +10547,19 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 36200,
-     "gainPct": 9.7
+     "value": 17000,
+     "gainPct": -48.5
     },
     "market": {
-     "value": 24686,
-     "gainPct": -25.2
+     "value": 5486,
+     "gainPct": -83.4
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv-1",
+     "꿈의 부화기 +1",
+     "스페셜 Lv+1",
+     "프리미엄 Lv+1"
+    ]
    }
   },
   {
@@ -10015,14 +10612,18 @@
    "nameUncertain": true,
    "calc": {
     "shop": {
-     "value": 10900,
-     "gainPct": 230.3
+     "value": 3700,
+     "gainPct": 12.1
     },
     "market": {
-     "value": 8372,
-     "gainPct": 153.7
+     "value": 1172,
+     "gainPct": -64.5
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv+1",
+     "Lv-1",
+     "꿈의 부화기 +1"
+    ]
    }
   },
   {
@@ -10075,14 +10676,18 @@
    "nameUncertain": true,
    "calc": {
     "shop": {
-     "value": 17000,
-     "gainPct": 209.1
+     "value": 7400,
+     "gainPct": 34.5
     },
     "market": {
-     "value": 11943,
-     "gainPct": 117.1
+     "value": 2343,
+     "gainPct": -57.4
     },
-    "unpriced": []
+    "unpriced": [
+     "Lv+1",
+     "Lv-1",
+     "꿈의 부화기 +1"
+    ]
    }
   },
   {
@@ -10126,176 +10731,22 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 36400,
-     "gainPct": -33.8
+     "value": 22000,
+     "gainPct": -60.0
     },
     "market": {
-     "value": 22400,
-     "gainPct": -59.3
+     "value": 8000,
+     "gainPct": -85.5
     },
     "unpriced": [
+     "Lv+1",
+     "Lv-1",
+     "꿈의 부화기 +1",
      "렉스톤의 알"
     ]
    }
   }
  ],
- "iceExchange": {
-  "noticeId": 21091,
-  "url": "https://www.dragonvillage.net/notice/21091",
-  "note": "루드라 패키지의 얼음 조각으로 교환하는 이벤트 상점. 아이템 간 상대 가치 참고용",
-  "items": [
-   {
-    "name": "렉몰 리버스",
-    "maxExchange": 1,
-    "icePrice": 3500
-   },
-   {
-    "name": "초림",
-    "maxExchange": 1,
-    "icePrice": 2000
-   },
-   {
-    "name": "정령 뽑기권 10+1",
-    "maxExchange": 1,
-    "icePrice": 2500
-   },
-   {
-    "name": "정령 최고급 뽑기권",
-    "maxExchange": 3,
-    "icePrice": 300
-   },
-   {
-    "name": "꿈의 공격 +36",
-    "maxExchange": 3,
-    "icePrice": 1600
-   },
-   {
-    "name": "꿈의 방어 +36",
-    "maxExchange": 3,
-    "icePrice": 1600
-   },
-   {
-    "name": "꿈의 체력 +144",
-    "maxExchange": 3,
-    "icePrice": 1600
-   },
-   {
-    "name": "꿈의 공격 +35",
-    "maxExchange": 3,
-    "icePrice": 800
-   },
-   {
-    "name": "꿈의 방어 +35",
-    "maxExchange": 3,
-    "icePrice": 800
-   },
-   {
-    "name": "꿈의 체력 +140",
-    "maxExchange": 3,
-    "icePrice": 800
-   },
-   {
-    "name": "마가 A",
-    "maxExchange": 3,
-    "icePrice": 500
-   },
-   {
-    "name": "스쿠룸 A",
-    "maxExchange": 3,
-    "icePrice": 500
-   },
-   {
-    "name": "그라치아 A",
-    "maxExchange": 3,
-    "icePrice": 500
-   },
-   {
-    "name": "더블 맥스 레벨업",
-    "maxExchange": 50,
-    "icePrice": 50
-   },
-   {
-    "name": "디트의 망치",
-    "maxExchange": 10,
-    "icePrice": 100
-   },
-   {
-    "name": "강림의 돌",
-    "maxExchange": 50,
-    "icePrice": 20
-   },
-   {
-    "name": "태양/달/땅/불/물의 정수",
-    "maxExchange": 200,
-    "icePrice": 3
-   },
-   {
-    "name": "꿈의 부화기 +1",
-    "maxExchange": 3,
-    "icePrice": 100
-   },
-   {
-    "name": "페르시온 결정",
-    "maxExchange": 3,
-    "icePrice": 150
-   },
-   {
-    "name": "이계 수정 [블랙]/[퍼플]",
-    "maxExchange": 999,
-    "icePrice": 2
-   },
-   {
-    "name": "꿈의 정수(최상급)",
-    "maxExchange": 5,
-    "icePrice": 50
-   },
-   {
-    "name": "강화의 정수(최상급)",
-    "maxExchange": 3,
-    "icePrice": 100
-   },
-   {
-    "name": "초월의 정수(옐로/레드/블루)",
-    "maxExchange": 5,
-    "icePrice": 40
-   },
-   {
-    "name": "상급 초월의 정수(레드/블루/옐로우)",
-    "maxExchange": 3,
-    "icePrice": 80
-   },
-   {
-    "name": "토벌권",
-    "maxExchange": null,
-    "icePrice": 5
-   },
-   {
-    "name": "스페셜 레벨업",
-    "maxExchange": null,
-    "icePrice": 50
-   },
-   {
-    "name": "프리미엄 레벨업",
-    "maxExchange": null,
-    "icePrice": 30
-   },
-   {
-    "name": "레벨 업",
-    "maxExchange": null,
-    "icePrice": 10
-   },
-   {
-    "name": "레벨 다운",
-    "maxExchange": null,
-    "icePrice": 10
-   },
-   {
-    "name": "치료제",
-    "maxExchange": null,
-    "icePrice": 10
-   }
-  ]
- },
  "saleReference": {
   "noticeId": 20018,
   "url": "https://www.dragonvillage.net/notice/20018",
@@ -10453,428 +10904,14 @@
   "checkedAt": "2026-11-16"
  },
  "itemPrices": {
-  "unit": "evt",
-  "wonPerUnit": 12.0,
-  "basis": "2026 할로윈 이벤트(공지 21447) 사탕 교환 가격. 이벤트 재화 1개 = 3,000원 ÷ 250개(일일 사탕·얼음 패키지, 일 1회)로 환산",
+  "unit": "won",
+  "basis": "상시 판매 패키지 가격 기준. 상급 초월의 정수 = 일일 패키지 3,000원 ÷ 6개, 더블 맥스 레벨업 = 더블 맥스 Lv+1 패키지 22,000원 ÷ 50개. 이벤트 재화는 쓰지 않음",
   "items": {
-   "꿈의 부화기 +1": 200,
-   "페르시온 결정": 150,
-   "이계 수정 [블랙]": 2,
-   "이계 수정 [퍼플]": 2,
-   "꿈의 정수(상급)": 25,
-   "꿈의 정수(최상급)": 120,
-   "최상급 강화의 정수": 200,
-   "상급 초월의 정수(옐로우)": 150,
-   "상급 초월의 정수(레드)": 150,
-   "상급 초월의 정수(블루)": 150,
-   "상급 초월의 정수 세트": 450,
-   "초월의 정수(옐로우)": 40,
-   "초월의 정수(레드)": 40,
-   "초월의 정수(블루)": 40,
-   "꿈의 보석": 50,
-   "초월의 보석": 150,
-   "합성석": 20,
-   "정령의 정수": 1,
-   "토벌권": 5,
-   "스페셜 Lv+1": 50,
-   "프리미엄 Lv+1": 30,
-   "Lv+1": 10,
-   "Lv-1": 10,
-   "치료제": 10,
-   "정령 10+1 뽑기권": 2500,
-   "최고급 정령 뽑기권": 300,
-   "꿈의 공격 +36": 1600,
-   "꿈의 방어 +36": 1600,
-   "꿈의 체력 +144": 1600,
-   "꿈의 공격 +35": 800,
-   "꿈의 방어 +35": 800,
-   "꿈의 체력 +140": 800,
-   "더블 맥스 레벨업": 150,
-   "디트의 망치": 400,
-   "마법의 망치": 150,
-   "강철의 망치": 70,
-   "강림의 돌": 20,
-   "태양의 정수": 3,
-   "달의 정수": 3,
-   "땅의 정수": 3,
-   "불의 정수": 3,
-   "물의 정수": 3,
-   "최상급 정령의 정수": 100,
-   "정령 경험치 던전 티켓": 100,
-   "얼음 조각": 1,
-   "사탕": 1
+   "상급 초월의 정수(옐로우)": 500,
+   "상급 초월의 정수(레드)": 500,
+   "상급 초월의 정수(블루)": 500,
+   "상급 초월의 정수 세트": 1500,
+   "더블 맥스 레벨업": 440
   }
- },
- "eventCurrency": [
-  {
-   "event": "호박 귀신이 사탕을 원해!! (2026.10.26~11.08)",
-   "noticeId": 21447,
-   "url": "https://www.dragonvillage.net/notice/21447",
-   "currency": "사탕",
-   "freePerDay": 200,
-   "packs": [
-    {
-     "name": "일일 사탕 패키지",
-     "price": 3000,
-     "qty": 250,
-     "limit": "일 1회"
-    },
-    {
-     "name": "사탕 패키지1",
-     "price": 12000,
-     "qty": 700
-    },
-    {
-     "name": "사탕 패키지2",
-     "price": 55000,
-     "qty": 4500
-    }
-   ],
-   "shop": [
-    [
-     "꿈의 부화기 +1",
-     200
-    ],
-    [
-     "페르시온 결정",
-     150
-    ],
-    [
-     "이계 수정 [블랙]",
-     2
-    ],
-    [
-     "이계 수정 [퍼플]",
-     2
-    ],
-    [
-     "꿈의 정수(상급)",
-     25
-    ],
-    [
-     "꿈의 정수(최상급)",
-     120
-    ],
-    [
-     "최상급 강화의 정수",
-     200
-    ],
-    [
-     "상급 초월의 정수(옐로우)",
-     150
-    ],
-    [
-     "상급 초월의 정수(레드)",
-     150
-    ],
-    [
-     "상급 초월의 정수(블루)",
-     150
-    ],
-    [
-     "초월의 정수(옐로우)",
-     40
-    ],
-    [
-     "초월의 정수(레드)",
-     40
-    ],
-    [
-     "초월의 정수(블루)",
-     40
-    ],
-    [
-     "꿈의 보석",
-     50
-    ],
-    [
-     "초월의 보석",
-     150
-    ],
-    [
-     "합성석",
-     20
-    ],
-    [
-     "정령의 정수",
-     1
-    ],
-    [
-     "토벌권",
-     5
-    ],
-    [
-     "스페셜 Lv+1",
-     50
-    ],
-    [
-     "프리미엄 Lv+1",
-     30
-    ],
-    [
-     "Lv+1",
-     10
-    ],
-    [
-     "Lv-1",
-     10
-    ],
-    [
-     "치료제",
-     10
-    ],
-    [
-     "정령 10+1 뽑기권",
-     2500
-    ],
-    [
-     "최고급 정령 뽑기권",
-     300
-    ],
-    [
-     "꿈의 공격 +36",
-     1600
-    ],
-    [
-     "꿈의 방어 +36",
-     1600
-    ],
-    [
-     "꿈의 체력 +144",
-     1600
-    ],
-    [
-     "꿈의 공격 +35",
-     800
-    ],
-    [
-     "꿈의 방어 +35",
-     800
-    ],
-    [
-     "꿈의 체력 +140",
-     800
-    ],
-    [
-     "더블 맥스 레벨업",
-     150
-    ],
-    [
-     "디트의 망치",
-     400
-    ],
-    [
-     "마법의 망치",
-     150
-    ],
-    [
-     "강철의 망치",
-     70
-    ],
-    [
-     "강림의 돌",
-     20
-    ],
-    [
-     "태양의 정수",
-     3
-    ],
-    [
-     "달의 정수",
-     3
-    ],
-    [
-     "땅의 정수",
-     3
-    ],
-    [
-     "불의 정수",
-     3
-    ],
-    [
-     "물의 정수",
-     3
-    ],
-    [
-     "최상급 정령의 정수",
-     100
-    ],
-    [
-     "정령 경험치 던전 티켓",
-     100
-    ],
-    [
-     "이그나",
-     3500
-    ],
-    [
-     "장고 S",
-     500
-    ],
-    [
-     "빛 속성 오라 스크롤",
-     1000
-    ],
-    [
-     "어둠 속성 오라 스크롤",
-     1000
-    ],
-    [
-     "오라 해제 스크롤",
-     100
-    ]
-   ]
-  },
-  {
-   "event": "더위 먹은 GM용순 (2026.07.13~07.26)",
-   "noticeId": 21377,
-   "url": "https://www.dragonvillage.net/notice/21377",
-   "currency": "얼음 조각",
-   "freePerDay": 200,
-   "packs": [
-    {
-     "name": "일일 얼음 조각 패키지",
-     "price": 3000,
-     "qty": 250,
-     "limit": "일 1회"
-    },
-    {
-     "name": "얼음 조각 패키지1",
-     "price": 12000,
-     "qty": 700
-    },
-    {
-     "name": "얼음 조각 패키지2",
-     "price": 55000,
-     "qty": 4500
-    }
-   ],
-   "shop": [
-    [
-     "블리자드",
-     3500
-    ],
-    [
-     "마니메칼라",
-     2000
-    ],
-    [
-     "정령 10+1 뽑기권",
-     2500
-    ],
-    [
-     "땅 속성 오라 스크롤",
-     1000
-    ],
-    [
-     "바람 속성 오라 스크롤",
-     1000
-    ],
-    [
-     "꿈의 공격 +36",
-     1600
-    ],
-    [
-     "꿈의 방어 +36",
-     1600
-    ],
-    [
-     "꿈의 체력 +144",
-     1600
-    ],
-    [
-     "꿈의 공격 +35",
-     800
-    ],
-    [
-     "꿈의 방어 +35",
-     800
-    ],
-    [
-     "꿈의 체력 +140",
-     800
-    ],
-    [
-     "마가 A",
-     500
-    ],
-    [
-     "스쿠룸 A",
-     500
-    ],
-    [
-     "그라치아 A",
-     500
-    ],
-    [
-     "더블 맥스 레벨업",
-     50
-    ],
-    [
-     "디트의 망치",
-     100
-    ],
-    [
-     "강림의 돌",
-     20
-    ],
-    [
-     "속성 정수(태양·달·땅·불·물)",
-     3
-    ],
-    [
-     "꿈의 부화기 +1",
-     100
-    ],
-    [
-     "페르시온 결정",
-     150
-    ],
-    [
-     "이계 수정",
-     2
-    ],
-    [
-     "꿈의 정수(최상급)",
-     50
-    ],
-    [
-     "최상급 강화의 정수",
-     100
-    ],
-    [
-     "초월의 정수",
-     40
-    ],
-    [
-     "상급 초월의 정수",
-     80
-    ],
-    [
-     "토벌권",
-     5
-    ],
-    [
-     "스페셜 Lv+1",
-     50
-    ],
-    [
-     "프리미엄 Lv+1",
-     30
-    ],
-    [
-     "Lv+1",
-     10
-    ],
-    [
-     "Lv-1",
-     10
-    ],
-    [
-     "치료제",
-     10
-    ]
-   ]
-  }
- ]
+ }
 }

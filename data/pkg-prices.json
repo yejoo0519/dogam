@@ -180,16 +180,15 @@
    "source": "인게임 상점 화면(2026-11-16)",
    "calc": {
     "shop": {
-     "value": 4000,
-     "gainPct": -81.8
+     "value": 13900,
+     "gainPct": -36.8
     },
     "market": {
-     "value": 4000,
-     "gainPct": -81.8
+     "value": 7600,
+     "gainPct": -65.5
     },
     "unpriced": [
      "골드",
-     "스페셜 Lv+1",
      "초월의 보석",
      "초월의 정수(레드)",
      "초월의 정수(블루)",
@@ -232,16 +231,14 @@
    "source": "인게임 상점 화면(2026-11-16)",
    "calc": {
     "shop": {
-     "value": 12440,
-     "gainPct": 3.7
+     "value": 45440,
+     "gainPct": 278.7
     },
     "market": {
-     "value": 12440,
-     "gainPct": 3.7
+     "value": 24440,
+     "gainPct": 103.7
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -432,16 +429,14 @@
    "note": "즉시 지급 + 매일 지급 28일분 합산. 즉시: 다이아 500·황다 200·스페셜 20·Lv-1 60 / 매일: 다이아 60·황다 15·스페셜 5·Lv-1 6",
    "calc": {
     "shop": {
-     "value": 67244,
-     "gainPct": 460.4
+     "value": 172844,
+     "gainPct": 1340.4
     },
     "market": {
-     "value": 22732,
-     "gainPct": 89.4
+     "value": 61132,
+     "gainPct": 409.4
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -659,16 +654,15 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 50200,
-     "gainPct": 52.1
+     "value": 116200,
+     "gainPct": 252.1
     },
     "market": {
-     "value": 19859,
-     "gainPct": -39.8
+     "value": 43859,
+     "gainPct": 32.9
     },
     "unpriced": [
      "꿈의 정수(최상급)",
-     "스페셜 Lv+1",
      "초월의 보석"
     ]
    }
@@ -738,15 +732,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 50200,
-     "gainPct": 52.1
+     "value": 116200,
+     "gainPct": 252.1
     },
     "market": {
-     "value": 19859,
-     "gainPct": -39.8
+     "value": 43859,
+     "gainPct": 32.9
     },
     "unpriced": [
-     "스페셜 Lv+1",
      "최상급 강화의 정수",
      "페르시온 결정"
     ]
@@ -852,15 +845,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 50200,
-     "gainPct": 52.1
+     "value": 116200,
+     "gainPct": 252.1
     },
     "market": {
-     "value": 19859,
-     "gainPct": -39.8
+     "value": 43859,
+     "gainPct": 32.9
     },
     "unpriced": [
-     "스페셜 Lv+1",
      "초월의 보석",
      "최상급 강화의 정수",
      "페르시온 결정"
@@ -916,16 +908,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 46800,
-     "gainPct": 112.7
+     "value": 86400,
+     "gainPct": 292.7
     },
     "market": {
-     "value": 19259,
-     "gainPct": -12.5
+     "value": 33659,
+     "gainPct": 53.0
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -981,16 +971,15 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 68800,
-     "gainPct": 40.4
+     "value": 134800,
+     "gainPct": 175.1
     },
     "market": {
-     "value": 25232,
-     "gainPct": -48.5
+     "value": 49232,
+     "gainPct": 0.5
     },
     "unpriced": [
-     "강림 강화곤",
-     "스페셜 Lv+1"
+     "강림 강화곤"
     ]
    }
   },
@@ -1094,16 +1083,15 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 50200,
-     "gainPct": 52.1
+     "value": 116200,
+     "gainPct": 252.1
     },
     "market": {
-     "value": 19859,
-     "gainPct": -39.8
+     "value": 43859,
+     "gainPct": 32.9
     },
     "unpriced": [
-     "꿈의 정수(최상급)",
-     "스페셜 Lv+1"
+     "꿈의 정수(최상급)"
     ]
    }
   },
@@ -1164,16 +1152,15 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 68800,
-     "gainPct": 40.4
+     "value": 134800,
+     "gainPct": 175.1
     },
     "market": {
-     "value": 25232,
-     "gainPct": -48.5
+     "value": 49232,
+     "gainPct": 0.5
     },
     "unpriced": [
      "강림 강화곤",
-     "스페셜 Lv+1",
      "심판자 카스티그(강림 전용 장식)"
     ]
    }
@@ -1239,15 +1226,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 50200,
-     "gainPct": 52.1
+     "value": 116200,
+     "gainPct": 252.1
     },
     "market": {
-     "value": 19859,
-     "gainPct": -39.8
+     "value": 43859,
+     "gainPct": 32.9
     },
     "unpriced": [
-     "스페셜 Lv+1",
      "초월의 보석",
      "최상급 강화의 정수",
      "페르시온 결정"
@@ -1354,16 +1340,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 48800,
-     "gainPct": 121.8
+     "value": 88400,
+     "gainPct": 301.8
     },
     "market": {
-     "value": 21259,
-     "gainPct": -3.4
+     "value": 35659,
+     "gainPct": 62.1
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -1419,16 +1403,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 48800,
-     "gainPct": 121.8
+     "value": 88400,
+     "gainPct": 301.8
     },
     "market": {
-     "value": 21259,
-     "gainPct": -3.4
+     "value": 35659,
+     "gainPct": 62.1
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -1492,15 +1474,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 50200,
-     "gainPct": 52.1
+     "value": 116200,
+     "gainPct": 252.1
     },
     "market": {
-     "value": 19859,
-     "gainPct": -39.8
+     "value": 43859,
+     "gainPct": 32.9
     },
     "unpriced": [
-     "스페셜 Lv+1",
      "초월의 보석",
      "최상급 강화의 정수",
      "페르시온 결정"
@@ -1564,16 +1545,15 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 50200,
-     "gainPct": 52.1
+     "value": 116200,
+     "gainPct": 252.1
     },
     "market": {
-     "value": 19859,
-     "gainPct": -39.8
+     "value": 43859,
+     "gainPct": 32.9
     },
     "unpriced": [
      "꿈의 정수(최상급)",
-     "스페셜 Lv+1",
      "초월의 보석"
     ]
    }
@@ -1635,16 +1615,15 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 50200,
-     "gainPct": 52.1
+     "value": 116200,
+     "gainPct": 252.1
     },
     "market": {
-     "value": 19859,
-     "gainPct": -39.8
+     "value": 43859,
+     "gainPct": 32.9
     },
     "unpriced": [
      "꿈의 정수(최상급)",
-     "스페셜 Lv+1",
      "초월의 보석"
     ]
    }
@@ -1706,16 +1685,15 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 50200,
-     "gainPct": 52.1
+     "value": 116200,
+     "gainPct": 252.1
     },
     "market": {
-     "value": 19859,
-     "gainPct": -39.8
+     "value": 43859,
+     "gainPct": 32.9
     },
     "unpriced": [
      "꿈의 정수(최상급)",
-     "스페셜 Lv+1",
      "초월의 보석"
     ]
    }
@@ -1783,16 +1761,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 48800,
-     "gainPct": 121.8
+     "value": 88400,
+     "gainPct": 301.8
     },
     "market": {
-     "value": 21259,
-     "gainPct": -3.4
+     "value": 35659,
+     "gainPct": 62.1
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -1858,16 +1834,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 48800,
-     "gainPct": 121.8
+     "value": 88400,
+     "gainPct": 301.8
     },
     "market": {
-     "value": 21259,
-     "gainPct": -3.4
+     "value": 35659,
+     "gainPct": 62.1
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -1933,16 +1907,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 48800,
-     "gainPct": 121.8
+     "value": 88400,
+     "gainPct": 301.8
     },
     "market": {
-     "value": 21259,
-     "gainPct": -3.4
+     "value": 35659,
+     "gainPct": 62.1
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -2006,15 +1978,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 50200,
-     "gainPct": 52.1
+     "value": 116200,
+     "gainPct": 252.1
     },
     "market": {
-     "value": 19859,
-     "gainPct": -39.8
+     "value": 43859,
+     "gainPct": 32.9
     },
     "unpriced": [
-     "스페셜 Lv+1",
      "초월의 보석",
      "최상급 강화의 정수",
      "페르시온 결정"
@@ -2098,16 +2069,15 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 45250,
-     "gainPct": 105.7
+     "value": 78250,
+     "gainPct": 255.7
     },
     "market": {
-     "value": 19966,
-     "gainPct": -9.2
+     "value": 31966,
+     "gainPct": 45.3
     },
     "unpriced": [
      "골드",
-     "스페셜 Lv+1",
      "합성석"
     ]
    }
@@ -2165,16 +2135,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 39900,
-     "gainPct": 81.4
+     "value": 79500,
+     "gainPct": 261.4
     },
     "market": {
-     "value": 17416,
-     "gainPct": -20.8
+     "value": 31816,
+     "gainPct": 44.6
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -2258,16 +2226,15 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 20750,
-     "gainPct": 72.9
+     "value": 40550,
+     "gainPct": 237.9
     },
     "market": {
-     "value": 11493,
-     "gainPct": -4.2
+     "value": 18693,
+     "gainPct": 55.8
     },
     "unpriced": [
      "골드",
-     "스페셜 Lv+1",
      "페르시온 결정",
      "합성석"
     ]
@@ -2326,16 +2293,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 46400,
-     "gainPct": 40.6
+     "value": 66200,
+     "gainPct": 100.6
     },
     "market": {
-     "value": 18859,
-     "gainPct": -42.9
+     "value": 26059,
+     "gainPct": -21.0
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -2399,15 +2364,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 50200,
-     "gainPct": 52.1
+     "value": 116200,
+     "gainPct": 252.1
     },
     "market": {
-     "value": 19859,
-     "gainPct": -39.8
+     "value": 43859,
+     "gainPct": 32.9
     },
     "unpriced": [
-     "스페셜 Lv+1",
      "초월의 보석",
      "최상급 강화의 정수",
      "페르시온 결정"
@@ -2572,16 +2536,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 48800,
-     "gainPct": 121.8
+     "value": 88400,
+     "gainPct": 301.8
     },
     "market": {
-     "value": 21259,
-     "gainPct": -3.4
+     "value": 35659,
+     "gainPct": 62.1
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -2849,16 +2811,15 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 20750,
-     "gainPct": 72.9
+     "value": 40550,
+     "gainPct": 237.9
     },
     "market": {
-     "value": 11493,
-     "gainPct": -4.2
+     "value": 18693,
+     "gainPct": 55.8
     },
     "unpriced": [
      "골드",
-     "스페셜 Lv+1",
      "페르시온 결정",
      "합성석"
     ]
@@ -2921,16 +2882,15 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 78300,
-     "gainPct": -0.9
+     "value": 144300,
+     "gainPct": 82.7
     },
     "market": {
-     "value": 27732,
-     "gainPct": -64.9
+     "value": 51732,
+     "gainPct": -34.5
     },
     "unpriced": [
      "강림 강화곤",
-     "스페셜 Lv+1",
      "정령 10+1 뽑기권"
     ]
    }
@@ -2996,15 +2956,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 50200,
-     "gainPct": 52.1
+     "value": 116200,
+     "gainPct": 252.1
     },
     "market": {
-     "value": 19859,
-     "gainPct": -39.8
+     "value": 43859,
+     "gainPct": 32.9
     },
     "unpriced": [
-     "스페셜 Lv+1",
      "초월의 보석",
      "최상급 강화의 정수",
      "페르시온 결정"
@@ -3064,15 +3023,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 26800,
-     "gainPct": -18.8
+     "value": 66400,
+     "gainPct": 101.2
     },
     "market": {
-     "value": 13259,
-     "gainPct": -59.8
+     "value": 27659,
+     "gainPct": -16.2
     },
     "unpriced": [
-     "스페셜 Lv+1",
      "얼음 조각"
     ]
    }
@@ -3130,16 +3088,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 48800,
-     "gainPct": 121.8
+     "value": 88400,
+     "gainPct": 301.8
     },
     "market": {
-     "value": 21259,
-     "gainPct": -3.4
+     "value": 35659,
+     "gainPct": 62.1
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -3199,17 +3155,16 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 68800,
-     "gainPct": 40.4
+     "value": 134800,
+     "gainPct": 175.1
     },
     "market": {
-     "value": 25232,
-     "gainPct": -48.5
+     "value": 49232,
+     "gainPct": 0.5
     },
     "unpriced": [
      "강림 강화곤",
-     "강림 전용 장식",
-     "스페셜 Lv+1"
+     "강림 전용 장식"
     ]
    }
   },
@@ -3262,16 +3217,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 30430,
-     "gainPct": 38.3
+     "value": 50230,
+     "gainPct": 128.3
     },
     "market": {
-     "value": 12146,
-     "gainPct": -44.8
+     "value": 19346,
+     "gainPct": -12.1
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -3335,15 +3288,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 44150,
-     "gainPct": 33.8
+     "value": 63950,
+     "gainPct": 93.8
     },
     "market": {
-     "value": 16609,
-     "gainPct": -49.7
+     "value": 23809,
+     "gainPct": -27.9
     },
     "unpriced": [
-     "스페셜 Lv+1",
      "초월의 보석",
      "최상급 강화의 정수",
      "페르시온 결정"
@@ -3411,15 +3363,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 44150,
-     "gainPct": 33.8
+     "value": 63950,
+     "gainPct": 93.8
     },
     "market": {
-     "value": 16609,
-     "gainPct": -49.7
+     "value": 23809,
+     "gainPct": -27.9
     },
     "unpriced": [
-     "스페셜 Lv+1",
      "초월의 보석",
      "최상급 강화의 정수",
      "페르시온 결정"
@@ -3475,16 +3426,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 35630,
-     "gainPct": 62.0
+     "value": 55430,
+     "gainPct": 152.0
     },
     "market": {
-     "value": 13689,
-     "gainPct": -37.8
+     "value": 20889,
+     "gainPct": -5.0
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -3536,16 +3485,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 35630,
-     "gainPct": 62.0
+     "value": 55430,
+     "gainPct": 152.0
     },
     "market": {
-     "value": 13689,
-     "gainPct": -37.8
+     "value": 20889,
+     "gainPct": -5.0
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -3601,16 +3548,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 46400,
-     "gainPct": 40.6
+     "value": 66200,
+     "gainPct": 100.6
     },
     "market": {
-     "value": 18859,
-     "gainPct": -42.9
+     "value": 26059,
+     "gainPct": -21.0
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -3662,16 +3607,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 30430,
-     "gainPct": 38.3
+     "value": 50230,
+     "gainPct": 128.3
     },
     "market": {
-     "value": 12146,
-     "gainPct": -44.8
+     "value": 19346,
+     "gainPct": -12.1
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -3731,17 +3674,16 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 70300,
-     "gainPct": 27.8
+     "value": 103300,
+     "gainPct": 87.8
     },
     "market": {
-     "value": 26732,
-     "gainPct": -51.4
+     "value": 38732,
+     "gainPct": -29.6
     },
     "unpriced": [
      "강림 강화곤",
-     "렉스톤",
-     "스페셜 Lv+1"
+     "렉스톤"
     ]
    }
   },
@@ -3798,16 +3740,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 46400,
-     "gainPct": 40.6
+     "value": 66200,
+     "gainPct": 100.6
     },
     "market": {
-     "value": 18859,
-     "gainPct": -42.9
+     "value": 26059,
+     "gainPct": -21.0
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -3859,16 +3799,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 30430,
-     "gainPct": 38.3
+     "value": 50230,
+     "gainPct": 128.3
     },
     "market": {
-     "value": 12146,
-     "gainPct": -44.8
+     "value": 19346,
+     "gainPct": -12.1
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -3948,16 +3886,15 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 45250,
-     "gainPct": 105.7
+     "value": 78250,
+     "gainPct": 255.7
     },
     "market": {
-     "value": 19966,
-     "gainPct": -9.2
+     "value": 31966,
+     "gainPct": 45.3
     },
     "unpriced": [
      "골드",
-     "스페셜 Lv+1",
      "합성석"
     ]
    }
@@ -4023,16 +3960,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 46400,
-     "gainPct": 40.6
+     "value": 66200,
+     "gainPct": 100.6
     },
     "market": {
-     "value": 18859,
-     "gainPct": -42.9
+     "value": 26059,
+     "gainPct": -21.0
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -4116,19 +4051,18 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 17750,
-     "gainPct": 47.9
+     "value": 37550,
+     "gainPct": 212.9
     },
     "market": {
-     "value": 8493,
-     "gainPct": -29.2
+     "value": 15693,
+     "gainPct": 30.8
     },
     "unpriced": [
      "골드",
      "꿈의 공격 +33",
      "꿈의 방어 +33",
      "꿈의 체력 +132",
-     "스페셜 Lv+1",
      "페르시온 결정",
      "합성석"
     ]
@@ -4183,16 +4117,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 30430,
-     "gainPct": 38.3
+     "value": 50230,
+     "gainPct": 128.3
     },
     "market": {
-     "value": 12146,
-     "gainPct": -44.8
+     "value": 19346,
+     "gainPct": -12.1
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -4268,16 +4200,15 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 45650,
-     "gainPct": 38.3
+     "value": 65450,
+     "gainPct": 98.3
     },
     "market": {
-     "value": 18109,
-     "gainPct": -45.1
+     "value": 25309,
+     "gainPct": -23.3
     },
     "unpriced": [
      "상급 강화의 정수",
-     "스페셜 Lv+1",
      "중급 강화의 정수",
      "최상급 강화의 정수",
      "페르시온 결정"
@@ -4345,16 +4276,15 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 67450,
-     "gainPct": 37.7
+     "value": 133450,
+     "gainPct": 172.3
     },
     "market": {
-     "value": 23882,
-     "gainPct": -51.3
+     "value": 47882,
+     "gainPct": -2.3
     },
     "unpriced": [
-     "강림 강화곤",
-     "스페셜 Lv+1"
+     "강림 강화곤"
     ]
    }
   },
@@ -4407,16 +4337,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 30430,
-     "gainPct": 38.3
+     "value": 50230,
+     "gainPct": 128.3
     },
     "market": {
-     "value": 12146,
-     "gainPct": -44.8
+     "value": 19346,
+     "gainPct": -12.1
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -4480,16 +4408,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 46400,
-     "gainPct": 40.6
+     "value": 66200,
+     "gainPct": 100.6
     },
     "market": {
-     "value": 18859,
-     "gainPct": -42.9
+     "value": 26059,
+     "gainPct": -21.0
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -4553,16 +4479,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 46400,
-     "gainPct": 40.6
+     "value": 66200,
+     "gainPct": 100.6
     },
     "market": {
-     "value": 18859,
-     "gainPct": -42.9
+     "value": 26059,
+     "gainPct": -21.0
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -4626,16 +4550,15 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 67300,
-     "gainPct": 37.3
+     "value": 100300,
+     "gainPct": 104.7
     },
     "market": {
-     "value": 23732,
-     "gainPct": -51.6
+     "value": 35732,
+     "gainPct": -27.1
     },
     "unpriced": [
-     "강림 강화곤",
-     "스페셜 Lv+1"
+     "강림 강화곤"
     ]
    }
   },
@@ -4700,16 +4623,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 46400,
-     "gainPct": 40.6
+     "value": 66200,
+     "gainPct": 100.6
     },
     "market": {
-     "value": 18859,
-     "gainPct": -42.9
+     "value": 26059,
+     "gainPct": -21.0
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -4781,15 +4702,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 44150,
-     "gainPct": 33.8
+     "value": 63950,
+     "gainPct": 93.8
     },
     "market": {
-     "value": 16609,
-     "gainPct": -49.7
+     "value": 23809,
+     "gainPct": -27.9
     },
     "unpriced": [
-     "스페셜 Lv+1",
      "초월의 보석",
      "최상급 강화의 정수",
      "페르시온 결정"
@@ -4867,16 +4787,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 32400,
-     "gainPct": 47.3
+     "value": 52200,
+     "gainPct": 137.3
     },
     "market": {
-     "value": 14116,
-     "gainPct": -35.8
+     "value": 21316,
+     "gainPct": -3.1
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -4950,16 +4868,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 32400,
-     "gainPct": 47.3
+     "value": 52200,
+     "gainPct": 137.3
     },
     "market": {
-     "value": 14116,
-     "gainPct": -35.8
+     "value": 21316,
+     "gainPct": -3.1
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -5033,16 +4949,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 32400,
-     "gainPct": 47.3
+     "value": 52200,
+     "gainPct": 137.3
     },
     "market": {
-     "value": 14116,
-     "gainPct": -35.8
+     "value": 21316,
+     "gainPct": -3.1
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -5122,16 +5036,15 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 46400,
-     "gainPct": 40.6
+     "value": 66200,
+     "gainPct": 100.6
     },
     "market": {
-     "value": 18859,
-     "gainPct": -42.9
+     "value": 26059,
+     "gainPct": -21.0
     },
     "unpriced": [
      "상급 강화의 정수",
-     "스페셜 Lv+1",
      "중급 강화의 정수",
      "최상급 강화의 정수",
      "페르시온 결정"
@@ -5199,16 +5112,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 32400,
-     "gainPct": 47.3
+     "value": 52200,
+     "gainPct": 137.3
     },
     "market": {
-     "value": 14116,
-     "gainPct": -35.8
+     "value": 21316,
+     "gainPct": -3.1
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -5272,16 +5183,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 46400,
-     "gainPct": 40.6
+     "value": 66200,
+     "gainPct": 100.6
     },
     "market": {
-     "value": 18859,
-     "gainPct": -42.9
+     "value": 26059,
+     "gainPct": -21.0
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -5361,16 +5270,15 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 46400,
-     "gainPct": 40.6
+     "value": 66200,
+     "gainPct": 100.6
     },
     "market": {
-     "value": 18859,
-     "gainPct": -42.9
+     "value": 26059,
+     "gainPct": -21.0
     },
     "unpriced": [
      "상급 강화의 정수",
-     "스페셜 Lv+1",
      "중급 강화의 정수",
      "최상급 강화의 정수",
      "페르시온 결정"
@@ -5438,16 +5346,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 46400,
-     "gainPct": 40.6
+     "value": 66200,
+     "gainPct": 100.6
     },
     "market": {
-     "value": 18859,
-     "gainPct": -42.9
+     "value": 26059,
+     "gainPct": -21.0
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -5568,16 +5474,15 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 21750,
-     "gainPct": 81.2
+     "value": 41550,
+     "gainPct": 246.2
     },
     "market": {
-     "value": 12493,
-     "gainPct": 4.1
+     "value": 19693,
+     "gainPct": 64.1
     },
     "unpriced": [
      "골드",
-     "스페셜 Lv+1",
      "합성석"
     ]
    }
@@ -5684,16 +5589,15 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 45250,
-     "gainPct": 105.7
+     "value": 78250,
+     "gainPct": 255.7
     },
     "market": {
-     "value": 19966,
-     "gainPct": -9.2
+     "value": 31966,
+     "gainPct": 45.3
     },
     "unpriced": [
      "골드",
-     "스페셜 Lv+1",
      "합성석"
     ]
    }
@@ -5779,19 +5683,18 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 17750,
-     "gainPct": 47.9
+     "value": 37550,
+     "gainPct": 212.9
     },
     "market": {
-     "value": 8493,
-     "gainPct": -29.2
+     "value": 15693,
+     "gainPct": 30.8
     },
     "unpriced": [
      "골드",
      "꿈의 공격 +33",
      "꿈의 방어 +33",
      "꿈의 체력 +132",
-     "스페셜 Lv+1",
      "페르시온 결정",
      "합성석"
     ]
@@ -5851,16 +5754,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 42590,
-     "gainPct": 93.6
+     "value": 62390,
+     "gainPct": 183.6
     },
     "market": {
-     "value": 17306,
-     "gainPct": -21.3
+     "value": 24506,
+     "gainPct": 11.4
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -5917,16 +5818,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 42590,
-     "gainPct": 93.6
+     "value": 62390,
+     "gainPct": 183.6
     },
     "market": {
-     "value": 17306,
-     "gainPct": -21.3
+     "value": 24506,
+     "gainPct": 11.4
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -5990,15 +5889,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 44150,
-     "gainPct": 33.8
+     "value": 63950,
+     "gainPct": 93.8
     },
     "market": {
-     "value": 16609,
-     "gainPct": -49.7
+     "value": 23809,
+     "gainPct": -27.9
     },
     "unpriced": [
-     "스페셜 Lv+1",
      "초월의 보석",
      "최상급 강화의 정수",
      "페르시온 결정"
@@ -6066,15 +5964,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 44150,
-     "gainPct": 33.8
+     "value": 63950,
+     "gainPct": 93.8
     },
     "market": {
-     "value": 16609,
-     "gainPct": -49.7
+     "value": 23809,
+     "gainPct": -27.9
     },
     "unpriced": [
-     "스페셜 Lv+1",
      "초월의 보석",
      "최상급 강화의 정수",
      "페르시온 결정"
@@ -6142,15 +6039,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 44150,
-     "gainPct": 33.8
+     "value": 63950,
+     "gainPct": 93.8
     },
     "market": {
-     "value": 16609,
-     "gainPct": -49.7
+     "value": 23809,
+     "gainPct": -27.9
     },
     "unpriced": [
-     "스페셜 Lv+1",
      "초월의 보석",
      "최상급 강화의 정수",
      "페르시온 결정"
@@ -6218,15 +6114,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 44150,
-     "gainPct": 33.8
+     "value": 63950,
+     "gainPct": 93.8
     },
     "market": {
-     "value": 16609,
-     "gainPct": -49.7
+     "value": 23809,
+     "gainPct": -27.9
     },
     "unpriced": [
-     "스페셜 Lv+1",
      "초월의 보석",
      "최상급 강화의 정수",
      "페르시온 결정"
@@ -6278,16 +6173,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 32300,
-     "gainPct": 46.8
+     "value": 65300,
+     "gainPct": 196.8
     },
     "market": {
-     "value": 11530,
-     "gainPct": -47.6
+     "value": 23530,
+     "gainPct": 7.0
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -6343,15 +6236,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 20650,
-     "gainPct": -37.4
+     "value": 40450,
+     "gainPct": 22.6
     },
     "market": {
-     "value": 9366,
-     "gainPct": -71.6
+     "value": 16566,
+     "gainPct": -49.8
     },
     "unpriced": [
-     "스페셜 Lv+1",
      "얼음 조각",
      "초월의 보석"
     ]
@@ -6407,16 +6299,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 32300,
-     "gainPct": 46.8
+     "value": 65300,
+     "gainPct": 196.8
     },
     "market": {
-     "value": 11530,
-     "gainPct": -47.6
+     "value": 23530,
+     "gainPct": 7.0
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -6469,16 +6359,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 32300,
-     "gainPct": 46.8
+     "value": 65300,
+     "gainPct": 196.8
     },
     "market": {
-     "value": 11530,
-     "gainPct": -47.6
+     "value": 23530,
+     "gainPct": 7.0
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -6534,16 +6422,15 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 75300,
-     "gainPct": -4.7
+     "value": 141300,
+     "gainPct": 78.9
     },
     "market": {
-     "value": 24732,
-     "gainPct": -68.7
+     "value": 48732,
+     "gainPct": -38.3
     },
     "unpriced": [
      "강림 강화곤",
-     "스페셜 Lv+1",
      "정령 10+1 뽑기권"
     ]
    }
@@ -6609,15 +6496,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 44150,
-     "gainPct": 33.8
+     "value": 63950,
+     "gainPct": 93.8
     },
     "market": {
-     "value": 16609,
-     "gainPct": -49.7
+     "value": 23809,
+     "gainPct": -27.9
     },
     "unpriced": [
-     "스페셜 Lv+1",
      "초월의 보석",
      "최상급 강화의 정수",
      "페르시온 결정"
@@ -6739,15 +6625,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 44150,
-     "gainPct": 33.8
+     "value": 63950,
+     "gainPct": 93.8
     },
     "market": {
-     "value": 16609,
-     "gainPct": -49.7
+     "value": 23809,
+     "gainPct": -27.9
     },
     "unpriced": [
-     "스페셜 Lv+1",
      "초월의 보석",
      "최상급 강화의 정수",
      "페르시온 결정"
@@ -6803,15 +6688,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 38150,
-     "gainPct": 15.6
+     "value": 57950,
+     "gainPct": 75.6
     },
     "market": {
-     "value": 12866,
-     "gainPct": -61.0
+     "value": 20066,
+     "gainPct": -39.2
     },
     "unpriced": [
-     "스페셜 Lv+1",
      "최고급 정령 뽑기권"
     ]
    }
@@ -6862,16 +6746,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 34300,
-     "gainPct": 55.9
+     "value": 67300,
+     "gainPct": 205.9
     },
     "market": {
-     "value": 13300,
-     "gainPct": -39.5
+     "value": 25300,
+     "gainPct": 15.0
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -6920,16 +6802,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 34300,
-     "gainPct": 55.9
+     "value": 67300,
+     "gainPct": 205.9
     },
     "market": {
-     "value": 13300,
-     "gainPct": -39.5
+     "value": 25300,
+     "gainPct": 15.0
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -7001,16 +6881,15 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 42650,
-     "gainPct": 29.2
+     "value": 62450,
+     "gainPct": 89.2
     },
     "market": {
-     "value": 17366,
-     "gainPct": -47.4
+     "value": 24566,
+     "gainPct": -25.6
     },
     "unpriced": [
      "상급 강화의 정수",
-     "스페셜 Lv+1",
      "중급 강화의 정수",
      "초월의 보석",
      "최상급 강화의 정수",
@@ -7067,16 +6946,15 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 54650,
-     "gainPct": -0.6
+     "value": 87650,
+     "gainPct": 59.4
     },
     "market": {
-     "value": 18082,
-     "gainPct": -67.1
+     "value": 30082,
+     "gainPct": -45.3
     },
     "unpriced": [
-     "렉스톤 드래곤 알",
-     "스페셜 Lv+1"
+     "렉스톤 드래곤 알"
     ]
    }
   },
@@ -7198,19 +7076,18 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 18750,
-     "gainPct": 56.2
+     "value": 38550,
+     "gainPct": 221.2
     },
     "market": {
-     "value": 9493,
-     "gainPct": -20.9
+     "value": 16693,
+     "gainPct": 39.1
     },
     "unpriced": [
      "골드",
      "꿈의 공격 +32",
      "꿈의 방어 +32",
      "꿈의 체력 +128",
-     "스페셜 Lv+1",
      "합성석"
     ]
    }
@@ -7317,19 +7194,18 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 42250,
-     "gainPct": 92.0
+     "value": 75250,
+     "gainPct": 242.0
     },
     "market": {
-     "value": 16966,
-     "gainPct": -22.9
+     "value": 28966,
+     "gainPct": 31.7
     },
     "unpriced": [
      "골드",
      "꿈의 공격 +32",
      "꿈의 방어 +32",
      "꿈의 체력 +128",
-     "스페셜 Lv+1",
      "합성석"
     ]
    }
@@ -7399,16 +7275,15 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 27650,
-     "gainPct": -16.2
+     "value": 47450,
+     "gainPct": 43.8
     },
     "market": {
-     "value": 13650,
-     "gainPct": -58.6
+     "value": 20850,
+     "gainPct": -36.8
     },
     "unpriced": [
      "상급 강화의 정수",
-     "스페셜 Lv+1",
      "중급 강화의 정수",
      "초월의 보석",
      "최상급 강화의 정수",
@@ -7571,19 +7446,18 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 16750,
-     "gainPct": 39.6
+     "value": 36550,
+     "gainPct": 204.6
     },
     "market": {
-     "value": 7493,
-     "gainPct": -37.6
+     "value": 14693,
+     "gainPct": 22.4
     },
     "unpriced": [
      "골드",
      "꿈의 공격 +33",
      "꿈의 방어 +33",
      "꿈의 체력 +132",
-     "스페셜 Lv+1",
      "페르시온 결정",
      "합성석"
     ]
@@ -7671,19 +7545,18 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 16750,
-     "gainPct": 39.6
+     "value": 36550,
+     "gainPct": 204.6
     },
     "market": {
-     "value": 7493,
-     "gainPct": -37.6
+     "value": 14693,
+     "gainPct": 22.4
     },
     "unpriced": [
      "골드",
      "꿈의 공격 +33",
      "꿈의 방어 +33",
      "꿈의 체력 +132",
-     "스페셜 Lv+1",
      "페르시온 결정",
      "합성석"
     ]
@@ -7746,16 +7619,15 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 24650,
-     "gainPct": -49.7
+     "value": 44450,
+     "gainPct": -9.3
     },
     "market": {
-     "value": 10650,
-     "gainPct": -78.3
+     "value": 17850,
+     "gainPct": -63.6
     },
     "unpriced": [
      "강림 강화곤",
-     "스페셜 Lv+1",
      "초월의 보석",
      "최고급 정령 뽑기권"
     ]
@@ -7888,16 +7760,15 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 75300,
-     "gainPct": 242.3
+     "value": 108300,
+     "gainPct": 392.3
     },
     "market": {
-     "value": 24732,
-     "gainPct": 12.4
+     "value": 36732,
+     "gainPct": 67.0
     },
     "unpriced": [
-     "골드",
-     "스페셜 Lv+1"
+     "골드"
     ]
    }
   },
@@ -7971,16 +7842,15 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 27650,
-     "gainPct": -16.2
+     "value": 47450,
+     "gainPct": 43.8
     },
     "market": {
-     "value": 13650,
-     "gainPct": -58.6
+     "value": 20850,
+     "gainPct": -36.8
     },
     "unpriced": [
      "상급 강화의 정수",
-     "스페셜 Lv+1",
      "중급 강화의 정수",
      "초월의 보석",
      "최상급 강화의 정수",
@@ -8046,16 +7916,15 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 27650,
-     "gainPct": -43.6
+     "value": 47450,
+     "gainPct": -3.2
     },
     "market": {
-     "value": 13650,
-     "gainPct": -72.1
+     "value": 20850,
+     "gainPct": -57.4
     },
     "unpriced": [
      "강림 강화곤",
-     "스페셜 Lv+1",
      "초월의 보석"
     ]
    }
@@ -8123,16 +7992,15 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 28090,
-     "gainPct": 27.7
+     "value": 47890,
+     "gainPct": 117.7
     },
     "market": {
-     "value": 9806,
-     "gainPct": -55.4
+     "value": 17006,
+     "gainPct": -22.7
     },
     "unpriced": [
      "각성 Lv+1",
-     "스페셜 Lv+1",
      "캡슐 Lv+1"
     ]
    }
@@ -8200,16 +8068,15 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 28090,
-     "gainPct": 27.7
+     "value": 47890,
+     "gainPct": 117.7
     },
     "market": {
-     "value": 9806,
-     "gainPct": -55.4
+     "value": 17006,
+     "gainPct": -22.7
     },
     "unpriced": [
      "각성 Lv+1",
-     "스페셜 Lv+1",
      "캡슐 Lv+1"
     ]
    }
@@ -8277,16 +8144,15 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 28090,
-     "gainPct": 27.7
+     "value": 47890,
+     "gainPct": 117.7
     },
     "market": {
-     "value": 9806,
-     "gainPct": -55.4
+     "value": 17006,
+     "gainPct": -22.7
     },
     "unpriced": [
      "각성 Lv+1",
-     "스페셜 Lv+1",
      "캡슐 Lv+1"
     ]
    }
@@ -8358,15 +8224,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 27650,
-     "gainPct": 25.7
+     "value": 47450,
+     "gainPct": 115.7
     },
     "market": {
-     "value": 13650,
-     "gainPct": -38.0
+     "value": 20850,
+     "gainPct": -5.2
     },
     "unpriced": [
-     "스페셜 Lv+1",
      "초월의 보석"
     ]
    }
@@ -8438,15 +8303,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 27650,
-     "gainPct": 25.7
+     "value": 47450,
+     "gainPct": 115.7
     },
     "market": {
-     "value": 13650,
-     "gainPct": -38.0
+     "value": 20850,
+     "gainPct": -5.2
     },
     "unpriced": [
-     "스페셜 Lv+1",
      "초월의 보석"
     ]
    }
@@ -8522,16 +8386,15 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 27650,
-     "gainPct": -43.6
+     "value": 47450,
+     "gainPct": -3.2
     },
     "market": {
-     "value": 13650,
-     "gainPct": -72.1
+     "value": 20850,
+     "gainPct": -57.4
     },
     "unpriced": [
      "강림 강화곤의 알",
-     "스페셜 Lv+1",
      "초월의 보석"
     ]
    }
@@ -9294,16 +9157,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 41300,
-     "gainPct": 87.7
+     "value": 74300,
+     "gainPct": 237.7
     },
     "market": {
-     "value": 13759,
-     "gainPct": -37.5
+     "value": 25759,
+     "gainPct": 17.1
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -10169,16 +10030,15 @@
    "nameUncertain": true,
    "calc": {
     "shop": {
-     "value": 16660,
-     "gainPct": -24.3
+     "value": 23260,
+     "gainPct": 5.7
     },
     "market": {
-     "value": 5376,
-     "gainPct": -75.6
+     "value": 7776,
+     "gainPct": -64.7
     },
     "unpriced": [
      "각성 Lv+1",
-     "스페셜 Lv+1",
      "캡슐 Lv+1"
     ]
    }
@@ -10232,16 +10092,14 @@
    "nameUncertain": false,
    "calc": {
     "shop": {
-     "value": 18990,
-     "gainPct": -42.5
+     "value": 25590,
+     "gainPct": -22.5
     },
     "market": {
-     "value": 7476,
-     "gainPct": -77.3
+     "value": 9876,
+     "gainPct": -70.1
     },
-    "unpriced": [
-     "스페셜 Lv+1"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -10577,7 +10435,7 @@
  "itemPrices": {
   "unit": "won",
   "checkedAt": "2026-11-16",
-  "basis": "유저 거래 시세: 꿈의 젬 +34 = 1,000원, +35 = +34 2개(2,000원), +36 = +35 2개(4,000원), 디트의 망치 1,000원, 마법의 망치 500원, 강철의 망치 200원, 꿈의 부화기 +1 1,000원, 합성석 = 골드 200만. 상급 초월의 정수 = 일일 패키지 3,000원 ÷ 6개, 더블 맥스 레벨업 = 22,000원 ÷ 50개, Lv+1 = 10개당 300원, Lv-1 = 100개당 300원, 프리미엄 레벨업 = 10개당 400~500원(중간값 45원)",
+  "basis": "유저 거래 시세: 꿈의 젬 +34 = 1,000원, +35 = +34 2개(2,000원), +36 = +35 2개(4,000원), 디트의 망치 1,000원, 마법의 망치 500원, 강철의 망치 200원, 꿈의 부화기 +1 1,000원, 합성석 = 골드 200만. 상급 초월의 정수 = 일일 패키지 3,000원 ÷ 6개, 더블 맥스 레벨업 = 22,000원 ÷ 50개, Lv+1 = 10개당 300원, Lv-1 = 100개당 300원, 프리미엄 레벨업 = 10개당 400~500원(중간값 45원), 스페셜 레벨업 = 인게임 다이아 30개",
   "items": {
    "꿈의 공격 +34": 1000,
    "꿈의 방어 +34": 1000,
@@ -10603,7 +10461,11 @@
    "꿈의 체력 +144": 4000,
    "Lv+1": 30,
    "Lv-1": 3,
-   "프리미엄 Lv+1": 45
+   "프리미엄 Lv+1": 45,
+   "스페셜 Lv+1": {
+    "v": 30,
+    "u": "dia"
+   }
   }
  }
 }

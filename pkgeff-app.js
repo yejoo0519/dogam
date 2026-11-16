@@ -1,7 +1,7 @@
 (function(root){
   'use strict';
-  const GENERIC=/다이아|골드|Lv|레벨업|부화기|정수|보석|결정|망치|합성석|꿈의 (공격|방어|체력)|강림|뽑기권|얼음 조각|물약|정기|치료제|스톤|해제권|뿔|장식|정령|토벌권|티켓/;
-  const DEFAULT_RATES={shop:{dia:22,gold:30},market:{dia:8,gold:7.43}};
+  const GENERIC=/다이아|골드|Lv|레벨업|부화기|정수|보석|결정|망치|합성석|꿈의 (공격|방어|체력)|강림|뽑기권|얼음 조각|사탕|물약|정기|치료제|스톤|해제권|뿔|장식|정령|토벌권|티켓|루비|확정권|변환권|스크롤|수정/;
+  const DEFAULT_RATES={shop:{dia:22,gold:30},market:{dia:8,gold:7.43}},DEFAULT_EVT=12.22;
   // 같은 드래곤은 표기(알/드래곤 알/의 알)가 달라도 하나의 시세 키로 묶는다.
   function eggKey(name){
     return name.replace(/\(알\)/g,'').replace(/\s*드래곤의?\s*알$/,'').replace(/의\s*알$/,'').replace(/\s*알$/,'').replace(/\s+/g,' ').trim().replace(/^블랙 아머$/,'블랙아머');
@@ -17,7 +17,8 @@
     if(item.name==='황금 다이아') return ctx.rates.gold;
     const p=ctx.prices[item.name];
     if(!p||!(Number(p.v)>0)) return null;
-    return p.u==='won'?Number(p.v):Number(p.v)*ctx.rates.dia;
+    // 단위: won=원, evt=이벤트 재화(사탕·얼음 조각), dia=다이아
+    return p.u==='won'?Number(p.v):p.u==='evt'?Number(p.v)*ctx.evt:Number(p.v)*ctx.rates.dia;
   }
   function calc(pkg,ctx){
     let value=0,missing=0;
@@ -28,7 +29,7 @@
     });
     return {lines,value,missing,gain:pkg.price>0?(value/pkg.price-1)*100:null};
   }
-  const api={eggKey,isEgg,unitWon,calc,DEFAULT_RATES};
+  const api={eggKey,isEgg,unitWon,calc,DEFAULT_RATES,DEFAULT_EVT};
   if(typeof module==='object'&&module.exports){module.exports=api;return;}
   root.PackageValue=api;
 
@@ -38,9 +39,10 @@
   const won=value=>Math.round(value).toLocaleString('ko-KR')+'원';
   const pretty=value=>value?value.replaceAll('-','.'):'—';
   const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
-  const state={basis:'shop',rates:{shop:{...DEFAULT_RATES.shop},market:{...DEFAULT_RATES.market}},eggs:{},prices:{},custom:[],query:'',sort:'recent',sale:'all',shown:PAGE};
+  const state={basis:'shop',rates:{shop:{...DEFAULT_RATES.shop},market:{...DEFAULT_RATES.market}},evt:DEFAULT_EVT,eggs:{},prices:{},custom:[],query:'',sort:'recent',sale:'all',shown:PAGE};
   let official=[],defaults={};
   const num=value=>{const n=Number(value);return Number.isFinite(n)&&n>0?n:0;};
+  const unit=value=>value==='won'||value==='evt'?value:'dia';
   function load(){
     try{
       const saved=JSON.parse(localStorage.getItem(STORE)||'null');
@@ -52,8 +54,9 @@
       }
       if(saved.basis==='shop'||saved.basis==='market') state.basis=saved.basis;
       for(const k of ['shop','market']) for(const f of ['dia','gold']){const v=Number(saved.rates?.[k]?.[f]);if(v>=0&&Number.isFinite(v)) state.rates[k][f]=v;}
+      if(num(saved.evt)) state.evt=num(saved.evt);
       for(const [k,v] of Object.entries(saved.eggs||{})) if(num(v)) state.eggs[k]=num(v);
-      for(const [k,p] of Object.entries(saved.prices||{})) if(num(p?.v)) state.prices[k]={v:num(p.v),u:p.u==='won'?'won':'dia'};
+      for(const [k,p] of Object.entries(saved.prices||{})) if(num(p?.v)) state.prices[k]={v:num(p.v),u:unit(p.u)};
       if(Array.isArray(saved.custom)) state.custom=saved.custom.filter(p=>p&&typeof p.name==='string'&&num(p.price)&&Array.isArray(p.items)).map(p=>({
         id:String(p.id),name:p.name,price:num(p.price),createdAt:String(p.createdAt||today),custom:true,
         items:p.items.filter(i=>i&&typeof i.name==='string'&&num(i.qty)).map(i=>({name:i.name,qty:num(i.qty),kind:i.kind==='egg'?'egg':'item'}))
@@ -61,18 +64,19 @@
     }catch(error){console.warn('Package value: 저장된 값을 읽지 못했습니다',error);}
   }
   function save(){
-    try{localStorage.setItem(STORE,JSON.stringify({basis:state.basis,rates:state.rates,eggs:state.eggs,prices:state.prices,custom:state.custom}));}
+    try{localStorage.setItem(STORE,JSON.stringify({basis:state.basis,rates:state.rates,evt:state.evt,eggs:state.eggs,prices:state.prices,custom:state.custom}));}
     catch(error){/* 저장이 막힌 환경에서는 이번 방문에만 유지 */}
   }
   // 직접 넣은 단가가 데이터의 기본 단가보다 우선한다.
   const prices=()=>({...defaults,...state.prices});
-  const ctx=()=>({rates:state.rates[state.basis],eggs:state.eggs,prices:prices()});
+  const ctx=()=>({rates:state.rates[state.basis],evt:state.evt,eggs:state.eggs,prices:prices()});
   const all=()=>state.custom.concat(official);
-  function onSale(pkg){return !pkg.custom&&pkg.noticeSalePeriods.some(p=>p.start&&p.end&&p.start<=today&&p.end>=today);}
+  function onSale(pkg){return !pkg.custom&&(pkg.always||pkg.noticeSalePeriods.some(p=>p.start&&p.end&&p.start<=today&&p.end>=today));}
   function period(pkg){
     if(pkg.custom) return `직접 등록 ${pretty(pkg.createdAt)}`;
     const starts=pkg.noticeSalePeriods.map(p=>p.start).filter(Boolean).sort(),ends=pkg.noticeSalePeriods.map(p=>p.end).filter(Boolean).sort();
     const limit=pkg.limit?' · 구매 '+(/^\d+$/.test(pkg.limit)?pkg.limit+'회':pkg.limit):'';
+    if(pkg.always) return '상시 판매'+limit;
     return (starts.length?`${pretty(starts[0])} — ${pretty(ends.at(-1))}`:`공지 ${pretty(pkg.noticeDate)}`)+limit;
   }
   function resultHtml(price,c){
@@ -102,8 +106,8 @@
     $('moreWrap').hidden=list.length<=state.shown;
     if(!list.length){$('results').innerHTML='<div class="pkg-empty">조건에 맞는 패키지가 없습니다.</div>';return;}
     $('results').innerHTML=page.map(({pkg,c})=>{
-      const title=pkg.custom?escape(pkg.name):`<a href="${escape(pkg.url)}" target="_blank" rel="noopener noreferrer">${escape(pkg.name)} ↗</a>`;
-      const badges=(onSale(pkg)?'<span class="pkg-badge gold">판매중</span>':'')+(pkg.custom?`<span class="pkg-badge">직접 등록</span><button type="button" class="pe-del" data-delete="${escape(pkg.id)}">삭제</button>`:'');
+      const title=pkg.custom||!pkg.url?escape(pkg.name):`<a href="${escape(pkg.url)}" target="_blank" rel="noopener noreferrer">${escape(pkg.name)} ↗</a>`;
+      const badges=(pkg.always?'<span class="pkg-badge gold">상시</span>':onSale(pkg)?'<span class="pkg-badge gold">판매중</span>':'')+(pkg.custom?`<span class="pkg-badge">직접 등록</span><button type="button" class="pe-del" data-delete="${escape(pkg.id)}">삭제</button>`:'');
       return `<article class="pe-card" data-id="${escape(pkg.id)}"><div class="pe-card-head"><div><div class="pe-title">${title}</div><div class="pe-meta">${period(pkg)}</div></div><div class="pe-badges">${badges}</div></div><div class="pe-chips">${c.lines.map(chipHtml).join('')}</div><div class="pe-result">${resultHtml(pkg.price,c)}</div></article>`;
     }).join('');
   }
@@ -118,7 +122,7 @@
   }
   function syncBasis(){
     document.querySelectorAll('[data-basis]').forEach(b=>{const on=b.dataset.basis===state.basis;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on);});
-    $('rateDia').value=state.rates[state.basis].dia;$('rateGold').value=state.rates[state.basis].gold;
+    $('rateDia').value=state.rates[state.basis].dia;$('rateGold').value=state.rates[state.basis].gold;$('rateEvt').value=state.evt;
   }
   function chipGroup(id,attr,key){
     $(id).addEventListener('click',e=>{
@@ -130,6 +134,7 @@
   }
   $('basis').addEventListener('click',e=>{const b=e.target.closest('[data-basis]');if(!b)return;state.basis=b.dataset.basis;syncBasis();save();render();});
   for(const [id,field] of [['rateDia','dia'],['rateGold','gold']]) $(id).addEventListener('input',e=>{const v=Number(e.target.value);state.rates[state.basis][field]=v>=0&&Number.isFinite(v)?v:0;save();render();});
+  $('rateEvt').addEventListener('input',e=>{state.evt=num(e.target.value);save();render();});
   chipGroup('sortChips','sort','sort');chipGroup('saleChips','sale','sale');
   $('query').addEventListener('input',e=>{state.query=e.target.value;state.shown=PAGE;render();});
   $('more').addEventListener('click',()=>{state.shown+=PAGE;render();});
@@ -159,13 +164,13 @@
   $('openPrices').addEventListener('click',()=>{
     $('priceList').innerHTML=itemNames().map(name=>{
       const p=state.prices[name]||defaults[name];
-      return `<label class="pe-line"><span>${escape(name)}</span><input type="number" min="0" step="any" inputmode="decimal" data-price="${escape(name)}" value="${p?p.v:''}" placeholder="단가"><select data-unit="${escape(name)}" aria-label="${escape(name)} 단가 단위"><option value="dia"${p?.u==='won'?'':' selected'}>다이아</option><option value="won"${p?.u==='won'?' selected':''}>원</option></select></label>`;
+      return `<label class="pe-line"><span>${escape(name)}</span><input type="number" min="0" step="any" inputmode="decimal" data-price="${escape(name)}" value="${p?p.v:''}" placeholder="단가"><select data-unit="${escape(name)}" aria-label="${escape(name)} 단가 단위"><option value="evt"${p?.u==='evt'?' selected':''}>이벤트 재화</option><option value="dia"${!p||p.u==='dia'?' selected':''}>다이아</option><option value="won"${p?.u==='won'?' selected':''}>원</option></select></label>`;
     }).join('');
     $('priceDialog').showModal();
   });
   function readPrice(name){
-    const line=$('priceList'),input=line.querySelector(`[data-price="${CSS.escape(name)}"]`),unit=line.querySelector(`[data-unit="${CSS.escape(name)}"]`);
-    const v=num(input.value);if(v) state.prices[name]={v,u:unit.value==='won'?'won':'dia'}; else delete state.prices[name];
+    const line=$('priceList'),input=line.querySelector(`[data-price="${CSS.escape(name)}"]`),sel=line.querySelector(`[data-unit="${CSS.escape(name)}"]`);
+    const v=num(input.value);if(v) state.prices[name]={v,u:unit(sel.value)}; else delete state.prices[name];
     save();
   }
   $('priceList').addEventListener('input',e=>{const t=e.target.closest('[data-price],[data-unit]');if(t)readPrice(t.dataset.price||t.dataset.unit);});
@@ -224,10 +229,10 @@
       if(!response.ok)throw Error('HTTP '+response.status);
       const source=await response.json();
       if(source.schemaVersion!==1||!Array.isArray(source.packages))throw Error('지원하지 않는 데이터 형식');
-      for(const [name,v] of Object.entries(source.itemPrices?.items||{})) if(num(v)) defaults[name]={v:num(v),u:source.itemPrices.unit==='won'?'won':'dia'};
+      for(const [name,v] of Object.entries(source.itemPrices?.items||{})) if(num(v)) defaults[name]={v:num(v),u:unit(source.itemPrices.unit)};
       official=source.packages.filter(p=>Number.isFinite(p.price)&&p.price>0&&Array.isArray(p.items)&&p.items.length)
-        .map((p,i)=>({...p,id:'n'+p.noticeIds.join('-')+'-'+i}));
-      $('syncStatus').textContent=`공식 공지 패키지 ${official.length.toLocaleString('ko-KR')}개 · 마지막 확인 ${pretty(source.checkedAt)}`;
+        .map((p,i)=>({...p,id:'n'+p.noticeIds.join('-')+'-'+i,noticeSalePeriods:p.noticeSalePeriods||[]}));
+      $('syncStatus').textContent=`패키지 ${official.length.toLocaleString('ko-KR')}개 · 마지막 확인 ${pretty(source.checkedAt)}`;
       render();
     }catch(error){
       $('syncStatus').classList.add('error');$('syncStatus').textContent='패키지 기록을 불러오지 못했습니다. 직접 등록한 패키지만 표시합니다.';

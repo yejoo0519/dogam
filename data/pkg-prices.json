@@ -47,10 +47,6 @@
    "source": "인게임 상점 화면(2026-11-16)",
    "note": "구매 제한 횟수는 화면에서 확인 못 함(2025.07 공지 기준 주 3회)",
    "calc": {
-    "shop": {
-     "value": 18000,
-     "gainPct": -18.2
-    },
     "market": {
      "value": 18000,
      "gainPct": -18.2
@@ -106,10 +102,6 @@
    "always": true,
    "source": "인게임 상점 화면(2026-11-16)",
    "calc": {
-    "shop": {
-     "value": 36200,
-     "gainPct": 64.5
-    },
     "market": {
      "value": 13800,
      "gainPct": -37.3
@@ -177,10 +169,6 @@
    "always": true,
    "source": "인게임 상점 화면(2026-11-16)",
    "calc": {
-    "shop": {
-     "value": 13900,
-     "gainPct": -36.8
-    },
     "market": {
      "value": 7600,
      "gainPct": -65.5
@@ -228,10 +216,6 @@
    "always": true,
    "source": "인게임 상점 화면(2026-11-16)",
    "calc": {
-    "shop": {
-     "value": 45440,
-     "gainPct": 278.7
-    },
     "market": {
      "value": 24440,
      "gainPct": 103.7
@@ -265,10 +249,6 @@
    "always": true,
    "source": "인게임 상점 화면(2026-11-16)",
    "calc": {
-    "shop": {
-     "value": 0,
-     "gainPct": -100.0
-    },
     "market": {
      "value": 0,
      "gainPct": -100.0
@@ -330,10 +310,6 @@
    "always": true,
    "source": "인게임 상점 화면(2026-11-16)",
    "calc": {
-    "shop": {
-     "value": 60000,
-     "gainPct": 9.1
-    },
     "market": {
      "value": 14865,
      "gainPct": -73.0
@@ -380,10 +356,6 @@
    "always": true,
    "source": "인게임 상점 화면(2026-11-16)",
    "calc": {
-    "shop": {
-     "value": 83600,
-     "gainPct": 280.0
-    },
     "market": {
      "value": 30400,
      "gainPct": 38.2
@@ -426,10 +398,6 @@
    "source": "인게임 상점 화면(2026-11-16)",
    "note": "즉시 지급 + 매일 지급 28일분 합산. 즉시: 다이아 500·황다 200·스페셜 20·Lv-1 60 / 매일: 다이아 60·황다 15·스페셜 5·Lv-1 6",
    "calc": {
-    "shop": {
-     "value": 172844,
-     "gainPct": 1340.4
-    },
     "market": {
      "value": 61132,
      "gainPct": 409.4
@@ -468,10 +436,6 @@
    "source": "인게임 상점 화면(2026-11-16)",
    "note": "즉시 지급 + 매일 지급 28일분 합산. 지급 기간 28일은 프리미엄 월정액과 같다고 가정",
    "calc": {
-    "shop": {
-     "value": 37302,
-     "gainPct": 521.7
-    },
     "market": {
      "value": 12405,
      "gainPct": 106.8
@@ -507,10 +471,6 @@
    "always": true,
    "source": "인게임 상점 화면(2026-11-16)",
    "calc": {
-    "shop": {
-     "value": 3450,
-     "gainPct": 130.0
-    },
     "market": {
      "value": 1350,
      "gainPct": -10.0
@@ -546,10 +506,6 @@
    "always": true,
    "source": "인게임 상점 화면(2026-11-16)",
    "calc": {
-    "shop": {
-     "value": 3000,
-     "gainPct": 0.0
-    },
     "market": {
      "value": 3000,
      "gainPct": 0.0
@@ -575,10 +531,6 @@
    "always": true,
    "source": "인게임 상점 화면(2026-11-16)",
    "calc": {
-    "shop": {
-     "value": 11000,
-     "gainPct": 150.0
-    },
     "market": {
      "value": 4000,
      "gainPct": -9.1
@@ -650,10 +602,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 116200,
-     "gainPct": 252.1
-    },
     "market": {
      "value": 43859,
      "gainPct": 32.9
@@ -728,10 +676,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 116200,
-     "gainPct": 252.1
-    },
     "market": {
      "value": 43859,
      "gainPct": 32.9
@@ -762,10 +706,6 @@
    "always": false,
    "source": "공지 구성표",
    "calc": {
-    "shop": {
-     "value": 22000,
-     "gainPct": 0.0
-    },
     "market": {
      "value": 22000,
      "gainPct": 0.0
@@ -841,10 +781,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 116200,
-     "gainPct": 252.1
-    },
     "market": {
      "value": 43859,
      "gainPct": 32.9
@@ -904,10 +840,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 86400,
-     "gainPct": 292.7
-    },
     "market": {
      "value": 33659,
      "gainPct": 53.0
@@ -967,10 +899,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 134800,
-     "gainPct": 175.1
-    },
     "market": {
      "value": 49232,
      "gainPct": 0.5
@@ -1012,10 +940,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 30000,
-     "gainPct": -9.1
-    },
     "market": {
      "value": 30000,
      "gainPct": -9.1
@@ -1079,10 +1003,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 116200,
-     "gainPct": 252.1
-    },
     "market": {
      "value": 43859,
      "gainPct": 32.9
@@ -1148,10 +1068,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 134800,
-     "gainPct": 175.1
-    },
     "market": {
      "value": 49232,
      "gainPct": 0.5
@@ -1222,10 +1138,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 116200,
-     "gainPct": 252.1
-    },
     "market": {
      "value": 43859,
      "gainPct": 32.9
@@ -1263,10 +1175,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 0,
-     "gainPct": -100.0
-    },
     "market": {
      "value": 0,
      "gainPct": -100.0
@@ -1336,10 +1244,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 88400,
-     "gainPct": 301.8
-    },
     "market": {
      "value": 35659,
      "gainPct": 62.1
@@ -1399,10 +1303,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 88400,
-     "gainPct": 301.8
-    },
     "market": {
      "value": 35659,
      "gainPct": 62.1
@@ -1470,10 +1370,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 116200,
-     "gainPct": 252.1
-    },
     "market": {
      "value": 43859,
      "gainPct": 32.9
@@ -1541,10 +1437,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 116200,
-     "gainPct": 252.1
-    },
     "market": {
      "value": 43859,
      "gainPct": 32.9
@@ -1611,10 +1503,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 116200,
-     "gainPct": 252.1
-    },
     "market": {
      "value": 43859,
      "gainPct": 32.9
@@ -1681,10 +1569,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 116200,
-     "gainPct": 252.1
-    },
     "market": {
      "value": 43859,
      "gainPct": 32.9
@@ -1757,10 +1641,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 88400,
-     "gainPct": 301.8
-    },
     "market": {
      "value": 35659,
      "gainPct": 62.1
@@ -1830,10 +1710,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 88400,
-     "gainPct": 301.8
-    },
     "market": {
      "value": 35659,
      "gainPct": 62.1
@@ -1903,10 +1779,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 88400,
-     "gainPct": 301.8
-    },
     "market": {
      "value": 35659,
      "gainPct": 62.1
@@ -1974,10 +1846,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 116200,
-     "gainPct": 252.1
-    },
     "market": {
      "value": 43859,
      "gainPct": 32.9
@@ -2065,10 +1933,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 78250,
-     "gainPct": 255.7
-    },
     "market": {
      "value": 31966,
      "gainPct": 45.3
@@ -2131,10 +1995,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 79500,
-     "gainPct": 261.4
-    },
     "market": {
      "value": 31816,
      "gainPct": 44.6
@@ -2222,10 +2082,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 40550,
-     "gainPct": 237.9
-    },
     "market": {
      "value": 18693,
      "gainPct": 55.8
@@ -2289,10 +2145,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 66200,
-     "gainPct": 100.6
-    },
     "market": {
      "value": 26059,
      "gainPct": -21.0
@@ -2360,10 +2212,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 116200,
-     "gainPct": 252.1
-    },
     "market": {
      "value": 43859,
      "gainPct": 32.9
@@ -2415,10 +2263,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 30800,
-     "gainPct": -44.0
-    },
     "market": {
      "value": 16800,
      "gainPct": -69.5
@@ -2466,10 +2310,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 30800,
-     "gainPct": -6.7
-    },
     "market": {
      "value": 16800,
      "gainPct": -49.1
@@ -2532,10 +2372,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 88400,
-     "gainPct": 301.8
-    },
     "market": {
      "value": 35659,
      "gainPct": 62.1
@@ -2575,10 +2411,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 0,
-     "gainPct": -100.0
-    },
     "market": {
      "value": 0,
      "gainPct": -100.0
@@ -2649,10 +2481,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 39600,
-     "gainPct": 230.0
-    },
     "market": {
      "value": 22486,
      "gainPct": 87.4
@@ -2712,10 +2540,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 39600,
-     "gainPct": 230.0
-    },
     "market": {
      "value": 22486,
      "gainPct": 87.4
@@ -2803,10 +2627,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 40550,
-     "gainPct": 237.9
-    },
     "market": {
      "value": 18693,
      "gainPct": 55.8
@@ -2874,10 +2694,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 144300,
-     "gainPct": 82.7
-    },
     "market": {
      "value": 51732,
      "gainPct": -34.5
@@ -2948,10 +2764,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 116200,
-     "gainPct": 252.1
-    },
     "market": {
      "value": 43859,
      "gainPct": 32.9
@@ -3015,10 +2827,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 66400,
-     "gainPct": 101.2
-    },
     "market": {
      "value": 27659,
      "gainPct": -16.2
@@ -3080,10 +2888,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 88400,
-     "gainPct": 301.8
-    },
     "market": {
      "value": 35659,
      "gainPct": 62.1
@@ -3147,10 +2951,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 134800,
-     "gainPct": 175.1
-    },
     "market": {
      "value": 49232,
      "gainPct": 0.5
@@ -3209,10 +3009,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 50230,
-     "gainPct": 128.3
-    },
     "market": {
      "value": 19346,
      "gainPct": -12.1
@@ -3280,10 +3076,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 63950,
-     "gainPct": 93.8
-    },
     "market": {
      "value": 23809,
      "gainPct": -27.9
@@ -3355,10 +3147,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 63950,
-     "gainPct": 93.8
-    },
     "market": {
      "value": 23809,
      "gainPct": -27.9
@@ -3418,10 +3206,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 55430,
-     "gainPct": 152.0
-    },
     "market": {
      "value": 20889,
      "gainPct": -5.0
@@ -3477,10 +3261,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 55430,
-     "gainPct": 152.0
-    },
     "market": {
      "value": 20889,
      "gainPct": -5.0
@@ -3540,10 +3320,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 66200,
-     "gainPct": 100.6
-    },
     "market": {
      "value": 26059,
      "gainPct": -21.0
@@ -3599,10 +3375,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 50230,
-     "gainPct": 128.3
-    },
     "market": {
      "value": 19346,
      "gainPct": -12.1
@@ -3666,10 +3438,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 103300,
-     "gainPct": 87.8
-    },
     "market": {
      "value": 38732,
      "gainPct": -29.6
@@ -3732,10 +3500,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 66200,
-     "gainPct": 100.6
-    },
     "market": {
      "value": 26059,
      "gainPct": -21.0
@@ -3791,10 +3555,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 50230,
-     "gainPct": 128.3
-    },
     "market": {
      "value": 19346,
      "gainPct": -12.1
@@ -3878,10 +3638,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 78250,
-     "gainPct": 255.7
-    },
     "market": {
      "value": 31966,
      "gainPct": 45.3
@@ -3952,10 +3708,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 66200,
-     "gainPct": 100.6
-    },
     "market": {
      "value": 26059,
      "gainPct": -21.0
@@ -4043,10 +3795,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 37550,
-     "gainPct": 212.9
-    },
     "market": {
      "value": 15693,
      "gainPct": 30.8
@@ -4109,10 +3857,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 50230,
-     "gainPct": 128.3
-    },
     "market": {
      "value": 19346,
      "gainPct": -12.1
@@ -4192,10 +3936,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 65450,
-     "gainPct": 98.3
-    },
     "market": {
      "value": 25309,
      "gainPct": -23.3
@@ -4268,10 +4008,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 133450,
-     "gainPct": 172.3
-    },
     "market": {
      "value": 47882,
      "gainPct": -2.3
@@ -4329,10 +4065,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 50230,
-     "gainPct": 128.3
-    },
     "market": {
      "value": 19346,
      "gainPct": -12.1
@@ -4400,10 +4132,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 66200,
-     "gainPct": 100.6
-    },
     "market": {
      "value": 26059,
      "gainPct": -21.0
@@ -4471,10 +4199,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 66200,
-     "gainPct": 100.6
-    },
     "market": {
      "value": 26059,
      "gainPct": -21.0
@@ -4542,10 +4266,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 100300,
-     "gainPct": 104.7
-    },
     "market": {
      "value": 35732,
      "gainPct": -27.1
@@ -4615,10 +4335,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 66200,
-     "gainPct": 100.6
-    },
     "market": {
      "value": 26059,
      "gainPct": -21.0
@@ -4694,10 +4410,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 63950,
-     "gainPct": 93.8
-    },
     "market": {
      "value": 23809,
      "gainPct": -27.9
@@ -4779,10 +4491,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 52200,
-     "gainPct": 137.3
-    },
     "market": {
      "value": 21316,
      "gainPct": -3.1
@@ -4860,10 +4568,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 52200,
-     "gainPct": 137.3
-    },
     "market": {
      "value": 21316,
      "gainPct": -3.1
@@ -4941,10 +4645,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 52200,
-     "gainPct": 137.3
-    },
     "market": {
      "value": 21316,
      "gainPct": -3.1
@@ -5028,10 +4728,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 66200,
-     "gainPct": 100.6
-    },
     "market": {
      "value": 26059,
      "gainPct": -21.0
@@ -5104,10 +4800,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 52200,
-     "gainPct": 137.3
-    },
     "market": {
      "value": 21316,
      "gainPct": -3.1
@@ -5175,10 +4867,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 66200,
-     "gainPct": 100.6
-    },
     "market": {
      "value": 26059,
      "gainPct": -21.0
@@ -5262,10 +4950,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 66200,
-     "gainPct": 100.6
-    },
     "market": {
      "value": 26059,
      "gainPct": -21.0
@@ -5338,10 +5022,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 66200,
-     "gainPct": 100.6
-    },
     "market": {
      "value": 26059,
      "gainPct": -21.0
@@ -5466,10 +5146,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 41550,
-     "gainPct": 246.2
-    },
     "market": {
      "value": 19693,
      "gainPct": 64.1
@@ -5581,10 +5257,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 78250,
-     "gainPct": 255.7
-    },
     "market": {
      "value": 31966,
      "gainPct": 45.3
@@ -5675,10 +5347,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 37550,
-     "gainPct": 212.9
-    },
     "market": {
      "value": 15693,
      "gainPct": 30.8
@@ -5746,10 +5414,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 62390,
-     "gainPct": 183.6
-    },
     "market": {
      "value": 24506,
      "gainPct": 11.4
@@ -5810,10 +5474,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 62390,
-     "gainPct": 183.6
-    },
     "market": {
      "value": 24506,
      "gainPct": 11.4
@@ -5881,10 +5541,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 63950,
-     "gainPct": 93.8
-    },
     "market": {
      "value": 23809,
      "gainPct": -27.9
@@ -5956,10 +5612,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 63950,
-     "gainPct": 93.8
-    },
     "market": {
      "value": 23809,
      "gainPct": -27.9
@@ -6031,10 +5683,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 63950,
-     "gainPct": 93.8
-    },
     "market": {
      "value": 23809,
      "gainPct": -27.9
@@ -6106,10 +5754,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 63950,
-     "gainPct": 93.8
-    },
     "market": {
      "value": 23809,
      "gainPct": -27.9
@@ -6165,10 +5809,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 65300,
-     "gainPct": 196.8
-    },
     "market": {
      "value": 23530,
      "gainPct": 7.0
@@ -6228,10 +5868,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 40450,
-     "gainPct": 22.6
-    },
     "market": {
      "value": 16566,
      "gainPct": -49.8
@@ -6291,10 +5927,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 65300,
-     "gainPct": 196.8
-    },
     "market": {
      "value": 23530,
      "gainPct": 7.0
@@ -6351,10 +5983,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 65300,
-     "gainPct": 196.8
-    },
     "market": {
      "value": 23530,
      "gainPct": 7.0
@@ -6414,10 +6042,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 141300,
-     "gainPct": 78.9
-    },
     "market": {
      "value": 48732,
      "gainPct": -38.3
@@ -6488,10 +6112,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 63950,
-     "gainPct": 93.8
-    },
     "market": {
      "value": 23809,
      "gainPct": -27.9
@@ -6617,10 +6237,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 63950,
-     "gainPct": 93.8
-    },
     "market": {
      "value": 23809,
      "gainPct": -27.9
@@ -6680,10 +6296,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 57950,
-     "gainPct": 75.6
-    },
     "market": {
      "value": 20066,
      "gainPct": -39.2
@@ -6738,10 +6350,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 67300,
-     "gainPct": 205.9
-    },
     "market": {
      "value": 25300,
      "gainPct": 15.0
@@ -6794,10 +6402,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 67300,
-     "gainPct": 205.9
-    },
     "market": {
      "value": 25300,
      "gainPct": 15.0
@@ -6873,10 +6477,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 62450,
-     "gainPct": 89.2
-    },
     "market": {
      "value": 24566,
      "gainPct": -25.6
@@ -6938,10 +6538,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 87650,
-     "gainPct": 59.4
-    },
     "market": {
      "value": 30082,
      "gainPct": -45.3
@@ -7068,10 +6664,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 38550,
-     "gainPct": 221.2
-    },
     "market": {
      "value": 16693,
      "gainPct": 39.1
@@ -7186,10 +6778,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 75250,
-     "gainPct": 242.0
-    },
     "market": {
      "value": 28966,
      "gainPct": 31.7
@@ -7267,10 +6855,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 47450,
-     "gainPct": 43.8
-    },
     "market": {
      "value": 20850,
      "gainPct": -36.8
@@ -7340,10 +6924,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 27500,
-     "gainPct": -16.7
-    },
     "market": {
      "value": 13500,
      "gainPct": -59.1
@@ -7438,10 +7018,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 36550,
-     "gainPct": 204.6
-    },
     "market": {
      "value": 14693,
      "gainPct": 22.4
@@ -7537,10 +7113,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 36550,
-     "gainPct": 204.6
-    },
     "market": {
      "value": 14693,
      "gainPct": 22.4
@@ -7611,10 +7183,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 44450,
-     "gainPct": -9.3
-    },
     "market": {
      "value": 17850,
      "gainPct": -63.6
@@ -7687,10 +7255,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 27500,
-     "gainPct": -16.7
-    },
     "market": {
      "value": 13500,
      "gainPct": -59.1
@@ -7752,10 +7316,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 108300,
-     "gainPct": 392.3
-    },
     "market": {
      "value": 36732,
      "gainPct": 67.0
@@ -7834,10 +7394,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 47450,
-     "gainPct": 43.8
-    },
     "market": {
      "value": 20850,
      "gainPct": -36.8
@@ -7908,10 +7464,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 47450,
-     "gainPct": -3.2
-    },
     "market": {
      "value": 20850,
      "gainPct": -57.4
@@ -7984,10 +7536,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 61090,
-     "gainPct": 177.7
-    },
     "market": {
      "value": 21806,
      "gainPct": -0.9
@@ -8057,10 +7605,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 61090,
-     "gainPct": 177.7
-    },
     "market": {
      "value": 21806,
      "gainPct": -0.9
@@ -8130,10 +7674,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 61090,
-     "gainPct": 177.7
-    },
     "market": {
      "value": 21806,
      "gainPct": -0.9
@@ -8207,10 +7747,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 47450,
-     "gainPct": 115.7
-    },
     "market": {
      "value": 20850,
      "gainPct": -5.2
@@ -8286,10 +7822,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 47450,
-     "gainPct": 115.7
-    },
     "market": {
      "value": 20850,
      "gainPct": -5.2
@@ -8369,10 +7901,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 47450,
-     "gainPct": -3.2
-    },
     "market": {
      "value": 20850,
      "gainPct": -57.4
@@ -8469,10 +7997,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 2350,
-     "gainPct": -89.3
-    },
     "market": {
      "value": 2350,
      "gainPct": -89.3
@@ -8514,10 +8038,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 4700,
-     "gainPct": -85.8
-    },
     "market": {
      "value": 4700,
      "gainPct": -85.8
@@ -8559,10 +8079,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 0,
-     "gainPct": -100.0
-    },
     "market": {
      "value": 0,
      "gainPct": -100.0
@@ -9074,10 +8590,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 5500,
-     "gainPct": -83.3
-    },
     "market": {
      "value": 5500,
      "gainPct": -83.3
@@ -9140,10 +8652,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 74300,
-     "gainPct": 237.7
-    },
     "market": {
      "value": 25759,
      "gainPct": 17.1
@@ -9602,10 +9110,6 @@
    ],
    "nameUncertain": true,
    "calc": {
-    "shop": {
-     "value": 0,
-     "gainPct": -100.0
-    },
     "market": {
      "value": 0,
      "gainPct": -100.0
@@ -9707,10 +9211,6 @@
    ],
    "nameUncertain": true,
    "calc": {
-    "shop": {
-     "value": 12250,
-     "gainPct": 214.1
-    },
     "market": {
      "value": 5793,
      "gainPct": 48.5
@@ -9807,10 +9307,6 @@
    ],
    "nameUncertain": true,
    "calc": {
-    "shop": {
-     "value": 3860,
-     "gainPct": -1.0
-    },
     "market": {
      "value": 2040,
      "gainPct": -47.7
@@ -9930,10 +9426,6 @@
    ],
    "nameUncertain": true,
    "calc": {
-    "shop": {
-     "value": 87000,
-     "gainPct": 163.6
-    },
     "market": {
      "value": 29432,
      "gainPct": -10.8
@@ -10011,10 +9503,6 @@
    ],
    "nameUncertain": true,
    "calc": {
-    "shop": {
-     "value": 32060,
-     "gainPct": 45.7
-    },
     "market": {
      "value": 10976,
      "gainPct": -50.1
@@ -10070,10 +9558,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 25590,
-     "gainPct": -22.5
-    },
     "market": {
      "value": 9876,
      "gainPct": -70.1
@@ -10130,10 +9614,6 @@
    ],
    "nameUncertain": true,
    "calc": {
-    "shop": {
-     "value": 5360,
-     "gainPct": 62.4
-    },
     "market": {
      "value": 2832,
      "gainPct": -14.2
@@ -10190,10 +9670,6 @@
    ],
    "nameUncertain": true,
    "calc": {
-    "shop": {
-     "value": 9390,
-     "gainPct": 70.7
-    },
     "market": {
      "value": 4333,
      "gainPct": -21.2
@@ -10241,10 +9717,6 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "shop": {
-     "value": 24650,
-     "gainPct": -55.2
-    },
     "market": {
      "value": 10650,
      "gainPct": -80.6
@@ -10397,13 +9869,6 @@
     ]
    }
   ]
- },
- "baseline": {
-  "wonPerDiamond": 22.0,
-  "wonPerGoldDiamond": 30.0,
-  "basis": "33,000원 충전 상품 단가",
-  "wonPerSangchoSet": 1500.0,
-  "setBasis": "일일 패키지 3,000원 = 색별 2개"
  },
  "marketBaseline": {
   "wonPerDiamond": 8.0,

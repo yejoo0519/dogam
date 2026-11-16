@@ -1,7 +1,8 @@
 (function(root){
   'use strict';
   const GENERIC=/다이아|골드|Lv|레벨업|부화기|정수|보석|결정|망치|합성석|꿈의 (공격|방어|체력)|강림|뽑기권|얼음 조각|사탕|물약|정기|치료제|스톤|해제권|뿔|장식|정령|토벌권|티켓|루비|확정권|변환권|스크롤|수정/;
-  const DEFAULT_RATES={shop:{dia:22,gold:30},market:{dia:8,gold:7.43}};
+  // 다이아·황금 다이아는 유저 거래 시세 기준(다이아 100개 800원, 황금 다이아 7,400개 55,000원)
+  const DEFAULT_RATES={market:{dia:8,gold:7.43}};
   // 같은 드래곤은 표기(알/드래곤 알/의 알)가 달라도 하나의 시세 키로 묶는다.
   function eggKey(name){
     return name.replace(/\(알\)/g,'').replace(/\s*드래곤의?\s*알$/,'').replace(/의\s*알$/,'').replace(/\s*알$/,'').replace(/\s+/g,' ').trim().replace(/^블랙 아머$/,'블랙아머');
@@ -41,7 +42,7 @@
   const won=value=>Math.round(value).toLocaleString('ko-KR')+'원';
   const pretty=value=>value?value.replaceAll('-','.'):'—';
   const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
-  const state={basis:'shop',rates:{shop:{...DEFAULT_RATES.shop},market:{...DEFAULT_RATES.market}},goldWon:0,eggs:{},prices:{},custom:[],query:'',sort:'recent',sale:'all',shown:PAGE};
+  const state={basis:'market',rates:{market:{...DEFAULT_RATES.market}},goldWon:0,eggs:{},prices:{},custom:[],query:'',sort:'recent',sale:'all',shown:PAGE};
   let official=[],defaults={};
   const num=value=>{const n=Number(value);return Number.isFinite(n)&&n>0?n:0;};
   const unit=value=>value==='won'||value==='gold'?value:'dia';
@@ -54,9 +55,8 @@
         if(old?.eggs) for(const [k,v] of Object.entries(old.eggs)) if(num(v)) state.eggs[k]=num(v);
         return;
       }
-      if(saved.basis==='shop'||saved.basis==='market') state.basis=saved.basis;
       if(num(saved.goldWon)) state.goldWon=num(saved.goldWon);
-      for(const k of ['shop','market']) for(const f of ['dia','gold']){const v=Number(saved.rates?.[k]?.[f]);if(v>=0&&Number.isFinite(v)) state.rates[k][f]=v;}
+      for(const k of ['market']) for(const f of ['dia','gold']){const v=Number(saved.rates?.[k]?.[f]);if(v>=0&&Number.isFinite(v)) state.rates[k][f]=v;}
       for(const [k,v] of Object.entries(saved.eggs||{})) if(num(v)) state.eggs[k]=num(v);
       for(const [k,p] of Object.entries(saved.prices||{})) if(num(p?.v)&&p.u!=='evt') state.prices[k]={v:num(p.v),u:unit(p.u)};
       if(Array.isArray(saved.custom)) state.custom=saved.custom.filter(p=>p&&typeof p.name==='string'&&num(p.price)&&Array.isArray(p.items)).map(p=>({
@@ -66,7 +66,7 @@
     }catch(error){console.warn('Package value: 저장된 값을 읽지 못했습니다',error);}
   }
   function save(){
-    try{localStorage.setItem(STORE,JSON.stringify({basis:state.basis,rates:state.rates,goldWon:state.goldWon,eggs:state.eggs,prices:state.prices,custom:state.custom}));}
+    try{localStorage.setItem(STORE,JSON.stringify({rates:state.rates,goldWon:state.goldWon,eggs:state.eggs,prices:state.prices,custom:state.custom}));}
     catch(error){/* 저장이 막힌 환경에서는 이번 방문에만 유지 */}
   }
   // 직접 넣은 단가가 데이터의 기본 단가보다 우선한다.
@@ -123,7 +123,6 @@
     document.querySelectorAll('#results [data-egg]').forEach(input=>{if(input!==active) input.value=state.eggs[input.dataset.egg]??'';});
   }
   function syncBasis(){
-    document.querySelectorAll('[data-basis]').forEach(b=>{const on=b.dataset.basis===state.basis;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on);});
     $('rateDia').value=state.rates[state.basis].dia;$('rateGold').value=state.rates[state.basis].gold;$('rateGoldCoin').value=state.goldWon||'';
   }
   function chipGroup(id,attr,key){
@@ -134,7 +133,6 @@
       render();
     });
   }
-  $('basis').addEventListener('click',e=>{const b=e.target.closest('[data-basis]');if(!b)return;state.basis=b.dataset.basis;syncBasis();save();render();});
   $('rateGoldCoin').addEventListener('input',e=>{state.goldWon=num(e.target.value);save();render();});
   for(const [id,field] of [['rateDia','dia'],['rateGold','gold']]) $(id).addEventListener('input',e=>{const v=Number(e.target.value);state.rates[state.basis][field]=v>=0&&Number.isFinite(v)?v:0;save();render();});
   chipGroup('sortChips','sort','sort');chipGroup('saleChips','sale','sale');

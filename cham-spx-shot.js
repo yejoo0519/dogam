@@ -43,7 +43,7 @@
     files = Array.prototype.filter.call(files, function (f) { return /^image\//.test(f.type); });
     if (!files.length) return;
     S.spx.fold = false; applySpxFold();
-    var added = 0, miss = 0, base = S.spx.list.length;
+    var added = 0, miss = 0, base = S.spx.list.length, firstUid = null;
     for (var i = 0; i < files.length; i++) {
       say(T.reading(i + 1, files.length));
       await new Promise(function (r) { setTimeout(r, 0); });
@@ -55,13 +55,15 @@
           var x = mkSpirit();
           x.sp = r.opts.map(function (o) { return { stat: o.stat, type: o.type }; });
           x.memo = T.memo + ' ' + (base + (++added));
+          if (S.spx.mode === 'rd') x.rd = S.spx.addRd || 0;
+          if (!firstUid) firstUid = x.uid;
           S.spx.list.push(x);
         });
       } catch (e) { miss++; }
     }
     renderSpxList(); if (typeof renderSpxSetting === 'function') renderSpxSetting(); save();
     say(added ? T.done(added, miss) : T.none);
-    if (added) { var cards = document.querySelectorAll('.spx-card'); if (cards[base]) cards[base].scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+    if (added) { var card = document.querySelector('.spx-card[data-spx="' + firstUid + '"]'); if (card) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
   }
   fileIn.addEventListener('change', function () { handle(fileIn.files); fileIn.value = ''; });
   var page = document.getElementById('page-spx');

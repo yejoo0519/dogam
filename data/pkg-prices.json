@@ -68,12 +68,17 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 44400.0,
-    "currencyPct": 134.5,
-    "sangchoValue": 4500.0,
-    "knownPct": 148.2,
-    "marketCurrencyValue": 14059,
-    "marketCurrencyPct": 42.6
+    "shop": {
+     "value": 199940,
+     "gainPct": 505.9
+    },
+    "market": {
+     "value": 70619,
+     "gainPct": 114.0
+    },
+    "unpriced": [
+     "초월의 보석"
+    ]
    }
   },
   {
@@ -140,12 +145,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 44400.0,
-    "currencyPct": 134.5,
-    "sangchoValue": 4500.0,
-    "knownPct": 148.2,
-    "marketCurrencyValue": 14059,
-    "marketCurrencyPct": 42.6
+    "shop": {
+     "value": 204340,
+     "gainPct": 519.2
+    },
+    "market": {
+     "value": 72219,
+     "gainPct": 118.8
+    },
+    "unpriced": []
    }
   },
   {
@@ -216,12 +224,17 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 44400.0,
-    "currencyPct": 134.5,
-    "sangchoValue": 4500.0,
-    "knownPct": 148.2,
-    "marketCurrencyValue": 14059,
-    "marketCurrencyPct": 42.6
+    "shop": {
+     "value": 204340,
+     "gainPct": 519.2
+    },
+    "market": {
+     "value": 72219,
+     "gainPct": 118.8
+    },
+    "unpriced": [
+     "초월의 보석"
+    ]
    }
   },
   {
@@ -272,12 +285,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 40000.0,
-    "currencyPct": 181.8,
-    "sangchoValue": 0.0,
-    "knownPct": 181.8,
-    "marketCurrencyValue": 12459,
-    "marketCurrencyPct": 56.6
+    "shop": {
+     "value": 198400,
+     "gainPct": 801.8
+    },
+    "market": {
+     "value": 70059,
+     "gainPct": 218.5
+    },
+    "unpriced": []
    }
   },
   {
@@ -332,12 +348,17 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 63000.0,
-    "currencyPct": 128.6,
-    "sangchoValue": 4500.0,
-    "knownPct": 137.8,
-    "marketCurrencyValue": 19432,
-    "marketCurrencyPct": 39.7
+    "shop": {
+     "value": 213040,
+     "gainPct": 334.8
+    },
+    "market": {
+     "value": 73992,
+     "gainPct": 51.0
+    },
+    "unpriced": [
+     "강림 강화곤"
+    ]
    }
   },
   {
@@ -372,12 +393,18 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 0.0,
-    "currencyPct": 0.0,
-    "sangchoValue": 0.0,
-    "knownPct": 0.0,
-    "marketCurrencyValue": 0,
-    "marketCurrencyPct": 0.0
+    "shop": {
+     "value": 66000,
+     "gainPct": 100.0
+    },
+    "market": {
+     "value": 24000,
+     "gainPct": -27.3
+    },
+    "unpriced": [
+     "합성석",
+     "골드"
+    ]
    }
   },
   {
@@ -432,12 +459,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 44400.0,
-    "currencyPct": 134.5,
-    "sangchoValue": 4500.0,
-    "knownPct": 148.2,
-    "marketCurrencyValue": 14059,
-    "marketCurrencyPct": 42.6
+    "shop": {
+     "value": 199940,
+     "gainPct": 505.9
+    },
+    "market": {
+     "value": 70619,
+     "gainPct": 114.0
+    },
+    "unpriced": []
    }
   },
   {
@@ -496,12 +526,18 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 63000.0,
-    "currencyPct": 128.6,
-    "sangchoValue": 4500.0,
-    "knownPct": 137.8,
-    "marketCurrencyValue": 19432,
-    "marketCurrencyPct": 39.7
+    "shop": {
+     "value": 213040,
+     "gainPct": 334.8
+    },
+    "market": {
+     "value": 73992,
+     "gainPct": 51.0
+    },
+    "unpriced": [
+     "강림 강화곤",
+     "심판자 카스티그(강림 전용 장식)"
+    ]
    }
   },
   {
@@ -564,12 +600,57 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 44400.0,
-    "currencyPct": 134.5,
-    "sangchoValue": 4500.0,
-    "knownPct": 148.2,
-    "marketCurrencyValue": 14059,
-    "marketCurrencyPct": 42.6
+    "shop": {
+     "value": 204340,
+     "gainPct": 519.2
+    },
+    "market": {
+     "value": 72219,
+     "gainPct": 118.8
+    },
+    "unpriced": [
+     "초월의 보석"
+    ]
+   }
+  },
+  {
+   "noticeIds": [
+    21369
+   ],
+   "noticeDate": "2026-06-30",
+   "url": "https://www.dragonvillage.net/notice/21369",
+   "name": "이벤트 정령 패키지",
+   "price": 33000,
+   "limit": "10",
+   "noticeSalePeriods": [],
+   "items": [
+    {
+     "name": "고급 정령 뽑기권",
+     "qty": 15
+    },
+    {
+     "name": "정령 10+1 뽑기권",
+     "qty": 3
+    },
+    {
+     "name": "디바인 스톤",
+     "qty": 3200
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "shop": {
+     "value": 165000,
+     "gainPct": 400.0
+    },
+    "market": {
+     "value": 60000,
+     "gainPct": 81.8
+    },
+    "unpriced": [
+     "고급 정령 뽑기권",
+     "디바인 스톤"
+    ]
    }
   },
   {
@@ -630,12 +711,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 40000.0,
-    "currencyPct": 181.8,
-    "sangchoValue": 3000.0,
-    "knownPct": 195.5,
-    "marketCurrencyValue": 12459,
-    "marketCurrencyPct": 56.6
+    "shop": {
+     "value": 206760,
+     "gainPct": 839.8
+    },
+    "market": {
+     "value": 73099,
+     "gainPct": 232.3
+    },
+    "unpriced": []
    }
   },
   {
@@ -690,12 +774,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 40000.0,
-    "currencyPct": 181.8,
-    "sangchoValue": 3000.0,
-    "knownPct": 195.5,
-    "marketCurrencyValue": 12459,
-    "marketCurrencyPct": 56.6
+    "shop": {
+     "value": 206760,
+     "gainPct": 839.8
+    },
+    "market": {
+     "value": 73099,
+     "gainPct": 232.3
+    },
+    "unpriced": []
    }
   },
   {
@@ -758,12 +845,17 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 44400.0,
-    "currencyPct": 134.5,
-    "sangchoValue": 4500.0,
-    "knownPct": 148.2,
-    "marketCurrencyValue": 14059,
-    "marketCurrencyPct": 42.6
+    "shop": {
+     "value": 204340,
+     "gainPct": 519.2
+    },
+    "market": {
+     "value": 72219,
+     "gainPct": 118.8
+    },
+    "unpriced": [
+     "초월의 보석"
+    ]
    }
   },
   {
@@ -822,12 +914,17 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 44400.0,
-    "currencyPct": 134.5,
-    "sangchoValue": 4500.0,
-    "knownPct": 148.2,
-    "marketCurrencyValue": 14059,
-    "marketCurrencyPct": 42.6
+    "shop": {
+     "value": 199940,
+     "gainPct": 505.9
+    },
+    "market": {
+     "value": 70619,
+     "gainPct": 114.0
+    },
+    "unpriced": [
+     "초월의 보석"
+    ]
    }
   },
   {
@@ -886,12 +983,17 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 44400.0,
-    "currencyPct": 134.5,
-    "sangchoValue": 4500.0,
-    "knownPct": 148.2,
-    "marketCurrencyValue": 14059,
-    "marketCurrencyPct": 42.6
+    "shop": {
+     "value": 199940,
+     "gainPct": 505.9
+    },
+    "market": {
+     "value": 70619,
+     "gainPct": 114.0
+    },
+    "unpriced": [
+     "초월의 보석"
+    ]
    }
   },
   {
@@ -950,12 +1052,17 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 44400.0,
-    "currencyPct": 134.5,
-    "sangchoValue": 4500.0,
-    "knownPct": 148.2,
-    "marketCurrencyValue": 14059,
-    "marketCurrencyPct": 42.6
+    "shop": {
+     "value": 199940,
+     "gainPct": 505.9
+    },
+    "market": {
+     "value": 70619,
+     "gainPct": 114.0
+    },
+    "unpriced": [
+     "초월의 보석"
+    ]
    }
   },
   {
@@ -1020,12 +1127,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 40000.0,
-    "currencyPct": 181.8,
-    "sangchoValue": 3000.0,
-    "knownPct": 195.5,
-    "marketCurrencyValue": 12459,
-    "marketCurrencyPct": 56.6
+    "shop": {
+     "value": 206760,
+     "gainPct": 839.8
+    },
+    "market": {
+     "value": 73099,
+     "gainPct": 232.3
+    },
+    "unpriced": []
    }
   },
   {
@@ -1090,12 +1200,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 40000.0,
-    "currencyPct": 181.8,
-    "sangchoValue": 3000.0,
-    "knownPct": 195.5,
-    "marketCurrencyValue": 12459,
-    "marketCurrencyPct": 56.6
+    "shop": {
+     "value": 206760,
+     "gainPct": 839.8
+    },
+    "market": {
+     "value": 73099,
+     "gainPct": 232.3
+    },
+    "unpriced": []
    }
   },
   {
@@ -1160,12 +1273,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 40000.0,
-    "currencyPct": 181.8,
-    "sangchoValue": 3000.0,
-    "knownPct": 195.5,
-    "marketCurrencyValue": 12459,
-    "marketCurrencyPct": 56.6
+    "shop": {
+     "value": 206760,
+     "gainPct": 839.8
+    },
+    "market": {
+     "value": 73099,
+     "gainPct": 232.3
+    },
+    "unpriced": []
    }
   },
   {
@@ -1228,12 +1344,17 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 44400.0,
-    "currencyPct": 134.5,
-    "sangchoValue": 4500.0,
-    "knownPct": 148.2,
-    "marketCurrencyValue": 14059,
-    "marketCurrencyPct": 42.6
+    "shop": {
+     "value": 204340,
+     "gainPct": 519.2
+    },
+    "market": {
+     "value": 72219,
+     "gainPct": 118.8
+    },
+    "unpriced": [
+     "초월의 보석"
+    ]
    }
   },
   {
@@ -1312,12 +1433,23 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 37000.0,
-    "currencyPct": 168.2,
-    "sangchoValue": 0.0,
-    "knownPct": 168.2,
-    "marketCurrencyValue": 11716,
-    "marketCurrencyPct": 53.3
+    "shop": {
+     "value": 109600,
+     "gainPct": 398.2
+    },
+    "market": {
+     "value": 38116,
+     "gainPct": 73.3
+    },
+    "unpriced": [
+     "골드",
+     "합성석",
+     "강철의 망치",
+     "마법의 망치",
+     "꿈의 공격 +34",
+     "꿈의 방어 +34",
+     "꿈의 체력 +136"
+    ]
    }
   },
   {
@@ -1372,12 +1504,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 32600.0,
-    "currencyPct": 148.2,
-    "sangchoValue": 3000.0,
-    "knownPct": 161.8,
-    "marketCurrencyValue": 10116,
-    "marketCurrencyPct": 46.0
+    "shop": {
+     "value": 155360,
+     "gainPct": 606.2
+    },
+    "market": {
+     "value": 54756,
+     "gainPct": 148.9
+    },
+    "unpriced": []
    }
   },
   {
@@ -1460,12 +1595,23 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 14000.0,
-    "currencyPct": 116.7,
-    "sangchoValue": 0.0,
-    "knownPct": 116.7,
-    "marketCurrencyValue": 4743,
-    "marketCurrencyPct": 39.5
+    "shop": {
+     "value": 65700,
+     "gainPct": 447.5
+    },
+    "market": {
+     "value": 23543,
+     "gainPct": 96.2
+    },
+    "unpriced": [
+     "골드",
+     "합성석",
+     "강철의 망치",
+     "마법의 망치",
+     "꿈의 공격 +34",
+     "꿈의 방어 +34",
+     "꿈의 체력 +136"
+    ]
    }
   },
   {
@@ -1520,12 +1666,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 40000.0,
-    "currencyPct": 121.2,
-    "sangchoValue": 3000.0,
-    "knownPct": 130.3,
-    "marketCurrencyValue": 12459,
-    "marketCurrencyPct": 37.8
+    "shop": {
+     "value": 129760,
+     "gainPct": 293.2
+    },
+    "market": {
+     "value": 45099,
+     "gainPct": 36.7
+    },
+    "unpriced": []
    }
   },
   {
@@ -1588,12 +1737,17 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 44400.0,
-    "currencyPct": 134.5,
-    "sangchoValue": 4500.0,
-    "knownPct": 148.2,
-    "marketCurrencyValue": 14059,
-    "marketCurrencyPct": 42.6
+    "shop": {
+     "value": 204340,
+     "gainPct": 519.2
+    },
+    "market": {
+     "value": 72219,
+     "gainPct": 118.8
+    },
+    "unpriced": [
+     "초월의 보석"
+    ]
    }
   },
   {
@@ -1636,12 +1790,18 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 22000.0,
-    "currencyPct": 40.0,
-    "sangchoValue": 0.0,
-    "knownPct": 40.0,
-    "marketCurrencyValue": 8000,
-    "marketCurrencyPct": 14.5
+    "shop": {
+     "value": 110000,
+     "gainPct": 100.0
+    },
+    "market": {
+     "value": 40000,
+     "gainPct": -27.3
+    },
+    "unpriced": [
+     "아르하의 정수(속성별)",
+     "강림 강화곤"
+    ]
    }
   },
   {
@@ -1680,12 +1840,17 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 22000.0,
-    "currencyPct": 66.7,
-    "sangchoValue": 0.0,
-    "knownPct": 66.7,
-    "marketCurrencyValue": 8000,
-    "marketCurrencyPct": 24.2
+    "shop": {
+     "value": 110000,
+     "gainPct": 233.3
+    },
+    "market": {
+     "value": 40000,
+     "gainPct": 21.2
+    },
+    "unpriced": [
+     "아르하의 정수(속성별)"
+    ]
    }
   },
   {
@@ -1740,12 +1905,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 40000.0,
-    "currencyPct": 181.8,
-    "sangchoValue": 3000.0,
-    "knownPct": 195.5,
-    "marketCurrencyValue": 12459,
-    "marketCurrencyPct": 56.6
+    "shop": {
+     "value": 206760,
+     "gainPct": 839.8
+    },
+    "market": {
+     "value": 73099,
+     "gainPct": 232.3
+    },
+    "unpriced": []
    }
   },
   {
@@ -1780,12 +1948,18 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 0.0,
-    "currencyPct": 0.0,
-    "sangchoValue": 0.0,
-    "knownPct": 0.0,
-    "marketCurrencyValue": 0,
-    "marketCurrencyPct": 0.0
+    "shop": {
+     "value": 0,
+     "gainPct": -100.0
+    },
+    "market": {
+     "value": 0,
+     "gainPct": -100.0
+    },
+    "unpriced": [
+     "축복의 보석",
+     "골드"
+    ]
    }
   },
   {
@@ -1848,12 +2022,17 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 23600.0,
-    "currencyPct": 196.7,
-    "sangchoValue": 0.0,
-    "knownPct": 196.7,
-    "marketCurrencyValue": 7886,
-    "marketCurrencyPct": 65.7
+    "shop": {
+     "value": 243600,
+     "gainPct": 1930.0
+    },
+    "market": {
+     "value": 87886,
+     "gainPct": 632.4
+    },
+    "unpriced": [
+     "축복 받은 부화기"
+    ]
    }
   },
   {
@@ -1908,12 +2087,17 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 23600.0,
-    "currencyPct": 196.7,
-    "sangchoValue": 0.0,
-    "knownPct": 196.7,
-    "marketCurrencyValue": 7886,
-    "marketCurrencyPct": 65.7
+    "shop": {
+     "value": 243600,
+     "gainPct": 1930.0
+    },
+    "market": {
+     "value": 87886,
+     "gainPct": 632.4
+    },
+    "unpriced": [
+     "축복 받은 부화기"
+    ]
    }
   },
   {
@@ -1996,12 +2180,23 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 14000.0,
-    "currencyPct": 116.7,
-    "sangchoValue": 0.0,
-    "knownPct": 116.7,
-    "marketCurrencyValue": 4743,
-    "marketCurrencyPct": 39.5
+    "shop": {
+     "value": 65700,
+     "gainPct": 447.5
+    },
+    "market": {
+     "value": 23543,
+     "gainPct": 96.2
+    },
+    "unpriced": [
+     "골드",
+     "합성석",
+     "강철의 망치",
+     "마법의 망치",
+     "꿈의 공격 +34",
+     "꿈의 방어 +34",
+     "꿈의 체력 +136"
+    ]
    }
   },
   {
@@ -2060,12 +2255,17 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 74000.0,
-    "currencyPct": 93.7,
-    "sangchoValue": 3000.0,
-    "knownPct": 97.5,
-    "marketCurrencyValue": 23432,
-    "marketCurrencyPct": 29.7
+    "shop": {
+     "value": 273760,
+     "gainPct": 246.5
+    },
+    "market": {
+     "value": 96072,
+     "gainPct": 21.6
+    },
+    "unpriced": [
+     "강림 강화곤"
+    ]
    }
   },
   {
@@ -2128,12 +2328,17 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 44400.0,
-    "currencyPct": 134.5,
-    "sangchoValue": 4500.0,
-    "knownPct": 148.2,
-    "marketCurrencyValue": 14059,
-    "marketCurrencyPct": 42.6
+    "shop": {
+     "value": 204340,
+     "gainPct": 519.2
+    },
+    "market": {
+     "value": 72219,
+     "gainPct": 118.8
+    },
+    "unpriced": [
+     "초월의 보석"
+    ]
    }
   },
   {
@@ -2188,12 +2393,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 18000.0,
-    "currencyPct": 54.5,
-    "sangchoValue": 3000.0,
-    "knownPct": 63.6,
-    "marketCurrencyValue": 4459,
-    "marketCurrencyPct": 13.5
+    "shop": {
+     "value": 211160,
+     "gainPct": 539.9
+    },
+    "market": {
+     "value": 74699,
+     "gainPct": 126.4
+    },
+    "unpriced": []
    }
   },
   {
@@ -2248,12 +2456,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 40000.0,
-    "currencyPct": 181.8,
-    "sangchoValue": 3000.0,
-    "knownPct": 195.5,
-    "marketCurrencyValue": 12459,
-    "marketCurrencyPct": 56.6
+    "shop": {
+     "value": 206760,
+     "gainPct": 839.8
+    },
+    "market": {
+     "value": 73099,
+     "gainPct": 232.3
+    },
+    "unpriced": []
    }
   },
   {
@@ -2312,12 +2523,18 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 63000.0,
-    "currencyPct": 128.6,
-    "sangchoValue": 4500.0,
-    "knownPct": 137.8,
-    "marketCurrencyValue": 19432,
-    "marketCurrencyPct": 39.7
+    "shop": {
+     "value": 213040,
+     "gainPct": 334.8
+    },
+    "market": {
+     "value": 73992,
+     "gainPct": 51.0
+    },
+    "unpriced": [
+     "강림 강화곤",
+     "강림 전용 장식"
+    ]
    }
   },
   {
@@ -2368,12 +2585,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 26000.0,
-    "currencyPct": 118.2,
-    "sangchoValue": 0.0,
-    "knownPct": 118.2,
-    "marketCurrencyValue": 7716,
-    "marketCurrencyPct": 35.1
+    "shop": {
+     "value": 109600,
+     "gainPct": 398.2
+    },
+    "market": {
+     "value": 38116,
+     "gainPct": 73.3
+    },
+    "unpriced": []
    }
   },
   {
@@ -2436,12 +2656,17 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 40000.0,
-    "currencyPct": 121.2,
-    "sangchoValue": 3000.0,
-    "knownPct": 130.3,
-    "marketCurrencyValue": 12459,
-    "marketCurrencyPct": 37.8
+    "shop": {
+     "value": 104460,
+     "gainPct": 216.5
+    },
+    "market": {
+     "value": 35899,
+     "gainPct": 8.8
+    },
+    "unpriced": [
+     "초월의 보석"
+    ]
    }
   },
   {
@@ -2504,12 +2729,17 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 40000.0,
-    "currencyPct": 121.2,
-    "sangchoValue": 3000.0,
-    "knownPct": 130.3,
-    "marketCurrencyValue": 12459,
-    "marketCurrencyPct": 37.8
+    "shop": {
+     "value": 104460,
+     "gainPct": 216.5
+    },
+    "market": {
+     "value": 35899,
+     "gainPct": 8.8
+    },
+    "unpriced": [
+     "초월의 보석"
+    ]
    }
   },
   {
@@ -2560,12 +2790,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 31200.0,
-    "currencyPct": 141.8,
-    "sangchoValue": 0.0,
-    "knownPct": 141.8,
-    "marketCurrencyValue": 9259,
-    "marketCurrencyPct": 42.1
+    "shop": {
+     "value": 114800,
+     "gainPct": 421.8
+    },
+    "market": {
+     "value": 39659,
+     "gainPct": 80.3
+    },
+    "unpriced": []
    }
   },
   {
@@ -2616,12 +2849,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 31200.0,
-    "currencyPct": 141.8,
-    "sangchoValue": 0.0,
-    "knownPct": 141.8,
-    "marketCurrencyValue": 9259,
-    "marketCurrencyPct": 42.1
+    "shop": {
+     "value": 114800,
+     "gainPct": 421.8
+    },
+    "market": {
+     "value": 39659,
+     "gainPct": 80.3
+    },
+    "unpriced": []
    }
   },
   {
@@ -2676,12 +2912,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 40000.0,
-    "currencyPct": 121.2,
-    "sangchoValue": 3000.0,
-    "knownPct": 130.3,
-    "marketCurrencyValue": 12459,
-    "marketCurrencyPct": 37.8
+    "shop": {
+     "value": 129760,
+     "gainPct": 293.2
+    },
+    "market": {
+     "value": 45099,
+     "gainPct": 36.7
+    },
+    "unpriced": []
    }
   },
   {
@@ -2732,12 +2971,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 26000.0,
-    "currencyPct": 118.2,
-    "sangchoValue": 0.0,
-    "knownPct": 118.2,
-    "marketCurrencyValue": 7716,
-    "marketCurrencyPct": 35.1
+    "shop": {
+     "value": 109600,
+     "gainPct": 398.2
+    },
+    "market": {
+     "value": 38116,
+     "gainPct": 73.3
+    },
+    "unpriced": []
    }
   },
   {
@@ -2796,12 +3038,18 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 63000.0,
-    "currencyPct": 114.5,
-    "sangchoValue": 3000.0,
-    "knownPct": 120.0,
-    "marketCurrencyValue": 19432,
-    "marketCurrencyPct": 35.3
+    "shop": {
+     "value": 174760,
+     "gainPct": 217.7
+    },
+    "market": {
+     "value": 60072,
+     "gainPct": 9.2
+    },
+    "unpriced": [
+     "렉스톤",
+     "강림 강화곤"
+    ]
    }
   },
   {
@@ -2856,12 +3104,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 40000.0,
-    "currencyPct": 121.2,
-    "sangchoValue": 3000.0,
-    "knownPct": 130.3,
-    "marketCurrencyValue": 12459,
-    "marketCurrencyPct": 37.8
+    "shop": {
+     "value": 129760,
+     "gainPct": 293.2
+    },
+    "market": {
+     "value": 45099,
+     "gainPct": 36.7
+    },
+    "unpriced": []
    }
   },
   {
@@ -2912,12 +3163,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 26000.0,
-    "currencyPct": 118.2,
-    "sangchoValue": 0.0,
-    "knownPct": 118.2,
-    "marketCurrencyValue": 7716,
-    "marketCurrencyPct": 35.1
+    "shop": {
+     "value": 109600,
+     "gainPct": 398.2
+    },
+    "market": {
+     "value": 38116,
+     "gainPct": 73.3
+    },
+    "unpriced": []
    }
   },
   {
@@ -2996,12 +3250,23 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 37000.0,
-    "currencyPct": 168.2,
-    "sangchoValue": 0.0,
-    "knownPct": 168.2,
-    "marketCurrencyValue": 11716,
-    "marketCurrencyPct": 53.3
+    "shop": {
+     "value": 109600,
+     "gainPct": 398.2
+    },
+    "market": {
+     "value": 38116,
+     "gainPct": 73.3
+    },
+    "unpriced": [
+     "골드",
+     "강철의 망치",
+     "마법의 망치",
+     "합성석",
+     "꿈의 공격 +34",
+     "꿈의 방어 +34",
+     "꿈의 체력 +136"
+    ]
    }
   },
   {
@@ -3064,12 +3329,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 40000.0,
-    "currencyPct": 121.2,
-    "sangchoValue": 3000.0,
-    "knownPct": 130.3,
-    "marketCurrencyValue": 12459,
-    "marketCurrencyPct": 37.8
+    "shop": {
+     "value": 129760,
+     "gainPct": 293.2
+    },
+    "market": {
+     "value": 45099,
+     "gainPct": 36.7
+    },
+    "unpriced": []
    }
   },
   {
@@ -3152,12 +3420,23 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 14000.0,
-    "currencyPct": 116.7,
-    "sangchoValue": 0.0,
-    "knownPct": 116.7,
-    "marketCurrencyValue": 4743,
-    "marketCurrencyPct": 39.5
+    "shop": {
+     "value": 65700,
+     "gainPct": 447.5
+    },
+    "market": {
+     "value": 23543,
+     "gainPct": 96.2
+    },
+    "unpriced": [
+     "골드",
+     "강철의 망치",
+     "마법의 망치",
+     "합성석",
+     "꿈의 공격 +33",
+     "꿈의 방어 +33",
+     "꿈의 체력 +132"
+    ]
    }
   },
   {
@@ -3208,12 +3487,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 26000.0,
-    "currencyPct": 118.2,
-    "sangchoValue": 0.0,
-    "knownPct": 118.2,
-    "marketCurrencyValue": 7716,
-    "marketCurrencyPct": 35.1
+    "shop": {
+     "value": 109600,
+     "gainPct": 398.2
+    },
+    "market": {
+     "value": 38116,
+     "gainPct": 73.3
+    },
+    "unpriced": []
    }
   },
   {
@@ -3288,12 +3570,18 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 40000.0,
-    "currencyPct": 121.2,
-    "sangchoValue": 4500.0,
-    "knownPct": 134.8,
-    "marketCurrencyValue": 12459,
-    "marketCurrencyPct": 37.8
+    "shop": {
+     "value": 109740,
+     "gainPct": 232.5
+    },
+    "market": {
+     "value": 37819,
+     "gainPct": 14.6
+    },
+    "unpriced": [
+     "중급 강화의 정수",
+     "상급 강화의 정수"
+    ]
    }
   },
   {
@@ -3356,12 +3644,17 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 63000.0,
-    "currencyPct": 128.6,
-    "sangchoValue": 3000.0,
-    "knownPct": 134.7,
-    "marketCurrencyValue": 19432,
-    "marketCurrencyPct": 39.7
+    "shop": {
+     "value": 218760,
+     "gainPct": 346.4
+    },
+    "market": {
+     "value": 76072,
+     "gainPct": 55.2
+    },
+    "unpriced": [
+     "강림 강화곤"
+    ]
    }
   },
   {
@@ -3412,12 +3705,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 26000.0,
-    "currencyPct": 118.2,
-    "sangchoValue": 0.0,
-    "knownPct": 118.2,
-    "marketCurrencyValue": 7716,
-    "marketCurrencyPct": 35.1
+    "shop": {
+     "value": 109600,
+     "gainPct": 398.2
+    },
+    "market": {
+     "value": 38116,
+     "gainPct": 73.3
+    },
+    "unpriced": []
    }
   },
   {
@@ -3480,12 +3776,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 40000.0,
-    "currencyPct": 121.2,
-    "sangchoValue": 3000.0,
-    "knownPct": 130.3,
-    "marketCurrencyValue": 12459,
-    "marketCurrencyPct": 37.8
+    "shop": {
+     "value": 129760,
+     "gainPct": 293.2
+    },
+    "market": {
+     "value": 45099,
+     "gainPct": 36.7
+    },
+    "unpriced": []
    }
   },
   {
@@ -3548,12 +3847,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 40000.0,
-    "currencyPct": 121.2,
-    "sangchoValue": 3000.0,
-    "knownPct": 130.3,
-    "marketCurrencyValue": 12459,
-    "marketCurrencyPct": 37.8
+    "shop": {
+     "value": 129760,
+     "gainPct": 293.2
+    },
+    "market": {
+     "value": 45099,
+     "gainPct": 36.7
+    },
+    "unpriced": []
    }
   },
   {
@@ -3616,12 +3918,17 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 63000.0,
-    "currencyPct": 128.6,
-    "sangchoValue": 3000.0,
-    "knownPct": 134.7,
-    "marketCurrencyValue": 19432,
-    "marketCurrencyPct": 39.7
+    "shop": {
+     "value": 152760,
+     "gainPct": 211.8
+    },
+    "market": {
+     "value": 52072,
+     "gainPct": 6.3
+    },
+    "unpriced": [
+     "강림 강화곤"
+    ]
    }
   },
   {
@@ -3684,12 +3991,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 40000.0,
-    "currencyPct": 121.2,
-    "sangchoValue": 3000.0,
-    "knownPct": 130.3,
-    "marketCurrencyValue": 12459,
-    "marketCurrencyPct": 37.8
+    "shop": {
+     "value": 129760,
+     "gainPct": 293.2
+    },
+    "market": {
+     "value": 45099,
+     "gainPct": 36.7
+    },
+    "unpriced": []
    }
   },
   {
@@ -3760,12 +4070,17 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 40000.0,
-    "currencyPct": 121.2,
-    "sangchoValue": 3000.0,
-    "knownPct": 130.3,
-    "marketCurrencyValue": 12459,
-    "marketCurrencyPct": 37.8
+    "shop": {
+     "value": 104460,
+     "gainPct": 216.5
+    },
+    "market": {
+     "value": 35899,
+     "gainPct": 8.8
+    },
+    "unpriced": [
+     "초월의 보석"
+    ]
    }
   },
   {
@@ -3838,12 +4153,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 26000.0,
-    "currencyPct": 118.2,
-    "sangchoValue": 3000.0,
-    "knownPct": 131.8,
-    "marketCurrencyValue": 7716,
-    "marketCurrencyPct": 35.1
+    "shop": {
+     "value": 115760,
+     "gainPct": 426.2
+    },
+    "market": {
+     "value": 40356,
+     "gainPct": 83.4
+    },
+    "unpriced": []
    }
   },
   {
@@ -3916,12 +4234,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 26000.0,
-    "currencyPct": 118.2,
-    "sangchoValue": 3000.0,
-    "knownPct": 131.8,
-    "marketCurrencyValue": 7716,
-    "marketCurrencyPct": 35.1
+    "shop": {
+     "value": 115760,
+     "gainPct": 426.2
+    },
+    "market": {
+     "value": 40356,
+     "gainPct": 83.4
+    },
+    "unpriced": []
    }
   },
   {
@@ -3994,12 +4315,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 26000.0,
-    "currencyPct": 118.2,
-    "sangchoValue": 3000.0,
-    "knownPct": 131.8,
-    "marketCurrencyValue": 7716,
-    "marketCurrencyPct": 35.1
+    "shop": {
+     "value": 115760,
+     "gainPct": 426.2
+    },
+    "market": {
+     "value": 40356,
+     "gainPct": 83.4
+    },
+    "unpriced": []
    }
   },
   {
@@ -4078,12 +4402,18 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 40000.0,
-    "currencyPct": 121.2,
-    "sangchoValue": 3000.0,
-    "knownPct": 130.3,
-    "marketCurrencyValue": 12459,
-    "marketCurrencyPct": 37.8
+    "shop": {
+     "value": 137460,
+     "gainPct": 316.5
+    },
+    "market": {
+     "value": 47899,
+     "gainPct": 45.1
+    },
+    "unpriced": [
+     "중급 강화의 정수",
+     "상급 강화의 정수"
+    ]
    }
   },
   {
@@ -4146,12 +4476,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 26000.0,
-    "currencyPct": 118.2,
-    "sangchoValue": 3000.0,
-    "knownPct": 131.8,
-    "marketCurrencyValue": 7716,
-    "marketCurrencyPct": 35.1
+    "shop": {
+     "value": 115760,
+     "gainPct": 426.2
+    },
+    "market": {
+     "value": 40356,
+     "gainPct": 83.4
+    },
+    "unpriced": []
    }
   },
   {
@@ -4214,12 +4547,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 40000.0,
-    "currencyPct": 121.2,
-    "sangchoValue": 3000.0,
-    "knownPct": 130.3,
-    "marketCurrencyValue": 12459,
-    "marketCurrencyPct": 37.8
+    "shop": {
+     "value": 129760,
+     "gainPct": 293.2
+    },
+    "market": {
+     "value": 45099,
+     "gainPct": 36.7
+    },
+    "unpriced": []
    }
   },
   {
@@ -4298,12 +4634,18 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 40000.0,
-    "currencyPct": 121.2,
-    "sangchoValue": 3000.0,
-    "knownPct": 130.3,
-    "marketCurrencyValue": 12459,
-    "marketCurrencyPct": 37.8
+    "shop": {
+     "value": 137460,
+     "gainPct": 316.5
+    },
+    "market": {
+     "value": 47899,
+     "gainPct": 45.1
+    },
+    "unpriced": [
+     "중급 강화의 정수",
+     "상급 강화의 정수"
+    ]
    }
   },
   {
@@ -4366,12 +4708,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 40000.0,
-    "currencyPct": 121.2,
-    "sangchoValue": 3000.0,
-    "knownPct": 130.3,
-    "marketCurrencyValue": 12459,
-    "marketCurrencyPct": 37.8
+    "shop": {
+     "value": 129760,
+     "gainPct": 293.2
+    },
+    "market": {
+     "value": 45099,
+     "gainPct": 36.7
+    },
+    "unpriced": []
    }
   },
   {
@@ -4491,12 +4836,23 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 14000.0,
-    "currencyPct": 116.7,
-    "sangchoValue": 0.0,
-    "knownPct": 116.7,
-    "marketCurrencyValue": 4743,
-    "marketCurrencyPct": 39.5
+    "shop": {
+     "value": 64600,
+     "gainPct": 438.3
+    },
+    "market": {
+     "value": 23143,
+     "gainPct": 92.9
+    },
+    "unpriced": [
+     "골드",
+     "강철의 망치",
+     "마법의 망치",
+     "합성석",
+     "꿈의 공격 +34",
+     "꿈의 방어 +34",
+     "꿈의 체력 +136"
+    ]
    }
   },
   {
@@ -4600,12 +4956,23 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 37000.0,
-    "currencyPct": 168.2,
-    "sangchoValue": 0.0,
-    "knownPct": 168.2,
-    "marketCurrencyValue": 11716,
-    "marketCurrencyPct": 53.3
+    "shop": {
+     "value": 109600,
+     "gainPct": 398.2
+    },
+    "market": {
+     "value": 38116,
+     "gainPct": 73.3
+    },
+    "unpriced": [
+     "골드",
+     "강철의 망치",
+     "마법의 망치",
+     "합성석",
+     "꿈의 공격 +34",
+     "꿈의 방어 +34",
+     "꿈의 체력 +136"
+    ]
    }
   },
   {
@@ -4688,12 +5055,23 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 14000.0,
-    "currencyPct": 116.7,
-    "sangchoValue": 0.0,
-    "knownPct": 116.7,
-    "marketCurrencyValue": 4743,
-    "marketCurrencyPct": 39.5
+    "shop": {
+     "value": 65700,
+     "gainPct": 447.5
+    },
+    "market": {
+     "value": 23543,
+     "gainPct": 96.2
+    },
+    "unpriced": [
+     "골드",
+     "합성석",
+     "꿈의 공격 +33",
+     "꿈의 방어 +33",
+     "꿈의 체력 +132",
+     "강철의 망치",
+     "마법의 망치"
+    ]
    }
   },
   {
@@ -4749,12 +5127,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 37000.0,
-    "currencyPct": 168.2,
-    "sangchoValue": 4500.0,
-    "knownPct": 188.6,
-    "marketCurrencyValue": 11716,
-    "marketCurrencyPct": 53.3
+    "shop": {
+     "value": 94640,
+     "gainPct": 330.2
+    },
+    "market": {
+     "value": 32676,
+     "gainPct": 48.5
+    },
+    "unpriced": []
    }
   },
   {
@@ -4810,12 +5191,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 37000.0,
-    "currencyPct": 168.2,
-    "sangchoValue": 4500.0,
-    "knownPct": 188.6,
-    "marketCurrencyValue": 11716,
-    "marketCurrencyPct": 53.3
+    "shop": {
+     "value": 94640,
+     "gainPct": 330.2
+    },
+    "market": {
+     "value": 32676,
+     "gainPct": 48.5
+    },
+    "unpriced": []
    }
   },
   {
@@ -4878,12 +5262,17 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 40000.0,
-    "currencyPct": 121.2,
-    "sangchoValue": 3000.0,
-    "knownPct": 130.3,
-    "marketCurrencyValue": 12459,
-    "marketCurrencyPct": 37.8
+    "shop": {
+     "value": 104460,
+     "gainPct": 216.5
+    },
+    "market": {
+     "value": 35899,
+     "gainPct": 8.8
+    },
+    "unpriced": [
+     "초월의 보석"
+    ]
    }
   },
   {
@@ -4946,12 +5335,17 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 40000.0,
-    "currencyPct": 121.2,
-    "sangchoValue": 3000.0,
-    "knownPct": 130.3,
-    "marketCurrencyValue": 12459,
-    "marketCurrencyPct": 37.8
+    "shop": {
+     "value": 104460,
+     "gainPct": 216.5
+    },
+    "market": {
+     "value": 35899,
+     "gainPct": 8.8
+    },
+    "unpriced": [
+     "초월의 보석"
+    ]
    }
   },
   {
@@ -5014,12 +5408,17 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 40000.0,
-    "currencyPct": 121.2,
-    "sangchoValue": 3000.0,
-    "knownPct": 130.3,
-    "marketCurrencyValue": 12459,
-    "marketCurrencyPct": 37.8
+    "shop": {
+     "value": 104460,
+     "gainPct": 216.5
+    },
+    "market": {
+     "value": 35899,
+     "gainPct": 8.8
+    },
+    "unpriced": [
+     "초월의 보석"
+    ]
    }
   },
   {
@@ -5082,12 +5481,17 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 40000.0,
-    "currencyPct": 121.2,
-    "sangchoValue": 3000.0,
-    "knownPct": 130.3,
-    "marketCurrencyValue": 12459,
-    "marketCurrencyPct": 37.8
+    "shop": {
+     "value": 104460,
+     "gainPct": 216.5
+    },
+    "market": {
+     "value": 35899,
+     "gainPct": 8.8
+    },
+    "unpriced": [
+     "초월의 보석"
+    ]
    }
   },
   {
@@ -5134,12 +5538,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 31000.0,
-    "currencyPct": 140.9,
-    "sangchoValue": 0.0,
-    "knownPct": 140.9,
-    "marketCurrencyValue": 10230,
-    "marketCurrencyPct": 46.5
+    "shop": {
+     "value": 110200,
+     "gainPct": 400.9
+    },
+    "market": {
+     "value": 39030,
+     "gainPct": 77.4
+    },
+    "unpriced": []
    }
   },
   {
@@ -5194,12 +5601,17 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 15000.0,
-    "currencyPct": 45.5,
-    "sangchoValue": 4500.0,
-    "knownPct": 59.1,
-    "marketCurrencyValue": 3716,
-    "marketCurrencyPct": 11.3
+    "shop": {
+     "value": 103440,
+     "gainPct": 213.5
+    },
+    "market": {
+     "value": 35876,
+     "gainPct": 8.7
+    },
+    "unpriced": [
+     "초월의 보석"
+    ]
    }
   },
   {
@@ -5251,12 +5663,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 31000.0,
-    "currencyPct": 140.9,
-    "sangchoValue": 0.0,
-    "knownPct": 140.9,
-    "marketCurrencyValue": 10230,
-    "marketCurrencyPct": 46.5
+    "shop": {
+     "value": 110200,
+     "gainPct": 400.9
+    },
+    "market": {
+     "value": 39030,
+     "gainPct": 77.4
+    },
+    "unpriced": []
    }
   },
   {
@@ -5308,12 +5723,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 31000.0,
-    "currencyPct": 140.9,
-    "sangchoValue": 0.0,
-    "knownPct": 140.9,
-    "marketCurrencyValue": 10230,
-    "marketCurrencyPct": 46.5
+    "shop": {
+     "value": 110200,
+     "gainPct": 400.9
+    },
+    "market": {
+     "value": 39030,
+     "gainPct": 77.4
+    },
+    "unpriced": []
    }
   },
   {
@@ -5368,12 +5786,17 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 74000.0,
-    "currencyPct": 93.7,
-    "sangchoValue": 0.0,
-    "knownPct": 93.7,
-    "marketCurrencyValue": 23432,
-    "marketCurrencyPct": 29.7
+    "shop": {
+     "value": 263200,
+     "gainPct": 233.2
+    },
+    "market": {
+     "value": 92232,
+     "gainPct": 16.7
+    },
+    "unpriced": [
+     "강림 강화곤"
+    ]
    }
   },
   {
@@ -5436,12 +5859,17 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 40000.0,
-    "currencyPct": 121.2,
-    "sangchoValue": 3000.0,
-    "knownPct": 130.3,
-    "marketCurrencyValue": 12459,
-    "marketCurrencyPct": 37.8
+    "shop": {
+     "value": 104460,
+     "gainPct": 216.5
+    },
+    "market": {
+     "value": 35899,
+     "gainPct": 8.8
+    },
+    "unpriced": [
+     "초월의 보석"
+    ]
    }
   },
   {
@@ -5558,12 +5986,17 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 40000.0,
-    "currencyPct": 121.2,
-    "sangchoValue": 3000.0,
-    "knownPct": 130.3,
-    "marketCurrencyValue": 12459,
-    "marketCurrencyPct": 37.8
+    "shop": {
+     "value": 104460,
+     "gainPct": 216.5
+    },
+    "market": {
+     "value": 35899,
+     "gainPct": 8.8
+    },
+    "unpriced": [
+     "초월의 보석"
+    ]
    }
   },
   {
@@ -5614,12 +6047,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 37000.0,
-    "currencyPct": 112.1,
-    "sangchoValue": 0.0,
-    "knownPct": 112.1,
-    "marketCurrencyValue": 11716,
-    "marketCurrencyPct": 35.5
+    "shop": {
+     "value": 103000,
+     "gainPct": 212.1
+    },
+    "market": {
+     "value": 35716,
+     "gainPct": 8.2
+    },
+    "unpriced": []
    }
   },
   {
@@ -5667,12 +6103,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 33000.0,
-    "currencyPct": 150.0,
-    "sangchoValue": 0.0,
-    "knownPct": 150.0,
-    "marketCurrencyValue": 12000,
-    "marketCurrencyPct": 54.5
+    "shop": {
+     "value": 112200,
+     "gainPct": 410.0
+    },
+    "market": {
+     "value": 40800,
+     "gainPct": 85.5
+    },
+    "unpriced": []
    }
   },
   {
@@ -5720,12 +6159,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 33000.0,
-    "currencyPct": 150.0,
-    "sangchoValue": 0.0,
-    "knownPct": 150.0,
-    "marketCurrencyValue": 12000,
-    "marketCurrencyPct": 54.5
+    "shop": {
+     "value": 112200,
+     "gainPct": 410.0
+    },
+    "market": {
+     "value": 40800,
+     "gainPct": 85.5
+    },
+    "unpriced": []
    }
   },
   {
@@ -5796,12 +6238,19 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 37000.0,
-    "currencyPct": 112.1,
-    "sangchoValue": 4500.0,
-    "knownPct": 125.8,
-    "marketCurrencyValue": 11716,
-    "marketCurrencyPct": 35.5
+    "shop": {
+     "value": 106740,
+     "gainPct": 223.5
+    },
+    "market": {
+     "value": 37076,
+     "gainPct": 12.4
+    },
+    "unpriced": [
+     "초월의 보석",
+     "상급 강화의 정수",
+     "중급 강화의 정수"
+    ]
    }
   },
   {
@@ -5852,12 +6301,17 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 52000.0,
-    "currencyPct": 94.5,
-    "sangchoValue": 0.0,
-    "knownPct": 94.5,
-    "marketCurrencyValue": 15432,
-    "marketCurrencyPct": 28.1
+    "shop": {
+     "value": 131200,
+     "gainPct": 138.5
+    },
+    "market": {
+     "value": 44232,
+     "gainPct": -19.6
+    },
+    "unpriced": [
+     "렉스톤 드래곤 알"
+    ]
    }
   },
   {
@@ -5977,12 +6431,23 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 14000.0,
-    "currencyPct": 116.7,
-    "sangchoValue": 0.0,
-    "knownPct": 116.7,
-    "marketCurrencyValue": 4743,
-    "marketCurrencyPct": 39.5
+    "shop": {
+     "value": 64600,
+     "gainPct": 438.3
+    },
+    "market": {
+     "value": 23143,
+     "gainPct": 92.9
+    },
+    "unpriced": [
+     "골드",
+     "강철의 망치",
+     "마법의 망치",
+     "합성석",
+     "꿈의 공격 +32",
+     "꿈의 방어 +32",
+     "꿈의 체력 +128"
+    ]
    }
   },
   {
@@ -6086,12 +6551,23 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 37000.0,
-    "currencyPct": 168.2,
-    "sangchoValue": 0.0,
-    "knownPct": 168.2,
-    "marketCurrencyValue": 11716,
-    "marketCurrencyPct": 53.3
+    "shop": {
+     "value": 109600,
+     "gainPct": 398.2
+    },
+    "market": {
+     "value": 38116,
+     "gainPct": 73.3
+    },
+    "unpriced": [
+     "골드",
+     "합성석",
+     "강철의 망치",
+     "마법의 망치",
+     "꿈의 공격 +32",
+     "꿈의 방어 +32",
+     "꿈의 체력 +128"
+    ]
    }
   },
   {
@@ -6158,12 +6634,19 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 22000.0,
-    "currencyPct": 66.7,
-    "sangchoValue": 4500.0,
-    "knownPct": 80.3,
-    "marketCurrencyValue": 8000,
-    "marketCurrencyPct": 24.2
+    "shop": {
+     "value": 91740,
+     "gainPct": 178.0
+    },
+    "market": {
+     "value": 33360,
+     "gainPct": 1.1
+    },
+    "unpriced": [
+     "중급 강화의 정수",
+     "상급 강화의 정수",
+     "초월의 보석"
+    ]
    }
   },
   {
@@ -6222,12 +6705,19 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 22000.0,
-    "currencyPct": 66.7,
-    "sangchoValue": 4500.0,
-    "knownPct": 80.3,
-    "marketCurrencyValue": 8000,
-    "marketCurrencyPct": 24.2
+    "shop": {
+     "value": 47740,
+     "gainPct": 44.7
+    },
+    "market": {
+     "value": 17360,
+     "gainPct": -47.4
+    },
+    "unpriced": [
+     "초월의 보석",
+     "중급 강화의 정수",
+     "상급 강화의 정수"
+    ]
    }
   },
   {
@@ -6311,12 +6801,22 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 14000.0,
-    "currencyPct": 116.7,
-    "sangchoValue": 0.0,
-    "knownPct": 116.7,
-    "marketCurrencyValue": 4743,
-    "marketCurrencyPct": 39.5
+    "shop": {
+     "value": 65700,
+     "gainPct": 447.5
+    },
+    "market": {
+     "value": 23543,
+     "gainPct": 96.2
+    },
+    "unpriced": [
+     "골드",
+     "강철의 망치",
+     "합성석",
+     "꿈의 공격 +33",
+     "꿈의 방어 +33",
+     "꿈의 체력 +132"
+    ]
    }
   },
   {
@@ -6400,12 +6900,22 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 14000.0,
-    "currencyPct": 116.7,
-    "sangchoValue": 0.0,
-    "knownPct": 116.7,
-    "marketCurrencyValue": 4743,
-    "marketCurrencyPct": 39.5
+    "shop": {
+     "value": 65700,
+     "gainPct": 447.5
+    },
+    "market": {
+     "value": 23543,
+     "gainPct": 96.2
+    },
+    "unpriced": [
+     "골드",
+     "강철의 망치",
+     "합성석",
+     "꿈의 공격 +33",
+     "꿈의 방어 +33",
+     "꿈의 체력 +132"
+    ]
    }
   },
   {
@@ -6464,12 +6974,18 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 22000.0,
-    "currencyPct": 44.9,
-    "sangchoValue": 1500.0,
-    "knownPct": 48.0,
-    "marketCurrencyValue": 8000,
-    "marketCurrencyPct": 16.3
+    "shop": {
+     "value": 106480,
+     "gainPct": 117.3
+    },
+    "market": {
+     "value": 38720,
+     "gainPct": -21.0
+    },
+    "unpriced": [
+     "초월의 보석",
+     "강림 강화곤"
+    ]
    }
   },
   {
@@ -6533,12 +7049,19 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 22000.0,
-    "currencyPct": 66.7,
-    "sangchoValue": 4500.0,
-    "knownPct": 80.3,
-    "marketCurrencyValue": 8000,
-    "marketCurrencyPct": 24.2
+    "shop": {
+     "value": 47740,
+     "gainPct": 44.7
+    },
+    "market": {
+     "value": 17360,
+     "gainPct": -47.4
+    },
+    "unpriced": [
+     "초월의 보석",
+     "중급 강화의 정수",
+     "상급 강화의 정수"
+    ]
    }
   },
   {
@@ -6589,12 +7112,17 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 74000.0,
-    "currencyPct": 336.4,
-    "sangchoValue": 0.0,
-    "knownPct": 336.4,
-    "marketCurrencyValue": 23432,
-    "marketCurrencyPct": 106.5
+    "shop": {
+     "value": 153200,
+     "gainPct": 596.4
+    },
+    "market": {
+     "value": 52232,
+     "gainPct": 137.4
+    },
+    "unpriced": [
+     "골드"
+    ]
    }
   },
   {
@@ -6666,12 +7194,19 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 22000.0,
-    "currencyPct": 66.7,
-    "sangchoValue": 4500.0,
-    "knownPct": 80.3,
-    "marketCurrencyValue": 8000,
-    "marketCurrencyPct": 24.2
+    "shop": {
+     "value": 91740,
+     "gainPct": 178.0
+    },
+    "market": {
+     "value": 33360,
+     "gainPct": 1.1
+    },
+    "unpriced": [
+     "중급 강화의 정수",
+     "상급 강화의 정수",
+     "초월의 보석"
+    ]
    }
   },
   {
@@ -6731,12 +7266,18 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 22000.0,
-    "currencyPct": 44.9,
-    "sangchoValue": 4500.0,
-    "knownPct": 54.1,
-    "marketCurrencyValue": 8000,
-    "marketCurrencyPct": 16.3
+    "shop": {
+     "value": 84040,
+     "gainPct": 71.5
+    },
+    "market": {
+     "value": 30560,
+     "gainPct": -37.6
+    },
+    "unpriced": [
+     "강림 강화곤",
+     "초월의 보석"
+    ]
    }
   },
   {
@@ -6801,12 +7342,18 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 26000.0,
-    "currencyPct": 118.2,
-    "sangchoValue": 0.0,
-    "knownPct": 118.2,
-    "marketCurrencyValue": 7716,
-    "marketCurrencyPct": 35.1
+    "shop": {
+     "value": 70000,
+     "gainPct": 218.2
+    },
+    "market": {
+     "value": 23716,
+     "gainPct": 7.8
+    },
+    "unpriced": [
+     "캡슐 Lv+1",
+     "각성 Lv+1"
+    ]
    }
   },
   {
@@ -6871,12 +7418,18 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 26000.0,
-    "currencyPct": 118.2,
-    "sangchoValue": 0.0,
-    "knownPct": 118.2,
-    "marketCurrencyValue": 7716,
-    "marketCurrencyPct": 35.1
+    "shop": {
+     "value": 70000,
+     "gainPct": 218.2
+    },
+    "market": {
+     "value": 23716,
+     "gainPct": 7.8
+    },
+    "unpriced": [
+     "캡슐 Lv+1",
+     "각성 Lv+1"
+    ]
    }
   },
   {
@@ -6941,12 +7494,18 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 26000.0,
-    "currencyPct": 118.2,
-    "sangchoValue": 0.0,
-    "knownPct": 118.2,
-    "marketCurrencyValue": 7716,
-    "marketCurrencyPct": 35.1
+    "shop": {
+     "value": 70000,
+     "gainPct": 218.2
+    },
+    "market": {
+     "value": 23716,
+     "gainPct": 7.8
+    },
+    "unpriced": [
+     "캡슐 Lv+1",
+     "각성 Lv+1"
+    ]
    }
   },
   {
@@ -7015,12 +7574,17 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 22000.0,
-    "currencyPct": 100.0,
-    "sangchoValue": 4500.0,
-    "knownPct": 120.5,
-    "marketCurrencyValue": 8000,
-    "marketCurrencyPct": 36.4
+    "shop": {
+     "value": 84040,
+     "gainPct": 282.0
+    },
+    "market": {
+     "value": 30560,
+     "gainPct": 38.9
+    },
+    "unpriced": [
+     "초월의 보석"
+    ]
    }
   },
   {
@@ -7089,12 +7653,17 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 22000.0,
-    "currencyPct": 100.0,
-    "sangchoValue": 4500.0,
-    "knownPct": 120.5,
-    "marketCurrencyValue": 8000,
-    "marketCurrencyPct": 36.4
+    "shop": {
+     "value": 84040,
+     "gainPct": 282.0
+    },
+    "market": {
+     "value": 30560,
+     "gainPct": 38.9
+    },
+    "unpriced": [
+     "초월의 보석"
+    ]
    }
   },
   {
@@ -7167,12 +7736,18 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 22000.0,
-    "currencyPct": 44.9,
-    "sangchoValue": 4500.0,
-    "knownPct": 54.1,
-    "marketCurrencyValue": 8000,
-    "marketCurrencyPct": 16.3
+    "shop": {
+     "value": 84040,
+     "gainPct": 71.5
+    },
+    "market": {
+     "value": 30560,
+     "gainPct": -37.6
+    },
+    "unpriced": [
+     "강림 강화곤의 알",
+     "초월의 보석"
+    ]
    }
   },
   {
@@ -7261,12 +7836,17 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 0.0,
-    "currencyPct": 0.0,
-    "sangchoValue": 0.0,
-    "knownPct": 0.0,
-    "marketCurrencyValue": 0,
-    "marketCurrencyPct": 0.0
+    "shop": {
+     "value": 12100,
+     "gainPct": -45.0
+    },
+    "market": {
+     "value": 4400,
+     "gainPct": -80.0
+    },
+    "unpriced": [
+     "강림 강화곤"
+    ]
    }
   },
   {
@@ -7301,12 +7881,17 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 0.0,
-    "currencyPct": 0.0,
-    "sangchoValue": 0.0,
-    "knownPct": 0.0,
-    "marketCurrencyValue": 0,
-    "marketCurrencyPct": 0.0
+    "shop": {
+     "value": 24200,
+     "gainPct": -26.7
+    },
+    "market": {
+     "value": 8800,
+     "gainPct": -73.3
+    },
+    "unpriced": [
+     "강림 강화곤"
+    ]
    }
   },
   {
@@ -7341,12 +7926,18 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 0.0,
-    "currencyPct": 0.0,
-    "sangchoValue": 0.0,
-    "knownPct": 0.0,
-    "marketCurrencyValue": 0,
-    "marketCurrencyPct": 0.0
+    "shop": {
+     "value": 33000,
+     "gainPct": 120.0
+    },
+    "market": {
+     "value": 12000,
+     "gainPct": -20.0
+    },
+    "unpriced": [
+     "디바인 스톤",
+     "드래곤 정령 해제권"
+    ]
    }
   },
   {
@@ -7849,12 +8440,19 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 0.0,
-    "currencyPct": 0.0,
-    "sangchoValue": 4500.0,
-    "knownPct": 13.6,
-    "marketCurrencyValue": 0,
-    "marketCurrencyPct": 0.0
+    "shop": {
+     "value": 25740,
+     "gainPct": -22.0
+    },
+    "market": {
+     "value": 9360,
+     "gainPct": -71.6
+    },
+    "unpriced": [
+     "중급 강화의 정수",
+     "상급 강화의 정수",
+     "초월의 보석"
+    ]
    }
   },
   {
@@ -7906,12 +8504,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 40000.0,
-    "currencyPct": 181.8,
-    "sangchoValue": 0.0,
-    "knownPct": 181.8,
-    "marketCurrencyValue": 12459,
-    "marketCurrencyPct": 56.6
+    "shop": {
+     "value": 119200,
+     "gainPct": 441.8
+    },
+    "market": {
+     "value": 41259,
+     "gainPct": 87.5
+    },
+    "unpriced": []
    }
   },
   {
@@ -8365,12 +8966,15 @@
    ],
    "nameUncertain": true,
    "calc": {
-    "currencyValue": 0.0,
-    "currencyPct": 0.0,
-    "sangchoValue": 0.0,
-    "knownPct": 0.0,
-    "marketCurrencyValue": 0,
-    "marketCurrencyPct": 0.0
+    "shop": {
+     "value": 0,
+     "gainPct": -100.0
+    },
+    "market": {
+     "value": 0,
+     "gainPct": -100.0
+    },
+    "unpriced": []
    }
   },
   {
@@ -8467,12 +9071,18 @@
    ],
    "nameUncertain": true,
    "calc": {
-    "currencyValue": 9600.0,
-    "currencyPct": 246.2,
-    "sangchoValue": 0.0,
-    "knownPct": 246.2,
-    "marketCurrencyValue": 3143,
-    "marketCurrencyPct": 80.6
+    "shop": {
+     "value": 33800,
+     "gainPct": 766.7
+    },
+    "market": {
+     "value": 11943,
+     "gainPct": 206.2
+    },
+    "unpriced": [
+     "골드",
+     "속성 정기 각"
+    ]
    }
   },
   {
@@ -8561,12 +9171,18 @@
    ],
    "nameUncertain": true,
    "calc": {
-    "currencyValue": 0.0,
-    "currencyPct": 0.0,
-    "sangchoValue": 0.0,
-    "knownPct": 0.0,
-    "marketCurrencyValue": 0,
-    "marketCurrencyPct": 0.0
+    "shop": {
+     "value": 4400,
+     "gainPct": 12.8
+    },
+    "market": {
+     "value": 1600,
+     "gainPct": -59.0
+    },
+    "unpriced": [
+     "속성 정기 각",
+     "축복 받은 부화기"
+    ]
    }
   },
   {
@@ -8679,12 +9295,23 @@
    ],
    "nameUncertain": true,
    "calc": {
-    "currencyValue": 85000.0,
-    "currencyPct": 257.6,
-    "sangchoValue": 0.0,
-    "knownPct": 257.6,
-    "marketCurrencyValue": 27432,
-    "marketCurrencyPct": 83.1
+    "shop": {
+     "value": 89400,
+     "gainPct": 170.9
+    },
+    "market": {
+     "value": 29032,
+     "gainPct": -12.0
+    },
+    "unpriced": [
+     "아르하의 뿔+14",
+     "꿈의 공격 +33",
+     "꿈의 방어 +33",
+     "꿈의 체력 +132",
+     "공격력물약6",
+     "체력물약6",
+     "방어력/크리/회피물약6"
+    ]
    }
   },
   {
@@ -8749,12 +9376,18 @@
    ],
    "nameUncertain": true,
    "calc": {
-    "currencyValue": 15000.0,
-    "currencyPct": 68.2,
-    "sangchoValue": 0.0,
-    "knownPct": 68.2,
-    "marketCurrencyValue": 3716,
-    "marketCurrencyPct": 16.9
+    "shop": {
+     "value": 37000,
+     "gainPct": 68.2
+    },
+    "market": {
+     "value": 11716,
+     "gainPct": -46.7
+    },
+    "unpriced": [
+     "캡슐 Lv+1",
+     "각성 Lv+1"
+    ]
    }
   },
   {
@@ -8805,12 +9438,15 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 17000.0,
-    "currencyPct": 51.5,
-    "sangchoValue": 0.0,
-    "knownPct": 51.5,
-    "marketCurrencyValue": 5486,
-    "marketCurrencyPct": 16.6
+    "shop": {
+     "value": 50000,
+     "gainPct": 51.5
+    },
+    "market": {
+     "value": 17486,
+     "gainPct": -47.0
+    },
+    "unpriced": []
    }
   },
   {
@@ -8862,12 +9498,15 @@
    ],
    "nameUncertain": true,
    "calc": {
-    "currencyValue": 3700.0,
-    "currencyPct": 112.1,
-    "sangchoValue": 0.0,
-    "knownPct": 112.1,
-    "marketCurrencyValue": 1172,
-    "marketCurrencyPct": 35.5
+    "shop": {
+     "value": 14700,
+     "gainPct": 345.5
+    },
+    "market": {
+     "value": 5172,
+     "gainPct": 56.7
+    },
+    "unpriced": []
    }
   },
   {
@@ -8919,12 +9558,15 @@
    ],
    "nameUncertain": true,
    "calc": {
-    "currencyValue": 7400.0,
-    "currencyPct": 134.5,
-    "sangchoValue": 0.0,
-    "knownPct": 134.5,
-    "marketCurrencyValue": 2343,
-    "marketCurrencyPct": 42.6
+    "shop": {
+     "value": 22800,
+     "gainPct": 314.5
+    },
+    "market": {
+     "value": 7943,
+     "gainPct": 44.4
+    },
+    "unpriced": []
    }
   },
   {
@@ -8967,12 +9609,17 @@
    ],
    "nameUncertain": false,
    "calc": {
-    "currencyValue": 22000.0,
-    "currencyPct": 40.0,
-    "sangchoValue": 0.0,
-    "knownPct": 40.0,
-    "marketCurrencyValue": 8000,
-    "marketCurrencyPct": 14.5
+    "shop": {
+     "value": 46200,
+     "gainPct": -16.0
+    },
+    "market": {
+     "value": 16800,
+     "gainPct": -69.5
+    },
+    "unpriced": [
+     "렉스톤의 알"
+    ]
    }
   }
  ],
@@ -9288,5 +9935,42 @@
   "wonPerGoldDiamond": 7.43,
   "basis": "유저 간 거래 시세: 다이아 100개당 800원, 황금 다이아 쿠폰 7,400개 55,000원",
   "checkedAt": "2026-11-16"
+ },
+ "itemPrices": {
+  "unit": "dia",
+  "basis": "얼음 교환소(공지 21091) 얼음 가격. 루드라 패키지가 다이아 1,200 자리에 얼음 조각 1,200을 넣은 점을 근거로 얼음 1 = 다이아 1로 가정",
+  "items": {
+   "꿈의 부화기 +1": 100,
+   "페르시온 결정": 150,
+   "스페셜 Lv+1": 50,
+   "프리미엄 Lv+1": 30,
+   "Lv+1": 10,
+   "Lv-1": 10,
+   "꿈의 정수(최상급)": 50,
+   "최상급 강화의 정수": 100,
+   "상급 초월의 정수(옐로우)": 80,
+   "상급 초월의 정수(레드)": 80,
+   "상급 초월의 정수(블루)": 80,
+   "상급 초월의 정수 세트": 240,
+   "디트의 망치": 100,
+   "강림의 돌": 20,
+   "더블 맥스 레벨업": 50,
+   "정령 10+1 뽑기권": 2500,
+   "최고급 정령 뽑기권": 300,
+   "꿈의 공격 +36": 1600,
+   "꿈의 방어 +36": 1600,
+   "꿈의 체력 +144": 1600,
+   "꿈의 공격 +35": 800,
+   "꿈의 방어 +35": 800,
+   "꿈의 체력 +140": 800,
+   "치료제": 10,
+   "토벌권": 5,
+   "얼음 조각": 1,
+   "태양의 정수": 3,
+   "달의 정수": 3,
+   "땅의 정수": 3,
+   "불의 정수": 3,
+   "물의 정수": 3
+  }
  }
 }

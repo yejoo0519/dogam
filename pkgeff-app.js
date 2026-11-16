@@ -39,7 +39,7 @@
   const pretty=value=>value?value.replaceAll('-','.'):'—';
   const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
   const state={basis:'shop',rates:{shop:{...DEFAULT_RATES.shop},market:{...DEFAULT_RATES.market}},eggs:{},prices:{},custom:[],query:'',sort:'recent',sale:'all',shown:PAGE};
-  let official=[];
+  let official=[],defaults={};
   const num=value=>{const n=Number(value);return Number.isFinite(n)&&n>0?n:0;};
   function load(){
     try{
@@ -64,7 +64,9 @@
     try{localStorage.setItem(STORE,JSON.stringify({basis:state.basis,rates:state.rates,eggs:state.eggs,prices:state.prices,custom:state.custom}));}
     catch(error){/* 저장이 막힌 환경에서는 이번 방문에만 유지 */}
   }
-  const ctx=()=>({rates:state.rates[state.basis],eggs:state.eggs,prices:state.prices});
+  // 직접 넣은 단가가 데이터의 기본 단가보다 우선한다.
+  const prices=()=>({...defaults,...state.prices});
+  const ctx=()=>({rates:state.rates[state.basis],eggs:state.eggs,prices:prices()});
   const all=()=>state.custom.concat(official);
   function onSale(pkg){return !pkg.custom&&pkg.noticeSalePeriods.some(p=>p.start&&p.end&&p.start<=today&&p.end>=today);}
   function period(pkg){
@@ -156,7 +158,7 @@
   }
   $('openPrices').addEventListener('click',()=>{
     $('priceList').innerHTML=itemNames().map(name=>{
-      const p=state.prices[name];
+      const p=state.prices[name]||defaults[name];
       return `<label class="pe-line"><span>${escape(name)}</span><input type="number" min="0" step="any" inputmode="decimal" data-price="${escape(name)}" value="${p?p.v:''}" placeholder="단가"><select data-unit="${escape(name)}" aria-label="${escape(name)} 단가 단위"><option value="dia"${p?.u==='won'?'':' selected'}>다이아</option><option value="won"${p?.u==='won'?' selected':''}>원</option></select></label>`;
     }).join('');
     $('priceDialog').showModal();
@@ -222,6 +224,7 @@
       if(!response.ok)throw Error('HTTP '+response.status);
       const source=await response.json();
       if(source.schemaVersion!==1||!Array.isArray(source.packages))throw Error('지원하지 않는 데이터 형식');
+      for(const [name,v] of Object.entries(source.itemPrices?.items||{})) if(num(v)) defaults[name]={v:num(v),u:source.itemPrices.unit==='won'?'won':'dia'};
       official=source.packages.filter(p=>Number.isFinite(p.price)&&p.price>0&&Array.isArray(p.items)&&p.items.length)
         .map((p,i)=>({...p,id:'n'+p.noticeIds.join('-')+'-'+i}));
       $('syncStatus').textContent=`공식 공지 패키지 ${official.length.toLocaleString('ko-KR')}개 · 마지막 확인 ${pretty(source.checkedAt)}`;

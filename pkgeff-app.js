@@ -131,7 +131,7 @@
     document.querySelectorAll('#results [data-egg]').forEach(input=>{if(input!==active) input.value=state.eggs[input.dataset.egg]??'';});
   }
   function syncBasis(){
-    $('rateDia').value=state.rates[state.basis].dia;$('rateGold').value=state.rates[state.basis].gold;$('rateGoldCoin').value=state.goldWon||'';$('rateGoldCoin').placeholder=defaultGoldDia?`기본 ${Math.round(defaultGoldDia*state.rates[state.basis].dia).toLocaleString('ko-KR')}`:'미입력';
+    $('rateDia').value=state.rates[state.basis].dia;$('rateGold').value=state.rates[state.basis].gold;$('rateGoldCoin').value=state.goldWon||'';$('rateGoldCoin').placeholder=defaultGoldDia?`기본 ${Math.round(defaultGoldDia*state.rates[state.basis].dia).toLocaleString('ko-KR')}`:'기본 0';
   }
   function chipGroup(id,attr,key){
     $(id).addEventListener('click',e=>{

@@ -2,8 +2,8 @@
   'use strict';
   const GENERIC=/다이아|골드|Lv|레벨업|부화기|정수|보석|결정|망치|합성석|꿈의 (공격|방어|체력)|강림|뽑기권|얼음 조각|사탕|물약|정기|치료제|디바인 스톤|해제권|뿔|장식|정령|토벌권|티켓|루비|확정권|변환권|스크롤|수정|파티클/;
   // market: 유저 거래 시세(다이아 100개 800원, 황금 다이아 7,400개 55,000원)
-  // ingame: 인게임 충전가(33,000원에 다이아 1,500개 / 황금 다이아 1,100개)
-  const DEFAULT_RATES={market:{dia:8,gold:7.43},ingame:{dia:22,gold:30}};
+  // ingame: 다이아는 다이아 패키지(22,000원에 다이아 3,800 + 루비 1,000 = 다이아 4,300개분), 황금 다이아는 황다 상점(33,000원에 1,100개)
+  const DEFAULT_RATES={market:{dia:8,gold:7.43},ingame:{dia:5.12,gold:30}};
   // 같은 드래곤은 표기(알/드래곤 알/의 알)가 달라도 하나의 시세 키로 묶는다.
   function eggKey(name){
     return name.replace(/\(알\)/g,'').replace(/\s*드래곤의?\s*알$/,'').replace(/의\s*알$/,'').replace(/\s*알$/,'').replace(/\s+/g,' ').trim().replace(/^블랙 아머$/,'블랙아머');
@@ -66,6 +66,8 @@
       }
       if(num(saved.goldWon)) state.goldWon=num(saved.goldWon);
       if(saved.basis==='ingame'||saved.basis==='market') state.basis=saved.basis;
+      // 예전 인게임 기본값(다이아 22원)이 저장돼 있으면 새 기본값을 쓴다.
+      if(saved.rates?.ingame?.dia===22) delete saved.rates.ingame.dia;
       for(const k of ['market','ingame']) for(const f of ['dia','gold']){const v=Number(saved.rates?.[k]?.[f]);if(v>=0&&Number.isFinite(v)) state.rates[k][f]=v;}
       for(const [k,v] of Object.entries(saved.eggs||{})) if(num(v)) state.eggs[k]=num(v);
       for(const [k,p] of Object.entries(saved.prices||{})) if(num(p?.v)&&p.u!=='evt') state.prices[k]={v:num(p.v),u:unit(p.u)};

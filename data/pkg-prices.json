@@ -76,8 +76,8 @@
    "note": "패스 28단계 유료 보상 합계(무료 일반 패스 보상 제외). 시즌 남은 기간 41일 기준 화면",
    "calc": {
     "market": {
-     "value": 64739,
-     "gainPct": 439.5
+     "value": 70308,
+     "gainPct": 485.9
     },
     "unpriced": []
    }
@@ -154,8 +154,8 @@
    "note": "패스 28단계 유료 보상 합계(무료 일반 패스 보상 제외). 시즌 남은 기간 41일 기준 화면 · 고급 패스는 일반 패스와 같은 가격으로 따로 구매",
    "calc": {
     "market": {
-     "value": 76521,
-     "gainPct": 537.7
+     "value": 82090,
+     "gainPct": 584.1
     },
     "unpriced": []
    }
@@ -260,11 +260,10 @@
    "note": "패스 28단계 유료 보상 합계(무료 일반 패스 보상 제외). 시즌 남은 기간 41일 기준 화면",
    "calc": {
     "market": {
-     "value": 38304,
-     "gainPct": 155.4
+     "value": 43873,
+     "gainPct": 192.5
     },
     "unpriced": [
-     "강림의 돌",
      "골드"
     ]
    }
@@ -365,11 +364,10 @@
    "note": "패스 28단계 유료 보상 합계(무료 일반 패스 보상 제외). 시즌 남은 기간 41일 기준 화면 · 고급 패스는 일반 패스와 같은 가격으로 따로 구매",
    "calc": {
     "market": {
-     "value": 41175,
-     "gainPct": 174.5
+     "value": 46744,
+     "gainPct": 211.6
     },
     "unpriced": [
-     "강림의 돌",
      "골드"
     ]
    }
@@ -422,8 +420,8 @@
    "note": "패스 28단계 유료 보상 합계(무료 일반 패스 보상 제외). 시즌 남은 기간 41일 기준 화면",
    "calc": {
     "market": {
-     "value": 36086,
-     "gainPct": 100.5
+     "value": 47224,
+     "gainPct": 162.4
     },
     "unpriced": [
      "골드"
@@ -478,8 +476,8 @@
    "note": "패스 28단계 유료 보상 합계(무료 일반 패스 보상 제외). 시즌 남은 기간 41일 기준 화면 · 고급 패스는 일반 패스와 같은 가격으로 따로 구매",
    "calc": {
     "market": {
-     "value": 48614,
-     "gainPct": 170.1
+     "value": 65320,
+     "gainPct": 262.9
     },
     "unpriced": [
      "골드"
@@ -585,13 +583,11 @@
    "source": "인게임 상점 화면(2026-11-16)",
    "calc": {
     "market": {
-     "value": 18513,
-     "gainPct": -15.9
+     "value": 19922,
+     "gainPct": -9.4
     },
     "unpriced": [
-     "골드",
-     "상급 강화의 정수",
-     "중급 강화의 정수"
+     "골드"
     ]
    }
   },
@@ -650,14 +646,11 @@
    "source": "인게임 상점 화면(2026-11-16)",
    "calc": {
     "market": {
-     "value": 9956,
-     "gainPct": -54.7
+     "value": 35185,
+     "gainPct": 59.9
     },
     "unpriced": [
-     "골드",
-     "초월의 정수(레드)",
-     "초월의 정수(블루)",
-     "초월의 정수(옐로우)"
+     "골드"
     ]
    }
   },
@@ -732,9 +725,7 @@
      "value": 33000,
      "gainPct": 0.0
     },
-    "unpriced": [
-     "고급 정령 뽑기권"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -788,17 +779,11 @@
    "source": "인게임 상점 화면(2026-11-16)",
    "calc": {
     "market": {
-     "value": 47865,
-     "gainPct": -13.0
+     "value": 49465,
+     "gainPct": -10.1
     },
     "unpriced": [
-     "고급 정령 뽑기권",
-     "공격력물약8",
-     "방어력물약8",
-     "정령 5성 확정권",
-     "체력물약8",
-     "크리물약8",
-     "회피물약8"
+     "정령 5성 확정권"
     ]
    }
   },
@@ -979,8 +964,8 @@
    "source": "인게임 상점 화면(2026-11-16)",
    "calc": {
     "market": {
-     "value": 3000,
-     "gainPct": 0.0
+     "value": 14138,
+     "gainPct": 371.3
     },
     "unpriced": []
    }
@@ -1075,8 +1060,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 57997,
-     "gainPct": 75.7
+     "value": 74704,
+     "gainPct": 126.4
     },
     "unpriced": []
    }
@@ -1146,8 +1131,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 50928,
-     "gainPct": 54.3
+     "value": 67635,
+     "gainPct": 105.0
     },
     "unpriced": []
    }
@@ -1248,8 +1233,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 53285,
-     "gainPct": 61.5
+     "value": 69992,
+     "gainPct": 112.1
     },
     "unpriced": []
    }
@@ -1362,12 +1347,10 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 49232,
-     "gainPct": 0.5
+     "value": 88348,
+     "gainPct": 80.3
     },
-    "unpriced": [
-     "강림 강화곤"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -1466,8 +1449,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 55641,
-     "gainPct": 68.6
+     "value": 72348,
+     "gainPct": 119.2
     },
     "unpriced": []
    }
@@ -1529,11 +1512,10 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 49232,
-     "gainPct": 0.5
+     "value": 88348,
+     "gainPct": 80.3
     },
     "unpriced": [
-     "강림 강화곤",
      "심판자 카스티그(강림 전용 장식)"
     ]
    }
@@ -1599,8 +1581,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 53285,
-     "gainPct": 61.5
+     "value": 69992,
+     "gainPct": 112.1
     },
     "unpriced": []
    }
@@ -1635,9 +1617,7 @@
      "value": 33000,
      "gainPct": 0.0
     },
-    "unpriced": [
-     "고급 정령 뽑기권"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -1699,8 +1679,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 35659,
-     "gainPct": 62.1
+     "value": 46797,
+     "gainPct": 112.7
     },
     "unpriced": []
    }
@@ -1758,8 +1738,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 35659,
-     "gainPct": 62.1
+     "value": 46797,
+     "gainPct": 112.7
     },
     "unpriced": []
    }
@@ -1825,8 +1805,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 53285,
-     "gainPct": 61.5
+     "value": 69992,
+     "gainPct": 112.1
     },
     "unpriced": []
    }
@@ -1888,8 +1868,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 57997,
-     "gainPct": 75.7
+     "value": 74704,
+     "gainPct": 126.4
     },
     "unpriced": []
    }
@@ -1951,8 +1931,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 57997,
-     "gainPct": 75.7
+     "value": 74704,
+     "gainPct": 126.4
     },
     "unpriced": []
    }
@@ -2014,8 +1994,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 57997,
-     "gainPct": 75.7
+     "value": 74704,
+     "gainPct": 126.4
     },
     "unpriced": []
    }
@@ -2083,8 +2063,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 35659,
-     "gainPct": 62.1
+     "value": 46797,
+     "gainPct": 112.7
     },
     "unpriced": []
    }
@@ -2152,8 +2132,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 35659,
-     "gainPct": 62.1
+     "value": 46797,
+     "gainPct": 112.7
     },
     "unpriced": []
    }
@@ -2221,8 +2201,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 35659,
-     "gainPct": 62.1
+     "value": 46797,
+     "gainPct": 112.7
     },
     "unpriced": []
    }
@@ -2288,8 +2268,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 53285,
-     "gainPct": 61.5
+     "value": 69992,
+     "gainPct": 112.1
     },
     "unpriced": []
    }
@@ -2433,8 +2413,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 31816,
-     "gainPct": 44.6
+     "value": 42954,
+     "gainPct": 95.2
     },
     "unpriced": []
    }
@@ -2582,8 +2562,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 26059,
-     "gainPct": -21.0
+     "value": 37197,
+     "gainPct": 12.7
     },
     "unpriced": []
    }
@@ -2649,8 +2629,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 53285,
-     "gainPct": 61.5
+     "value": 69992,
+     "gainPct": 112.1
     },
     "unpriced": []
    }
@@ -2696,12 +2676,10 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 16800,
-     "gainPct": -69.5
+     "value": 61618,
+     "gainPct": 12.0
     },
     "unpriced": [
-     "강림 강화곤",
-     "강림의 돌",
      "아르하의 정수(속성별)"
     ]
    }
@@ -2747,7 +2725,6 @@
      "gainPct": -49.1
     },
     "unpriced": [
-     "강림의 돌",
      "아르하의 정수(속성별)"
     ]
    }
@@ -2805,8 +2782,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 35659,
-     "gainPct": 62.1
+     "value": 46797,
+     "gainPct": 112.7
     },
     "unpriced": []
    }
@@ -3125,12 +3102,10 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 62732,
-     "gainPct": -20.6
+     "value": 96279,
+     "gainPct": 21.9
     },
-    "unpriced": [
-     "강림 강화곤"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -3194,8 +3169,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 53285,
-     "gainPct": 61.5
+     "value": 69992,
+     "gainPct": 112.1
     },
     "unpriced": []
    }
@@ -3253,8 +3228,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 27659,
-     "gainPct": -16.2
+     "value": 38797,
+     "gainPct": 17.6
     },
     "unpriced": [
      "얼음 조각"
@@ -3314,8 +3289,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 35659,
-     "gainPct": 62.1
+     "value": 46797,
+     "gainPct": 112.7
     },
     "unpriced": []
    }
@@ -3377,11 +3352,10 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 49232,
-     "gainPct": 0.5
+     "value": 88348,
+     "gainPct": 80.3
     },
     "unpriced": [
-     "강림 강화곤",
      "강림 전용 장식"
     ]
    }
@@ -3502,8 +3476,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 30878,
-     "gainPct": -6.4
+     "value": 42016,
+     "gainPct": 27.3
     },
     "unpriced": []
    }
@@ -3569,8 +3543,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 30878,
-     "gainPct": -6.4
+     "value": 42016,
+     "gainPct": 27.3
     },
     "unpriced": []
    }
@@ -3738,8 +3712,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 26059,
-     "gainPct": -21.0
+     "value": 37197,
+     "gainPct": 12.7
     },
     "unpriced": []
    }
@@ -3856,11 +3830,10 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 38732,
-     "gainPct": -29.6
+     "value": 72279,
+     "gainPct": 31.4
     },
     "unpriced": [
-     "강림 강화곤",
      "렉스톤"
     ]
    }
@@ -3918,8 +3891,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 26059,
-     "gainPct": -21.0
+     "value": 37197,
+     "gainPct": 12.7
     },
     "unpriced": []
    }
@@ -4126,8 +4099,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 26059,
-     "gainPct": -21.0
+     "value": 37197,
+     "gainPct": 12.7
     },
     "unpriced": []
    }
@@ -4353,13 +4326,10 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 30022,
-     "gainPct": -9.0
+     "value": 48138,
+     "gainPct": 45.9
     },
-    "unpriced": [
-     "상급 강화의 정수",
-     "중급 강화의 정수"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -4423,12 +4393,10 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 47882,
-     "gainPct": -2.3
+     "value": 81429,
+     "gainPct": 66.2
     },
-    "unpriced": [
-     "강림 강화곤"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -4547,8 +4515,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 26059,
-     "gainPct": -21.0
+     "value": 37197,
+     "gainPct": 12.7
     },
     "unpriced": []
    }
@@ -4614,8 +4582,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 26059,
-     "gainPct": -21.0
+     "value": 37197,
+     "gainPct": 12.7
     },
     "unpriced": []
    }
@@ -4681,12 +4649,10 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 35732,
-     "gainPct": -27.1
+     "value": 69279,
+     "gainPct": 41.4
     },
-    "unpriced": [
-     "강림 강화곤"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -4750,8 +4716,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 26059,
-     "gainPct": -21.0
+     "value": 37197,
+     "gainPct": 12.7
     },
     "unpriced": []
    }
@@ -4825,8 +4791,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 30878,
-     "gainPct": -6.4
+     "value": 42016,
+     "gainPct": 27.3
     },
     "unpriced": []
    }
@@ -4902,8 +4868,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 21316,
-     "gainPct": -3.1
+     "value": 32454,
+     "gainPct": 47.5
     },
     "unpriced": []
    }
@@ -4979,8 +4945,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 21316,
-     "gainPct": -3.1
+     "value": 32454,
+     "gainPct": 47.5
     },
     "unpriced": []
    }
@@ -5056,8 +5022,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 21316,
-     "gainPct": -3.1
+     "value": 32454,
+     "gainPct": 47.5
     },
     "unpriced": []
    }
@@ -5139,13 +5105,10 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 30772,
-     "gainPct": -6.8
+     "value": 43319,
+     "gainPct": 31.3
     },
-    "unpriced": [
-     "상급 강화의 정수",
-     "중급 강화의 정수"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -5209,8 +5172,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 21316,
-     "gainPct": -3.1
+     "value": 32454,
+     "gainPct": 47.5
     },
     "unpriced": []
    }
@@ -5276,8 +5239,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 26059,
-     "gainPct": -21.0
+     "value": 37197,
+     "gainPct": 12.7
     },
     "unpriced": []
    }
@@ -5359,13 +5322,10 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 30772,
-     "gainPct": -6.8
+     "value": 43319,
+     "gainPct": 31.3
     },
-    "unpriced": [
-     "상급 강화의 정수",
-     "중급 강화의 정수"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -5429,8 +5389,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 26059,
-     "gainPct": -21.0
+     "value": 37197,
+     "gainPct": 12.7
     },
     "unpriced": []
    }
@@ -5820,8 +5780,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 24506,
-     "gainPct": 11.4
+     "value": 41213,
+     "gainPct": 87.3
     },
     "unpriced": []
    }
@@ -5880,8 +5840,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 24506,
-     "gainPct": 11.4
+     "value": 41213,
+     "gainPct": 87.3
     },
     "unpriced": []
    }
@@ -5947,8 +5907,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 30878,
-     "gainPct": -6.4
+     "value": 42016,
+     "gainPct": 27.3
     },
     "unpriced": []
    }
@@ -6014,8 +5974,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 30878,
-     "gainPct": -6.4
+     "value": 42016,
+     "gainPct": 27.3
     },
     "unpriced": []
    }
@@ -6081,8 +6041,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 30878,
-     "gainPct": -6.4
+     "value": 42016,
+     "gainPct": 27.3
     },
     "unpriced": []
    }
@@ -6148,8 +6108,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 30878,
-     "gainPct": -6.4
+     "value": 42016,
+     "gainPct": 27.3
     },
     "unpriced": []
    }
@@ -6258,8 +6218,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 18923,
-     "gainPct": -42.7
+     "value": 35629,
+     "gainPct": 8.0
     },
     "unpriced": [
      "얼음 조각"
@@ -6431,12 +6391,10 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 59732,
-     "gainPct": -24.4
+     "value": 82141,
+     "gainPct": 4.0
     },
-    "unpriced": [
-     "강림 강화곤"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -6500,8 +6458,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 30878,
-     "gainPct": -6.4
+     "value": 42016,
+     "gainPct": 27.3
     },
     "unpriced": []
    }
@@ -6621,8 +6579,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 30878,
-     "gainPct": -6.4
+     "value": 42016,
+     "gainPct": 27.3
     },
     "unpriced": []
    }
@@ -6857,13 +6815,10 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 31635,
-     "gainPct": -4.1
+     "value": 49751,
+     "gainPct": 50.8
     },
-    "unpriced": [
-     "상급 강화의 정수",
-     "중급 강화의 정수"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -7232,13 +7187,10 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 30275,
-     "gainPct": -8.3
+     "value": 48391,
+     "gainPct": 46.6
     },
-    "unpriced": [
-     "상급 강화의 정수",
-     "중급 강화의 정수"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -7298,13 +7250,10 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 20569,
-     "gainPct": -37.7
+     "value": 38685,
+     "gainPct": 17.2
     },
-    "unpriced": [
-     "상급 강화의 정수",
-     "중급 강화의 정수"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -7552,11 +7501,10 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 20206,
-     "gainPct": -58.8
+     "value": 48184,
+     "gainPct": -1.7
     },
     "unpriced": [
-     "강림 강화곤",
      "최고급 정령 뽑기권"
     ]
    }
@@ -7623,13 +7571,10 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 20569,
-     "gainPct": -37.7
+     "value": 38685,
+     "gainPct": 17.2
     },
-    "unpriced": [
-     "상급 강화의 정수",
-     "중급 강화의 정수"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -7759,13 +7704,10 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 30275,
-     "gainPct": -8.3
+     "value": 48391,
+     "gainPct": 46.6
     },
-    "unpriced": [
-     "상급 강화의 정수",
-     "중급 강화의 정수"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -7826,12 +7768,10 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 23206,
-     "gainPct": -52.6
+     "value": 62322,
+     "gainPct": 27.2
     },
-    "unpriced": [
-     "강림 강화곤"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -8108,8 +8048,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 23206,
-     "gainPct": 5.5
+     "value": 39913,
+     "gainPct": 81.4
     },
     "unpriced": []
    }
@@ -8181,8 +8121,8 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 23206,
-     "gainPct": 5.5
+     "value": 39913,
+     "gainPct": 81.4
     },
     "unpriced": []
    }
@@ -8258,12 +8198,10 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 23206,
-     "gainPct": -52.6
+     "value": 62322,
+     "gainPct": 27.2
     },
-    "unpriced": [
-     "강림 강화곤의 알"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -8353,12 +8291,10 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 2350,
-     "gainPct": -89.3
+     "value": 24759,
+     "gainPct": 12.5
     },
-    "unpriced": [
-     "강림 강화곤"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -8394,12 +8330,10 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 4700,
-     "gainPct": -85.8
+     "value": 49518,
+     "gainPct": 50.1
     },
-    "unpriced": [
-     "강림 강화곤"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -8945,13 +8879,10 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 12569,
-     "gainPct": -61.9
+     "value": 30685,
+     "gainPct": -7.0
     },
-    "unpriced": [
-     "상급 강화의 정수",
-     "중급 강화의 정수"
-    ]
+    "unpriced": []
    }
   },
   {
@@ -10230,7 +10161,7 @@
  "itemPrices": {
   "unit": "won",
   "checkedAt": "2026-11-16",
-  "basis": "유저 거래 시세: 꿈의 젬 +34 = 1,000원, +35 = +34 2개(2,000원), +36 = +35 2개(4,000원), 디트의 망치 1,000원, 마법의 망치 500원, 강철의 망치 200원, 꿈의 부화기 +1 1,000원, 합성석 = 골드 200만. 상급 초월의 정수 = 일일 패키지 3,000원 ÷ 6개, 더블 맥스 레벨업 = 22,000원 ÷ 50개, Lv+1 = 10개당 300원, Lv-1 = 100개당 300원, 프리미엄 레벨업 = 10개당 400~500원(중간값 45원), 스페셜 레벨업 = 인게임 다이아 30개, 캡슐·각성 Lv+1·축복 받은 부화기 = 다이아 10개, 드래곤 부화기·드래곤의 승천 = 다이아 5개, 치료제 = 다이아 3개(인게임 다이아 상점). 꿈의 정수 = 레브의 뽑기(다이아 15, 최상급 2.2%·상급 11.2%·중급 33.7%, 꿈의 보석·파티클은 0으로 봄)와 제작식(상급 = 중급 10 + 다이아 1, 최상급 = 상급 5 + 다이아 1)으로 역산. 초월의 보석·최상급 강화의 정수 = 꿈의 정수(최상급) 1개. 정령 10+1 뽑기권 11,000원. 카닐 = 카닐 패키지(공지 21142, 22,000원) ÷ 51(카닐 50 + 축복의 보석 1 = 카닐 1개 값, 골드 제외), 축복의 보석 = 카닐 1개. 디바인 스톤·페르시온 결정·속성 정수·이계의 수정·꿈의 보석·파티클 = 0. 루비 = 길드 상점 루비상자(루비 50개 다이아 25개) 기준 다이아 0.5개. 토벌권 = 상점 황금 다이아 4개",
+  "basis": "유저 거래 시세: 꿈의 젬 +34 = 1,000원, +35 = +34 2개(2,000원), +36 = +35 2개(4,000원), 디트의 망치 1,000원, 마법의 망치 500원, 강철의 망치 200원, 꿈의 부화기 +1 1,000원, 합성석 = 골드 200만. 상급 초월의 정수 = 일일 패키지 3,000원 ÷ 6개, 더블 맥스 레벨업 = 22,000원 ÷ 50개, Lv+1 = 10개당 300원, Lv-1 = 100개당 300원, 프리미엄 레벨업 = 10개당 400~500원(중간값 45원), 스페셜 레벨업 = 인게임 다이아 30개, 캡슐·각성 Lv+1·축복 받은 부화기 = 다이아 10개, 드래곤 부화기·드래곤의 승천 = 다이아 5개, 치료제 = 다이아 3개(인게임 다이아 상점). 꿈의 정수 = 레브의 뽑기(다이아 15, 최상급 2.2%·상급 11.2%·중급 33.7%, 꿈의 보석·파티클은 0으로 봄)와 제작식(상급 = 중급 10 + 다이아 1, 최상급 = 상급 5 + 다이아 1)으로 역산. 초월의 보석·최상급 강화의 정수 = 꿈의 정수(최상급) 1개. 정령 10+1 뽑기권 11,000원. 카닐 = 카닐 패키지(공지 21142, 22,000원) ÷ 51(카닐 50 + 축복의 보석 1 = 카닐 1개 값, 골드 제외), 축복의 보석 = 카닐 1개. 디바인 스톤·페르시온 결정·속성 정수·이계의 수정·꿈의 보석·파티클 = 0. 루비 = 길드 상점 루비상자(루비 50개 다이아 25개) 기준 다이아 0.5개. 토벌권 = 상점 황금 다이아 4개. 물약 8단계 = 다이아 4개. 강림의 돌·고급 정령 뽑기권·중급 강화의 정수 = 0. 상급 강화의 정수·일반 초월의 정수 = 꿈의 정수(상급) 1개, 상급 초월의 정수 = 꿈의 정수(최상급) 1개. 강림 강화곤 = 미스핏 패키지(49,000원, 공지 21412) − 유르카 패키지(33,000원, 공지 21406) 가격 차에서 나머지 구성 차이를 뺀 값(22,409원). 강림 전용 장식은 카드에서 직접 시세 입력",
   "items": {
    "꿈의 공격 +34": 1000,
    "꿈의 방어 +34": 1000,
@@ -10242,10 +10173,22 @@
    "마법의 망치": 500,
    "강철의 망치": 200,
    "꿈의 부화기 +1": 1000,
-   "상급 초월의 정수(옐로우)": 500,
-   "상급 초월의 정수(레드)": 500,
-   "상급 초월의 정수(블루)": 500,
-   "상급 초월의 정수 세트": 1500,
+   "상급 초월의 정수(옐로우)": {
+    "v": 294.54,
+    "u": "dia"
+   },
+   "상급 초월의 정수(레드)": {
+    "v": 294.54,
+    "u": "dia"
+   },
+   "상급 초월의 정수(블루)": {
+    "v": 294.54,
+    "u": "dia"
+   },
+   "상급 초월의 정수 세트": {
+    "v": 883.62,
+    "u": "dia"
+   },
    "더블 맥스 레벨업": 440,
    "합성석": {
     "v": 2000000,
@@ -10328,7 +10271,48 @@
     "v": 0.5,
     "u": "dia"
    },
-   "토벌권": 29.73
+   "토벌권": 29.73,
+   "공격력물약8": {
+    "v": 4,
+    "u": "dia"
+   },
+   "방어력물약8": {
+    "v": 4,
+    "u": "dia"
+   },
+   "체력물약8": {
+    "v": 4,
+    "u": "dia"
+   },
+   "크리물약8": {
+    "v": 4,
+    "u": "dia"
+   },
+   "회피물약8": {
+    "v": 4,
+    "u": "dia"
+   },
+   "강림의 돌": 0,
+   "고급 정령 뽑기권": 0,
+   "중급 강화의 정수": 0,
+   "상급 강화의 정수": {
+    "v": 58.71,
+    "u": "dia"
+   },
+   "초월의 정수(옐로우)": {
+    "v": 58.71,
+    "u": "dia"
+   },
+   "초월의 정수(레드)": {
+    "v": 58.71,
+    "u": "dia"
+   },
+   "초월의 정수(블루)": {
+    "v": 58.71,
+    "u": "dia"
+   },
+   "강림 강화곤": 22409,
+   "강림 강화곤의 알": 22409
   }
  }
 }

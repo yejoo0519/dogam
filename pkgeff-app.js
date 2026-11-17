@@ -11,6 +11,8 @@
   const NOT_EGG=new Set(['카닐']);
   function isEgg(item){
     if(item.kind) return item.kind==='egg';
+    // 강림 전용 장식도 거래 시세를 직접 넣는 항목이라 알과 같은 입력칸으로 받는다.
+    if(/전용 장식/.test(item.name)) return true;
     return !GENERIC.test(item.name)&&!item.name.startsWith('알(')&&!NOT_EGG.has(item.name);
   }
   // 구성품 한 줄의 1개 단가(원). 단가를 모르면 null.
@@ -92,7 +94,7 @@
   }
   function chipHtml(line){
     const qty=line.qty.toLocaleString('ko-KR');
-    if(line.egg) return `<label class="pe-chip egg" data-line="${escape(line.name)}"><b>${escape(line.key)}</b><em>×${qty}</em><input type="number" min="0" step="100" inputmode="numeric" placeholder="알 시세(원)" data-egg="${escape(line.key)}" value="${state.eggs[line.key]??''}" aria-label="${escape(line.key)} 알 1개 시세(원)"></label>`;
+    if(line.egg) return `<label class="pe-chip egg" data-line="${escape(line.name)}"><b>${escape(line.key)}</b><em>×${qty}</em><input type="number" min="0" step="100" inputmode="numeric" placeholder="${/장식/.test(line.key)?'장식':'알'} 시세(원)" data-egg="${escape(line.key)}" value="${state.eggs[line.key]??''}" aria-label="${escape(line.key)} 1개 시세(원)"></label>`;
     return `<span class="pe-chip${line.value==null?' miss':''}" data-line="${escape(line.name)}"><b>${escape(line.name)}</b><em>×${qty}</em><i>${line.value==null?'미환산':won(line.value)}</i></span>`;
   }
   function visible(){

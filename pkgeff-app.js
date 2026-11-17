@@ -7,9 +7,11 @@
   function eggKey(name){
     return name.replace(/\(알\)/g,'').replace(/\s*드래곤의?\s*알$/,'').replace(/의\s*알$/,'').replace(/\s*알$/,'').replace(/\s+/g,' ').trim().replace(/^블랙 아머$/,'블랙아머');
   }
+  // 유저 간 거래가 되는 건 드래곤 알뿐이라, 거래가 안 되는 육성 재료는 알 시세 입력에서 뺀다.
+  const NOT_EGG=new Set(['카닐']);
   function isEgg(item){
     if(item.kind) return item.kind==='egg';
-    return !GENERIC.test(item.name)&&!item.name.startsWith('알(');
+    return !GENERIC.test(item.name)&&!item.name.startsWith('알(')&&!NOT_EGG.has(item.name);
   }
   // 구성품 한 줄의 1개 단가(원). 단가를 모르면 null.
   function unitWon(item,ctx){

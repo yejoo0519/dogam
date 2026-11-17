@@ -20,12 +20,13 @@
     if(isEgg(item)){const v=Number(ctx.eggs[eggKey(item.name)]);return v>0?v:null;}
     if(item.name==='다이아') return ctx.rates.dia;
     if(item.name==='황금 다이아') return ctx.rates.gold;
-    if(item.name==='골드') return ctx.goldWon>0?ctx.goldWon/1e8:null;
+    // 골드는 거래가 안 돼서 기본 0원. 직접 시세를 넣으면 그 값으로 환산한다.
+    if(item.name==='골드') return ctx.goldWon>0?ctx.goldWon/1e8:0;
     const p=ctx.prices[item.name];
     // 기본 단가 0은 '가치 없음'으로 확정된 값이라 미환산과 구분한다.
     if(!p||!(Number(p.v)>=0)) return null;
     // 단위: won=원, dia=다이아, gold=골드(골드 1억당 원 시세로 환산)
-    if(p.u==='gold') return ctx.goldWon>0?Number(p.v)*ctx.goldWon/1e8:null;
+    if(p.u==='gold') return ctx.goldWon>0?Number(p.v)*ctx.goldWon/1e8:0;
     return p.u==='won'?Number(p.v):Number(p.v)*ctx.rates.dia;
   }
   function calc(pkg,ctx){

@@ -48,7 +48,8 @@
   const pretty=value=>value?value.replaceAll('-','.'):'—';
   const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
   const state={basis:'market',rates:{market:{...DEFAULT_RATES.market}},goldWon:0,eggs:{},prices:{},custom:[],query:'',sort:'recent',sale:'all',shown:PAGE};
-  let official=[],defaults={};
+  // 골드 1억의 기본값(다이아 개수). 직접 입력한 골드 시세가 없을 때 다이아 단가를 곱해 쓴다.
+  let official=[],defaults={},defaultGoldDia=0;
   const num=value=>{const n=Number(value);return Number.isFinite(n)&&n>0?n:0;};
   const unit=value=>value==='won'||value==='gold'?value:'dia';
   function load(){
@@ -76,7 +77,8 @@
   }
   // 직접 넣은 단가가 데이터의 기본 단가보다 우선한다.
   const prices=()=>({...defaults,...state.prices});
-  const ctx=()=>({rates:state.rates[state.basis],goldWon:state.goldWon,eggs:state.eggs,prices:prices()});
+  const goldWon=()=>state.goldWon>0?state.goldWon:defaultGoldDia*state.rates[state.basis].dia;
+  const ctx=()=>({rates:state.rates[state.basis],goldWon:goldWon(),eggs:state.eggs,prices:prices()});
   const all=()=>state.custom.concat(official);
   function onSale(pkg){return !pkg.custom&&(pkg.always||pkg.noticeSalePeriods.some(p=>p.start&&p.end&&p.start<=today&&p.end>=today));}
   function period(pkg){
@@ -128,7 +130,7 @@
     document.querySelectorAll('#results [data-egg]').forEach(input=>{if(input!==active) input.value=state.eggs[input.dataset.egg]??'';});
   }
   function syncBasis(){
-    $('rateDia').value=state.rates[state.basis].dia;$('rateGold').value=state.rates[state.basis].gold;$('rateGoldCoin').value=state.goldWon||'';
+    $('rateDia').value=state.rates[state.basis].dia;$('rateGold').value=state.rates[state.basis].gold;$('rateGoldCoin').value=state.goldWon||'';$('rateGoldCoin').placeholder=defaultGoldDia?`기본 ${Math.round(defaultGoldDia*state.rates[state.basis].dia).toLocaleString('ko-KR')}`:'미입력';
   }
   function chipGroup(id,attr,key){
     $(id).addEventListener('click',e=>{
@@ -139,7 +141,7 @@
     });
   }
   $('rateGoldCoin').addEventListener('input',e=>{state.goldWon=num(e.target.value);save();render();});
-  for(const [id,field] of [['rateDia','dia'],['rateGold','gold']]) $(id).addEventListener('input',e=>{const v=Number(e.target.value);state.rates[state.basis][field]=v>=0&&Number.isFinite(v)?v:0;save();render();});
+  for(const [id,field] of [['rateDia','dia'],['rateGold','gold']]) $(id).addEventListener('input',e=>{const v=Number(e.target.value);state.rates[state.basis][field]=v>=0&&Number.isFinite(v)?v:0;save();syncBasis();render();});
   chipGroup('sortChips','sort','sort');chipGroup('saleChips','sale','sale');
   $('query').addEventListener('input',e=>{state.query=e.target.value;state.shown=PAGE;render();});
   $('more').addEventListener('click',()=>{state.shown+=PAGE;render();});
@@ -234,6 +236,8 @@
       if(!response.ok)throw Error('HTTP '+response.status);
       const source=await response.json();
       if(source.schemaVersion!==1||!Array.isArray(source.packages))throw Error('지원하지 않는 데이터 형식');
+      if(num(source.itemPrices?.goldPer100mDia)) defaultGoldDia=num(source.itemPrices.goldPer100mDia);
+      syncBasis();
       for(const [name,v] of Object.entries(source.itemPrices?.items||{})) {const val=typeof v==='object'&&v?v.v:v,u=typeof v==='object'&&v?v.u:source.itemPrices.unit;if(Number.isFinite(Number(val))&&Number(val)>=0) defaults[name]={v:Number(val),u:unit(u)};}
       official=source.packages.filter(p=>Number.isFinite(p.price)&&p.price>0&&Array.isArray(p.items)&&p.items.length)
         .map((p,i)=>({...p,id:'n'+p.noticeIds.join('-')+'-'+i,noticeSalePeriods:p.noticeSalePeriods||[]}));

@@ -20,7 +20,8 @@
     if(item.name==='황금 다이아') return ctx.rates.gold;
     if(item.name==='골드') return ctx.goldWon>0?ctx.goldWon/1e8:null;
     const p=ctx.prices[item.name];
-    if(!p||!(Number(p.v)>0)) return null;
+    // 기본 단가 0은 '가치 없음'으로 확정된 값이라 미환산과 구분한다.
+    if(!p||!(Number(p.v)>=0)) return null;
     // 단위: won=원, dia=다이아, gold=골드(골드 1억당 원 시세로 환산)
     if(p.u==='gold') return ctx.goldWon>0?Number(p.v)*ctx.goldWon/1e8:null;
     return p.u==='won'?Number(p.v):Number(p.v)*ctx.rates.dia;
@@ -231,7 +232,7 @@
       if(!response.ok)throw Error('HTTP '+response.status);
       const source=await response.json();
       if(source.schemaVersion!==1||!Array.isArray(source.packages))throw Error('지원하지 않는 데이터 형식');
-      for(const [name,v] of Object.entries(source.itemPrices?.items||{})) {const val=typeof v==='object'&&v?v.v:v,u=typeof v==='object'&&v?v.u:source.itemPrices.unit;if(num(val)) defaults[name]={v:num(val),u:unit(u)};}
+      for(const [name,v] of Object.entries(source.itemPrices?.items||{})) {const val=typeof v==='object'&&v?v.v:v,u=typeof v==='object'&&v?v.u:source.itemPrices.unit;if(Number.isFinite(Number(val))&&Number(val)>=0) defaults[name]={v:Number(val),u:unit(u)};}
       official=source.packages.filter(p=>Number.isFinite(p.price)&&p.price>0&&Array.isArray(p.items)&&p.items.length)
         .map((p,i)=>({...p,id:'n'+p.noticeIds.join('-')+'-'+i,noticeSalePeriods:p.noticeSalePeriods||[]}));
       $('syncStatus').textContent=`패키지 ${official.length.toLocaleString('ko-KR')}개 · 마지막 확인 ${pretty(source.checkedAt)}`;

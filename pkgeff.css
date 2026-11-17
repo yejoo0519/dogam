@@ -45,9 +45,16 @@
 .pe-line select{padding:7px 6px}
 .pe-line button{border:1px solid var(--border);border-radius:6px;background:var(--bg3);color:var(--text3);padding:6px 9px;font-size:11px}
 .pe-form .pe-result{border:1px solid var(--border);border-radius:9px;margin-top:18px}
+.pe-calc{padding:16px 18px;margin-bottom:14px}
+.pe-calc-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:6px}
+.pe-calc-head h2{font:600 16px var(--u-sans);color:var(--text);margin:2px 0 4px}
+.pe-calc-head .pkg-muted{font-size:11px}
+.pe-calc-body{display:grid;grid-template-columns:1fr 1fr;gap:4px 28px}
 .pe-form-actions{display:flex;justify-content:flex-end;margin-top:14px}
 .pe-hint{font-size:11px;line-height:1.7;margin-bottom:14px}
 @media(max-width:860px){
+.pe-calc{padding:12px}
+.pe-calc-body{grid-template-columns:1fr}
 .pe-cards{grid-template-columns:1fr;padding:10px}
 .pe-base{padding:12px}
 #openPrices{margin-left:0}

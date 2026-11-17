@@ -204,13 +204,14 @@
     const form=readForm(),c=ctx();
     $('regPreview').innerHTML=resultHtml(form.price,calc(form,{...c,eggs:{...c.eggs,...form.eggs}}));
   }
-  $('openRegister').addEventListener('click',()=>{
+  function resetForm(){
     $('registerForm').reset();
     $('itemNames').innerHTML=['다이아','황금 다이아'].concat(itemNames()).map(n=>`<option value="${escape(n)}">`).join('');
     $('eggNames').innerHTML=eggNames().map(n=>`<option value="${escape(n)}">`).join('');
     $('regItems').innerHTML=itemLine()+itemLine();$('regEggs').innerHTML=eggLine();
-    preview();$('registerDialog').showModal();
-  });
+    preview();
+  }
+  $('regReset').addEventListener('click',resetForm);
   $('regAddItem').addEventListener('click',()=>$('regItems').insertAdjacentHTML('beforeend',itemLine()));
   $('regAddEgg').addEventListener('click',()=>$('regEggs').insertAdjacentHTML('beforeend',eggLine()));
   $('registerForm').addEventListener('click',e=>{const b=e.target.closest('[data-remove]');if(b){b.closest('.pe-line').remove();preview();}});
@@ -223,11 +224,11 @@
   $('registerForm').addEventListener('submit',e=>{
     e.preventDefault();
     const form=readForm();
-    if(!form.name||!form.price){$('registerForm').reportValidity();return;}
+    if(!form.name||!form.price){$('regPreview').innerHTML='<div><div class="pe-k">패키지 이름과 가격을 입력해 주세요.</div></div>';return;}
     if(!form.items.length){$('regPreview').innerHTML='<div><div class="pe-k">구성품 또는 알을 한 줄 이상 입력해 주세요.</div></div>';return;}
     Object.assign(state.eggs,form.eggs);
     state.custom.unshift({id:'c'+Date.now().toString(36),name:form.name,price:form.price,createdAt:today,custom:true,items:form.items});
-    save();state.shown=PAGE;$('registerDialog').close();render();
+    save();state.shown=PAGE;resetForm();render();
   });
 
   async function init(){
@@ -243,7 +244,7 @@
       official=source.packages.filter(p=>Number.isFinite(p.price)&&p.price>0&&Array.isArray(p.items)&&p.items.length)
         .map((p,i)=>({...p,id:'n'+p.noticeIds.join('-')+'-'+i,noticeSalePeriods:p.noticeSalePeriods||[]}));
       $('syncStatus').textContent=`패키지 ${official.length.toLocaleString('ko-KR')}개 · 마지막 확인 ${pretty(source.checkedAt)}`;
-      render();
+      render();resetForm();
     }catch(error){
       $('syncStatus').classList.add('error');$('syncStatus').textContent='패키지 기록을 불러오지 못했습니다. 직접 등록한 패키지만 표시합니다.';
       console.error('Package value:',error);render();

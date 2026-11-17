@@ -19,7 +19,6 @@
       <div class="pkg-wrap" id="pkgeffRoot" hidden>
         <header class="pkg-heading">
           <div><p class="pkg-eyebrow">PACKAGE VALUE</p><h1>패키지 효율</h1><p class="pkg-sub">구성품과 알 시세를 넣으면, 재화 가치와 이득률을 정리해 드려요.</p></div>
-          <button id="openRegister" class="pkg-button pe-primary" type="button">+ 등록하기</button>
         </header>
         <div id="syncStatus" class="pkg-sync" aria-live="polite">패키지 기록을 불러오는 중…</div>
         <section class="pkg-content pe-base" aria-label="환산 기준">
@@ -28,6 +27,28 @@
           <label class="pe-field">황금 다이아 1개 <input id="rateGold" type="number" min="0" step="0.01" inputmode="decimal"> 원</label>
           <label class="pe-field">골드 1억 <input id="rateGoldCoin" type="number" min="0" step="1" inputmode="numeric" placeholder="기본 0"> 원</label>
           <button id="openPrices" class="pkg-button" type="button">아이템 단가 설정</button>
+        </section>
+        <section class="pkg-content pe-calc" aria-labelledby="registerTitle">
+          <form id="registerForm">
+            <div class="pe-calc-head"><div><p class="pkg-eyebrow">CALCULATOR</p><h2 id="registerTitle">패키지 직접 계산</h2><p class="pkg-muted">구성품과 개수를 넣으면 바로 계산돼요. 등록하면 아래 목록에 저장됩니다.</p></div><button type="button" id="regReset" class="pkg-button">초기화</button></div>
+            <div class="pe-calc-body pe-form">
+              <div>
+                <label class="pe-form-row">패키지 이름 <input id="regName" type="text" maxlength="40" placeholder="예: 말카르티스 패키지"></label>
+                <label class="pe-form-row">가격(원) <input id="regPrice" type="number" min="1" step="100" inputmode="numeric" placeholder="33000"></label>
+                <h3>구성품</h3>
+                <div id="regItems" class="pe-lines"></div>
+                <button type="button" id="regAddItem" class="pkg-button">+ 구성품 추가</button>
+              </div>
+              <div>
+                <h3>알</h3>
+                <div id="regEggs" class="pe-lines"></div>
+                <button type="button" id="regAddEgg" class="pkg-button">+ 알 추가</button>
+                <div id="regPreview" class="pe-result" aria-live="polite"></div>
+                <div class="pe-form-actions"><button type="submit" class="pkg-button pe-primary">목록에 등록</button></div>
+              </div>
+            </div>
+            <datalist id="itemNames"></datalist><datalist id="eggNames"></datalist>
+          </form>
         </section>
         <section class="pkg-content">
           <div class="pkg-filters">
@@ -51,24 +72,6 @@
       </div>
     </main>
   </div>
-  <dialog id="registerDialog" class="pkg-dialog" aria-labelledby="registerTitle">
-    <form id="registerForm" method="dialog">
-      <header class="pkg-detail-head"><div><p class="pkg-eyebrow">NEW PACKAGE</p><h2 id="registerTitle">패키지 등록</h2></div><button type="button" data-close>닫기</button></header>
-      <div class="pkg-detail-content pe-form">
-        <label class="pe-form-row">패키지 이름 <input id="regName" type="text" maxlength="40" placeholder="예: 말카르티스 패키지" required></label>
-        <label class="pe-form-row">가격(원) <input id="regPrice" type="number" min="1" step="100" inputmode="numeric" placeholder="33000" required></label>
-        <h3>구성품</h3>
-        <div id="regItems" class="pe-lines"></div>
-        <button type="button" id="regAddItem" class="pkg-button">+ 구성품 추가</button>
-        <h3>알</h3>
-        <div id="regEggs" class="pe-lines"></div>
-        <button type="button" id="regAddEgg" class="pkg-button">+ 알 추가</button>
-        <div id="regPreview" class="pe-result" aria-live="polite"></div>
-        <div class="pe-form-actions"><button type="submit" class="pkg-button pe-primary">등록</button></div>
-      </div>
-    </form>
-    <datalist id="itemNames"></datalist><datalist id="eggNames"></datalist>
-  </dialog>
   <dialog id="priceDialog" class="pkg-dialog" aria-labelledby="priceTitle">
     <header class="pkg-detail-head"><div><p class="pkg-eyebrow">ITEM PRICES</p><h2 id="priceTitle">아이템 단가</h2></div><button type="button" data-close>닫기</button></header>
     <div class="pkg-detail-content">

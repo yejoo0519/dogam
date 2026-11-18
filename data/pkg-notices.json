@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-11-17",
+  "checkedAt": "2026-11-18",
   "source": "https://www.dragonvillage.net/notice",
-  "totalCount": 3968,
-  "scannedCount": 3968,
+  "totalCount": 3969,
+  "scannedCount": 3969,
   "scannedIds": [
     283,
     284,
@@ -3972,9 +3972,33 @@
     21459,
     21460,
     21461,
-    21462
+    21462,
+    21463
   ],
   "notices": [
+    {
+      "id": 21463,
+      "title": "[공지] 11월 18일(수) 업데이트 안내(수정)",
+      "date": "2026-11-17",
+      "url": "https://www.dragonvillage.net/notice/21463",
+      "events": [
+        {
+          "dragonId": 244,
+          "name": "와일드 드래곤",
+          "start": "2026-11-23",
+          "end": "2026-12-06",
+          "noticeId": 21463
+        }
+      ],
+      "periods": [
+        {
+          "start": "2026-11-23",
+          "end": "2026-12-06",
+          "label": "와일드 패키지 판매"
+        }
+      ],
+      "hasImages": true
+    },
     {
       "id": 21456,
       "title": "[공지] (내용 추가)11월 11일(수) 업데이트 안내",

@@ -12,9 +12,10 @@
   var SCOL = { hp: 'var(--hpc)', atk: 'var(--atc)', def: 'var(--dfc)' };
   /* 게임 젬 수치 → 사이트 젬 칸 (35·36은 뉴비용 칸, 38~44는 기존 37~40 칸) */
   var GEM_KEY = { 35: 35, 36: 36, 38: 37, 40: 38, 42: 39, 44: 40 };
-  var CHAM_DEST = [['cham', '챔대 정령 배분'], ['cham1', '챔대 정령 배분 · 1라'], ['cham2', '챔대 정령 배분 · 2라'], ['cham3', '챔대 정령 배분 · 3라']];
+  var CHAM_DEST = [['chamrsv', '챔대 예비 정령'], ['cham', '챔대 정령 배분'], ['cham1', '챔대 정령 배분 · 1라'], ['cham2', '챔대 정령 배분 · 2라'], ['cham3', '챔대 정령 배분 · 3라']];
   var CHAM_INBOX = (/\/en\//.test(location.pathname) ? 'dv1simEN' : 'dv1sim') + '_cham_spx_inbox';
-  function isCham(v) { return /^cham[123]?$/.test(v || ''); }
+  var CHAM_RSV_INBOX = CHAM_INBOX.replace('_cham_spx_inbox', '_cham_rsv_inbox');
+  function isCham(v) { return /^cham([123]|rsv)?$/.test(v || ''); }
   /* 챔대 자동 계산기 정령 배분으로 보내기: list = [{opts, rd(0~2 또는 null)}] */
   function chamSend(list) {
     if (!list.length) return 0;
@@ -169,7 +170,7 @@
       html += '</div></div>';
     });
     if (items.some(function (i) { return i.kind === 'spirit'; })) {
-      html += '<p class="shot-help" style="margin-top:8px">정령은 옵션을 풀강 기준으로 넣고 부가옵은 비워요. 정령마다 <b>길드전 예비 정령</b>으로 보내거나, <b>드래곤을 골라</b> 그 정령을 단 드래곤으로 길드전 계산기 [내 용 정보]에 등록해요. (등급 9.0 · 강림(축복)으로 들어가니 길드전 계산기에서 맞게 바꿔 주세요) <b>챔대 정령 배분</b>을 고르면 챔피언대전 자동 계산기 [정령 배분] 탭의 보유 정령에 추가돼요. 1라 · 2라 · 3라를 고르면 라운드별 배분의 그 라운드로 들어가요.</p>';
+      html += '<p class="shot-help" style="margin-top:8px">정령은 옵션을 풀강 기준으로 넣고 부가옵은 비워요. 정령마다 <b>길드전 예비 정령</b>으로 보내거나, <b>드래곤을 골라</b> 그 정령을 단 드래곤으로 길드전 계산기 [내 용 정보]에 등록해요. (등급 9.0 · 강림(축복)으로 들어가니 길드전 계산기에서 맞게 바꿔 주세요) <b>챔대 예비 정령</b>을 고르면 챔피언대전 자동 계산기 [내 드래곤] 탭의 예비 정령에, <b>챔대 정령 배분</b>을 고르면 챔피언대전 자동 계산기 [정령 배분] 탭의 보유 정령에 추가돼요. 1라 · 2라 · 3라를 고르면 라운드별 배분의 그 라운드로 들어가요.</p>';
     }
     var others = items.filter(function (i) { return i.kind === 'none'; }).length;
     if (others) html += '<p class="shot-help" style="margin-top:12px">정보를 못 읽은 칸 ' + others + '개는 뺐어요.</p>';
@@ -222,6 +223,15 @@
     });
     if (gn) msg.push('젬 ' + gn + '칸');
     var chams = sel.filter(function (i) { return i.kind === 'spirit' && isCham(i.data.dest); });
+    var crs = chams.filter(function (i) { return i.data.dest === 'chamrsv'; });
+    if (crs.length) {
+      var rbox = [];
+      try { rbox = JSON.parse(localStorage.getItem(CHAM_RSV_INBOX) || '[]'); } catch (e) {}
+      if (!Array.isArray(rbox)) rbox = [];
+      crs.forEach(function (i) { rbox.push({ sp: i.data.opts.map(function (o) { return { stat: o.stat, type: o.type }; }), memo: '' }); });
+      try { localStorage.setItem(CHAM_RSV_INBOX, JSON.stringify(rbox)); msg.push('챔대 예비 정령 ' + crs.length + '개'); } catch (e) {}
+    }
+    chams = chams.filter(function (i) { return i.data.dest !== 'chamrsv'; });
     var nc = chamSend(chams.map(function (i) { var m = /^cham([123])$/.exec(i.data.dest); return { opts: i.data.opts, rd: m ? +m[1] - 1 : null }; }));
     if (nc) msg.push('챔대 정령 배분 ' + nc + '개');
     var sps = sel.filter(function (i) { return i.kind === 'spirit' && !isCham(i.data.dest); });

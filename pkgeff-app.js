@@ -50,10 +50,14 @@
   const won=value=>Math.round(value).toLocaleString('ko-KR')+'원';
   const pretty=value=>value?value.replaceAll('-','.'):'—';
   const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
-  const state={basis:'market',rates:{market:{...DEFAULT_RATES.market},ingame:{...DEFAULT_RATES.ingame}},goldWon:0,eggs:{},prices:{},custom:[],query:'',sort:'recent',sale:'all',shown:PAGE};
+  const state={basis:'market',rates:{market:{...DEFAULT_RATES.market},ingame:{...DEFAULT_RATES.ingame}},goldWon:0,eggs:{},prices:{market:{},ingame:{}},custom:[],query:'',sort:'recent',sale:'all',shown:PAGE};
   // 골드 1억의 기본값(다이아 개수). 직접 입력한 골드 시세가 없을 때 다이아 단가를 곱해 쓴다.
-  let official=[],defaults={},defaultsIngame={},defaultGoldDia=0;
+  let official=[],defaults={},defaultsIngame={},defaultGoldDia=0,notes={},notesIngame={};
+  const BASIS_LABEL={market:'유저 거래 기준',ingame:'인게임 재화값 기준'};
+  const TYPE_LABEL={trade:'유저 거래가',shop:'인게임 상점',estimate:'추정',zero:'0원 지정'};
   const num=value=>{const n=Number(value);return Number.isFinite(n)&&n>0?n:0;};
+  // 단가는 0도 유효한 값(평가 제외)이라 빈칸만 '값 없음'으로 본다.
+  const priceVal=value=>{if(value===''||value==null)return null;const n=Number(value);return Number.isFinite(n)&&n>=0?n:null;};
   const unit=value=>value==='won'||value==='gold'||value==='gdia'?value:'dia';
   function load(){
     try{
@@ -70,7 +74,10 @@
       if(saved.rates?.ingame?.dia===5.12) delete saved.rates.ingame.dia;
       for(const k of ['market','ingame']) for(const f of ['dia','gold']){const v=Number(saved.rates?.[k]?.[f]);if(v>=0&&Number.isFinite(v)) state.rates[k][f]=v;}
       for(const [k,v] of Object.entries(saved.eggs||{})) if(num(v)) state.eggs[k]=num(v);
-      for(const [k,p] of Object.entries(saved.prices||{})) if(num(p?.v)&&p.u!=='evt') state.prices[k]={v:num(p.v),u:unit(p.u)};
+      const readPrices=src=>{const out={};for(const [k,p] of Object.entries(src||{})){const v=priceVal(p?.v);if(v!=null&&p.u!=='evt') out[k]={v,u:unit(p.u)};}return out;};
+      if(saved.prices&&(saved.prices.market||saved.prices.ingame)){state.prices.market=readPrices(saved.prices.market);state.prices.ingame=readPrices(saved.prices.ingame);}
+      // 예전 버전은 두 기준이 같은 단가를 썼으니 양쪽에 그대로 옮긴다.
+      else if(saved.prices){state.prices.market=readPrices(saved.prices);state.prices.ingame=readPrices(saved.prices);}
       if(Array.isArray(saved.custom)) state.custom=saved.custom.filter(p=>p&&typeof p.name==='string'&&num(p.price)&&Array.isArray(p.items)).map(p=>({
         id:String(p.id),name:p.name,price:num(p.price),createdAt:String(p.createdAt||today),custom:true,
         items:p.items.filter(i=>i&&typeof i.name==='string'&&num(i.qty)).map(i=>({name:i.name,qty:num(i.qty),kind:i.kind==='egg'?'egg':'item'}))
@@ -83,7 +90,8 @@
   }
   // 직접 넣은 단가가 데이터의 기본 단가보다 우선한다.
   // 인게임 기준에서는 인게임 가격이 있는 아이템만 그 값으로 바꾸고, 나머지는 유저 거래 단가를 그대로 쓴다.
-  const prices=()=>({...defaults,...(state.basis==='ingame'?defaultsIngame:{}),...state.prices});
+  const baseDefaults=()=>({...defaults,...(state.basis==='ingame'?defaultsIngame:{})});
+  const prices=()=>({...baseDefaults(),...state.prices[state.basis]});
   const goldWon=()=>state.goldWon>0?state.goldWon:defaultGoldDia*state.rates[state.basis].dia;
   const ctx=()=>({rates:state.rates[state.basis],goldWon:goldWon(),eggs:state.eggs,prices:prices()});
   const all=()=>state.custom.concat(official);
@@ -149,7 +157,7 @@
     });
   }
   $('rateGoldCoin').addEventListener('input',e=>{state.goldWon=num(e.target.value);save();render();});
-  $('basis').addEventListener('click',e=>{const b=e.target.closest('[data-basis]');if(!b)return;state.basis=b.dataset.basis;syncBasis();save();render();preview();});
+  $('basis').addEventListener('click',e=>{const b=e.target.closest('[data-basis]');if(!b)return;state.basis=b.dataset.basis;syncBasis();save();render();preview();renderNotes();});
   for(const [id,field] of [['rateDia','dia'],['rateGold','gold']]) $(id).addEventListener('input',e=>{const v=Number(e.target.value);state.rates[state.basis][field]=v>=0&&Number.isFinite(v)?v:0;save();syncBasis();render();});
   chipGroup('sortChips','sort','sort');chipGroup('saleChips','sale','sale');
   $('query').addEventListener('input',e=>{state.query=e.target.value;state.shown=PAGE;render();});
@@ -179,19 +187,20 @@
   }
   $('openPrices').addEventListener('click',()=>{
     $('priceList').innerHTML=itemNames().map(name=>{
-      const p=state.prices[name]||prices()[name];
-      return `<label class="pe-line"><span>${escape(name)}</span><input type="number" min="0" step="any" inputmode="decimal" data-price="${escape(name)}" value="${p?p.v:''}" placeholder="단가"><select data-unit="${escape(name)}" aria-label="${escape(name)} 단가 단위"><option value="dia"${!p||p.u==='dia'?' selected':''}>다이아</option><option value="gdia"${p?.u==='gdia'?' selected':''}>황금 다이아</option><option value="won"${p?.u==='won'?' selected':''}>원</option><option value="gold"${p?.u==='gold'?' selected':''}>골드</option></select></label>`;
+      const own=state.prices[state.basis][name],p=own||prices()[name],n=noteOf(name);
+      return `<label class="pe-line"><span>${escape(name)}${own?' <em class="pe-own">직접 수정</em>':''}${n?`<small class="pe-note">${escape(TYPE_LABEL[n.type]||'')} · ${escape(n.basis)}</small>`:''}</span><input type="number" min="0" step="any" inputmode="decimal" data-price="${escape(name)}" value="${p?p.v:''}" placeholder="단가"><select data-unit="${escape(name)}" aria-label="${escape(name)} 단가 단위"><option value="dia"${!p||p.u==='dia'?' selected':''}>다이아</option><option value="gdia"${p?.u==='gdia'?' selected':''}>황금 다이아</option><option value="won"${p?.u==='won'?' selected':''}>원</option><option value="gold"${p?.u==='gold'?' selected':''}>골드</option></select></label>`;
     }).join('');
+    $('priceBasis').textContent=BASIS_LABEL[state.basis];
     $('priceDialog').showModal();
   });
   function readPrice(name){
     const line=$('priceList'),input=line.querySelector(`[data-price="${CSS.escape(name)}"]`),sel=line.querySelector(`[data-unit="${CSS.escape(name)}"]`);
-    const v=num(input.value);if(v) state.prices[name]={v,u:unit(sel.value)}; else delete state.prices[name];
+    const v=priceVal(input.value),own=state.prices[state.basis];if(v!=null) own[name]={v,u:unit(sel.value)}; else delete own[name];
     save();
   }
   $('priceList').addEventListener('input',e=>{const t=e.target.closest('[data-price],[data-unit]');if(t)readPrice(t.dataset.price||t.dataset.unit);});
   $('priceList').addEventListener('change',e=>{const t=e.target.closest('[data-unit]');if(t)readPrice(t.dataset.unit);});
-  $('priceDialog').addEventListener('close',render);
+  $('priceDialog').addEventListener('close',()=>{render();renderNotes();});
 
   /* ── 패키지 등록 ── */
   function itemLine(){return '<div class="pe-line"><input type="text" list="itemNames" maxlength="30" placeholder="구성품 이름" data-f="name"><input type="number" min="0" step="1" inputmode="numeric" placeholder="수량" data-f="qty"><button type="button" data-remove>삭제</button></div>';}
@@ -239,6 +248,20 @@
     save();state.shown=PAGE;resetForm();render();
   });
 
+  /* ── 단가 근거 ── */
+  function noteOf(name){return (state.basis==='ingame'&&notesIngame[name])||notes[name]||null;}
+  function renderNotes(){
+    const box=$('noteList');if(!box)return;
+    const c=ctx(),groups={trade:[],shop:[],estimate:[],zero:[]};
+    const names=new Set([...Object.keys(notes),...Object.keys(notesIngame)]);
+    for(const name of names){
+      const n=noteOf(name);if(!n||!groups[n.type])continue;
+      const w=unitWon({name},c),own=state.prices[state.basis][name];
+      groups[n.type].push(`<tr><td>${escape(name)}</td><td class="pe-num">${w==null?'—':w<10&&w>0?w.toFixed(2)+'원':won(w)}${own?' <em class="pe-own">직접 수정</em>':''}</td><td>${escape(n.basis)}</td></tr>`);
+    }
+    $('noteBasis').textContent=BASIS_LABEL[state.basis];
+    box.innerHTML=Object.entries(groups).filter(([,r])=>r.length).map(([t,r])=>`<h3>${TYPE_LABEL[t]} <span class="pkg-muted">${r.length}종</span></h3><div class="pe-table-wrap"><table class="pe-table"><thead><tr><th>아이템</th><th>1개 단가</th><th>근거</th></tr></thead><tbody>${r.join('')}</tbody></table></div>`).join('');
+  }
   async function init(){
     load();syncBasis();
     try{
@@ -249,11 +272,12 @@
       if(num(source.itemPrices?.goldPer100mDia)) defaultGoldDia=num(source.itemPrices.goldPer100mDia);
       syncBasis();
       for(const [name,v] of Object.entries(source.itemPrices?.items||{})) {const val=typeof v==='object'&&v?v.v:v,u=typeof v==='object'&&v?v.u:source.itemPrices.unit;if(Number.isFinite(Number(val))&&Number(val)>=0) defaults[name]={v:Number(val),u:unit(u)};}
+      notes=source.itemPrices?.notes||{};notesIngame=source.itemPrices?.ingameNotes||{};
       for(const [name,v] of Object.entries(source.itemPrices?.ingame||{})) {const val=typeof v==='object'&&v?v.v:v,u=typeof v==='object'&&v?v.u:source.itemPrices.unit;if(Number.isFinite(Number(val))&&Number(val)>=0) defaultsIngame[name]={v:Number(val),u:unit(u)};}
       official=source.packages.filter(p=>Number.isFinite(p.price)&&p.price>0&&Array.isArray(p.items)&&p.items.length)
         .map((p,i)=>({...p,id:'n'+p.noticeIds.join('-')+'-'+i,noticeSalePeriods:p.noticeSalePeriods||[]}));
       $('syncStatus').textContent=`패키지 ${official.length.toLocaleString('ko-KR')}개 · 마지막 확인 ${pretty(source.checkedAt)}`;
-      render();resetForm();
+      render();resetForm();renderNotes();
     }catch(error){
       $('syncStatus').classList.add('error');$('syncStatus').textContent='패키지 기록을 불러오지 못했습니다. 직접 등록한 패키지만 표시합니다.';
       console.error('Package value:',error);render();

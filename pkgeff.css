@@ -52,7 +52,19 @@
 .pe-calc-body{display:grid;grid-template-columns:1fr 1fr;gap:4px 28px}
 .pe-form-actions{display:flex;justify-content:flex-end;margin-top:14px}
 .pe-hint{font-size:11px;line-height:1.7;margin-bottom:14px}
+.pe-note{display:block;font-size:10px;color:var(--text3);line-height:1.5;margin-top:2px}
+.pe-own{font-style:normal;font-size:10px;color:var(--accent)}
+.pe-notes{padding:12px 18px;margin-bottom:14px}
+.pe-notes summary{cursor:pointer;font:600 13px var(--u-sans);color:var(--text)}
+.pe-notes h3{font:600 12px var(--u-sans);color:var(--text2);margin:16px 0 6px}
+.pe-table-wrap{overflow-x:auto}
+.pe-table{width:100%;border-collapse:collapse;font-size:11px;color:var(--text2)}
+.pe-table th{text-align:left;font-weight:500;color:var(--text3);border-bottom:1px solid var(--border);padding:6px 8px;white-space:nowrap}
+.pe-table td{border-bottom:1px solid var(--border2);padding:6px 8px;vertical-align:top;line-height:1.5}
+.pe-table td:first-child{color:var(--text);white-space:nowrap}
+.pe-num{font-family:var(--u-mono,monospace);white-space:nowrap;text-align:right}
 @media(max-width:860px){
+.pe-notes{padding:12px}
 .pe-calc{padding:12px}
 .pe-calc-body{grid-template-columns:1fr}
 .pe-cards{grid-template-columns:1fr;padding:10px}

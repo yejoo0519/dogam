@@ -53,6 +53,14 @@
   const state={basis:'market',rates:{market:{...DEFAULT_RATES.market},ingame:{...DEFAULT_RATES.ingame}},goldWon:0,eggs:{},prices:{market:{},ingame:{}},custom:[],query:'',sort:'recent',sale:'all',shown:PAGE};
   // 골드 1억의 기본값(다이아 개수). 직접 입력한 골드 시세가 없을 때 다이아 단가를 곱해 쓴다.
   let official=[],defaults={},defaultsIngame={},defaultGoldDia=0,notes={},notesIngame={};
+  // 구성품 아이콘: 아이템은 assets/items 코드, 드래곤 알은 드래곤 번호(성체 프로필)로 보여 준다.
+  let icons={items:{},eggs:{}};
+  function iconHtml(line){
+    const code=line.egg?icons.eggs[line.key]:icons.items[line.name];
+    if(code==null) return '';
+    const src=line.egg?`dragon/${encodeURIComponent(code)}/profile/4.png`:`assets/items/${encodeURIComponent(code)}.webp`;
+    return `<img class="pe-ico" src="${src}" alt="" loading="lazy" decoding="async">`;
+  }
   const BASIS_LABEL={market:'유저 거래 기준',ingame:'인게임 재화값 기준'};
   const TYPE_LABEL={trade:'유저 거래가',shop:'인게임 상점',estimate:'추정',zero:'0원 지정'};
   const num=value=>{const n=Number(value);return Number.isFinite(n)&&n>0?n:0;};
@@ -111,8 +119,8 @@
   }
   function chipHtml(line){
     const qty=line.qty.toLocaleString('ko-KR');
-    if(line.egg) return `<label class="pe-chip egg" data-line="${escape(line.name)}"><b>${escape(line.key)}</b><em>×${qty}</em><input type="number" min="0" step="100" inputmode="numeric" placeholder="${/장식/.test(line.key)?'장식':'알'} 시세(원)" data-egg="${escape(line.key)}" value="${state.eggs[line.key]??''}" aria-label="${escape(line.key)} 1개 시세(원)"></label>`;
-    return `<span class="pe-chip${line.value==null?' miss':''}" data-line="${escape(line.name)}"><b>${escape(line.name)}</b><em>×${qty}</em><i>${line.value==null?'미환산':won(line.value)}</i></span>`;
+    if(line.egg) return `<label class="pe-chip egg" data-line="${escape(line.name)}">${iconHtml(line)}<b>${escape(line.key)}</b><em>×${qty}</em><input type="number" min="0" step="100" inputmode="numeric" placeholder="${/장식/.test(line.key)?'장식':'알'} 시세(원)" data-egg="${escape(line.key)}" value="${state.eggs[line.key]??''}" aria-label="${escape(line.key)} 1개 시세(원)"></label>`;
+    return `<span class="pe-chip${line.value==null?' miss':''}" data-line="${escape(line.name)}">${iconHtml(line)}<b>${escape(line.name)}</b><em>×${qty}</em><i>${line.value==null?'미환산':won(line.value)}</i></span>`;
   }
   function visible(){
     const q=state.query.replace(/\s+/g,'').toLowerCase(),c=ctx();
@@ -320,6 +328,7 @@
       const source=await response.json();
       if(source.schemaVersion!==1||!Array.isArray(source.packages))throw Error('지원하지 않는 데이터 형식');
       if(num(source.itemPrices?.goldPer100mDia)) defaultGoldDia=num(source.itemPrices.goldPer100mDia);
+      if(source.itemIcons) icons={items:source.itemIcons.items||{},eggs:source.itemIcons.eggs||{}};
       syncBasis();
       for(const [name,v] of Object.entries(source.itemPrices?.items||{})) {const val=typeof v==='object'&&v?v.v:v,u=typeof v==='object'&&v?v.u:source.itemPrices.unit;if(Number.isFinite(Number(val))&&Number(val)>=0) defaults[name]={v:Number(val),u:unit(u)};}
       notes=source.itemPrices?.notes||{};notesIngame=source.itemPrices?.ingameNotes||{};

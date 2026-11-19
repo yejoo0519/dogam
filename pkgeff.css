@@ -22,6 +22,8 @@
 .pe-del:hover{color:var(--text);border-color:var(--border3)}
 .pe-chips{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 14px;flex:1;align-content:flex-start}
 .pe-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border2);border-radius:7px;background:var(--bg2);padding:5px 8px;font-size:11px;color:var(--text2);max-width:100%}
+.pe-ico{width:22px;height:22px;object-fit:contain;flex-shrink:0;margin:-2px -1px -2px -3px}
+.pe-chip.egg .pe-ico{width:28px;height:28px}
 .pe-chip b{font-weight:500;color:var(--text);overflow-wrap:anywhere}
 .pe-chip em{font-style:normal;color:var(--text3)}
 .pe-chip i{font:normal 11px var(--u-mono,monospace);color:var(--accent)}

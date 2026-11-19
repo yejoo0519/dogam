@@ -1,6 +1,6 @@
 (function(root){
   'use strict';
-  const GENERIC=/다이아|골드|Lv|레벨업|부화기|정수|보석|결정|망치|합성석|꿈의 (공격|방어|체력)|강림|뽑기권|얼음 조각|사탕|물약|정기|치료제|디바인 스톤|해제권|뿔|장식|정령|토벌권|티켓|루비|확정권|변환권|스크롤|수정|파티클/;
+  const GENERIC=/다이아|골드|Lv|레벨업|부화기|승천|정수|보석|결정|망치|합성석|꿈의 (공격|방어|체력)|강림|뽑기권|얼음 조각|사탕|물약|정기|치료제|디바인 스톤|해제권|뿔|장식|정령|토벌권|티켓|루비|확정권|변환권|스크롤|수정|파티클/;
   // market: 유저 거래 시세(다이아 100개 800원, 황금 다이아 7,400개 55,000원)
   // ingame: 다이아 상점(33,000원에 1,500개), 황금 다이아 상점(33,000원에 1,100개)
   const DEFAULT_RATES={market:{dia:8,gold:7.43},ingame:{dia:22,gold:30}};
@@ -219,6 +219,8 @@
   // 드래곤 알·강림 전용 장식은 하나의 타일로 담고, 줄에서 이름(선택)과 시세를 넣는다.
   const PRICED=[['드래곤 알','egg'],['강림 전용 장식','deco']];
   let pickTab='all';
+  // 이벤트 재화는 패키지 가치 계산에서 빼므로 담기 목록에도 넣지 않는다.
+  const EVENT_ONLY=new Set(['얼음 조각','사탕']);
   function catOf(name){
     if(/^(다이아|황금 다이아|골드|루비|디바인 스톤|카닐|축복의 보석|얼음 조각|사탕)$/.test(name)) return 'cur';
     if(/Lv|레벨업|부화기|더블 맥스|승천/.test(name)) return 'lv';
@@ -250,7 +252,7 @@
   }
   function renderPick(){
     const q=norm($('pickQuery').value||'');
-    const items=[...new Set([...QUICK,...itemFreq()])].filter(n=>!n.startsWith('알(')),priced=PRICED.map(([n,k])=>[n,k]);
+    const items=[...new Set([...QUICK,...itemFreq()])].filter(n=>!n.startsWith('알(')&&!EVENT_ONLY.has(n)),priced=PRICED.map(([n,k])=>[n,k]);
     let list;
     if(q) list=[...priced.filter(([n])=>norm(n).includes(q)),...items.filter(n=>norm(n).includes(q)).map(n=>[n,'item'])];
     else if(pickTab==='all') list=[...priced,...items.slice(0,22).map(n=>[n,'item'])];
@@ -354,7 +356,7 @@
   }
   function resetForm(){
     $('registerForm').reset();
-    const items=[...new Set([...QUICK,...itemFreq()])].filter(n=>!n.startsWith('알('));
+    const items=[...new Set([...QUICK,...itemFreq()])].filter(n=>!n.startsWith('알(')&&!EVENT_ONLY.has(n));
     $('pickNames').innerHTML=[...items,...eggRecent()].map(n=>`<option value="${escape(n)}">`).join('');
     $('eggList').innerHTML=eggRecent().map(n=>`<option value="${escape(n)}">`).join('');
     $('regTemplate').innerHTML='<option value="">직접 입력</option>'+all().filter(p=>p.price&&p.items.length).map(p=>`<option value="${escape(p.id)}">${escape(p.name)} · ${won(p.price)}${p.custom?' · 직접 등록':p.always?' · 상시':' · '+pretty(p.noticeDate)}</option>`).join('');

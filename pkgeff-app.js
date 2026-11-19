@@ -166,9 +166,9 @@
       render();
     });
   }
-  $('rateGoldCoin').addEventListener('input',e=>{state.goldWon=num(e.target.value);save();render();});
-  $('basis').addEventListener('click',e=>{const b=e.target.closest('[data-basis]');if(!b)return;state.basis=b.dataset.basis;syncBasis();save();render();preview();renderNotes();});
-  for(const [id,field] of [['rateDia','dia'],['rateGold','gold']]) $(id).addEventListener('input',e=>{const v=Number(e.target.value);state.rates[state.basis][field]=v>=0&&Number.isFinite(v)?v:0;save();syncBasis();render();});
+  $('rateGoldCoin').addEventListener('input',e=>{state.goldWon=num(e.target.value);save();render();refreshCalc();});
+  $('basis').addEventListener('click',e=>{const b=e.target.closest('[data-basis]');if(!b)return;state.basis=b.dataset.basis;syncBasis();save();render();refreshCalc();renderNotes();});
+  for(const [id,field] of [['rateDia','dia'],['rateGold','gold']]) $(id).addEventListener('input',e=>{const v=Number(e.target.value);state.rates[state.basis][field]=v>=0&&Number.isFinite(v)?v:0;save();syncBasis();render();refreshCalc();});
   chipGroup('sortChips','sort','sort');chipGroup('saleChips','sale','sale');
   $('query').addEventListener('input',e=>{state.query=e.target.value;state.shown=PAGE;render();});
   $('more').addEventListener('click',()=>{state.shown+=PAGE;render();});
@@ -210,97 +210,157 @@
   }
   $('priceList').addEventListener('input',e=>{const t=e.target.closest('[data-price],[data-unit]');if(t)readPrice(t.dataset.price||t.dataset.unit);});
   $('priceList').addEventListener('change',e=>{const t=e.target.closest('[data-unit]');if(t)readPrice(t.dataset.unit);});
-  $('priceDialog').addEventListener('close',()=>{render();renderNotes();});
+  $('priceDialog').addEventListener('close',()=>{render();refreshCalc();renderNotes();});
 
   /* ── 패키지 등록 ── */
-  function itemLine(name='',qty=''){return `<div class="pe-line"><input type="text" list="itemNames" maxlength="30" placeholder="구성품 이름" data-f="name" value="${escape(name)}"><input type="number" min="0" step="1" inputmode="numeric" placeholder="수량" data-f="qty" value="${escape(qty)}"><i class="pe-line-val" data-f="val"></i><button type="button" data-remove>삭제</button></div>`;}
-  function eggLine(name='',qty=1){const price=name?state.eggs[eggKey(name)]??'':'';return `<div class="pe-line"><input type="text" list="eggNames" maxlength="30" placeholder="알(드래곤) 이름" data-f="name" value="${escape(name)}"><input type="number" min="0" step="1" inputmode="numeric" placeholder="수량" data-f="qty" value="${escape(qty)}"><input type="number" min="0" step="100" inputmode="numeric" placeholder="알 시세(원)" data-f="price" value="${escape(price)}"><button type="button" data-remove>삭제</button></div>`;}
-  // 지금 목록의 패키지에 자주 들어가는 구성품 순서(빠른 추가·자동완성용)
+  /* ── 직접 계산: 왼쪽 목록에서 눌러 담고, 오른쪽 바구니에서 수량을 넣는다 ── */
+  const QUICK=['다이아','황금 다이아','골드','스페셜 Lv+1','Lv-1','Lv+1','프리미엄 Lv+1','꿈의 부화기 +1','상급 초월의 정수 세트','초월의 보석','최상급 강화의 정수','꿈의 정수(최상급)','페르시온 결정','강림 강화곤','더블 맥스 레벨업','합성석','디트의 망치','카닐'];
+  const PICK_TABS=[['all','자주 쓰는'],['cur','재화'],['lv','레벨업'],['mat','정수·재료'],['gem','젬·망치'],['etc','정령·기타'],['egg','드래곤']];
+  let pickTab='all';
+  function catOf(name){
+    if(/^(다이아|황금 다이아|골드|루비|디바인 스톤|카닐|축복의 보석|얼음 조각|사탕)$/.test(name)) return 'cur';
+    if(/Lv|레벨업|부화기|더블 맥스|승천/.test(name)) return 'lv';
+    if(/꿈의 (공격|방어|체력)|망치|합성석|아르하의 (공격|방어|체력)/.test(name)) return 'gem';
+    if(/정수|보석|결정|강림|파티클|수정|강화곤|정기|뿔|보주/.test(name)) return 'mat';
+    return 'etc';
+  }
+  // 지금 목록의 패키지에 자주 들어가는 구성품 순서(자주 쓰는 탭·자동완성용)
   function itemFreq(){
     const count=new Map();
     for(const pkg of all()) for(const item of pkg.items) if(!isEgg(item)&&!item.name.startsWith('알(')) count.set(item.name,(count.get(item.name)||0)+1);
     for(const name of Object.keys(prices())) if(!count.has(name)) count.set(name,0);
     return Array.from(count).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'ko')).map(([n])=>n);
   }
-  const QUICK=['다이아','황금 다이아','스페셜 Lv+1','Lv-1','프리미엄 Lv+1','꿈의 부화기 +1','상급 초월의 정수 세트','초월의 보석','최상급 강화의 정수','꿈의 정수(최상급)','페르시온 결정','강림 강화곤','더블 맥스 레벨업','골드'];
-  // 이미 있는 줄이면 수량칸으로, 없으면 빈 줄(없으면 새 줄)에 이름을 넣고 수량칸으로 이동
-  function quickAdd(name){
-    const lines=[...$('regItems').querySelectorAll('.pe-line')];
-    let line=lines.find(l=>l.querySelector('[data-f=name]').value.trim()===name)||lines.find(l=>!l.querySelector('[data-f=name]').value.trim());
-    if(!line){$('regItems').insertAdjacentHTML('beforeend',itemLine());line=$('regItems').lastElementChild;}
-    line.querySelector('[data-f=name]').value=name;
-    const qty=line.querySelector('[data-f=qty]');qty.focus();try{qty.select();}catch(error){/* 일부 브라우저는 숫자칸 선택을 막음 */}preview();
+  // 드래곤은 최근 패키지에 나온 순서대로
+  function eggRecent(){
+    const seen=new Set();
+    for(const pkg of [...all()].sort((a,b)=>String(b.noticeDate||b.createdAt||'').localeCompare(String(a.noticeDate||a.createdAt||'')))) for(const item of pkg.items) if(isEgg(item)) seen.add(eggKey(item.name));
+    return [...seen];
   }
+  const fmtUnit=w=>w==null?'단가 없음':w>0&&w<10?w.toFixed(2)+'원':won(w);
+  // 골드는 1개 단가가 너무 작아서 1억 기준으로 보여 준다.
+  const unitLabel=(name,c)=>name==='골드'?'1억 '+won(c.goldWon):fmtUnit(unitWon({name,kind:'item'},c));
+  const norm=v=>v.replace(/\s+/g,'').toLowerCase();
+  function tileHtml(name,kind){
+    const c=ctx(),egg=kind==='egg',line={name,egg,key:egg?eggKey(name):null};
+    const sub=egg?(state.eggs[eggKey(name)]?won(state.eggs[eggKey(name)]):'알 시세 입력'):unitLabel(name,c);
+    return `<button type="button" class="pe-tile${egg?' egg':''}" data-pick="${escape(name)}" data-kind="${kind}" title="${escape(name)}">${iconHtml(line)||'<span class="pe-ico pe-ico-none"></span>'}<span class="pe-tile-name">${escape(name)}</span><small>${escape(sub)}</small><b class="pe-tile-n" hidden></b></button>`;
+  }
+  function renderPick(){
+    const q=norm($('pickQuery').value||'');
+    const items=[...new Set([...QUICK,...itemFreq()])].filter(n=>!n.startsWith('알(')),eggs=eggRecent();
+    let list;
+    if(q) list=[...items.filter(n=>norm(n).includes(q)).map(n=>[n,'item']),...eggs.filter(n=>norm(n).includes(q)).map(n=>[n,'egg'])];
+    else if(pickTab==='egg') list=eggs.map(n=>[n,'egg']);
+    else if(pickTab==='all') list=items.slice(0,24).map(n=>[n,'item']);
+    else list=items.filter(n=>catOf(n)===pickTab).map(n=>[n,'item']);
+    $('pickTabs').innerHTML=PICK_TABS.map(([k,l])=>`<button type="button" role="tab" data-tab="${k}" aria-selected="${!q&&pickTab===k}" class="${!q&&pickTab===k?'on':''}">${l}</button>`).join('');
+    $('pickGrid').innerHTML=list.length?list.map(([n,k])=>tileHtml(n,k)).join(''):`<div class="pe-pick-empty">검색 결과가 없어요. 아래에 이름을 직접 넣어 담을 수 있어요.</div>`;
+    markTiles();
+  }
+  function lineHtml(name,kind,qty=''){
+    const egg=kind==='egg',line={name,egg,key:egg?eggKey(name):null};
+    const unitText=egg?'':`<small>${name==='골드'?'':'개당 '}${escape(unitLabel(name,ctx()))}</small>`;
+    const price=egg?`<input type="number" min="0" step="100" inputmode="numeric" placeholder="알 시세(원)" data-f="price" value="${escape(state.eggs[eggKey(name)]??'')}" aria-label="${escape(name)} 알 1개 시세(원)">`:'';
+    return `<div class="pe-line${egg?' egg':''}" data-kind="${kind}" data-name="${escape(name)}">${iconHtml(line)||'<span class="pe-ico pe-ico-none"></span>'}<span class="pe-line-name">${escape(name)}${unitText}</span><input type="number" min="0" step="1" inputmode="numeric" placeholder="수량" data-f="qty" value="${escape(qty)}" aria-label="${escape(name)} 수량">${price}<i class="pe-line-val" data-f="val"></i><button type="button" data-remove aria-label="${escape(name)} 빼기">×</button></div>`;
+  }
+  const basketLines=()=>[...$('regItems').querySelectorAll('.pe-line')];
+  function addLine(name,kind,qty){
+    name=String(name||'').trim();if(!name)return;
+    if(!kind) kind=isEgg({name})?'egg':'item';
+    if(kind==='egg') name=eggKey(name);
+    let line=basketLines().find(l=>l.dataset.kind===kind&&l.dataset.name===name);
+    if(!line){
+      $('regItems').querySelector('.pe-basket-empty')?.remove();
+      $('regItems').insertAdjacentHTML('beforeend',lineHtml(name,kind,qty??(kind==='egg'?1:'')));
+      line=$('regItems').lastElementChild;
+    }else if(qty!=null) line.querySelector('[data-f=qty]').value=qty;
+    preview();
+    return line;
+  }
+  function focusLine(line){
+    if(!line)return;
+    const input=line.dataset.kind==='egg'&&!line.querySelector('[data-f=price]').value?line.querySelector('[data-f=price]'):line.querySelector('[data-f=qty]');
+    input.focus();try{input.select();}catch(error){/* 일부 브라우저는 숫자칸 선택을 막음 */}
+    line.classList.add('flash');setTimeout(()=>line.classList.remove('flash'),500);
+  }
+  function clearBasket(){$('regItems').innerHTML='<div class="pe-basket-empty">왼쪽에서 구성품을 눌러 담아 주세요.</div>';}
   function fillTemplate(id){
     const pkg=all().find(p=>p.id===id);if(!pkg)return;
     $('regName').value=pkg.name;$('regPrice').value=pkg.price;
-    const items=pkg.items.filter(i=>!isEgg(i)),eggs=pkg.items.filter(i=>isEgg(i));
-    $('regItems').innerHTML=items.map(i=>itemLine(i.name,i.qty)).join('')+itemLine();
-    $('regEggs').innerHTML=(eggs.length?eggs.map(i=>eggLine(eggKey(i.name),i.qty)).join(''):eggLine());
+    clearBasket();
+    for(const i of pkg.items) addLine(isEgg(i)?eggKey(i.name):i.name,isEgg(i)?'egg':'item',i.qty);
     preview();
   }
   function readForm(){
     const items=[],eggs={};
-    $('regItems').querySelectorAll('.pe-line').forEach(line=>{
-      const name=line.querySelector('[data-f=name]').value.trim(),qty=num(line.querySelector('[data-f=qty]').value);
-      if(name&&qty) items.push({name,qty,kind:'item'});
-    });
-    $('regEggs').querySelectorAll('.pe-line').forEach(line=>{
-      const name=line.querySelector('[data-f=name]').value.trim(),qty=num(line.querySelector('[data-f=qty]').value),price=num(line.querySelector('[data-f=price]').value);
-      if(name&&qty){items.push({name,qty,kind:'egg'});if(price) eggs[eggKey(name)]=price;}
+    basketLines().forEach(line=>{
+      const name=line.dataset.name,kind=line.dataset.kind,qty=num(line.querySelector('[data-f=qty]').value);
+      if(!name||!qty)return;
+      items.push({name,qty,kind});
+      if(kind==='egg'){const price=num(line.querySelector('[data-f=price]').value);if(price) eggs[eggKey(name)]=price;}
     });
     return {name:$('regName').value.trim(),price:num($('regPrice').value),items,eggs};
   }
-  function preview(){
-    const form=readForm(),c=ctx();
-    $('regPreview').innerHTML=resultHtml(form.price,calc(form,{...c,eggs:{...c.eggs,...form.eggs}}));
-    // 줄마다 환산액 표시
-    $('regItems').querySelectorAll('.pe-line').forEach(line=>{
-      const name=line.querySelector('[data-f=name]').value.trim(),qty=num(line.querySelector('[data-f=qty]').value),out=line.querySelector('[data-f=val]');
-      if(!out)return;
-      if(!name||!qty){out.textContent='';out.classList.remove('miss');return;}
-      const unitPrice=unitWon({name,kind:'item'},c);
-      out.textContent=unitPrice==null?'미환산':won(unitPrice*qty);out.classList.toggle('miss',unitPrice==null);
+  // 바구니에 담긴 수량을 왼쪽 목록 타일에 표시
+  function markTiles(){
+    const have=new Map(basketLines().map(l=>[l.dataset.kind+':'+l.dataset.name,l.querySelector('[data-f=qty]').value]));
+    $('pickGrid').querySelectorAll('.pe-tile').forEach(t=>{
+      const v=have.get(t.dataset.kind+':'+(t.dataset.kind==='egg'?eggKey(t.dataset.pick):t.dataset.pick));
+      const n=t.querySelector('.pe-tile-n');t.classList.toggle('in',v!=null);n.hidden=v==null;n.textContent=v?'×'+Number(v).toLocaleString('ko-KR'):'담음';
     });
+  }
+  function preview(){
+    const form=readForm(),c=ctx(),cc={...c,eggs:{...c.eggs,...form.eggs}};
+    $('regPreview').innerHTML=resultHtml(form.price,calc(form,cc));
+    const lines=basketLines();
+    lines.forEach(line=>{
+      const name=line.dataset.name,kind=line.dataset.kind,qty=num(line.querySelector('[data-f=qty]').value),out=line.querySelector('[data-f=val]');
+      if(!qty){out.textContent='';out.classList.remove('miss');return;}
+      const unitPrice=unitWon({name,kind},cc);
+      out.textContent=unitPrice==null?(kind==='egg'?'시세 없음':'미환산'):won(unitPrice*qty);out.classList.toggle('miss',unitPrice==null);
+    });
+    $('basketCount').textContent=lines.length?`${lines.length}종`:'';
+    if(!lines.length&&!$('regItems').querySelector('.pe-basket-empty')) clearBasket();
+    markTiles();
+  }
+  // 기준·단가가 바뀌면 목록 타일과 바구니의 개당 단가를 다시 계산
+  function refreshCalc(){
+    renderPick();
+    basketLines().forEach(line=>{const small=line.querySelector('.pe-line-name small');if(small&&line.dataset.kind!=='egg') small.textContent=(line.dataset.name==='골드'?'':'개당 ')+unitLabel(line.dataset.name,ctx());});
+    preview();
   }
   function resetForm(){
     $('registerForm').reset();
-    const freq=itemFreq();
-    $('itemNames').innerHTML=['다이아','황금 다이아'].concat(freq.filter(n=>n!=='다이아'&&n!=='황금 다이아')).map(n=>`<option value="${escape(n)}">`).join('');
-    $('regQuick').innerHTML=QUICK.filter(n=>n==='다이아'||n==='황금 다이아'||n==='골드'||freq.includes(n)).map(n=>`<button type="button" class="pe-quick-btn" data-quick="${escape(n)}">${escape(n)}</button>`).join('');
+    const items=[...new Set([...QUICK,...itemFreq()])].filter(n=>!n.startsWith('알('));
+    $('pickNames').innerHTML=[...items,...eggRecent()].map(n=>`<option value="${escape(n)}">`).join('');
     $('regTemplate').innerHTML='<option value="">직접 입력</option>'+all().filter(p=>p.price&&p.items.length).map(p=>`<option value="${escape(p.id)}">${escape(p.name)} · ${won(p.price)}${p.custom?' · 직접 등록':p.always?' · 상시':' · '+pretty(p.noticeDate)}</option>`).join('');
-    $('eggNames').innerHTML=eggNames().map(n=>`<option value="${escape(n)}">`).join('');
-    $('regItems').innerHTML=itemLine()+itemLine();$('regEggs').innerHTML=eggLine();
-    preview();
+    clearBasket();renderPick();preview();
   }
   $('regReset').addEventListener('click',resetForm);
+  $('basketClear').addEventListener('click',()=>{clearBasket();preview();});
   $('regTemplate').addEventListener('change',e=>{if(e.target.value)fillTemplate(e.target.value);});
-  $('regQuick').addEventListener('click',e=>{const b=e.target.closest('[data-quick]');if(b)quickAdd(b.dataset.quick);});
-  // 수량칸에서 엔터: 다음 줄로(마지막 줄이면 새 줄 추가). 폼 제출은 막는다.
+  $('pickTabs').addEventListener('click',e=>{const b=e.target.closest('[data-tab]');if(!b)return;pickTab=b.dataset.tab;$('pickQuery').value='';renderPick();});
+  $('pickQuery').addEventListener('input',renderPick);
+  $('pickGrid').addEventListener('click',e=>{const b=e.target.closest('[data-pick]');if(b)focusLine(addLine(b.dataset.pick,b.dataset.kind));});
+  function freeAdd(){const v=$('freeName').value.trim();if(!v)return;$('freeName').value='';focusLine(addLine(v));}
+  $('freeAdd').addEventListener('click',freeAdd);
+  // 엔터: 검색칸이면 첫 결과 담기, 수량·시세칸이면 다시 검색칸으로. 폼 제출은 막는다.
   $('registerForm').addEventListener('keydown',e=>{
     if(e.key!=='Enter'||e.isComposing)return;
     const t=e.target;if(!(t instanceof HTMLInputElement))return;
     e.preventDefault();
-    const line=t.closest('.pe-line');if(!line)return;
-    if(t.dataset.f==='name'){line.querySelector('[data-f=qty]').focus();return;}
-    let next=line.nextElementSibling;
-    if(!next){const box=line.parentElement;box.insertAdjacentHTML('beforeend',box.id==='regEggs'?eggLine():itemLine());next=box.lastElementChild;}
-    next.querySelector('[data-f=name]').focus();
+    if(t.id==='pickQuery'){const first=$('pickGrid').querySelector('[data-pick]');if(first){focusLine(addLine(first.dataset.pick,first.dataset.kind));t.value='';renderPick();}return;}
+    if(t.id==='freeName'){freeAdd();return;}
+    if(t.closest('.pe-line')){const q=$('pickQuery');q.focus();try{q.select();}catch(error){/* 무시 */}}
   });
-  $('regAddItem').addEventListener('click',()=>$('regItems').insertAdjacentHTML('beforeend',itemLine()));
-  $('regAddEgg').addEventListener('click',()=>$('regEggs').insertAdjacentHTML('beforeend',eggLine()));
   $('registerForm').addEventListener('click',e=>{const b=e.target.closest('[data-remove]');if(b){b.closest('.pe-line').remove();preview();}});
-  $('registerForm').addEventListener('input',e=>{
-    // 이미 저장된 알 시세가 있으면 이름을 고를 때 채워 준다.
-    const name=e.target.closest('#regEggs [data-f=name]');
-    if(name){const price=name.closest('.pe-line').querySelector('[data-f=price]'),known=state.eggs[eggKey(name.value.trim())];if(known&&!price.value) price.value=known;}
-    preview();
-  });
+  $('registerForm').addEventListener('input',e=>{if(e.target.closest('#regItems,#regPrice'))preview();});
   $('registerForm').addEventListener('submit',e=>{
     e.preventDefault();
     const form=readForm();
     if(!form.name||!form.price){$('regPreview').innerHTML='<div><div class="pe-k">패키지 이름과 가격을 입력해 주세요.</div></div>';return;}
-    if(!form.items.length){$('regPreview').innerHTML='<div><div class="pe-k">구성품 또는 알을 한 줄 이상 입력해 주세요.</div></div>';return;}
+    if(!form.items.length){$('regPreview').innerHTML='<div><div class="pe-k">구성품을 하나 이상 담고 수량을 넣어 주세요.</div></div>';return;}
     Object.assign(state.eggs,form.eggs);
     state.custom.unshift({id:'c'+Date.now().toString(36),name:form.name,price:form.price,createdAt:today,custom:true,items:form.items});
     save();state.shown=PAGE;resetForm();render();

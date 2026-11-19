@@ -33,26 +33,27 @@
         </section>
         <section class="pkg-content pe-calc" aria-labelledby="registerTitle">
           <form id="registerForm">
-            <div class="pe-calc-head"><div><p class="pkg-eyebrow">CALCULATOR</p><h2 id="registerTitle">패키지 직접 계산</h2><p class="pkg-muted">기존 패키지를 불러와 고치거나, 자주 쓰는 구성품 버튼으로 바로 넣을 수 있어요. 수량칸에서 엔터를 누르면 다음 줄로 넘어갑니다.</p></div><button type="button" id="regReset" class="pkg-button">초기화</button></div>
-            <div class="pe-calc-body pe-form">
-              <div>
-                <label class="pe-form-row">불러오기 <select id="regTemplate" aria-label="기존 패키지 구성 불러오기"></select></label>
-                <label class="pe-form-row">패키지 이름 <input id="regName" type="text" maxlength="40" placeholder="예: 말카르티스 패키지"></label>
-                <label class="pe-form-row">가격(원) <input id="regPrice" type="number" min="1" step="100" inputmode="numeric" placeholder="33000"></label>
-                <h3>구성품</h3>
-                <div id="regQuick" class="pe-quick" aria-label="자주 쓰는 구성품 빠르게 추가"></div>
-                <div id="regItems" class="pe-lines"></div>
-                <button type="button" id="regAddItem" class="pkg-button">+ 구성품 추가</button>
+            <div class="pe-calc-head"><div><p class="pkg-eyebrow">CALCULATOR</p><h2 id="registerTitle">패키지 직접 계산</h2><p class="pkg-muted">왼쪽에서 구성품이나 드래곤을 눌러 담고 수량만 넣으면 됩니다. 수량칸에서 엔터를 누르면 다시 검색칸으로 돌아가요.</p></div><button type="button" id="regReset" class="pkg-button">초기화</button></div>
+            <div class="pe-calc-top">
+              <label>불러오기<select id="regTemplate" aria-label="기존 패키지 구성 불러오기"></select></label>
+              <label>패키지 이름<input id="regName" type="text" maxlength="40" placeholder="예: 말카르티스 패키지"></label>
+              <label>가격(원)<input id="regPrice" type="number" min="1" step="100" inputmode="numeric" placeholder="33000"></label>
+            </div>
+            <div class="pe-calc-body">
+              <div class="pe-pick">
+                <input id="pickQuery" type="search" placeholder="구성품 · 드래곤 검색" autocomplete="off" aria-label="구성품 또는 드래곤 검색">
+                <div id="pickTabs" class="pe-pick-tabs" role="tablist" aria-label="구성품 분류"></div>
+                <div id="pickGrid" class="pe-pick-grid" aria-label="눌러서 담기"></div>
+                <div class="pe-free"><input id="freeName" type="text" list="pickNames" maxlength="30" placeholder="목록에 없으면 이름 직접 입력" aria-label="구성품 이름 직접 입력"><button type="button" id="freeAdd" class="pkg-button">담기</button></div>
               </div>
-              <div>
-                <h3>알</h3>
-                <div id="regEggs" class="pe-lines"></div>
-                <button type="button" id="regAddEgg" class="pkg-button">+ 알 추가</button>
+              <div class="pe-basket">
+                <div class="pe-basket-head"><h3>담은 구성품 <span id="basketCount" class="pkg-muted"></span></h3><button type="button" id="basketClear" class="pe-text-btn">모두 빼기</button></div>
+                <div id="regItems" class="pe-lines"><div class="pe-basket-empty">왼쪽에서 구성품을 눌러 담아 주세요.</div></div>
                 <div id="regPreview" class="pe-result" aria-live="polite"></div>
                 <div class="pe-form-actions"><button type="submit" class="pkg-button pe-primary">목록에 등록</button></div>
               </div>
             </div>
-            <datalist id="itemNames"></datalist><datalist id="eggNames"></datalist>
+            <datalist id="pickNames"></datalist>
           </form>
         </section>
         <details class="pkg-content pe-notes">

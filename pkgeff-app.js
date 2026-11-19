@@ -50,7 +50,7 @@
   const won=value=>Math.round(value).toLocaleString('ko-KR')+'원';
   const pretty=value=>value?value.replaceAll('-','.'):'—';
   const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
-  const state={basis:'market',rates:{market:{...DEFAULT_RATES.market},ingame:{...DEFAULT_RATES.ingame}},goldWon:0,eggs:{},prices:{market:{},ingame:{}},custom:[],query:'',sort:'recent',sale:'all',shown:PAGE};
+  const state={basis:'market',rates:{market:{...DEFAULT_RATES.market},ingame:{...DEFAULT_RATES.ingame}},goldWon:0,eggs:{},prices:{market:{},ingame:{}},custom:[],draftId:null,query:'',sort:'recent',sale:'all',shown:PAGE};
   // 골드 1억의 기본값(다이아 개수). 직접 입력한 골드 시세가 없을 때 다이아 단가를 곱해 쓴다.
   let official=[],defaults={},defaultsIngame={},defaultGoldDia=0,notes={},notesIngame={};
   // 구성품 아이콘: 아이템은 assets/items 코드, 드래곤 알은 드래곤 번호(성체 프로필)로 보여 준다.
@@ -86,15 +86,18 @@
       if(saved.prices&&(saved.prices.market||saved.prices.ingame)){state.prices.market=readPrices(saved.prices.market);state.prices.ingame=readPrices(saved.prices.ingame);}
       // 예전 버전은 두 기준이 같은 단가를 썼으니 양쪽에 그대로 옮긴다.
       else if(saved.prices){state.prices.market=readPrices(saved.prices);state.prices.ingame=readPrices(saved.prices);}
-      if(Array.isArray(saved.custom)) state.custom=saved.custom.filter(p=>p&&typeof p.name==='string'&&num(p.price)&&Array.isArray(p.items)).map(p=>({
-        id:String(p.id),name:p.name,price:num(p.price),createdAt:String(p.createdAt||today),custom:true,
+      if(Array.isArray(saved.custom)) state.custom=saved.custom.filter(p=>p&&typeof p.name==='string'&&Array.isArray(p.items)).map(p=>({
+        id:String(p.id),name:p.name,price:num(p.price),createdAt:String(p.createdAt||today),updatedAt:Number(p.updatedAt)||0,custom:true,
         items:p.items.filter(i=>i&&typeof i.name==='string'&&num(i.qty)).map(i=>({name:i.name,qty:num(i.qty),kind:i.kind==='egg'?'egg':'item'}))
-      }));
+      })).filter(p=>p.items.length);
+      if(typeof saved.draftId==='string') state.draftId=saved.draftId;
     }catch(error){console.warn('Package value: 저장된 값을 읽지 못했습니다',error);}
   }
   function save(){
-    try{localStorage.setItem(STORE,JSON.stringify({basis:state.basis,rates:state.rates,goldWon:state.goldWon,eggs:state.eggs,prices:state.prices,custom:state.custom}));}
+    try{localStorage.setItem(STORE,JSON.stringify({basis:state.basis,rates:state.rates,goldWon:state.goldWon,eggs:state.eggs,prices:state.prices,custom:state.custom,draftId:state.draftId}));}
     catch(error){/* 저장이 막힌 환경에서는 이번 방문에만 유지 */}
+    // 로그인 상태면 계정에도 저장해 다른 기기에서 이어 쓴다(calc-cloud.js).
+    try{if(root.CalcCloud) root.CalcCloud.push(STORE);}catch(error){/* 계정 저장 실패 시 이 기기에만 남는다 */}
   }
   // 직접 넣은 단가가 데이터의 기본 단가보다 우선한다.
   // 인게임 기준에서는 인게임 가격이 있는 아이템만 그 값으로 바꾸고, 나머지는 유저 거래 단가를 그대로 쓴다.
@@ -105,7 +108,7 @@
   const all=()=>state.custom.concat(official);
   function onSale(pkg){return !pkg.custom&&(pkg.always||pkg.noticeSalePeriods.some(p=>p.start&&p.end&&p.start<=today&&p.end>=today));}
   function period(pkg){
-    if(pkg.custom) return `직접 등록 ${pretty(pkg.createdAt)}`;
+    if(pkg.custom) return `내 계산 · ${pretty(pkg.createdAt)}${pkg.price?'':' · 가격 미입력'}`;
     const starts=pkg.noticeSalePeriods.map(p=>p.start).filter(Boolean).sort(),ends=pkg.noticeSalePeriods.map(p=>p.end).filter(Boolean).sort();
     const limit=pkg.limit?' · 구매 '+(/^\d+$/.test(pkg.limit)?pkg.limit+'회':pkg.limit):'';
     if(pkg.always) return '상시 판매'+limit;
@@ -139,7 +142,7 @@
     if(!list.length){$('results').innerHTML='<div class="pkg-empty">조건에 맞는 패키지가 없습니다.</div>';return;}
     $('results').innerHTML=page.map(({pkg,c})=>{
       const title=pkg.custom||!pkg.url?escape(pkg.name):`<a href="${escape(pkg.url)}" target="_blank" rel="noopener noreferrer">${escape(pkg.name)} ↗</a>`;
-      const badges=(pkg.always?'<span class="pkg-badge gold">상시</span>':onSale(pkg)?'<span class="pkg-badge gold">판매중</span>':'')+(pkg.custom?`<span class="pkg-badge">직접 등록</span><button type="button" class="pe-del" data-delete="${escape(pkg.id)}">삭제</button>`:'');
+      const badges=(pkg.always?'<span class="pkg-badge gold">상시</span>':onSale(pkg)?'<span class="pkg-badge gold">판매중</span>':'')+(pkg.custom?`<span class="pkg-badge">내 계산</span><button type="button" class="pe-del" data-delete="${escape(pkg.id)}">삭제</button>`:'');
       // 인게임 상점 배너가 있으면 이름 옆에 붙여서 패키지를 한눈에 구분할 수 있게 한다.
       const banner=pkg.banner?`<div class="pe-banner"><img src="assets/pkg-banner/${escape(pkg.banner)}" alt="" loading="lazy" decoding="async"></div>`:'';
       return `<article class="pe-card" data-id="${escape(pkg.id)}"><div class="pe-card-head">${banner}<div class="pe-head-text"><div class="pe-title">${title}</div><div class="pe-meta">${period(pkg)}</div></div><div class="pe-badges">${badges}</div></div><div class="pe-chips">${c.lines.map(chipHtml).join('')}</div><div class="pe-result">${resultHtml(pkg.price,c)}</div></article>`;
@@ -180,7 +183,7 @@
   $('results').addEventListener('change',e=>{if(e.target.closest('[data-egg]')&&state.sort==='gain')render();});
   $('results').addEventListener('click',e=>{
     const del=e.target.closest('[data-delete]');if(!del)return;
-    state.custom=state.custom.filter(p=>p.id!==del.dataset.delete);save();render();
+    state.custom=state.custom.filter(p=>p.id!==del.dataset.delete);if(state.draftId===del.dataset.delete){state.draftId=null;resetForm();}save();render();renderHistory();
   });
   document.addEventListener('click',e=>{const close=e.target.closest('[data-close]');if(close)close.closest('dialog').close();});
 
@@ -306,7 +309,7 @@
     if(line.dataset.kind==='item') return line.dataset.name;
     const typed=line.querySelector('[data-f=name]').value.trim();
     if(typed) return typed;
-    const base=(pkgName||'직접 등록')+(line.dataset.kind==='deco'?' 장식':' 알');
+    const base=(pkgName||'이름 없는 계산')+(line.dataset.kind==='deco'?' 장식':' 알');
     return i>0?base+' '+(i+1):base;
   }
   function readForm(){
@@ -359,36 +362,83 @@
     const items=[...new Set([...QUICK,...itemFreq()])].filter(n=>!n.startsWith('알(')&&!EVENT_ONLY.has(n));
     $('pickNames').innerHTML=[...items,...eggRecent()].map(n=>`<option value="${escape(n)}">`).join('');
     $('eggList').innerHTML=eggRecent().map(n=>`<option value="${escape(n)}">`).join('');
-    $('regTemplate').innerHTML='<option value="">직접 입력</option>'+all().filter(p=>p.price&&p.items.length).map(p=>`<option value="${escape(p.id)}">${escape(p.name)} · ${won(p.price)}${p.custom?' · 직접 등록':p.always?' · 상시':' · '+pretty(p.noticeDate)}</option>`).join('');
+    $('regTemplate').innerHTML='<option value="">직접 입력</option>'+all().filter(p=>p.items.length).map(p=>`<option value="${escape(p.id)}">${escape(p.name)} · ${won(p.price)}${p.custom?' · 내 계산':p.always?' · 상시':' · '+pretty(p.noticeDate)}</option>`).join('');
     clearBasket();renderPick();preview();
   }
-  $('regReset').addEventListener('click',resetForm);
-  $('basketClear').addEventListener('click',()=>{clearBasket();preview();});
-  $('regTemplate').addEventListener('change',e=>{if(e.target.value)fillTemplate(e.target.value);});
+  // 새 계산: 지금 계산은 기록에 남겨 두고 빈 화면에서 시작
+  $('regReset').addEventListener('click',()=>{clearTimeout(saveTimer);if(saveTimer)saveDraft();state.draftId=null;save();resetForm();renderHistory();$('saveStatus').textContent='';});
+  $('basketClear').addEventListener('click',()=>{clearBasket();preview();scheduleSave();});
+  // 불러온 패키지는 고치기 시작할 때 새 기록으로 저장된다.
+  $('regTemplate').addEventListener('change',e=>{if(!e.target.value)return;clearTimeout(saveTimer);if(saveTimer)saveDraft();state.draftId=null;save();fillTemplate(e.target.value);renderHistory();$('saveStatus').textContent='불러옴 · 고치면 새 기록으로 저장';});
   $('pickTabs').addEventListener('click',e=>{const b=e.target.closest('[data-tab]');if(!b)return;pickTab=b.dataset.tab;$('pickQuery').value='';renderPick();});
   $('pickQuery').addEventListener('input',renderPick);
-  $('pickGrid').addEventListener('click',e=>{const b=e.target.closest('[data-pick]');if(b)focusLine(addLine(b.dataset.pick,b.dataset.kind));});
-  function freeAdd(){const v=$('freeName').value.trim();if(!v)return;$('freeName').value='';focusLine(addLine(v));}
+  $('pickGrid').addEventListener('click',e=>{const b=e.target.closest('[data-pick]');if(b){focusLine(addLine(b.dataset.pick,b.dataset.kind));scheduleSave();}});
+  function freeAdd(){const v=$('freeName').value.trim();if(!v)return;$('freeName').value='';focusLine(addLine(v));scheduleSave();}
   $('freeAdd').addEventListener('click',freeAdd);
   // 엔터: 검색칸이면 첫 결과 담기, 수량·시세칸이면 다시 검색칸으로. 폼 제출은 막는다.
   $('registerForm').addEventListener('keydown',e=>{
     if(e.key!=='Enter'||e.isComposing)return;
     const t=e.target;if(!(t instanceof HTMLInputElement))return;
     e.preventDefault();
-    if(t.id==='pickQuery'){const first=$('pickGrid').querySelector('[data-pick]');if(first){focusLine(addLine(first.dataset.pick,first.dataset.kind));t.value='';renderPick();}return;}
+    if(t.id==='pickQuery'){const first=$('pickGrid').querySelector('[data-pick]');if(first){focusLine(addLine(first.dataset.pick,first.dataset.kind));t.value='';renderPick();scheduleSave();}return;}
     if(t.id==='freeName'){freeAdd();return;}
     if(t.closest('.pe-line')){const q=$('pickQuery');q.focus();try{q.select();}catch(error){/* 무시 */}}
   });
-  $('registerForm').addEventListener('click',e=>{const b=e.target.closest('[data-remove]');if(b){b.closest('.pe-line').remove();preview();}});
-  $('registerForm').addEventListener('input',e=>{if(e.target.closest('#regItems,#regPrice'))preview();});
-  $('registerForm').addEventListener('submit',e=>{
-    e.preventDefault();
-    const form=readForm();
-    if(!form.name||!form.price){$('regPreview').innerHTML='<div><div class="pe-k">패키지 이름과 가격을 입력해 주세요.</div></div>';return;}
-    if(!form.items.length){$('regPreview').innerHTML='<div><div class="pe-k">구성품을 하나 이상 담고 수량을 넣어 주세요.</div></div>';return;}
-    Object.assign(state.eggs,form.eggs);
-    state.custom.unshift({id:'c'+Date.now().toString(36),name:form.name,price:form.price,createdAt:today,custom:true,items:form.items});
-    save();state.shown=PAGE;resetForm();render();
+  $('registerForm').addEventListener('click',e=>{const b=e.target.closest('[data-remove]');if(b){b.closest('.pe-line').remove();preview();scheduleSave();}});
+  $('registerForm').addEventListener('input',e=>{if(e.target.closest('#regItems,#regPrice'))preview();if(e.target.closest('#regItems,#regPrice,#regName'))scheduleSave();});
+  // 계산 중인 내용은 자동으로 기록에 저장된다(목록의 '내 계산'). 새 계산을 시작해도 이전 계산은 남는다.
+  let saveTimer=0;
+  function scheduleSave(){clearTimeout(saveTimer);$('saveStatus').textContent='저장 중…';saveTimer=setTimeout(saveDraft,500);}
+  function saveDraft(){
+    const form=readForm(),now=Date.now();
+    let entry=state.custom.find(p=>p.id===state.draftId);
+    if(!form.items.length){
+      // 구성품을 다 빼면 그 계산 기록도 지운다.
+      if(entry) state.custom=state.custom.filter(p=>p!==entry);
+      state.draftId=null;
+    }else{
+      if(!entry){entry={id:'c'+now.toString(36),createdAt:today,custom:true};state.draftId=entry.id;}
+      Object.assign(entry,{name:form.name||'이름 없는 계산',price:form.price,items:form.items,updatedAt:now});
+      state.custom=[entry,...state.custom.filter(p=>p!==entry)].slice(0,40);
+      Object.assign(state.eggs,form.eggs);
+    }
+    save();render();renderHistory();
+    $('saveStatus').textContent=form.items.length?`자동 저장됨 · ${accountLabel()}`:'';
+  }
+  const accountLabel=()=>root.CalcCloud&&root.CalcCloud.ready()?'내 계정':'이 기기';
+  function loadEntry(id,scroll=true){
+    const entry=state.custom.find(p=>p.id===id);if(!entry)return;
+    state.draftId=entry.id;save();
+    $('regTemplate').value='';$('regName').value=entry.name==='이름 없는 계산'?'':entry.name;$('regPrice').value=entry.price||'';
+    clearBasket();
+    // 이름을 비워서 저장된 알·장식(패키지 이름 + 알/장식)은 다시 빈 이름으로 연다.
+    const auto=new RegExp('^'+entry.name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+' (알|장식)( \\d+)?(\\(강림 전용 장식\\))?$');
+    for(const i of entry.items){
+      const kind=/전용 장식/.test(i.name)?'deco':i.kind==='egg'?'egg':'item';
+      const line=addLine(kind!=='item'&&auto.test(i.name)?'':i.name,kind,i.qty);
+      if(line&&kind!=='item'&&!line.querySelector('[data-f=price]').value){const v=state.eggs[eggKey(i.name)];if(v)line.querySelector('[data-f=price]').value=v;}
+    }
+    preview();renderHistory();
+    $('saveStatus').textContent=`불러옴 · 고치면 이 기록에 자동 저장`;
+    if(scroll) $('registerForm').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  const ago=t=>{if(!t)return '';const m=Math.round((Date.now()-t)/60000);return m<1?'방금':m<60?m+'분 전':m<1440?Math.round(m/60)+'시간 전':Math.round(m/1440)+'일 전';};
+  function renderHistory(){
+    const box=$('historyList');if(!box)return;
+    const c=ctx();
+    box.innerHTML=state.custom.length?state.custom.slice(0,12).map(p=>{
+      const r=calc(p,c),gain=r.gain==null?'—':(r.gain>=0?'+':'−')+Math.abs(r.gain).toFixed(1)+'%';
+      return `<div class="pe-hist${p.id===state.draftId?' on':''}"><button type="button" class="pe-hist-open" data-open="${escape(p.id)}"><b>${escape(p.name)}</b><span>${p.price?won(p.price):'가격 미입력'} · ${p.items.length}종 · ${ago(p.updatedAt)}</span></button><i class="${r.gain==null?'':r.gain>=0?'gain':'loss'}">${gain}</i><button type="button" class="pe-x" data-forget="${escape(p.id)}" aria-label="${escape(p.name)} 기록 삭제">×</button></div>`;
+    }).join(''):'<div class="pe-basket-empty">계산하면 여기에 자동으로 남아요.</div>';
+  }
+  $('historyList').addEventListener('click',e=>{
+    const open=e.target.closest('[data-open]'),del=e.target.closest('[data-forget]');
+    if(open) loadEntry(open.dataset.open);
+    if(del){
+      state.custom=state.custom.filter(p=>p.id!==del.dataset.forget);
+      if(state.draftId===del.dataset.forget){state.draftId=null;resetForm();}
+      save();render();renderHistory();
+    }
   });
 
   /* ── 단가 근거 ── */
@@ -406,6 +456,7 @@
     box.innerHTML=Object.entries(groups).filter(([,r])=>r.length).map(([t,r])=>`<h3>${TYPE_LABEL[t]} <span class="pkg-muted">${r.length}종</span></h3><div class="pe-table-wrap"><table class="pe-table"><thead><tr><th>아이템</th><th>1개 단가</th><th>근거</th></tr></thead><tbody>${r.join('')}</tbody></table></div>`).join('');
   }
   async function init(){
+    try{if(root.CalcCloud) root.CalcCloud.start(STORE);}catch(error){/* 계정 동기화 없이 진행 */}
     load();syncBasis();
     try{
       const response=await fetch('./data/pkg-prices.json',{cache:'no-cache'});
@@ -423,7 +474,8 @@
       official=source.packages.filter(p=>Number.isFinite(p.price)&&p.price>0&&Array.isArray(p.items)&&p.items.length&&(p.always||!listFrom||p.noticeDate>=listFrom))
         .map((p,i)=>({...p,id:'n'+p.noticeIds.join('-')+'-'+i,noticeSalePeriods:p.noticeSalePeriods||[]}));
       $('syncStatus').textContent=`패키지 ${official.length.toLocaleString('ko-KR')}개${listFrom?` (${pretty(listFrom)} 이후 판매분과 상시 패키지)`:''} · 마지막 확인 ${pretty(source.checkedAt)}`;
-      render();resetForm();renderNotes();
+      render();resetForm();renderNotes();renderHistory();
+      if(state.draftId&&state.custom.some(p=>p.id===state.draftId)){loadEntry(state.draftId,false);$('saveStatus').textContent=`이어서 계산 중 · ${accountLabel()}에 자동 저장`;}
     }catch(error){
       $('syncStatus').classList.add('error');$('syncStatus').textContent='패키지 기록을 불러오지 못했습니다. 직접 등록한 패키지만 표시합니다.';
       console.error('Package value:',error);render();

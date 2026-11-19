@@ -50,27 +50,64 @@
     var i = (y * im.w + x) * 4;
     return Math.abs(im.d[i] - BG[0]) <= 14 && Math.abs(im.d[i + 1] - BG[1]) <= 14 && Math.abs(im.d[i + 2] - BG[2]) <= 14;
   }
+  function colRuns(im, x, k) {
+    var res = [], s = -1, gap = 0, lastOn = -1;
+    for (var y = 0; y <= im.h; y++) {
+      var on = y < im.h && isBg(im, x, y);
+      if (on) { if (s < 0) s = y; lastOn = y; gap = 0; continue; }
+      if (s >= 0 && y < im.h && ++gap <= 2) continue;   // JPEG 잡음 몇 픽셀은 이어 붙임
+      if (s >= 0) {
+        var hgt = lastOn + 1 - s;
+        if (Math.abs(hgt - 319 * k) <= 25 * k) res.push(s);
+        s = -1; gap = 0;
+      }
+    }
+    return res;
+  }
   function findCards(im) {
     var r = contentRect(im); if (!r) return [];
     var k = (r.y1 - r.y0) / 1080, cx = (r.x0 + r.x1) / 2, out = [];
     for (var c = 0; c < 5; c++) {
-      var left = cx + k * (-805.5 + 330 * c), x = Math.round(left + 7 * k);
-      if (x < 0 || x >= im.w) continue;
-      var s = -1, gap = 0, lastOn = -1;
-      for (var y = 0; y <= im.h; y++) {
-        var on = y < im.h && isBg(im, x, y);
-        if (on) { if (s < 0) s = y; lastOn = y; gap = 0; continue; }
-        if (s >= 0 && y < im.h && ++gap <= 2) continue;   // JPEG 잡음 몇 픽셀은 이어 붙임
-        if (s >= 0) {
-          var hgt = lastOn + 1 - s;
-          if (Math.abs(hgt - 319 * k) <= 25 * k) out.push({ col: c, l: Math.round(left), t: s, k: k });
-          s = -1; gap = 0;
-        }
+      var left = cx + k * (-805.5 + 330 * c);
+      // 카드 왼쪽 배경 띠(폭 약 12)를 세로로 훑음. 잘라낸 캡처는 위치가 몇 px 어긋나므로 몇 군데 찔러 봄
+      var P = [7, 3, 11, -1, 15, -5], ts = [];
+      for (var q = 0; q < P.length && !ts.length; q++) {
+        var x = Math.round(left + P[q] * k);
+        if (x >= 0 && x < im.w) ts = colRuns(im, x, k);
       }
+      ts.forEach(function (t) { out.push({ col: c, l: Math.round(left), t: t, k: k }); });
     }
     if (!out.length) out = findCardsCropped(im);
+    else refineCards(im, out);
     out.sort(function (a, b) { return Math.abs(a.t - b.t) > 30 * a.k ? a.t - b.t : a.col - b.col; });
     return out;
+  }
+  /* 화면 높이로 잡은 배율 · 위치가 조금 어긋난 캡처(팝업만 잘라낸 캡처 등)용 보정:
+     카드 왼쪽 끝(배경 띠 시작)을 실제로 찾아 맞추고, 칸 간격(330)으로 배율을 다시 잡는다 */
+  function refineCards(im, cards) {
+    var k = cards[0].k;
+    cards.forEach(function (c) {
+      var y = Math.round(c.t + 160 * k), best = null;
+      if (y >= im.h) return;
+      for (var x = Math.round(c.l - 14 * k); x <= Math.round(c.l + 14 * k); x++) {
+        if (x < 1 || x + 8 * k >= im.w) continue;
+        if (isBg(im, x - 1, y) || !isBg(im, x, y)) continue;
+        var ok = true;
+        for (var xx = x; xx < x + 8 * k; xx++) if (!isBg(im, Math.round(xx), y)) { ok = false; break; }
+        if (ok && (best == null || Math.abs(x - c.l) < Math.abs(best - c.l))) best = x;
+      }
+      if (best == null) return;
+      c.l = best;
+    });
+    var ps = [];
+    cards.forEach(function (a) { cards.forEach(function (b) {
+      var dc = b.col - a.col;
+      if (dc > 0 && Math.abs(a.t - b.t) <= 6 * k) ps.push((b.l - a.l) / dc / 330);
+    }); });
+    if (!ps.length) return;
+    ps.sort(function (a, b) { return a - b; });
+    var nk = ps[ps.length >> 1];
+    if (Math.abs(nk - k) / k <= 0.06) cards.forEach(function (c) { c.k = nk; });
   }
   /* 잘라낸 캡처용: 화면 크기에 기대지 않고 카드 배경색이 가로로 이어진 길이(카드 폭 291)로 배율을 구해 카드를 찾습니다 */
   function vRuns(im, x, k, left, col, out) {
@@ -200,7 +237,19 @@
   }
 
   /* ---------- 카드 해석 ---------- */
+  /* 위치가 1~3px 어긋나면 작은 숫자가 잘려 6→4처럼 틀리게 읽혀서, 위아래로 조금씩 옮겨 가장 또렷하게 읽히는 자리를 고른다 */
   function readStatLines(im, card) {
+    var best = null, bs = null;
+    [0, 2, 4, -2, 6, -4].forEach(function (dy) {
+      var c = { col: card.col, l: card.l, t: Math.round(card.t + dy * card.k), k: card.k };
+      var ls = readStatLinesAt(im, c);
+      if (!ls.length) return;
+      var sc = ls.length * 10 - Math.max.apply(null, ls.map(function (l) { return l.d; }));
+      if (bs == null || sc > bs + 1e-9) { bs = sc; best = ls; }
+    });
+    return best || [];
+  }
+  function readStatLinesAt(im, card) {
     var lines = [], k = card.k;
     [213, 249, 285].forEach(function (cy) {
       var rg = region(im, card, 220, 291, cy - 16, cy + 16), best = null, bn = 0;
@@ -214,7 +263,7 @@
       for (var i = 0; i < bx.length - 1; i++) { var r = classify(best.M, bx[i], true); digits += r.c; conf = Math.max(conf, r.d); }
       var val = parseInt(digits, 10);
       if (!isFinite(val) || digits.length > 2) return;
-      lines.push({ stat: best.key === 'grn' || best.key === 'mag' ? 'etc' : best.key, val: val, unsure: conf > DIGIT_MAX_D });
+      lines.push({ stat: best.key === 'grn' || best.key === 'mag' ? 'etc' : best.key, val: val, unsure: conf > DIGIT_MAX_D, d: conf });
     });
     return lines;
   }

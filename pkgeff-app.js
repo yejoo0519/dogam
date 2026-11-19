@@ -56,9 +56,9 @@
   // 구성품 아이콘: 아이템은 assets/items 코드, 드래곤 알은 드래곤 번호(성체 프로필)로 보여 준다.
   let icons={items:{},eggs:{}};
   function iconHtml(line){
-    const code=line.egg?icons.eggs[line.key]:icons.items[line.name];
+    const item=icons.items[line.name],code=item??(line.egg?icons.eggs[line.key]:null);
     if(code==null) return '';
-    const src=line.egg?`dragon/${encodeURIComponent(code)}/profile/4.png`:`assets/items/${encodeURIComponent(code)}.webp`;
+    const src=line.egg&&item==null?`dragon/${encodeURIComponent(code)}/profile/4.png`:`assets/items/${encodeURIComponent(code)}.webp`;
     return `<img class="pe-ico" src="${src}" alt="" loading="lazy" decoding="async">`;
   }
   const BASIS_LABEL={market:'유저 거래 기준',ingame:'인게임 재화값 기준'};
@@ -215,7 +215,9 @@
   /* ── 패키지 등록 ── */
   /* ── 직접 계산: 왼쪽 목록에서 눌러 담고, 오른쪽 바구니에서 수량을 넣는다 ── */
   const QUICK=['다이아','황금 다이아','골드','스페셜 Lv+1','Lv-1','Lv+1','프리미엄 Lv+1','꿈의 부화기 +1','상급 초월의 정수 세트','초월의 보석','최상급 강화의 정수','꿈의 정수(최상급)','페르시온 결정','강림 강화곤','더블 맥스 레벨업','합성석','디트의 망치','카닐'];
-  const PICK_TABS=[['all','자주 쓰는'],['cur','재화'],['lv','레벨업'],['mat','정수·재료'],['gem','젬·망치'],['etc','정령·기타'],['egg','드래곤']];
+  const PICK_TABS=[['all','자주 쓰는'],['cur','재화'],['lv','레벨업'],['mat','정수·재료'],['gem','젬·망치'],['etc','정령·기타']];
+  // 드래곤 알·강림 전용 장식은 하나의 타일로 담고, 줄에서 이름(선택)과 시세를 넣는다.
+  const PRICED=[['드래곤 알','egg'],['강림 전용 장식','deco']];
   let pickTab='all';
   function catOf(name){
     if(/^(다이아|황금 다이아|골드|루비|디바인 스톤|카닐|축복의 보석|얼음 조각|사탕)$/.test(name)) return 'cur';
@@ -242,37 +244,42 @@
   const unitLabel=(name,c)=>name==='골드'?'1억 '+won(c.goldWon):fmtUnit(unitWon({name,kind:'item'},c));
   const norm=v=>v.replace(/\s+/g,'').toLowerCase();
   function tileHtml(name,kind){
-    const c=ctx(),egg=kind==='egg',line={name,egg,key:egg?eggKey(name):null};
-    const sub=egg?(state.eggs[eggKey(name)]?won(state.eggs[eggKey(name)]):'알 시세 입력'):unitLabel(name,c);
-    return `<button type="button" class="pe-tile${egg?' egg':''}" data-pick="${escape(name)}" data-kind="${kind}" title="${escape(name)}">${iconHtml(line)||'<span class="pe-ico pe-ico-none"></span>'}<span class="pe-tile-name">${escape(name)}</span><small>${escape(sub)}</small><b class="pe-tile-n" hidden></b></button>`;
+    const c=ctx(),line={name,egg:false,key:null};
+    const sub=kind==='item'?unitLabel(name,c):'시세 직접 입력';
+    return `<button type="button" class="pe-tile${kind!=='item'?' egg':''}" data-pick="${escape(name)}" data-kind="${kind}" title="${escape(name)}">${iconHtml(line)||'<span class="pe-ico pe-ico-none"></span>'}<span class="pe-tile-name">${escape(name)}</span><small>${escape(sub)}</small><b class="pe-tile-n" hidden></b></button>`;
   }
   function renderPick(){
     const q=norm($('pickQuery').value||'');
-    const items=[...new Set([...QUICK,...itemFreq()])].filter(n=>!n.startsWith('알(')),eggs=eggRecent();
+    const items=[...new Set([...QUICK,...itemFreq()])].filter(n=>!n.startsWith('알(')),priced=PRICED.map(([n,k])=>[n,k]);
     let list;
-    if(q) list=[...items.filter(n=>norm(n).includes(q)).map(n=>[n,'item']),...eggs.filter(n=>norm(n).includes(q)).map(n=>[n,'egg'])];
-    else if(pickTab==='egg') list=eggs.map(n=>[n,'egg']);
-    else if(pickTab==='all') list=items.slice(0,24).map(n=>[n,'item']);
-    else list=items.filter(n=>catOf(n)===pickTab).map(n=>[n,'item']);
+    if(q) list=[...priced.filter(([n])=>norm(n).includes(q)),...items.filter(n=>norm(n).includes(q)).map(n=>[n,'item'])];
+    else if(pickTab==='all') list=[...priced,...items.slice(0,22).map(n=>[n,'item'])];
+    else list=[...(pickTab==='etc'?priced:[]),...items.filter(n=>catOf(n)===pickTab).map(n=>[n,'item'])];
     $('pickTabs').innerHTML=PICK_TABS.map(([k,l])=>`<button type="button" role="tab" data-tab="${k}" aria-selected="${!q&&pickTab===k}" class="${!q&&pickTab===k?'on':''}">${l}</button>`).join('');
     $('pickGrid').innerHTML=list.length?list.map(([n,k])=>tileHtml(n,k)).join(''):`<div class="pe-pick-empty">검색 결과가 없어요. 아래에 이름을 직접 넣어 담을 수 있어요.</div>`;
     markTiles();
   }
+  // kind: item(단가 있는 구성품) / egg(드래곤 알) / deco(강림 전용 장식). 알·장식은 이름(선택)·수량·시세를 넣는다.
   function lineHtml(name,kind,qty=''){
-    const egg=kind==='egg',line={name,egg,key:egg?eggKey(name):null};
-    const unitText=egg?'':`<small>${name==='골드'?'':'개당 '}${escape(unitLabel(name,ctx()))}</small>`;
-    const price=egg?`<input type="number" min="0" step="100" inputmode="numeric" placeholder="알 시세(원)" data-f="price" value="${escape(state.eggs[eggKey(name)]??'')}" aria-label="${escape(name)} 알 1개 시세(원)">`:'';
-    return `<div class="pe-line${egg?' egg':''}" data-kind="${kind}" data-name="${escape(name)}">${iconHtml(line)||'<span class="pe-ico pe-ico-none"></span>'}<span class="pe-line-name">${escape(name)}${unitText}</span><input type="number" min="0" step="1" inputmode="numeric" placeholder="수량" data-f="qty" value="${escape(qty)}" aria-label="${escape(name)} 수량">${price}<i class="pe-line-val" data-f="val"></i><button type="button" data-remove aria-label="${escape(name)} 빼기">×</button></div>`;
+    if(kind==='item'){
+      const line={name,egg:false,key:null};
+      return `<div class="pe-line" data-kind="item" data-name="${escape(name)}">${iconHtml(line)||'<span class="pe-ico pe-ico-none"></span>'}<span class="pe-line-name">${escape(name)}<small>${name==='골드'?'':'개당 '}${escape(unitLabel(name,ctx()))}</small></span><input type="number" min="0" step="1" inputmode="numeric" placeholder="수량" data-f="qty" value="${escape(qty)}" aria-label="${escape(name)} 수량"><i class="pe-line-val" data-f="val"></i><button type="button" data-remove aria-label="${escape(name)} 빼기">×</button></div>`;
+    }
+    const deco=kind==='deco',key=name?eggKey(name):'';
+    const icon=iconHtml({name,egg:!deco,key})||(deco?'<span class="pe-ico pe-ico-none"></span>':iconHtml({name:'드래곤 알',egg:false}));
+    const price=name?state.eggs[deco?name:key]??'':'';
+    return `<div class="pe-line egg" data-kind="${kind}">${icon||'<span class="pe-ico pe-ico-none"></span>'}<input type="text" list="eggList" maxlength="40" placeholder="${deco?'장식 이름(선택)':'드래곤 이름(선택)'}" data-f="name" value="${escape(name)}" aria-label="${deco?'장식':'드래곤'} 이름"><input type="number" min="0" step="1" inputmode="numeric" placeholder="수량" data-f="qty" value="${escape(qty||1)}" aria-label="수량"><input type="number" min="0" step="100" inputmode="numeric" placeholder="1개 시세(원)" data-f="price" value="${escape(price)}" aria-label="1개 시세(원)"><i class="pe-line-val" data-f="val"></i><button type="button" data-remove aria-label="빼기">×</button></div>`;
   }
   const basketLines=()=>[...$('regItems').querySelectorAll('.pe-line')];
   function addLine(name,kind,qty){
-    name=String(name||'').trim();if(!name)return;
-    if(!kind) kind=isEgg({name})?'egg':'item';
-    if(kind==='egg') name=eggKey(name);
-    let line=basketLines().find(l=>l.dataset.kind===kind&&l.dataset.name===name);
+    name=String(name||'').trim();
+    if(!kind) kind=/전용 장식/.test(name)?'deco':isEgg({name})?'egg':'item';
+    if(kind==='item'&&!name)return;
+    let line=kind==='item'?basketLines().find(l=>l.dataset.kind==='item'&&l.dataset.name===name):null;
     if(!line){
       $('regItems').querySelector('.pe-basket-empty')?.remove();
-      $('regItems').insertAdjacentHTML('beforeend',lineHtml(name,kind,qty??(kind==='egg'?1:'')));
+      const label=kind==='egg'&&name==='드래곤 알'?'':kind==='deco'&&name==='강림 전용 장식'?'':name;
+      $('regItems').insertAdjacentHTML('beforeend',lineHtml(kind==='egg'?(label?eggKey(label):''):label,kind,qty??''));
       line=$('regItems').lastElementChild;
     }else if(qty!=null) line.querySelector('[data-f=qty]').value=qty;
     preview();
@@ -280,7 +287,7 @@
   }
   function focusLine(line){
     if(!line)return;
-    const input=line.dataset.kind==='egg'&&!line.querySelector('[data-f=price]').value?line.querySelector('[data-f=price]'):line.querySelector('[data-f=qty]');
+    const input=line.dataset.kind!=='item'&&!line.querySelector('[data-f=price]').value?line.querySelector('[data-f=price]'):line.querySelector('[data-f=qty]');
     input.focus();try{input.select();}catch(error){/* 일부 브라우저는 숫자칸 선택을 막음 */}
     line.classList.add('flash');setTimeout(()=>line.classList.remove('flash'),500);
   }
@@ -289,25 +296,40 @@
     const pkg=all().find(p=>p.id===id);if(!pkg)return;
     $('regName').value=pkg.name;$('regPrice').value=pkg.price;
     clearBasket();
-    for(const i of pkg.items) addLine(isEgg(i)?eggKey(i.name):i.name,isEgg(i)?'egg':'item',i.qty);
+    for(const i of pkg.items) addLine(isEgg(i)&&!/전용 장식/.test(i.name)?eggKey(i.name):i.name,/전용 장식/.test(i.name)?'deco':isEgg(i)?'egg':'item',i.qty);
     preview();
   }
+  // 이름을 비운 알·장식은 패키지 이름을 붙여 따로 구분한다(시세가 다른 패키지와 섞이지 않게).
+  function lineName(line,i,pkgName){
+    if(line.dataset.kind==='item') return line.dataset.name;
+    const typed=line.querySelector('[data-f=name]').value.trim();
+    if(typed) return typed;
+    const base=(pkgName||'직접 등록')+(line.dataset.kind==='deco'?' 장식':' 알');
+    return i>0?base+' '+(i+1):base;
+  }
   function readForm(){
-    const items=[],eggs={};
+    const items=[],eggs={},pkgName=$('regName').value.trim(),seen={egg:0,deco:0};
     basketLines().forEach(line=>{
-      const name=line.dataset.name,kind=line.dataset.kind,qty=num(line.querySelector('[data-f=qty]').value);
+      const kind=line.dataset.kind,qty=num(line.querySelector('[data-f=qty]').value);
+      const blank=kind!=='item'&&!line.querySelector('[data-f=name]').value.trim();
+      const name=lineName(line,blank?seen[kind]++:0,pkgName);
       if(!name||!qty)return;
-      items.push({name,qty,kind});
-      if(kind==='egg'){const price=num(line.querySelector('[data-f=price]').value);if(price) eggs[eggKey(name)]=price;}
+      if(kind==='item'){items.push({name,qty,kind:'item'});return;}
+      // 장식도 알처럼 시세를 직접 넣는 항목이라 egg로 저장한다.
+      const itemName=kind==='deco'&&!/전용 장식/.test(name)?name+'(강림 전용 장식)':name;
+      items.push({name:itemName,qty,kind:'egg'});
+      const price=num(line.querySelector('[data-f=price]').value);if(price) eggs[eggKey(itemName)]=price;
     });
-    return {name:$('regName').value.trim(),price:num($('regPrice').value),items,eggs};
+    return {name:pkgName,price:num($('regPrice').value),items,eggs};
   }
   // 바구니에 담긴 수량을 왼쪽 목록 타일에 표시
   function markTiles(){
-    const have=new Map(basketLines().map(l=>[l.dataset.kind+':'+l.dataset.name,l.querySelector('[data-f=qty]').value]));
+    const have=new Map(),count={egg:0,deco:0};
+    basketLines().forEach(l=>{if(l.dataset.kind==='item') have.set(l.dataset.name,l.querySelector('[data-f=qty]').value);else count[l.dataset.kind]++;});
     $('pickGrid').querySelectorAll('.pe-tile').forEach(t=>{
-      const v=have.get(t.dataset.kind+':'+(t.dataset.kind==='egg'?eggKey(t.dataset.pick):t.dataset.pick));
-      const n=t.querySelector('.pe-tile-n');t.classList.toggle('in',v!=null);n.hidden=v==null;n.textContent=v?'×'+Number(v).toLocaleString('ko-KR'):'담음';
+      const k=t.dataset.kind,n=t.querySelector('.pe-tile-n');
+      const v=k==='item'?have.get(t.dataset.pick):(count[k]?count[k]+'줄':null);
+      t.classList.toggle('in',v!=null);n.hidden=v==null;n.textContent=k==='item'?(v?'×'+Number(v).toLocaleString('ko-KR'):'담음'):v;
     });
   }
   function preview(){
@@ -315,25 +337,26 @@
     $('regPreview').innerHTML=resultHtml(form.price,calc(form,cc));
     const lines=basketLines();
     lines.forEach(line=>{
-      const name=line.dataset.name,kind=line.dataset.kind,qty=num(line.querySelector('[data-f=qty]').value),out=line.querySelector('[data-f=val]');
+      const kind=line.dataset.kind,qty=num(line.querySelector('[data-f=qty]').value),out=line.querySelector('[data-f=val]');
       if(!qty){out.textContent='';out.classList.remove('miss');return;}
-      const unitPrice=unitWon({name,kind},cc);
-      out.textContent=unitPrice==null?(kind==='egg'?'시세 없음':'미환산'):won(unitPrice*qty);out.classList.toggle('miss',unitPrice==null);
+      const unitPrice=kind==='item'?unitWon({name:line.dataset.name,kind:'item'},cc):num(line.querySelector('[data-f=price]').value)||null;
+      out.textContent=unitPrice==null?(kind==='item'?'미환산':'시세 없음'):won(unitPrice*qty);out.classList.toggle('miss',unitPrice==null);
     });
-    $('basketCount').textContent=lines.length?`${lines.length}종`:'';
+    $('basketCount').textContent=lines.length?`${lines.length}줄`:'';
     if(!lines.length&&!$('regItems').querySelector('.pe-basket-empty')) clearBasket();
     markTiles();
   }
   // 기준·단가가 바뀌면 목록 타일과 바구니의 개당 단가를 다시 계산
   function refreshCalc(){
     renderPick();
-    basketLines().forEach(line=>{const small=line.querySelector('.pe-line-name small');if(small&&line.dataset.kind!=='egg') small.textContent=(line.dataset.name==='골드'?'':'개당 ')+unitLabel(line.dataset.name,ctx());});
+    basketLines().forEach(line=>{const small=line.querySelector('.pe-line-name small');if(small&&line.dataset.kind==='item') small.textContent=(line.dataset.name==='골드'?'':'개당 ')+unitLabel(line.dataset.name,ctx());});
     preview();
   }
   function resetForm(){
     $('registerForm').reset();
     const items=[...new Set([...QUICK,...itemFreq()])].filter(n=>!n.startsWith('알('));
     $('pickNames').innerHTML=[...items,...eggRecent()].map(n=>`<option value="${escape(n)}">`).join('');
+    $('eggList').innerHTML=eggRecent().map(n=>`<option value="${escape(n)}">`).join('');
     $('regTemplate').innerHTML='<option value="">직접 입력</option>'+all().filter(p=>p.price&&p.items.length).map(p=>`<option value="${escape(p.id)}">${escape(p.name)} · ${won(p.price)}${p.custom?' · 직접 등록':p.always?' · 상시':' · '+pretty(p.noticeDate)}</option>`).join('');
     clearBasket();renderPick();preview();
   }

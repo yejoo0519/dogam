@@ -203,8 +203,32 @@
   $('priceDialog').addEventListener('close',()=>{render();renderNotes();});
 
   /* ── 패키지 등록 ── */
-  function itemLine(){return '<div class="pe-line"><input type="text" list="itemNames" maxlength="30" placeholder="구성품 이름" data-f="name"><input type="number" min="0" step="1" inputmode="numeric" placeholder="수량" data-f="qty"><button type="button" data-remove>삭제</button></div>';}
-  function eggLine(){return '<div class="pe-line"><input type="text" list="eggNames" maxlength="30" placeholder="알(드래곤) 이름" data-f="name"><input type="number" min="0" step="1" inputmode="numeric" placeholder="수량" data-f="qty" value="1"><input type="number" min="0" step="100" inputmode="numeric" placeholder="알 시세(원)" data-f="price"><button type="button" data-remove>삭제</button></div>';}
+  function itemLine(name='',qty=''){return `<div class="pe-line"><input type="text" list="itemNames" maxlength="30" placeholder="구성품 이름" data-f="name" value="${escape(name)}"><input type="number" min="0" step="1" inputmode="numeric" placeholder="수량" data-f="qty" value="${escape(qty)}"><i class="pe-line-val" data-f="val"></i><button type="button" data-remove>삭제</button></div>`;}
+  function eggLine(name='',qty=1){const price=name?state.eggs[eggKey(name)]??'':'';return `<div class="pe-line"><input type="text" list="eggNames" maxlength="30" placeholder="알(드래곤) 이름" data-f="name" value="${escape(name)}"><input type="number" min="0" step="1" inputmode="numeric" placeholder="수량" data-f="qty" value="${escape(qty)}"><input type="number" min="0" step="100" inputmode="numeric" placeholder="알 시세(원)" data-f="price" value="${escape(price)}"><button type="button" data-remove>삭제</button></div>`;}
+  // 지금 목록의 패키지에 자주 들어가는 구성품 순서(빠른 추가·자동완성용)
+  function itemFreq(){
+    const count=new Map();
+    for(const pkg of all()) for(const item of pkg.items) if(!isEgg(item)&&!item.name.startsWith('알(')) count.set(item.name,(count.get(item.name)||0)+1);
+    for(const name of Object.keys(prices())) if(!count.has(name)) count.set(name,0);
+    return Array.from(count).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'ko')).map(([n])=>n);
+  }
+  const QUICK=['다이아','황금 다이아','스페셜 Lv+1','Lv-1','프리미엄 Lv+1','꿈의 부화기 +1','상급 초월의 정수 세트','초월의 보석','최상급 강화의 정수','꿈의 정수(최상급)','페르시온 결정','강림 강화곤','더블 맥스 레벨업','골드'];
+  // 이미 있는 줄이면 수량칸으로, 없으면 빈 줄(없으면 새 줄)에 이름을 넣고 수량칸으로 이동
+  function quickAdd(name){
+    const lines=[...$('regItems').querySelectorAll('.pe-line')];
+    let line=lines.find(l=>l.querySelector('[data-f=name]').value.trim()===name)||lines.find(l=>!l.querySelector('[data-f=name]').value.trim());
+    if(!line){$('regItems').insertAdjacentHTML('beforeend',itemLine());line=$('regItems').lastElementChild;}
+    line.querySelector('[data-f=name]').value=name;
+    const qty=line.querySelector('[data-f=qty]');qty.focus();try{qty.select();}catch(error){/* 일부 브라우저는 숫자칸 선택을 막음 */}preview();
+  }
+  function fillTemplate(id){
+    const pkg=all().find(p=>p.id===id);if(!pkg)return;
+    $('regName').value=pkg.name;$('regPrice').value=pkg.price;
+    const items=pkg.items.filter(i=>!isEgg(i)),eggs=pkg.items.filter(i=>isEgg(i));
+    $('regItems').innerHTML=items.map(i=>itemLine(i.name,i.qty)).join('')+itemLine();
+    $('regEggs').innerHTML=(eggs.length?eggs.map(i=>eggLine(eggKey(i.name),i.qty)).join(''):eggLine());
+    preview();
+  }
   function readForm(){
     const items=[],eggs={};
     $('regItems').querySelectorAll('.pe-line').forEach(line=>{
@@ -220,15 +244,39 @@
   function preview(){
     const form=readForm(),c=ctx();
     $('regPreview').innerHTML=resultHtml(form.price,calc(form,{...c,eggs:{...c.eggs,...form.eggs}}));
+    // 줄마다 환산액 표시
+    $('regItems').querySelectorAll('.pe-line').forEach(line=>{
+      const name=line.querySelector('[data-f=name]').value.trim(),qty=num(line.querySelector('[data-f=qty]').value),out=line.querySelector('[data-f=val]');
+      if(!out)return;
+      if(!name||!qty){out.textContent='';out.classList.remove('miss');return;}
+      const unitPrice=unitWon({name,kind:'item'},c);
+      out.textContent=unitPrice==null?'미환산':won(unitPrice*qty);out.classList.toggle('miss',unitPrice==null);
+    });
   }
   function resetForm(){
     $('registerForm').reset();
-    $('itemNames').innerHTML=['다이아','황금 다이아'].concat(itemNames()).map(n=>`<option value="${escape(n)}">`).join('');
+    const freq=itemFreq();
+    $('itemNames').innerHTML=['다이아','황금 다이아'].concat(freq.filter(n=>n!=='다이아'&&n!=='황금 다이아')).map(n=>`<option value="${escape(n)}">`).join('');
+    $('regQuick').innerHTML=QUICK.filter(n=>n==='다이아'||n==='황금 다이아'||n==='골드'||freq.includes(n)).map(n=>`<button type="button" class="pe-quick-btn" data-quick="${escape(n)}">${escape(n)}</button>`).join('');
+    $('regTemplate').innerHTML='<option value="">직접 입력</option>'+all().filter(p=>p.price&&p.items.length).map(p=>`<option value="${escape(p.id)}">${escape(p.name)} · ${won(p.price)}${p.custom?' · 직접 등록':p.always?' · 상시':' · '+pretty(p.noticeDate)}</option>`).join('');
     $('eggNames').innerHTML=eggNames().map(n=>`<option value="${escape(n)}">`).join('');
     $('regItems').innerHTML=itemLine()+itemLine();$('regEggs').innerHTML=eggLine();
     preview();
   }
   $('regReset').addEventListener('click',resetForm);
+  $('regTemplate').addEventListener('change',e=>{if(e.target.value)fillTemplate(e.target.value);});
+  $('regQuick').addEventListener('click',e=>{const b=e.target.closest('[data-quick]');if(b)quickAdd(b.dataset.quick);});
+  // 수량칸에서 엔터: 다음 줄로(마지막 줄이면 새 줄 추가). 폼 제출은 막는다.
+  $('registerForm').addEventListener('keydown',e=>{
+    if(e.key!=='Enter'||e.isComposing)return;
+    const t=e.target;if(!(t instanceof HTMLInputElement))return;
+    e.preventDefault();
+    const line=t.closest('.pe-line');if(!line)return;
+    if(t.dataset.f==='name'){line.querySelector('[data-f=qty]').focus();return;}
+    let next=line.nextElementSibling;
+    if(!next){const box=line.parentElement;box.insertAdjacentHTML('beforeend',box.id==='regEggs'?eggLine():itemLine());next=box.lastElementChild;}
+    next.querySelector('[data-f=name]').focus();
+  });
   $('regAddItem').addEventListener('click',()=>$('regItems').insertAdjacentHTML('beforeend',itemLine()));
   $('regAddEgg').addEventListener('click',()=>$('regEggs').insertAdjacentHTML('beforeend',eggLine()));
   $('registerForm').addEventListener('click',e=>{const b=e.target.closest('[data-remove]');if(b){b.closest('.pe-line').remove();preview();}});

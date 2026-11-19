@@ -33,12 +33,14 @@
         </section>
         <section class="pkg-content pe-calc" aria-labelledby="registerTitle">
           <form id="registerForm">
-            <div class="pe-calc-head"><div><p class="pkg-eyebrow">CALCULATOR</p><h2 id="registerTitle">패키지 직접 계산</h2><p class="pkg-muted">구성품과 개수를 넣으면 바로 계산돼요. 등록하면 아래 목록에 저장됩니다.</p></div><button type="button" id="regReset" class="pkg-button">초기화</button></div>
+            <div class="pe-calc-head"><div><p class="pkg-eyebrow">CALCULATOR</p><h2 id="registerTitle">패키지 직접 계산</h2><p class="pkg-muted">기존 패키지를 불러와 고치거나, 자주 쓰는 구성품 버튼으로 바로 넣을 수 있어요. 수량칸에서 엔터를 누르면 다음 줄로 넘어갑니다.</p></div><button type="button" id="regReset" class="pkg-button">초기화</button></div>
             <div class="pe-calc-body pe-form">
               <div>
+                <label class="pe-form-row">불러오기 <select id="regTemplate" aria-label="기존 패키지 구성 불러오기"></select></label>
                 <label class="pe-form-row">패키지 이름 <input id="regName" type="text" maxlength="40" placeholder="예: 말카르티스 패키지"></label>
                 <label class="pe-form-row">가격(원) <input id="regPrice" type="number" min="1" step="100" inputmode="numeric" placeholder="33000"></label>
                 <h3>구성품</h3>
+                <div id="regQuick" class="pe-quick" aria-label="자주 쓰는 구성품 빠르게 추가"></div>
                 <div id="regItems" class="pe-lines"></div>
                 <button type="button" id="regAddItem" class="pkg-button">+ 구성품 추가</button>
               </div>

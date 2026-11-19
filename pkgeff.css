@@ -50,6 +50,12 @@
 .pe-calc-head h2{font:600 16px var(--u-sans);color:var(--text);margin:2px 0 4px}
 .pe-calc-head .pkg-muted{font-size:11px}
 .pe-calc-body{display:grid;grid-template-columns:1fr 1fr;gap:4px 28px}
+.pe-quick{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.pe-quick-btn{border:1px solid var(--border);border-radius:999px;background:var(--bg3);color:var(--text2);font-size:11px;padding:4px 9px}
+.pe-quick-btn:hover{border-color:var(--accent-border);color:var(--accent)}
+.pe-line-val{font:normal 11px var(--u-mono,monospace);color:var(--accent);min-width:64px;text-align:right;white-space:nowrap}
+.pe-line-val.miss{color:var(--text3)}
+#regTemplate{width:min(260px,60%);background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:7px;padding:7px 9px;font:12px var(--u-sans)}
 .pe-form-actions{display:flex;justify-content:flex-end;margin-top:14px}
 .pe-hint{font-size:11px;line-height:1.7;margin-bottom:14px}
 .pe-note{display:block;font-size:10px;color:var(--text3);line-height:1.5;margin-top:2px}
@@ -64,6 +70,8 @@
 .pe-table td:first-child{color:var(--text);white-space:nowrap}
 .pe-num{font-family:var(--u-mono,monospace);white-space:nowrap;text-align:right}
 @media(max-width:860px){
+#regTemplate{min-height:40px;font-size:16px}
+.pe-quick-btn{padding:7px 11px;font-size:12px}
 .pe-notes{padding:12px}
 .pe-calc{padding:12px}
 .pe-calc-body{grid-template-columns:1fr}

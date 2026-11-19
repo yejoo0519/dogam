@@ -4,7 +4,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>패키지 효율 · 드래곤빌리지1 도감</title>
-  <meta name="robots" content="noindex">
   <meta name="description" content="드래곤빌리지 패키지 가격과 구성품을 기준 단가와 알 시세로 환산해 이득%를 계산합니다">
   <link id="theme-css" rel="stylesheet" href="./theme-dark.css">
   <script src="./theme.js"></script>
@@ -16,7 +15,7 @@
 <body class="u">
   <div class="u-app">
     <main class="u-wrap full">
-      <div class="pkg-wrap" id="pkgeffRoot" hidden>
+      <div class="pkg-wrap" id="pkgeffRoot">
         <header class="pkg-heading">
           <div><p class="pkg-eyebrow">PACKAGE VALUE</p><h1>패키지 효율</h1><p class="pkg-sub">구성품과 알 시세를 넣으면, 재화 가치와 이득률을 정리해 드려요.</p></div>
         </header>
@@ -92,22 +91,9 @@
   </dialog>
   <noscript><p>패키지 효율을 보려면 JavaScript를 활성화해 주세요.</p></noscript>
   <script src="./ui.js"></script>
-  <script>UI.shell({page:'pkg',title:'패키지 효율',sub:'가격 대비 구성품 가치'});</script>
+  <script>UI.shell({page:'pkgeff',title:'패키지 효율',sub:'가격 대비 구성품 가치'});</script>
   <script src="./sb_config.js"></script>
   <script src="./calc-cloud.js"></script>
-  <script>
-  /* 관리자 전용: 로그인 정보의 관리자 표시를 서버 기록으로 한 번 더 확인한 뒤에만 화면을 연다. */
-  (async function(){
-    function deny(){ alert('관리자만 접근 가능합니다.'); location.href = './community.html'; }
-    const user = getUser();
-    if(!user || user.id == null || !user.is_admin) return deny();
-    try{
-      const rows = await supabase('GET','users',null,'?id=eq.'+encodeURIComponent(user.id)+'&select=id,is_admin,is_banned');
-      if(!Array.isArray(rows) || rows.length !== 1 || !rows[0].is_admin || rows[0].is_banned) return deny();
-    }catch(error){ console.error('Package value: 관리자 확인 실패', error); return deny(); }
-    document.getElementById('pkgeffRoot').hidden = false;
-    const app = document.createElement('script'); app.src = './pkgeff-app.js'; document.body.appendChild(app);
-  })();
-  </script>
+  <script src="./pkgeff-app.js"></script>
 </body>
 </html>

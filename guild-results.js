@@ -82,8 +82,10 @@
   // 예비 정령 결과: 지금 추천(base)과 예비 정령까지 고려한 추천(info.deck)을 비교
   window.renderReserveDeck=function(base,info){
     const el=document.getElementById('res-body-reserve');if(!el)return;
+    const sr=info.searched??1;
+    const scope=sr>=1?'모든 조합을 확인한 최고값이에요.':'계산 시간 제한(20초)까지 찾은 최고값이에요. 확인 못 한 조합에 더 높은 게 있을 수 있어요.';
     if(!info.deck){
-      el.innerHTML=`<p class="sp-help rsv-none">예비 정령을 달아도 지금 추천보다 오르는 조합이 없어요. (3위 안에 들 수 있는 용 ${info.checked}/${info.total}마리 확인)</p>`;
+      el.innerHTML=`<p class="sp-help rsv-none">${sr>=1?'예비 정령을 달아도 지금 추천보다 오르는 조합이 없어요.':'예비 정령으로 오르는 조합을 찾지 못했어요.'} (3위 안에 들 수 있는 용 ${info.checked}/${info.total}마리 · ${sr>=1?'모든 조합 확인':'계산 시간 제한(20초)까지 확인'})</p>`;
       return;
     }
     const {wMax,wPct}=weekCtx();
@@ -98,7 +100,7 @@
       tarLine=`<div>평균 TAR ${t0.toFixed(1)} → ${t1.toFixed(1)} <b class="rsv-up">${sign(t1-t0)}</b></div>`;
     }
     lastRsv=info.deck;
-    el.innerHTML=`<div class="rsv-summary"><div>추천: ${picks}</div><div>평균 비밸 ${a0.toFixed(1)} → ${a1.toFixed(1)} <b class="rsv-up">${sign(diff)} (${sign(a0?100*diff/a0:0)}%)</b></div>${tarLine}<div class="rsv-apply-row"><button type="button" class="btn-gold" data-rsv-apply="all">추천대로 길드전 셋팅에 전부 적용</button></div></div><div class="sp-guild-cards">${info.deck.map((r,i)=>cardHtml(r,i,wMax,wPct,info.origin)).join('')}</div>`;
+    el.innerHTML=`<div class="rsv-summary"><div>추천: ${picks}</div><div>평균 비밸 ${a0.toFixed(1)} → ${a1.toFixed(1)} <b class="rsv-up">${sign(diff)} (${sign(a0?100*diff/a0:0)}%)</b></div>${tarLine}<div class="rsv-scope">${scope}</div><div class="rsv-apply-row"><button type="button" class="btn-gold" data-rsv-apply="all">추천대로 길드전 셋팅에 전부 적용</button></div></div><div class="sp-guild-cards">${info.deck.map((r,i)=>cardHtml(r,i,wMax,wPct,info.origin)).join('')}</div>`;
   };
   document.addEventListener('DOMContentLoaded',()=>{
     const select=document.getElementById('guild-priority');

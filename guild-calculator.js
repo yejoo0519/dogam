@@ -1812,6 +1812,7 @@ function switchResTab(t){
   });
 }
 
+const RSV_TIME_LIMIT_MS=20000; // 예비 정령 조합 탐색 시간 제한
 function runSim(){
   if(document.getElementById('sim-btn').disabled)return;
   {const _e=document.getElementById('res-sec-empty');if(_e)_e.style.display='none';}
@@ -1852,12 +1853,14 @@ function runSim(){
       const deck=await runDeck(filtered,0,baseEnd);
       if(deck.length<3)throw new Error('장신구/펜던트/젬 중복 제한을 만족하는 3마리 조합을 찾지 못했습니다.');
       // ── 예비 정령 ──
-      // 1) 지금 추천 3마리가 기준선. 2) 용 × 예비 정령마다 상한(가장 좋은 젬을 다 받았다고 친 값)만 빠르게 구하고,
-      //    상한으로도 기준선을 못 넘는 조합은 버린다. 3) 남은 조합만 넣어서 3마리 조합을 다시 탐색한다.
+      // 1) 지금 추천 3마리가 기준선. 2) 용 × 예비 정령마다 상한(가장 좋은 젬을 다 받았다고 친 값)을 구해 기준선을 못 넘는 예비는 뺀다.
+      // 3) 남은 예비를 그 용의 정령 후보(_alts)로 붙여 3마리 조합을 다시 탐색한다. 조합은 용 기준으로만 돌고 정령은 셋팅 후보 안에서 고른다
+      //    (같은 셋팅에서 지배되는 정령은 doSimDeck에서 빠지므로 예비가 많아도 후보가 크게 늘지 않는다).
       let rsvInfo=null;
       if(reserves.length){
         const keyed=filtered.map(d=>({...d,_dk:d.uid||`${d.attr}#${d.idx}`}));
-        const allVariants=keyed.flatMap(d=>reserves.map(r=>({...d,opts:r.opts.map(o=>({...o})),bonus:r.bonus||'',_rsv:r.uid,_rsvName:r.name,_hadSpirit:spiritHasOpt(d)})));
+        const altOf=(d,r)=>({opts:r.opts.map(o=>({...o})),bonus:r.bonus||'',_rsv:r.uid,_rsvName:r.name,_hadSpirit:spiritHasOpt(d)});
+        const allVariants=keyed.flatMap(d=>reserves.map(r=>({...d,...altOf(d,r)})));
         const ubs=await doSimDeck(ownedAcc,[...keyed,...allVariants],excSun,(p,stage)=>CalcProgress.update(50+p*0.05,'예비 정령 후보 거르기'),encMode,true);
         const baseScores=deck.map(r=>score(r));
         const T=baseScores.reduce((t,v)=>t+v,0),T3=Math.min(...baseScores);
@@ -1865,12 +1868,16 @@ function runSim(){
         ubs.forEach(u=>bestUB.set(u.dragon._dk,Math.max(bestUB.get(u.dragon._dk)||-Infinity,u.ubS)));
         const ubDesc=[...bestUB.entries()].sort((x,y)=>y[1]-x[1]);
         const others2=dk=>ubDesc.filter(([k])=>k!==dk).slice(0,2).reduce((t,[,v])=>t+v,0);
-        const keep=new Set(ubs.filter(u=>u.dragon._rsv&&(guildDistMode()==='focus'?u.ubS>=T3-1e-9:u.ubS+others2(u.dragon._dk)>=T-1e-9)).map(u=>u.dragon));
-        const variants=allVariants.filter(v=>keep.has(v));
-        const liveCount=new Set(variants.map(v=>v._dk)).size;
-        let rsvDeck=null;
-        if(variants.length){
-          const d2=await runDeck([...keyed,...variants],55,100,deck);
+        const floorOf=dk=>guildDistMode()==='focus'?T3:T-others2(dk);
+        const pass=new Set(ubs.filter(u=>u.dragon._rsv&&u.ubS>=floorOf(u.dragon._dk)-1e-9).map(u=>u.dragon._dk+'|'+u.dragon._rsv));
+        const withAlts=keyed.map(d=>({...d,_minUbS:floorOf(d._dk),_alts:reserves.filter(r=>pass.has(d._dk+'|'+r.uid)).map(r=>altOf(d,r))}));
+        const liveCount=withAlts.filter(d=>d._alts.length).length;
+        let rsvDeck=null,searched=1;
+        if(liveCount){
+          // 승계 가능이면 승계 가능 한 번만 돈다 (인챈트를 고를 수 있는 쪽이 보유 인챈트 경우를 포함한다).
+          // 시간 제한 안에 다 못 보면 그때까지 찾은 최고 조합을 쓰고, 확인한 비율을 함께 보여준다
+          const d2=await doSimDeck(ownedAcc,withAlts,excSun,(p,stage)=>CalcProgress.update(55+p*0.45,'예비 정령 조합 탐색'),encMode,false,deck,performance.now()+RSV_TIME_LIMIT_MS);
+          searched=d2.searched??1;
           if(d2.length>=3&&d2.some(r=>r.dragon._rsv)&&lexGt(tot(d2),tot(deck)))rsvDeck=d2;
         }
         // 예비 정령마다 타입별 '원래 비밸': 9.0 · 내 장비로 6타입 × 2단계 버프 조합에 달았을 때 타입별 가장 높은 비밸
@@ -1885,7 +1892,7 @@ function runSim(){
             if(byType.length)origin[r.uid]=byType.map(u=>({dtype:u.dragon.dtype,label:u.dragon._lbl,bv:u.ub}));
           }
         }
-        rsvInfo={deck:rsvDeck,checked:liveCount,total:keyed.length,origin};
+        rsvInfo={deck:rsvDeck,checked:liveCount,total:keyed.length,origin,searched};
       }
       renderResDeck(deck,includeDebuff?0:candidates.length-filtered.length);
       const rsec=document.getElementById('res-reserve-sec');
@@ -2173,6 +2180,7 @@ function focusDeck(sets,stock,score){
   const accOk=(o,picked)=>{
     let a=1,p=1;
     for(const q of picked){
+      if(o.dragon._rsv&&q.dragon._rsv===o.dragon._rsv)return false; // 같은 예비 정령은 한 마리만
       if(q.accId===o.accId&&++a>o.accCnt)return false;
       if(o.pendId!=null&&q.pendId===o.pendId&&++p>o.pendCnt)return false;
     }
@@ -2218,7 +2226,7 @@ function focusDeck(sets,stock,score){
   });
 }
 
-async function doSimDeck(ownedAcc,dragons,excSun,onProgress=()=>{},encModeOverride=null,ubOnly=false,seedDeck=null){
+async function doSimDeck(ownedAcc,dragons,excSun,onProgress=()=>{},encModeOverride=null,ubOnly=false,seedDeck=null,deadline=0){
   ownedAcc=groupOwnedAcc(ownedAcc);
   const stock=buildGemStock();
   const pends=getPends(excSun);
@@ -2251,34 +2259,75 @@ async function doSimDeck(ownedAcc,dragons,excSun,onProgress=()=>{},encModeOverri
   let lastYield=performance.now();
   onProgress(0,'장비 조합 계산');await new Promise(r=>setTimeout(r,0));
 
+  // 예비 정령(dragon._alts): 같은 장비 셋팅(장신구·인챈트·펜던트·젬 배분)에서는 정령만 다르다.
+  // 그 셋팅에서 어떤 젬 단계로도 다른 정령보다 낮거나 같은 정령은, 원래 정령에 지배되거나 남겨둔 예비 3개 이상에 지배되면 후보에서 뺀다.
+  // 3마리 조합에서 다른 두 마리가 예비를 하나씩 가져가도 같은 장비·젬으로 바꿔 낄 정령이 남으므로 최적은 그대로다.
+  const gLo=SKEYS.map(k=>{const it=stock[k].items[stock[k].items.length-1];return it.h+it.a+it.d;});
+  const POT=[24,6,6];
+  const statPre=(sp,si,a,m,C)=>{const k=SKEYS[si];return ((a+sp.plus[k])*(1+sp.pct[k])+sp.bonus[k])*m+C;};
   for(let di=0;di<dragons.length;di++){
     const dragon=dragons[di];
-    const {plus:sP,pct:sPct,bonus:sB}=procSpiritFrom(dragon);
+    const spirits=[{dr:dragon,sp:procSpiritFrom(dragon)}].concat((dragon._alts||[]).map(alt=>{const dr={...dragon,...alt,_alts:null};return {dr,sp:procSpiritFrom(dr)};}));
     const bs=BASE[dragon.grade][dragon.dtype];
     const bh=bs.hp,ba=bs.atk,bd=bs.def;
     const buff=getDragonBuffCounts(dragon),debuff=getDragonDebuffCounts(dragon);
     const bufH=buff.hp*Math.floor(bh*.2+1e-9),bufA=buff.atk*Math.floor(ba*.2+1e-9),bufD=buff.def*Math.floor(bd*.2+1e-9);
     const debufH=debuff.hp*Math.floor(bh*.2+1e-9),debufA=debuff.atk*Math.floor(ba*.2+1e-9),debufD=debuff.def*Math.floor(bd*.2+1e-9);
     const netBufH=bufH-debufH,netBufA=bufA-debufA,netBufD=bufD-debufD;
+    const Cst=[coll.hp+netBufH,coll.atk+netBufA,coll.def+netBufD],B3=[bh,ba,bd];
+    const minUbS=dragon._minUbS;
     const options=[];
     for(const acc of ownedAcc){
       const encs=encMode==='infinite'?['hp','atk','def']:[acc._enc||'none'];
       for(const enc of encs){
         const aH=acc.hp+(enc==='hp'?.21:0),aA=acc.atk+(enc==='atk'?.21:0),aD=acc.def+(enc==='def'?.21:0);
+        const AP=[aH,aA,aD];
         for(const pend of pends){
           const {pH,pA,pD}=calcPendPct(pend);
-          const _calc={bh,ba,bd,aH,aA,aD,pH,pA,pD,sPct,sP,sB,coll,bufH,bufA,bufD,debufH,debufA,debufD,netBufH,netBufA,netBufD};
-          const base={dragon,buff,debuff,accN:acc.n,accId:acc._accId,accCnt:acc._accCnt||1,enc,pend,pendId:pend?pend._pendId:null,pendCnt:pend?pend._pendCnt||1:0,_calc};
-          const mult=[(1+aH)*(1+sPct.hp)*(1+pH),(1+aA)*(1+sPct.atk)*(1+pA),(1+aD)*(1+sPct.def)*(1+pD)];
+          const M=[1+pH,1+pA,1+pD];
           for(const shape of GEM_SHAPES){
-            const r=guildOptStats(_calc,stock.hp.pre[shape[0]],stock.atk.pre[shape[1]],stock.def.pre[shape[2]]);
-            const o={...base,shape,ub:r.bv};
-            o.ubS=score(o,r.bv);
-            // 가장 낮은 젬만 받았을 때의 스탯 → 젬을 덜 받았을 때 줄어드는 양의 하한 계산에 사용
-            const lo=guildOptStats(_calc,shape[0]*minGemVal.hp,shape[1]*minGemVal.atk,shape[2]*minGemVal.def);
-            o.lossK=[lo.fA*lo.fD,lo.fH*lo.fD,lo.fH*lo.fA].map((v,si)=>v*scoreSlopeMin(o,lo.bv));
-            o.mult=mult;
-            options.push(o);
+            const cands=[];
+            for(const {dr,sp} of spirits){
+              const _calc={bh,ba,bd,aH,aA,aD,pH,pA,pD,sPct:sp.pct,sP:sp.plus,sB:sp.bonus,coll,bufH,bufA,bufD,debufH,debufA,debufD,netBufH,netBufA,netBufD};
+              const r=guildOptStats(_calc,stock.hp.pre[shape[0]],stock.atk.pre[shape[1]],stock.def.pre[shape[2]]);
+              const ubS=score({dragon:dr,buff,debuff},r.bv);
+              if(minUbS!=null&&ubS<minUbS-1e-9)continue; // 상한으로도 기준선에 못 미침
+              cands.push({dr,sp,_calc,r,ubS});
+            }
+            if(!cands.length)continue;
+            let kept=cands;
+            if(cands.length>1){
+              // 이 셋팅에서 정령 전 스탯 범위 (가장 낮은 젬 ~ 가장 높은 젬)
+              const aR=[0,1,2].map(si=>[Math.floor((B3[si]+shape[si]*gLo[si]+POT[si])*(1+AP[si])+1e-9),Math.floor((B3[si]+stock[SKEYS[si]].pre[shape[si]]+POT[si])*(1+AP[si])+1e-9)]);
+              const dom=(X,Y)=>{ // 정령 X가 정령 Y를 지배 (버림 오차는 X에서 3을 빼서 안전하게)
+                let prod=1;
+                for(let si=0;si<3;si++){
+                  let mn=Infinity;
+                  for(const a of aR[si]){const y=statPre(Y,si,a,M[si],Cst[si]);if(y<=0)return false;mn=Math.min(mn,(statPre(X,si,a,M[si],Cst[si])-3)/y);}
+                  if(mn<=0)return false;prod*=mn;
+                }
+                return prod>=1;
+              };
+              cands.sort((x,y)=>y.r.bv-x.r.bv);
+              const ownSp=spirits[0].sp;kept=[];
+              for(const c of cands){
+                if(c.dr._rsv){
+                  if(dom(ownSp,c.sp))continue;
+                  let n=0;for(const q of kept)if(q.dr._rsv&&dom(q.sp,c.sp)&&++n>=3)break;
+                  if(n>=3)continue;
+                }
+                kept.push(c);
+              }
+            }
+            for(const c of kept){
+              const base={dragon:c.dr,buff,debuff,accN:acc.n,accId:acc._accId,accCnt:acc._accCnt||1,enc,pend,pendId:pend?pend._pendId:null,pendCnt:pend?pend._pendCnt||1:0,_calc:c._calc};
+              const o={...base,shape,ub:c.r.bv,ubS:c.ubS};
+              // 가장 낮은 젬만 받았을 때의 스탯 → 젬을 덜 받았을 때 줄어드는 양의 하한 계산에 사용
+              const lo=guildOptStats(c._calc,shape[0]*minGemVal.hp,shape[1]*minGemVal.atk,shape[2]*minGemVal.def);
+              o.lossK=[lo.fA*lo.fD,lo.fH*lo.fD,lo.fH*lo.fA].map((v,si)=>v*scoreSlopeMin(o,lo.bv));
+              o.mult=[(1+aH)*(1+c.sp.pct.hp)*(1+pH),(1+aA)*(1+c.sp.pct.atk)*(1+pA),(1+aD)*(1+c.sp.pct.def)*(1+pD)];
+              options.push(o);
+            }
           }
         }
       }
@@ -2298,6 +2347,10 @@ async function doSimDeck(ownedAcc,dragons,excSun,onProgress=()=>{},encModeOverri
   const canBeat=(s,b)=>!best||s>best.total||(s===best.total&&b>best.bvSum);
   const n=sets.length,totalTriples=n*(n-1)*(n-2)/6;let done=0,steps=0;
   onProgress(20,'3마리 조합 탐색');
+  // deadline: 예비 정령 탐색은 시간 제한이 있다. 넘으면 그때까지 찾은 최고 조합을 돌려주고 얼마나 확인했는지 표시한다
+  let timedOut=false;
+  const late=()=>deadline&&performance.now()>deadline&&(timedOut=true);
+  search:
   for(let i=0;i<n-2;i++)for(let j=i+1;j<n-1;j++)for(let k=j+1;k<n;k++){
     done++;
     if(sameDragonSlot(sets[i].dragon,sets[j].dragon)||sameDragonSlot(sets[i].dragon,sets[k].dragon)||sameDragonSlot(sets[j].dragon,sets[k].dragon))continue;
@@ -2307,6 +2360,7 @@ async function doSimDeck(ownedAcc,dragons,excSun,onProgress=()=>{},encModeOverri
       if(!canBeat(a.ubS+B[0].ubS+C[0].ubS,a.ub+B[0].ub+C[0].ub))break;
       for(const b of B){
         if(!canBeat(a.ubS+b.ubS+C[0].ubS,a.ub+b.ub+C[0].ub))break;
+        if((++steps&4095)===0&&performance.now()-lastYield>=100){onProgress(20+79*done/Math.max(1,totalTriples),'3마리 조합 탐색');await CalcProgress.yield();lastYield=performance.now();if(late())break search;}
         if(!guildPairOk(a,b))continue;
         const abLoss=lossLB([a,b]);
         if(!canBeat(a.ubS+b.ubS+C[0].ubS-abLoss,a.ub+b.ub+C[0].ub))continue;
@@ -2316,14 +2370,16 @@ async function doSimDeck(ownedAcc,dragons,excSun,onProgress=()=>{},encModeOverri
           if(!canBeat(a.ubS+b.ubS+c.ubS-lossLB([a,b,c]),a.ub+b.ub+c.ub))continue;
           const r=assignTripleGems([a,b,c],stock,score,best?best.total*0.99:-Infinity);
           if(beats(r.total,r.bvSum))best=r;
-          if((++steps&1023)===0&&performance.now()-lastYield>=100){onProgress(20+79*done/Math.max(1,totalTriples),'3마리 조합 탐색');await CalcProgress.yield();lastYield=performance.now();}
+          if((++steps&1023)===0&&performance.now()-lastYield>=100){onProgress(20+79*done/Math.max(1,totalTriples),'3마리 조합 탐색');await CalcProgress.yield();lastYield=performance.now();if(late())break search;}
         }
       }
     }
-    if(performance.now()-lastYield>=100){onProgress(20+79*done/Math.max(1,totalTriples),'3마리 조합 탐색');await CalcProgress.yield();lastYield=performance.now();}
+    if(performance.now()-lastYield>=100){onProgress(20+79*done/Math.max(1,totalTriples),'3마리 조합 탐색');await CalcProgress.yield();lastYield=performance.now();if(late())break search;}
   }
   if(!best)return [];
-  return best.out.sort((a,b)=>typeof guildCompare==='function'?guildCompare(a,b):b.bv-a.bv);
+  const res=best.out.sort((a,b)=>typeof guildCompare==='function'?guildCompare(a,b):b.bv-a.bv);
+  res.searched=timedOut?Math.max(0,(done-1)/Math.max(1,totalTriples)):1;
+  return res;
 }
 
 function deckOptionsCompatible(a,b,pool){

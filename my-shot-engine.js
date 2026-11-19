@@ -350,8 +350,80 @@
     return out;
   }
 
+  /* 정령 관리 화면 (왼쪽 정령 목록 + 오른쪽 선택한 정령 상세): 오른쪽 상세의 옵션 4칸(2×2)을 읽는다.
+     기준 좌표는 게임 화면 높이 1041 · 화면 가운데 기준. 스탯은 아이콘 색(하트=체, 방패=방, 회색 칼=공),
+     %/+ 는 수치 마지막 글자 모양(%는 폭이 넓음)으로 구분. 한 장에 정령 1마리 */
+  var PANEL_H = 1041;
+  var PANEL_ICON = [[190, 852], [555, 852], [190, 968], [555, 968]];   // 아이콘 중심 (가운데 기준 x, y)
+  var PANEL_TXT = 80;                                                // 아이콘 중심 → 수치 시작
+  function iconKind(im, x, y, k) {
+    var R = Math.round(26 * k), h = 0, s = 0, g = 0, n = 0;
+    for (var yy = Math.max(0, y - R); yy < Math.min(im.h, y + R); yy++) for (var xx = Math.max(0, x - R); xx < Math.min(im.w, x + R); xx++) {
+      var i = (yy * im.w + xx) * 4, r = im.d[i], gg = im.d[i + 1], b = im.d[i + 2]; n++;
+      if (r > 190 && gg < 140 && b < 90 && r - gg > 80) h++;
+      else if (b > 170 && r < 150 && b - r > 60) s++;
+      else if (r > 130 && gg > 130 && b > 130 && Math.max(r, gg, b) - Math.min(r, gg, b) < 35) g++;
+    }
+    var min = n * 0.06;
+    if (h >= min && h > s) return 'hp';
+    if (s >= min) return 'def';
+    if (g >= min) return 'atk';
+    return null;
+  }
+  function panelType(im, x, y, k) {
+    var rg = { x0: Math.max(0, x), y0: Math.max(0, Math.round(y - 26 * k)), w: Math.round(220 * k), h: Math.round(52 * k) };
+    if (rg.x0 + rg.w > im.w) rg.w = im.w - rg.x0;
+    if (rg.y0 + rg.h > im.h) rg.h = im.h - rg.y0;
+    if (rg.w <= 0 || rg.h <= 0) return null;
+    var M = whiteMask(im, rg), bx = segment(M, 14 * k);
+    if (bx.length < 2 || bx.length > 6) return null;
+    var top = 1e9, bot = -1;
+    bx.forEach(function (b) { if (b[2] < top) top = b[2]; if (b[3] > bot) bot = b[3]; });
+    var th = bot - top;
+    if (th < 20 * k || th > 46 * k) return null;
+    var last = bx[bx.length - 1], lw = last[1] - last[0], lh = last[3] - last[2];
+    return lw / lh > 0.8 ? '%' : '+';
+  }
+  function readPanelAt(im, cx, y0, k) {
+    var opts = [];
+    for (var i = 0; i < 4; i++) {
+      var x = Math.round(cx + PANEL_ICON[i][0] * k), y = Math.round(y0 + PANEL_ICON[i][1] * k);
+      if (x < 0 || x >= im.w || y < 0 || y >= im.h) return null;
+      var st = iconKind(im, x, y, k); if (!st) return null;
+      var tp = panelType(im, Math.round(x + PANEL_TXT * k), y, k); if (!tp) return null;
+      opts.push({ stat: st, type: tp });
+    }
+    // 옵션 칸 배경(어두운 회색) 확인: 두 줄 사이
+    var by = Math.round(y0 + 910 * k), bxx = Math.round(cx + 380 * k);
+    if (by >= im.h || bxx >= im.w) return null;
+    var p = im.px(bxx, by);
+    if (Math.max(p[0], p[1], p[2]) > 70) return null;
+    return opts;
+  }
+  function readPanel(im) {
+    var r = contentRect(im); if (!r) return null;
+    var k = (r.y1 - r.y0) / PANEL_H;
+    var anchors = [(r.x0 + r.x1) / 2, r.x1 - 900 * k, r.x0 + 900 * k];   // 가운데 기준, 안 되면 오른쪽 · 왼쪽 끝 기준
+    var D = [0, -6, 6, -12, 12, -20, 20];
+    for (var a = 0; a < anchors.length; a++) for (var i = 0; i < D.length; i++) for (var j = 0; j < D.length; j++) {
+      var cx = anchors[a] + D[i] * k, y0 = r.y0 + D[j] * k;
+      var opts = readPanelAt(im, cx, y0, k);
+      if (opts) {
+        // 미리보기 그림용: 정령 초상(상세 왼쪽 위)을 감싸는 가짜 카드 (thumbOf: l+14k, t+60k, 264k×258k)
+        return { kind: 'spirit', opts: opts, panel: true, card: { col: 0, l: Math.round(cx + 102 * k), t: Math.round(y0 + 280 * k), k: k } };
+      }
+    }
+    return null;
+  }
+
   /* 한 장 해석 → 카드별 결과 */
   function analyze(im) {
+    var res = analyzeCards(im);
+    if (res.some(function (r) { return r.kind !== 'none'; })) return res;
+    var p = readPanel(im);
+    return p ? [p] : res;
+  }
+  function analyzeCards(im) {
     var cards = findCards(im), spiritShot = cards.some(function (c) { return readSpiritNear(im, c); });
     if (spiritShot) cards = spiritCards(im, cards);
     return cards.map(function (card) {

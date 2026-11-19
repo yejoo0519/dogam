@@ -664,6 +664,14 @@ function normRounds(raw){
   })};
 }
 // ── 역상성 ──
+function antiBoxHtml(){const on=!!S.anti,info=antiInfo();
+   let h=`<div class="min-row${on?'':' off'}"><span class="k">${esc(roundBuffAttrs().map(attrLbl).join(' · ')||L.none)}</span>
+     <button type="button" class="tg${on?' on':''}" onclick="setAnti()">${on?L.anti_on:L.anti_off}</button></div>`;
+   if(on&&info.cycle)h+=`<div class="run-note" style="margin-top:6px">${esc(L.anti_cycle)}</div><div class="seg" style="margin-top:6px">${info.bs.map(a=>
+     `<button type="button" class="chip${info.keep.includes(a)?' on':''}" onclick="antiPick('${a}')">${esc(attrLbl(a))}</button>`).join('')}</div>`;
+   const nt=!on?L.anti_note_off:(info.keep?L.anti_note(info.keep.map(attrLbl).join(' · ')):L.anti_nobuff);
+   h+=`<div class="run-note" style="margin-top:6px">${esc(nt)}</div>`;
+   return h;}
 // A가 B에 강함: 땅→물→불→바람→땅, 4속성→빛, 빛→어둠, 어둠→4속성 (황혼·여명·악몽은 상성 없음)
 const BEATS={'땅':['물','빛'],'물':['불','빛'],'불':['바람','빛'],'바람':['땅','빛'],'빛':['어둠'],'어둠':['땅','물','불','바람']};
 function roundBuffAttrs(rd){return [...new Set(STATS.map(st=>(rd||S.rounds[S.round]).buff[st]).filter(Boolean))];}
@@ -677,14 +685,14 @@ function antiInfo(){
   return {keep:pk.length?pk:bs,bs,cycle:true};
 }
 function antiAllow(){return S.anti?antiInfo().keep:null;}
-function setAnti(){S.anti=S.anti?0:1;renderSetting();save();}
+function setAnti(){S.anti=S.anti?0:1;renderBuffAll();save();}
 function antiPick(a){
   const info=antiInfo(),rd=S.rounds[S.round];
   let cur=[...info.keep];
   cur=cur.includes(a)?cur.filter(x=>x!==a):cur.concat([a]);
   if(!cur.length)return;
   rd.pick=info.bs.filter(x=>cur.includes(x));
-  cloudQueue();save();renderSetting();
+  cloudQueue();save();renderBuffAll();
 }
 const mkSpirit=()=>({uid:newUid(),memo:'',sp:Array.from({length:4},(_,k)=>({stat:'',type:SP_DEF_TYPE(k)})),bonus:'',rd:0});
 const mkGprio=()=>({mode:'even',order:[0,1,2]});
@@ -1344,8 +1352,8 @@ async function solve(makeSets,optCap,onProg){
     if(!minOf(ti))return arr;
     return arr.map(s=>({...s,opts:s.opts.filter(o=>minOk(ti,o.r))})).filter(s=>s.opts.length);
   });
-  // 역상성 제외 (자동 계산만)
-  const allow=useMin?antiAllow():null;
+  // 역상성 제외 (자동 계산 · 정령 배분)
+  const allow=(useMin||(makeSets&&makeSets.useAnti))?antiAllow():null;
   if(allow)setsByTeam=setsByTeam.map(arr=>arr.filter(s=>allow.includes(s.cand.attr)));
   const mti=ti=>useMin?ti:-1;
   P(63);await tick();
@@ -1892,14 +1900,7 @@ function renderSetting(){
       ${STATS.map(st=>`<label class="f"><span class="c-${st}">${statLbl(st)}</span>
         <input type="number" min="0" step="1" value="${minClamp(m[st])||''}" placeholder="0"
           oninput="setMinVal(${ti},'${st}',this.value)"></label>`).join('')}</div>`;}).join('');
-  {const on=!!S.anti,info=antiInfo();
-   let h=`<div class="min-row${on?'':' off'}"><span class="k">${esc(roundBuffAttrs().map(attrLbl).join(' · ')||L.none)}</span>
-     <button type="button" class="tg${on?' on':''}" onclick="setAnti()">${on?L.anti_on:L.anti_off}</button></div>`;
-   if(on&&info.cycle)h+=`<div class="run-note" style="margin-top:6px">${esc(L.anti_cycle)}</div><div class="seg" style="margin-top:6px">${info.bs.map(a=>
-     `<button type="button" class="chip${info.keep.includes(a)?' on':''}" onclick="antiPick('${a}')">${esc(attrLbl(a))}</button>`).join('')}</div>`;
-   const nt=!on?L.anti_note_off:(info.keep?L.anti_note(info.keep.map(attrLbl).join(' · ')):L.anti_nobuff);
-   h+=`<div class="run-note" style="margin-top:6px">${esc(nt)}</div>`;
-   document.getElementById('anti-box').innerHTML=h;}
+  document.getElementById('anti-box').innerHTML=antiBoxHtml();
   {const g=S.gprio,pr=g.mode==='prio';
    document.getElementById('gprio-box').innerHTML=`<div class="metric-bar">${[['even',L.gp_even],['prio',L.gp_prio]].map(([m,lb])=>
      `<button class="metric-btn${g.mode===m?' on':''}" onclick="setGpMode('${m}')">${lb}</button>`).join('')}</div>`+
@@ -2578,6 +2579,7 @@ function renderSpxSetting(){
     ${grade}
     ${dup}
     <div style="height:12px"></div><div class="lbl">${L.t_buff}</div>${roundBarHtml()}${buff}
+    <div style="height:12px"></div><div class="lbl">${L.t_anti}</div>${antiBoxHtml()}
     <div style="height:12px"></div><div class="lbl">${L.t_metric}</div>${metric}
     ${warns.length?`<div class="spec-warn">${warns.map(w=>''+w).join('<br>')}</div>`:''}
     <div class="run-row">
@@ -2663,7 +2665,7 @@ async function spxMakeSets(shapes,pends,onProg){
 let SPX_UNDO=null,SPX_LAST=null,SPX_MS=0;
 function spxRerender(){
   if(!SPX_LAST)return;
-  renderResult(SPX_LAST,SPX_MS,'spx-result',ti=>S.spx.target==='mine'&&teamCandidates(ti).length<3?L.team_need3:L.team_fail);
+  renderResult(SPX_LAST,SPX_MS,'spx-result',ti=>{const a=antiAllow();if(S.spx.target==='mine'&&teamCandidates(ti).length<3)return L.team_need3;if(a&&(S.spx.target!=='mine'||teamCandidates(ti).filter(c=>a.includes(c.attr)).length<3))return L.team_anti;return L.team_fail;});
 }
 function spxApply(){
   if(!SPX_LAST||!SPX_LAST.filled)return;
@@ -2716,7 +2718,7 @@ async function spxRun(){
       if(v!==last){last=v;btn.textContent=L.running_p(v);progBar(btn,v);}
     });
     SPX_LAST=best;SPX_MS=performance.now()-t0;SPX_UNDO=null;
-    renderResult(best,SPX_MS,'spx-result',ti=>S.spx.target==='mine'&&teamCandidates(ti).length<3?L.team_need3:L.team_fail);
+    renderResult(best,SPX_MS,'spx-result',ti=>{const a=antiAllow();if(S.spx.target==='mine'&&teamCandidates(ti).length<3)return L.team_need3;if(a&&(S.spx.target!=='mine'||teamCandidates(ti).filter(c=>a.includes(c.attr)).length<3))return L.team_anti;return L.team_fail;});
     const el=document.getElementById('spx-result');
     if(best&&best.filled){
       const used=new Set();best.decks.forEach(d=>d&&d.forEach(o=>{if(o.cand.spId!=null)used.add(o.cand.spId);}));
@@ -2799,6 +2801,7 @@ async function rsvMakeSets(shapes,pends,onProg){
   return res;
 }
 rsvMakeSets.useMin=true;
+spxMakeSets.useAnti=true;   // 정령 배분도 역상성 제외 설정을 따른다
 let RSV_LAST=null,RSV_DONE=false;
 function rsvUsed(best){const out=[];(best&&best.decks||[]).forEach((d,ti)=>d&&d.forEach(o=>{if(o.cand._rsv)out.push({ti,o});}));return out;}
 function renderRsvResult(base,rb,ms){

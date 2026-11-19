@@ -132,7 +132,9 @@
     $('results').innerHTML=page.map(({pkg,c})=>{
       const title=pkg.custom||!pkg.url?escape(pkg.name):`<a href="${escape(pkg.url)}" target="_blank" rel="noopener noreferrer">${escape(pkg.name)} ↗</a>`;
       const badges=(pkg.always?'<span class="pkg-badge gold">상시</span>':onSale(pkg)?'<span class="pkg-badge gold">판매중</span>':'')+(pkg.custom?`<span class="pkg-badge">직접 등록</span><button type="button" class="pe-del" data-delete="${escape(pkg.id)}">삭제</button>`:'');
-      return `<article class="pe-card" data-id="${escape(pkg.id)}"><div class="pe-card-head"><div><div class="pe-title">${title}</div><div class="pe-meta">${period(pkg)}</div></div><div class="pe-badges">${badges}</div></div><div class="pe-chips">${c.lines.map(chipHtml).join('')}</div><div class="pe-result">${resultHtml(pkg.price,c)}</div></article>`;
+      // 인게임 상점 배너가 있으면 이름 옆에 붙여서 패키지를 한눈에 구분할 수 있게 한다.
+      const banner=pkg.banner?`<div class="pe-banner"><img src="assets/pkg-banner/${escape(pkg.banner)}" alt="" loading="lazy" decoding="async"></div>`:'';
+      return `<article class="pe-card" data-id="${escape(pkg.id)}"><div class="pe-card-head">${banner}<div class="pe-head-text"><div class="pe-title">${title}</div><div class="pe-meta">${period(pkg)}</div></div><div class="pe-badges">${badges}</div></div><div class="pe-chips">${c.lines.map(chipHtml).join('')}</div><div class="pe-result">${resultHtml(pkg.price,c)}</div></article>`;
     }).join('');
   }
   // 알 시세 입력 중에는 카드를 다시 그리지 않고 값만 갱신해 포커스를 유지한다.

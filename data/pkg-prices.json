@@ -73,12 +73,12 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 54594,
-     "gainPct": 65.4
+     "value": 45858,
+     "gainPct": 39
     },
     "ingame": {
-     "value": 152025,
-     "gainPct": 360.7
+     "value": 124500,
+     "gainPct": 277.3
     },
     "unpriced": []
    },
@@ -156,12 +156,12 @@
    "note": "패스 28단계 유료 보상 합계(무료 일반 패스 보상 제외). 시즌 남은 기간 41일 기준 화면",
    "calc": {
     "market": {
-     "value": 71950,
-     "gainPct": 499.6
+     "value": 23900,
+     "gainPct": 99.2
     },
     "ingame": {
-     "value": 193487,
-     "gainPct": 1512.4
+     "value": 42100,
+     "gainPct": 250.8
     },
     "unpriced": []
    },
@@ -239,12 +239,12 @@
    "note": "패스 28단계 유료 보상 합계(무료 일반 패스 보상 제외). 시즌 남은 기간 41일 기준 화면 · 고급 패스는 일반 패스와 같은 가격으로 따로 구매",
    "calc": {
     "market": {
-     "value": 85370,
-     "gainPct": 611.4
+     "value": 26400,
+     "gainPct": 120
     },
     "ingame": {
-     "value": 230393,
-     "gainPct": 1819.9
+     "value": 44600,
+     "gainPct": 271.7
     },
     "unpriced": []
    },
@@ -350,12 +350,12 @@
    "note": "패스 28단계 유료 보상 합계(무료 일반 패스 보상 제외). 시즌 남은 기간 41일 기준 화면",
    "calc": {
     "market": {
-     "value": 45114,
-     "gainPct": 200.8
+     "value": 26331,
+     "gainPct": 75.5
     },
     "ingame": {
-     "value": 1069238,
-     "gainPct": 7028.3
+     "value": 1010061,
+     "gainPct": 6633.7
     },
     "unpriced": []
    },
@@ -457,12 +457,12 @@
    "note": "패스 28단계 유료 보상 합계(무료 일반 패스 보상 제외). 시즌 남은 기간 41일 기준 화면 · 고급 패스는 일반 패스와 같은 가격으로 따로 구매",
    "calc": {
     "market": {
-     "value": 49244,
-     "gainPct": 228.3
+     "value": 28715,
+     "gainPct": 91.4
     },
     "ingame": {
-     "value": 1316235,
-     "gainPct": 8674.9
+     "value": 1251553,
+     "gainPct": 8243.7
     },
     "unpriced": []
    },
@@ -688,12 +688,12 @@
    "source": "인게임 상점 화면(2026-11-16)",
    "calc": {
     "market": {
-     "value": 21014,
-     "gainPct": -4.5
+     "value": 15335,
+     "gainPct": -30.3
     },
     "ingame": {
-     "value": 56038,
-     "gainPct": 154.7
+     "value": 38147,
+     "gainPct": 73.4
     },
     "unpriced": []
    },
@@ -754,12 +754,12 @@
    "source": "인게임 상점 화면(2026-11-16)",
    "calc": {
     "market": {
-     "value": 26580,
-     "gainPct": 20.8
+     "value": 11292,
+     "gainPct": -48.7
     },
     "ingame": {
-     "value": 66095,
-     "gainPct": 200.4
+     "value": 17928,
+     "gainPct": -18.5
     },
     "unpriced": []
    },
@@ -1208,12 +1208,12 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 59962,
-     "gainPct": 81.7
+     "value": 46858,
+     "gainPct": 42
     },
     "ingame": {
-     "value": 166787,
-     "gainPct": 405.4
+     "value": 125500,
+     "gainPct": 280.3
     },
     "unpriced": []
    },
@@ -1284,12 +1284,12 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 51910,
-     "gainPct": 57.3
+     "value": 45358,
+     "gainPct": 37.4
     },
     "ingame": {
-     "value": 144644,
-     "gainPct": 338.3
+     "value": 124000,
+     "gainPct": 275.8
     },
     "unpriced": []
    },
@@ -1402,12 +1402,12 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 54594,
-     "gainPct": 65.4
+     "value": 45858,
+     "gainPct": 39
     },
     "ingame": {
-     "value": 152025,
-     "gainPct": 360.7
+     "value": 124500,
+     "gainPct": 277.3
     },
     "unpriced": []
    },
@@ -1635,12 +1635,12 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 57278,
-     "gainPct": 73.6
+     "value": 46358,
+     "gainPct": 40.5
     },
     "ingame": {
-     "value": 159406,
-     "gainPct": 383
+     "value": 125000,
+     "gainPct": 278.8
     },
     "unpriced": []
    },
@@ -1777,12 +1777,12 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 54594,
-     "gainPct": 65.4
+     "value": 45858,
+     "gainPct": 39
     },
     "ingame": {
-     "value": 152025,
-     "gainPct": 360.7
+     "value": 124500,
+     "gainPct": 277.3
     },
     "unpriced": []
    },
@@ -2021,12 +2021,12 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 54594,
-     "gainPct": 65.4
+     "value": 45858,
+     "gainPct": 39
     },
     "ingame": {
-     "value": 152025,
-     "gainPct": 360.7
+     "value": 124500,
+     "gainPct": 277.3
     },
     "unpriced": []
    },
@@ -2089,12 +2089,12 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 59962,
-     "gainPct": 81.7
+     "value": 46858,
+     "gainPct": 42
     },
     "ingame": {
-     "value": 166787,
-     "gainPct": 405.4
+     "value": 125500,
+     "gainPct": 280.3
     },
     "unpriced": []
    },
@@ -2157,12 +2157,12 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 59962,
-     "gainPct": 81.7
+     "value": 46858,
+     "gainPct": 42
     },
     "ingame": {
-     "value": 166787,
-     "gainPct": 405.4
+     "value": 125500,
+     "gainPct": 280.3
     },
     "unpriced": []
    },
@@ -2225,12 +2225,12 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 59962,
-     "gainPct": 81.7
+     "value": 46858,
+     "gainPct": 42
     },
     "ingame": {
-     "value": 166787,
-     "gainPct": 405.4
+     "value": 125500,
+     "gainPct": 280.3
     },
     "unpriced": []
    },
@@ -2519,12 +2519,12 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 54594,
-     "gainPct": 65.4
+     "value": 45858,
+     "gainPct": 39
     },
     "ingame": {
-     "value": 152025,
-     "gainPct": 360.7
+     "value": 124500,
+     "gainPct": 277.3
     },
     "unpriced": []
    },
@@ -2899,12 +2899,12 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 54594,
-     "gainPct": 65.4
+     "value": 45858,
+     "gainPct": 39
     },
     "ingame": {
-     "value": 152025,
-     "gainPct": 360.7
+     "value": 124500,
+     "gainPct": 277.3
     },
     "unpriced": []
    },
@@ -3475,12 +3475,12 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 54594,
-     "gainPct": 65.4
+     "value": 45858,
+     "gainPct": 39
     },
     "ingame": {
-     "value": 152025,
-     "gainPct": 360.7
+     "value": 124500,
+     "gainPct": 277.3
     },
     "unpriced": []
    },
@@ -3806,12 +3806,12 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 31860,
-     "gainPct": -3.5
+     "value": 25308,
+     "gainPct": -23.3
     },
     "ingame": {
-     "value": 89244,
-     "gainPct": 170.4
+     "value": 68600,
+     "gainPct": 107.9
     },
     "unpriced": []
    }
@@ -3877,12 +3877,12 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 31860,
-     "gainPct": -3.5
+     "value": 25308,
+     "gainPct": -23.3
     },
     "ingame": {
-     "value": 89244,
-     "gainPct": 170.4
+     "value": 68600,
+     "gainPct": 107.9
     },
     "unpriced": []
    }
@@ -4701,12 +4701,12 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 32282,
-     "gainPct": -2.2
+     "value": 26603,
+     "gainPct": -19.4
     },
     "ingame": {
-     "value": 87778,
-     "gainPct": 166
+     "value": 69887,
+     "gainPct": 111.8
     },
     "unpriced": []
    }
@@ -5194,12 +5194,12 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 31860,
-     "gainPct": -3.5
+     "value": 25308,
+     "gainPct": -23.3
     },
     "ingame": {
-     "value": 89244,
-     "gainPct": 170.4
+     "value": 68600,
+     "gainPct": 107.9
     },
     "unpriced": []
    }
@@ -5524,12 +5524,12 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 33032,
-     "gainPct": 0.1
+     "value": 27353,
+     "gainPct": -17.1
     },
     "ingame": {
-     "value": 95078,
-     "gainPct": 188.1
+     "value": 77187,
+     "gainPct": 133.9
     },
     "unpriced": []
    }
@@ -5753,12 +5753,12 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 33032,
-     "gainPct": 0.1
+     "value": 27353,
+     "gainPct": -17.1
     },
     "ingame": {
-     "value": 95078,
-     "gainPct": 188.1
+     "value": 77187,
+     "gainPct": 133.9
     },
     "unpriced": []
    }
@@ -6358,12 +6358,12 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 31860,
-     "gainPct": -3.5
+     "value": 25308,
+     "gainPct": -23.3
     },
     "ingame": {
-     "value": 89244,
-     "gainPct": 170.4
+     "value": 68600,
+     "gainPct": 107.9
     },
     "unpriced": []
    }
@@ -6429,12 +6429,12 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 31860,
-     "gainPct": -3.5
+     "value": 25308,
+     "gainPct": -23.3
     },
     "ingame": {
-     "value": 89244,
-     "gainPct": 170.4
+     "value": 68600,
+     "gainPct": 107.9
     },
     "unpriced": []
    }
@@ -6500,12 +6500,12 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 31860,
-     "gainPct": -3.5
+     "value": 25308,
+     "gainPct": -23.3
     },
     "ingame": {
-     "value": 89244,
-     "gainPct": 170.4
+     "value": 68600,
+     "gainPct": 107.9
     },
     "unpriced": []
    }
@@ -6571,12 +6571,12 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 31860,
-     "gainPct": -3.5
+     "value": 25308,
+     "gainPct": -23.3
     },
     "ingame": {
-     "value": 89244,
-     "gainPct": 170.4
+     "value": 68600,
+     "gainPct": 107.9
     },
     "unpriced": []
    }
@@ -6689,12 +6689,12 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 19249,
-     "gainPct": -41.7
+     "value": 17065,
+     "gainPct": -48.3
     },
     "ingame": {
-     "value": 50981,
-     "gainPct": 54.5
+     "value": 44100,
+     "gainPct": 33.6
     },
     "unpriced": [
      "얼음 조각"
@@ -6945,12 +6945,12 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 31860,
-     "gainPct": -3.5
+     "value": 25308,
+     "gainPct": -23.3
     },
     "ingame": {
-     "value": 89244,
-     "gainPct": 170.4
+     "value": 68600,
+     "gainPct": 107.9
     },
     "unpriced": []
    }
@@ -7070,12 +7070,12 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 31860,
-     "gainPct": -3.5
+     "value": 25308,
+     "gainPct": -23.3
     },
     "ingame": {
-     "value": 89244,
-     "gainPct": 170.4
+     "value": 68600,
+     "gainPct": 107.9
     },
     "unpriced": []
    }
@@ -7322,12 +7322,12 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 34223,
-     "gainPct": 3.7
+     "value": 26360,
+     "gainPct": -20.1
     },
     "ingame": {
-     "value": 92159,
-     "gainPct": 179.3
+     "value": 67387,
+     "gainPct": 104.2
     },
     "unpriced": []
    }
@@ -7704,12 +7704,12 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 33192,
-     "gainPct": 0.6
+     "value": 23145,
+     "gainPct": -29.9
     },
     "ingame": {
-     "value": 84540,
-     "gainPct": 156.2
+     "value": 52887,
+     "gainPct": 60.3
     },
     "unpriced": []
    }
@@ -7771,12 +7771,12 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 23158,
-     "gainPct": -29.8
+     "value": 15295,
+     "gainPct": -53.7
     },
     "ingame": {
-     "value": 54059,
-     "gainPct": 63.8
+     "value": 29287,
+     "gainPct": -11.3
     },
     "unpriced": []
    }
@@ -8030,12 +8030,12 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 44581,
-     "gainPct": -9
+     "value": 42397,
+     "gainPct": -13.5
     },
     "ingame": {
-     "value": 79028,
-     "gainPct": 61.3
+     "value": 72147,
+     "gainPct": 47.2
     },
     "unpriced": [
      "최고급 정령 뽑기권"
@@ -8104,12 +8104,12 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 23158,
-     "gainPct": -29.8
+     "value": 15295,
+     "gainPct": -53.7
     },
     "ingame": {
-     "value": 54059,
-     "gainPct": 63.8
+     "value": 29287,
+     "gainPct": -11.3
     },
     "unpriced": []
    }
@@ -8243,12 +8243,12 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 33192,
-     "gainPct": 0.6
+     "value": 23145,
+     "gainPct": -29.9
     },
     "ingame": {
-     "value": 84540,
-     "gainPct": 156.2
+     "value": 52887,
+     "gainPct": 60.3
     },
     "unpriced": []
    }
@@ -8311,12 +8311,12 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 47581,
-     "gainPct": -2.9
+     "value": 45397,
+     "gainPct": -7.4
     },
     "ingame": {
-     "value": 82028,
-     "gainPct": 67.4
+     "value": 75147,
+     "gainPct": 53.4
     },
     "unpriced": []
    }
@@ -8607,12 +8607,12 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 23534,
-     "gainPct": 7
+     "value": 21350,
+     "gainPct": -3
     },
     "ingame": {
-     "value": 57981,
-     "gainPct": 163.6
+     "value": 51100,
+     "gainPct": 132.3
     },
     "unpriced": []
    }
@@ -8684,12 +8684,12 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 23534,
-     "gainPct": 7
+     "value": 21350,
+     "gainPct": -3
     },
     "ingame": {
-     "value": 57981,
-     "gainPct": 163.6
+     "value": 51100,
+     "gainPct": 132.3
     },
     "unpriced": []
    }
@@ -8765,12 +8765,12 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 47581,
-     "gainPct": -2.9
+     "value": 45397,
+     "gainPct": -7.4
     },
     "ingame": {
-     "value": 82028,
-     "gainPct": 67.4
+     "value": 75147,
+     "gainPct": 53.4
     },
     "unpriced": []
    }
@@ -9461,12 +9461,12 @@
    "nameUncertain": false,
    "calc": {
     "market": {
-     "value": 15158,
-     "gainPct": -54.1
+     "value": 7295,
+     "gainPct": -77.9
     },
     "ingame": {
-     "value": 32059,
-     "gainPct": -2.9
+     "value": 7287,
+     "gainPct": -77.9
     },
     "unpriced": []
    }
@@ -10784,7 +10784,7 @@
  "itemPrices": {
   "unit": "won",
   "checkedAt": "2026-11-16",
-  "basis": "유저 거래 시세: 꿈의 젬 +34 = 1,000원, +35 = +34 2개(2,000원), +36 = +35 2개(4,000원), 디트의 망치 1,000원, 마법의 망치 500원, 강철의 망치 200원, 꿈의 부화기 +1 1,000원, 합성석 = 골드 200만, Lv+1 = 10개당 300원, Lv-1 = 100개당 300원, 프리미엄 레벨업 = 10개당 400~500원(중간값 45원), 정령 10+1 뽑기권 11,000원, 드래곤 정령 해제권 15,000원. 인게임 다이아 상점: 스페셜 레벨업 다이아 30개, 캡슐·각성 Lv+1·축복 받은 부화기 다이아 10개, 드래곤 부화기·드래곤의 승천 다이아 5개, 치료제 다이아 3개, 물약 8단계 다이아 4개, 토벌권 황금 다이아 4개, 더블 맥스 레벨업 황금 다이아 100개, 루비 = 길드 상점 루비상자(루비 50개 다이아 25개) 기준 다이아 0.5개. 추정(역산): 꿈의 정수 = 레브의 뽑기(다이아 15, 최상급 2.2%·상급 11.2%·하급 33.7%, 꿈의 보석·파티클은 0으로 봄)와 이클리프의 상자 제작식(중급 = 하급 15 + 다이아 1, 상급 = 중급 10 + 다이아 1, 최상급 = 상급 5 + 다이아 1)으로 역산(하급 0.3727, 중급 6.59, 상급 66.9, 최상급 335.51 다이아). 상급 강화의 정수·일반 초월의 정수 = 꿈의 정수(상급) 1개, 초월의 보석·최상급 강화의 정수 = 꿈의 정수(최상급) 1개. 상급 초월의 정수 = 일일 패키지 3,000원 ÷ 6개 = 개당 500원(두 기준 공통). 강림 강화곤 = 미스핏 패키지(49,000원, 공지 21412) − 유르카 패키지(33,000원, 공지 21406) 가격 차에서 나머지 구성 차이를 뺀 값(24,047원). 카닐 = (카닐 패키지 22,000원(공지 21142) − 골드 3,000만 1,440원) ÷ 51(카닐 50 + 축복의 보석 1 = 카닐 1개 값) = 403.14원, 축복의 보석 = 카닐 1개. 골드 = 즉시 치유 50만 골드가 치료제 1개(다이아 3개)를 대신하므로 골드 1억 = 다이아 600개, 합성석(골드 200만) = 다이아 12개. 아르하의 정수 = 하드 증탑 대리 1판 180~200원(중간 190원) ÷ 약 80개(속성별로 적힌 물·달·불·땅·태양의 정수도 같은 값). 정령 5성 확정권 = 2,857원(최고급 뽑기 1회 1,000원 = 6성 5% + 5성 15% × 합성 가능 비율 50%(가정) × 6성 절반 값으로 6성 = 11,429원을 구하고, 5성 2개 = 6성 1개라 6성 절반 × 합성 가능 비율 50%). 0원: 디바인 스톤·페르시온 결정·이계의 수정·꿈의 보석·파티클·강림의 돌·고급 정령 뽑기권·중급 강화의 정수. 강림 전용 장식과 드래곤 알은 카드에서 직접 시세 입력",
+  "basis": "유저 거래 시세: 꿈의 젬 +34 = 1,000원, +35 = +34 2개(2,000원), +36 = +35 2개(4,000원), 디트의 망치 1,000원, 마법의 망치 500원, 강철의 망치 200원, 꿈의 부화기 +1 1,000원, 합성석 = 골드 200만, Lv+1 = 10개당 300원, Lv-1 = 100개당 300원, 프리미엄 레벨업 = 10개당 400~500원(중간값 45원), 정령 10+1 뽑기권 11,000원, 드래곤 정령 해제권 15,000원. 인게임 다이아 상점: 스페셜 레벨업 다이아 30개, 캡슐·각성 Lv+1·축복 받은 부화기 다이아 10개, 드래곤 부화기·드래곤의 승천 다이아 5개, 치료제 다이아 3개, 물약 8단계 다이아 4개, 토벌권 황금 다이아 4개, 더블 맥스 레벨업 황금 다이아 100개, 루비 = 길드 상점 루비상자(루비 50개 다이아 25개) 기준 다이아 0.5개. 추정(역산): 꿈의 정수 = 레브의 뽑기(다이아 15, 최상급 2.2%·상급 11.2%·하급 33.7%, 꿈의 보석·파티클은 0으로 봄)와 이클리프의 상자 제작식(중급 = 하급 15 + 다이아 1, 상급 = 중급 10 + 다이아 1, 최상급 = 상급 5 + 다이아 1)으로 역산(하급 0.3727, 중급 6.59 다이아). 꿈의 정수(최상급) = 상급 초월의 정수와 같은 500원, 꿈의 정수(상급) = (500원 − 다이아 1개) ÷ 5 = 98.4원(인게임 95.6원). 상급 강화의 정수·일반 초월의 정수 = 꿈의 정수(상급) 1개, 초월의 보석·최상급 강화의 정수 = 꿈의 정수(최상급) 1개. 상급 초월의 정수 = 일일 패키지 3,000원 ÷ 6개 = 개당 500원(두 기준 공통). 강림 강화곤 = 미스핏 패키지(49,000원, 공지 21412) − 유르카 패키지(33,000원, 공지 21406) 가격 차에서 나머지 구성 차이를 뺀 값(24,047원). 카닐 = (카닐 패키지 22,000원(공지 21142) − 골드 3,000만 1,440원) ÷ 51(카닐 50 + 축복의 보석 1 = 카닐 1개 값) = 403.14원, 축복의 보석 = 카닐 1개. 골드 = 즉시 치유 50만 골드가 치료제 1개(다이아 3개)를 대신하므로 골드 1억 = 다이아 600개, 합성석(골드 200만) = 다이아 12개. 아르하의 정수 = 하드 증탑 대리 1판 180~200원(중간 190원) ÷ 약 80개(속성별로 적힌 물·달·불·땅·태양의 정수도 같은 값). 정령 5성 확정권 = 2,857원(최고급 뽑기 1회 1,000원 = 6성 5% + 5성 15% × 합성 가능 비율 50%(가정) × 6성 절반 값으로 6성 = 11,429원을 구하고, 5성 2개 = 6성 1개라 6성 절반 × 합성 가능 비율 50%). 0원: 디바인 스톤·페르시온 결정·이계의 수정·꿈의 보석·파티클·강림의 돌·고급 정령 뽑기권·중급 강화의 정수. 강림 전용 장식과 드래곤 알은 카드에서 직접 시세 입력",
   "items": {
    "꿈의 공격 +34": 1000,
    "꿈의 방어 +34": 1000,
@@ -10846,22 +10846,10 @@
     "v": 6.59,
     "u": "dia"
    },
-   "꿈의 정수(상급)": {
-    "v": 66.9,
-    "u": "dia"
-   },
-   "꿈의 정수(최상급)": {
-    "v": 335.51,
-    "u": "dia"
-   },
-   "초월의 보석": {
-    "v": 335.51,
-    "u": "dia"
-   },
-   "최상급 강화의 정수": {
-    "v": 335.51,
-    "u": "dia"
-   },
+   "꿈의 정수(상급)": 98.4,
+   "꿈의 정수(최상급)": 500,
+   "초월의 보석": 500,
+   "최상급 강화의 정수": 500,
    "정령 10+1 뽑기권": 11000,
    "카닐": 403.14,
    "디바인 스톤": 0,
@@ -10912,22 +10900,10 @@
    "강림의 돌": 0,
    "고급 정령 뽑기권": 0,
    "중급 강화의 정수": 0,
-   "상급 강화의 정수": {
-    "v": 66.9,
-    "u": "dia"
-   },
-   "초월의 정수(옐로우)": {
-    "v": 66.9,
-    "u": "dia"
-   },
-   "초월의 정수(레드)": {
-    "v": 66.9,
-    "u": "dia"
-   },
-   "초월의 정수(블루)": {
-    "v": 66.9,
-    "u": "dia"
-   },
+   "상급 강화의 정수": 98.4,
+   "초월의 정수(옐로우)": 98.4,
+   "초월의 정수(레드)": 98.4,
+   "초월의 정수(블루)": 98.4,
    "강림 강화곤": 24047,
    "아르하의 정수(속성별)": 2.375,
    "정령 5성 확정권": 2857,
@@ -10981,7 +10957,12 @@
    "태양의 정수": {
     "v": 20,
     "u": "gdia"
-   }
+   },
+   "꿈의 정수(상급)": 95.6,
+   "상급 강화의 정수": 95.6,
+   "초월의 정수(옐로우)": 95.6,
+   "초월의 정수(레드)": 95.6,
+   "초월의 정수(블루)": 95.6
   },
   "ingameBasis": "인게임 재화값 기준: 다이아 22원(다이아 상점 33,000원에 1,500개) · 황금 다이아 30원(황다 상점 33,000원에 1,100개). 인게임 상점 가격이 있는 아이템만 바꿈 — Lv+1·Lv-1 다이아 3개, 프리미엄 레벨업 다이아 8개, 아르하의 정수(물·달·불·땅·태양의 정수 포함) 황금 다이아 20개, 정령 10+1 뽑기권 = 길드 상점 루비 2,500개(다이아 1,250개), 정령 5성 확정권 = 같은 방식으로 다이아 324.68개. 나머지는 유저 거래 단가 그대로",
   "notes": {
@@ -11131,35 +11112,35 @@
    },
    "꿈의 정수(상급)": {
     "type": "estimate",
-    "basis": "중급 10개 + 다이아 1 → 다이아 66.9개"
+    "basis": "최상급 = 상급 5개 + 다이아 1개 제작식으로 역산: (500원 − 다이아 1개) ÷ 5 = 98.4원(인게임 기준 95.6원)"
    },
    "꿈의 정수(최상급)": {
-    "type": "estimate",
-    "basis": "상급 5개 + 다이아 1 → 다이아 335.51개"
+    "type": "trade",
+    "basis": "상급 초월의 정수와 같은 값(일일 패키지 3,000원 ÷ 6개 = 500원, 두 기준 공통)"
    },
    "상급 강화의 정수": {
     "type": "estimate",
-    "basis": "꿈의 정수(상급) 1개 값으로 지정"
+    "basis": "꿈의 정수(상급) 1개 값(98.4원)으로 지정"
    },
    "초월의 정수(옐로우)": {
     "type": "estimate",
-    "basis": "꿈의 정수(상급) 1개 값으로 지정"
+    "basis": "꿈의 정수(상급) 1개 값(98.4원)으로 지정"
    },
    "초월의 정수(레드)": {
     "type": "estimate",
-    "basis": "꿈의 정수(상급) 1개 값으로 지정"
+    "basis": "꿈의 정수(상급) 1개 값(98.4원)으로 지정"
    },
    "초월의 정수(블루)": {
     "type": "estimate",
-    "basis": "꿈의 정수(상급) 1개 값으로 지정"
+    "basis": "꿈의 정수(상급) 1개 값(98.4원)으로 지정"
    },
    "초월의 보석": {
     "type": "estimate",
-    "basis": "꿈의 정수(최상급) 1개 값으로 지정"
+    "basis": "꿈의 정수(최상급) 1개 값(500원)으로 지정"
    },
    "최상급 강화의 정수": {
     "type": "estimate",
-    "basis": "꿈의 정수(최상급) 1개 값으로 지정"
+    "basis": "꿈의 정수(최상급) 1개 값(500원)으로 지정"
    },
    "상급 초월의 정수(옐로우)": {
     "type": "trade",
@@ -11322,6 +11303,26 @@
    "태양의 정수": {
     "type": "shop",
     "basis": "아르하의 정수(속성별)과 같은 값(상점 황금 다이아 20개)"
+   },
+   "꿈의 정수(상급)": {
+    "type": "estimate",
+    "basis": "(꿈의 정수(최상급) 500원 − 다이아 1개 22원) ÷ 5 = 95.6원"
+   },
+   "상급 강화의 정수": {
+    "type": "estimate",
+    "basis": "꿈의 정수(상급) 1개 값(95.6원)으로 지정"
+   },
+   "초월의 정수(옐로우)": {
+    "type": "estimate",
+    "basis": "꿈의 정수(상급) 1개 값(95.6원)으로 지정"
+   },
+   "초월의 정수(레드)": {
+    "type": "estimate",
+    "basis": "꿈의 정수(상급) 1개 값(95.6원)으로 지정"
+   },
+   "초월의 정수(블루)": {
+    "type": "estimate",
+    "basis": "꿈의 정수(상급) 1개 값(95.6원)으로 지정"
    }
   },
   "goldPer100mDia": 600

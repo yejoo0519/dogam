@@ -268,7 +268,7 @@
       return `<div class="pe-line" data-kind="item" data-name="${escape(name)}">${iconHtml(line)||'<span class="pe-ico pe-ico-none"></span>'}<span class="pe-line-name">${escape(name)}<small>${name==='골드'?'':'개당 '}${escape(unitLabel(name,ctx()))}</small></span><input type="number" min="0" step="1" inputmode="numeric" placeholder="수량" data-f="qty" value="${escape(qty)}" aria-label="${escape(name)} 수량"><i class="pe-line-val" data-f="val"></i><button type="button" data-remove aria-label="${escape(name)} 빼기">×</button></div>`;
     }
     const deco=kind==='deco',key=name?eggKey(name):'';
-    const icon=iconHtml({name,egg:!deco,key})||(deco?'<span class="pe-ico pe-ico-none"></span>':iconHtml({name:'드래곤 알',egg:false}));
+    const icon=iconHtml({name,egg:!deco,key})||iconHtml({name:deco?'강림 전용 장식':'드래곤 알',egg:false});
     const price=name?state.eggs[deco?name:key]??'':'';
     return `<div class="pe-line egg" data-kind="${kind}">${icon||'<span class="pe-ico pe-ico-none"></span>'}<input type="text" list="eggList" maxlength="40" placeholder="${deco?'장식 이름(선택)':'드래곤 이름(선택)'}" data-f="name" value="${escape(name)}" aria-label="${deco?'장식':'드래곤'} 이름"><input type="number" min="0" step="1" inputmode="numeric" placeholder="수량" data-f="qty" value="${escape(qty||1)}" aria-label="수량"><input type="number" min="0" step="100" inputmode="numeric" placeholder="1개 시세(원)" data-f="price" value="${escape(price)}" aria-label="1개 시세(원)"><i class="pe-line-val" data-f="val"></i><button type="button" data-remove aria-label="빼기">×</button></div>`;
   }

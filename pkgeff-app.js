@@ -274,9 +274,11 @@
       for(const [name,v] of Object.entries(source.itemPrices?.items||{})) {const val=typeof v==='object'&&v?v.v:v,u=typeof v==='object'&&v?v.u:source.itemPrices.unit;if(Number.isFinite(Number(val))&&Number(val)>=0) defaults[name]={v:Number(val),u:unit(u)};}
       notes=source.itemPrices?.notes||{};notesIngame=source.itemPrices?.ingameNotes||{};
       for(const [name,v] of Object.entries(source.itemPrices?.ingame||{})) {const val=typeof v==='object'&&v?v.v:v,u=typeof v==='object'&&v?v.u:source.itemPrices.unit;if(Number.isFinite(Number(val))&&Number(val)>=0) defaultsIngame[name]={v:Number(val),u:unit(u)};}
-      official=source.packages.filter(p=>Number.isFinite(p.price)&&p.price>0&&Array.isArray(p.items)&&p.items.length)
+      // 지금 구성으로 바뀐 시점(listFrom) 이전의 기간 한정 패키지는 목록에서 뺀다. 상시 패키지·패스는 항상 표시.
+      const listFrom=typeof source.listFrom==='string'?source.listFrom:'';
+      official=source.packages.filter(p=>Number.isFinite(p.price)&&p.price>0&&Array.isArray(p.items)&&p.items.length&&(p.always||!listFrom||p.noticeDate>=listFrom))
         .map((p,i)=>({...p,id:'n'+p.noticeIds.join('-')+'-'+i,noticeSalePeriods:p.noticeSalePeriods||[]}));
-      $('syncStatus').textContent=`패키지 ${official.length.toLocaleString('ko-KR')}개 · 마지막 확인 ${pretty(source.checkedAt)}`;
+      $('syncStatus').textContent=`패키지 ${official.length.toLocaleString('ko-KR')}개${listFrom?` (${pretty(listFrom)} 이후 판매분과 상시 패키지)`:''} · 마지막 확인 ${pretty(source.checkedAt)}`;
       render();resetForm();renderNotes();
     }catch(error){
       $('syncStatus').classList.add('error');$('syncStatus').textContent='패키지 기록을 불러오지 못했습니다. 직접 등록한 패키지만 표시합니다.';

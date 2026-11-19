@@ -1,9 +1,88 @@
 {
  "schemaVersion": 1,
- "checkedAt": "2026-11-16",
+ "checkedAt": "2026-11-19",
  "source": "https://www.dragonvillage.net/notice (공지 구성표 이미지 수동 판독)",
  "currency": "KRW",
  "packages": [
+  {
+   "noticeIds": [
+    21463
+   ],
+   "noticeDate": "2026-11-17",
+   "url": "https://www.dragonvillage.net/notice/21463",
+   "name": "와일드 패키지",
+   "price": 33000,
+   "limit": "3",
+   "noticeSalePeriods": [
+    {
+     "dragon": "와일드 드래곤",
+     "start": "2026-11-23",
+     "end": "2026-12-06"
+    }
+   ],
+   "items": [
+    {
+     "name": "와일드",
+     "qty": 1
+    },
+    {
+     "name": "다이아",
+     "qty": 1200
+    },
+    {
+     "name": "황금 다이아",
+     "qty": 600
+    },
+    {
+     "name": "Lv-1",
+     "qty": 100
+    },
+    {
+     "name": "스페셜 Lv+1",
+     "qty": 100
+    },
+    {
+     "name": "꿈의 부화기 +1",
+     "qty": 1
+    },
+    {
+     "name": "초월의 보석",
+     "qty": 1
+    },
+    {
+     "name": "최상급 강화의 정수",
+     "qty": 3
+    },
+    {
+     "name": "상급 초월의 정수(옐로우)",
+     "qty": 3
+    },
+    {
+     "name": "상급 초월의 정수(레드)",
+     "qty": 3
+    },
+    {
+     "name": "상급 초월의 정수(블루)",
+     "qty": 3
+    },
+    {
+     "name": "페르시온 결정",
+     "qty": 1
+    }
+   ],
+   "nameUncertain": false,
+   "calc": {
+    "market": {
+     "value": 54596,
+     "gainPct": 65.4
+    },
+    "ingame": {
+     "value": 152025,
+     "gainPct": 360.7
+    },
+    "unpriced": []
+   }
+  },
   {
    "noticeIds": [],
    "noticeDate": "2026-11-16",
@@ -506,7 +585,7 @@
    "url": null,
    "name": "젬 패키지",
    "price": 22000,
-   "limit": null,
+   "limit": "주 3회",
    "noticeSalePeriods": [],
    "items": [
     {
@@ -541,7 +620,7 @@
    "nameUncertain": false,
    "always": true,
    "source": "인게임 상점 화면(2026-11-16)",
-   "note": "구매 제한 횟수는 화면에서 확인 못 함(2025.07 공지 기준 주 3회)",
+   "note": "구매 제한은 공지 21070(2025.07 변경) 기준",
    "calc": {
     "market": {
      "value": 18000,
@@ -762,7 +841,7 @@
    "noticeIds": [],
    "noticeDate": "2026-11-16",
    "url": null,
-   "name": "황금 다이아·정령 패키지(이름 미확인)",
+   "name": "챔피언 패키지",
    "price": 55000,
    "limit": "주 1회",
    "noticeSalePeriods": [],
@@ -817,7 +896,8 @@
      "gainPct": 180.1
     },
     "unpriced": []
-   }
+   },
+   "note": "인게임 상점 화면(2026-11-16) 기준. 구성은 공지 20863의 챔피언 패키지(변경 후)와 같음"
   },
   {
    "noticeIds": [],
@@ -906,9 +986,9 @@
    "noticeIds": [],
    "noticeDate": "2026-11-16",
    "url": null,
-   "name": "월정액(28일 합계, 이름 미확인)",
+   "name": "다이아 월정액(28일 합계)",
    "price": 6000,
-   "limit": "28일마다(추정)",
+   "limit": "28일마다",
    "noticeSalePeriods": [],
    "items": [
     {
@@ -931,7 +1011,7 @@
    "nameUncertain": false,
    "always": true,
    "source": "인게임 상점 화면(2026-11-16)",
-   "note": "즉시 지급 + 매일 지급 28일분 합산. 지급 기간 28일은 프리미엄 월정액과 같다고 가정",
+   "note": "즉시 지급 + 매일 지급 28일분 합산. 즉시: 골드 30만·다이아 300·황다 60·Lv-1 30 / 매일: 골드 10만·다이아 30·황다 12·Lv-1 3 (공지 19757 표와 같음)",
    "calc": {
     "market": {
      "value": 12405,
@@ -11155,5 +11235,6 @@
     "basis": "유저 거래 기준과 같은 방식(합성 가능 비율 50% 가정)으로, 10+1 뽑기권 다이아 1,250개 기준 역산 → 다이아 324.68개"
    }
   }
- }
+ },
+ "listFrom": "2025-07-14"
 }

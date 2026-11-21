@@ -113,7 +113,7 @@
     }
     if(['preset','stat','type','bonus'].includes(act)&&x)x.rsvSent=false;
     if(act==='fold'){S.spxFold=!S.spxFold;}
-    else if(act==='add'){S.spxFold=false;S.spxList.push(mkSp());}
+    else if(act==='add'){S.spxFold=false;S.spxList.unshift(mkSp());}
     else if(act==='dup'&&x){const cp=JSON.parse(JSON.stringify(x));cp.uid=newUid();cp.rsvSent=false;S.spxList.splice(j+1,0,cp);}
     else if(act==='del'&&x){S.spxList.splice(j,1);}
     else if(act==='preset'&&x){const p=el.dataset.p;if(!SPX_PATS.includes(p))return;x.opts.forEach((o,k)=>{o.type=p[k];});}
@@ -123,7 +123,7 @@
     else return;
     renderList();renderCfg();save();
     if(act!=='fold')markDirty();
-    if(act==='add'){const cards=document.querySelectorAll('#spx-wrap .spx-card');const lastCard=cards[cards.length-1];if(lastCard)lastCard.scrollIntoView({behavior:'smooth',block:'nearest'});}
+    if(act==='add'){const firstCard=document.querySelector('#spx-wrap .spx-card');if(firstCard)firstCard.scrollIntoView({behavior:'smooth',block:'nearest'});}
   }
 
   // ── 설정 (정령 계산 모드 패널 값을 읽는다) ─────────────────

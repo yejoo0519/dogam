@@ -17689,7 +17689,7 @@
         advent: false,
       },
       canLevelUp: false,
-      codeAvailability: "No",
+      codeAvailability: "C-S",
       tier: {
         value: null,
         status: "NI",

@@ -373,5 +373,6 @@
     if(pane){pane.addEventListener('click',e=>{if(e.target.closest('button')&&e.target.id!=='sim-btn')markDirty();});pane.addEventListener('change',markDirty);}
     setTimeout(()=>{renderMode();inboxApply();},0); // spirit-simulator.js 초기 상태 문구 이후에 적용
     window.addEventListener('storage',e=>{if(e.key===SPX_INBOX)inboxApply();});
+    window.addEventListener('pageshow',e=>{if(e.persisted)inboxApply();});   // 뒤로가기로 돌아온 경우
   });
 })();

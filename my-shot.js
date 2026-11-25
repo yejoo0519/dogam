@@ -56,6 +56,10 @@
     d.mode = m; d.attr = '';
     d.dest = m === 'grsv' ? 'rsv' : m === 'sdist' ? 'spx' : m === 'crsv' ? 'chamrsv' : m === 'cdist' ? 'cham' : '';
   }
+  /* 일괄 칸을 바꾸면 체크한 정령에 바로 적용 */
+  function bulkApply() {
+    items.forEach(function (i) { if (i.kind === 'spirit' && i.ok && i.on) { i.data.mode = modeOf(bulk); i.data.attr = bulk.attr; i.data.dest = bulk.dest; } });
+  }
   function needDrg(d) { return modeOf(d) === 'gdrg' && !/^\d+$/.test(d.dest || ''); }
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -110,6 +114,7 @@
     '.shot-bulk select{font-size:11px;padding:3px 6px;width:auto;max-width:220px}' +
     '.shot-dest{display:flex;flex-wrap:wrap;gap:3px 4px;margin-top:3px}.shot-it .shot-dest select{margin-top:0;flex:1 1 100px;min-width:0;width:auto}' +
     '.shot-bulk .shot-dest{margin-top:0;flex-wrap:nowrap}' +
+    '.shot-bulk-n{color:var(--dimmer)}' +
     '.shot-bulk-sep{width:1px;height:16px;background:var(--bd);margin:0 4px}' +
     '.shot-opts{display:flex;flex-wrap:wrap;gap:8px 16px;margin:16px 0 10px;font-size:12px;color:var(--dim)}' +
     '.shot-opts label{display:flex;align-items:center;gap:6px;cursor:pointer}.shot-opts input{accent-color:var(--gold)}' +
@@ -188,9 +193,9 @@
           '<button type="button" class="btn-white" data-bulk="all">전체 선택</button>' +
           '<button type="button" class="btn-white" data-bulk="none">전체 해제</button>' +
           '<span class="shot-bulk-sep"></span>' +
-          '<span>체크한 정령을</span>' +
+          '<span>체크한 정령 보낼 곳</span>' +
           destSelects('bulk', bulk) +
-          '<button type="button" class="btn-gold" data-bulk="set"' + (on ? '' : ' disabled') + '>' + on + '개 한 번에 바꾸기</button>' +
+          '<span class="shot-bulk-n">체크한 ' + on + '개에 바로 적용돼요</span>' +
           '</div>';
       }
       html += '<div class="shot-list">';
@@ -237,7 +242,9 @@
       if (t.dataset.mode) setMode(d, t.value);
       else if (t.dataset.dist) d.dest = t.value;
       else if (t.dataset.attr) { d.mode = 'gdrg'; d.attr = t.value; d.dest = ''; }
-      else if (t.dataset.drg) { d.dest = t.value; return; }
+      else if (t.dataset.drg) d.dest = t.value;
+      if (key === 'bulk') bulkApply();
+      else if (t.dataset.drg) return;
       render();
     }
   });
@@ -248,10 +255,6 @@
     if (b) {
       var sp = items.filter(function (i) { return i.kind === 'spirit' && i.ok; });
       if (b === 'all' || b === 'none') sp.forEach(function (i) { i.on = b === 'all'; });
-      if (b === 'set') {
-        if (needDrg(bulk)) { alert('드래곤에 달 거면 속성 · 드래곤까지 골라 주세요.'); return; }
-        sp.filter(function (i) { return i.on; }).forEach(function (i) { i.data.mode = modeOf(bulk); i.data.attr = bulk.attr; i.data.dest = bulk.dest; });
-      }
       render();
     }
   });

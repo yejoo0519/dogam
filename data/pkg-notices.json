@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-11-24",
+  "checkedAt": "2026-11-25",
   "source": "https://www.dragonvillage.net/notice",
-  "totalCount": 3973,
-  "scannedCount": 3973,
+  "totalCount": 3977,
+  "scannedCount": 3977,
   "scannedIds": [
     283,
     284,
@@ -3977,9 +3977,22 @@
     21464,
     21465,
     21466,
-    21467
+    21467,
+    21468,
+    21469,
+    21470,
+    21471
   ],
   "notices": [
+    {
+      "id": 21468,
+      "title": "[공지] 11월 25일(수) 업데이트 안내(내용 추가)",
+      "date": "2026-11-24",
+      "url": "https://www.dragonvillage.net/notice/21468",
+      "events": [],
+      "periods": [],
+      "hasImages": true
+    },
     {
       "id": 21463,
       "title": "[공지] 11월 18일(수) 업데이트 안내(수정)",

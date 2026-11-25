@@ -1,0 +1,21 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /admin_users.html
+Disallow: /account.html
+Disallow: /login.html
+Disallow: /register.html
+Disallow: /my.html
+Disallow: /friend.html
+Disallow: /gdgm.html
+Disallow: /move.html
+Disallow: /write.html
+Disallow: /combat-index-test.html
+Disallow: /tank_calc.html
+Disallow: /en/account.html
+Disallow: /en/login.html
+Disallow: /en/register.html
+Disallow: /en/my.html
+Disallow: /en/tank_calc.html
+
+Sitemap: https://dbryong.com/sitemap.xml

@@ -405,6 +405,7 @@
   var PANEL_H = 1041;
   var PANEL_ICON = [[190, 852], [555, 852], [190, 968], [555, 968]];   // 아이콘 중심 (가운데 기준 x, y)
   var PANEL_TXT = 80;                                                // 아이콘 중심 → 수치 시작
+  var PANEL_BONUS = [190, 750];                                      // 부가옵 줄 아이콘 (체 40 · 공/방 10이라 아이콘만 보면 됨)
   function iconKind(im, x, y, k) {
     var R = Math.round(26 * k), h = 0, s = 0, g = 0, n = 0;
     for (var yy = Math.max(0, y - R); yy < Math.min(im.h, y + R); yy++) for (var xx = Math.max(0, x - R); xx < Math.min(im.w, x + R); xx++) {
@@ -447,6 +448,8 @@
     if (by >= im.h || bxx >= im.w) return null;
     var p = im.px(bxx, by);
     if (Math.max(p[0], p[1], p[2]) > 70) return null;
+    var bx = Math.round(cx + PANEL_BONUS[0] * k), byy = Math.round(y0 + PANEL_BONUS[1] * k);
+    opts.bonus = bx < im.w && byy < im.h ? (iconKind(im, bx, byy, k) || '') : '';
     return opts;
   }
   function readPanel(im) {
@@ -459,7 +462,7 @@
       var opts = readPanelAt(im, cx, y0, k);
       if (opts) {
         // 미리보기 그림용: 정령 초상(상세 왼쪽 위)을 감싸는 가짜 카드 (thumbOf: l+14k, t+60k, 264k×258k)
-        return { kind: 'spirit', opts: opts, panel: true, card: { col: 0, l: Math.round(cx + 102 * k), t: Math.round(y0 + 280 * k), k: k } };
+        return { kind: 'spirit', opts: opts, bonus: opts.bonus || '', panel: true, card: { col: 0, l: Math.round(cx + 102 * k), t: Math.round(y0 + 280 * k), k: k } };
       }
     }
     return null;

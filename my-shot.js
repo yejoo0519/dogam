@@ -1,5 +1,5 @@
 /* 내 스펙 — 스크린샷으로 장신구 · 펜던트 · 젬 · 정령 등록 (UI)
-   정령은 풀강 기준(옵션 스탯 · %/+ 만 읽음, 부가옵 없음)으로 길드전 예비 정령에 넣거나 길드전 드래곤에 귀속합니다.
+   정령은 풀강 기준(옵션 스탯 · %/+, 정령 관리 화면이면 부가옵까지)으로 길드전 예비 정령에 넣거나 길드전 드래곤에 귀속합니다.
    챔대 정령 배분으로 보낸 정령은 받은함(…_cham_spx_inbox)에 넣어 두고, 챔대 자동 계산기가 열릴 때 보유 정령에 합칩니다.
    인식은 my-shot-engine.js. 결과는 미리보기로 보여주고, 확인을 눌러야 S에 반영합니다. */
 (function () {
@@ -18,12 +18,13 @@
   var SPX_INBOX = CHAM_INBOX.replace('_cham_spx_inbox', '_spx_inbox');   // 정령 계산/배분 [정령 배분] 받은함
   function isCham(v) { return /^cham([123]|rsv)?$/.test(v || ''); }
   /* 챔대 자동 계산기 정령 배분으로 보내기: list = [{opts, rd(0~2 또는 null)}] */
+  var BON_TXT = { hp: '체 40', atk: '공 10', def: '방 10' };
   function chamSend(list) {
     if (!list.length) return 0;
     var box = [];
     try { box = JSON.parse(localStorage.getItem(CHAM_INBOX) || '[]'); } catch (e) {}
     if (!Array.isArray(box)) box = [];
-    list.forEach(function (r) { box.push({ sp: r.opts.map(function (o) { return { stat: o.stat, type: o.type }; }), rd: r.rd, memo: /_cham/.test(CHAM_INBOX) && /^dv1simEN/.test(CHAM_INBOX) ? 'Shot' : '스샷' }); });
+    list.forEach(function (r) { box.push({ sp: r.opts.map(function (o) { return { stat: o.stat, type: o.type }; }), bonus: r.bonus || '', rd: r.rd, memo: /_cham/.test(CHAM_INBOX) && /^dv1simEN/.test(CHAM_INBOX) ? 'Shot' : '스샷' }); });
     try { localStorage.setItem(CHAM_INBOX, JSON.stringify(box)); } catch (e) { return 0; }
     return list.length;
   }
@@ -161,10 +162,11 @@
         if (!a) { it.ok = false; it.label = '목록에 없는 장신구예요'; it.sub = statTxt(r.lines); }
         else { it.data = { name: a.n, enchant: r.enchant || 'none' }; it.label = a.n; it.sub = statTxt(r.lines); }
       } else if (r.kind === 'spirit') {
-        it.data = { opts: r.opts, dest: 'rsv' };
+        it.data = { opts: r.opts, dest: 'rsv', bonus: r.bonus || '' };
         spSeq++;
         it.label = '정령 ' + spSeq;
-        it.sub = r.opts.map(function (o) { return '<span style="color:' + SCOL[o.stat] + '">' + SKN[o.stat] + o.type + '</span>'; }).join(' ');
+        it.sub = r.opts.map(function (o) { return '<span style="color:' + SCOL[o.stat] + '">' + SKN[o.stat] + o.type + '</span>'; }).join(' ') +
+          (r.bonus ? ' · 부가옵 <span style="color:' + SCOL[r.bonus] + '">' + BON_TXT[r.bonus] + '</span>' : '');
       } else { it.ok = false; it.label = '읽을 수 있는 정보가 없어요'; it.sub = ''; }
       if (!it.ok) it.on = false;
       return it;
@@ -211,7 +213,7 @@
       html += '</div></div>';
     });
     if (items.some(function (i) { return i.kind === 'spirit'; })) {
-      html += '<p class="shot-help" style="margin-top:8px">정령은 옵션을 풀강 기준으로 넣고 부가옵은 비워요. 정령마다 <b>길드전 예비 정령</b>으로 보내거나, <b>길드전 드래곤에 달기</b>에서 속성 · 드래곤을 골라 그 정령을 단 드래곤으로 길드전 계산기 [내 용 정보]에 등록해요. (등급 9.0 · 강림(축복)으로 들어가니 길드전 계산기에서 맞게 바꿔 주세요) <b>정령 배분</b>을 고르면 정령 계산/배분 페이지 [정령 배분]의 보유 정령에 들어가요. <b>챔대 예비 정령</b>을 고르면 챔피언대전 자동 계산기 [내 드래곤] 탭의 예비 정령에, <b>챔대 정령 배분</b>을 고르면 챔피언대전 자동 계산기 [정령 배분] 탭의 보유 정령에 추가돼요. 옆 칸에서 1라 · 2라 · 3라를 고르면 라운드별 배분의 그 라운드로 들어가요.</p>';
+      html += '<p class="shot-help" style="margin-top:8px">정령은 옵션을 풀강 기준으로 넣어요. 부가옵은 <b>정령 관리</b> 화면 캡처에서만 읽고, 정령 목록 화면 캡처는 부가옵을 비워요. 정령마다 <b>길드전 예비 정령</b>으로 보내거나, <b>길드전 드래곤에 달기</b>에서 속성 · 드래곤을 골라 그 정령을 단 드래곤으로 길드전 계산기 [내 용 정보]에 등록해요. (등급 9.0 · 강림(축복)으로 들어가니 길드전 계산기에서 맞게 바꿔 주세요) <b>정령 배분</b>을 고르면 정령 계산/배분 페이지 [정령 배분]의 보유 정령에 들어가요. <b>챔대 예비 정령</b>을 고르면 챔피언대전 자동 계산기 [내 드래곤] 탭의 예비 정령에, <b>챔대 정령 배분</b>을 고르면 챔피언대전 자동 계산기 [정령 배분] 탭의 보유 정령에 추가돼요. 옆 칸에서 1라 · 2라 · 3라를 고르면 라운드별 배분의 그 라운드로 들어가요.</p>';
     }
     var others = items.filter(function (i) { return i.kind === 'none'; }).length;
     if (others) html += '<p class="shot-help" style="margin-top:12px">정보를 못 읽은 칸 ' + others + '개는 뺐어요.</p>';
@@ -287,18 +289,18 @@
       var rbox = [];
       try { rbox = JSON.parse(localStorage.getItem(CHAM_RSV_INBOX) || '[]'); } catch (e) {}
       if (!Array.isArray(rbox)) rbox = [];
-      crs.forEach(function (i) { rbox.push({ sp: i.data.opts.map(function (o) { return { stat: o.stat, type: o.type }; }), memo: '' }); });
+      crs.forEach(function (i) { rbox.push({ sp: i.data.opts.map(function (o) { return { stat: o.stat, type: o.type }; }), bonus: i.data.bonus || '', memo: '' }); });
       try { localStorage.setItem(CHAM_RSV_INBOX, JSON.stringify(rbox)); msg.push('챔대 예비 정령 ' + crs.length + '개'); } catch (e) {}
     }
     chams = chams.filter(function (i) { return i.data.dest !== 'chamrsv'; });
-    var nc = chamSend(chams.map(function (i) { var m = /^cham([123])$/.exec(i.data.dest); return { opts: i.data.opts, rd: m ? +m[1] - 1 : null }; }));
+    var nc = chamSend(chams.map(function (i) { var m = /^cham([123])$/.exec(i.data.dest); return { opts: i.data.opts, bonus: i.data.bonus, rd: m ? +m[1] - 1 : null }; }));
     if (nc) msg.push('챔대 정령 배분 ' + nc + '개');
     var sds = sel.filter(function (i) { return i.kind === 'spirit' && i.data.dest === 'spx'; });
     if (sds.length) {
       var sbox = [];
       try { sbox = JSON.parse(localStorage.getItem(SPX_INBOX) || '[]'); } catch (e) {}
       if (!Array.isArray(sbox)) sbox = [];
-      sds.forEach(function (i) { sbox.push({ sp: i.data.opts.map(function (o) { return { stat: o.stat, type: o.type }; }), memo: '스샷' }); });
+      sds.forEach(function (i) { sbox.push({ sp: i.data.opts.map(function (o) { return { stat: o.stat, type: o.type }; }), bonus: i.data.bonus || '', memo: '스샷' }); });
       try { localStorage.setItem(SPX_INBOX, JSON.stringify(sbox)); msg.push('정령 배분 ' + sds.length + '개'); } catch (e) {}
     }
     var sps = sel.filter(function (i) { return i.kind === 'spirit' && !isCham(i.data.dest) && i.data.dest !== 'spx'; });
@@ -306,8 +308,8 @@
       var cat = GuildLink.catalog(), rsv = [], add = [];
       sps.forEach(function (i) {
         var d = /^\d+$/.test(i.data.dest) ? cat[+i.data.dest] : null;
-        if (d) add.push({ attr: d.attr, name: d.name, dtype: d.dtype, opts: i.data.opts, bonus: '' });
-        else rsv.push({ name: '', opts: i.data.opts, bonus: '' });
+        if (d) add.push({ attr: d.attr, name: d.name, dtype: d.dtype, opts: i.data.opts, bonus: i.data.bonus || '' });
+        else rsv.push({ name: '', opts: i.data.opts, bonus: i.data.bonus || '' });
       });
       var nb = GuildLink.addDragons(add), nr = GuildLink.addReserves(rsv);
       if (nr) msg.push('예비 정령 ' + nr + '개');

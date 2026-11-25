@@ -1,0 +1,474 @@
+advent.png
+size: 1020, 1821
+format: RGBA4444
+filter: Linear, Linear
+repeat: none
+dragon/3792/advent/bg_black1
+  rotate: false
+  xy: 741, 812
+  size: 176, 151
+  orig: 178, 153
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/bg_black2
+  rotate: false
+  xy: 1, 1129
+  size: 194, 466
+  orig: 196, 468
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/bg_black3
+  rotate: false
+  xy: 1, 638
+  size: 423, 489
+  orig: 425, 492
+  offset: 1, 2
+  index: -1
+dragon/3792/advent/bg_brunch1
+  rotate: false
+  xy: 666, 492
+  size: 91, 148
+  orig: 93, 150
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/bg_brunch2
+  rotate: false
+  xy: 865, 1509
+  size: 138, 94
+  orig: 140, 96
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/bg_brunch3
+  rotate: false
+  xy: 1, 1
+  size: 540, 635
+  orig: 542, 637
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/bg_flower1
+  rotate: false
+  xy: 923, 1059
+  size: 91, 23
+  orig: 93, 25
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/bg_flower2
+  rotate: false
+  xy: 885, 1356
+  size: 49, 26
+  orig: 51, 28
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/bg_flower3
+  rotate: false
+  xy: 871, 1088
+  size: 12, 20
+  orig: 14, 22
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/bg_flower4
+  rotate: false
+  xy: 967, 1084
+  size: 38, 86
+  orig: 40, 88
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/bg_flower5
+  rotate: false
+  xy: 941, 1327
+  size: 20, 26
+  orig: 22, 28
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/bg_flower6
+  rotate: false
+  xy: 698, 1110
+  size: 15, 14
+  orig: 17, 16
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/bg_flower7
+  rotate: false
+  xy: 967, 1722
+  size: 52, 35
+  orig: 54, 37
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/bg_flower8
+  rotate: false
+  xy: 967, 1684
+  size: 52, 36
+  orig: 54, 38
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/bg_flower9
+  rotate: false
+  xy: 381, 1760
+  size: 37, 38
+  orig: 39, 40
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/bg_flower10
+  rotate: false
+  xy: 822, 1567
+  size: 39, 38
+  orig: 41, 40
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/bg_flower11
+  rotate: false
+  xy: 722, 1277
+  size: 161, 119
+  orig: 163, 121
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/bg_flower12
+  rotate: false
+  xy: 721, 1398
+  size: 142, 167
+  orig: 144, 169
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/bg_flower13
+  rotate: false
+  xy: 116, 1758
+  size: 63, 59
+  orig: 65, 61
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/bg_flower14
+  rotate: false
+  xy: 250, 1760
+  size: 43, 48
+  orig: 45, 50
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/body
+  rotate: false
+  xy: 722, 1110
+  size: 162, 165
+  orig: 164, 167
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/brooch1
+  rotate: false
+  xy: 967, 1759
+  size: 47, 61
+  orig: 49, 63
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/brooch2
+  rotate: false
+  xy: 464, 1760
+  size: 37, 32
+  orig: 39, 34
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/brunch1
+  rotate: false
+  xy: 863, 1764
+  size: 67, 51
+  orig: 69, 53
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/cape
+  rotate: false
+  xy: 537, 1636
+  size: 324, 181
+  orig: 326, 183
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/hand_l
+  rotate: false
+  xy: 503, 1379
+  size: 32, 62
+  orig: 34, 64
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/hand_l_finger1
+  rotate: false
+  xy: 932, 1764
+  size: 31, 25
+  orig: 33, 27
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/hand_l_finger2
+  rotate: false
+  xy: 420, 1760
+  size: 42, 29
+  orig: 44, 31
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/hand_l_finger3
+  rotate: false
+  xy: 987, 520
+  size: 22, 51
+  orig: 24, 53
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/hand_r
+  rotate: false
+  xy: 885, 1277
+  size: 54, 77
+  orig: 56, 79
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/hand_r2
+  rotate: false
+  xy: 1, 1758
+  size: 113, 53
+  orig: 115, 55
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/hand_r3
+  rotate: false
+  xy: 941, 1262
+  size: 53, 63
+  orig: 55, 65
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/head
+  rotate: false
+  xy: 698, 965
+  size: 171, 143
+  orig: 173, 145
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/key
+  rotate: false
+  xy: 543, 1
+  size: 215, 489
+  orig: 217, 491
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/l_hand
+  rotate: false
+  xy: 645, 797
+  size: 94, 96
+  orig: 96, 98
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/l_leg
+  rotate: false
+  xy: 863, 1684
+  size: 102, 78
+  orig: 104, 80
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/l_leg_fur
+  rotate: false
+  xy: 295, 1760
+  size: 43, 43
+  orig: 45, 45
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/l_outwear1
+  rotate: false
+  xy: 1007, 1084
+  size: 12, 73
+  orig: 14, 75
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/l_outwear2
+  rotate: false
+  xy: 886, 1088
+  size: 79, 89
+  orig: 81, 91
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/l_wing_a1
+  rotate: false
+  xy: 197, 1129
+  size: 304, 323
+  orig: 306, 325
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/l_wing_a_flower
+  rotate: false
+  xy: 543, 492
+  size: 121, 144
+  orig: 123, 146
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/l_wing_b1
+  rotate: false
+  xy: 503, 1126
+  size: 217, 251
+  orig: 219, 253
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/l_wing_b2
+  rotate: false
+  xy: 1, 1597
+  size: 176, 159
+  orig: 178, 161
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/leg_fur
+  rotate: false
+  xy: 932, 697
+  size: 83, 104
+  orig: 85, 106
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/leg_r
+  rotate: false
+  xy: 645, 642
+  size: 106, 153
+  orig: 108, 155
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/neck
+  rotate: false
+  xy: 919, 812
+  size: 100, 149
+  orig: 102, 151
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/outwear_acc
+  rotate: false
+  xy: 181, 1760
+  size: 67, 49
+  orig: 69, 51
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/outwear_r1
+  rotate: false
+  xy: 721, 1567
+  size: 99, 54
+  orig: 101, 56
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/outwear_r2
+  rotate: false
+  xy: 863, 1605
+  size: 124, 77
+  orig: 126, 79
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/outwear_r3
+  rotate: false
+  xy: 886, 1179
+  size: 85, 81
+  orig: 87, 83
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/r_wing_a1
+  rotate: false
+  xy: 197, 1454
+  size: 338, 304
+  orig: 340, 306
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/r_wing_a2
+  rotate: false
+  xy: 426, 906
+  size: 270, 218
+  orig: 272, 220
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/r_wing_b1
+  rotate: false
+  xy: 760, 246
+  size: 249, 222
+  orig: 251, 224
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/r_wing_b1_brunch1
+  rotate: false
+  xy: 987, 470
+  size: 32, 48
+  orig: 34, 50
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/r_wing_b1_brunch2
+  rotate: false
+  xy: 871, 965
+  size: 50, 121
+  orig: 52, 123
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/r_wing_b2
+  rotate: false
+  xy: 753, 697
+  size: 177, 113
+  orig: 179, 115
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/r_wing_flower1
+  rotate: false
+  xy: 340, 1760
+  size: 39, 37
+  orig: 41, 39
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/r_wing_flower2
+  rotate: false
+  xy: 923, 963
+  size: 93, 94
+  orig: 95, 96
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/tail1
+  rotate: false
+  xy: 426, 638
+  size: 217, 266
+  orig: 219, 268
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/tail2
+  rotate: false
+  xy: 537, 1379
+  size: 182, 255
+  orig: 184, 257
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/wand_eff1
+  rotate: false
+  xy: 987, 573
+  size: 22, 19
+  orig: 24, 21
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/wand_eff2
+  rotate: false
+  xy: 721, 1623
+  size: 18, 11
+  orig: 20, 13
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/wand_eff3
+  rotate: false
+  xy: 885, 1384
+  size: 17, 12
+  orig: 19, 14
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/wand_eff4
+  rotate: false
+  xy: 179, 1597
+  size: 9, 14
+  orig: 11, 16
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/wand_light
+  rotate: false
+  xy: 760, 1
+  size: 259, 243
+  orig: 261, 245
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/wand_light0
+  rotate: false
+  xy: 760, 470
+  size: 225, 225
+  orig: 227, 227
+  offset: 1, 1
+  index: -1
+dragon/3792/advent/wand_light1
+  rotate: false
+  xy: 865, 1398
+  size: 138, 109
+  orig: 140, 111
+  offset: 1, 1
+  index: -1

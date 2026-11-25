@@ -1,0 +1,159 @@
+child1.png
+size: 472, 491
+format: RGBA4444
+filter: Linear, Linear
+repeat: none
+dragon/3792/child1/bg_eff1
+  rotate: false
+  xy: 457, 1
+  size: 14, 11
+  orig: 16, 13
+  offset: 1, 1
+  index: -1
+dragon/3792/child1/bg_eff2
+  rotate: false
+  xy: 457, 14
+  size: 10, 10
+  orig: 12, 12
+  offset: 1, 1
+  index: -1
+dragon/3792/child1/bg_eff3
+  rotate: false
+  xy: 439, 20
+  size: 9, 15
+  orig: 11, 17
+  offset: 1, 1
+  index: -1
+dragon/3792/child1/bg_eff4
+  rotate: false
+  xy: 439, 1
+  size: 16, 17
+  orig: 18, 19
+  offset: 1, 1
+  index: -1
+dragon/3792/child1/bg_eff5
+  rotate: false
+  xy: 450, 26
+  size: 7, 7
+  orig: 9, 9
+  offset: 1, 1
+  index: -1
+dragon/3792/child1/bg_eff6
+  rotate: false
+  xy: 1, 149
+  size: 247, 223
+  orig: 249, 225
+  offset: 1, 1
+  index: -1
+dragon/3792/child1/bg_flower1
+  rotate: false
+  xy: 385, 178
+  size: 39, 31
+  orig: 41, 33
+  offset: 1, 1
+  index: -1
+dragon/3792/child1/bg_flower2
+  rotate: false
+  xy: 1, 1
+  size: 270, 146
+  orig: 272, 148
+  offset: 1, 1
+  index: -1
+dragon/3792/child1/body
+  rotate: false
+  xy: 137, 374
+  size: 147, 94
+  orig: 149, 96
+  offset: 1, 1
+  index: -1
+dragon/3792/child1/branch1
+  rotate: false
+  xy: 321, 444
+  size: 62, 40
+  orig: 64, 42
+  offset: 1, 1
+  index: -1
+dragon/3792/child1/head
+  rotate: false
+  xy: 273, 1
+  size: 164, 125
+  orig: 166, 127
+  offset: 1, 1
+  index: -1
+dragon/3792/child1/key
+  rotate: false
+  xy: 250, 226
+  size: 127, 138
+  orig: 129, 140
+  offset: 1, 1
+  index: -1
+dragon/3792/child1/l_hand1
+  rotate: false
+  xy: 250, 178
+  size: 92, 46
+  orig: 94, 48
+  offset: 1, 1
+  index: -1
+dragon/3792/child1/l_hand2
+  rotate: false
+  xy: 286, 437
+  size: 33, 52
+  orig: 35, 54
+  offset: 1, 1
+  index: -1
+dragon/3792/child1/leg1
+  rotate: false
+  xy: 379, 363
+  size: 72, 72
+  orig: 74, 74
+  offset: 1, 1
+  index: -1
+dragon/3792/child1/leg2
+  rotate: false
+  xy: 321, 366
+  size: 48, 76
+  orig: 50, 78
+  offset: 1, 1
+  index: -1
+dragon/3792/child1/neck_acc
+  rotate: false
+  xy: 344, 178
+  size: 39, 43
+  orig: 41, 45
+  offset: 1, 1
+  index: -1
+dragon/3792/child1/r_hand
+  rotate: false
+  xy: 426, 128
+  size: 43, 96
+  orig: 45, 98
+  offset: 1, 1
+  index: -1
+dragon/3792/child1/r_hand_finger
+  rotate: false
+  xy: 385, 437
+  size: 36, 28
+  orig: 38, 30
+  offset: 1, 1
+  index: -1
+dragon/3792/child1/tail
+  rotate: false
+  xy: 379, 226
+  size: 92, 135
+  orig: 94, 137
+  offset: 1, 1
+  index: -1
+dragon/3792/child1/wing
+  rotate: false
+  xy: 1, 374
+  size: 134, 116
+  orig: 136, 118
+  offset: 1, 1
+  index: -1
+dragon/3792/child1/wing_back
+  rotate: false
+  xy: 273, 128
+  size: 151, 48
+  orig: 153, 50
+  offset: 1, 1
+  index: -1

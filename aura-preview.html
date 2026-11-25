@@ -951,8 +951,8 @@ const ASSET_BASES = [
 ];
 const LOCAL_ASSET_BASE = "./assets/aura-dragons/";
 const LOCAL_SET_OVERRIDES = {"438": ["advent"]};
-const SKILL_LOCAL = {"3759":["col_action10","col_action20"],"3760":["col_action10"],"3766":["col_action10"],"3772":["col_action10"],"3778":["col_action10","col_action20"],"3779":["col_action10","col_action20"],"3780":["col_action10","col_action20"],"3781":["col_action10","col_action20"],"3782":["col_action10","col_action20"],"3783":["col_action10","col_action20"],"3784":["col_action10"],"3790":["col_action10","col_action20"]}; // 스킬샷 에셋을 사이트에 직접 둔 드래곤
-const LOCAL_ASSETS = {"3778": ["child1", "child2", "adult", "transcended", "advent"], "3779": ["child1", "child2", "adult", "transcended", "advent"], "3780": ["child1", "child2", "adult", "transcended", "advent"], "3781": ["child1", "child2", "adult", "transcended", "advent"], "3782": ["child1", "child2", "adult", "transcended", "advent"], "3783": ["child1", "child2", "adult", "transcended", "advent"], "3784": ["child1", "child2", "adult"], "3790": ["child1", "child2", "adult", "transcended", "advent"]};
+const SKILL_LOCAL = {"3759":["col_action10","col_action20"],"3760":["col_action10"],"3766":["col_action10"],"3772":["col_action10"],"3778":["col_action10","col_action20"],"3779":["col_action10","col_action20"],"3780":["col_action10","col_action20"],"3781":["col_action10","col_action20"],"3782":["col_action10","col_action20"],"3783":["col_action10","col_action20"],"3784":["col_action10"],"3790":["col_action10","col_action20"],"3791":["col_action10"],"3792":["col_action10","col_action20"]}; // 스킬샷 에셋을 사이트에 직접 둔 드래곤
+const LOCAL_ASSETS = {"3778": ["child1", "child2", "adult", "transcended", "advent"], "3779": ["child1", "child2", "adult", "transcended", "advent"], "3780": ["child1", "child2", "adult", "transcended", "advent"], "3781": ["child1", "child2", "adult", "transcended", "advent"], "3782": ["child1", "child2", "adult", "transcended", "advent"], "3783": ["child1", "child2", "adult", "transcended", "advent"], "3784": ["child1", "child2", "adult"], "3790": ["child1", "child2", "adult", "transcended", "advent"], "3791": ["child1", "child2", "adult"], "3792": ["child1", "child2", "adult", "transcended", "advent"]};
 let ASSET_BASE = ASSET_BASES[0]; // 매니페스트를 받은 주소로 확정됩니다
 
 // 아이콘·동굴 배경·오라는 기존 사이트에서 그대로 가져옵니다
@@ -1033,7 +1033,7 @@ const AURAS = [
 ];
 
 // 도감 아이콘 단계: 강림 8, 초월 7, 그 외 성체 4
-const ICON_SRC = (id, stage) => ['3782','3783','3784','3790'].includes(String(ASSET_ID[id])) ? LOCAL_ASSET_BASE + ASSET_ID[id] + '/profile/' + stage + '.png' : (String(id)==='719'||String(id)==='720') ? LOCAL_ASSET_BASE + (String(id)==='719'?'3780':'3781') + '/profile/8.png' : ((['717', '718'].includes(String(id)) ? './' : SITE_BASE) + 'dragon/' + id + '/profile/' + stage + '.png');
+const ICON_SRC = (id, stage) => ['3782','3783','3784','3790','3791','3792'].includes(String(ASSET_ID[id])) ? LOCAL_ASSET_BASE + ASSET_ID[id] + '/profile/' + stage + '.png' : (String(id)==='719'||String(id)==='720') ? LOCAL_ASSET_BASE + (String(id)==='719'?'3780':'3781') + '/profile/8.png' : ((['717', '718'].includes(String(id)) ? './' : SITE_BASE) + 'dragon/' + id + '/profile/' + stage + '.png');
 const ELEM_ICON = {
  '땅': 'icon/11.png', '물': 'icon/12.png', '불': 'icon/13.png',
  '바람': 'icon/14.png', '빛': 'icon/84.png', '어둠': 'icon/87.png',

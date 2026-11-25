@@ -76432,6 +76432,170 @@
       ],
       "compatibility": {}
     },
+
+    // 725 데저티 — 도감 카드
+    {
+      "id": 725,
+      "name": {
+        "ko": "데저티"
+      },
+      "aliases": {
+        "ko": []
+      },
+      "element": "땅",
+      "type": "체력",
+      "stages": {
+        "awakening": false,
+        "transcendence": false,
+        "advent": false
+      },
+      "canLevelUp": true,
+      "codeAvailability": "Yes",
+      "tier": {
+        "value": 7.0,
+        "status": "listed",
+        "source": "도감 카드"
+      },
+      "stats": {
+        "regular": {
+          "hp": [
+            295,
+            9
+          ],
+          "atk": [
+            33,
+            4
+          ],
+          "def": [
+            33,
+            4
+          ]
+        },
+        "grades": null
+      },
+      "description": {
+        "ko": "사막의 땅속 깊은 곳에서 물길을 찾아내어 오아시스를 만드는 드래곤이다. 하나의 오아시스를 만들고 나면, 물길을 찾아서 또 다른 오아시스를 만든다. 아무리 힘들고 오래 걸려도 끈기 있게 물길을 찾아 움직이고, 전에 만들었지만 무너진 오아시스는 다시 보수한다. 소리를 내지 않고도 멀리, 높이까지 점프 할 수 있기 때문에 비행보다 점프를 즐긴다. 사막 중심에 커다란 오아시스를 만드는 것이 꿈이지만 모래 폭풍이 자주 불어오는 모래별 특성상 쉽지 않다. [획득처: 스타터 패키지]"
+      },
+      "assets": {
+        "gameId": 3791,
+        "gradeFamilyId": null,
+        "familyMembers": null
+      },
+      "availability": {
+        "guildWarOriginal": true,
+        "guildWarNewbie": true,
+        "championshipExcluded": false
+      },
+      "rankingProfiles": [
+        {
+          "name": "데저티",
+          "element": "땅",
+          "skill": null,
+          "statsRef": "regular",
+          "appearances": [
+            {
+              "page": "cham",
+              "tab": "SSS",
+              "levels": [
+                45,
+                21
+              ]
+            },
+            {
+              "page": "cham",
+              "tab": "SS",
+              "levels": [
+                45,
+                21
+              ]
+            }
+          ]
+        }
+      ],
+      "compatibility": {}
+    },
+
+    // 726 클라비스 — 도감 카드
+    {
+      "id": 726,
+      "name": {
+        "ko": "클라비스"
+      },
+      "aliases": {
+        "ko": []
+      },
+      "element": "땅",
+      "type": "방어",
+      "stages": {
+        "awakening": false,
+        "transcendence": true,
+        "advent": true
+      },
+      "canLevelUp": true,
+      "codeAvailability": "Yes",
+      "tier": {
+        "value": 7.0,
+        "status": "listed",
+        "source": "도감 카드"
+      },
+      "stats": {
+        "regular": {
+          "hp": [
+            235,
+            10
+          ],
+          "atk": [
+            27,
+            3
+          ],
+          "def": [
+            38,
+            4
+          ]
+        },
+        "grades": null
+      },
+      "description": {
+        "ko": "장미로 세상을 덮어내어 아름다움을 선사한다. 차원을 떠돌아다니며 장미로 아름답게 꾸밀 행성을 찾아다닌다. 삭막한 행성이 보이면 열쇠의 힘을 사용해 장미를 자라게 만든다. 클라비스는 삭막함을 반드시 아름다움으로 바꿔야 한다고 여긴다. 클라비스의 장미는 크고 탐스러우나 향기가 진하고, 장미 사이에는 날카로운 가시덩굴이 있어 가까이 다가가기가 힘들다. 자신의 장미를 매우 소중히 여겨 시드는 것을 용납하지 않는다. [획득처: 초보자 패키지]"
+      },
+      "assets": {
+        "gameId": 3792,
+        "gradeFamilyId": null,
+        "familyMembers": null
+      },
+      "availability": {
+        "guildWarOriginal": true,
+        "guildWarNewbie": true,
+        "championshipExcluded": false
+      },
+      "rankingProfiles": [
+        {
+          "name": "클라비스",
+          "element": "땅",
+          "skill": null,
+          "statsRef": "regular",
+          "appearances": [
+            {
+              "page": "cham",
+              "tab": "SSS",
+              "levels": [
+                45,
+                21
+              ]
+            },
+            {
+              "page": "cham",
+              "tab": "SS",
+              "levels": [
+                45,
+                21
+              ]
+            }
+          ]
+        }
+      ],
+      "compatibility": {}
+    },
   ];
 
   // 아래는 공통 조회·계산 함수입니다. 드래곤을 추가할 때 수정할 필요가 없습니다.

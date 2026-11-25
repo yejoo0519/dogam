@@ -1,0 +1,138 @@
+child2.png
+size: 1091, 252
+format: RGBA4444
+filter: Linear, Linear
+repeat: none
+dragon/3791/child2/body
+  rotate: false
+  xy: 479, 1
+  size: 151, 141
+  orig: 153, 143
+  offset: 1, 1
+  index: -1
+dragon/3791/child2/effect1
+  rotate: false
+  xy: 997, 113
+  size: 93, 84
+  orig: 95, 86
+  offset: 1, 1
+  index: -1
+dragon/3791/child2/effect2
+  rotate: false
+  xy: 368, 149
+  size: 82, 100
+  orig: 84, 102
+  offset: 1, 1
+  index: -1
+dragon/3791/child2/effect3
+  rotate: false
+  xy: 452, 149
+  size: 123, 94
+  orig: 125, 96
+  offset: 1, 1
+  index: -1
+dragon/3791/child2/foot1
+  rotate: false
+  xy: 877, 129
+  size: 118, 85
+  orig: 120, 87
+  offset: 1, 1
+  index: -1
+dragon/3791/child2/foot2
+  rotate: false
+  xy: 805, 129
+  size: 70, 111
+  orig: 72, 113
+  offset: 1, 1
+  index: -1
+dragon/3791/child2/footprint
+  rotate: false
+  xy: 1, 199
+  size: 150, 39
+  orig: 152, 41
+  offset: 1, 1
+  index: -1
+dragon/3791/child2/hand
+  rotate: false
+  xy: 288, 178
+  size: 76, 57
+  orig: 78, 59
+  offset: 1, 1
+  index: -1
+dragon/3791/child2/head1
+  rotate: false
+  xy: 667, 132
+  size: 136, 119
+  orig: 138, 121
+  offset: 1, 1
+  index: -1
+dragon/3791/child2/head2
+  rotate: false
+  xy: 766, 1
+  size: 143, 126
+  orig: 145, 128
+  offset: 1, 1
+  index: -1
+dragon/3791/child2/highligts
+  rotate: false
+  xy: 1, 240
+  size: 11, 11
+  orig: 13, 13
+  offset: 1, 1
+  index: -1
+dragon/3791/child2/l_ear
+  rotate: false
+  xy: 368, 1
+  size: 109, 146
+  orig: 111, 148
+  offset: 1, 1
+  index: -1
+dragon/3791/child2/leg1
+  rotate: false
+  xy: 577, 144
+  size: 88, 92
+  orig: 90, 94
+  offset: 1, 1
+  index: -1
+dragon/3791/child2/r_ear
+  rotate: false
+  xy: 1, 1
+  size: 143, 196
+  orig: 145, 198
+  offset: 1, 1
+  index: -1
+dragon/3791/child2/tail1
+  rotate: false
+  xy: 911, 1
+  size: 177, 110
+  orig: 179, 112
+  offset: 1, 1
+  index: -1
+dragon/3791/child2/tail2
+  rotate: false
+  xy: 146, 1
+  size: 140, 192
+  orig: 142, 194
+  offset: 1, 1
+  index: -1
+dragon/3791/child2/tongue
+  rotate: false
+  xy: 153, 195
+  size: 30, 24
+  orig: 32, 26
+  offset: 1, 1
+  index: -1
+dragon/3791/child2/wing1
+  rotate: false
+  xy: 632, 1
+  size: 132, 129
+  orig: 134, 131
+  offset: 1, 1
+  index: -1
+dragon/3791/child2/wing2
+  rotate: false
+  xy: 288, 1
+  size: 78, 175
+  orig: 80, 177
+  offset: 1, 1
+  index: -1

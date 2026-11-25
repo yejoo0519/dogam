@@ -1,0 +1,229 @@
+child2.png
+size: 1108, 511
+format: RGBA4444
+filter: Linear, Linear
+repeat: none
+dragon/3792/child2/bg_balck_eff1
+  rotate: false
+  xy: 174, 207
+  size: 207, 233
+  orig: 209, 235
+  offset: 1, 1
+  index: -1
+dragon/3792/child2/bg_brunch
+  rotate: false
+  xy: 174, 1
+  size: 380, 204
+  orig: 382, 206
+  offset: 1, 1
+  index: -1
+dragon/3792/child2/bg_flower1
+  rotate: false
+  xy: 1071, 467
+  size: 19, 34
+  orig: 21, 36
+  offset: 1, 1
+  index: -1
+dragon/3792/child2/bg_flower2
+  rotate: false
+  xy: 311, 489
+  size: 9, 16
+  orig: 11, 18
+  offset: 1, 1
+  index: -1
+dragon/3792/child2/bg_flower3
+  rotate: false
+  xy: 689, 453
+  size: 30, 19
+  orig: 32, 21
+  offset: 1, 1
+  index: -1
+dragon/3792/child2/bg_flower4
+  rotate: false
+  xy: 311, 442
+  size: 50, 45
+  orig: 52, 47
+  offset: 1, 1
+  index: -1
+dragon/3792/child2/bg_flower5
+  rotate: false
+  xy: 625, 406
+  size: 62, 70
+  orig: 64, 72
+  offset: 1, 1
+  index: -1
+dragon/3792/child2/bg_flower6
+  rotate: false
+  xy: 625, 478
+  size: 34, 32
+  orig: 36, 34
+  offset: 1, 1
+  index: -1
+dragon/3792/child2/bg_flower7
+  rotate: false
+  xy: 1017, 467
+  size: 52, 42
+  orig: 54, 44
+  offset: 1, 1
+  index: -1
+dragon/3792/child2/bg_flower8
+  rotate: false
+  xy: 898, 358
+  size: 117, 145
+  orig: 119, 147
+  offset: 1, 1
+  index: -1
+dragon/3792/child2/bg_flower9
+  rotate: false
+  xy: 726, 384
+  size: 170, 99
+  orig: 172, 101
+  offset: 1, 1
+  index: -1
+dragon/3792/child2/bg_flower10
+  rotate: false
+  xy: 689, 406
+  size: 33, 45
+  orig: 35, 47
+  offset: 1, 1
+  index: -1
+dragon/3792/child2/bg_white1
+  rotate: false
+  xy: 556, 187
+  size: 14, 15
+  orig: 16, 17
+  offset: 1, 1
+  index: -1
+dragon/3792/child2/bg_white2
+  rotate: false
+  xy: 957, 169
+  size: 14, 15
+  orig: 16, 17
+  offset: 1, 1
+  index: -1
+dragon/3792/child2/bg_white3
+  rotate: false
+  xy: 363, 442
+  size: 14, 15
+  orig: 16, 17
+  offset: 1, 1
+  index: -1
+dragon/3792/child2/body
+  rotate: false
+  xy: 726, 200
+  size: 169, 182
+  orig: 171, 184
+  offset: 1, 1
+  index: -1
+dragon/3792/child2/body_fur
+  rotate: false
+  xy: 976, 320
+  size: 32, 35
+  orig: 34, 37
+  offset: 1, 1
+  index: -1
+dragon/3792/child2/brooch
+  rotate: false
+  xy: 252, 442
+  size: 57, 63
+  orig: 59, 65
+  offset: 1, 1
+  index: -1
+dragon/3792/child2/head
+  rotate: false
+  xy: 556, 1
+  size: 209, 184
+  orig: 211, 186
+  offset: 1, 1
+  index: -1
+dragon/3792/child2/key
+  rotate: false
+  xy: 1, 1
+  size: 171, 508
+  orig: 173, 510
+  offset: 1, 1
+  index: -1
+dragon/3792/child2/l_hand
+  rotate: false
+  xy: 957, 1
+  size: 150, 166
+  orig: 152, 168
+  offset: 1, 1
+  index: -1
+dragon/3792/child2/l_outwear1
+  rotate: false
+  xy: 513, 413
+  size: 55, 78
+  orig: 57, 80
+  offset: 1, 1
+  index: -1
+dragon/3792/child2/l_outwear2
+  rotate: false
+  xy: 449, 413
+  size: 62, 89
+  orig: 64, 91
+  offset: 1, 1
+  index: -1
+dragon/3792/child2/l_wing
+  rotate: false
+  xy: 383, 207
+  size: 170, 204
+  orig: 172, 206
+  offset: 1, 1
+  index: -1
+dragon/3792/child2/neck
+  rotate: false
+  xy: 976, 169
+  size: 128, 149
+  orig: 130, 151
+  offset: 1, 1
+  index: -1
+dragon/3792/child2/r_hand1
+  rotate: false
+  xy: 1017, 320
+  size: 71, 145
+  orig: 73, 147
+  offset: 1, 1
+  index: -1
+dragon/3792/child2/r_hand2
+  rotate: false
+  xy: 174, 442
+  size: 76, 67
+  orig: 78, 69
+  offset: 1, 1
+  index: -1
+dragon/3792/child2/r_leg
+  rotate: false
+  xy: 897, 200
+  size: 77, 156
+  orig: 79, 158
+  offset: 1, 1
+  index: -1
+dragon/3792/child2/r_outwear1
+  rotate: false
+  xy: 570, 406
+  size: 53, 104
+  orig: 55, 106
+  offset: 1, 1
+  index: -1
+dragon/3792/child2/r_outwear2
+  rotate: false
+  xy: 383, 413
+  size: 64, 96
+  orig: 66, 98
+  offset: 1, 1
+  index: -1
+dragon/3792/child2/tail
+  rotate: false
+  xy: 555, 207
+  size: 169, 197
+  orig: 171, 199
+  offset: 1, 1
+  index: -1
+dragon/3792/child2/wing_r
+  rotate: false
+  xy: 767, 1
+  size: 188, 197
+  orig: 190, 199
+  offset: 1, 1
+  index: -1

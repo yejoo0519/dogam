@@ -536,6 +536,8 @@ const dexStatMap = {
 721: { hp:[230,9], atk:[43,4], def:[25,3] }, // 에레보스
 722: { hp:[230,9], atk:[43,4], def:[25,3] }, // 크로마 에레보스
 724: { hp:[217,10], atk:[37,4], def:[26,3] }, // 말카르티스
+725: { hp:[295,9], atk:[33,4], def:[33,4] }, // 데저티
+726: { hp:[235,10], atk:[27,3], def:[38,4] }, // 클라비스
 };
 
 if (typeof module !== "undefined" && module.exports) module.exports = dexStatMap;

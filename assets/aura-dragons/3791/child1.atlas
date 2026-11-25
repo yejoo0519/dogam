@@ -1,0 +1,138 @@
+child1.png
+size: 432, 254
+format: RGBA4444
+filter: Linear, Linear
+repeat: none
+dragon/3791/child1/bg_shadow
+  rotate: false
+  xy: 200, 194
+  size: 153, 39
+  orig: 155, 41
+  offset: 1, 1
+  index: -1
+dragon/3791/child1/body
+  rotate: false
+  xy: 125, 141
+  size: 73, 89
+  orig: 75, 91
+  offset: 1, 1
+  index: -1
+dragon/3791/child1/dirt1
+  rotate: false
+  xy: 184, 107
+  size: 14, 14
+  orig: 16, 16
+  offset: 1, 1
+  index: -1
+dragon/3791/child1/dirt2
+  rotate: false
+  xy: 296, 77
+  size: 84, 66
+  orig: 86, 68
+  offset: 1, 1
+  index: -1
+dragon/3791/child1/ear1
+  rotate: false
+  xy: 1, 141
+  size: 122, 109
+  orig: 124, 111
+  offset: 1, 1
+  index: -1
+dragon/3791/child1/ear2
+  rotate: false
+  xy: 296, 1
+  size: 103, 74
+  orig: 105, 76
+  offset: 1, 1
+  index: -1
+dragon/3791/child1/eff1
+  rotate: false
+  xy: 289, 145
+  size: 54, 35
+  orig: 56, 37
+  offset: 1, 1
+  index: -1
+dragon/3791/child1/eye
+  rotate: false
+  xy: 125, 232
+  size: 45, 21
+  orig: 47, 23
+  offset: 1, 1
+  index: -1
+dragon/3791/child1/foot
+  rotate: false
+  xy: 382, 77
+  size: 41, 72
+  orig: 43, 74
+  offset: 1, 1
+  index: -1
+dragon/3791/child1/hand1
+  rotate: false
+  xy: 381, 151
+  size: 47, 30
+  orig: 49, 32
+  offset: 1, 1
+  index: -1
+dragon/3791/child1/hand2
+  rotate: false
+  xy: 391, 183
+  size: 36, 45
+  orig: 38, 47
+  offset: 1, 1
+  index: -1
+dragon/3791/child1/head1
+  rotate: false
+  xy: 200, 107
+  size: 87, 85
+  orig: 89, 87
+  offset: 1, 1
+  index: -1
+dragon/3791/child1/head2
+  rotate: false
+  xy: 184, 1
+  size: 110, 104
+  orig: 112, 106
+  offset: 1, 1
+  index: -1
+dragon/3791/child1/highlight
+  rotate: false
+  xy: 289, 182
+  size: 12, 10
+  orig: 14, 12
+  offset: 1, 1
+  index: -1
+dragon/3791/child1/leg1
+  rotate: false
+  xy: 355, 183
+  size: 34, 57
+  orig: 36, 59
+  offset: 1, 1
+  index: -1
+dragon/3791/child1/smoke1
+  rotate: false
+  xy: 345, 145
+  size: 34, 31
+  orig: 36, 33
+  offset: 1, 1
+  index: -1
+dragon/3791/child1/smoke2
+  rotate: false
+  xy: 172, 232
+  size: 20, 20
+  orig: 22, 22
+  offset: 1, 1
+  index: -1
+dragon/3791/child1/tail
+  rotate: false
+  xy: 1, 1
+  size: 181, 138
+  orig: 183, 140
+  offset: 1, 1
+  index: -1
+dragon/3791/child1/wing
+  rotate: false
+  xy: 401, 1
+  size: 30, 60
+  orig: 32, 62
+  offset: 1, 1
+  index: -1

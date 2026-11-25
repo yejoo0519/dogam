@@ -2969,6 +2969,7 @@ function renderReserveSpirits(){
       <summary><input type="checkbox" class="rsv-chk" aria-label="선택" ${RSV_SEL.has(r.uid)?'checked':''} onclick="event.stopPropagation()" onchange="selReserve('${r.uid}',this.checked)"><span class="rsv-name">${escHtml(reserveLabel(r,i))}</span>${gSpChips(r)}</summary>
       <div class="rsv-body">
         <div class="rsv-hd"><input type="text" value="${escHtml(r.name)}" placeholder="예비 정령 ${i+1}" aria-label="예비 정령 이름" onchange="onReserveName(${i},this.value)"><button class="btn-red" onclick="delReserveSpirit(${i})">삭제</button></div>
+        <div class="rsv-attach"><span>드래곤에 달기</span><select aria-label="드래곤에 달기" onfocus="this.innerHTML=rsvDragonOptions()" onchange="attachReserve(${i},this.value)">${rsvDragonOptions()}</select></div>
         ${SpiritInput.options(r,'onReserveOpt',[i],fmtDragonSpVal)}
         ${SpiritInput.bonus(r,'onReserveBonus',[i])}
       </div>
@@ -2988,6 +2989,30 @@ function delAllReserves(){
   if(!S.reserveSpirits.length)return;
   if(!confirm(`예비 정령 ${S.reserveSpirits.length}개를 전부 삭제할까요?`))return;
   S.reserveSpirits=[];RSV_OPEN.clear();RSV_SEL.clear();renderReserveSpirits();qSave();
+}
+/* 예비 정령 → 드래곤 귀속 */
+function rsvDragonOptions(){
+  normalizeDragonCards();
+  const grp=DRAGON_CATS.map(cat=>{
+    const cards=S.dragonCards[cat]||[];
+    if(!cards.length)return '';
+    return `<optgroup label="${cat}">`+cards.map(c=>`<option value="${cat}|${c.uid}">${escHtml(dragonDispName(c)||'용 미선택')}${spiritHasOpt(c)?' (정령 있음)':''}</option>`).join('')+'</optgroup>';
+  }).join('');
+  return '<option value="">'+(grp?'드래곤 선택':'등록한 드래곤이 없어요')+'</option>'+grp;
+}
+function attachReserve(i,val){
+  normalizeReserves();normalizeDragonCards();
+  const r=S.reserveSpirits[i];if(!r||!val)return;
+  const [cat,uid]=val.split('|');const card=(S.dragonCards[cat]||[]).find(c=>c.uid===uid);if(!card){renderReserveSpirits();return;}
+  const nm=dragonDispName(card)||'용 미선택';
+  const had=spiritHasOpt(card);
+  if(!confirm(had?`${nm}에 이미 정령이 달려 있어요. 바꿔 달고 기존 정령은 예비 정령으로 보낼까요?`:`이 정령을 ${nm}에 달까요?`)){renderReserveSpirits();return;}
+  const old=had?{uid:newReserveUid(),name:String(nm+' 정령').slice(0,20),opts:(card.opts||[]).map(o=>({stat:o?.stat||'',type:o?.type||''})),bonus:card.bonus||''}:null;
+  card.opts=r.opts.map(o=>({stat:o.stat||'',type:o.type||''}));card.bonus=r.bonus||'';
+  RSV_OPEN.delete(r.uid);RSV_SEL.delete(r.uid);
+  if(old)S.reserveSpirits.splice(i,1,old);else S.reserveSpirits.splice(i,1);
+  renderReserveSpirits();renderDragonInfo();qSave();
+  if(typeof showToast==='function')showToast(`${nm}에 정령을 달았어요`);
 }
 function toggleReserve(uid,open){if(open)RSV_OPEN.add(uid);else RSV_OPEN.delete(uid);}
 function addReserveSpirit(){

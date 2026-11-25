@@ -1194,6 +1194,7 @@ function elIcon(attr){return EL_IMG_BASE+(EL_ICON[attr]||11)+'.png';}
 let G_ATTR='';    // 레일에서 고른 속성
 let G_EDIT=null;  // {cat, ci}
 function setGAttr(a){G_ATTR=(G_ATTR===a)?'':a;renderDragonInfo();}
+const G_REL='정령해제권';   // 레일의 정령해제권 탭 (G_ATTR 값으로 씀)
 function gOpenEdit(cat,ci){
   const same=G_EDIT&&G_EDIT.cat===cat&&G_EDIT.ci===ci;
   G_EDIT=same?null:{cat:cat,ci:ci};
@@ -1223,7 +1224,8 @@ function renderDragonInfo(){
   if(!host)return;
 
   const total=DRAGON_CATS.reduce((n,c)=>n+(S.dragonCards[c]||[]).length,0);
-  const shown=G_ATTR?[G_ATTR]:DRAGON_CATS.slice();
+  const isRel=G_ATTR===G_REL;
+  const shown=isRel?[]:G_ATTR?[G_ATTR]:DRAGON_CATS.slice();
 
   const rail=`<div class="dr-rail">
     <div class="dr-rail-t">속성</div>
@@ -1234,7 +1236,17 @@ function renderDragonInfo(){
         <img src="${elIcon(c)}" onerror="this.style.visibility='hidden'" alt="">${c}
         <span class="n">${n||'—'}</span></button>`;
     }).join('')}
+    <div class="dr-rail-sep"></div>
+    <button class="dr-rail-i${isRel?' on':''}" onclick="setGAttr(G_REL)">정령해제권</button>
   </div>`;
+  // 정령해제권 탭: 드래곤에 달린 정령을 전부 예비 정령으로
+  const relN=DRAGON_CATS.reduce((n,c)=>n+(S.dragonCards[c]||[]).filter(spiritHasOpt).length,0);
+  const relPanel=`<div class="dr-rel">
+      <strong>정령해제권을 사용한 경우에 눌러주세요</strong>
+      <p>드래곤에 달린 정령 <b>${relN}개</b>를 전부 예비 정령으로 보내고, 드래곤의 정령 칸은 비워요. 드래곤 정보(이름 · 타입 · 등급)는 그대로 남아요.</p>
+      <div class="dr-rel-acts"><button class="btn-gold" ${relN?'':'disabled'} onclick="releaseAllSpirits()">싹 다 예비 정령으로 보내기</button>
+      <button class="btn-white" onclick="setGAttr('')">돌아가기</button></div>
+    </div>`;
 
   const grpBar=(cat,n,mobile)=>`
     <div class="grp-bar">
@@ -1276,7 +1288,7 @@ function renderDragonInfo(){
     });
   }
   const hint=total?'':'<div class="dr-hint">아직 등록한 용이 없어요. 속성 줄의 ＋ 추가를 눌러 등록해주세요.</div>';
-  const table=hint+`<table class="dr-tbl"><tbody>${rows}</tbody></table>`;
+  const table=isRel?relPanel:hint+`<table class="dr-tbl"><tbody>${rows}</tbody></table>`;
 
   // 모바일 목록
   let mo='';
@@ -1301,7 +1313,7 @@ function renderDragonInfo(){
     });
   }
 
-  mo=hint+mo;
+  mo=isRel?relPanel:`<div class="dr-rel-mo"><button class="btn-white" onclick="setGAttr(G_REL)">정령해제권</button></div>`+hint+mo;
 
   // 모바일 편집 시트
   let sheet='';
@@ -1341,6 +1353,23 @@ function delDragonCard(cat,idx){
   S.dragonCards[cat].splice(idx,1);
   renderDragonInfo();
   qSave();
+}
+
+function releaseAllSpirits(){
+  normalizeDragonCards();normalizeReserves();
+  const cards=DRAGON_CATS.flatMap(cat=>(S.dragonCards[cat]||[]).filter(spiritHasOpt));
+  if(!cards.length)return;
+  if(!confirm(`드래곤에 달린 정령 ${cards.length}개를 전부 예비 정령으로 보낼까요?`))return;
+  const moved=cards.map(card=>{
+    const nm=dragonDispName(card);
+    const r={uid:newReserveUid(),name:nm?String(nm+' 정령').slice(0,20):'',opts:(card.opts||[]).map(o=>({stat:o?.stat||'',type:o?.type||''})),bonus:card.bonus||''};
+    card.opts=[{stat:'',type:''},{stat:'',type:''},{stat:'',type:''},{stat:'',type:''}];card.bonus='';
+    return r;
+  });
+  S.reserveSpirits.unshift(...moved);
+  G_ATTR='';
+  renderDragonInfo();renderReserveSpirits();qSave();
+  if(typeof showToast==='function')showToast(`정령 ${moved.length}개를 예비 정령으로 보냈어요`);
 }
 
 function clearDragonCat(cat,ev){

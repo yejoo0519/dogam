@@ -76534,9 +76534,9 @@
       "canLevelUp": true,
       "codeAvailability": "Yes",
       "tier": {
-        "value": null,
-        "status": "NI",
-        "source": null
+        "value": 7.0,
+        "status": "listed",
+        "source": "도감 카드 7.0 (방어형 기준)"
       },
       "stats": {
         "regular": {

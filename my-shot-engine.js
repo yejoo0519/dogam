@@ -431,8 +431,11 @@
     bx.forEach(function (b) { if (b[2] < top) top = b[2]; if (b[3] > bot) bot = b[3]; });
     var th = bot - top;
     if (th < 20 * k || th > 46 * k) return null;
-    var last = bx[bx.length - 1], lw = last[1] - last[0], lh = last[3] - last[2];
-    return lw / lh > 0.8 ? '%' : '+';
+    // '%'는 숫자보다 훨씬 넓음 (숫자 ~20px, % ~32px). 아랫줄은 글자가 낮게 잡혀 가로/세로 비율로는 0이 %처럼 보여서 앞 글자 폭과 비교
+    var last = bx[bx.length - 1], lw = last[1] - last[0];
+    var ws = bx.slice(0, -1).map(function (b) { return b[1] - b[0]; }).sort(function (a, b) { return a - b; });
+    var mw = ws[Math.floor(ws.length / 2)] || 1;
+    return lw / mw > 1.3 ? '%' : '+';
   }
   function readPanelAt(im, cx, y0, k) {
     var opts = [];

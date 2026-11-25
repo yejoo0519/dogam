@@ -28,6 +28,13 @@
   }
   var items = [];   // {id, kind, label, ok, on, data, thumb, shot}
   var seq = 0, spSeq = 0;
+  var bulkAt = '', bulkDest = 'rsv';   // 정령 일괄 적용용 선택값
+  /* '보낼 곳' 옵션 (개별 · 일괄 공용) */
+  function destOptions(at, dest) {
+    return '<option value="rsv"' + (!at && !isCham(dest) ? ' selected' : '') + '>길드전 예비 정령</option>' +
+      '<optgroup label="챔피언대전">' + CHAM_DEST.map(function (o) { return '<option value="' + o[0] + '"' + (dest === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</optgroup>' +
+      (window.GuildLink ? '<optgroup label="드래곤 속성">' + GuildLink.attrOptions(at) + '</optgroup>' : '');
+  }
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
 
@@ -76,6 +83,10 @@
     '.shot-it .sub{display:block;font-size:11px;color:var(--dim)}' +
     '.shot-it input[type=checkbox]{accent-color:var(--gold);width:16px;height:16px;flex-shrink:0}' +
     '.shot-it select{font-size:11px;padding:3px 6px;margin-top:3px;display:block;width:100%;max-width:220px}' +
+    '.shot-bulk{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 8px;padding:8px 10px;border:1px solid var(--bd);border-radius:8px;background:var(--sf2);font-size:12px;color:var(--dim)}' +
+    '.shot-bulk button{width:auto;flex:0 0 auto;font-size:11px;padding:4px 10px}.shot-bulk button[disabled]{opacity:.45;cursor:default}' +
+    '.shot-bulk select{font-size:11px;padding:3px 6px;width:auto;max-width:220px}' +
+    '.shot-bulk-sep{width:1px;height:16px;background:var(--bd);margin:0 4px}' +
     '.shot-opts{display:flex;flex-wrap:wrap;gap:8px 16px;margin:16px 0 10px;font-size:12px;color:var(--dim)}' +
     '.shot-opts label{display:flex;align-items:center;gap:6px;cursor:pointer}.shot-opts input{accent-color:var(--gold)}' +
     '.shot-actions{display:flex;gap:8px;flex-wrap:wrap}.shot-actions button{width:auto;flex:0 0 auto}';
@@ -146,7 +157,19 @@
       var list = items.filter(function (i) { return i.kind === g[0]; });
       if (!list.length) return;
       var on = list.filter(function (i) { return i.on; }).length;
-      html += '<div class="shot-group"><h4>' + g[1] + ' <small>' + on + '개 선택 · 인식 ' + list.filter(function (i) { return i.ok; }).length + '/' + list.length + '</small></h4><div class="shot-list">';
+      html += '<div class="shot-group"><h4>' + g[1] + ' <small>' + on + '개 선택 · 인식 ' + list.filter(function (i) { return i.ok; }).length + '/' + list.length + '</small></h4>';
+      if (g[0] === 'spirit') {
+        html += '<div class="shot-bulk">' +
+          '<button type="button" class="btn-white" data-bulk="all">전체 선택</button>' +
+          '<button type="button" class="btn-white" data-bulk="none">전체 해제</button>' +
+          '<span class="shot-bulk-sep"></span>' +
+          '<span>체크한 정령을</span>' +
+          '<select id="shot-bulk-dest" aria-label="일괄 보낼 곳">' + destOptions(bulkAt, bulkDest) + '</select>' +
+          (bulkAt && window.GuildLink ? '<select id="shot-bulk-drg" aria-label="일괄 드래곤"><option value="">드래곤 선택</option>' + GuildLink.dragonOptions(bulkAt, /^\d+$/.test(bulkDest) ? bulkDest : '') + '</select>' : '') +
+          '<button type="button" class="btn-gold" data-bulk="set"' + (on ? '' : ' disabled') + '>' + on + '개 한 번에 바꾸기</button>' +
+          '</div>';
+      }
+      html += '<div class="shot-list">';
       list.forEach(function (i) {
         var enc = '';
         if (i.kind === 'acc' && i.ok) {
@@ -157,9 +180,7 @@
         }
         if (i.kind === 'spirit') {
           var at = i.data.attr || '';
-          enc = '<select data-dest="' + i.id + '" aria-label="보낼 곳"><option value="rsv"' + (!at && !isCham(i.data.dest) ? ' selected' : '') + '>길드전 예비 정령</option>' +
-            '<optgroup label="챔피언대전">' + CHAM_DEST.map(function (o) { return '<option value="' + o[0] + '"' + (i.data.dest === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</optgroup>' +
-            (window.GuildLink ? '<optgroup label="드래곤 속성">' + GuildLink.attrOptions(at) + '</optgroup>' : '') + '</select>';
+          enc = '<select data-dest="' + i.id + '" aria-label="보낼 곳">' + destOptions(at, i.data.dest) + '</select>';
           if (at && window.GuildLink) enc += '<select data-drg="' + i.id + '" aria-label="드래곤"><option value="">드래곤 선택</option>' + GuildLink.dragonOptions(at, /^\d+$/.test(i.data.dest) ? i.data.dest : '') + '</select>';
         }
         html += '<label class="shot-it' + (i.ok ? (i.on ? '' : ' off') : ' bad') + '">' +
@@ -189,10 +210,22 @@
     if (t.dataset.enc) { var a = items.find(function (i) { return i.id === +t.dataset.enc; }); if (a) a.data.enchant = t.value; }
     if (t.dataset.dest) { var sp = items.find(function (i) { return i.id === +t.dataset.dest; }); if (sp) { var plain = t.value === 'rsv' || isCham(t.value); sp.data.attr = plain ? '' : t.value; sp.data.dest = plain ? t.value : ''; render(); } }
     if (t.dataset.drg) { var sd = items.find(function (i) { return i.id === +t.dataset.drg; }); if (sd) sd.data.dest = t.value; }
+    if (t.id === 'shot-bulk-dest') { var pl = t.value === 'rsv' || isCham(t.value); bulkAt = pl ? '' : t.value; bulkDest = pl ? t.value : ''; render(); }
+    if (t.id === 'shot-bulk-drg') bulkDest = t.value;
   });
   result.addEventListener('click', function (e) {
     if (e.target.id === 'shot-clear') { items = []; render(); status.textContent = ''; }
     if (e.target.id === 'shot-apply') apply();
+    var b = e.target.dataset && e.target.dataset.bulk;
+    if (b) {
+      var sp = items.filter(function (i) { return i.kind === 'spirit' && i.ok; });
+      if (b === 'all' || b === 'none') sp.forEach(function (i) { i.on = b === 'all'; });
+      if (b === 'set') {
+        if (bulkAt && !/^\d+$/.test(bulkDest)) { alert('속성을 골랐으면 드래곤까지 골라 주세요.'); return; }
+        sp.filter(function (i) { return i.on; }).forEach(function (i) { i.data.attr = bulkAt; i.data.dest = bulkDest; });
+      }
+      render();
+    }
   });
 
   function apply() {

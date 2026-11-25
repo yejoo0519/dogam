@@ -1331,7 +1331,7 @@ function renderDragonInfo(){
 function addDragonCard(cat,ev){
   if(ev){ev.preventDefault();ev.stopPropagation();}
   normalizeDragonCards();
-  S.dragonCards[cat].push(mkDragonCard());
+  S.dragonCards[cat].unshift(mkDragonCard());
   renderDragonInfo();
   qSave();
 }

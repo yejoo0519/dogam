@@ -154,8 +154,9 @@
     var dc = current();
     dc = dc ? JSON.parse(JSON.stringify(dc)) : {};
     CATS.forEach(function (c) { if (!Array.isArray(dc[c])) dc[c] = []; });
-    items.forEach(function (it) {
-      dc[it.attr].push({ uid: 'dragon-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8), name: it.name, dtype: it.dtype || '', dupe: false,
+    /* 맨 위부터 추가 (같이 넣은 것끼리는 순서 유지) */
+    items.slice().reverse().forEach(function (it) {
+      dc[it.attr].unshift({ uid: 'dragon-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8), name: it.name, dtype: it.dtype || '', dupe: false,
         grade: '9.0', growth: '강림(축복)', opts: normOpts(it.opts), bonus: ['hp', 'atk', 'def'].indexOf(it.bonus) >= 0 ? it.bonus : '' });
     });
     writeAll(dc);

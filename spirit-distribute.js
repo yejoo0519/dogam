@@ -341,6 +341,24 @@
     sec.scrollIntoView({behavior:'smooth',block:'start'});
   }
 
+  // ── 내 스펙 스크린샷에서 보낸 정령 받기 ─────────────────
+  // 내 스펙은 받은함(…_spx_inbox)에만 넣어 두고, 여기서 보유 정령 맨 위에 합친다.
+  const SPX_INBOX=(/\/en\//.test(location.pathname)?'dv1simEN':'dv1sim')+'_spx_inbox';
+  function inboxApply(){
+    let a=null;
+    try{a=JSON.parse(localStorage.getItem(SPX_INBOX)||'null');}catch(e){}
+    if(!Array.isArray(a)||!a.length)return;
+    try{localStorage.removeItem(SPX_INBOX);}catch(e){}
+    const add=a.filter(q=>q&&Array.isArray(q.sp)).map(q=>({uid:newUid(),memo:String(q.memo||'').slice(0,30),opts:q.sp,bonus:q.bonus||''}));
+    if(!add.length)return;
+    S.spxList.unshift(...add);ensure();
+    S.spxList=S.spxList.filter((x,i)=>i>=add.length||spValid(x));
+    S.calcMode='dist';S.spxFold=false;
+    if(typeof doSave==='function')doSave();else save();   // 바로 저장 (클라우드 재로드 때 지워지지 않게)
+    renderMode();renderList();
+    if(typeof showToast==='function')showToast('스크린샷 정령 '+add.length+'개를 보유 정령에 추가했어요');
+  }
+
   // ── 연결 ────────────────────────────────────────────────
   document.addEventListener('DOMContentLoaded',()=>{
     ensure();
@@ -353,6 +371,7 @@
     if(list)['click','input'].forEach(t=>list.addEventListener(t,onListEvent));
     const pane=$('setpane');
     if(pane){pane.addEventListener('click',e=>{if(e.target.closest('button')&&e.target.id!=='sim-btn')markDirty();});pane.addEventListener('change',markDirty);}
-    setTimeout(renderMode,0); // spirit-simulator.js 초기 상태 문구 이후에 적용
+    setTimeout(()=>{renderMode();inboxApply();},0); // spirit-simulator.js 초기 상태 문구 이후에 적용
+    window.addEventListener('storage',e=>{if(e.key===SPX_INBOX)inboxApply();});
   });
 })();

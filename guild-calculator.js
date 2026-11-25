@@ -2908,6 +2908,7 @@ function mountLowGemOpt(){
 // UI - 예비 정령
 // ================================================================
 const RSV_OPEN=new Set();
+const RSV_SEL=new Set();   // 일괄 삭제용 체크
 const newReserveUid=()=>`rsv-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,6)}`;
 function spiritHasOpt(sp){return (sp?.opts||[]).some(o=>o&&o.stat&&o.type)||!!sp?.bonus;}
 function normalizeReserves(){
@@ -2926,14 +2927,38 @@ function activeReserveSpirits(){
 function renderReserveSpirits(){
   const el=document.getElementById('reserve-spirits');if(!el)return;
   normalizeReserves();
-  el.innerHTML=S.reserveSpirits.map((r,i)=>`<details class="rsv-item" ${RSV_OPEN.has(r.uid)?'open':''} ontoggle="toggleReserve('${r.uid}',this.open)">
-      <summary><span class="rsv-name">${escHtml(reserveLabel(r,i))}</span>${gSpChips(r)}</summary>
+  const uids=new Set(S.reserveSpirits.map(r=>r.uid));
+  [...RSV_SEL].forEach(u=>{if(!uids.has(u))RSV_SEL.delete(u);});
+  const nSel=RSV_SEL.size,nAll=S.reserveSpirits.length;
+  const bar=nAll?`<div class="rsv-bulk">
+      <label><input type="checkbox" ${nSel===nAll?'checked':''} onchange="selAllReserves(this.checked)"> 전체 선택</label>
+      <span class="rsv-bulk-n">${nSel}개 선택</span>
+      <button class="btn-red" ${nSel?'':'disabled'} onclick="delSelReserves()">선택 삭제</button>
+      <button class="btn-red" onclick="delAllReserves()">일괄 삭제</button>
+    </div>`:'';
+  el.innerHTML=bar+S.reserveSpirits.map((r,i)=>`<details class="rsv-item" ${RSV_OPEN.has(r.uid)?'open':''} ontoggle="toggleReserve('${r.uid}',this.open)">
+      <summary><input type="checkbox" class="rsv-chk" aria-label="선택" ${RSV_SEL.has(r.uid)?'checked':''} onclick="event.stopPropagation()" onchange="selReserve('${r.uid}',this.checked)"><span class="rsv-name">${escHtml(reserveLabel(r,i))}</span>${gSpChips(r)}</summary>
       <div class="rsv-body">
         <div class="rsv-hd"><input type="text" value="${escHtml(r.name)}" placeholder="예비 정령 ${i+1}" aria-label="예비 정령 이름" onchange="onReserveName(${i},this.value)"><button class="btn-red" onclick="delReserveSpirit(${i})">삭제</button></div>
         ${SpiritInput.options(r,'onReserveOpt',[i],fmtDragonSpVal)}
         ${SpiritInput.bonus(r,'onReserveBonus',[i])}
       </div>
     </details>`).join('')+`<button class="btn-white rsv-add" onclick="addReserveSpirit()">+ 예비 정령 추가</button>`;
+}
+function selReserve(uid,on){if(on)RSV_SEL.add(uid);else RSV_SEL.delete(uid);renderReserveSpirits();}
+function selAllReserves(on){normalizeReserves();RSV_SEL.clear();if(on)S.reserveSpirits.forEach(r=>RSV_SEL.add(r.uid));renderReserveSpirits();}
+function delSelReserves(){
+  normalizeReserves();
+  const n=S.reserveSpirits.filter(r=>RSV_SEL.has(r.uid)).length;if(!n)return;
+  if(!confirm(`선택한 예비 정령 ${n}개를 삭제할까요?`))return;
+  S.reserveSpirits=S.reserveSpirits.filter(r=>{const d=RSV_SEL.has(r.uid);if(d)RSV_OPEN.delete(r.uid);return !d;});
+  RSV_SEL.clear();renderReserveSpirits();qSave();
+}
+function delAllReserves(){
+  normalizeReserves();
+  if(!S.reserveSpirits.length)return;
+  if(!confirm(`예비 정령 ${S.reserveSpirits.length}개를 전부 삭제할까요?`))return;
+  S.reserveSpirits=[];RSV_OPEN.clear();RSV_SEL.clear();renderReserveSpirits();qSave();
 }
 function toggleReserve(uid,open){if(open)RSV_OPEN.add(uid);else RSV_OPEN.delete(uid);}
 function addReserveSpirit(){

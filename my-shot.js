@@ -15,6 +15,7 @@
   var CHAM_DEST = [['chamrsv', '챔대 예비 정령'], ['cham', '챔대 정령 배분'], ['cham1', '챔대 정령 배분 · 1라'], ['cham2', '챔대 정령 배분 · 2라'], ['cham3', '챔대 정령 배분 · 3라']];
   var CHAM_INBOX = (/\/en\//.test(location.pathname) ? 'dv1simEN' : 'dv1sim') + '_cham_spx_inbox';
   var CHAM_RSV_INBOX = CHAM_INBOX.replace('_cham_spx_inbox', '_cham_rsv_inbox');
+  var SPX_INBOX = CHAM_INBOX.replace('_cham_spx_inbox', '_spx_inbox');   // 정령 계산/배분 [정령 배분] 받은함
   function isCham(v) { return /^cham([123]|rsv)?$/.test(v || ''); }
   /* 챔대 자동 계산기 정령 배분으로 보내기: list = [{opts, rd(0~2 또는 null)}] */
   function chamSend(list) {
@@ -28,13 +29,33 @@
   }
   var items = [];   // {id, kind, label, ok, on, data, thumb, shot}
   var seq = 0, spSeq = 0;
-  var bulkAt = '', bulkDest = 'rsv';   // 정령 일괄 적용용 선택값
-  /* '보낼 곳' 옵션 (개별 · 일괄 공용) */
-  function destOptions(at, dest) {
-    return '<option value="rsv"' + (!at && !isCham(dest) ? ' selected' : '') + '>길드전 예비 정령</option>' +
-      '<optgroup label="챔피언대전">' + CHAM_DEST.map(function (o) { return '<option value="' + o[0] + '"' + (dest === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</optgroup>' +
-      (window.GuildLink ? '<optgroup label="드래곤 속성">' + GuildLink.attrOptions(at) + '</optgroup>' : '');
+  /* 보낼 곳: mode = grsv(길드전 예비 정령) · gdrg(길드전 드래곤) · sdist(정령 계산/배분 정령 배분) · crsv(챔대 예비 정령) · cdist(챔대 정령 배분)
+     attr = 드래곤 속성, dest = 'rsv' · 드래곤 번호 · 'spx' · 'chamrsv' · 'cham' · 'cham1~3' */
+  var bulk = { mode: 'grsv', attr: '', dest: 'rsv' };   // 정령 일괄 적용용 선택값
+  var MODE_GROUPS = [['길드전', [['grsv', '길드전 · 예비 정령'], ['gdrg', '길드전 · 드래곤에 달기']]],
+    ['정령 계산/배분', [['sdist', '정령 배분']]],
+    ['챔피언대전', [['crsv', '챔대 · 예비 정령'], ['cdist', '챔대 · 정령 배분']]]];
+  var DIST = [['cham', '통합 배분'], ['cham1', '라운드별 · 1라'], ['cham2', '라운드별 · 2라'], ['cham3', '라운드별 · 3라']];
+  function modeOf(d) { return d.mode || (d.attr ? 'gdrg' : d.dest === 'spx' ? 'sdist' : d.dest === 'chamrsv' ? 'crsv' : /^cham[123]?$/.test(d.dest || '') ? 'cdist' : 'grsv'); }
+  function opt(v, t, sel) { return '<option value="' + v + '"' + (v === sel ? ' selected' : '') + '>' + t + '</option>'; }
+  /* 보낼 곳 선택칸 (개별 · 일괄 공용). key = 정령 id 또는 'bulk' */
+  function destSelects(key, d) {
+    var m = modeOf(d), h = '<span class="shot-dest">';
+    h += '<select data-mode="' + key + '" aria-label="보낼 곳">' + MODE_GROUPS.map(function (g) {
+      return '<optgroup label="' + g[0] + '">' + g[1].filter(function (o) { return o[0] !== 'gdrg' || window.GuildLink; }).map(function (o) { return opt(o[0], o[1], m); }).join('') + '</optgroup>';
+    }).join('') + '</select>';
+    if (m === 'cdist') h += '<select data-dist="' + key + '" aria-label="배분 방식">' + DIST.map(function (o) { return opt(o[0], o[1], d.dest); }).join('') + '</select>';
+    if (m === 'gdrg' && window.GuildLink) {
+      h += '<select data-attr="' + key + '" aria-label="속성"><option value="">속성 선택</option>' + GuildLink.attrOptions(d.attr || '') + '</select>';
+      if (d.attr) h += '<select data-drg="' + key + '" aria-label="드래곤"><option value="">드래곤 선택</option>' + GuildLink.dragonOptions(d.attr, /^\d+$/.test(d.dest) ? d.dest : '') + '</select>';
+    }
+    return h + '</span>';
   }
+  function setMode(d, m) {
+    d.mode = m; d.attr = '';
+    d.dest = m === 'grsv' ? 'rsv' : m === 'sdist' ? 'spx' : m === 'crsv' ? 'chamrsv' : m === 'cdist' ? 'cham' : '';
+  }
+  function needDrg(d) { return modeOf(d) === 'gdrg' && !/^\d+$/.test(d.dest || ''); }
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
 
@@ -86,6 +107,8 @@
     '.shot-bulk{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 8px;padding:8px 10px;border:1px solid var(--bd);border-radius:8px;background:var(--sf2);font-size:12px;color:var(--dim)}' +
     '.shot-bulk button{width:auto;flex:0 0 auto;font-size:11px;padding:4px 10px}.shot-bulk button[disabled]{opacity:.45;cursor:default}' +
     '.shot-bulk select{font-size:11px;padding:3px 6px;width:auto;max-width:220px}' +
+    '.shot-dest{display:flex;flex-wrap:wrap;gap:3px 4px;margin-top:3px}.shot-it .shot-dest select{margin-top:0;flex:1 1 100px;min-width:0;width:auto}' +
+    '.shot-bulk .shot-dest{margin-top:0;flex-wrap:nowrap}' +
     '.shot-bulk-sep{width:1px;height:16px;background:var(--bd);margin:0 4px}' +
     '.shot-opts{display:flex;flex-wrap:wrap;gap:8px 16px;margin:16px 0 10px;font-size:12px;color:var(--dim)}' +
     '.shot-opts label{display:flex;align-items:center;gap:6px;cursor:pointer}.shot-opts input{accent-color:var(--gold)}' +
@@ -164,8 +187,7 @@
           '<button type="button" class="btn-white" data-bulk="none">전체 해제</button>' +
           '<span class="shot-bulk-sep"></span>' +
           '<span>체크한 정령을</span>' +
-          '<select id="shot-bulk-dest" aria-label="일괄 보낼 곳">' + destOptions(bulkAt, bulkDest) + '</select>' +
-          (bulkAt && window.GuildLink ? '<select id="shot-bulk-drg" aria-label="일괄 드래곤"><option value="">드래곤 선택</option>' + GuildLink.dragonOptions(bulkAt, /^\d+$/.test(bulkDest) ? bulkDest : '') + '</select>' : '') +
+          destSelects('bulk', bulk) +
           '<button type="button" class="btn-gold" data-bulk="set"' + (on ? '' : ' disabled') + '>' + on + '개 한 번에 바꾸기</button>' +
           '</div>';
       }
@@ -179,9 +201,7 @@
             }).join('') + '</select>';
         }
         if (i.kind === 'spirit') {
-          var at = i.data.attr || '';
-          enc = '<select data-dest="' + i.id + '" aria-label="보낼 곳">' + destOptions(at, i.data.dest) + '</select>';
-          if (at && window.GuildLink) enc += '<select data-drg="' + i.id + '" aria-label="드래곤"><option value="">드래곤 선택</option>' + GuildLink.dragonOptions(at, /^\d+$/.test(i.data.dest) ? i.data.dest : '') + '</select>';
+          enc = destSelects(i.id, i.data);
         }
         html += '<label class="shot-it' + (i.ok ? (i.on ? '' : ' off') : ' bad') + '">' +
           '<input type="checkbox" data-id="' + i.id + '"' + (i.on ? ' checked' : '') + (i.ok ? '' : ' disabled') + '>' +
@@ -191,7 +211,7 @@
       html += '</div></div>';
     });
     if (items.some(function (i) { return i.kind === 'spirit'; })) {
-      html += '<p class="shot-help" style="margin-top:8px">정령은 옵션을 풀강 기준으로 넣고 부가옵은 비워요. 정령마다 <b>길드전 예비 정령</b>으로 보내거나, <b>드래곤을 골라</b> 그 정령을 단 드래곤으로 길드전 계산기 [내 용 정보]에 등록해요. (등급 9.0 · 강림(축복)으로 들어가니 길드전 계산기에서 맞게 바꿔 주세요) <b>챔대 예비 정령</b>을 고르면 챔피언대전 자동 계산기 [내 드래곤] 탭의 예비 정령에, <b>챔대 정령 배분</b>을 고르면 챔피언대전 자동 계산기 [정령 배분] 탭의 보유 정령에 추가돼요. 1라 · 2라 · 3라를 고르면 라운드별 배분의 그 라운드로 들어가요.</p>';
+      html += '<p class="shot-help" style="margin-top:8px">정령은 옵션을 풀강 기준으로 넣고 부가옵은 비워요. 정령마다 <b>길드전 예비 정령</b>으로 보내거나, <b>길드전 드래곤에 달기</b>에서 속성 · 드래곤을 골라 그 정령을 단 드래곤으로 길드전 계산기 [내 용 정보]에 등록해요. (등급 9.0 · 강림(축복)으로 들어가니 길드전 계산기에서 맞게 바꿔 주세요) <b>정령 배분</b>을 고르면 정령 계산/배분 페이지 [정령 배분]의 보유 정령에 들어가요. <b>챔대 예비 정령</b>을 고르면 챔피언대전 자동 계산기 [내 드래곤] 탭의 예비 정령에, <b>챔대 정령 배분</b>을 고르면 챔피언대전 자동 계산기 [정령 배분] 탭의 보유 정령에 추가돼요. 옆 칸에서 1라 · 2라 · 3라를 고르면 라운드별 배분의 그 라운드로 들어가요.</p>';
     }
     var others = items.filter(function (i) { return i.kind === 'none'; }).length;
     if (others) html += '<p class="shot-help" style="margin-top:12px">정보를 못 읽은 칸 ' + others + '개는 뺐어요.</p>';
@@ -208,10 +228,16 @@
     var t = e.target;
     if (t.dataset.id) { var it = items.find(function (i) { return i.id === +t.dataset.id; }); if (it) { it.on = t.checked; render(); } }
     if (t.dataset.enc) { var a = items.find(function (i) { return i.id === +t.dataset.enc; }); if (a) a.data.enchant = t.value; }
-    if (t.dataset.dest) { var sp = items.find(function (i) { return i.id === +t.dataset.dest; }); if (sp) { var plain = t.value === 'rsv' || isCham(t.value); sp.data.attr = plain ? '' : t.value; sp.data.dest = plain ? t.value : ''; render(); } }
-    if (t.dataset.drg) { var sd = items.find(function (i) { return i.id === +t.dataset.drg; }); if (sd) sd.data.dest = t.value; }
-    if (t.id === 'shot-bulk-dest') { var pl = t.value === 'rsv' || isCham(t.value); bulkAt = pl ? '' : t.value; bulkDest = pl ? t.value : ''; render(); }
-    if (t.id === 'shot-bulk-drg') bulkDest = t.value;
+    var key = t.dataset.mode || t.dataset.dist || t.dataset.attr || t.dataset.drg;
+    if (key) {
+      var d = key === 'bulk' ? bulk : (items.find(function (i) { return i.id === +key; }) || {}).data;
+      if (!d) return;
+      if (t.dataset.mode) setMode(d, t.value);
+      else if (t.dataset.dist) d.dest = t.value;
+      else if (t.dataset.attr) { d.mode = 'gdrg'; d.attr = t.value; d.dest = ''; }
+      else if (t.dataset.drg) { d.dest = t.value; return; }
+      render();
+    }
   });
   result.addEventListener('click', function (e) {
     if (e.target.id === 'shot-clear') { items = []; render(); status.textContent = ''; }
@@ -221,8 +247,8 @@
       var sp = items.filter(function (i) { return i.kind === 'spirit' && i.ok; });
       if (b === 'all' || b === 'none') sp.forEach(function (i) { i.on = b === 'all'; });
       if (b === 'set') {
-        if (bulkAt && !/^\d+$/.test(bulkDest)) { alert('속성을 골랐으면 드래곤까지 골라 주세요.'); return; }
-        sp.filter(function (i) { return i.on; }).forEach(function (i) { i.data.attr = bulkAt; i.data.dest = bulkDest; });
+        if (needDrg(bulk)) { alert('드래곤에 달 거면 속성 · 드래곤까지 골라 주세요.'); return; }
+        sp.filter(function (i) { return i.on; }).forEach(function (i) { i.data.mode = modeOf(bulk); i.data.attr = bulk.attr; i.data.dest = bulk.dest; });
       }
       render();
     }
@@ -230,7 +256,7 @@
 
   function apply() {
     var sel = items.filter(function (i) { return i.on && i.ok; });
-    if (sel.some(function (i) { return i.kind === 'spirit' && i.data.attr && !/^\d+$/.test(i.data.dest); })) { alert('속성을 고른 정령은 드래곤까지 골라 주세요.'); return; }
+    if (sel.some(function (i) { return i.kind === 'spirit' && needDrg(i.data); })) { alert('드래곤에 달 정령은 속성 · 드래곤까지 골라 주세요.'); return; }
     if (!sel.length) { alert('반영할 항목을 골라 주세요.'); return; }
     var msg = [];
     var acc = sel.filter(function (i) { return i.kind === 'acc'; }).map(function (i) { return { name: i.data.name, enchant: i.data.enchant }; });
@@ -267,7 +293,15 @@
     chams = chams.filter(function (i) { return i.data.dest !== 'chamrsv'; });
     var nc = chamSend(chams.map(function (i) { var m = /^cham([123])$/.exec(i.data.dest); return { opts: i.data.opts, rd: m ? +m[1] - 1 : null }; }));
     if (nc) msg.push('챔대 정령 배분 ' + nc + '개');
-    var sps = sel.filter(function (i) { return i.kind === 'spirit' && !isCham(i.data.dest); });
+    var sds = sel.filter(function (i) { return i.kind === 'spirit' && i.data.dest === 'spx'; });
+    if (sds.length) {
+      var sbox = [];
+      try { sbox = JSON.parse(localStorage.getItem(SPX_INBOX) || '[]'); } catch (e) {}
+      if (!Array.isArray(sbox)) sbox = [];
+      sds.forEach(function (i) { sbox.push({ sp: i.data.opts.map(function (o) { return { stat: o.stat, type: o.type }; }), memo: '스샷' }); });
+      try { localStorage.setItem(SPX_INBOX, JSON.stringify(sbox)); msg.push('정령 배분 ' + sds.length + '개'); } catch (e) {}
+    }
+    var sps = sel.filter(function (i) { return i.kind === 'spirit' && !isCham(i.data.dest) && i.data.dest !== 'spx'; });
     if (sps.length && window.GuildLink) {
       var cat = GuildLink.catalog(), rsv = [], add = [];
       sps.forEach(function (i) {

@@ -559,6 +559,11 @@ input[type=number]{appearance:textfield;-moz-appearance:textfield}
 
 <link rel="stylesheet" href="./spirit-input.css">
 <style>
+.rsv-bulk{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px;font-size:12px;color:var(--dim)}
+.rsv-bulk label{display:flex;align-items:center;gap:6px;cursor:pointer;color:var(--text);font-weight:700}
+.rsv-bulk input,.rsv-chk{accent-color:var(--gold);width:16px;height:16px;flex:none;margin:0;cursor:pointer}
+.rsv-bulk-n{margin-right:auto}
+.rsv-bulk button{width:auto;flex:0 0 auto;font-size:11px;padding:4px 10px}.rsv-bulk button[disabled]{opacity:.45;cursor:default}
 .rsv-item{border:1px solid var(--bd);border-radius:9px;margin-bottom:8px;background:var(--sf2);transition:border-color .15s}
 .rsv-item[open]{border-color:var(--gold)}
 .rsv-item>summary{display:flex;align-items:center;gap:8px;padding:10px 12px;cursor:pointer;font-size:13px;font-weight:800;list-style:none;border-radius:9px;user-select:none}

@@ -76452,9 +76452,9 @@
       "canLevelUp": true,
       "codeAvailability": "Yes",
       "tier": {
-        "value": 7.0,
-        "status": "listed",
-        "source": "도감 카드"
+        "value": null,
+        "status": "NI",
+        "source": null
       },
       "stats": {
         "regular": {
@@ -76534,9 +76534,9 @@
       "canLevelUp": true,
       "codeAvailability": "Yes",
       "tier": {
-        "value": 7.0,
-        "status": "listed",
-        "source": "도감 카드"
+        "value": null,
+        "status": "NI",
+        "source": null
       },
       "stats": {
         "regular": {

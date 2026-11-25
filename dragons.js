@@ -76534,9 +76534,9 @@
       "canLevelUp": true,
       "codeAvailability": "Yes",
       "tier": {
-        "value": 7.0,
+        "value": 5.95,
         "status": "listed",
-        "source": "도감 카드 7.0 (방어형 기준)"
+        "source": "키갈(방어형 7.0) 기준 20레벨 비밸 비교 추정"
       },
       "stats": {
         "regular": {

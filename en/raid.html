@@ -2,13 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<script src="../en-messages.js?v=20261108"></script>
+<script src="../en-messages.js?v=20261125"></script>
 <script src="../en-extra-messages.js?v=20261108"></script>
 <script src="../en-locale.js?v=20261108"></script>
 <link rel="stylesheet" href="../en-locale.css?v=20261108">
 <script src="../dragons.js"></script>
 <script src="../cham-rules.js"></script>
 <script src="../dragon-views.js"></script>
+<script src="../raid-tools.js?v=20261125"></script>
 <script>
 if (!globalThis.DV1_DRAGON_VIEWS) {
   document.addEventListener('DOMContentLoaded', function () {
@@ -126,6 +127,30 @@ h1{font-size:20px;color:var(--text2);margin-bottom:16px}
 .info-icon:hover .info-tooltip,.info-icon.active .info-tooltip{display:block}
 .info-tooltip b{color:var(--accent)}
 .fail-msg{background:rgba(239,83,80,0.1);border:1px solid rgba(239,83,80,0.3);border-radius:8px;padding:12px;font-size:12px;color:#ef5350;margin-top:8px}
+.mode-tab{padding:8px 20px;font-size:13px;font-weight:600;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);cursor:pointer;font-family:inherit;margin-bottom:-1px}
+.mode-tab:hover{color:var(--text2)}
+.mode-tab.active{color:var(--accent);border-bottom:2px solid var(--accent)}
+.need-hint{font-size:11px;font-weight:500;color:var(--text3);margin-left:6px;letter-spacing:0}
+.scan-btn{width:100%;margin-bottom:8px;padding:6px 8px;font-size:11px;border-radius:6px;border:1px dashed #4a90d9;background:none;color:#5dcff5;cursor:pointer;font-family:inherit}
+.scan-btn:hover{background:rgba(74,144,217,0.15)}
+.scan-modal{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;padding:16px}
+.scan-box{background:var(--bg2);border:1px solid var(--border3);border-radius:12px;width:100%;max-width:560px;max-height:88vh;display:flex;flex-direction:column}
+.scan-head{display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid var(--border);font-size:14px;font-weight:700;color:var(--text)}
+.scan-close{margin-left:auto;background:none;border:none;color:var(--text3);font-size:20px;line-height:1;cursor:pointer}
+.scan-status{padding:10px 16px;font-size:12px;color:var(--text2)}
+.scan-status b{color:var(--accent)}
+.scan-status .warn{color:#f5c842}
+.scan-list{overflow-y:auto;padding:0 16px 8px;display:flex;flex-direction:column;gap:6px}
+.scan-item{display:flex;align-items:center;gap:10px;padding:6px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:8px}
+.scan-item.unsure{border-color:#f5c842}
+.scan-item img{width:44px;height:44px;border-radius:6px;flex-shrink:0}
+.scan-item select{flex:1;min-width:0;padding:6px 8px;background:var(--bg2);border:1px solid var(--border3);border-radius:6px;color:var(--text);font-size:12px;font-family:inherit}
+.scan-flag{font-size:10px;color:#f5c842;flex-shrink:0}
+.scan-foot{display:flex;gap:8px;justify-content:flex-end;padding:12px 16px;border-top:1px solid var(--border)}
+.scan-foot button{padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+.scan-cancel{background:none;border:1px solid var(--border3);color:var(--text2)}
+.scan-ok{background:#4a90d9;border:1px solid #4a90d9;color:#fff}
+.scan-ok:disabled{background:var(--border);border-color:var(--border);color:var(--text4);cursor:not-allowed}
 </style>
 </head>
 <body class="u">
@@ -237,11 +262,17 @@ h1{font-size:20px;color:var(--text2);margin-bottom:16px}
 
 <!-- 플레이어 드래곤 입력 -->
 <div class="section">
- <div class="section-title" style="display:flex;align-items:center">플레이어별 드래곤 입력 (각 3마리 이상 입력 권장)
+ <div style="display:flex;gap:0;border-bottom:1px solid #333;margin-bottom:12px">
+ <button class="mode-tab" id="mode-btn-solo" onclick="selectMode('solo')">솔플</button>
+ <button class="mode-tab" id="mode-btn-duo" onclick="selectMode('duo')">듀오</button>
+ <button class="mode-tab active" id="mode-btn-squad" onclick="selectMode('squad')">스쿼드</button>
+ </div>
+ <div class="section-title" style="display:flex;align-items:center">플레이어별 드래곤 입력<span class="need-hint" id="need-hint">각 3마리 이상 입력</span>
  <span class="info-icon">i
  <div class="info-tooltip">
  <b>1.</b>드래곤 도감 기준으로 데이터가 등록되어 있어, 줄임말은 인식하지 못합니다.<br>&nbsp;&nbsp;&nbsp;✗ 고신, 드슬, 카룩<br>&nbsp;&nbsp;&nbsp;✓ 엔젤, 페어리, 디멘<br><br>
- <b>2.</b>이름을 쉼표로 구분해 입력하면 한번에 등록됩니다.<br>&nbsp;&nbsp;&nbsp;예) 고대신룡, 다크닉스, 엔젤
+ <b>2.</b>이름을 쉼표로 구분해 입력하면 한번에 등록됩니다.<br>&nbsp;&nbsp;&nbsp;예) 고대신룡, 다크닉스, 엔젤<br><br>
+ <b>3.</b>'스크린샷으로 등록'을 눌러 출전 선택 화면 캡처를 올리면 초월·강림 드래곤을 인식해 등록합니다. 스크롤해서 여러 장 올려도 됩니다.
  </div>
  </span>
  </div>
@@ -249,6 +280,20 @@ h1{font-size:20px;color:var(--text2);margin-bottom:16px}
 </div>
 
 <button id="calc-btn" onclick="calculate()">조합 짜기</button>
+
+<!-- 스크린샷 인식 -->
+<input type="file" id="scan-file" accept="image/*" multiple style="display:none" onchange="onScanFiles(this.files)">
+<div class="scan-modal" id="scan-modal" style="display:none">
+ <div class="scan-box">
+ <div class="scan-head"><span>스크린샷 인식</span><button class="scan-close" onclick="closeScan()">×</button></div>
+ <div class="scan-status" id="scan-status"></div>
+ <div class="scan-list" id="scan-list"></div>
+ <div class="scan-foot">
+ <button class="scan-cancel" onclick="closeScan()">취소</button>
+ <button class="scan-ok" id="scan-ok" onclick="applyScan()" disabled>추가</button>
+ </div>
+ </div>
+</div>
 
 <!-- 결과 -->
 <div class="section" id="result" style="margin-top:16px">
@@ -610,12 +655,31 @@ const PATTERNS = {
 const selectedPatterns = new Set([1,2,3,4,5]);
 const playerDragons = [[],[],[],[]];
 
+// 솔플 1명×12마리 / 듀오 2명×6마리 / 스쿼드 4명×3마리 (조건은 동일하게 총 12마리 기준)
+const RAID_MODES = {solo:{n:1,k:12}, duo:{n:2,k:6}, squad:{n:4,k:3}};
+let currentMode = 'squad';
+
+function selectMode(mode) {
+ if(!RAID_MODES[mode]) return;
+ currentMode = mode;
+ document.querySelectorAll('.mode-tab').forEach(b =>b.classList.remove('active'));
+ document.getElementById('mode-btn-' + mode).classList.add('active');
+ const {n, k} = RAID_MODES[mode];
+ for(let i=0; i<4; i++) {
+ const card = document.getElementById('player-card-'+i);
+ if(card) card.style.display = i < n ? '' : 'none';
+ }
+ document.getElementById('need-hint').textContent = n === 1 ? `${k}마리 이상 입력` : `각 ${k}마리 이상 입력`;
+ document.getElementById('result').style.display = 'none';
+ saveToStorage();
+}
+
 function init() {
  const grid = document.getElementById('players-grid');
  grid.innerHTML = '';
  for(let i=0; i<4; i++) {
  grid.innerHTML += `
- <div class="player-card">
+ <div class="player-card" id="player-card-${i}">
  <div class="player-title">
  <div class="player-num">${i+1}</div>
  <span>${i+1}번 플레이어</span>
@@ -630,6 +694,7 @@ function init() {
  id="search-${i}">
  <div class="autocomplete" id="ac-${i}"></div>
  </div>
+ <button class="scan-btn" onclick="openScan(${i})">스크린샷으로 등록</button>
  <div class="dragon-list" id="list-${i}"></div>
  </div>`;
  }
@@ -640,6 +705,7 @@ function saveToStorage() {
  if (raidRestoring) return;
  try {
  localStorage.setItem('raid_boss_kr', currentBoss);
+ localStorage.setItem('raid_mode_kr', currentMode);
  localStorage.setItem('raid_dragons_kr', JSON.stringify(playerDragons));
  } catch(e) {}
 }
@@ -649,6 +715,8 @@ function loadFromStorage() {
  try {
  const boss = localStorage.getItem('raid_boss_kr');
  if(boss) selectBoss(boss);
+ const mode = localStorage.getItem('raid_mode_kr');
+ if(mode && RAID_MODES[mode]) selectMode(mode);
  const dragons = localStorage.getItem('raid_dragons_kr');
  if(dragons) {
  const saved = JSON.parse(dragons);
@@ -739,82 +807,45 @@ function renderList(playerIdx) {
 }
 
 function calculate() {
- for(let i=0; i<4; i++) {
- if(playerDragons[i].length < 3) {
- alert(`${i+1}번 플레이어의 드래곤이 3마리 미만입니다. 현재 ${playerDragons[i].length}마리`);
+ const {n, k} = RAID_MODES[currentMode];
+ for(let i=0; i<n; i++) {
+ if(playerDragons[i].length < k) {
+ alert(`${i+1}번 플레이어의 드래곤이 ${k}마리 미만입니다. 현재 ${playerDragons[i].length}마리`);
  return;
  }
  }
 
- const conditions = {};
+ // 조건: 속성·타입별 필요한 마리 수 (12마리 전체 기준, 정확히 일치)
+ const dims = [];
+ const dimIdx = {};
  for(const p of BOSS_PATTERNS[currentBoss]) {
- conditions[p.elem] = (conditions[p.elem]||0) + p.elemCnt;
- if(p.type && p.typeCnt >0) conditions[p.type+'_type'] = (conditions[p.type+'_type']||0) + p.typeCnt;
- }
-
- const reqSlots = [];
- for(const p of BOSS_PATTERNS[currentBoss]) {
- const paired = Math.min(p.elemCnt, p.typeCnt || 0);
- for(let i=0; i<paired; i++) reqSlots.push({elem:p.elem, type:p.type, done:false});
- for(let i=paired; i<p.elemCnt; i++) reqSlots.push({elem:p.elem, type:null, done:false});
- for(let i=paired; i<(p.typeCnt||0); i++) reqSlots.push({elem:null, type:p.type, done:false});
- }
-
- const globalUsed = new Set();
- const result = [[],[],[],[]];
- const condElems = new Set(BOSS_PATTERNS[currentBoss].map(p=>p.elem));
- const condTypes = new Set(BOSS_PATTERNS[currentBoss].filter(p=>p.type).map(p=>p.type));
- const playerCondElem = [{},{},{},{}];
- const playerCondType = [{},{},{},{}];
-
- for(const slot of reqSlots) {
- if(slot.done) continue;
- for(let pi=0; pi<4; pi++) {
- if(result[pi].length >= 3) continue;
- if(slot.elem && (playerCondElem[pi][slot.elem]||0) >= 1) continue;
- if(slot.type && (playerCondType[pi][slot.type]||0) >= 1) continue;
- const d = playerDragons[pi].find(x =>!globalUsed.has(x.n) &&
- (slot.elem ? x.e === slot.elem : true) &&
- (slot.type ? x.t === slot.type : true)
- );
- if(d) {
- result[pi].push(d);
- globalUsed.add(d.n);
- if(slot.elem) playerCondElem[pi][slot.elem] = (playerCondElem[pi][slot.elem]||0)+1;
- if(slot.type) playerCondType[pi][slot.type] = (playerCondType[pi][slot.type]||0)+1;
- slot.done = true;
- break;
- }
+ const ek = 'e:'+p.elem;
+ if(!(ek in dimIdx)) { dimIdx[ek] = dims.length; dims.push({kind:'e', key:p.elem, need:0}); }
+ dims[dimIdx[ek]].need += p.elemCnt;
+ if(p.type && p.typeCnt > 0) {
+ const tk = 't:'+p.type;
+ if(!(tk in dimIdx)) { dimIdx[tk] = dims.length; dims.push({kind:'t', key:p.type, need:0}); }
+ dims[dimIdx[tk]].need += p.typeCnt;
  }
  }
 
- for(let pi=0; pi<4; pi++) {
- while(result[pi].length < 3) {
- const allSoFar = result.flat();
- const usedElem = {};
- const usedType = {};
- for(const x of allSoFar) {
- usedElem[x.e] = (usedElem[x.e]||0)+1;
- usedType[x.t] = (usedType[x.t]||0)+1;
+ // 각 플레이어는 본인이 보유한 드래곤만 사용 (다른 플레이어와 같은 드래곤은 사용 가능)
+ const lists = playerDragons.slice(0, n).map(l => l.slice());
+ const btn = document.getElementById('calc-btn');
+ btn.disabled = true;
+ btn.textContent = '계산 중…';
+ setTimeout(() => {
+ try {
+ const sol = DV1_RAID.solve(dims, lists, k);
+ showResult(sol.teams);
+ } finally {
+ btn.disabled = false;
+ btn.textContent = '조합 짜기';
  }
- const blockedElems = new Set(Object.keys(conditions).filter(k=>!k.endsWith('_type') && (usedElem[k]||0) >= conditions[k]));
- const blockedTypes = new Set(Object.keys(conditions).filter(k=>k.endsWith('_type') && (usedType[k.replace('_type','')]||0) >= conditions[k]).map(k=>k.replace('_type','')));
- let d = playerDragons[pi].find(x =>!globalUsed.has(x.n) && !blockedElems.has(x.e) && !blockedTypes.has(x.t) && !condElems.has(x.e) && !condTypes.has(x.t)
- );
- if(!d) d = playerDragons[pi].find(x =>!globalUsed.has(x.n) && !blockedElems.has(x.e) && !blockedTypes.has(x.t) && !condElems.has(x.e)
- );
- if(!d) d = playerDragons[pi].find(x =>!globalUsed.has(x.n) && !blockedElems.has(x.e) && !blockedTypes.has(x.t)
- );
- if(!d) break;
- result[pi].push(d);
- globalUsed.add(d.n);
- }
- }
-
- showResult(result, conditions);
+ }, 30);
 }
 
-function showResult(result, conditions) {
+function showResult(result) {
  const all12 = result.flat();
  const elemCount = {};
  const typeCount = {};
@@ -866,6 +897,127 @@ function showResult(result, conditions) {
  '<div class="fail-msg">현재 드래곤 조합으로는 모든 패턴을 정확히 파훼하기 어렵습니다. 드래곤 목록을 보완해주세요.</div>';
 
  document.getElementById('result').scrollIntoView({behavior:'smooth'});
+}
+
+// ── 스크린샷 인식 ──
+let scanTarget = 0;
+let scanItems = [];
+let raidRefsPromise = null;
+
+function loadRaidRefs() {
+ if(raidRefsPromise) return raidRefsPromise;
+ const base = new URL('raid-icons.json', document.querySelector('script[src*="raid-tools.js"]').src);
+ raidRefsPromise = Promise.all([
+ fetch(base).then(r =>{ if(!r.ok) throw new Error('icons'); return r.json(); }),
+ new Promise((res, rej) =>{ const im = new Image(); im.onload = () =>res(im); im.onerror = rej; im.src = new URL('raid-icons.webp', base).href; })
+ ]).then(([list, im]) =>{
+ const c = document.createElement('canvas');
+ c.width = im.naturalWidth; c.height = im.naturalHeight;
+ const ctx = c.getContext('2d');
+ ctx.drawImage(im, 0, 0);
+ const data = ctx.getImageData(0, 0, c.width, c.height);
+ return DV1_RAID.buildRefs({data:data.data, width:c.width}, list);
+ }).catch(e =>{ raidRefsPromise = null; throw e; });
+ return raidRefsPromise;
+}
+
+function loadScanImage(file) {
+ return new Promise((res, rej) =>{
+ const url = URL.createObjectURL(file);
+ const im = new Image();
+ im.onload = () =>{ URL.revokeObjectURL(url); res(im); };
+ im.onerror = () =>{ URL.revokeObjectURL(url); rej(new Error('image')); };
+ im.src = url;
+ });
+}
+
+function openScan(playerIdx) {
+ scanTarget = playerIdx;
+ const f = document.getElementById('scan-file');
+ f.value = '';
+ f.click();
+}
+
+function closeScan() {
+ document.getElementById('scan-modal').style.display = 'none';
+ scanItems = [];
+}
+
+function scanDragonName(id) {
+ const r = DV1_DRAGONS.getById(id);
+ return r ? r.name.ko : null;
+}
+
+async function onScanFiles(files) {
+ if(!files || !files.length) return;
+ const status = document.getElementById('scan-status');
+ const listEl = document.getElementById('scan-list');
+ const okBtn = document.getElementById('scan-ok');
+ document.getElementById('scan-modal').style.display = 'flex';
+ status.innerHTML = '<span>인식 중…</span>';
+ listEl.innerHTML = '';
+ okBtn.disabled = true;
+ scanItems = [];
+ let refs;
+ try { refs = await loadRaidRefs(); }
+ catch(e) { status.innerHTML = '<span class="warn">인식 데이터를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</span>'; return; }
+
+ const found = new Map(); // 확실한 인식: id 기준으로 중복 제거
+ const unsure = [];
+ let failed = 0;
+ for(const file of files) {
+ let im;
+ try { im = await loadScanImage(file); } catch(e) { failed++; continue; }
+ // 너무 큰 이미지는 세로 1200px 기준으로 줄여서 처리
+ const scale = Math.min(1, 1200 / im.naturalHeight);
+ const W = Math.round(im.naturalWidth * scale), H = Math.round(im.naturalHeight * scale);
+ const c = document.createElement('canvas');
+ c.width = W; c.height = H;
+ const ctx = c.getContext('2d', {willReadFrequently:true});
+ ctx.drawImage(im, 0, 0, W, H);
+ const px = ctx.getImageData(0, 0, W, H).data;
+ await new Promise(r =>setTimeout(r, 0));
+ const res = DV1_RAID.scan(px, W, H, refs);
+ if(!res.length) { failed++; continue; }
+ for(const r of res) {
+ const ms = r.matches.filter(m =>scanDragonName(m.id));
+ if(!ms.length) continue;
+ if(r.sure && found.has(ms[0].id)) continue;
+ const tc = document.createElement('canvas');
+ tc.width = tc.height = 88;
+ tc.getContext('2d').drawImage(c, r.cell.x, r.cell.y, r.cell.p, r.cell.p, 0, 0, 88, 88);
+ const item = {thumb:tc.toDataURL('image/jpeg', 0.8), sure:r.sure, matches:ms};
+ if(r.sure) found.set(ms[0].id, item); else unsure.push(item);
+ }
+ }
+ scanItems = [...found.values(), ...unsure];
+ const owned = new Set(playerDragons[scanTarget].map(d =>d.n));
+ listEl.innerHTML = scanItems.map((it, idx) =>{
+ const opts = it.matches.map(m =>{
+ const nm = scanDragonName(m.id);
+ return `<option value="${nm.replace(/"/g,'&quot;')}">${nm} (${m.stage === 8 ? '강림' : '초월'})</option>`;
+ }).join('');
+ const first = scanDragonName(it.matches[0].id);
+ const already = owned.has(first);
+ return `<div class="scan-item${it.sure ? '' : ' unsure'}">
+ <img src="${it.thumb}" alt="">
+ <select id="scan-sel-${idx}">${opts}<option value="">제외</option></select>
+ ${it.sure ? (already ? '<span class="scan-flag">등록됨</span>' : '') : '<span class="scan-flag">확인 필요</span>'}
+ </div>`;
+ }).join('');
+ const unsureCnt = scanItems.filter(it =>!it.sure).length;
+ status.innerHTML = scanItems.length
+ ? `<span>인식한 드래곤</span> <b>${scanItems.length}</b>${unsureCnt ? ` · <span class="warn">확인 필요 ${unsureCnt}</span>` : ''}${failed ? ` · <span class="warn"><span>인식 실패</span> ${failed}</span>` : ''}`
+ : '<span class="warn">드래곤 목록을 찾지 못했습니다. 출전 선택 화면 전체를 가로로 캡처해 주세요.</span>';
+ okBtn.disabled = !scanItems.length;
+}
+
+function applyScan() {
+ scanItems.forEach((_, idx) =>{
+ const sel = document.getElementById('scan-sel-'+idx);
+ if(sel && sel.value) addDragon(scanTarget, sel.value);
+ });
+ closeScan();
 }
 
 init();

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <script src="../en-messages.js?v=20261108"></script>
-<script src="../en-extra-messages.js?v=20261108"></script>
+<script src="../en-extra-messages.js?v=20261126"></script>
 <script src="../en-locale.js?v=20261108"></script>
 <link rel="stylesheet" href="../en-locale.css?v=20261108">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -98,7 +98,7 @@
  <div class="raid-section">
  <div class="section-head">
  <div><span class="section-name">일반 레이드</span><span class="section-en">패턴 있음</span></div>
- <span class="section-count">14보스</span>
+ <span class="section-count">16보스</span>
  </div>
  <div class="boss-cards">
  <div class="boss-card" onclick="showBoss(20,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/20.png"><span class="boss-card-name">레굴루스</span></div>
@@ -112,6 +112,8 @@
  <div class="boss-card" onclick="showBoss(29,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/29.png"><span class="boss-card-name">아카이아</span></div>
  <div class="boss-card" onclick="showBoss(30,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/30.png"><span class="boss-card-name">루루</span></div>
  <div class="boss-card" onclick="showBoss(35,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/35.png"><span class="boss-card-name">크툴루</span></div>
+ <div class="boss-card" onclick="showBoss(36,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/36.png"><span class="boss-card-name">오파님</span></div>
+ <div class="boss-card" onclick="showBoss(37,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/37.png"><span class="boss-card-name">블랙홀</span></div>
  <div class="boss-card" onclick="showBoss(31,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/31.png"><span class="boss-card-name">펜리르</span></div>
  <div class="boss-card" onclick="showBoss(32,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/32.png"><span class="boss-card-name">지바타르</span></div>
  <div class="boss-card" onclick="showBoss(33,this)"><img class="boss-card-img" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/boss/33.png"><span class="boss-card-name">카모플라쥬</span></div>
@@ -297,6 +299,19 @@ const BD={
  {c:'pat',l:'패턴',t:'4턴마다 공격 후 아군 드래곤에게 사슬을 부여합니다. (3턴간 봉인)<br>사슬이 부여된 아군은 보스에게 입는 피해가 증가합니다.<br>사슬 해제 후 패턴이 다시 반복됩니다.'},
  {c:'ctr',l:'패턴 파훼',t:'<span class="ta" data-a="빛"></span>1마리 이상 사용 시 사슬 개수가 3개에서 1개로 감소합니다. (남은 체력이 가장 높은 드래곤이 사슬에 묶입니다)<br><span class="t">공방형</span>1마리 이상 사용 시 사슬이 부여된 드래곤이 입는 피해 증가 기믹이 사라집니다.'},
  {c:'rec',l:'추천 조합',t:'탱커 1, 딜러 2<br><span class="ta" data-a="빛"></span><span class="t">공방형</span>사용을 권장드립니다.'},
+ ]},
+ 36:{name:'오파님',section:'일반 레이드',weakAttr:['불'],weakType:['체방형'],
+ cards:[
+ {c:'pat',l:'패턴',t:'아군 전체에 사슬을 부여한 뒤 약 1000씩 단일 공격 피해를 입힙니다.'},
+ {c:'ctr',l:'패턴 파훼',t:'<span class="t">체방형</span>2마리 사용 시 아군이 받는 단일 공격 피해가 1/10로 감소합니다.<br><span class="ta" data-a="불"></span>1마리 사용 시 아군이 가하는 데미지가 증가합니다.'},
+ {c:'rec',l:'추천 조합',t:'<span class="t">체방형</span>2마리 사용, <span class="ta" data-a="불"></span>속성 1마리 포함을 권장드립니다.'},
+ {c:'tip',l:'안내',t:'자세한 공략이 나오기 전까지 참고용 정보입니다.'},
+ ]},
+ 37:{name:'블랙홀',section:'일반 레이드',weakAttr:['빛'],weakType:['체력형'],
+ cards:[
+ {c:'pat',l:'패턴',t:'광역 공격과 단일 공격을 1회씩 번갈아 사용합니다.<br>광역 공격: 드래곤마다 전체 체력의 10% 피해 (방어력 무시)<br>단일 공격: 방어력 적용, 공격 시점에 남은 체력이 가장 높은 드래곤을 공격합니다.<br>한 마리가 광역 공격을 회피하면 세 마리 모두 회피하는 것으로 보입니다.'},
+ {c:'ctr',l:'패턴 파훼',t:'<span class="ta" data-a="빛"></span>1마리 사용 시 아군 전체 데미지가 증가합니다.<br><span class="t">체력형</span>2마리 사용 시 아군 전체가 받는 피해가 절반으로 감소합니다. (광역 10% → 5%, 3마리를 써도 추가 효과 없음)'},
+ {c:'rec',l:'추천 조합',t:'<span class="t">체력형</span>2마리 사용, <span class="ta" data-a="빛"></span>속성 1마리 포함을 권장드립니다.'},
  ]},
  31:{name:'펜리르',section:'일반 레이드',weakAttr:['바람'],weakType:['체방형'],
  cards:[

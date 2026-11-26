@@ -195,5 +195,18 @@ window.EN_EXTRA_MESSAGES={
   "배치": "Placement",
   "작업 탭": "Task tabs",
   "나중에": "Later",
-  "현재": "Current"
+  "현재": "Current",
+  "오파님": "Ophanim",
+  "아군 전체에 사슬을 부여한 뒤 약 1000씩 단일 공격 피해를 입힙니다.": "Chains all allies, then deals about 1000 damage per single-target hit.",
+  "2마리 사용 시 아군이 받는 단일 공격 피해가 1/10로 감소합니다.": "Using 2 reduces single-target damage taken by allies to 1/10.",
+  "1마리 사용 시 아군이 가하는 데미지가 증가합니다.": "Using 1 increases damage dealt by allies.",
+  "2마리 사용,": "×2,",
+  "속성 1마리 포함을 권장드립니다.": " element ×1 included (recommended).",
+  "자세한 공략이 나오기 전까지 참고용 정보입니다.": "For reference only until a detailed guide is available.",
+  "광역 공격과 단일 공격을 1회씩 번갈아 사용합니다.": "Alternates one area attack and one single-target attack.",
+  "광역 공격: 드래곤마다 전체 체력의 10% 피해 (방어력 무시)": "Area attack: 10% of each dragon's max HP (ignores DEF)",
+  "단일 공격: 방어력 적용, 공격 시점에 남은 체력이 가장 높은 드래곤을 공격합니다.": "Single-target attack: reduced by DEF, hits the dragon with the most HP left at that moment.",
+  "한 마리가 광역 공격을 회피하면 세 마리 모두 회피하는 것으로 보입니다.": "If one dragon dodges the area attack, all three appear to dodge it.",
+  "1마리 사용 시 아군 전체 데미지가 증가합니다.": "Using 1 increases damage for the whole team.",
+  "2마리 사용 시 아군 전체가 받는 피해가 절반으로 감소합니다. (광역 10% → 5%, 3마리를 써도 추가 효과 없음)": "Using 2 halves damage taken by the whole team. (Area 10% → 5%; a 3rd adds no extra effect)"
 };

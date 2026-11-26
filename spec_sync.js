@@ -112,7 +112,7 @@
     var rows=await supabase('GET','users',null,'?id=eq.'+u.id+'&select=spec_data');
     if(!rows||!rows[0]||!rows[0].spec_data)return null;
     var raw=rows[0].spec_data;
-    return typeof raw==='string'?JSON.parse(raw):raw;
+    return dbClean(typeof raw==='string'?JSON.parse(raw):raw);
   }
   async function pushCloud(P){
     var u=user();

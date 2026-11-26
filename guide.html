@@ -120,7 +120,7 @@
  <tbody id="guide-list-body"></tbody>
 </table>
 
-<script src="./sb_config.js"></script>
+<script src="./sb_config.js?v=20261126"></script>
 <script src="./data/guide_list.js"></script>
 <script>// ?from= 파라미터를 읽어서 뒤로가기 URL 결정
 (function() {
@@ -224,15 +224,15 @@ function renderList() {
  dbFiltered.forEach(p =>{
  let tags = [];
  try { tags = JSON.parse(p.tags || '[]'); } catch {}
- const tagHtml = tags.map(t =>`<span class="tag-badge tag-${t}">${t}</span>`).join('');
+ const tagHtml = tags.map(t =>`<span class="tag-badge tag-${dbEsc(t)}">${dbEsc(t)}</span>`).join('');
  const isMe = user && user.id === p.user_id;
- const blockBtn = user && !isMe ? `<button class="block-btn" onclick="event.stopPropagation();blockUser('${p.user_id}','${p.nickname||p.username}')">차단</button>` : '';
+ const blockBtn = user && !isMe ? `<button class="block-btn" onclick="event.stopPropagation();blockUser(${dbArg(p.user_id)},${dbArg(p.nickname||p.username)})">차단</button>` : '';
  const tr = document.createElement('tr');
- tr.onclick = () =>location.href = `./community_view.html?id=${p.id}&back=guide`;
+ tr.onclick = () =>location.href = `./community_view.html?id=${encodeURIComponent(p.id)}&back=guide`;
  tr.innerHTML = `
  <td class="num">-</td>
- <td><a class="guide-title-link" href="./community_view.html?id=${p.id}&back=guide">${highlight(p.title, searchQuery)}</a>${tagHtml}</td>
- <td class="author">${p.nickname || p.username}${blockBtn}</td>
+ <td><a class="guide-title-link" href="./community_view.html?id=${encodeURIComponent(p.id)}&back=guide">${highlight(p.title, searchQuery)}</a>${tagHtml}</td>
+ <td class="author">${dbEsc(p.nickname || p.username)}${blockBtn}</td>
  <td class="likes">${p.likes || 0}</td>
  <td class="date">${p.created_at.slice(0,10).replace(/-/g,'.')}</td>`;
  tbody.appendChild(tr);
@@ -240,7 +240,7 @@ function renderList() {
 
  staticFiltered.forEach(g =>{
  const tags = g.tags || [];
- const tagHtml = tags.map(t =>`<span class="tag-badge tag-${t}">${t}</span>`).join('');
+ const tagHtml = tags.map(t =>`<span class="tag-badge tag-${dbEsc(t)}">${dbEsc(t)}</span>`).join('');
  const tr = document.createElement('tr');
  tr.onclick = () =>location.href = `./guide_view.html?id=${g.id}`;
  tr.innerHTML = `

@@ -121,7 +121,7 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
   <div class="empty">로딩 중...</div>
 </div>
 
-<script src="./sb_config.js"></script>
+<script src="./sb_config.js?v=20261126"></script>
 <script>
 // ?from= 파라미터를 읽어서 뒤로가기 URL 결정
 (function() {
@@ -212,7 +212,7 @@ async function loadPosts() {
     filtered.forEach(p => {
       const isMe = user && user.id === p.user_id;
       const blockBtn = user && !isMe
-        ? `<button class="block-btn" onclick="event.stopPropagation();blockUser('${p.user_id}','${p.nickname||p.username}')">차단</button>`
+        ? `<button class="block-btn" onclick="event.stopPropagation();blockUser(${dbArg(p.user_id)},${dbArg(p.nickname||p.username)})">차단</button>`
         : '';
       const numDisplay = p.is_pinned ? '📌' : num--;
       const titlePrefix = p.is_pinned ? '<span class="pin-icon">📌</span>' : '';
@@ -221,10 +221,10 @@ async function loadPosts() {
 
       // PC 테이블 행
       rows.table.push(`
-        <tr class="${p.is_pinned ? 'pinned' : ''}" onclick="location.href='./community_view.html?id=${p.id}'">
+        <tr class="${p.is_pinned ? 'pinned' : ''}" onclick="location.href='./community_view.html?id=${encodeURIComponent(p.id)}'">
           <td class="num">${numDisplay}</td>
-          <td><a class="post-link" href="./community_view.html?id=${p.id}">${titlePrefix}${p.title}</a></td>
-          <td class="author">${p.nickname || p.username}${blockBtn}</td>
+          <td><a class="post-link" href="./community_view.html?id=${encodeURIComponent(p.id)}">${titlePrefix}${dbEsc(p.title)}</a></td>
+          <td class="author">${dbEsc(p.nickname || p.username)}${blockBtn}</td>
           <td class="replies">💬 ${replyCount}</td>
           <td class="date">${dateStr}</td>
         </tr>
@@ -232,13 +232,13 @@ async function loadPosts() {
 
       // 모바일 카드
       rows.card.push(`
-        <div class="post-card${p.is_pinned ? ' pinned' : ''}" onclick="location.href='./community_view.html?id=${p.id}'">
+        <div class="post-card${p.is_pinned ? ' pinned' : ''}" onclick="location.href='./community_view.html?id=${encodeURIComponent(p.id)}'">
           <div class="post-meta">
             <span class="post-num">${p.is_pinned ? '' : numDisplay}</span>
-            <span class="post-author">${p.nickname || p.username}${blockBtn}</span>
+            <span class="post-author">${dbEsc(p.nickname || p.username)}${blockBtn}</span>
             <span class="post-date">${dateStr}</span>
           </div>
-          <a class="post-title" href="./community_view.html?id=${p.id}" onclick="event.stopPropagation()">${titlePrefix}${p.title}</a>
+          <a class="post-title" href="./community_view.html?id=${encodeURIComponent(p.id)}" onclick="event.stopPropagation()">${titlePrefix}${dbEsc(p.title)}</a>
           <div class="post-footer">
             <span class="post-replies">💬 ${replyCount}</span>
           </div>
@@ -249,8 +249,8 @@ async function loadPosts() {
     tbody.innerHTML = rows.table.join('');
     cardWrap.innerHTML = rows.card.join('');
   } catch(e) {
-    tbody.innerHTML = `<tr><td colspan="5" class="empty">불러오기 실패: ${e.message}</td></tr>`;
-    cardWrap.innerHTML = `<div class="empty">불러오기 실패: ${e.message}</div>`;
+    tbody.innerHTML = `<tr><td colspan="5" class="empty">불러오기 실패: ${dbEsc(e.message)}</td></tr>`;
+    cardWrap.innerHTML = `<div class="empty">불러오기 실패: ${dbEsc(e.message)}</div>`;
   }
 }
 

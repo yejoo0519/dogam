@@ -138,7 +138,7 @@ body{font-family:'Malgun Gothic',sans-serif;background:var(--bg);color:var(--tex
   <tbody id="post-list"></tbody>
 </table>
 
-<script src="./sb_config.js"></script>
+<script src="./sb_config.js?v=20261126"></script>
 <script>
 // 모바일 여부에 따라 헤더 조정
 (function(){
@@ -226,27 +226,27 @@ function renderList() {
   tbody.innerHTML = filtered.map(p => {
     let tags = [];
     try { tags = JSON.parse(p.tags || '[]'); } catch {}
-    const tagHtml = tags.map(t => `<span class="tag-badge tag-${t.replace(/\s/g,'')}">${t}</span>`).join('');
+    const tagHtml = tags.map(t => `<span class="tag-badge tag-${dbEsc(String(t).replace(/\s/g,''))}">${dbEsc(t)}</span>`).join('');
     const isMe = user && user.id === p.user_id;
-    const blockBtn = user && !isMe ? `<button class="block-btn" onclick="event.stopPropagation();blockUser('${p.user_id}','${p.nickname||p.username}')">차단</button>` : '';
-    const blockBtnM = user && !isMe ? `<button class="block-btn-m" onclick="event.stopPropagation();blockUser('${p.user_id}','${p.nickname||p.username}')">차단</button>` : '';
+    const blockBtn = user && !isMe ? `<button class="block-btn" onclick="event.stopPropagation();blockUser(${dbArg(p.user_id)},${dbArg(p.nickname||p.username)})">차단</button>` : '';
+    const blockBtnM = user && !isMe ? `<button class="block-btn-m" onclick="event.stopPropagation();blockUser(${dbArg(p.user_id)},${dbArg(p.nickname||p.username)})">차단</button>` : '';
     const dateStr = p.created_at.slice(0,10).replace(/-/g,'.');
 
     if(isMobile) {
       // 모바일: 추천/날짜 없음, 제목 한줄 + 태그 아래줄, 작성자 묶음
       const tagRow = tags.length ? `<div class="tag-row">${tagHtml}</div>` : '';
       return `
-        <tr class="${p.is_pinned ? 'pinned' : ''}" onclick="location.href='./community_view.html?id=${p.id}&back=friend'">
+        <tr class="${p.is_pinned ? 'pinned' : ''}" onclick="location.href='./community_view.html?id=${encodeURIComponent(p.id)}&back=friend'">
           <td class="num">${p.is_pinned ? '📌' : num--}</td>
           <td>
             <div class="title-wrap">
-              <a class="title-text post-link" href="./community_view.html?id=${p.id}&back=friend">${p.title}</a>
+              <a class="title-text post-link" href="./community_view.html?id=${encodeURIComponent(p.id)}&back=friend">${dbEsc(p.title)}</a>
               ${tagRow}
             </div>
           </td>
           <td class="meta-m">
             <div class="meta-wrap-m">
-              <span class="meta-author-m">${p.nickname || p.username}</span>
+              <span class="meta-author-m">${dbEsc(p.nickname || p.username)}</span>
               ${blockBtnM}
             </div>
           </td>
@@ -255,10 +255,10 @@ function renderList() {
     } else {
       // PC: 원래 레이아웃 그대로
       return `
-        <tr class="${p.is_pinned ? 'pinned' : ''}" onclick="location.href='./community_view.html?id=${p.id}&back=friend'">
+        <tr class="${p.is_pinned ? 'pinned' : ''}" onclick="location.href='./community_view.html?id=${encodeURIComponent(p.id)}&back=friend'">
           <td class="num">${p.is_pinned ? '📌' : num--}</td>
-          <td><a class="post-link" href="./community_view.html?id=${p.id}&back=friend">${p.title}</a> ${tagHtml}</td>
-          <td class="author pc-only">${p.nickname || p.username}${blockBtn}</td>
+          <td><a class="post-link" href="./community_view.html?id=${encodeURIComponent(p.id)}&back=friend">${dbEsc(p.title)}</a> ${tagHtml}</td>
+          <td class="author pc-only">${dbEsc(p.nickname || p.username)}${blockBtn}</td>
           <td class="likes pc-only">❤ ${p.likes || 0}</td>
           <td class="date pc-only">${dateStr}</td>
         </tr>

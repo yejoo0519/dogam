@@ -356,7 +356,7 @@ button{white-space:nowrap}
 
 <div class="toast" id="toast"></div>
 
-<script src="../sb_config.js"></script>
+<script src="../sb_config.js?v=20261126"></script>
 <script>
 if (!globalThis.DV1_DRAGON_VIEWS) throw new Error("드래곤 데이터 로드 실패: 초기화 중단");
 // ================================================================
@@ -857,7 +857,7 @@ async function doImport(){
  try{
  const res=await supabase('GET','spec_shares',null,`?code=eq.${code}&select=spec_data`);
  if(!res||!res.length){alert('코드를 찾을 수 없습니다. 코드를 다시 확인해주세요.');return;}
- const data=res[0].spec_data;
+ const data=dbClean(typeof res[0].spec_data==='string'?JSON.parse(res[0].spec_data):res[0].spec_data);
  S.accCards=data.accCards||[];
  S.gems={...mkSpec().gems,...(data.gems||{})};
  S.pendants=data.pendants||[];

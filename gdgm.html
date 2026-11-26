@@ -23,7 +23,7 @@ if (!globalThis.DV1_DRAGON_VIEWS) {
 <link rel="stylesheet" href="./ui.css">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="./theme.js"></script>
-<script src="./sb_config.js"></script>
+<script src="./sb_config.js?v=20261126"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>:root{
  --sf:var(--bg2);--sf2:var(--bg3);--bd:var(--border);
@@ -615,14 +615,14 @@ async function loadPending(){
  }
  cnt.textContent=rows.length; cnt.style.display='';
  bd.innerHTML=rows.map(r=>`
- <div class="req-card" id="req-${r.id}">
+ <div class="req-card" id="req-${dbEsc(r.id)}">
  <div class="req-info">
  <div class="req-nick">${x(r.nickname)}</div>
  <div class="req-time">${timeAgo(r.requested_at)}</div>
  </div>
  <div class="req-actions">
- <button class="btn-gold btn-sm" onclick="acceptMember('${r.id}','${x(r.nickname)}')">수락</button>
- <button class="btn-reset btn-sm" onclick="rejectMember('${r.id}','${x(r.nickname)}')">거절</button>
+ <button class="btn-gold btn-sm" onclick="acceptMember(${dbArg(r.id)},${dbArg(r.nickname)})">수락</button>
+ <button class="btn-reset btn-sm" onclick="rejectMember(${dbArg(r.id)},${dbArg(r.nickname)})">거절</button>
  </div>
  </div>`).join('');
  }catch(e){ bd.innerHTML='<div class="empty-msg">로드 오류</div>'; }
@@ -661,8 +661,8 @@ async function loadMembers(){
  const isMe=m.user_id===gUser.id;
  const roleBtn=!isMe
  ?(m.role==='admin'
- ?`<button class="btn-white btn-sm" onclick="toggleRole('${m.user_id}','admin','${x(m.nickname)}')" style="font-size:11px;padding:3px 8px;color:var(--dim)">권한 해제</button>`
- :`<button class="btn-white btn-sm" onclick="toggleRole('${m.user_id}','member','${x(m.nickname)}')" style="font-size:11px;padding:3px 8px;color:var(--gold);border-color:var(--gold)">관리진 지급</button>`)
+ ?`<button class="btn-white btn-sm" onclick="toggleRole(${dbArg(m.user_id)},'admin',${dbArg(m.nickname)})" style="font-size:11px;padding:3px 8px;color:var(--dim)">권한 해제</button>`
+ :`<button class="btn-white btn-sm" onclick="toggleRole(${dbArg(m.user_id)},'member',${dbArg(m.nickname)})" style="font-size:11px;padding:3px 8px;color:var(--gold);border-color:var(--gold)">관리진 지급</button>`)
  :'';
  return `<div class="member-card">
  <div class="member-info">
@@ -672,7 +672,7 @@ async function loadMembers(){
  <div class="member-meta">가입 ${m.approved_at?new Date(m.approved_at).toLocaleDateString('ko-KR'):'-'}</div>
  </div>
  <div class="member-actions" style="display:flex;gap:6px;align-items:center">${roleBtn}
- ${!isMe?`<button class="btn-reset btn-sm" onclick="kickMember('${m.id}','${x(m.nickname)}')">강퇴</button>`:'<span style="font-size:11px;color:var(--dim)">나</span>'}
+ ${!isMe?`<button class="btn-reset btn-sm" onclick="kickMember(${dbArg(m.id)},${dbArg(m.nickname)})">강퇴</button>`:'<span style="font-size:11px;color:var(--dim)">나</span>'}
  </div>
  </div>`;
  }).join('');
@@ -808,7 +808,7 @@ function renderRankTable(bd, settings, statCol){
  bd.innerHTML='<div class="empty-msg" style="padding:16px">제출된 셋팅이 없습니다.</div>'; return;
  }
  settings.forEach((s,i)=>{
- if(s.settings_json) gRankDetails[i]=typeof s.settings_json==='string'?JSON.parse(s.settings_json):s.settings_json;
+ if(s.settings_json) gRankDetails[i]=dbClean(typeof s.settings_json==='string'?JSON.parse(s.settings_json):s.settings_json);
  });
  const label=gShowBuff?'비밸 (버프 포함)':'비밸 (버프 제외)';
  let html=`<div style="overflow-x:auto"><table class="rank-tbl">

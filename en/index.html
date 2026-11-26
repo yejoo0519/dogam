@@ -7,7 +7,7 @@
 <script src="../en-locale.js?v=20261108"></script>
 <link rel="stylesheet" href="../en-locale.css?v=20261108">
 <link rel="stylesheet" href="../cham-access.css">
-<script src="../sb_config.js"></script>
+<script src="../sb_config.js?v=20261126"></script>
 <script src="../cham-access.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="DBRyong - Dragon Village 1 calculators, dragon encyclopedia, tier list, raids, guides, and guild tools.">
@@ -655,7 +655,7 @@
     if(user){
       // PC: 닉네임 + 로그아웃
       if(pc) pc.innerHTML=`
-        <span class="pill-btn auth-user" style="pointer-events:none">👤 ${user.nickname||user.username}</span>
+        <span class="pill-btn auth-user" style="pointer-events:none">👤 ${dbEsc(user.nickname||user.username)}</span>
         <a href="./my.html" class="pill-btn">내 스펙</a>
         <button class="pill-btn" onclick="doLogout()">로그아웃</button>`;
       // 모바일 아이콘
@@ -724,13 +724,13 @@
       <div class="admin-member-card">
         <div class="admin-member-info">
           <div class="admin-member-name">
-            ${u.nickname||u.username}
+            ${dbEsc(u.nickname||u.username)}
             ${u.is_admin?'<span style="font-size:10px;padding:1px 6px;border-radius:3px;background:rgba(167,139,250,.15);color:#a78bfa;border:1px solid rgba(167,139,250,.3);margin-left:4px">어드민</span>':''}
             ${u.is_banned?'<span style="font-size:10px;padding:1px 6px;border-radius:3px;background:rgba(239,83,80,.12);color:#ef5350;border:1px solid rgba(239,83,80,.3);margin-left:4px">정지</span>':''}
           </div>
-          <div class="admin-member-meta">@${u.username} · ${u.friend_code||'—'}</div>
+          <div class="admin-member-meta">@${dbEsc(u.username)} · ${dbEsc(u.friend_code||'—')}</div>
         </div>
-        ${!u.is_admin?`<button class="admin-ban-btn ${u.is_banned?'ban-off':'ban-on'}" onclick="toggleBan(${u.id},${!!u.is_banned},'${u.nickname||u.username}')">${u.is_banned?'Unsuspend':'Suspend account'}</button>`:'<span style="font-size:11px;color:var(--text4)">나</span>'}
+        ${!u.is_admin?`<button class="admin-ban-btn ${u.is_banned?'ban-off':'ban-on'}" onclick="toggleBan(${dbArg(u.id)},${!!u.is_banned},${dbArg(u.nickname||u.username)})">${u.is_banned?'Unsuspend':'Suspend account'}</button>`:'<span style="font-size:11px;color:var(--text4)">나</span>'}
       </div>`).join('');
     // 페이지네이션
     if(pages<=1){pg.innerHTML='';return;}

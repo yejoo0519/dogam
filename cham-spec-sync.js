@@ -17,6 +17,7 @@
     var raw = rows && rows[0] && rows[0].spec_data;
     if (!raw) return false;
     if (typeof raw === 'string') raw = JSON.parse(raw);
+    raw = dbClean(raw);
     var P = raw && raw.v === 2 && Array.isArray(raw.presets) && raw.presets.length ? raw : { v: 2, activeId: 'p1', presets: [{ id: 'p1', name: '기본', data: raw }] };
     var lp = rd(K.presets), want = lp && lp.activeId && P.presets.some(function (x) { return x.id === lp.activeId; }) ? lp.activeId : P.activeId;
     var a = P.presets.find(function (x) { return x.id === want; }) || P.presets[0];

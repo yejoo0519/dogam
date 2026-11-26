@@ -14,7 +14,7 @@
   const metaKey=k=>k+':t';
   const localT=k=>{try{return Number(localStorage.getItem(metaKey(k)))||0}catch(_){return 0}};
   const setT=(k,t)=>{try{localStorage.setItem(metaKey(k),String(t))}catch(_){}};
-  async function fetchAll(){const rows=await supabase('GET','users',null,'?id=eq.'+user().id+'&select='+COL);const v=rows&&rows[0]?rows[0][COL]:null;return v&&typeof v==='object'?v:(typeof v==='string'?JSON.parse(v||'{}'):{});}
+  async function fetchAll(){const rows=await supabase('GET','users',null,'?id=eq.'+user().id+'&select='+COL);const v=rows&&rows[0]?rows[0][COL]:null;return dbClean(v&&typeof v==='object'?v:(typeof v==='string'?JSON.parse(v||'{}'):{}));}
   // 다른 계산기 값은 그대로 두고 이 키만 바꿉니다.
   async function upload(k,entry){const all=await fetchAll();all[k]=entry;await supabase('PATCH','users',{[COL]:all},'?id=eq.'+user().id);}
   async function pull(k){

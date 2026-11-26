@@ -90,7 +90,7 @@ h2{font-size:15px;color:var(--text2);margin-bottom:12px;margin-top:24px}
  <tbody id="post-list"></tbody>
 </table>
 
-<script src="./sb_config.js"></script>
+<script src="./sb_config.js?v=20261126"></script>
 <script>const user = getUser();
 if(!user || !user.is_admin) { alert('관리자만 접근 가능합니다.'); location.href = './community.html'; }
 
@@ -112,8 +112,8 @@ async function loadMonthlyWinner() {
  <div class="monthly-crown"></div>
  <div class="monthly-info">
  <div class="monthly-title">${now.getMonth()+1}월 추천왕</div>
- <div class="monthly-name">${p.nickname || p.username}</div>
- <div class="monthly-likes">${p.likes}추천 · "${p.title}"</div>
+ <div class="monthly-name">${dbEsc(p.nickname || p.username)}</div>
+ <div class="monthly-likes">${p.likes}추천 · "${dbEsc(p.title)}"</div>
  </div>
  </div>`;
  } catch(e) {
@@ -125,14 +125,14 @@ async function loadUsers() {
  const rows = await supabase('GET', 'users', null, '?order=created_at.asc');
  document.getElementById('user-list').innerHTML = rows.map(u =>`
  <tr>
- <td>${u.username} ${u.is_admin ? '<span style="color:var(--accent);font-size:10px">[관리자]</span>' : ''}</td>
- <td>${u.nickname || '-'}</td>
- <td>${u.friend_code ? `<span class="friend-code">${u.friend_code}</span>` : '<span style="color:var(--text4);font-size:11px">미입력</span>'}</td>
+ <td>${dbEsc(u.username)} ${u.is_admin ? '<span style="color:var(--accent);font-size:10px">[관리자]</span>' : ''}</td>
+ <td>${dbEsc(u.nickname || '-')}</td>
+ <td>${u.friend_code ? `<span class="friend-code">${dbEsc(u.friend_code)}</span>` : '<span style="color:var(--text4);font-size:11px">미입력</span>'}</td>
  <td>${u.is_banned ? '<span class="badge-banned">밴됨</span>' : '<span class="badge-ok">정상</span>'}</td>
  <td>${u.created_at.slice(0,10).replace(/-/g,'.')}</td>
  <td>${!u.is_admin ? (u.is_banned
- ? `<button class="btn btn-ok" onclick="toggleBan('${u.id}', false)">밴 해제</button>`
- : `<button class="btn btn-warn" onclick="toggleBan('${u.id}', true)">밴</button>`) : '-'}
+ ? `<button class="btn btn-ok" onclick="toggleBan(${dbArg(u.id)}, false)">밴 해제</button>`
+ : `<button class="btn btn-warn" onclick="toggleBan(${dbArg(u.id)}, true)">밴</button>`) : '-'}
  </td>
  </tr>`).join('');
 }
@@ -154,18 +154,18 @@ async function loadPosts() {
  ${p.is_verified ? '<span class="verify-badge"></span>' : ''}
  ${p.title}
  </td>
- <td>${p.nickname || p.username}</td>
+ <td>${dbEsc(p.nickname || p.username)}</td>
  <td><span class="board-badge ${boardClass}">${boardName}</span></td>
  <td>${p.created_at.slice(0,10).replace(/-/g,'.')}</td>
  <td>${p.is_pinned
- ? `<button class="btn btn-unpin" onclick="togglePin(${p.id}, false)">핀 해제</button>`
- : `<button class="btn btn-pin" onclick="togglePin(${p.id}, true)">핀</button>`
+ ? `<button class="btn btn-unpin" onclick="togglePin(${dbArg(p.id)}, false)">핀 해제</button>`
+ : `<button class="btn btn-pin" onclick="togglePin(${dbArg(p.id)}, true)">핀</button>`
  }
  ${p.board === 'guild' ? (p.is_verified
- ? `<button class="btn btn-unverify" onclick="toggleVerify(${p.id}, false)">인증 해제</button>`
- : `<button class="btn btn-verify" onclick="toggleVerify(${p.id}, true)">인증</button>`
+ ? `<button class="btn btn-unverify" onclick="toggleVerify(${dbArg(p.id)}, false)">인증 해제</button>`
+ : `<button class="btn btn-verify" onclick="toggleVerify(${dbArg(p.id)}, true)">인증</button>`
  ) : ''}
- <button class="btn btn-danger" onclick="deletePost(${p.id})">삭제</button>
+ <button class="btn btn-danger" onclick="deletePost(${dbArg(p.id)})">삭제</button>
  </td>
  </tr>`;
  }).join('');

@@ -87,7 +87,7 @@
 <div class="post-box" id="post-box">로딩 중...</div>
 <div id="comments-section"></div>
 
-<script src="./sb_config.js"></script>
+<script src="./sb_config.js?v=20261126"></script>
 <script>const user = getUser();
 const params = new URLSearchParams(location.search);
 const postId = params.get('id');
@@ -142,21 +142,21 @@ async function loadPost() {
  postBox.innerHTML = `
  ${currentPost.is_pinned ? '<div class="pin-label">공지 / 고정글</div>' : ''}
  ${isGuild && (currentPost.guild_icon || currentPost.guild_interview) ? `
- <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">${currentPost.guild_icon ? `<img src="${currentPost.guild_icon}" style="width:56px;height:56px;border-radius:10px;object-fit:cover;border:1px solid var(--border);background:var(--bg3)">` : ''}
+ <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">${currentPost.guild_icon ? `<img src="${dbEsc(dbSafeUrl(currentPost.guild_icon, true))}" style="width:56px;height:56px;border-radius:10px;object-fit:cover;border:1px solid var(--border);background:var(--bg3)">` : ''}
  </div>` : ''}
- <div class="post-title">${currentPost.title}</div>${(() =>{ let tags=[]; try{tags=JSON.parse(currentPost.tags||'[]')}catch{}; return tags.length ? `<div style="margin-bottom:8px">${tags.map(t=>`<span class="tag-badge tag-${t.replace(/\s/g,'')}">${t}</span>`).join('')}</div>` : ''; })()}
+ <div class="post-title">${dbEsc(currentPost.title)}</div>${(() =>{ let tags=[]; try{tags=JSON.parse(currentPost.tags||'[]')}catch{}; return tags.length ? `<div style="margin-bottom:8px">${tags.map(t=>`<span class="tag-badge tag-${dbEsc(String(t).replace(/\s/g,''))}">${dbEsc(t)}</span>`).join('')}</div>` : ''; })()}
  <div class="post-meta">
- <span class="post-author">${currentPost.nickname || currentPost.username}</span>${authorIsAdmin ? '<span class="admin-badge">관리자</span>' : ''}
- <span>${currentPost.created_at.slice(0,10).replace(/-/g,'.')}</span>
- </div>${currentPost.board === 'friend' && currentPost.friend_code ? `<div class="friend-code-box"><span class="friend-code-label">친구코드</span><span class="friend-code-value">${currentPost.friend_code}</span></div>` : ''}
- <div class="post-content">${currentPost.content}</div>${isGuild && isOwner ? `
+ <span class="post-author">${dbEsc(currentPost.nickname || currentPost.username)}</span>${authorIsAdmin ? '<span class="admin-badge">관리자</span>' : ''}
+ <span>${dbEsc(String(currentPost.created_at).slice(0,10)).replace(/-/g,'.')}</span>
+ </div>${currentPost.board === 'friend' && currentPost.friend_code ? `<div class="friend-code-box"><span class="friend-code-label">친구코드</span><span class="friend-code-value">${dbEsc(currentPost.friend_code)}</span></div>` : ''}
+ <div class="post-content">${dbHtml(currentPost.content)}</div>${isGuild && isOwner ? `
  <div class="edit-form" id="edit-form" style="display:none">
  <label>제목</label>
- <input id="edit-title" type="text" value="${currentPost.title.replace(/"/g,'&quot;')}">
+ <input id="edit-title" type="text" value="${dbEsc(currentPost.title)}">
  <label>길드 아이콘 URL <span style="color:var(--text4);font-weight:400">(선택)</span></label>
- <input id="edit-guild-icon" type="text" placeholder="이미지 URL 입력 (없으면 기본 이미지 사용)" value="${(currentPost.guild_icon||'').replace(/"/g,'&quot;')}">
+ <input id="edit-guild-icon" type="text" placeholder="이미지 URL 입력 (없으면 기본 이미지 사용)" value="${dbEsc(currentPost.guild_icon||'')}">
  <label>면접방 링크 <span style="color:var(--text4);font-weight:400">(선택)</span></label>
- <input id="edit-guild-interview" type="text" placeholder="카카오 오픈채팅 등 링크 입력" value="${(currentPost.guild_interview||'').replace(/"/g,'&quot;')}">
+ <input id="edit-guild-interview" type="text" placeholder="카카오 오픈채팅 등 링크 입력" value="${dbEsc(currentPost.guild_interview||'')}">
  <label>내용</label>
  <div id="edit-quill"></div>
  <div class="edit-form-btns">
@@ -171,10 +171,10 @@ async function loadPost() {
  <div class="post-actions-right">${isGuild && isOwner ? `
  <button class="btn btn-bump" onclick="bumpPost()">⬆ 끌어올리기</button>
  <button class="btn btn-edit" onclick="toggleEdit()">수정</button>` : ''}
- ${canDelete ? `<button class="btn btn-danger" onclick="deletePost(${currentPost.id})">삭제</button>` : ''}
+ ${canDelete ? `<button class="btn btn-danger" onclick="deletePost(${dbArg(currentPost.id)})">삭제</button>` : ''}
  </div>
  </div>${isGuild && currentPost.guild_interview ? `
- <a href="${currentPost.guild_interview}" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:14px;padding:13px;background:#FEE500;border:none;border-radius:10px;color:#3C1E1E;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none">K&nbsp; 길드 면접방 입장하기
+ <a href="${dbEsc(dbSafeUrl(currentPost.guild_interview))}" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:14px;padding:13px;background:#FEE500;border:none;border-radius:10px;color:#3C1E1E;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none">K&nbsp; 길드 면접방 입장하기
  </a>` : ''}
  `;
  } catch(e) { document.getElementById('post-box').innerHTML = '오류: ' + e.message; }
@@ -200,7 +200,7 @@ function toggleEdit() {
  ]
  }
  });
- editQuill.root.innerHTML = currentPost.content || '';
+ editQuill.root.innerHTML = dbHtml(currentPost.content || '');
  }
 }
 
@@ -269,11 +269,11 @@ async function loadComments() {
  return `
  <div class="comment-item">
  <div class="comment-meta">
- <span class="comment-author">${c.nickname || c.username}</span>${commentIsAdmin ? '<span class="admin-badge">관리자</span>' : ''}
- <span>${c.created_at.slice(0,10).replace(/-/g,'.')}</span>${user && user.id !== c.user_id && !commentIsAdmin ? `<button class="block-btn" onclick="blockUser('${c.user_id}','${c.nickname||c.username}')">차단</button>` : ''}
- ${canDel ? `<button class="comment-del" onclick="deleteComment(${c.id})">삭제</button>` : ''}
+ <span class="comment-author">${dbEsc(c.nickname || c.username)}</span>${commentIsAdmin ? '<span class="admin-badge">관리자</span>' : ''}
+ <span>${dbEsc(String(c.created_at).slice(0,10)).replace(/-/g,'.')}</span>${user && user.id !== c.user_id && !commentIsAdmin ? `<button class="block-btn" onclick="blockUser(${dbArg(c.user_id)},${dbArg(c.nickname||c.username)})">차단</button>` : ''}
+ ${canDel ? `<button class="comment-del" onclick="deleteComment(${dbArg(c.id)})">삭제</button>` : ''}
  </div>
- <div class="comment-content">${c.content}</div>
+ <div class="comment-content">${dbEsc(c.content)}</div>
  </div>`;
  }).join('') + `</div>`;
  }

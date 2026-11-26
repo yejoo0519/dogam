@@ -74,3 +74,54 @@ function sha256HexFallback(bytes) {
   }
   return H.map(x => x.toString(16).padStart(8,'0')).join('');
 }
+
+// ── XSS 방지 공용 함수 ──
+// dbEsc: DB/외부에서 온 문자열을 HTML 본문·속성에 넣을 때
+function dbEsc(v) {
+  return String(v == null ? '' : v).replace(/[&<>"'`]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','`':'&#96;'}[c]));
+}
+// dbArg: onclick="fn(${dbArg(x)})" 처럼 인라인 JS 인자로 넣을 때 (따옴표 포함해서 반환)
+function dbArg(v) { return dbEsc(JSON.stringify(String(v == null ? '' : v))); }
+// dbHtml: 게시글 본문처럼 서식 HTML을 보여줘야 할 때 — 허용 태그/속성만 남김
+var DB_HTML_TAGS = new Set(['P','BR','B','STRONG','I','EM','U','S','STRIKE','DEL','H1','H2','H3','H4','OL','UL','LI','BLOCKQUOTE','PRE','CODE','A','IMG','SPAN','DIV','SUB','SUP','HR','TABLE','THEAD','TBODY','TR','TH','TD']);
+var DB_HTML_ATTRS = new Set(['class','style','href','src','alt','title','width','height','colspan','rowspan','data-list','spellcheck']);
+function dbSafeUrl(u, isImg) {
+  const s = String(u || '').trim();
+  if (/^(https?:|\/|\.\/|\.\.\/|#|mailto:)/i.test(s) && !/^\/\//.test(s)) return s;
+  if (isImg && /^data:image\/(png|jpe?g|gif|webp);base64,/i.test(s)) return s;
+  return '';
+}
+function dbHtml(html) {
+  const doc = new DOMParser().parseFromString('<div>' + String(html == null ? '' : html) + '</div>', 'text/html');
+  const root = doc.body.firstChild;
+  (function walk(node) {
+    Array.from(node.childNodes).forEach(ch => {
+      if (ch.nodeType === 3) return;
+      if (ch.nodeType !== 1) { ch.remove(); return; }
+      const tg = String(ch.tagName).toUpperCase();
+      if (!DB_HTML_TAGS.has(tg)) {
+        if (/^(SCRIPT|STYLE|IFRAME|OBJECT|EMBED|SVG|MATH|TEMPLATE|NOSCRIPT|FORM|INPUT|TEXTAREA|BUTTON|SELECT|LINK|META|BASE)$/.test(tg)) { ch.remove(); return; }
+        walk(ch); ch.replaceWith(...ch.childNodes); return;
+      }
+      Array.from(ch.attributes).forEach(a => {
+        const n = a.name.toLowerCase();
+        if (!DB_HTML_ATTRS.has(n)) { ch.removeAttribute(a.name); return; }
+        if (n === 'href' || n === 'src') {
+          const ok = dbSafeUrl(a.value, tg === 'IMG' && n === 'src');
+          if (ok) ch.setAttribute(n, ok); else ch.removeAttribute(a.name);
+        }
+        if (n === 'style' && /url\s*\(|expression|javascript:|@import|behavior/i.test(a.value)) ch.removeAttribute('style');
+      });
+      if (tg === 'A') { ch.setAttribute('rel', 'noopener noreferrer nofollow'); if (/^https?:/i.test(ch.getAttribute('href') || '')) ch.setAttribute('target', '_blank'); }
+      walk(ch);
+    });
+  })(root);
+  return root.innerHTML;
+}
+// dbClean: 공유 코드·클라우드에서 불러온 스펙 데이터의 문자열 값에서 HTML 특수문자 제거
+function dbClean(v) {
+  if (typeof v === 'string') return v.replace(/[<>"`]/g, '');
+  if (Array.isArray(v)) return v.map(dbClean);
+  if (v && typeof v === 'object') { const o = {}; for (const k in v) o[k] = dbClean(v[k]); return o; }
+  return v;
+}

@@ -100,7 +100,7 @@
  <tbody id="guild-list-body"></tbody>
 </table>
 
-<script src="./sb_config.js"></script>
+<script src="./sb_config.js?v=20261126"></script>
 <script src="./data2/guild_list.js"></script>
 <script>// ?from= 파라미터를 읽어서 뒤로가기 URL 결정
 (function() {
@@ -182,19 +182,19 @@ function renderList() {
  filtered.forEach(p =>{
  const num = p.is_pinned ? '' : normalPosts.length - normalPosts.indexOf(p);
  const isMe = user && user.id === p.user_id;
- const blockBtn = user && !isMe ? `<button class="block-btn" onclick="event.stopPropagation();blockUser('${p.user_id}','${p.nickname||p.username}')">차단</button>` : '';
+ const blockBtn = user && !isMe ? `<button class="block-btn" onclick="event.stopPropagation();blockUser(${dbArg(p.user_id)},${dbArg(p.nickname||p.username)})">차단</button>` : '';
  const tr = document.createElement('tr');
- tr.onclick = () =>location.href = `./community_view.html?id=${p.id}&back=guild`;
+ tr.onclick = () =>location.href = `./community_view.html?id=${encodeURIComponent(p.id)}&back=guild`;
  tr.innerHTML = `
  <td class="num">${num}</td>
  <td class="title">
- <a class="guild-title-link" href="./community_view.html?id=${p.id}&back=guild">${p.is_verified ? '<span class="verify-badge"></span>' : ''}
+ <a class="guild-title-link" href="./community_view.html?id=${encodeURIComponent(p.id)}&back=guild">${p.is_verified ? '<span class="verify-badge"></span>' : ''}
  ${p.title}
  </a>
  </td>
  <td class="meta">
  <div class="meta-wrap">
- <span class="meta-author">${p.nickname || p.username}</span>
+ <span class="meta-author">${dbEsc(p.nickname || p.username)}</span>
  <span class="meta-likes">${p.likes || 0}</span>${blockBtn}
  </div>
  </td>`;
@@ -205,13 +205,13 @@ function renderList() {
  if(guildList && guildList.length >0 && !activeContent && !activeAge) {
  guildList.forEach(g =>{
  const tr = document.createElement('tr');
- tr.onclick = () =>location.href = `./guild_view.html?id=${g.id}`;
+ tr.onclick = () =>location.href = `./guild_view.html?id=${encodeURIComponent(g.id)}`;
  tr.innerHTML = `
- <td class="num">${g.id}</td>
+ <td class="num">${dbEsc(g.id)}</td>
  <td class="title">
- <a class="guild-title-link" href="./guild_view.html?id=${g.id}">
- <img class="guild-logo-small" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/guild/${g.id}.png" alt="">
- <span class="verify-badge"></span>${g.title}
+ <a class="guild-title-link" href="./guild_view.html?id=${encodeURIComponent(g.id)}">
+ <img class="guild-logo-small" src="https://raw.githubusercontent.com/yejoo0519/dogam/refs/heads/main/guild/${encodeURIComponent(g.id)}.png" alt="">
+ <span class="verify-badge"></span>${dbEsc(g.title)}
  </a>
  </td>
  <td class="meta">

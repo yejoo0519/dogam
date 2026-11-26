@@ -74,7 +74,7 @@
  <button class="btn" id="rec-go" disabled onclick="goLogin()">로그인하러 가기</button>
 </div>
 
-<script src="../sb_config.js?v=20261126"></script>
+<script src="../sb_config.js?v=20261126b"></script>
 <script>let nicknameValid = false;
 let nicknameTimer = null;
 
@@ -100,7 +100,7 @@ async function checkNickname() {
  // 타이핑 멈추고 400ms 후에 중복 확인 (API 요청 최소화)
  nicknameTimer = setTimeout(async () =>{
  try {
- const rows = await supabase('GET', 'users', null, `?nickname=eq.${encodeURIComponent(nickname)}&select=id`);
+ const rows = await supabase('GET', 'users_public', null, `?nickname=eq.${encodeURIComponent(nickname)}&select=id`);
  if(rows && rows.length >0) {
  hint.className = 'field-hint error';
  hint.textContent = '이미 사용 중인 닉네임입니다.';

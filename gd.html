@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="./ui.css">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="./theme.js"></script>
-<script src="./sb_config.js?v=20261126"></script>
+<script src="./sb_config.js?v=20261126b"></script>
 <style>:root{
  --sf:var(--bg2);--sf2:var(--bg3);--bd:var(--border);
  --gold:var(--accent);--gold2:var(--accent);
@@ -304,8 +304,7 @@ async function doLogin() {
  btn.disabled = true; btn.textContent = '로그인 중...';
  try {
  const hashed = await hashPassword(password);
- const rows = await supabase('GET','users',null,
- `?username=eq.${encodeURIComponent(username)}&password=eq.${hashed}`);
+ const rows = await dbLoginRows(username, hashed);
 
  if (!rows || !rows.length) {
  msgEl.className = 'login-msg error';
@@ -438,7 +437,7 @@ async function submitJoin() {
  const ex = await supabase('GET','guild_members',null,`?user_id=eq.${gUser.id}&status=in.(pending,approved)&limit=1`);
  if (ex&&ex.length){ errEl.textContent='이미 다른 길드에 가입 요청 중이거나 소속되어 있어요.'; errEl.classList.add('on'); return; }
 
- const cd = await supabase('GET','guild_codes',null,`?code=eq.${code}&select=guild_id&limit=1`);
+ const cd = await sbRpc('guild_id_by_code',{p_code:code}).then(g=>g?[{guild_id:g}]:[]);
  if (!cd||!cd.length){ errEl.textContent='유효하지 않은 연동 코드예요.'; errEl.classList.add('on'); return; }
 
  const ins = await supabase('POST','guild_members',{

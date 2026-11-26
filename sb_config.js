@@ -1,33 +1,91 @@
 const SUPABASE_URL = 'https://ytudyupzaabisaupytuz.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_nZ2vb00wab3vbsCXSN6iZA_hIJ-udxV';
+// ── 로그인 세션 (Supabase Auth 토큰) ──
+const SB_SESSION_KEY = 'sb_session';
+function sbGetSession() { try { return JSON.parse(localStorage.getItem(SB_SESSION_KEY)); } catch { return null; } }
+function sbSetSession(d) {
+  if (!d || !d.access_token) { localStorage.removeItem(SB_SESSION_KEY); return; }
+  localStorage.setItem(SB_SESSION_KEY, JSON.stringify({
+    access_token: d.access_token, refresh_token: d.refresh_token,
+    expires_at: d.expires_at || (Math.floor(Date.now() / 1000) + (d.expires_in || 3600))
+  }));
+}
+// 예전 방식으로 로그인돼 있던 사람(토큰 없음)은 로그아웃 처리 → 한 번만 다시 로그인
+if (localStorage.getItem('community_user') && !sbGetSession()) localStorage.removeItem('community_user');
+let sbRefreshing = null;
+async function sbAuthFetch(path, body) {
+  const res = await fetch(`${SUPABASE_URL}/auth/v1/${path}`, {
+    method: 'POST', headers: { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+  });
+  const j = await res.json().catch(() => ({}));
+  if (!res.ok) { const e = new Error(j.error_description || j.msg || j.message || '인증 실패'); e.status = res.status; throw e; }
+  return j;
+}
+async function sbAccessToken() {
+  const s = sbGetSession();
+  if (!s) return null;
+  if (Date.now() / 1000 < s.expires_at - 60) return s.access_token;
+  if (!sbRefreshing) sbRefreshing = (async () => {
+    try {
+      const latest = sbGetSession(); // 다른 탭에서 먼저 갱신했으면 그걸 사용
+      if (latest && Date.now() / 1000 < latest.expires_at - 60) return latest.access_token;
+      const d = await sbAuthFetch('token?grant_type=refresh_token', { refresh_token: (latest || s).refresh_token });
+      sbSetSession(d); return d.access_token;
+    } catch (e) {
+      if (e.status === 400 || e.status === 401 || e.status === 403) { sbSetSession(null); localStorage.removeItem('community_user'); }
+      return null;
+    } finally { setTimeout(() => { sbRefreshing = null; }, 0); }
+  })();
+  return sbRefreshing;
+}
+async function sbHeaders(extra) {
+  const t = await sbAccessToken();
+  return Object.assign({ 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${t || SUPABASE_KEY}` }, extra || {});
+}
+// 아이디/비번 확인 후 내 users 행을 [row] 형태로 반환 (실패 시 [])
+async function dbLoginRows(username, hashed) {
+  const id = await sbRpc('login_id', { p_username: username });
+  if (!id) return [];
+  let d;
+  try { d = await sbAuthFetch('token?grant_type=password', { email: `${id}@u.dbryong.com`, password: hashed }); }
+  catch (e) { if (e.status === 400) return []; throw e; }
+  sbSetSession(d);
+  const rows = await supabase('GET', 'users', null, `?id=eq.${id}&select=id,username,nickname,friend_code,is_admin,is_banned,can_cham_auto&limit=1`);
+  if (!rows || !rows.length || rows[0].is_banned) { sbSetSession(null); }
+  return rows || [];
+}
+async function sbRpc(fn, args) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${fn}`, {
+    method: 'POST', headers: await sbHeaders({ 'Content-Type': 'application/json' }), body: JSON.stringify(args || {})
+  });
+  if (!res.ok) { const err = await res.json().catch(() => ({})); throw new Error(err.message || '요청 실패'); }
+  const txt = await res.text();
+  return txt ? JSON.parse(txt) : null;
+}
 async function supabase(method, table, data = null, params = '') {
   const url = `${SUPABASE_URL}/rest/v1/${table}${params}`;
-  const headers = {
-    'apikey': SUPABASE_KEY,
-    'Authorization': `Bearer ${SUPABASE_KEY}`,
+  // 회원가입(users POST)은 로그인 전이라 결과 행을 돌려받을 수 없음 → minimal
+  const minimal = method === 'POST' && table === 'users';
+  const headers = await sbHeaders({
     'Content-Type': 'application/json',
-    'Prefer': method === 'POST' ? 'return=representation' : ''
-  };
-  if(method === 'PATCH') headers['Prefer'] = 'return=representation';
+    'Prefer': (method === 'POST' || method === 'PATCH') ? (minimal ? 'return=minimal' : 'return=representation') : ''
+  });
   const res = await fetch(url, {
     method,
     headers,
     body: data ? JSON.stringify(data) : null
   });
   if (!res.ok) {
-    const err = await res.json();
+    const err = await res.json().catch(() => ({}));
     throw new Error(err.message || '요청 실패');
   }
-  return method === 'DELETE' ? null : res.json();
+  if (method === 'DELETE') return null;
+  const txt = await res.text();
+  return txt ? JSON.parse(txt) : null;
 }
 async function getCount(table, query = '') {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}${query}`, {
-    headers: {
-      'apikey': SUPABASE_KEY,
-      'Authorization': `Bearer ${SUPABASE_KEY}`,
-      'Prefer': 'count=exact',
-      'Range': '0-0'
-    }
+    headers: await sbHeaders({ 'Prefer': 'count=exact', 'Range': '0-0' })
   });
   const range = res.headers.get('content-range');
   return range ? parseInt(range.split('/')[1]) : 0;
@@ -36,7 +94,12 @@ function getUser() {
   try { return JSON.parse(localStorage.getItem('community_user')); } catch { return null; }
 }
 function setUser(user) { localStorage.setItem('community_user', JSON.stringify(user)); }
-function logout() { localStorage.removeItem('community_user'); location.href = location.href.split('/').pop() || './index.html'; }
+function logout() {
+  const s = sbGetSession();
+  if (s) fetch(`${SUPABASE_URL}/auth/v1/logout`, { method: 'POST', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${s.access_token}` } }).catch(() => {});
+  sbSetSession(null);
+  localStorage.removeItem('community_user'); location.href = location.href.split('/').pop() || './index.html';
+}
 async function hashPassword(pw) {
   const data = new TextEncoder().encode(pw);
   // crypto.subtle 은 https 에서만 존재 → 없을 때(http, 일부 인앱 브라우저)는 같은 결과를 내는 JS 구현 사용

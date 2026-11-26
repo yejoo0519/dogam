@@ -87,7 +87,7 @@
 <div class="post-box" id="post-box">로딩 중...</div>
 <div id="comments-section"></div>
 
-<script src="./sb_config.js?v=20261126"></script>
+<script src="./sb_config.js?v=20261126b"></script>
 <script>const user = getUser();
 const params = new URLSearchParams(location.search);
 const postId = params.get('id');
@@ -111,7 +111,7 @@ else if(backBoard === 'friend') document.getElementById('back-link').href = './f
 
 async function loadAdmins() {
  try {
- const rows = await supabase('GET', 'users', null, '?is_admin=eq.true&select=id');
+ const rows = await supabase('GET', 'users_public', null, '?is_admin=eq.true&select=id');
  adminIds = rows ? rows.map(r =>r.id) : [];
  } catch(e) {}
 }
@@ -237,11 +237,9 @@ async function toggleLike() {
  try {
  if(isLiked) {
  await supabase('DELETE', 'post_likes', null, `?post_id=eq.${postId}&user_id=eq.${user.id}`);
- await supabase('PATCH', 'posts', { likes: parseInt(document.getElementById('like-count').textContent) - 1 }, `?id=eq.${postId}`);
  isLiked = false;
  } else {
  await supabase('POST', 'post_likes', { post_id: parseInt(postId), user_id: user.id });
- await supabase('PATCH', 'posts', { likes: parseInt(document.getElementById('like-count').textContent) + 1 }, `?id=eq.${postId}`);
  isLiked = true;
  }
  const rows = await supabase('GET', 'posts', null, `?id=eq.${postId}&select=likes`);

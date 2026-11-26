@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="../ui.css">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="./theme.js"></script>
-<script src="../sb_config.js?v=20261126"></script>
+<script src="../sb_config.js?v=20261126b"></script>
 <style>/* ── 카드 ── */
 .box{margin:24px auto;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:28px;width:100%;max-width:400px}
 .box-title{font-size:17px;font-weight:800;text-align:center;margin-bottom:6px}
@@ -241,12 +241,12 @@ async function findId(){
  let rows;
  if(METHOD.fi==='rec'){
  const hashed = await hashPassword(rec);
- rows = await supabase('GET','users',null,
- `?recovery_code=eq.${hashed}&select=id,username&limit=1`);
+ const un = await sbRpc('find_username',{p_method:'rec',p_rec_hash:hashed,p_nick:null,p_code:null});
+ rows = un ? [{username:un}] : [];
  }else{
  // ilike: 대소문자 무관 비교
- rows = await supabase('GET','users',null,
- `?nickname=eq.${encodeURIComponent(nick)}&friend_code=ilike.${encodeURIComponent(code)}&select=id,username&limit=1`);
+ const un = await sbRpc('find_username',{p_method:'fc',p_rec_hash:null,p_nick:nick,p_code:code});
+ rows = un ? [{username:un}] : [];
  }
  if(!rows||!rows.length){
  showMsg(msg,'error', METHOD.fi==='rec'
@@ -292,19 +292,12 @@ async function changePw(){
  btn.disabled=true; btn.textContent='변경 중...';
  try{
  // 계정 확인
- const verify = METHOD.fp==='rec'
- ? `recovery_code=eq.${await hashPassword(rec)}`
- : `friend_code=ilike.${encodeURIComponent(code)}`;
- const rows = await supabase('GET','users',null,
- `?username=eq.${encodeURIComponent(username)}&${verify}&select=id&limit=1`);
- if(!rows||!rows.length){
+ const recHash = METHOD.fp==='rec' ? await hashPassword(rec) : null;
+ const hashed = await hashPassword(pw1);
+ const ok = await sbRpc('reset_password',{p_username:username,p_method:METHOD.fp==='rec'?'rec':'fc',p_rec_hash:recHash,p_code:METHOD.fp==='rec'?null:code,p_new_hash:hashed});
+ if(!ok){
  showMsg(msg,'error', METHOD.fp==='rec' ? '아이디 또는 복구 코드가 일치하지 않아요.' : '아이디 또는 친구코드가 일치하지 않아요.'); return;
  }
- const userId = rows[0].id;
- const hashed = await hashPassword(pw1);
-
- // 비밀번호 업데이트
- await supabase('PATCH','users',{password:hashed},`?id=eq.${userId}`);
  showMsg(msg,'success','비밀번호가 변경됐어요! 새 비밀번호로 로그인해주세요.');
  document.getElementById('fp-pw1').value='';
  document.getElementById('fp-pw2').value='';
@@ -327,7 +320,7 @@ async function checkNewNick(){
  hint.className='hint'; hint.textContent='확인 중...';
  _nickTimer=setTimeout(async()=>{
  try{
- const rows=await supabase('GET','users',null,`?nickname=eq.${encodeURIComponent(val)}&select=id&limit=1`);
+ const rows=await supabase('GET','users_public',null,`?nickname=eq.${encodeURIComponent(val)}&select=id&limit=1`);
  if(rows&&rows.length){
  hint.className='hint'; hint.style.color='#ef5350';
  hint.textContent='이미 사용 중인 닉네임이에요.';

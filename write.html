@@ -135,9 +135,9 @@
  </div>
 </div>
 
-<script src="./sb_config.js?v=20261126b"></script>
+<script src="./sb_config.js?v=20261126c"></script>
 <script>const params = new URLSearchParams(location.search);
-const board = params.get('board') || 'qna';
+const board = ['qna','guide','guild'].includes(params.get('board')) ? params.get('board') : 'qna';
 const user = getUser();
 
 if(!user) { alert('로그인이 필요합니다.'); location.href = './login.html?from=' + encodeURIComponent(location.href.split('/').pop()); }
@@ -145,8 +145,7 @@ if(!user) { alert('로그인이 필요합니다.'); location.href = './login.htm
 const boardConfig = {
  qna: { name: '묻고답하기', back: './community.html', placeholder: '내용을 입력하세요' },
  guide: { name: '공략 & 가이드', back: './guide.html', placeholder: '공략 내용을 입력하세요' },
- guild: { name: '길드 홍보', back: './guild.html', placeholder: '길드 소개, 모집 조건 등을 입력하세요' },
- friend: { name: '친구요청', back: './friend.html', placeholder: '친구 요청 내용을 입력하세요' }
+ guild: { name: '길드 홍보', back: './guild.html', placeholder: '길드 소개, 모집 조건 등을 입력하세요' }
 };
 const config = boardConfig[board] || boardConfig.qna;
 

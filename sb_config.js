@@ -64,8 +64,8 @@ async function sbRpc(fn, args) {
 }
 async function supabase(method, table, data = null, params = '') {
   const url = `${SUPABASE_URL}/rest/v1/${table}${params}`;
-  // 회원가입(users POST)은 로그인 전이라 결과 행을 돌려받을 수 없음 → minimal
-  const minimal = method === 'POST' && table === 'users';
+  // 회원가입(users)·스펙 공유(spec_shares) POST는 결과 행을 읽을 권한이 없음 → minimal
+  const minimal = method === 'POST' && (table === 'users' || table === 'spec_shares');
   const headers = await sbHeaders({
     'Content-Type': 'application/json',
     'Prefer': (method === 'POST' || method === 'PATCH') ? (minimal ? 'return=minimal' : 'return=representation') : ''

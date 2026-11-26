@@ -87,7 +87,7 @@
 <div class="post-box" id="post-box">로딩 중...</div>
 <div id="comments-section"></div>
 
-<script src="./sb_config.js?v=20261126b"></script>
+<script src="./sb_config.js?v=20261126c"></script>
 <script>const user = getUser();
 const params = new URLSearchParams(location.search);
 const postId = params.get('id');
@@ -107,7 +107,6 @@ function blockUser(userId, nickname) {
 
 if(backBoard === 'guild') document.getElementById('back-link').href = './guild.html';
 else if(backBoard === 'guide') document.getElementById('back-link').href = './guide.html';
-else if(backBoard === 'friend') document.getElementById('back-link').href = './friend.html';
 
 async function loadAdmins() {
  try {
@@ -148,7 +147,7 @@ async function loadPost() {
  <div class="post-meta">
  <span class="post-author">${dbEsc(currentPost.nickname || currentPost.username)}</span>${authorIsAdmin ? '<span class="admin-badge">관리자</span>' : ''}
  <span>${dbEsc(String(currentPost.created_at).slice(0,10)).replace(/-/g,'.')}</span>
- </div>${currentPost.board === 'friend' && currentPost.friend_code ? `<div class="friend-code-box"><span class="friend-code-label">친구코드</span><span class="friend-code-value">${dbEsc(currentPost.friend_code)}</span></div>` : ''}
+ </div>
  <div class="post-content">${dbHtml(currentPost.content)}</div>${isGuild && isOwner ? `
  <div class="edit-form" id="edit-form" style="display:none">
  <label>제목</label>
@@ -251,7 +250,7 @@ async function toggleLike() {
 async function deletePost(id) {
  if(!confirm('글을 삭제할까요?')) return;
  await supabase('DELETE', 'posts', null, `?id=eq.${id}`);
- const back = backBoard === 'guild' ? './guild.html' : backBoard === 'guide' ? './guide.html' : backBoard === 'friend' ? './friend.html' : './community.html';
+ const back = backBoard === 'guild' ? './guild.html' : backBoard === 'guide' ? './guide.html' : './community.html';
  location.href = back;
 }
 

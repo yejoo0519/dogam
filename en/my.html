@@ -356,7 +356,7 @@ button{white-space:nowrap}
 
 <div class="toast" id="toast"></div>
 
-<script src="../sb_config.js?v=20261126b"></script>
+<script src="../sb_config.js?v=20261126c"></script>
 <script>
 if (!globalThis.DV1_DRAGON_VIEWS) throw new Error("드래곤 데이터 로드 실패: 초기화 중단");
 // ================================================================
@@ -855,7 +855,8 @@ async function doImport(){
  const code=document.getElementById('import-code').value.trim().toUpperCase();
  if(code.length!==12){alert('12자리 코드를 입력해주세요.');return;}
  try{
- const res=await supabase('GET','spec_shares',null,`?code=eq.${code}&select=spec_data`);
+ const sd=await sbRpc('get_spec_share',{p_code:code});
+ const res=sd?[{spec_data:sd}]:[];
  if(!res||!res.length){alert('코드를 찾을 수 없습니다. 코드를 다시 확인해주세요.');return;}
  const data=dbClean(typeof res[0].spec_data==='string'?JSON.parse(res[0].spec_data):res[0].spec_data);
  S.accCards=data.accCards||[];

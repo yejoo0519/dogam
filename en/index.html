@@ -763,7 +763,7 @@
       }
       const todayCount  = await getCount('visitors', `?visited_at=eq.${today}`);
       const totalCount  = await getCount('visitors');
-      const memberCount = await getCount('users');
+      const memberCount = await getCount('users_public');
       document.getElementById('s-today').textContent   = todayCount.toLocaleString();
       document.getElementById('s-total').textContent   = totalCount.toLocaleString();
       document.getElementById('s-members').textContent = memberCount.toLocaleString();

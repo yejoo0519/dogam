@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-11-27",
+  "checkedAt": "2026-11-28",
   "source": "https://www.dragonvillage.net/notice",
-  "totalCount": 3978,
-  "scannedCount": 3978,
+  "totalCount": 3979,
+  "scannedCount": 3979,
   "scannedIds": [
     283,
     284,
@@ -3982,9 +3982,19 @@
     21469,
     21470,
     21471,
-    21472
+    21472,
+    21473
   ],
   "notices": [
+    {
+      "id": 21473,
+      "title": "[이벤트] 12월 1,2,3 이벤트 안내",
+      "date": "2026-11-27",
+      "url": "https://www.dragonvillage.net/notice/21473",
+      "events": [],
+      "periods": [],
+      "hasImages": true
+    },
     {
       "id": 21468,
       "title": "[공지] 11월 25일(수) 업데이트 안내(내용 추가)",
